@@ -13,6 +13,10 @@ HRESULT	InitDevice();
 void CleanupDevice();
 HRESULT CompileShaderFromFile(const WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
 
+void CreateInputLayout();
+
+void Render(float deltaTime);
+
 HINSTANCE g_hInstance;
 
 HWND g_hWnd;
@@ -26,6 +30,7 @@ ID3D11RenderTargetView* g_pRenderTargetView = nullptr;
 ID3D11Texture2D* g_pDepthStencil = nullptr;
 ID3D11DepthStencilView* g_pDepthStencilView = nullptr;
 
+ID3D11VertexShader* g_pVertexShader = nullptr;
 ID3D11PixelShader* g_pPixelShader = nullptr;
 
 ID3D11InputLayout* g_pVertexLayout = nullptr;
@@ -389,4 +394,61 @@ HRESULT CompileShaderFromFile(const WCHAR* szFileName, LPCSTR szEntryPoint, LPCS
 	if (pErrorBlob) pErrorBlob->Release();
 
 	return S_OK;
+}
+
+HRESULT CreateInputLayout()
+{
+	// Define the input layout
+	D3D11_INPUT_ELEMENT_DESC layout[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT , D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT , D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	};
+	UINT numElements = ARRAYSIZE(layout);
+
+	// Create the input layout
+	HRESULT hr = g_pd3dDevice->CreateInputLayout(layout, numElements, pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), &g_pVertexLayout);
+	pVSBlob->Release();
+	if (FAILED(hr))
+		return hr;
+
+	// Set the input layout
+	g_pImmediateContext->IASetInputLayout(g_pVertexLayout);
+}
+
+void Render(float deltaTime)
+{
+	{
+		// Clear the back buffer
+		g_pImmediateContext->ClearRenderTargetView(g_pRenderTargetView, DirectX::Colors::MidnightBlue);
+
+		// Clear the depth buffer to 1.0 (max depth)
+		g_pImmediateContext->ClearDepthStencilView(g_pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+		// get the game object world transform
+		XMMATRIX mGO = XMLoadFloat4x4(g_GameObject.getTransform());
+
+		// store this and the view / projection in a constant buffer for the vertex shader to use
+		ConstantBuffer cb1;
+		cb1.mWorld = XMMatrixTranspose(mGO);
+		cb1.mView = XMMatrixTranspose(g_View);
+		cb1.mProjection = XMMatrixTranspose(g_Projection);
+		cb1.vOutputColor = XMFLOAT4(0, 0, 0, 0);
+		g_pImmediateContext->UpdateSubresource(g_pConstantBuffer, 0, nullptr, &cb1, 0, 0);
+
+		// Render the cube
+		g_pImmediateContext->VSSetShader(g_pVertexShader, nullptr, 0);
+		g_pImmediateContext->VSSetConstantBuffers(0, 1, &g_pConstantBuffer);
+
+		g_pImmediateContext->PSSetShader(g_pPixelShader, nullptr, 0);
+		g_pImmediateContext->PSSetConstantBuffers(2, 1, &g_pLightConstantBuffer);
+		g_pImmediateContext->PSSetConstantBuffers(1, 1, &materialCB);
+
+		g_GameObject.draw(g_pImmediateContext);
+
+		// Present our back buffer to our front buffer
+		g_pSwapChain->Present(0, 0);
+	}
+
 }
