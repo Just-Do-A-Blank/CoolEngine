@@ -9,3 +9,13 @@ bool Collision::BoxCollision(Box box1, Box box2)
 
 	return false;
 }
+
+bool Collision::CircleCollision(Circle circle1, Circle circle2)
+{
+	float m_distanceBetweenCircles = sqrt((circle2.m_x - circle1.m_x) * (circle2.m_x - circle1.m_x) + (circle2.m_y - circle1.m_y) * (circle2.m_y - circle1.m_y));
+	if (m_distanceBetweenCircles <= circle1.m_radius + circle2.m_radius)
+	{
+		return true;
+	}
+	return false;
+}
