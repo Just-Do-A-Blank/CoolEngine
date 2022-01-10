@@ -2,12 +2,12 @@
 
 bool Collision::BoxCollision(Box box1, Box box2)
 {
-	if ( box1.m_x + box1.m_width > box2.m_x && box1.m_x < box2.m_x + box2.m_width && box1.m_y + box1.m_height > box2.m_y && box1.m_y < box2.m_y + box2.m_height )
-	{
-		return true;
-	}
+	return (box1.m_x + box1.m_width > box2.m_x && box1.m_x < box2.m_x + box2.m_width && box1.m_y + box1.m_height > box2.m_y && box1.m_y < box2.m_y + box2.m_height);
+}
 
-	return false;
+bool Collision::LineBoxCollision(Line line, Box box)
+{
+	return (box.m_x + box.m_width > line.m_point1.m_x && box.m_x < line.m_point1.m_x&& box.m_y + box.m_height > line.m_point1.m_y && box.m_y < line.m_point1.m_y);
 }
 
 bool Collision::CircleCollision(Circle circle1, Circle circle2)

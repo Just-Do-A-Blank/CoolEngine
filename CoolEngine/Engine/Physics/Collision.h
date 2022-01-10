@@ -1,5 +1,6 @@
 #pragma once
 #include "Box.h"
+#include "Line.h"
 #include "Circle.h"
 #include <math.h>
 
@@ -21,4 +22,13 @@ public:
 	/// <param name="circle2"></param>
 	/// <returns></returns>
 	static bool CircleCollision(Circle circle1, Circle circle2);
+
+	/// <summary>
+	/// Return true if line and box overlap, otherwise false.
+	/// Only works for axis aligned lines right now!!!
+	/// </summary>
+	/// <param name="line"></param>
+	/// <param name="box"></param>
+	/// <returns></returns>
+	static bool LineBoxCollision(Line line, Box box);
 };
