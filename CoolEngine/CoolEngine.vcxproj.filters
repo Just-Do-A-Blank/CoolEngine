@@ -43,15 +43,32 @@
     <Filter Include="Resources\UI">
       <UniqueIdentifier>{32d1376a-4037-46be-b6fe-35f906fd5ef6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Graphics\Shaders">
+      <UniqueIdentifier>{8f77816b-ddde-4978-b7c7-7e20ec47e52d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\Shaders\ConstantBuffers.h">
+      <Filter>Engine\Graphics\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\Shaders\HLSLCompat.h">
+      <Filter>Engine\Graphics\Shaders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Engine\Graphics\Shaders\BasicVertex.hlsl">
+      <Filter>Engine\Graphics\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">
+      <Filter>Engine\Graphics\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
