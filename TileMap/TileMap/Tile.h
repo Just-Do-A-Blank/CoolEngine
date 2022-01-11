@@ -4,15 +4,36 @@
 class Tile
 {
 public:
+	Tile();
 	Tile(int a);
 
-	void setID(int id) { ID = id; }
-	int getID() { return ID; }
+	int GetID() 
+	{ 
+		try
+		{
+			if (ID != NULL)
+			{
+				return ID;
+			}
+		}
+		catch(...)
+		{
+			return -25;
+		}
+	}
+	void SetID(int id) { ID = id; }
+
+	void SetEdges(bool N, bool E, bool S, bool W);
+
+	void SetEdgeN(bool N);
+	void SetEdgeS(bool S);
+	void SetEdgeW(bool W);
+	void SetEdgeE(bool E);
 
 protected:
 
 private:
-	std::vector<bool>		m_edges;
-	int ID;
+	bool					m_edgeN, m_edgeS, m_edgeW, m_edgeE;
+	int ID = -25;
 };
 
