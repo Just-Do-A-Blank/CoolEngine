@@ -3,5 +3,6 @@
 
 class GameObject
 {
+protected:
 	Transform m_transform;
 };
