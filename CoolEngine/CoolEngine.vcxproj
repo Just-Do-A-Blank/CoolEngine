@@ -21,9 +21,21 @@
   <ItemGroup>
     <ClInclude Include="Engine\Graphics\Shaders\ConstantBuffers.h" />
     <ClInclude Include="Engine\Graphics\Shaders\HLSLCompat.h" />
+    <ClInclude Include="Engine\GameObjects\CameraGameObject.h" />
+    <ClInclude Include="Engine\GameObjects\CollidableGameObject.h" />
+    <ClInclude Include="Engine\GameObjects\GameObject.h" />
+    <ClInclude Include="Engine\GameObjects\RenderableGameObject.h" />
+    <ClInclude Include="Engine\GameObjects\Transform.h" />
+    <ClInclude Include="Engine\GameObjects\TriggerGameObject.h" />
     <ClInclude Include="Engine\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp" />
+    <ClCompile Include="Engine\GameObjects\CollidableGameObject.cpp" />
+    <ClCompile Include="Engine\GameObjects\GameObject.cpp" />
+    <ClCompile Include="Engine\GameObjects\RenderableGameObject.cpp" />
+    <ClCompile Include="Engine\GameObjects\Transform.cpp" />
+    <ClCompile Include="Engine\GameObjects\TriggerGameObject.cpp" />
     <ClCompile Include="Engine\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -110,6 +122,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <ForcedIncludeFiles>$(ProjectDir)Engine\stdafx.h</ForcedIncludeFiles>
+      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -125,6 +139,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <ForcedIncludeFiles>$(ProjectDir)Engine\stdafx.h</ForcedIncludeFiles>
+      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -140,6 +156,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <ForcedIncludeFiles>$(ProjectDir)Engine\stdafx.h</ForcedIncludeFiles>
+      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -155,6 +173,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <ForcedIncludeFiles>$(ProjectDir)Engine\stdafx.h</ForcedIncludeFiles>
+      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
