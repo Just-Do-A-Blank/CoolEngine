@@ -1,19 +1,13 @@
 #pragma once
 
-#ifdef HLSL
-#include "HlslCompat.h"
-#else
 #include <DirectXMath.h>
-
-using namespace DirectX;
-#endif
 
 struct PerFrameCB
 {
-	XMMATRIX viewProjection;
+	DirectX::XMFLOAT4X4 viewProjection;
 };
 
 struct PerInstanceCB
 {
-	XMMATRIX world;
+	DirectX::XMFLOAT4X4 world;
 };
