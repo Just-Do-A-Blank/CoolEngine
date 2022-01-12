@@ -1,4 +1,6 @@
 #pragma once
+#include <io.h>
+#include <fcntl.h>
 
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/Graphics/Mesh.h"
@@ -43,6 +45,18 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
+
+#if _DEBUG
+	AllocConsole();
+
+	HANDLE handle_out = GetStdHandle(STD_OUTPUT_HANDLE);
+	int hCrt = _open_osfhandle((long)handle_out, _O_TEXT);
+	FILE* hf_out = _fdopen(hCrt, "w");
+	setvbuf(hf_out, NULL, _IONBF, 1);
+	*stdout = *hf_out;
+
+	freopen_s(&hf_out, "CONOUT$", "w", stdout);
+#endif //_DEBUG
 
 	if (FAILED(InitWindow(hInstance, nCmdShow)))
 		return 0;
@@ -99,6 +113,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		else
 		{
 			Render();
+			LOG("Console output test");
 		}
 	}
 
@@ -136,9 +151,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		break;
 
+	case WM_KEYDOWN:
+		if (wParam == VK_ESCAPE)
+		{
+			PostQuitMessage(0);
+		}
+		break;
+
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
+
+	
 
 	return 0;
 }
@@ -388,6 +412,7 @@ void CleanupDevice()
 		g_pImmediateContext->Release();
 	}
 
+#if _DEBUG
 	ID3D11Debug* debugDevice = nullptr;
 	g_pd3dDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&debugDevice));
 
@@ -403,6 +428,7 @@ void CleanupDevice()
 	{
 		debugDevice->Release();
 	}
+#endif //_DEBUG
 }
 
 void Render()
