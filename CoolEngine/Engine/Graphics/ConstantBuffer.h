@@ -29,4 +29,9 @@ public:
 		memcpy(resource.pData, &data, sizeof(T));
 		pcontext->Unmap(m_pbuffer, 0);
 	}
+
+	ID3D11Buffer* GetBuffer()
+	{
+		return m_pbuffer;
+	}
 };
