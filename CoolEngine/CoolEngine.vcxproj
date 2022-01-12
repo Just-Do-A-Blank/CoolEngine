@@ -26,6 +26,9 @@
     <ClInclude Include="Engine\GameObjects\Transform.h" />
     <ClInclude Include="Engine\GameObjects\TriggerGameObject.h" />
     <ClInclude Include="Engine\stdafx.h" />
+    <ClInclude Include="Engine\Tools\EventManager.h" />
+    <ClInclude Include="Engine\Tools\Events.h" />
+    <ClInclude Include="Engine\Tools\ListenerClasses.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp" />
@@ -35,6 +38,9 @@
     <ClCompile Include="Engine\GameObjects\Transform.cpp" />
     <ClCompile Include="Engine\GameObjects\TriggerGameObject.cpp" />
     <ClCompile Include="Engine\Main.cpp" />
+    <ClCompile Include="Engine\Tools\EventManager.cpp" />
+    <ClCompile Include="Engine\Tools\Events.cpp" />
+    <ClCompile Include="Engine\Tools\ListenerClasses.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

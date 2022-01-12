@@ -46,6 +46,9 @@
     <Filter Include="Engine\GameObjects">
       <UniqueIdentifier>{538b9ef7-73a5-459d-a461-42f205c14b3d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Tools\EventManager">
+      <UniqueIdentifier>{03523ee1-f37f-408c-b098-e2d61b24d577}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -69,6 +72,15 @@
     <ClInclude Include="Engine\GameObjects\TriggerGameObject.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Tools\ListenerClasses.h">
+      <Filter>Engine\Tools\EventManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Tools\Events.h">
+      <Filter>Engine\Tools\EventManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Tools\EventManager.h">
+      <Filter>Engine\Tools\EventManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -91,6 +103,15 @@
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\TriggerGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Tools\ListenerClasses.cpp">
+      <Filter>Engine\Tools\EventManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Tools\Events.cpp">
+      <Filter>Engine\Tools\EventManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Tools\EventManager.cpp">
+      <Filter>Engine\Tools\EventManager</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
