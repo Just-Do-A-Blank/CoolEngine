@@ -4,7 +4,7 @@
 using namespace std;
 
 
-//When removing m_clients or checks if its registered all registered listeners will be checked 
+//When removing m_listenerClients or checks if its registered all registered listeners will be checked 
 //commented out was using multimap instead of map
 
 EventManager::EventManager()
@@ -20,27 +20,27 @@ EventManager::~EventManager()
 
 
 //Registers client to specific event
-void EventManager::AddClient(EventType eventid, Listener* client)
+void EventManager::AddClient(EventType eventid, Observer* client)
 {
 
 	//If the client event pair doenst exist
 	if (!IsRegistered(eventid, client))
 	{
-		m_client[eventid].push_back(client);
-		//m_clients.insert(make_pair(eventid, client));
+		m_listenerClients[eventid].push_back(client);
+		//m_listenerClients.insert(make_pair(eventid, client));
 	}
 	
-	else //Outputs that there is a duplicate and doesnt add it to the list of m_clients since it has no value to have 2
+	else //Outputs that there is a duplicate and doesnt add it to the list of m_listenerClients since it has no value to have 2
 		OutputDebugStringA("Duplicate client eventID combo\n");
 
 }
 
-bool EventManager::IsRegistered(EventType eventid, Listener* client)
+bool EventManager::IsRegistered(EventType eventid, Observer* client)
 {
 	//Assume the client isnt registered 
 	bool exists = false;
 	//Itterates the current list of listeners to check if there is a duplicate
-	//for (auto i = m_clients.begin(); i != m_clients.end(); i++) {
+	//for (auto i = m_listenerClients.begin(); i != m_listenerClients.end(); i++) {
 	//	if (i->first == eventid) {
 	//		if (i->second == client) {
 	//			exists = true;
@@ -49,9 +49,9 @@ bool EventManager::IsRegistered(EventType eventid, Listener* client)
 	//	}
 	//}
 
-	for (auto i = 0; i < m_client[eventid].size(); ++i)
+	for (auto i = 0; i < m_listenerClients[eventid].size(); ++i)
 	{
-		if (m_client[eventid][i] == client)
+		if (m_listenerClients[eventid][i] == client)
 		{
 			exists = true;
 			break;
@@ -66,24 +66,24 @@ bool EventManager::IsRegistered(EventType eventid, Listener* client)
 
 
 
-//Unregisters client from a specific event since a listener can be registered to multiple m_clients at a time it needs to be done this way
-void EventManager::RemoveClientEvent(EventType eventid, Listener* client)
+//Unregisters client from a specific event since a listener can be registered to multiple m_listenerClients at a time it needs to be done this way
+void EventManager::RemoveClientEvent(EventType eventid, Observer* client)
 {
-	//for (auto i = m_clients.begin(); i != m_clients.end(); i++) {
+	//for (auto i = m_listenerClients.begin(); i != m_listenerClients.end(); i++) {
 	//	if (i->first == eventid) {
 	//		if (i->second == client) {
 	//			//Delete the client in question. No need to keep going since its a unique and more cant exist
-	//			i = m_clients.erase(i);
+	//			i = m_listenerClients.erase(i);
 	//			break;
 	//		}
 	//	}
 	//}
 
-	for (auto i = 0; i < m_client[eventid].size(); ++i)
+	for (auto i = 0; i < m_listenerClients[eventid].size(); ++i)
 	{
-		if (m_client[eventid][i] == client)
+		if (m_listenerClients[eventid][i] == client)
 		{
-			m_client[eventid].erase(m_client[eventid].begin() + i);
+			m_listenerClients[eventid].erase(m_listenerClients[eventid].begin() + i);
 			break;
 		}
 
@@ -93,18 +93,18 @@ void EventManager::RemoveClientEvent(EventType eventid, Listener* client)
 }
 
 //Unregisters client from all events
-void EventManager::RemoveClientAllEvents(Listener* client)
+void EventManager::RemoveClientAllEvents(Observer* client)
 {
-	//for (auto i = m_clients.begin(); i != m_clients.end(); i++) 
+	//for (auto i = m_listenerClients.begin(); i != m_listenerClients.end(); i++) 
 	//{
 	//	if (i->second == client) {
 	//		//Delete this client, keep going
-	//		i = m_clients.erase(i);
+	//		i = m_listenerClients.erase(i);
 	//	}
 	//}
 
 	//This is kind of messy but no other way to do it unless stored in a different way - store clients with their eventID in a vector (take worst of both evils), itterates each event vector to check for the client
-	for (auto i = m_client.begin(); i != m_client.end(); ++i)
+	for (auto i = m_listenerClients.begin(); i != m_listenerClients.end(); ++i)
 	{
 		for (auto j = 0; j < i->second.size(); ++i)
 		{
@@ -118,19 +118,27 @@ void EventManager::RemoveClientAllEvents(Listener* client)
 }
 
 
-//Process specific event. Add to event buffer
-void EventManager::AddEvent(EventType eventid, void* data)
+////Process specific event. Add to event buffer
+//void EventManager::AddEvent(EventType eventid, void* data)
+//{
+//	Event newEvent(eventid, data);
+//	//Add to the buffer
+//	m_eventBuffer.push_back(newEvent);
+//}
+
+void EventManager::AddEvent(Event* event)
 {
-	Event newEvent(eventid, data);
-	//Add to the buffer
-	m_eventBuffer.push_back(newEvent);
+	m_eventBuffer.push_back(event);
+
+
 }
+
 
 //Process event buffer
 void EventManager::ProcessEvents() 
 {
 	while (m_eventBuffer.size()) {
-		SendEvent(&m_eventBuffer.front());
+		SendEvent(m_eventBuffer.front());
 		//Remove the event from the buffer
 		m_eventBuffer.pop_front();
 	}
@@ -139,15 +147,15 @@ void EventManager::ProcessEvents()
 //Sends the event to the listener
 void EventManager::SendEvent(Event* event) 
 {
-	//for (auto i = m_clients.begin(); i != m_clients.end(); i++) {
+	//for (auto i = m_listenerClients.begin(); i != m_listenerClients.end(); i++) {
 	//	if (i->first == event->GetEventID()) {
 	//		i->second->HandleEvent(event);
 	//	}
 	//}
 
-	for (auto i = 0; i < m_client[event->GetEventID()].size(); ++i)
+	for (auto i = 0; i < m_listenerClients[event->GetEventID()].size(); ++i)
 	{
-		m_client[event->GetEventID()][i]->HandleEvent(event);
+		m_listenerClients[event->GetEventID()][i]->Handle(event);
 	}
 
 
@@ -162,7 +170,7 @@ void EventManager::ClearBuffer()
 //Clears the whole client list
 void EventManager::ClearClients() 
 {
-	m_clients.clear();
+	m_listenerClients.clear();
 }
 
 //Shutdown event system

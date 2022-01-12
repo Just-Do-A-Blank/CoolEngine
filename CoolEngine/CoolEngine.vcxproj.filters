@@ -72,7 +72,7 @@
     <ClInclude Include="Engine\GameObjects\TriggerGameObject.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Tools\ListenerClasses.h">
+    <ClInclude Include="Engine\Tools\EventObserver.h">
       <Filter>Engine\Tools\EventManager</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Tools\Events.h">
@@ -104,7 +104,7 @@
     <ClCompile Include="Engine\GameObjects\TriggerGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Tools\ListenerClasses.cpp">
+    <ClCompile Include="Engine\Tools\EventObserver.cpp">
       <Filter>Engine\Tools\EventManager</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Tools\Events.cpp">

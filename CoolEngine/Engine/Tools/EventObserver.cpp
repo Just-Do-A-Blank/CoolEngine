@@ -1,14 +1,15 @@
-#include "ListenerClasses.h"
+#include "EventObserver.h"
 #include <iostream>
 
 using namespace std;
 
-void ListenerInherr::HandleEvent(Event* event) {
+void ListenerInherr::Handle(Event* e) {
 	//Converts the data a local value that can actually be used
 	string* data;
-	data = static_cast<string*>(event->GetData());
+	data = static_cast<string*>(e->GetData());
 
-	switch (event->GetEventID()) {
+	switch (e->GetEventID()) 
+	{
 	case EventType::KeyPressed:
 		cout << count << ": Event1: " << *data << endl;
 		break;
@@ -20,4 +21,29 @@ void ListenerInherr::HandleEvent(Event* event) {
 		break;
 
 	}
+}
+
+void KeyObserver::Handle(KeyEvent* e)
+{
+	int keyCode = e->GetKeyCode();
+
+	switch (e->GetEventID())
+	{
+	case EventType::KeyPressed:
+		switch (keyCode)
+		{
+			
+
+
+
+
+
+
+		}
+
+
+	}
+
+
+
 }

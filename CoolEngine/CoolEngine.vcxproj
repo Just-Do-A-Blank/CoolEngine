@@ -28,7 +28,7 @@
     <ClInclude Include="Engine\stdafx.h" />
     <ClInclude Include="Engine\Tools\EventManager.h" />
     <ClInclude Include="Engine\Tools\Events.h" />
-    <ClInclude Include="Engine\Tools\ListenerClasses.h" />
+    <ClInclude Include="Engine\Tools\EventObserver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp" />
@@ -40,7 +40,7 @@
     <ClCompile Include="Engine\Main.cpp" />
     <ClCompile Include="Engine\Tools\EventManager.cpp" />
     <ClCompile Include="Engine\Tools\Events.cpp" />
-    <ClCompile Include="Engine\Tools\ListenerClasses.cpp" />
+    <ClCompile Include="Engine\Tools\EventObserver.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

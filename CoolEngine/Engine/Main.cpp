@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/Tools/EventManager.h"
+#include "Engine/Tools/EventObserver.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
@@ -33,7 +34,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 
 
-
+	PlayerControllerObserver observer(new int(10));
+	EventManager::Instance()->AddClient(EventType::KeyPressed,&observer);
+	EventManager::Instance()->AddClient(EventType::KeyReleased,&observer);
 
 
 	if (FAILED(InitWindow(hInstance, nCmdShow)))
@@ -55,6 +58,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
+
 
 			EventManager::Instance()->ProcessEvents(); 
 
