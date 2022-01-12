@@ -54,7 +54,7 @@ XMFLOAT4X4 CameraGameObject::GetProjection() const
 	return m_projectionMatrix;
 }
 
-XMFLOAT4X4 CameraGameObject::GetViewProjeciton() const
+XMFLOAT4X4 CameraGameObject::GetViewProjection() const
 {
 	XMFLOAT4X4 viewProj;
 
