@@ -39,27 +39,27 @@ public:
 		}
 	}
 
-	const ID3D11Buffer* GetVertexBuffer() const
+	ID3D11Buffer* GetVertexBuffer() const
 	{
 		return m_pvertexBuffer;
 	}
 
-	const ID3D11Buffer* GetIndexBuffer() const
+	ID3D11Buffer* GetIndexBuffer() const
 	{
 		return m_pindexBuffer;
 	}
 
-	const UINT& GetVBStride() const
+	UINT GetVBStride() const
 	{
 		return m_vBStride;
 	}
 
-	const UINT& GetVBOffset() const
+	UINT GetVBOffset() const
 	{
 		return m_vBOffset;
 	}
 
-	const UINT& GetIndexCount() const
+	UINT GetIndexCount() const
 	{
 		return m_indexCount;
 	}
