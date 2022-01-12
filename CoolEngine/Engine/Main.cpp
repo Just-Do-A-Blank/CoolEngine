@@ -1,16 +1,19 @@
 #pragma once
 
+#include "Engine/Managers/GraphicsManager.h"
+#include "Engine/Graphics/Mesh.h"
 
+#include "Engine/GameObjects/CameraGameObject.h"
+#include "Engine/Graphics/ConstantBuffer.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
 HRESULT	InitDevice();
 void CleanupDevice();
-HRESULT CompileShaderFromFile(const WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
 
-void CreateInputLayout();
+void Render();
 
-void Render(float deltaTime);
+void BindQuadBuffers();
 
 HINSTANCE g_hInstance;
 
@@ -24,11 +27,14 @@ IDXGISwapChain* g_pSwapChain = nullptr;
 ID3D11RenderTargetView* g_pRenderTargetView = nullptr;
 ID3D11Texture2D* g_pDepthStencil = nullptr;
 ID3D11DepthStencilView* g_pDepthStencilView = nullptr;
+ID3D11RasterizerState* g_prasterState = nullptr;
 
-ID3D11VertexShader* g_pVertexShader = nullptr;
-ID3D11PixelShader* g_pPixelShader = nullptr;
+CameraGameObject* g_pcamera = nullptr;
 
-ID3D11InputLayout* g_pVertexLayout = nullptr;
+GameObject* g_ptestObject;
+
+ConstantBuffer<PerFrameCB>* g_pperFrameCB;
+ConstantBuffer<PerInstanceCB>* g_pperInstanceCB;
 
 int g_Width = 1920;
 int g_Height = 1080;
@@ -37,8 +43,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
-
-
 
 	if (FAILED(InitWindow(hInstance, nCmdShow)))
 		return 0;
@@ -49,7 +53,39 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		return 0;
 	}
 
+	GraphicsManager::GetInstance()->Init(g_pd3dDevice);
 
+	GraphicsManager::GetInstance()->LoadTextureFromFile(L"Resources/Sprites/Brick.dds", g_pd3dDevice);
+
+	//Create camera
+	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, 0);
+	XMFLOAT3 cameraForward = XMFLOAT3(0, -1, 0);
+	XMFLOAT3 cameraUp = XMFLOAT3(0, 0, 1);
+
+	float windowWidth = g_Width;
+	float windowHeight = g_Height;
+
+	float nearDepth = 0.01f;
+	float farDepth = 1000.0f;
+
+	g_pcamera = new CameraGameObject("Camera");
+	g_pcamera->Initialize(cameraPos, cameraForward, cameraUp, windowWidth, windowHeight, nearDepth, farDepth);
+
+	//Create constant buffers
+	g_pperFrameCB = new ConstantBuffer<PerFrameCB>(g_pd3dDevice);
+	g_pperInstanceCB = new ConstantBuffer<PerInstanceCB>(g_pd3dDevice);
+
+	//Create test gameobject
+	XMFLOAT3 objectPos = XMFLOAT3(0, -5.0f, 0);
+	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
+
+	g_ptestObject = new GameObject("tempTile");
+	g_ptestObject->SetMesh(QUAD_MESH_NAME);
+	g_ptestObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+	g_ptestObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+	g_ptestObject->SetAlbedo(L"Resources/Sprites/Brick.dds");
+	g_ptestObject->GetTransform()->SetPosition(objectPos);
+	g_ptestObject->GetTransform()->SetScale(objectScale);
 
 	// Main message loop
 	MSG msg = { 0 };
@@ -62,11 +98,17 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		}
 		else
 		{
-
+			Render();
 		}
 	}
 
 	CleanupDevice();
+
+	delete g_pperFrameCB;
+	g_pperFrameCB = nullptr;
+
+	delete g_pperInstanceCB;
+	g_pperInstanceCB = nullptr;
 
 	return (int)msg.wParam;
 }
@@ -289,6 +331,21 @@ inline HRESULT InitDevice()
 		return hr;
 	}
 
+	D3D11_RASTERIZER_DESC rasterDesc;
+	ZeroMemory(&rasterDesc, sizeof(D3D11_RASTERIZER_DESC));
+	rasterDesc.FillMode = D3D11_FILL_SOLID;
+	rasterDesc.CullMode = D3D11_CULL_NONE;
+	hr = g_pd3dDevice->CreateRasterizerState(&rasterDesc, &g_prasterState);
+
+	if (FAILED(hr))
+	{
+		return hr;
+	}
+
+	g_pImmediateContext->RSSetState(g_prasterState);
+
+	g_pImmediateContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 	return S_OK;
 }
 
@@ -305,16 +362,6 @@ void CleanupDevice()
 
 	// Flush the immediate context to force cleanup
 	g_pImmediateContext->Flush();
-
-	if (g_pVertexLayout)
-	{
-		g_pVertexLayout->Release();
-	}
-
-	if (g_pPixelShader)
-	{
-		g_pPixelShader->Release();
-	}
 
 	if (g_pDepthStencil)
 	{
@@ -358,92 +405,51 @@ void CleanupDevice()
 	}
 }
 
-HRESULT CompileShaderFromFile(const WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut)
+void Render()
 {
-	HRESULT hr = S_OK;
+	// Clear the back buffer
+	g_pImmediateContext->ClearRenderTargetView(g_pRenderTargetView, DirectX::Colors::MidnightBlue);
 
-	DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
-#ifdef _DEBUG
-	// Set the D3DCOMPILE_DEBUG flag to embed debug information in the shaders.
-	// Setting this flag improves the shader debugging experience, but still allows 
-	// the shaders to be optimized and to run exactly the way they will run in 
-	// the release configuration of this program.
-	dwShaderFlags |= D3DCOMPILE_DEBUG;
+	// Clear the depth buffer to 1.0 (max depth)
+	g_pImmediateContext->ClearDepthStencilView(g_pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-	// Disable optimizations to further improve shader debugging
-	dwShaderFlags |= D3DCOMPILE_SKIP_OPTIMIZATION;
-#endif
+	g_pImmediateContext->IASetInputLayout(GraphicsManager::GetInstance()->GetInputLayout(GraphicsManager::InputLayouts::POS_TEX));
 
-	ID3DBlob* pErrorBlob = nullptr;
-	hr = D3DCompileFromFile(szFileName, nullptr, nullptr, szEntryPoint, szShaderModel,
-		dwShaderFlags, 0, ppBlobOut, &pErrorBlob);
-	if (FAILED(hr))
-	{
-		if (pErrorBlob)
-		{
-			OutputDebugStringA(reinterpret_cast<const char*>(pErrorBlob->GetBufferPointer()));
-			pErrorBlob->Release();
-		}
-		return hr;
-	}
-	if (pErrorBlob) pErrorBlob->Release();
+	BindQuadBuffers();
 
-	return S_OK;
+	//Bind sampler
+	ID3D11SamplerState* psampler = GraphicsManager::GetInstance()->GetSampler(GraphicsManager::Samplers::LINEAR_WRAP);
+
+	g_pImmediateContext->PSSetSamplers(0, 1, &psampler);
+
+	//Update per frame CB
+	PerFrameCB perFrameCB;
+	XMStoreFloat4x4(&perFrameCB.viewProjection, XMMatrixTranspose(XMLoadFloat4x4(&g_pcamera->GetViewProjection())));
+
+	g_pperFrameCB->Update(perFrameCB, g_pImmediateContext);
+
+	//Bind per frame CB
+	ID3D11Buffer* pbuffer = g_pperFrameCB->GetBuffer();
+
+	g_pImmediateContext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pbuffer);
+	g_pImmediateContext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pbuffer);
+
+	g_ptestObject->Render(g_pImmediateContext, g_pperInstanceCB);
+
+	// Present our back buffer to our front buffer
+	g_pSwapChain->Present(0, 0);
 }
 
-HRESULT CreateInputLayout()
+void BindQuadBuffers()
 {
-	// Define the input layout
-	D3D11_INPUT_ELEMENT_DESC layout[] =
-	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT , D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT , D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	};
-	UINT numElements = ARRAYSIZE(layout);
+	Mesh* pmesh = GraphicsManager::GetInstance()->GetMesh(QUAD_MESH_NAME);
 
-	// Create the input layout
-	HRESULT hr = g_pd3dDevice->CreateInputLayout(layout, numElements, pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), &g_pVertexLayout);
-	pVSBlob->Release();
-	if (FAILED(hr))
-		return hr;
+	ID3D11Buffer* pindexBuffer = pmesh->GetIndexBuffer();
+	ID3D11Buffer* pvertexBuffer = pmesh->GetVertexBuffer();
 
-	// Set the input layout
-	g_pImmediateContext->IASetInputLayout(g_pVertexLayout);
-}
+	UINT stride = pmesh->GetVBStride();
+	UINT offset = pmesh->GetVBOffset();
 
-void Render(float deltaTime)
-{
-	{
-		// Clear the back buffer
-		g_pImmediateContext->ClearRenderTargetView(g_pRenderTargetView, DirectX::Colors::MidnightBlue);
-
-		// Clear the depth buffer to 1.0 (max depth)
-		g_pImmediateContext->ClearDepthStencilView(g_pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
-
-		// get the game object world transform
-		XMMATRIX mGO = XMLoadFloat4x4(g_GameObject.getTransform());
-
-		// store this and the view / projection in a constant buffer for the vertex shader to use
-		ConstantBuffer cb1;
-		cb1.mWorld = XMMatrixTranspose(mGO);
-		cb1.mView = XMMatrixTranspose(g_View);
-		cb1.mProjection = XMMatrixTranspose(g_Projection);
-		cb1.vOutputColor = XMFLOAT4(0, 0, 0, 0);
-		g_pImmediateContext->UpdateSubresource(g_pConstantBuffer, 0, nullptr, &cb1, 0, 0);
-
-		// Render the cube
-		g_pImmediateContext->VSSetShader(g_pVertexShader, nullptr, 0);
-		g_pImmediateContext->VSSetConstantBuffers(0, 1, &g_pConstantBuffer);
-
-		g_pImmediateContext->PSSetShader(g_pPixelShader, nullptr, 0);
-		g_pImmediateContext->PSSetConstantBuffers(2, 1, &g_pLightConstantBuffer);
-		g_pImmediateContext->PSSetConstantBuffers(1, 1, &materialCB);
-
-		g_GameObject.draw(g_pImmediateContext);
-
-		// Present our back buffer to our front buffer
-		g_pSwapChain->Present(0, 0);
-	}
-
+	g_pImmediateContext->IASetVertexBuffers(0, 1, &pvertexBuffer, &stride, &offset);
+	g_pImmediateContext->IASetIndexBuffer(pmesh->GetIndexBuffer(), DXGI_FORMAT_R16_UINT, 0);
 }
