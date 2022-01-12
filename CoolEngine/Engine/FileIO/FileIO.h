@@ -95,10 +95,11 @@ public:
 	static void LoadSavefile(const char* fileAddress);
 
 	/// <summary>
-	/// A function that saves data related to a Game Object and saves it to a JSON file
+	/// A function that saves data related to a Game Object and saves it to a file. Ensure to specify the file type in the string
 	/// </summary>
 	/// <param name="gameObjData"></param>
-	static void SaveGameObject(GameObjectData gameObjData);
+	/// <param name="fileLocation"></param>
+	static void SaveGameObject(GameObjectData gameObjData, const char* fileLocation);
 
 private:
 	/// <summary>

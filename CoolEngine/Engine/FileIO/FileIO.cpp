@@ -140,11 +140,11 @@ void FileIO::LoadSavefile(const char* fileAddress)
 
 //////////////////////////SAVE FUNCTIONS ////////////////////////////////////////
 
-void FileIO::SaveGameObject(GameObjectData gameObjData)
+void FileIO::SaveGameObject(GameObjectData gameObjData, const char* fileLocation)
 {
 
 	std::ofstream outFile;
-	outFile.open("TestFile.json");
+	outFile.open(fileLocation);
 
 	std::string colliderType;
 
