@@ -69,6 +69,9 @@
     <ClInclude Include="Engine\Managers\AudioManager.h">
       <Filter>Engine\Managers</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Managers\SceneGraph.h">
+      <Filter>Engine\Managers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -87,6 +90,9 @@
       <Filter>Engine\Managers</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Managers\AudioManager.cpp">
+      <Filter>Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\SceneGraph.cpp">
       <Filter>Engine\Managers</Filter>
     </ClCompile>
   </ItemGroup>

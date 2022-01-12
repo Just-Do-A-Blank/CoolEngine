@@ -66,7 +66,7 @@ TreeNode* SceneGraph::TraverseTree(TreeNode* currentNode)
 {
 	if (!currentNode)
 	{
-		return;
+		return nullptr;
 	}
 
 	while (currentNode)
