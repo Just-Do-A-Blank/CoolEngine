@@ -24,5 +24,10 @@ public:
         newNearDepth, float newFarDepth);
 
     void Update(float deltaTime);
+
+	//Getters
+	XMFLOAT4X4 GetView() const;
+	XMFLOAT4X4 GetProjection() const;
+	XMFLOAT4X4 GetViewProjeciton() const;
 };
 

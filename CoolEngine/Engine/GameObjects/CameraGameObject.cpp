@@ -43,3 +43,22 @@ void CameraGameObject::Update(float deltaTime)
 {
 	CreateViewMatrix();
 }
+
+XMFLOAT4X4 CameraGameObject::GetView() const
+{
+	return m_viewMatrix;
+}
+
+XMFLOAT4X4 CameraGameObject::GetProjection() const
+{
+	return m_projectionMatrix;
+}
+
+XMFLOAT4X4 CameraGameObject::GetViewProjeciton() const
+{
+	XMFLOAT4X4 viewProj;
+
+	XMStoreFloat4x4(&viewProj, XMMatrixMultiply(XMLoadFloat4x4(&m_viewMatrix), XMLoadFloat4x4(&m_projectionMatrix)));
+
+	return viewProj;
+}
