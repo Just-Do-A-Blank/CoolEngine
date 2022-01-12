@@ -5,7 +5,7 @@ class Transform
 {
 	XMFLOAT3 m_position;
 	XMFLOAT3 m_rotation;
-	XMFLOAT3 m_scale;
+	XMFLOAT3 m_scale = XMFLOAT3(1, 1, 1);
 
 	XMFLOAT3 m_forwardVector;
 	XMFLOAT3 m_upVector;
@@ -13,17 +13,16 @@ class Transform
 
 	//Matrices
 	XMMATRIX m_scaleMatrix;
-	XMMATRIX m_rotationMatrix;
+	XMMATRIX m_rotationMatrix = XMMatrixIdentity();
 	XMMATRIX m_translationalMatrix;
 	XMMATRIX m_worldMatrix;
 
 	//flags
-	bool m_rotationDirty = true;
 
 public:
 	void Initialize(const XMFLOAT3& position, const XMFLOAT3& rotation, const XMFLOAT3& scale);
 
-	void Update(float deltaTime);
+	void UpdateMatrix();
 
 	//Getters
 	const XMFLOAT3& GetPosition()const;
