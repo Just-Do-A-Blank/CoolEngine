@@ -29,7 +29,7 @@ struct GameObjectData
 		m_Position = XMFLOAT3();
 		m_Rotation = XMFLOAT3();
 		m_Scale = XMFLOAT3();
-		m_TextureData = nullptr; 
+		m_TextureLocation = "";
 		m_IsRenderable = false;
 		m_IsCollidable = false;
 		m_IsTrigger = false;
@@ -38,7 +38,7 @@ struct GameObjectData
 
 	XMFLOAT3 m_Position, m_Rotation, m_Scale;
 	bool m_IsRenderable, m_IsCollidable, m_IsTrigger;
-	ID3D11Resource* m_TextureData;
+	std::string m_TextureLocation;
 	COLLIDER_TYPE m_ColliderType;
 };
 

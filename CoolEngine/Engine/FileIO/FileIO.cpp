@@ -58,18 +58,18 @@ std::vector<GameObjectData> FileIO::LoadMultipleGameObjects(const char* fileAddr
 
 		if (data.at(0)["IsRenderable"])
 		{
-			objects[i].m_TextureData = nullptr;
+			
 			objects[i].m_IsRenderable = true;
 		}
 		else
 		{
-			objects[i].m_TextureData = nullptr;
+			objects[i].m_TextureLocation = data.at(i)["TextureLocation"];
 			objects[i].m_IsRenderable = false;
 		}
 		if (data.at(0)["IsTrigger"])
 		{
 			objects[i].m_IsTrigger = true;
-			objects[i].m_ColliderType = ColliderType(data.at(0)["ColliderType"]);
+			objects[i].m_ColliderType = ColliderType(data.at(i)["ColliderType"]);
 		}
 		else
 		{
@@ -78,7 +78,7 @@ std::vector<GameObjectData> FileIO::LoadMultipleGameObjects(const char* fileAddr
 		if (data.at(0)["IsCollideable"])
 		{
 			objects[i].m_IsCollidable = true;
-			objects[i].m_ColliderType = ColliderType(data.at(0)["ColliderType"]);
+			objects[i].m_ColliderType = ColliderType(data.at(i)["ColliderType"]);
 		}
 		else
 		{
@@ -99,12 +99,11 @@ GameObjectData FileIO::LoadGameObject(const char* fileAddress)
 
 	if (data.at(0)["IsRenderable"])
 	{
-		gameObjData.m_TextureData = nullptr;
+		gameObjData.m_TextureLocation = data.at(0)["TextureLocation"];
 		gameObjData.m_IsRenderable = true;
 	}
 	else
 	{
-		gameObjData.m_TextureData = nullptr;
 		gameObjData.m_IsRenderable = false;
 	}
 	if (data.at(0)["IsTrigger"])
