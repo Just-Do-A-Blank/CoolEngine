@@ -15,7 +15,7 @@ public:
 	TileMap(int width, int height);
 	~TileMap();
 
-	Tile					GetTileFromWorldPos(int posX, int posY);
+	//Tile					GetTileFromWorldPos(int posX, int posY);
 	Tile*					GetTileFromMapPos(int x, int y);
 
 protected:
@@ -28,7 +28,7 @@ private:
 	void					InitEdges();
 
 
-	/// <summary>Allows the user to define which edges of a tile are collideable. x, y = TileMap Coordinates of tile to be modified . N, E, S & W - True = Collideable Edge</summary>
+	//Allows the user to define which edges of a tile are collideable. x, y = TileMap Coordinates of tile to be modified . N, E, S & W - True = Collideable Edge
 	void					SetEdges(int x, int y, bool N, bool E, bool S, bool W); // TODO - Fix summary
 	
 
