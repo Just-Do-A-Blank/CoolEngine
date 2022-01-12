@@ -24,6 +24,11 @@ void GameObject::AddTrigger()
 	m_isTrigger = true;
 }
 
+GameObject::GameObject(string identifier)
+{
+	m_identifier = identifier;
+}
+
 const bool& GameObject::IsRenderable()
 {
 	return m_isRenderable;
@@ -172,4 +177,9 @@ bool GameObject::SetPixelShader(std::wstring shaderName)
 void GameObject::SetPixelShader(ID3D11PixelShader* ppixelShader)
 {
 	m_ppixelShader = ppixelShader;
+}
+
+const string& GameObject::GetIdentifier()
+{
+	return m_identifier;
 }

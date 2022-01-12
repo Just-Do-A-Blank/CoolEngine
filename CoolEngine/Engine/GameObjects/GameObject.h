@@ -19,6 +19,8 @@ private:
 
 	Mesh* m_pmesh;
 
+	string m_identifier;
+
 	//Flags
 	bool m_isRenderable = false;
 	bool m_isCollidable = false;
@@ -35,6 +37,9 @@ protected:
 	Transform m_transform;
 
 public:
+	GameObject(string identifier);
+
+	//Getters
 	const bool& IsRenderable();
 	const bool& IsCollidable();
 	const bool& IsTrigger();
@@ -50,6 +55,8 @@ public:
 	ID3D11PixelShader* GetPixelShader() const;
 
 	Transform* GetTransform();
+
+	const string& GetIdentifier();
 
 	//Setters
 	bool SetMesh(wstring meshName);

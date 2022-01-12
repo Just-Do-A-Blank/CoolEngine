@@ -22,46 +22,19 @@
     <ClInclude Include="Engine\GameObjects\CameraGameObject.h" />
     <ClInclude Include="Engine\GameObjects\GameObject.h" />
     <ClInclude Include="Engine\GameObjects\Transform.h" />
-    <ClInclude Include="Engine\Graphics\ConstantBuffer.h" />
-    <ClInclude Include="Engine\Graphics\ConstantBuffers.h" />
-    <ClInclude Include="Engine\Graphics\DDSTextureLoader.h" />
-    <ClInclude Include="Engine\Graphics\Mesh.h" />
-    <ClInclude Include="Engine\Graphics\Vertices.h" />
     <ClInclude Include="Engine\Managers\AudioManager.h" />
     <ClInclude Include="Engine\Managers\GameManager.h" />
-    <ClInclude Include="Engine\Managers\GraphicsManager.h" />
+    <ClInclude Include="Engine\Managers\SceneGraph.h" />
     <ClInclude Include="Engine\stdafx.h" />
-    <ClInclude Include="Engine\Structure\Singleton.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\GameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\Transform.cpp" />
-    <ClCompile Include="Engine\Graphics\DDSTextureLoader.cpp" />
     <ClCompile Include="Engine\Main.cpp" />
     <ClCompile Include="Engine\Managers\AudioManager.cpp" />
     <ClCompile Include="Engine\Managers\GameManager.cpp" />
-    <ClCompile Include="Engine\Managers\GraphicsManager.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="Engine\Graphics\Shaders\BasicVertex.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="Engine\Graphics\Shaders\DummyPosTex.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
+    <ClCompile Include="Engine\Managers\SceneGraph.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
