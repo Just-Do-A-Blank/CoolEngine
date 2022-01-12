@@ -5,6 +5,7 @@
 // Placeholder
 class Texture {};
 
+// A sprite that disappears over time
 class Particle
 {
 private:
@@ -18,7 +19,6 @@ private:
 
 public:
 	Particle();
-	Particle(Box box, Vector2 vel, Vector2 accel, Texture* tex, float life);
 	~Particle();
 
 	/// <summary>
@@ -31,4 +31,16 @@ public:
 	/// Mark the particle as free
 	/// </summary>
 	void Disable();
+
+	/// <summary>
+	/// Activate a free particle slot
+	/// </summary>
+	/// <param name="box"></param>
+	/// <param name="vel"></param>
+	/// <param name="accel"></param>
+	/// <param name="tex"></param>
+	/// <param name="life"></param>
+	void Initialise(Box box, Vector2 vel, Vector2 accel, Texture* tex, float life);
+
+	bool IsActive() { return m_isActive; }
 };

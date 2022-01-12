@@ -3,6 +3,7 @@
 
 #define PARTICLE_MANAGER_SIZE 32
 
+// This class holds all the particle systems. It will be initialised at the start and removed at the end.
 class ParticleManager
 {
 private:
@@ -24,5 +25,5 @@ public:
 	/// <param name="pos"></param>
 	/// <param name="life"></param>
 	/// <param name="type"></param>
-	void AddSystem(Vector2 pos, float life, SYSTEM_TYPE type);
+	void AddSystem(Box box, float life, SYSTEM_TYPE type);
 };

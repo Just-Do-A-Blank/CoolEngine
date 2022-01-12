@@ -6,9 +6,10 @@ ParticleSystem::ParticleSystem()
 	{
 		m_pParticles[i] = new Particle();
 	}
-	m_position = Vector2();
 
+	m_box = Box();
 	m_lifetime = 0.0f;
+	m_timer = 0.0f;
 	m_isActive = false;
 	m_systemType = SYSTEM_NONE;
 }
@@ -18,10 +19,11 @@ ParticleSystem::~ParticleSystem()
 	delete[] m_pParticles;
 }
 
-void ParticleSystem::Initialise(Vector2 pos, float life, SYSTEM_TYPE type)
+void ParticleSystem::Initialise(Box box, float life, SYSTEM_TYPE type)
 {
-	m_position = pos;
+	m_box = box;
 	m_lifetime = life;
+	m_timer = 0.0f;
 	m_isActive = true;
 	m_systemType = type;
 }
@@ -30,8 +32,30 @@ void ParticleSystem::Update(const float dTime)
 {
 	for (unsigned int i = 0; i < PARTICLE_SYSTEM_SIZE; ++i)
 	{
-		m_pParticles[i]->Update(dTime);
+		if (m_pParticles[i]->IsActive())
+		{
+			m_pParticles[i]->Update(dTime);
+		}
 	}
+
+
+	// Particle generation process
+	switch (m_systemType)
+	{
+	case SYSTEM_NONE:
+		break;
+
+	case SYSTEM_TEST:
+		// Basic test particle effect
+		if (m_timer >= 1.0f)
+		{
+			AddParticle(m_box, Vector2(0, 0), Vector2(0, 0), nullptr, 0.5f);
+			m_timer = 0;
+		}
+		break;
+	}
+	m_timer += dTime;
+
 
 	m_lifetime -= dTime;
 	if (m_lifetime <= 0.0f)
@@ -43,15 +67,17 @@ void ParticleSystem::Update(const float dTime)
 			m_pParticles[i]->Disable();
 		}
 	}
+}
 
-	// Particle generation process
-	switch (m_systemType)
+void ParticleSystem::AddParticle(Box box, Vector2 vel, Vector2 accel, Texture* tex, float life)
+{
+	for (unsigned int i = 0; i < PARTICLE_SYSTEM_SIZE; ++i)
 	{
-	case SYSTEM_NONE:
-		break;
-
-	case SYSTEM_TEST:
-		// Something
-		break;
+		if (!m_pParticles[i]->IsActive())
+		{
+			// Initialise one, then break from loop so more are not made
+			m_pParticles[i]->Initialise(box, vel, accel, tex, life);
+			break;
+		}
 	}
 }

@@ -11,17 +11,6 @@ Particle::Particle()
 	m_isActive = false;
 }
 
-Particle::Particle(Box box, Vector2 vel, Vector2 accel, Texture* tex, float life)
-{
-	m_box = box;
-	m_velocity = vel;
-	m_accel = accel;
-
-	m_pTexture = tex;
-	m_lifetime = life;
-	m_isActive = true;
-}
-
 Particle::~Particle()
 {
 	delete m_pTexture;
@@ -46,4 +35,15 @@ void Particle::Update(const float dTime)
 void Particle::Disable()
 {
 	m_isActive = false;
+}
+
+void Particle::Initialise(Box box, Vector2 vel, Vector2 accel, Texture* tex, float life)
+{
+	m_box = box;
+	m_velocity = vel;
+	m_accel = accel;
+
+	m_pTexture = tex;
+	m_lifetime = life;
+	m_isActive = true;
 }
