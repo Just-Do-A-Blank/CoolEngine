@@ -3,17 +3,20 @@
 template<class T>
 class Singleton
 {
-	static T* m_pinstance = nullptr;
+	static T* s_pinstance;
 
 public:
 	static T* GetInstance()
 	{
-		if (m_pinstance == nullptr)
+		if (s_pinstance == nullptr)
 		{
-			m_pinstance = new T();
+			s_pinstance = new T();
 		}
 
-		return m_pinstance;
+		return s_pinstance;
 	}
 
 };
+
+template <class T>
+T* Singleton<T>::s_pinstance = nullptr;
