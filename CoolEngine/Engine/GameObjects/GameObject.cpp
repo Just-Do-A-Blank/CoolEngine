@@ -20,6 +20,11 @@ void GameObject::AddTrigger()
 	m_isTrigger = true;
 }
 
+GameObject::GameObject(string identifier)
+{
+	m_identifier = identifier;
+}
+
 const bool& GameObject::IsRenderable()
 {
 	return m_isRenderable;
@@ -33,4 +38,9 @@ const bool& GameObject::IsCollidable()
 const bool& GameObject::IsTrigger()
 {
 	return m_isTrigger;
+}
+
+const string& GameObject::GetIdentifier()
+{
+	return m_identifier;
 }

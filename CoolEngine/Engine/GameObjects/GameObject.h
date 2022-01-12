@@ -6,6 +6,7 @@ class GameObject
 {
 	friend class GameManager;
 private:
+	string m_identifier;
 	ID3D11ShaderResourceView* m_texture;
 
 	//Flags
@@ -24,7 +25,12 @@ protected:
 	Transform m_transform;
 
 public:
+	GameObject(string identifier);
+
+	//Getters
 	const bool& IsRenderable();
 	const bool& IsCollidable();
 	const bool& IsTrigger();
+
+	const string& GetIdentifier();
 };

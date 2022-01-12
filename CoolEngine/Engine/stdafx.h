@@ -7,5 +7,9 @@
 #include <DirectXMath.h>
 #include <DirectXColors.h>
 
+#include <map>
+#include <string>
+#include <iostream>
+
 using namespace DirectX;
 using namespace std;
