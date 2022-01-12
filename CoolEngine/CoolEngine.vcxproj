@@ -19,46 +19,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine\Graphics\ConstantBuffer.h" />
-    <ClInclude Include="Engine\Graphics\ConstantBuffers.h" />
-    <ClInclude Include="Engine\Graphics\DDSTextureLoader.h" />
-    <ClInclude Include="Engine\Graphics\GraphicsManager.h" />
-    <ClInclude Include="Engine\Graphics\Mesh.h" />
     <ClInclude Include="Engine\GameObjects\CameraGameObject.h" />
-    <ClInclude Include="Engine\GameObjects\CollidableGameObject.h" />
     <ClInclude Include="Engine\GameObjects\GameObject.h" />
-    <ClInclude Include="Engine\GameObjects\RenderableGameObject.h" />
     <ClInclude Include="Engine\GameObjects\Transform.h" />
-    <ClInclude Include="Engine\GameObjects\TriggerGameObject.h" />
-    <ClInclude Include="Engine\Graphics\Vertices.h" />
+    <ClInclude Include="Engine\Managers\AudioManager.h" />
+    <ClInclude Include="Engine\Managers\GameManager.h" />
     <ClInclude Include="Engine\stdafx.h" />
-    <ClInclude Include="Engine\Structure\Singleton.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp" />
-    <ClCompile Include="Engine\GameObjects\CollidableGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\GameObject.cpp" />
-    <ClCompile Include="Engine\GameObjects\RenderableGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\Transform.cpp" />
-    <ClCompile Include="Engine\GameObjects\TriggerGameObject.cpp" />
-    <ClCompile Include="Engine\Graphics\DDSTextureLoader.cpp" />
-    <ClCompile Include="Engine\Graphics\GraphicsManager.cpp" />
     <ClCompile Include="Engine\Main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-    </FxCompile>
-    <FxCompile Include="Engine\Graphics\Shaders\BasicVertex.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-    </FxCompile>
-    <FxCompile Include="Engine\Graphics\Shaders\DummyPosTex.hlsl" />
+    <ClCompile Include="Engine\Managers\AudioManager.cpp" />
+    <ClCompile Include="Engine\Managers\GameManager.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
