@@ -18,3 +18,19 @@ class Listener_Player_Enemy_Collision : public Listener
 
 	Listener_Player_Enemy_Collision();
 };
+
+
+
+
+class ListenerInherr : public Listener
+{
+public:
+	void HandleEvent(Event* event);
+
+	ListenerInherr(int count) { this->count = count; }
+
+private:
+	int count;
+
+};
+

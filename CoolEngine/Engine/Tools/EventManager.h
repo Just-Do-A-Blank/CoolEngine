@@ -36,7 +36,6 @@ public:
 	//Checks if the client in question is already in the system. Public because of allowing it to be checked from outside the system if wanted. Might never be called in the public domain though
 	bool IsRegistered(EventType eventid, Listener* client);
 
-
 	//Unregisters client from a specific event
 	void RemoveClientEvent(EventType eventid, Listener* client);
 
