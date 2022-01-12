@@ -1,5 +1,3 @@
-#define HLSL
-#include "../ConstantBuffers.h"
 
 struct VS_INPUT
 {
@@ -13,10 +11,21 @@ struct VS_OUTPUT
 	float2 texCoords : TEXCOORD;
 };
 
-float4 main(VS_INPUT input) : SV_POSITION
+cbuffer perFrameCB : register(b0)
+{
+    float4x4 viewProjection;
+}
+
+cbuffer perInstanceCB : register(b1)
+{
+    float4x4 world;
+}
+
+VS_OUTPUT main(VS_INPUT input)
 {
 	VS_OUTPUT output;
-	output.posH = mul(float4(input, 1.0f), world);
+	output.posH = mul(float4(input.posL, 1.0f), world);
+    output.posH = mul(output.posH, viewProjection);
 	output.texCoords = input.texCoords;
 
 	return output;
