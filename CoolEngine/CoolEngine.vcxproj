@@ -19,15 +19,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine\Graphics\Shaders\ConstantBuffers.h" />
-    <ClInclude Include="Engine\Graphics\Shaders\HLSLCompat.h" />
+    <ClInclude Include="Engine\Graphics\ConstantBuffer.h" />
+    <ClInclude Include="Engine\Graphics\ConstantBuffers.h" />
+    <ClInclude Include="Engine\Graphics\DDSTextureLoader.h" />
+    <ClInclude Include="Engine\Graphics\GraphicsManager.h" />
+    <ClInclude Include="Engine\Graphics\Mesh.h" />
     <ClInclude Include="Engine\GameObjects\CameraGameObject.h" />
     <ClInclude Include="Engine\GameObjects\CollidableGameObject.h" />
     <ClInclude Include="Engine\GameObjects\GameObject.h" />
     <ClInclude Include="Engine\GameObjects\RenderableGameObject.h" />
     <ClInclude Include="Engine\GameObjects\Transform.h" />
     <ClInclude Include="Engine\GameObjects\TriggerGameObject.h" />
+    <ClInclude Include="Engine\Graphics\Vertices.h" />
     <ClInclude Include="Engine\stdafx.h" />
+    <ClInclude Include="Engine\Structure\Singleton.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp" />
@@ -36,6 +41,8 @@
     <ClCompile Include="Engine\GameObjects\RenderableGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\Transform.cpp" />
     <ClCompile Include="Engine\GameObjects\TriggerGameObject.cpp" />
+    <ClCompile Include="Engine\Graphics\DDSTextureLoader.cpp" />
+    <ClCompile Include="Engine\Graphics\GraphicsManager.cpp" />
     <ClCompile Include="Engine\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -51,6 +58,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\DummyPosTex.hlsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

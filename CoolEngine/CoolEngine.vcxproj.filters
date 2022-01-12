@@ -46,6 +46,12 @@
     <Filter Include="Engine\GameObjects">
       <UniqueIdentifier>{538b9ef7-73a5-459d-a461-42f205c14b3d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Graphics\Shaders">
+      <UniqueIdentifier>{42499f2a-2658-4309-9c99-65643d097970}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Structure">
+      <UniqueIdentifier>{34fe005f-5ac6-427a-a104-7e4d954c4a18}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -68,6 +74,27 @@
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\TriggerGameObject.h">
       <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Structure\Singleton.h">
+      <Filter>Engine\Structure</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\GraphicsManager.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\Vertices.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\Mesh.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\DDSTextureLoader.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\ConstantBuffer.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\ConstantBuffers.h">
+      <Filter>Engine\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -92,5 +119,22 @@
     <ClCompile Include="Engine\GameObjects\TriggerGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Graphics\GraphicsManager.cpp">
+      <Filter>Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\DDSTextureLoader.cpp">
+      <Filter>Engine\Graphics</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">
+      <Filter>Engine\Graphics\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\BasicVertex.hlsl">
+      <Filter>Engine\Graphics\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\DummyPosTex.hlsl">
+      <Filter>Engine\Graphics\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
