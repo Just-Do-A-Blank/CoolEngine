@@ -24,8 +24,16 @@ public:
 	static bool CircleCollision(Circle circle1, Circle circle2);
 
 	/// <summary>
+	/// Return true if two box and circle overlap, otherwise false
+	/// </summary>
+	/// <param name="circle"></param>
+	/// <param name="box"></param>
+	/// <returns></returns>
+	static bool CircleBoxCollision(Circle circle, Box box);
+
+	/// <summary>
 	/// Return true if line and box overlap, otherwise false.
-	/// Only works for axis aligned lines right now!!!
+	/// Only works for axis aligned lines right now!!! So, lines straight up or down, as with a tile grid.
 	/// </summary>
 	/// <param name="line"></param>
 	/// <param name="box"></param>
