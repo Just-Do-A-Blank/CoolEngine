@@ -46,6 +46,9 @@
     <Filter Include="Engine\GameObjects">
       <UniqueIdentifier>{538b9ef7-73a5-459d-a461-42f205c14b3d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Managers">
+      <UniqueIdentifier>{26faa8bf-974d-40b5-b889-21ab258c934a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -69,6 +72,12 @@
     <ClInclude Include="Engine\GameObjects\TriggerGameObject.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Managers\GameManager.h">
+      <Filter>Engine\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\AudioManager.h">
+      <Filter>Engine\Managers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -91,6 +100,12 @@
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\TriggerGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\GameManager.cpp">
+      <Filter>Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\AudioManager.cpp">
+      <Filter>Engine\Managers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

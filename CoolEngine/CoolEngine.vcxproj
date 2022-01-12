@@ -25,6 +25,8 @@
     <ClInclude Include="Engine\GameObjects\RenderableGameObject.h" />
     <ClInclude Include="Engine\GameObjects\Transform.h" />
     <ClInclude Include="Engine\GameObjects\TriggerGameObject.h" />
+    <ClInclude Include="Engine\Managers\AudioManager.h" />
+    <ClInclude Include="Engine\Managers\GameManager.h" />
     <ClInclude Include="Engine\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
@@ -35,6 +37,8 @@
     <ClCompile Include="Engine\GameObjects\Transform.cpp" />
     <ClCompile Include="Engine\GameObjects\TriggerGameObject.cpp" />
     <ClCompile Include="Engine\Main.cpp" />
+    <ClCompile Include="Engine\Managers\AudioManager.cpp" />
+    <ClCompile Include="Engine\Managers\GameManager.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
