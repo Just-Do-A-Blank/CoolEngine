@@ -83,4 +83,7 @@ public:
 
 	bool SetAnimation(wstring animName);
 	void SetAnimation(SpriteAnimation& animation);
+	void SetIsRenderable(bool& condition);
+	void SetIsCollidable(bool& condition);
+	void SetIsTrigger(bool& condition);
 };

@@ -221,6 +221,19 @@ bool GameObject::SetAnimation(wstring animName)
 void GameObject::SetAnimation(SpriteAnimation& animation)
 {
 	m_animation = animation;
+void GameObject::SetIsRenderable(bool& condition)
+{
+	m_isRenderable = condition;
+}
+
+void GameObject::SetIsCollidable(bool& condition)
+{
+	m_isCollidable = condition;
+}
+
+void GameObject::SetIsTrigger(bool& condition)
+{
+	m_isTrigger = condition;
 }
 
 const string& GameObject::GetIdentifier()

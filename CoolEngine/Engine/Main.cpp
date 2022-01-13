@@ -1,4 +1,5 @@
 #pragma once
+
 #include <io.h>
 #include <fcntl.h>
 
@@ -7,6 +8,9 @@
 #include "Engine/Graphics/ConstantBuffer.h"
 #include "Engine/Graphics/SpriteAnimation.h"
 #include "Engine/GameObjects/CameraGameObject.h"
+
+#include "Engine/Tools/EventManager.h"
+#include "Engine/Tools/EventObserver.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
@@ -68,6 +72,13 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		return 0;
 	}
 
+  ExampleObserver observer(new int(10));
+	EventManager::Instance()->AddClient(EventType::KeyPressed,&observer);
+	EventManager::Instance()->AddClient(EventType::KeyReleased,&observer);
+
+	EventManager::Instance()->AddEvent(new Event(EventType::KeyPressed));
+	//EventManager::Instance()->AddEvent(new KeyPressedEvent(0x43))
+  
 	GraphicsManager::GetInstance()->Init(g_pd3dDevice);
 
 	GraphicsManager::GetInstance()->LoadTextureFromFile(L"Resources/Sprites/Brick.dds", g_pd3dDevice);
@@ -113,12 +124,15 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
+
+
+			EventManager::Instance()->ProcessEvents(); 
+
 		}
 		else
 		{
 			Update();
 			Render();
-			LOG("Console output test");
 		}
 	}
 
@@ -141,6 +155,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	PAINTSTRUCT ps;
 	HDC hdc;
 
+
+	
+
+
+
+
 	switch (message)
 	{
 	case WM_LBUTTONDOWN:
@@ -157,6 +177,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_KEYDOWN:
+		EventManager::Instance()->AddEvent(new KeyPressedEvent(wParam));
+
+
 		if (wParam == VK_ESCAPE)
 		{
 			PostQuitMessage(0);
