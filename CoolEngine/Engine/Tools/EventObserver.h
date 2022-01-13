@@ -27,7 +27,21 @@ class ExampleObserver : public Observer
 public:
 	void KeyPressed(KeyPressedEvent* e)
 	{
+		//Can use 'Letter' or the raw keycode for keyboard inputs.
+		if (e->GetKeyCode() == 'C')
+		{
+			int i = 0;
+		}
 
+		if (e->GetKeyCode() == 0x43)
+		{
+			int i = 0;
+		}
+
+		if (e->GetKeyCode() == 0x44)
+		{
+			int i = 0;
+		}
 	}
 
 	void KeyReleased(KeyReleasedEvent* e)

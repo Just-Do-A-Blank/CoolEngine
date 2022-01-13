@@ -36,6 +36,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	EventManager::Instance()->AddClient(EventType::KeyPressed,&observer);
 	EventManager::Instance()->AddClient(EventType::KeyReleased,&observer);
 
+	EventManager::Instance()->AddEvent(new Event(EventType::KeyPressed));
+	//EventManager::Instance()->AddEvent(new KeyPressedEvent(0x43))
+
 
 	if (FAILED(InitWindow(hInstance, nCmdShow)))
 		return 0;
@@ -92,6 +95,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		break;
 	}
+	case WM_KEYDOWN:
+		EventManager::Instance()->AddEvent(new KeyPressedEvent(wParam));
+
+		break;
+
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 		EndPaint(hWnd, &ps);

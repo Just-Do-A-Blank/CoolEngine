@@ -49,6 +49,9 @@
     <Filter Include="Engine\Tools\EventManager">
       <UniqueIdentifier>{03523ee1-f37f-408c-b098-e2d61b24d577}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Tools\Inputs">
+      <UniqueIdentifier>{c6210cac-b0fe-46b6-a5fb-3d3a314f7ed9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
