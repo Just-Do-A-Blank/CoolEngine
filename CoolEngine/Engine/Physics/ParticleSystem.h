@@ -42,7 +42,7 @@ public:
 	/// <summary>
 	/// Find slot for a new particle, and initialise it
 	/// </summary>
-	void AddParticle(Box box, Vector2 vel, Vector2 accel, Texture* tex, float life);
+	void AddParticle(Box box, XMFLOAT2 vel, XMFLOAT2 accel, Texture* tex, float life);
 
 	bool IsActive() { return m_isActive; }
 };
