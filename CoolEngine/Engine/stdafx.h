@@ -6,6 +6,11 @@
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
 #include <DirectXColors.h>
+#include "Managers/DebugManager.h"
+
+#include <unordered_map>
+#include <string>
+#include <iostream>
 
 using namespace DirectX;
 using namespace std;

@@ -1,4 +1,14 @@
 #pragma once
+
+#include <io.h>
+#include <fcntl.h>
+
+#include "Engine/Managers/GraphicsManager.h"
+#include "Engine/Graphics/Mesh.h"
+
+#include "Engine/GameObjects/CameraGameObject.h"
+#include "Engine/Graphics/ConstantBuffer.h"
+
 #include "Engine/Tools/EventManager.h"
 #include "Engine/Tools/EventObserver.h"
 
@@ -6,6 +16,10 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
 HRESULT	InitDevice();
 void CleanupDevice();
+
+void Render();
+
+void BindQuadBuffers();
 
 HINSTANCE g_hInstance;
 
@@ -19,10 +33,14 @@ IDXGISwapChain* g_pSwapChain = nullptr;
 ID3D11RenderTargetView* g_pRenderTargetView = nullptr;
 ID3D11Texture2D* g_pDepthStencil = nullptr;
 ID3D11DepthStencilView* g_pDepthStencilView = nullptr;
+ID3D11RasterizerState* g_prasterState = nullptr;
 
-ID3D11PixelShader* g_pPixelShader = nullptr;
+CameraGameObject* g_pcamera = nullptr;
 
-ID3D11InputLayout* g_pVertexLayout = nullptr;
+GameObject* g_ptestObject;
+
+ConstantBuffer<PerFrameCB>* g_pperFrameCB;
+ConstantBuffer<PerInstanceCB>* g_pperInstanceCB;
 
 int g_Width = 1920;
 int g_Height = 1080;
@@ -32,13 +50,17 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
-	ExampleObserver observer(new int(10));
-	EventManager::Instance()->AddClient(EventType::KeyPressed,&observer);
-	EventManager::Instance()->AddClient(EventType::KeyReleased,&observer);
+#if _DEBUG
+	AllocConsole();
 
-	EventManager::Instance()->AddEvent(new Event(EventType::KeyPressed));
-	//EventManager::Instance()->AddEvent(new KeyPressedEvent(0x43))
+	HANDLE handle_out = GetStdHandle(STD_OUTPUT_HANDLE);
+	int hCrt = _open_osfhandle((long)handle_out, _O_TEXT);
+	FILE* hf_out = _fdopen(hCrt, "w");
+	setvbuf(hf_out, NULL, _IONBF, 1);
+	*stdout = *hf_out;
 
+	freopen_s(&hf_out, "CONOUT$", "w", stdout);
+#endif //_DEBUG
 
 	if (FAILED(InitWindow(hInstance, nCmdShow)))
 		return 0;
@@ -49,7 +71,46 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		return 0;
 	}
 
+  ExampleObserver observer(new int(10));
+	EventManager::Instance()->AddClient(EventType::KeyPressed,&observer);
+	EventManager::Instance()->AddClient(EventType::KeyReleased,&observer);
 
+	EventManager::Instance()->AddEvent(new Event(EventType::KeyPressed));
+	//EventManager::Instance()->AddEvent(new KeyPressedEvent(0x43))
+  
+	GraphicsManager::GetInstance()->Init(g_pd3dDevice);
+
+	GraphicsManager::GetInstance()->LoadTextureFromFile(L"Resources/Sprites/Brick.dds", g_pd3dDevice);
+
+	//Create camera
+	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, 0);
+	XMFLOAT3 cameraForward = XMFLOAT3(0, -1, 0);
+	XMFLOAT3 cameraUp = XMFLOAT3(0, 0, 1);
+
+	float windowWidth = g_Width;
+	float windowHeight = g_Height;
+
+	float nearDepth = 0.01f;
+	float farDepth = 1000.0f;
+
+	g_pcamera = new CameraGameObject("Camera");
+	g_pcamera->Initialize(cameraPos, cameraForward, cameraUp, windowWidth, windowHeight, nearDepth, farDepth);
+
+	//Create constant buffers
+	g_pperFrameCB = new ConstantBuffer<PerFrameCB>(g_pd3dDevice);
+	g_pperInstanceCB = new ConstantBuffer<PerInstanceCB>(g_pd3dDevice);
+
+	//Create test gameobject
+	XMFLOAT3 objectPos = XMFLOAT3(0, -5.0f, 0);
+	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
+
+	g_ptestObject = new GameObject("tempTile");
+	g_ptestObject->SetMesh(QUAD_MESH_NAME);
+	g_ptestObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+	g_ptestObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+	g_ptestObject->SetAlbedo(L"Resources/Sprites/Brick.dds");
+	g_ptestObject->GetTransform()->SetPosition(objectPos);
+	g_ptestObject->GetTransform()->SetScale(objectScale);
 
 	// Main message loop
 	MSG msg = { 0 };
@@ -66,11 +127,18 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		}
 		else
 		{
-
+			Render();
+			LOG("Console output test");
 		}
 	}
 
 	CleanupDevice();
+
+	delete g_pperFrameCB;
+	g_pperFrameCB = nullptr;
+
+	delete g_pperInstanceCB;
+	g_pperInstanceCB = nullptr;
 
 	return (int)msg.wParam;
 }
@@ -109,9 +177,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		break;
 
+	case WM_KEYDOWN:
+		if (wParam == VK_ESCAPE)
+		{
+			PostQuitMessage(0);
+		}
+		break;
+
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
+
+	
 
 	return 0;
 }
@@ -304,6 +381,21 @@ inline HRESULT InitDevice()
 		return hr;
 	}
 
+	D3D11_RASTERIZER_DESC rasterDesc;
+	ZeroMemory(&rasterDesc, sizeof(D3D11_RASTERIZER_DESC));
+	rasterDesc.FillMode = D3D11_FILL_SOLID;
+	rasterDesc.CullMode = D3D11_CULL_NONE;
+	hr = g_pd3dDevice->CreateRasterizerState(&rasterDesc, &g_prasterState);
+
+	if (FAILED(hr))
+	{
+		return hr;
+	}
+
+	g_pImmediateContext->RSSetState(g_prasterState);
+
+	g_pImmediateContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 	return S_OK;
 }
 
@@ -320,16 +412,6 @@ void CleanupDevice()
 
 	// Flush the immediate context to force cleanup
 	g_pImmediateContext->Flush();
-
-	if (g_pVertexLayout)
-	{
-		g_pVertexLayout->Release();
-	}
-
-	if (g_pPixelShader)
-	{
-		g_pPixelShader->Release();
-	}
 
 	if (g_pDepthStencil)
 	{
@@ -356,6 +438,7 @@ void CleanupDevice()
 		g_pImmediateContext->Release();
 	}
 
+#if _DEBUG
 	ID3D11Debug* debugDevice = nullptr;
 	g_pd3dDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&debugDevice));
 
@@ -371,4 +454,54 @@ void CleanupDevice()
 	{
 		debugDevice->Release();
 	}
+#endif //_DEBUG
+}
+
+void Render()
+{
+	// Clear the back buffer
+	g_pImmediateContext->ClearRenderTargetView(g_pRenderTargetView, DirectX::Colors::MidnightBlue);
+
+	// Clear the depth buffer to 1.0 (max depth)
+	g_pImmediateContext->ClearDepthStencilView(g_pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+	g_pImmediateContext->IASetInputLayout(GraphicsManager::GetInstance()->GetInputLayout(GraphicsManager::InputLayouts::POS_TEX));
+
+	BindQuadBuffers();
+
+	//Bind sampler
+	ID3D11SamplerState* psampler = GraphicsManager::GetInstance()->GetSampler(GraphicsManager::Samplers::LINEAR_WRAP);
+
+	g_pImmediateContext->PSSetSamplers(0, 1, &psampler);
+
+	//Update per frame CB
+	PerFrameCB perFrameCB;
+	XMStoreFloat4x4(&perFrameCB.viewProjection, XMMatrixTranspose(XMLoadFloat4x4(&g_pcamera->GetViewProjection())));
+
+	g_pperFrameCB->Update(perFrameCB, g_pImmediateContext);
+
+	//Bind per frame CB
+	ID3D11Buffer* pbuffer = g_pperFrameCB->GetBuffer();
+
+	g_pImmediateContext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pbuffer);
+	g_pImmediateContext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pbuffer);
+
+	g_ptestObject->Render(g_pImmediateContext, g_pperInstanceCB);
+
+	// Present our back buffer to our front buffer
+	g_pSwapChain->Present(0, 0);
+}
+
+void BindQuadBuffers()
+{
+	Mesh* pmesh = GraphicsManager::GetInstance()->GetMesh(QUAD_MESH_NAME);
+
+	ID3D11Buffer* pindexBuffer = pmesh->GetIndexBuffer();
+	ID3D11Buffer* pvertexBuffer = pmesh->GetVertexBuffer();
+
+	UINT stride = pmesh->GetVBStride();
+	UINT offset = pmesh->GetVBOffset();
+
+	g_pImmediateContext->IASetVertexBuffers(0, 1, &pvertexBuffer, &stride, &offset);
+	g_pImmediateContext->IASetIndexBuffer(pmesh->GetIndexBuffer(), DXGI_FORMAT_R16_UINT, 0);
 }

@@ -46,11 +46,14 @@
     <Filter Include="Engine\GameObjects">
       <UniqueIdentifier>{538b9ef7-73a5-459d-a461-42f205c14b3d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Tools\EventManager">
-      <UniqueIdentifier>{03523ee1-f37f-408c-b098-e2d61b24d577}</UniqueIdentifier>
+    <Filter Include="Engine\Managers">
+      <UniqueIdentifier>{26faa8bf-974d-40b5-b889-21ab258c934a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Tools\Inputs">
-      <UniqueIdentifier>{c6210cac-b0fe-46b6-a5fb-3d3a314f7ed9}</UniqueIdentifier>
+    <Filter Include="Engine\Graphics\Shaders">
+      <UniqueIdentifier>{8f10024e-6222-47c0-83e5-679de881b965}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Structure">
+      <UniqueIdentifier>{2e610b81-e2f8-4347-8d90-edcc56b6f1c1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -60,20 +63,68 @@
     <ClInclude Include="Engine\GameObjects\CameraGameObject.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\GameObjects\CollidableGameObject.h">
-      <Filter>Engine\GameObjects</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\GameObjects\GameObject.h">
-      <Filter>Engine\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObjects\RenderableGameObject.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\Transform.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\GameObjects\TriggerGameObject.h">
-      <Filter>Engine\GameObjects</Filter>
+    <ClInclude Include="Engine\Managers\GameManager.h">
+      <Filter>Engine\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\AudioManager.h">
+      <Filter>Engine\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\SceneGraph.h">
+      <Filter>Engine\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\ConstantBuffer.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\ConstantBuffers.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\DDSTextureLoader.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\Mesh.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\Vertices.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Structure\Singleton.h">
+      <Filter>Engine\Structure</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Physics\Box.h">
+      <Filter>Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Physics\Circle.h">
+      <Filter>Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Physics\Collision.h">
+      <Filter>Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Physics\Line.h">
+      <Filter>Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Physics\Particle.h">
+      <Filter>Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Physics\ParticleManager.h">
+      <Filter>Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Physics\ParticleSystem.h">
+      <Filter>Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Physics\Vector2.h">
+      <Filter>Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\GraphicsManager.h">
+      <Filter>Engine\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\DebugManager.h">
+      <Filter>Engine\Managers</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Tools\EventObserver.h">
       <Filter>Engine\Tools\EventManager</Filter>
@@ -92,20 +143,14 @@
     <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GameObjects\CollidableGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\GameObjects\GameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\RenderableGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\Transform.cpp">
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GameObjects\TriggerGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
+    <ClCompile Include="Engine\Managers\GameManager.cpp">
+      <Filter>Engine\Managers</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Tools\EventObserver.cpp">
       <Filter>Engine\Tools\EventManager</Filter>
@@ -116,5 +161,40 @@
     <ClCompile Include="Engine\Tools\EventManager.cpp">
       <Filter>Engine\Tools\EventManager</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Managers\AudioManager.cpp">
+      <Filter>Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\SceneGraph.cpp">
+      <Filter>Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\DDSTextureLoader.cpp">
+      <Filter>Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Physics\Collision.cpp">
+      <Filter>Engine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Physics\Particle.cpp">
+      <Filter>Engine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Physics\ParticleManager.cpp">
+      <Filter>Engine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Physics\ParticleSystem.cpp">
+      <Filter>Engine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\GraphicsManager.cpp">
+      <Filter>Engine\Managers</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">
+      <Filter>Engine\Graphics\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\BasicVertex.hlsl">
+      <Filter>Engine\Graphics\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\DummyPosTex.hlsl">
+      <Filter>Engine\Graphics\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
