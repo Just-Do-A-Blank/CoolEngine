@@ -29,6 +29,9 @@
     <ClInclude Include="Engine\Graphics\Vertices.h" />
     <ClInclude Include="Engine\Managers\AudioManager.h" />
     <ClInclude Include="Engine\Managers\DebugManager.h" />
+    <ClInclude Include="Engine\Managers\Events\EventManager.h" />
+    <ClInclude Include="Engine\Managers\Events\EventObserver.h" />
+    <ClInclude Include="Engine\Managers\Events\Events.h" />
     <ClInclude Include="Engine\Managers\GameManager.h" />
     <ClInclude Include="Engine\Managers\GraphicsManager.h" />
     <ClInclude Include="Engine\Managers\SceneGraph.h" />
@@ -41,10 +44,8 @@
     <ClInclude Include="Engine\Physics\ParticleSystem.h" />
     <ClInclude Include="Engine\Physics\Vector2.h" />
     <ClInclude Include="Engine\stdafx.h" />
-    <ClInclude Include="Engine\Tools\EventManager.h" />
-    <ClInclude Include="Engine\Tools\Events.h" />
-    <ClInclude Include="Engine\Tools\EventObserver.h" />
     <ClInclude Include="Engine\Structure\Singleton.h" />
+    <ClInclude Include="Keyboard.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp" />
@@ -52,10 +53,10 @@
     <ClCompile Include="Engine\GameObjects\Transform.cpp" />
     <ClCompile Include="Engine\Graphics\DDSTextureLoader.cpp" />
     <ClCompile Include="Engine\Main.cpp" />
-    <ClCompile Include="Engine\Tools\EventManager.cpp" />
-    <ClCompile Include="Engine\Tools\Events.cpp" />
-    <ClCompile Include="Engine\Tools\EventObserver.cpp" />
     <ClCompile Include="Engine\Managers\AudioManager.cpp" />
+    <ClCompile Include="Engine\Managers\Events\EventManager.cpp" />
+    <ClCompile Include="Engine\Managers\Events\EventObserver.cpp" />
+    <ClCompile Include="Engine\Managers\Events\Events.cpp" />
     <ClCompile Include="Engine\Managers\GameManager.cpp" />
     <ClCompile Include="Engine\Managers\GraphicsManager.cpp" />
     <ClCompile Include="Engine\Managers\SceneGraph.cpp" />
@@ -63,6 +64,7 @@
     <ClCompile Include="Engine\Physics\Particle.cpp" />
     <ClCompile Include="Engine\Physics\ParticleManager.cpp" />
     <ClCompile Include="Engine\Physics\ParticleSystem.cpp" />
+    <ClCompile Include="Keyboard.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">

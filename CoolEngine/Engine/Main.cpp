@@ -9,8 +9,8 @@
 #include "Engine/GameObjects/CameraGameObject.h"
 #include "Engine/Graphics/ConstantBuffer.h"
 
-#include "Engine/Tools/EventManager.h"
-#include "Engine/Tools/EventObserver.h"
+#include "Engine/Managers/Events/EventManager.h"
+#include "Engine/Managers/Events/EventObserver.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
@@ -74,10 +74,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   ExampleObserver observer(new int(10));
 	EventManager::Instance()->AddClient(EventType::KeyPressed,&observer);
 	EventManager::Instance()->AddClient(EventType::KeyReleased,&observer);
+	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, &observer);
+	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, &observer);
+	EventManager::Instance()->AddClient(EventType::MouseMoved, &observer);
 
-	EventManager::Instance()->AddEvent(new Event(EventType::KeyPressed));
-	//EventManager::Instance()->AddEvent(new KeyPressedEvent(0x43))
-  
 	GraphicsManager::GetInstance()->Init(g_pd3dDevice);
 
 	GraphicsManager::GetInstance()->LoadTextureFromFile(L"Resources/Sprites/Brick.dds", g_pd3dDevice);
@@ -112,6 +112,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_ptestObject->GetTransform()->SetPosition(objectPos);
 	g_ptestObject->GetTransform()->SetScale(objectScale);
 
+
 	// Main message loop
 	MSG msg = { 0 };
 	while (WM_QUIT != msg.message)
@@ -122,13 +123,18 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 			DispatchMessage(&msg);
 
 
-			EventManager::Instance()->ProcessEvents(); 
+
 
 		}
 		else
 		{
 			Render();
-			LOG("Console output test");
+			//LOG("Console output test");
+
+
+
+
+			EventManager::Instance()->ProcessEvents();
 		}
 	}
 
@@ -151,16 +157,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	PAINTSTRUCT ps;
 	HDC hdc;
 
-
-	
-
-
-
-
 	switch (message)
 	{
 	case WM_LBUTTONDOWN:
 	{
+		EventManager::Instance()->AddEvent(new MouseButtonPressedEvent(WM_LBUTTONDOWN));
 		break;
 	}
 	case WM_PAINT:
@@ -174,14 +175,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_KEYDOWN:
 		EventManager::Instance()->AddEvent(new KeyPressedEvent(wParam));
-
+		
+		
 
 		if (wParam == VK_ESCAPE)
 		{
 			PostQuitMessage(0);
 		}
 		break;
+	case WM_KEYUP:
+		EventManager::Instance()->AddEvent(new KeyReleasedEvent(wParam));
+		break;
 
+	case WM_MOUSEMOVE:
+		EventManager::Instance()->AddEvent(new MouseMovedEvent(GET_X_LPARAM(lParam),GET_Y_LPARAM(lParam)));
+		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}

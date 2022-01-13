@@ -129,15 +129,16 @@
     <ClInclude Include="Engine\Managers\DebugManager.h">
       <Filter>Engine\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Tools\Events.h">
+    <ClInclude Include="Engine\Managers\Events\EventManager.h">
       <Filter>Engine\Managers\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Tools\EventManager.h">
+    <ClInclude Include="Engine\Managers\Events\EventObserver.h">
       <Filter>Engine\Managers\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Tools\EventObserver.h">
+    <ClInclude Include="Engine\Managers\Events\Events.h">
       <Filter>Engine\Managers\Events</Filter>
     </ClInclude>
+    <ClInclude Include="Keyboard.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -179,15 +180,16 @@
     <ClCompile Include="Engine\Managers\GraphicsManager.cpp">
       <Filter>Engine\Managers</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Tools\EventManager.cpp">
+    <ClCompile Include="Engine\Managers\Events\EventObserver.cpp">
       <Filter>Engine\Managers\Events</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Tools\EventObserver.cpp">
+    <ClCompile Include="Engine\Managers\Events\Events.cpp">
       <Filter>Engine\Managers\Events</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Tools\Events.cpp">
+    <ClCompile Include="Engine\Managers\Events\EventManager.cpp">
       <Filter>Engine\Managers\Events</Filter>
     </ClCompile>
+    <ClCompile Include="Keyboard.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">
