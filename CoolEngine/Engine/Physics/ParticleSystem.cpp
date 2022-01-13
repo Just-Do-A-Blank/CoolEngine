@@ -49,7 +49,7 @@ void ParticleSystem::Update(const float dTime)
 		// Basic test particle effect
 		if (m_timer >= 1.0f)
 		{
-			AddParticle(m_box, Vector2(0, 0), Vector2(0, 0), nullptr, 0.5f);
+			AddParticle(m_box, XMFLOAT2(0, 0), XMFLOAT2(0, 0), nullptr, 0.5f);
 			m_timer = 0;
 		}
 		break;
@@ -69,7 +69,7 @@ void ParticleSystem::Update(const float dTime)
 	}
 }
 
-void ParticleSystem::AddParticle(Box box, Vector2 vel, Vector2 accel, Texture* tex, float life)
+void ParticleSystem::AddParticle(Box box, XMFLOAT2 vel, XMFLOAT2 accel, Texture* tex, float life)
 {
 	for (unsigned int i = 0; i < PARTICLE_SYSTEM_SIZE; ++i)
 	{
