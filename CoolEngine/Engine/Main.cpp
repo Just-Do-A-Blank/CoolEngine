@@ -96,8 +96,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	//Create camera
 	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, 0);
-	XMFLOAT3 cameraForward = XMFLOAT3(0, -1, 0);
-	XMFLOAT3 cameraUp = XMFLOAT3(0, 0, 1);
+	XMFLOAT3 cameraForward = XMFLOAT3(0, 0, 1);
+	XMFLOAT3 cameraUp = XMFLOAT3(0, 1, 0);
 
 	float windowWidth = g_Width;
 	float windowHeight = g_Height;
@@ -115,7 +115,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//Create test gameobject
 	GraphicsManager::GetInstance()->LoadAnimationFromFile(L"TestAnim", g_pd3dDevice);
 
-	XMFLOAT3 objectPos = XMFLOAT3(0, -5.0f, 0);
+	XMFLOAT3 objectPos = XMFLOAT3(0, 0.0f, 5.0f);
 	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
 
 	g_ptestObject = new GameObject("tempTile");
