@@ -221,6 +221,8 @@ bool GameObject::SetAnimation(wstring animName)
 void GameObject::SetAnimation(SpriteAnimation& animation)
 {
 	m_animation = animation;
+}
+
 void GameObject::SetIsRenderable(bool& condition)
 {
 	m_isRenderable = condition;
