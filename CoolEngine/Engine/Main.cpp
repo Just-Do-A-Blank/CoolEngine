@@ -163,11 +163,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		break;
 	}
-	case WM_KEYDOWN:
-		EventManager::Instance()->AddEvent(new KeyPressedEvent(wParam));
-
-		break;
-
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 		EndPaint(hWnd, &ps);
@@ -178,6 +173,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_KEYDOWN:
+		EventManager::Instance()->AddEvent(new KeyPressedEvent(wParam));
+
+
 		if (wParam == VK_ESCAPE)
 		{
 			PostQuitMessage(0);

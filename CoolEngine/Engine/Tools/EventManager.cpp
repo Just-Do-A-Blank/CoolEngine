@@ -118,19 +118,16 @@ void EventManager::RemoveClientAllEvents(Observer* client)
 }
 
 
-////Process specific event. Add to event buffer
-//void EventManager::AddEvent(EventType eventid, void* data)
-//{
-//	Event newEvent(eventid, data);
-//	//Add to the buffer
-//	m_eventBuffer.push_back(newEvent);
-//}
+//Process specific event. Add to event buffer
+void EventManager::AddEvent(EventType eventid, void* data)
+{
+	//Add to the buffer
+	m_eventBuffer.push_back(new Event(eventid,data));
+}
 
 void EventManager::AddEvent(Event* event)
 {
 	m_eventBuffer.push_back(event);
-
-
 }
 
 
