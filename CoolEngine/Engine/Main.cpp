@@ -27,8 +27,19 @@ void Update();
 void BindQuadBuffers();
 
 void InitIMGUI();
-void CreateIMGUIWindow();
+void CreateIMGUIWindows();
+void DrawMasterWindow();
+void DrawSceneGraphWindow();
+void DrawSceneManagementWindow();
+void DrawGameObjectPropertiesWindow();
 void ShutdownIMGUI();
+
+//IMGUI variables
+
+//Master window
+bool g_ShowSceneEditor;
+bool g_ShowSceneManagement;
+bool g_ShowGameObject;
 
 HINSTANCE g_hInstance;
 
@@ -502,7 +513,7 @@ void Render()
 
 	g_ptestObject->Render(g_pImmediateContext, g_pperInstanceCB);
 
-	CreateIMGUIWindow();
+	CreateIMGUIWindows();
 
 	// Present our back buffer to our front buffer
 	g_pSwapChain->Present(0, 0);
@@ -542,20 +553,125 @@ void InitIMGUI()
 	ImGui_ImplDX11_Init(g_pd3dDevice, g_pImmediateContext);
 }
 
-void CreateIMGUIWindow()
+void CreateIMGUIWindows()
 {
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
-	ImGui::Begin("Hello, world!");
-	ImGui::Text("This is some useful text.");
-	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-	ImGui::End();
+	DrawMasterWindow();
+
+	if (g_ShowSceneEditor)
+	{
+		DrawSceneGraphWindow();
+	}
+
+	if (g_ShowSceneManagement)
+	{
+		DrawSceneManagementWindow();
+	}
+
+	if (g_ShowGameObject)
+	{
+		DrawGameObjectPropertiesWindow();
+	}
 
 	ImGui::Render();
 
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+}
+
+void DrawMasterWindow()
+{
+	ImGui::Begin("Master Window");
+	ImGui::Checkbox("Scene Graph Window", &g_ShowSceneEditor);
+	ImGui::Checkbox("Scene Management Window", &g_ShowSceneManagement);
+	ImGui::Checkbox("GameObject Properties Window", &g_ShowGameObject);
+	ImGui::End();
+}
+
+void DrawSceneGraphWindow()
+{
+	ImGui::Begin("Scene Graph");
+
+	ImGui::End();
+}
+
+void DrawSceneManagementWindow()
+{
+	ImGui::Begin("Scene Management", nullptr, ImGuiWindowFlags_MenuBar);
+
+	if (ImGui::BeginMenuBar())
+	{
+		if (ImGui::BeginMenu("File"))
+		{
+			if (ImGui::MenuItem("Create Scene", "Ctrl+C")) 
+			{ 
+				/* Do stuff */ 
+			}
+
+			if (ImGui::MenuItem("Save Scene", "Ctrl+S")) 
+			{ 
+				/* Do stuff */ 
+			}
+
+			if (ImGui::MenuItem("Open Scene", "Ctrl+O")) 
+			{ 
+				/* Do stuff */ 
+			}
+
+			if (ImGui::MenuItem("Delete Scene", "Ctrl+D")) 
+			{
+			
+			}
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Create"))
+		{
+			if (ImGui::MenuItem("GameObject")) 
+			{
+				
+			}
+
+			if (ImGui::MenuItem("ParticleSystem")) 
+			{
+			
+			}
+
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMenuBar();
+	}
+
+	ImGui::End();
+}
+
+void DrawGameObjectPropertiesWindow()
+{
+	ImGui::Begin("GameObject Properties");
+
+	float pos[3] =
+	{
+		10, 1, 0
+	};
+
+	ImGui::DragFloat3("Position", pos);
+	ImGui::DragFloat3("Rotation", pos);
+	ImGui::DragFloat3("Scale", pos);
+
+	char buf[100];
+
+	ImGui::InputText("Texture Name", buf, IM_ARRAYSIZE(buf));
+	ImGui::InputText("Animation Name", buf, IM_ARRAYSIZE(buf));
+
+	ImGui::Checkbox("Renderable", &g_ShowSceneEditor);
+	ImGui::Checkbox("Collidable", &g_ShowSceneEditor);
+	ImGui::Checkbox("Trigger", &g_ShowSceneEditor);
+
+	ImGui::End();
 }
 
 void ShutdownIMGUI()
