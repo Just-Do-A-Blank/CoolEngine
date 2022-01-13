@@ -15,6 +15,12 @@
 
 class Mesh;
 
+struct RenderStruct
+{
+	ID3D11DeviceContext* m_pcontext;
+	ConstantBuffer<PerInstanceCB>* m_pconstantBuffer;
+};
+
 class GraphicsManager : public Singleton<GraphicsManager>
 {
 	std::unordered_map<wstring, ID3D11ShaderResourceView*> m_textureSRVs;
