@@ -5,9 +5,9 @@
 
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/Graphics/Mesh.h"
-
-#include "Engine/GameObjects/CameraGameObject.h"
 #include "Engine/Graphics/ConstantBuffer.h"
+#include "Engine/Graphics/SpriteAnimation.h"
+#include "Engine/GameObjects/CameraGameObject.h"
 
 #include "Engine/Tools/EventManager.h"
 #include "Engine/Tools/EventObserver.h"
@@ -18,6 +18,7 @@ HRESULT	InitDevice();
 void CleanupDevice();
 
 void Render();
+void Update();
 
 void BindQuadBuffers();
 
@@ -101,6 +102,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_pperInstanceCB = new ConstantBuffer<PerInstanceCB>(g_pd3dDevice);
 
 	//Create test gameobject
+	GraphicsManager::GetInstance()->LoadAnimationFromFile(L"TestAnim", g_pd3dDevice);
+
 	XMFLOAT3 objectPos = XMFLOAT3(0, -5.0f, 0);
 	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
 
@@ -111,6 +114,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_ptestObject->SetAlbedo(L"Resources/Sprites/Brick.dds");
 	g_ptestObject->GetTransform()->SetPosition(objectPos);
 	g_ptestObject->GetTransform()->SetScale(objectScale);
+	g_ptestObject->SetAnimation(L"TestAnim");
 
 	// Main message loop
 	MSG msg = { 0 };
@@ -127,6 +131,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		}
 		else
 		{
+			Update();
 			Render();
 		}
 	}
@@ -487,6 +492,13 @@ void Render()
 
 	// Present our back buffer to our front buffer
 	g_pSwapChain->Present(0, 0);
+}
+
+void Update()
+{
+	GameManager::GetInstance()->GetTimer()->Tick();
+
+	g_ptestObject->Update();
 }
 
 void BindQuadBuffers()

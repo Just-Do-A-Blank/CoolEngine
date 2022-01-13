@@ -26,7 +26,9 @@
     <ClInclude Include="Engine\Graphics\ConstantBuffers.h" />
     <ClInclude Include="Engine\Graphics\DDSTextureLoader.h" />
     <ClInclude Include="Engine\Graphics\Mesh.h" />
+    <ClInclude Include="Engine\Graphics\SpriteAnimation.h" />
     <ClInclude Include="Engine\Graphics\Vertices.h" />
+    <ClInclude Include="Engine\Helpers\Timer.h" />
     <ClInclude Include="Engine\Helpers\DebugHelper.h" />
     <ClInclude Include="Engine\Helpers\MathHelper.h" />
     <ClInclude Include="Engine\Managers\AudioManager.h" />
@@ -52,6 +54,8 @@
     <ClCompile Include="Engine\GameObjects\GameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\Transform.cpp" />
     <ClCompile Include="Engine\Graphics\DDSTextureLoader.cpp" />
+    <ClCompile Include="Engine\Graphics\SpriteAnimation.cpp" />
+    <ClCompile Include="Engine\Helpers\Timer.cpp" />
     <ClCompile Include="Engine\Main.cpp" />
     <ClCompile Include="Engine\Tools\EventManager.cpp" />
     <ClCompile Include="Engine\Tools\Events.cpp" />
