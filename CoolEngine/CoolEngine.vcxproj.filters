@@ -55,6 +55,9 @@
     <Filter Include="Engine\Structure">
       <UniqueIdentifier>{2e610b81-e2f8-4347-8d90-edcc56b6f1c1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Helpers">
+      <UniqueIdentifier>{f9e333bf-56a1-4d4a-a56a-3c69d9e1cf6f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -123,8 +126,11 @@
     <ClInclude Include="Engine\Managers\GraphicsManager.h">
       <Filter>Engine\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Managers\DebugManager.h">
-      <Filter>Engine\Managers</Filter>
+    <ClInclude Include="Engine\Helpers\DebugHelper.h">
+      <Filter>Engine\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Helpers\MathHelper.h">
+      <Filter>Engine\Helpers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
