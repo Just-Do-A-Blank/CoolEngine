@@ -8,6 +8,7 @@
   "ObjectData":
   [
     {
+      "Name" :  "Object",
       "ColliderType": "BoxCollider",
       "IsCollideable": true,
       "IsRenderable": true,

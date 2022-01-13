@@ -5,6 +5,7 @@
 
 #include "Engine/GameObjects/CameraGameObject.h"
 #include "Engine/Graphics/ConstantBuffer.h"
+#include "FileIO/FileIO.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
@@ -46,6 +47,62 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	if (FAILED(InitWindow(hInstance, nCmdShow)))
 		return 0;
+
+	std::string test("Hello");
+
+	std::vector<std::string> names;
+	std::vector<JSON_VARIABLE_TYPE> types;
+	std::vector<void*> data;
+
+	for (size_t i = 0; i < 20; i++)
+	{
+		names.push_back(std::to_string(i));
+		types.push_back(JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_INT);
+		data.push_back(&i);
+	}
+
+	char* c = "Hello";
+	names.push_back("CharTest");
+	types.push_back(JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_CHAR);
+	data.push_back(c);
+
+	double d = double(647.56);
+	names.push_back("DoubleTest");
+	types.push_back(JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_DOUBLE);
+	data.push_back(&d);
+
+	float f = 6.56;
+	names.push_back("FloatTest");
+	types.push_back(JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_FLOAT);
+	data.push_back(&f);
+
+	names.push_back("StringTest");
+	types.push_back(JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_STRING);
+	data.push_back(&test);
+
+	wchar_t w = 'Fumo';
+	names.push_back("WCHARTest");
+	types.push_back(JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_WCHAR_T);
+	data.push_back(&w);
+
+	XMFLOAT2 XM2 = { 0,0 };
+	names.push_back("XMFLOAT2Test");
+	types.push_back(JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_XMFLOAT2);
+	data.push_back(&XM2);
+
+	XMFLOAT3 XM3 = { 0,0,0 };
+	names.push_back("XMFLOAT3Test");
+	types.push_back(JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_XMFLOAT3);
+	data.push_back(&XM3);
+
+	XMFLOAT4 XM4 = { 0,0,0,0 };
+	names.push_back("XMFLOAT4Test");
+	types.push_back(JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_XMFLOAT4);
+	data.push_back(&XM4);
+
+	std::string location("\\Test.json");
+	std::string fileLocation = FileIO::AttachDefaultFileLocation(location);
+	FileIO::SaveObjectInJson(fileLocation.c_str(), names, types, data);
 
 	if (FAILED(InitDevice()))
 	{

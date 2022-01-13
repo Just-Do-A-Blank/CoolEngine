@@ -42,6 +42,26 @@ json FileIO::LoadJson(const char* fileAddress)
 	}
 }
 
+template <typename t>
+t FileIO::LoadTextFile(const char* fileAddress)
+{
+	try
+	{
+		if (file)
+		{
+			t result;
+			result >> file;
+			return file;
+		}
+		throw std::exception("File was not opened");
+	}
+	catch (const std::exception& e)
+	{
+		OutputDebugStringA(e.what());
+		return t();
+	}
+}
+
 std::vector<GameObjectData> FileIO::LoadMultipleGameObjects(const char* fileAddress)
 {
 	json m_json = LoadJson(fileAddress);
@@ -52,9 +72,11 @@ std::vector<GameObjectData> FileIO::LoadMultipleGameObjects(const char* fileAddr
 
 	for (size_t i = 0; i < metaData.at(0)["NumberOfObject"]; i++)
 	{
-		objects[i].m_Position = XMFLOAT3(data.at(0)["Position"][0], data.at(0)["Position"][1], data.at(0)["Position"][2]);
-		objects[i].m_Rotation = XMFLOAT3(data.at(0)["Rotation"][0], data.at(0)["Rotation"][1], data.at(0)["Rotation"][2]);
-		objects[i].m_Scale = XMFLOAT3(data.at(0)["Scale"][0], data.at(0)["Scale"][1], data.at(0)["Scale"][2]);
+		//GameObject gameObject(data.at(i)["Name"]);
+		objects[i].m_Name = data.at(i)["Name"];
+		objects[i].m_Position = XMFLOAT3(data.at(i)["Position"][0], data.at(i)["Position"][1], data.at(i)["Position"][2]);
+		objects[i].m_Rotation = XMFLOAT3(data.at(i)["Rotation"][0], data.at(i)["Rotation"][1], data.at(i)["Rotation"][2]);
+		objects[i].m_Scale = XMFLOAT3(data.at(i)["Scale"][0], data.at(i)["Scale"][1], data.at(i)["Scale"][2]);
 
 		if (data.at(0)["IsRenderable"])
 		{
@@ -85,6 +107,58 @@ std::vector<GameObjectData> FileIO::LoadMultipleGameObjects(const char* fileAddr
 			objects[i].m_IsCollidable = false;
 		}
 	}
+	return objects;
+}
+
+inline std::string FileIO::ExeLocation(bool removeExeName)
+{
+	char exePath[MAX_PATH];
+	//based on fatih sennik's answer on https://stackoverflow.com/questions/1023306/finding-current-executables-path-without-proc-self-exe/1024937#1024937
+	DWORD result = GetModuleFileNameA(NULL, exePath, MAX_PATH);
+	std::string finalOutput(exePath);
+	if (removeExeName)
+	{
+		int exeNameStart = finalOutput.find_last_of('\\');
+		finalOutput.erase(exeNameStart);
+	}
+	return finalOutput;
+}
+
+std::string FileIO::AttachDefaultFileLocation(std::string* fileAddress)
+{
+	char exePath[MAX_PATH];
+	//based on fatih sennik's answer on https://stackoverflow.com/questions/1023306/finding-current-executables-path-without-proc-self-exe/1024937#1024937
+	DWORD result = GetModuleFileNameA(NULL, exePath, MAX_PATH);
+	std::string finalOutput(exePath);
+	int exeNameStart = finalOutput.find_last_of('\\');
+	finalOutput.erase(exeNameStart);
+	finalOutput.append(*fileAddress);
+	return finalOutput.c_str();
+}
+
+std::string FileIO::AttachDefaultFileLocation(std::string fileAddress)
+{
+	char exePath[MAX_PATH];
+	//based on fatih sennik's answer on https://stackoverflow.com/questions/1023306/finding-current-executables-path-without-proc-self-exe/1024937#1024937
+	DWORD result = GetModuleFileNameA(NULL, exePath, MAX_PATH);
+	std::string finalOutput(exePath);
+	int exeNameStart = finalOutput.find_last_of('\\');
+	finalOutput.erase(exeNameStart);
+	finalOutput.append(fileAddress);
+	return finalOutput.c_str();
+}
+
+std::string FileIO::AttachDefaultFileLocation(const char* fileAddress)
+{
+	std::string fileAdd(fileAddress);
+	char exePath[MAX_PATH];
+	//based on fatih sennik's answer on https://stackoverflow.com/questions/1023306/finding-current-executables-path-without-proc-self-exe/1024937#1024937
+	DWORD result = GetModuleFileNameA(NULL, exePath, MAX_PATH);
+	std::string finalOutput(exePath);
+	int exeNameStart =finalOutput.find_last_of('\\');
+	finalOutput.erase(exeNameStart);
+	finalOutput.append(fileAdd);
+	return finalOutput.c_str();
 }
 
 GameObjectData FileIO::LoadGameObject(const char* fileAddress)
@@ -92,10 +166,17 @@ GameObjectData FileIO::LoadGameObject(const char* fileAddress)
 	json m_json = LoadJson(fileAddress);
 	json data = m_json["ObjectData"];
 
+	//GameObject gameObject(data.at(0)["Name"]);
+
 	GameObjectData gameObjData;
+	gameObjData.m_Name = data.at(0)["Name"];
 	gameObjData.m_Position = XMFLOAT3(data.at(0)["Position"][0], data.at(0)["Position"][1], data.at(0)["Position"][2]);
 	gameObjData.m_Rotation = XMFLOAT3(data.at(0)["Rotation"][0], data.at(0)["Rotation"][1], data.at(0)["Rotation"][2]) ;
 	gameObjData.m_Scale = XMFLOAT3(data.at(0)["Scale"][0], data.at(0)["Scale"][1], data.at(0)["Scale"][2]);
+
+	//gameObject.GetTransform()->SetPosition(XMFLOAT3(data.at(0)["Position"][0], data.at(0)["Position"][1], data.at(0)["Position"][2]));
+	//gameObject.GetTransform()->SetRotation(XMFLOAT3(data.at(0)["Position"][0], data.at(0)["Position"][1], data.at(0)["Position"][2]));
+	//gameObject.GetTransform()->SetScale(XMFLOAT3(data.at(0)["Position"][0], data.at(0)["Position"][1], data.at(0)["Position"][2]));
 
 	if (data.at(0)["IsRenderable"])
 	{
@@ -170,6 +251,7 @@ void FileIO::SaveGameObject(GameObjectData gameObjData, const char* fileLocation
 	{
 		{"Metadata",
 			{
+				{"Name", gameObjData.m_Name },
 				{"ColliderType", colliderType},
 				{"IsCollideable" , gameObjData.m_IsCollidable},
 				{"IsRenderable", gameObjData.m_IsRenderable},
@@ -184,3 +266,61 @@ void FileIO::SaveGameObject(GameObjectData gameObjData, const char* fileLocation
 	outFile << m_JsonOutput;
 	outFile.close();
 }
+
+bool FileIO::SaveObjectInJson(const char* fileLocation, std::vector<std::string> varNames, std::vector<JSON_VARIABLE_TYPE> types, std::vector<void*> data)
+{
+	int i;
+	try
+	{
+		std::ofstream outFile;
+		outFile.open(fileLocation);
+		json m_JsonOutput;
+		for (size_t i = 0; i < varNames.size(); i++)
+		{
+			switch (types[i])
+			{
+			default:
+				m_JsonOutput.push_back({ varNames[i], *(int*)data[i] });
+				break;
+			case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_CHAR:
+				m_JsonOutput.push_back({ varNames[i], *(char*)data[i] });
+				break;
+			case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_STRING:
+				m_JsonOutput.push_back({ varNames[i], *(std::string*)data[i] });
+				break;
+			case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_DOUBLE:
+				m_JsonOutput.push_back({ varNames[i], *(double*)data[i] });
+				break;
+			case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_FLOAT:
+				m_JsonOutput.push_back({ varNames[i], *(float*)data[i] });
+				break;
+			case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_INT:
+				m_JsonOutput.push_back({ varNames[i], *(int*)data[i] });
+				break;
+			case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_WCHAR_T:
+				m_JsonOutput.push_back({ varNames[i], *(wchar_t*)data[i] });
+				break;
+			case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_XMFLOAT2:
+				XMFLOAT2 vec2 = *(XMFLOAT2*)data[i];
+				m_JsonOutput.push_back({ varNames[i],  { vec2.x, vec2.y} });
+				break;
+			case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_XMFLOAT3:
+				XMFLOAT3 vec3 = *(XMFLOAT3*)data[i];
+				m_JsonOutput.push_back({ varNames[i],   { vec3.x, vec3.y, vec3.z } });
+				break;
+			case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_XMFLOAT4:
+				XMFLOAT4 vec4 = *(XMFLOAT4*)data[i];
+				m_JsonOutput.push_back({ varNames[i],  { vec4.x, vec4.y, vec4.z, vec4.w } });
+				break;
+			}
+		}
+		outFile << m_JsonOutput;
+		outFile.close();
+		return true;
+	}
+	catch (const std::exception&)
+	{
+		return false;
+	}
+}
+

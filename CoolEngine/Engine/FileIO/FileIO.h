@@ -20,6 +20,22 @@ enum COLLIDER_TYPE
 };
 
 /// <summary>
+/// Flags for functions where saving multiple data types at once is important
+/// </summary>
+enum JSON_VARIABLE_TYPE
+{
+	JSON_VARIABLE_TYPE_INT,
+	JSON_VARIABLE_TYPE_CHAR,
+	JSON_VARIABLE_TYPE_STRING,
+	JSON_VARIABLE_TYPE_FLOAT,
+	JSON_VARIABLE_TYPE_DOUBLE,
+	JSON_VARIABLE_TYPE_WCHAR_T,
+	JSON_VARIABLE_TYPE_XMFLOAT2,
+	JSON_VARIABLE_TYPE_XMFLOAT3,
+	JSON_VARIABLE_TYPE_XMFLOAT4
+};
+
+/// <summary>
 /// A struct that contains data related to a game object
 /// </summary>
 struct GameObjectData
@@ -30,6 +46,7 @@ struct GameObjectData
 		m_Rotation = XMFLOAT3();
 		m_Scale = XMFLOAT3();
 		m_TextureLocation = "";
+		m_Name = "";
 		m_IsRenderable = false;
 		m_IsCollidable = false;
 		m_IsTrigger = false;
@@ -38,7 +55,7 @@ struct GameObjectData
 
 	XMFLOAT3 m_Position, m_Rotation, m_Scale;
 	bool m_IsRenderable, m_IsCollidable, m_IsTrigger;
-	std::string m_TextureLocation;
+	std::string m_TextureLocation, m_Name;
 	COLLIDER_TYPE m_ColliderType;
 };
 
@@ -64,6 +81,33 @@ struct MapFileData
 class FileIO
 {
 public:
+
+	/// <summary>
+	/// Returns a string of the current .exe location
+	/// </summary>
+	/// <returns></returns>
+	inline std::string ExeLocation(bool removeExeName);
+
+	/// <summary>
+	/// Takes a string pointer and appends the .exe location to the front of the string
+	/// </summary>
+	/// <param name="fileAddress"></param>
+	/// <returns>const char pointer with file address</returns>
+	static std::string AttachDefaultFileLocation(std::string* fileAddress);
+
+	/// <summary>
+	/// Takes a string and appends the .exe location to the front of the string
+	/// </summary>
+	/// <param name="fileAddress"></param>
+	/// <returns>const char pointer with file address</returns>
+	static std::string AttachDefaultFileLocation(std::string fileAddress);
+
+	/// <summary>
+	/// Takes a const char pointer and appends the .exe location to the front of the string
+	/// </summary>
+	/// <param name="fileAddress"></param>
+	/// <returns>const char pointer with file address</returns>
+	static std::string AttachDefaultFileLocation(const char* fileAddress);
 
 	/// <summary>
 	/// Loads a Game Object from a JSON file.
@@ -95,19 +139,40 @@ public:
 	static void LoadSavefile(const char* fileAddress);
 
 	/// <summary>
+	/// Takes a file location and then returns a nlohmann::json. Throws an exception in the visual studios output channel if it has failed to open the file.
+	/// </summary>
+	/// <param name="char* fileAddress"></param>
+	/// <returns>returns the output of the file in the expected type, if there is an exception it returns the default value of the variable</returns>
+	static json LoadJson(const char* fileAddress);
+
+	/// <summary>
+	/// Takes a file location and then returns a specified type.Throws an exception in the visual studios output channel if it has failed to open the file.
+	/// </summary>
+	/// <param name="char* fileAddress"></param>
+	/// <returns>returns the output of the file in the expected type, if there is an exception it returns the default value of the variable</returns>
+	template <typename t>
+	static t LoadTextFile(const char* fileAddress);
+
+
+
+	/// <summary>
 	/// A function that saves data related to a Game Object and saves it to a file. Ensure to specify the file type in the string
 	/// </summary>
 	/// <param name="gameObjData"></param>
 	/// <param name="fileLocation"></param>
 	static void SaveGameObject(GameObjectData gameObjData, const char* fileLocation);
 
-private:
 	/// <summary>
-	/// Takes a file location and then returns a nlohmann::json. Throws an exception in the visual studios output channel if it has failed.
+	/// This function allows for the saving of a custom json file.
 	/// </summary>
-	/// <param name="char* fileAddress"></param>
+	/// <param name="fileLocation"></param>
+	/// <param name="varNames"></param>
+	/// <param name="types"></param>
+	/// <param name="data"></param>
 	/// <returns></returns>
-	static json LoadJson(const char* fileAddress);
+	static bool SaveObjectInJson(const char* fileLocation, std::vector<std::string> varNames, std::vector<JSON_VARIABLE_TYPE> types, std::vector<void*> data);
+
+private:
 
 	/// <summary>
 	/// Determins what collider type a object has from a string
