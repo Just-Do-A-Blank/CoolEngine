@@ -5,7 +5,7 @@
 
 class GameObject;
 
-class GameManager : Singleton<GameManager>
+class GameManager : public Singleton<GameManager>
 {
 	unordered_map<string, GameObject*> m_gameObjectMap;
 
