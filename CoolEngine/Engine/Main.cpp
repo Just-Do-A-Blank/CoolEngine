@@ -4,9 +4,9 @@
 
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/Graphics/Mesh.h"
-
-#include "Engine/GameObjects/CameraGameObject.h"
 #include "Engine/Graphics/ConstantBuffer.h"
+#include "Engine/Graphics/SpriteAnimation.h"
+#include "Engine/GameObjects/CameraGameObject.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
