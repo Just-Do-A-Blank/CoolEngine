@@ -8,6 +8,8 @@
 #include "Engine/GameObjects/CameraGameObject.h"
 #include "Engine/Graphics/ConstantBuffer.h"
 
+#include "Engine/TileMap/TileMap/TileMap.h"
+
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
 HRESULT	InitDevice();
@@ -100,6 +102,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_ptestObject->SetAlbedo(L"Resources/Sprites/Brick.dds");
 	g_ptestObject->GetTransform()->SetPosition(objectPos);
 	g_ptestObject->GetTransform()->SetScale(objectScale);
+
+	//Create test Tile Map
+	TileMap TestMap = TileMap(10, 10);
+	TestMap.testFunc();
 
 	// Main message loop
 	MSG msg = { 0 };

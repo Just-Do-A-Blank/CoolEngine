@@ -55,6 +55,9 @@
     <Filter Include="Engine\Structure">
       <UniqueIdentifier>{2e610b81-e2f8-4347-8d90-edcc56b6f1c1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\TileMap">
+      <UniqueIdentifier>{4362da10-2646-4398-9553-b164f7571686}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -126,6 +129,12 @@
     <ClInclude Include="Engine\Managers\DebugManager.h">
       <Filter>Engine\Managers</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\TileMap\TileMap\TileGameObject.h">
+      <Filter>Engine\TileMap</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\TileMap\TileMap\TileMap.h">
+      <Filter>Engine\TileMap</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -166,6 +175,15 @@
     </ClCompile>
     <ClCompile Include="Engine\Managers\GraphicsManager.cpp">
       <Filter>Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\TileMap\TileMap\TestSource.cpp">
+      <Filter>Engine\TileMap</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\TileMap\TileMap\TileGameObject.cpp">
+      <Filter>Engine\TileMap</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\TileMap\TileMap\TileMap.cpp">
+      <Filter>Engine\TileMap</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
