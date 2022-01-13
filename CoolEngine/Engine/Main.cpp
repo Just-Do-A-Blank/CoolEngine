@@ -12,6 +12,10 @@
 #include "Engine/Tools/EventManager.h"
 #include "Engine/Tools/EventObserver.h"
 
+#include "Includes/IMGUI/imgui.h"
+#include "Includes/IMGUI/imgui_impl_win32.h"
+#include "Includes/IMGUI/imgui_impl_dx11.h"
+
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
 HRESULT	InitDevice();
@@ -21,6 +25,10 @@ void Render();
 void Update();
 
 void BindQuadBuffers();
+
+void InitIMGUI();
+void CreateIMGUIWindow();
+void ShutdownIMGUI();
 
 HINSTANCE g_hInstance;
 
@@ -72,7 +80,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		return 0;
 	}
 
-  ExampleObserver observer(new int(10));
+	InitIMGUI();
+
+
+	ExampleObserver observer(new int(10));
 	EventManager::Instance()->AddClient(EventType::KeyPressed,&observer);
 	EventManager::Instance()->AddClient(EventType::KeyReleased,&observer);
 
@@ -136,6 +147,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		}
 	}
 
+	ShutdownIMGUI();
+
 	CleanupDevice();
 
 	delete g_pperFrameCB;
@@ -154,12 +167,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	PAINTSTRUCT ps;
 	HDC hdc;
-
-
-	
-
-
-
 
 	switch (message)
 	{
@@ -490,6 +497,8 @@ void Render()
 
 	g_ptestObject->Render(g_pImmediateContext, g_pperInstanceCB);
 
+	CreateIMGUIWindow();
+
 	// Present our back buffer to our front buffer
 	g_pSwapChain->Present(0, 0);
 }
@@ -513,4 +522,40 @@ void BindQuadBuffers()
 
 	g_pImmediateContext->IASetVertexBuffers(0, 1, &pvertexBuffer, &stride, &offset);
 	g_pImmediateContext->IASetIndexBuffer(pmesh->GetIndexBuffer(), DXGI_FORMAT_R16_UINT, 0);
+}
+
+void InitIMGUI()
+{
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	(void)io;
+
+	ImGui::StyleColorsDark();
+
+	ImGui_ImplWin32_Init(g_hWnd);
+	ImGui_ImplDX11_Init(g_pd3dDevice, g_pImmediateContext);
+}
+
+void CreateIMGUIWindow()
+{
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+
+	ImGui::Begin("Hello, world!");
+	ImGui::Text("This is some useful text.");
+	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+	ImGui::End();
+
+	ImGui::Render();
+
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+}
+
+void ShutdownIMGUI()
+{
+	ImGui_ImplDX11_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
 }
