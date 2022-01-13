@@ -55,6 +55,9 @@
     <Filter Include="Engine\Structure">
       <UniqueIdentifier>{2e610b81-e2f8-4347-8d90-edcc56b6f1c1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Helpers">
+      <UniqueIdentifier>{2e0e309d-62bd-4f71-8eb9-1187d3a28bfd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -126,6 +129,12 @@
     <ClInclude Include="Engine\Managers\DebugManager.h">
       <Filter>Engine\Managers</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Helpers\Timer.h">
+      <Filter>Engine\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\SpriteAnimation.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -166,6 +175,12 @@
     </ClCompile>
     <ClCompile Include="Engine\Managers\GraphicsManager.cpp">
       <Filter>Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\SpriteAnimation.cpp">
+      <Filter>Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Helpers\Timer.cpp">
+      <Filter>Engine\Helpers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
