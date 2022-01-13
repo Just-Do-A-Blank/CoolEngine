@@ -179,6 +179,21 @@ void GameObject::SetPixelShader(ID3D11PixelShader* ppixelShader)
 	m_ppixelShader = ppixelShader;
 }
 
+void GameObject::SetIsRenderable(bool& condition)
+{
+	m_isRenderable = condition;
+}
+
+void GameObject::SetIsCollidable(bool& condition)
+{
+	m_isCollidable = condition;
+}
+
+void GameObject::SetIsTrigger(bool& condition)
+{
+	m_isTrigger = condition;
+}
+
 const string& GameObject::GetIdentifier()
 {
 	return m_identifier;
