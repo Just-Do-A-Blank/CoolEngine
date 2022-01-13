@@ -255,10 +255,10 @@ void GraphicsManager::CreateQuadMesh(ID3D11Device* pdevice)
 	//Create default mesh for plane
 	const Vertex_PosTex quadVertices[4] =
 	{
-		Vertex_PosTex(XMFLOAT3(-1, 0, 1), XMFLOAT2(0, 0)),
-		Vertex_PosTex(XMFLOAT3(-1, 0, -1), XMFLOAT2(0, 1)),
-		Vertex_PosTex(XMFLOAT3(1, 0, -1), XMFLOAT2(1, 1)),
-		Vertex_PosTex(XMFLOAT3(1, 0, 1), XMFLOAT2(1, 0)),
+		Vertex_PosTex(XMFLOAT3(-1, 1, 0), XMFLOAT2(0, 0)),
+		Vertex_PosTex(XMFLOAT3(-1, -1, 0), XMFLOAT2(0, 1)),
+		Vertex_PosTex(XMFLOAT3(1, -1, 0), XMFLOAT2(1, 1)),
+		Vertex_PosTex(XMFLOAT3(1, 1, 0), XMFLOAT2(1, 0)),
 	};
 
 	const UINT16 quadIndices[6] =
