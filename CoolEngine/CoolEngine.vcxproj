@@ -27,8 +27,9 @@
     <ClInclude Include="Engine\Graphics\DDSTextureLoader.h" />
     <ClInclude Include="Engine\Graphics\Mesh.h" />
     <ClInclude Include="Engine\Graphics\Vertices.h" />
+    <ClInclude Include="Engine\Helpers\DebugHelper.h" />
+    <ClInclude Include="Engine\Helpers\MathHelper.h" />
     <ClInclude Include="Engine\Managers\AudioManager.h" />
-    <ClInclude Include="Engine\Managers\DebugManager.h" />
     <ClInclude Include="Engine\Managers\GameManager.h" />
     <ClInclude Include="Engine\Managers\GraphicsManager.h" />
     <ClInclude Include="Engine\Managers\SceneGraph.h" />
