@@ -22,34 +22,9 @@ public:
 
 };
 
-class KeyObserver : public Observer
-{
-	void Handle(KeyEvent* e);
-
-	KeyObserver() {};
-
-
-};
-
-
-class ListenerInherr : public Observer
+class ExampleObserver : public Observer
 {
 public:
-	void Handle(Event* e);
-
-	ListenerInherr(int count) { this->count = count; }
-
-private:
-	int count;
-
-};
-
-
-
-class PlayerControllerObserver : public Observer
-{
-public:
-
 	void KeyPressed(KeyPressedEvent* e)
 	{
 
@@ -98,7 +73,12 @@ public:
 		}
 
 	}
-	PlayerControllerObserver(int* i) { this->m_i = i; }
+	
+	//pass in object / values you want the observer to have access to for editing e.g m_playerController* controller; this->m_playerController = playerController then the observer makes all changes basedo on the events. 
+	//Event processing all happens in 1 place for each object that wants access to the event classes. Controllers can be placed in their own classes if they have access to the headers for the 
+	//Observed class & EventObserver.h for access to the Observer based class for inheritance 
+	
+	ExampleObserver(int* i) { this->m_i = i; }
 
 
 private:

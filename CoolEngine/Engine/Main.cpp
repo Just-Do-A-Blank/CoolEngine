@@ -32,9 +32,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
-
-
-	PlayerControllerObserver observer(new int(10));
+	ExampleObserver observer(new int(10));
 	EventManager::Instance()->AddClient(EventType::KeyPressed,&observer);
 	EventManager::Instance()->AddClient(EventType::KeyReleased,&observer);
 
@@ -81,6 +79,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	PAINTSTRUCT ps;
 	HDC hdc;
+
+
+	
+
+
+
 
 	switch (message)
 	{
