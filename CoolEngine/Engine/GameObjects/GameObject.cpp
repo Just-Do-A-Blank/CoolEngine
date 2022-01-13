@@ -93,7 +93,7 @@ Mesh* GameObject::GetMesh() const
 	return m_pmesh;
 }
 
-const SpriteAnimation& GameObject::GetAnimation()
+SpriteAnimation& GameObject::GetAnimation()
 {
 	return m_animation;
 }

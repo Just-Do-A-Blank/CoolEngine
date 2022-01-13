@@ -55,7 +55,7 @@ public:
 	//Getters
 	Mesh* GetMesh() const;
 
-	const SpriteAnimation& GetAnimation();
+	SpriteAnimation& GetAnimation();
 
 	ID3D11ShaderResourceView* GetAlbedoSRV() const;
 
