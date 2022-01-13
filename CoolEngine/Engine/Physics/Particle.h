@@ -1,6 +1,5 @@
 #pragma once
 #include "Box.h"
-#include "Vector2.h"
 
 // Placeholder
 class Texture {};
@@ -10,8 +9,8 @@ class Particle
 {
 private:
 	Box m_box;
-	Vector2 m_velocity;
-	Vector2 m_accel;
+	XMFLOAT2 m_velocity;
+	XMFLOAT2 m_accel;
 
 	Texture* m_pTexture;
 	float m_lifetime;
@@ -40,7 +39,7 @@ public:
 	/// <param name="accel"></param>
 	/// <param name="tex"></param>
 	/// <param name="life"></param>
-	void Initialise(Box box, Vector2 vel, Vector2 accel, Texture* tex, float life);
+	void Initialise(Box box, XMFLOAT2 vel, XMFLOAT2 accel, Texture* tex, float life);
 
 	bool IsActive() { return m_isActive; }
 };
