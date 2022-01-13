@@ -103,7 +103,7 @@ TreeNode* SceneGraph::GetRootNode()
 
 TreeNode* SceneGraph::GetNodeUsingIdentifier(string identifier)
 {
-	map<string, TreeNode*>::iterator iterator;
+	unordered_map<string, TreeNode*>::iterator iterator;
 
 	iterator = m_sceneMap.find(identifier);
 

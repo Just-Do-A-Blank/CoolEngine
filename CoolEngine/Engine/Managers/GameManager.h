@@ -5,6 +5,6 @@ class GameObject;
 
 class GameManager
 {
-	map<string, GameObject*> m_gameObjectMap;
+	unordered_map<string, GameObject*> m_gameObjectMap;
 };
 
