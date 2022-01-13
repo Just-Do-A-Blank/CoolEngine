@@ -12,7 +12,7 @@ class SceneGraph
 {
 private:
 	TreeNode* m_rootNode;
-	map<string, TreeNode*> m_sceneMap;
+	unordered_map<string, TreeNode*> m_sceneMap;
 
 public:
 	SceneGraph();

@@ -55,6 +55,12 @@
     <Filter Include="Engine\Structure">
       <UniqueIdentifier>{2e610b81-e2f8-4347-8d90-edcc56b6f1c1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Managers\Events">
+      <UniqueIdentifier>{fe343eac-e903-4a37-800d-6b7c75317835}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Helpers">
+      <UniqueIdentifier>{b7094138-64a7-40ab-b98e-13bc2b8ff7e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -123,6 +129,21 @@
     <ClInclude Include="Engine\Managers\GraphicsManager.h">
       <Filter>Engine\Managers</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Tools\Events.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Tools\EventManager.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Tools\EventObserver.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Helpers\DebugHelper.h">
+      <Filter>Engine\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Helpers\MathHelper.h">
+      <Filter>Engine\Helpers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -163,6 +184,15 @@
     </ClCompile>
     <ClCompile Include="Engine\Managers\GraphicsManager.cpp">
       <Filter>Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Tools\EventManager.cpp">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Tools\EventObserver.cpp">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Tools\Events.cpp">
+      <Filter>Engine\Managers\Events</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,11 +1,17 @@
 #pragma once
 
+#include <io.h>
+#include <fcntl.h>
+
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/Graphics/Mesh.h"
 
 #include "Engine/GameObjects/CameraGameObject.h"
 #include "Engine/Graphics/ConstantBuffer.h"
 #include "FileIO/FileIO.h"
+
+#include "Engine/Tools/EventManager.h"
+#include "Engine/Tools/EventObserver.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
@@ -44,6 +50,18 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
+
+#if _DEBUG
+	AllocConsole();
+
+	HANDLE handle_out = GetStdHandle(STD_OUTPUT_HANDLE);
+	int hCrt = _open_osfhandle((long)handle_out, _O_TEXT);
+	FILE* hf_out = _fdopen(hCrt, "w");
+	setvbuf(hf_out, NULL, _IONBF, 1);
+	*stdout = *hf_out;
+
+	freopen_s(&hf_out, "CONOUT$", "w", stdout);
+#endif //_DEBUG
 
 	if (FAILED(InitWindow(hInstance, nCmdShow)))
 		return 0;
@@ -110,6 +128,13 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		return 0;
 	}
 
+  ExampleObserver observer(new int(10));
+	EventManager::Instance()->AddClient(EventType::KeyPressed,&observer);
+	EventManager::Instance()->AddClient(EventType::KeyReleased,&observer);
+
+	EventManager::Instance()->AddEvent(new Event(EventType::KeyPressed));
+	//EventManager::Instance()->AddEvent(new KeyPressedEvent(0x43))
+  
 	GraphicsManager::GetInstance()->Init(g_pd3dDevice);
 
 	GraphicsManager::GetInstance()->LoadTextureFromFile(L"Resources/Sprites/Brick.dds", g_pd3dDevice);
@@ -152,6 +177,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
+
+
+			EventManager::Instance()->ProcessEvents(); 
+
 		}
 		else
 		{
@@ -178,6 +207,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	PAINTSTRUCT ps;
 	HDC hdc;
 
+
+	
+
+
+
+
 	switch (message)
 	{
 	case WM_LBUTTONDOWN:
@@ -193,9 +228,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		break;
 
+	case WM_KEYDOWN:
+		EventManager::Instance()->AddEvent(new KeyPressedEvent(wParam));
+
+
+		if (wParam == VK_ESCAPE)
+		{
+			PostQuitMessage(0);
+		}
+		break;
+
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
+
+	
 
 	return 0;
 }
@@ -445,6 +492,7 @@ void CleanupDevice()
 		g_pImmediateContext->Release();
 	}
 
+#if _DEBUG
 	ID3D11Debug* debugDevice = nullptr;
 	g_pd3dDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&debugDevice));
 
@@ -460,6 +508,7 @@ void CleanupDevice()
 	{
 		debugDevice->Release();
 	}
+#endif //_DEBUG
 }
 
 void Render()
