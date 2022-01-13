@@ -61,6 +61,12 @@
     <Filter Include="Engine\Helpers">
       <UniqueIdentifier>{b7094138-64a7-40ab-b98e-13bc2b8ff7e4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Includes">
+      <UniqueIdentifier>{849334a7-9492-4248-8ccb-4876c67dd766}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Includes\IMGUI">
+      <UniqueIdentifier>{25e05f73-ba22-439a-a374-c951e2bf745f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -150,6 +156,30 @@
     <ClInclude Include="Engine\Helpers\Timer.h">
       <Filter>Engine\Helpers</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Includes\IMGUI\imconfig.h">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\IMGUI\imgui.h">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\IMGUI\imgui_internal.h">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\IMGUI\imstb_rectpack.h">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\IMGUI\imstb_textedit.h">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\IMGUI\imstb_truetype.h">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\IMGUI\imgui_impl_dx11.h">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\IMGUI\imgui_impl_win32.h">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -205,6 +235,27 @@
     </ClCompile>
     <ClCompile Include="Engine\Helpers\Timer.cpp">
       <Filter>Engine\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Includes\IMGUI\imgui.cpp">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Includes\IMGUI\imgui_demo.cpp">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Includes\IMGUI\imgui_draw.cpp">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Includes\IMGUI\imgui_tables.cpp">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Includes\IMGUI\imgui_widgets.cpp">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Includes\IMGUI\imgui_impl_dx11.cpp">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Includes\IMGUI\imgui_impl_win32.cpp">
+      <Filter>Engine\Includes\IMGUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
