@@ -4,8 +4,11 @@
 #include "Engine/Graphics/Mesh.h"
 #include "Engine/Graphics/ConstantBuffer.h"
 #include "Engine/Graphics/ConstantBuffers.h"
+#include "Engine/Graphics/SpriteAnimation.h"
 
 #include <string>
+
+class SpriteAnimation;
 
 class GameObject
 {
@@ -18,6 +21,8 @@ private:
 	ID3D11PixelShader* m_ppixelShader;
 
 	Mesh* m_pmesh;
+
+	SpriteAnimation m_animation;
 
 	string m_identifier;
 
@@ -44,10 +49,13 @@ public:
 	const bool& IsCollidable();
 	const bool& IsTrigger();
 
-	void Render(ID3D11DeviceContext* pcontext, ConstantBuffer<PerInstanceCB>* pconstantBuffer);
+	virtual void Render(ID3D11DeviceContext* pcontext, ConstantBuffer<PerInstanceCB>* pconstantBuffer);
+	virtual void Update();
 
 	//Getters
 	Mesh* GetMesh() const;
+
+	const SpriteAnimation& GetAnimation();
 
 	ID3D11ShaderResourceView* GetAlbedoSRV() const;
 
@@ -57,6 +65,8 @@ public:
 	Transform* GetTransform();
 
 	const string& GetIdentifier();
+
+	bool IsAnimated();
 
 	//Setters
 	bool SetMesh(wstring meshName);
@@ -70,4 +80,7 @@ public:
 
 	bool SetPixelShader(wstring shaderName);
 	void SetPixelShader(ID3D11PixelShader* ppixelShader);
+
+	bool SetAnimation(wstring animName);
+	void SetAnimation(SpriteAnimation& animation);
 };

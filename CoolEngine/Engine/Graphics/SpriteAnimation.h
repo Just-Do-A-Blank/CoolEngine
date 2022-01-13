@@ -10,13 +10,20 @@ struct Frame
 
 class SpriteAnimation
 {
-	std::vector<Frame> m_frames;
+	std::vector<Frame>* m_pframes;
 
-	bool m_Interpolate = false;
+	int m_currentFrameIndex = 0;
+
+	float m_timeMilestone = 0.0f;
 
 public:
-	void SetFrames(std::vector<Frame>& frames);
-	void SetInterpolate(bool interpolate);
+	SpriteAnimation();
+	SpriteAnimation(std::vector<Frame>* pframes);
+
+	void SetFrames(std::vector<Frame>* pframes);
+	std::vector<Frame>* GetFrames();
+
+	void Update();
 
 	ID3D11ShaderResourceView* GetCurrentFrame();
 };
