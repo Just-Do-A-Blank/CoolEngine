@@ -172,7 +172,8 @@ void EditorUI::DrawGameObjectPropertiesWindow()
 	ImGui::Spacing();
 	ImGui::Separator();
 	ImGui::Spacing();
-	char buf[100];
+
+	ImGui::TextUnformatted("Texture");
 
 	if (ImGui::ImageButton((void*)(intptr_t)GraphicsManager::GetInstance()->GetShaderResourceView(m_texNameBuffer), DEFAULT_IMGUI_IMAGE_SIZE))
 	{
@@ -196,12 +197,13 @@ void EditorUI::DrawGameObjectPropertiesWindow()
 		m_texNameBuffer[relativePath.size()] = L'\0';
 	}
 
+	ImGui::Spacing();
+	ImGui::TextUnformatted("Animation");
+
 	if (ImGui::ImageButton((void*)(intptr_t)m_animation.GetCurrentFrame(), DEFAULT_IMGUI_IMAGE_SIZE))
 	{
 		OpenFolderExplorer(m_animNameBuffer, _countof(m_animNameBuffer));
 	}
-
-	IMGUI_LEFT_LABEL(ImGui::InputText, "Animation Name", buf, IM_ARRAYSIZE(buf));
 
 	ImGui::Spacing();
 	ImGui::Separator();
