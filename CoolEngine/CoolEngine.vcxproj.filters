@@ -67,6 +67,9 @@
     <Filter Include="Engine\Includes\IMGUI">
       <UniqueIdentifier>{25e05f73-ba22-439a-a374-c951e2bf745f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Scenes">
+      <UniqueIdentifier>{1dd4e68e-7a12-4c4c-9e2b-6c5bfd8206be}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -180,6 +183,9 @@
     <ClInclude Include="Engine\Includes\IMGUI\imgui_impl_win32.h">
       <Filter>Engine\Includes\IMGUI</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Scene\Scene.h">
+      <Filter>Engine\Scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -256,6 +262,9 @@
     </ClCompile>
     <ClCompile Include="Engine\Includes\IMGUI\imgui_impl_win32.cpp">
       <Filter>Engine\Includes\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Scene\Scene.cpp">
+      <Filter>Engine\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
