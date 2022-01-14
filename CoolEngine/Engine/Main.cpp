@@ -3,6 +3,7 @@
 #include <io.h>
 #include <fcntl.h>
 #include <locale>
+#include <algorithm>
 #include <codecvt>
 
 #include "Engine/Managers/GraphicsManager.h"
@@ -24,6 +25,11 @@
 #define DEFAULT_IMGUI_IMAGE L"Resources/Sprites/Brick.dds"
 #define DEFAULT_IMGUI_IMAGE_SIZE ImVec2(256, 256)
 
+#define IMGUI_LEFT_LABEL(func, label, ...) (ImGui::TextUnformatted(label), ImGui::SameLine(), func("##" label, __VA_ARGS__))
+#define FILEPATH_BUFFER_SIZE 200
+#define DEFAULT_IMGUI_IMAGE L"Resources\\Sprites\\Brick.dds"
+#define DEFAULT_IMGUI_IMAGE_SIZE ImVec2(256, 256)
+
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
 HRESULT	InitDevice();
@@ -34,9 +40,29 @@ void Update();
 
 void BindQuadBuffers();
 
+wstring StringToWString(const string& str);
+string WStringToString(const wstring& str);
+
 void InitIMGUI();
-void CreateIMGUIWindow();
+void CreateIMGUIWindows();
+void DrawMasterWindow();
+void DrawSceneGraphWindow();
+void DrawSceneManagementWindow();
+void DrawGameObjectPropertiesWindow();
 void ShutdownIMGUI();
+
+void OpenFileExplorer(const WCHAR* fileFilters, WCHAR* buffer, int bufferSize);
+
+//IMGUI variables
+
+//Master window
+bool g_ShowSceneEditor;
+bool g_ShowSceneManagement;
+bool g_ShowGameObject;
+
+//Gameobject properties
+WCHAR m_texNameBuffer[FILEPATH_BUFFER_SIZE] = DEFAULT_IMGUI_IMAGE;
+
 
 HINSTANCE g_hInstance;
 
@@ -100,7 +126,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	GraphicsManager::GetInstance()->Init(g_pd3dDevice);
 
-	GraphicsManager::GetInstance()->LoadTextureFromFile(L"Resources/Sprites/Brick.dds", g_pd3dDevice);
+	GraphicsManager::GetInstance()->LoadTextureFromFile(DEFAULT_IMGUI_IMAGE, g_pd3dDevice);
 
 	//Create camera
 	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, 0);
@@ -130,7 +156,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_ptestObject->SetMesh(QUAD_MESH_NAME);
 	g_ptestObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
 	g_ptestObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	g_ptestObject->SetAlbedo(L"Resources/Sprites/Brick.dds");
+	g_ptestObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 	g_ptestObject->GetTransform()->SetPosition(objectPos);
 	g_ptestObject->GetTransform()->SetScale(objectScale);
 	g_ptestObject->SetAnimation(L"TestAnim");
@@ -510,7 +536,7 @@ void Render()
 
 	g_ptestObject->Render(g_pImmediateContext, g_pperInstanceCB);
 
-	CreateIMGUIWindow();
+	CreateIMGUIWindows();
 
 	// Present our back buffer to our front buffer
 	g_pSwapChain->Present(0, 0);
@@ -537,11 +563,27 @@ void BindQuadBuffers()
 	g_pImmediateContext->IASetIndexBuffer(pmesh->GetIndexBuffer(), DXGI_FORMAT_R16_UINT, 0);
 }
 
+wstring StringToWString(const string& str)
+{
+	std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+
+	return converter.from_bytes(str);
+}
+
+string WStringToString(const wstring& str)
+{
+	std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+
+	return converter.to_bytes(str);
+}
+
 void InitIMGUI()
 {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
+	io.WantCaptureMouse = true;
+
 	(void)io;
 
 	ImGui::StyleColorsDark();
@@ -550,16 +592,28 @@ void InitIMGUI()
 	ImGui_ImplDX11_Init(g_pd3dDevice, g_pImmediateContext);
 }
 
-void CreateIMGUIWindow()
+void CreateIMGUIWindows()
 {
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
-	ImGui::Begin("Hello, world!");
-	ImGui::Text("This is some useful text.");
-	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-	ImGui::End();
+	DrawMasterWindow();
+
+	if (g_ShowSceneEditor)
+	{
+		DrawSceneGraphWindow();
+	}
+
+	if (g_ShowSceneManagement)
+	{
+		DrawSceneManagementWindow();
+	}
+
+	if (g_ShowGameObject)
+	{
+		DrawGameObjectPropertiesWindow();
+	}
 
 	ImGui::Render();
 
@@ -703,7 +757,25 @@ void DrawGameObjectPropertiesWindow()
 
 	char* texName = (char*)WStringToString(m_texNameBuffer).c_str();
 
-	ImGui::Image((void*)(intptr_t)GraphicsManager::GetInstance()->GetShaderResourceView(m_texNameBuffer), DEFAULT_IMGUI_IMAGE_SIZE);
+	if (ImGui::ImageButton((void*)(intptr_t)GraphicsManager::GetInstance()->GetShaderResourceView(m_texNameBuffer), DEFAULT_IMGUI_IMAGE_SIZE))
+	{
+		OpenFileExplorer(L"DDS files\0*.dds\0", m_texNameBuffer, _countof(m_texNameBuffer));
+
+		wstring relativePath = m_texNameBuffer;
+
+		int index = relativePath.find(L"Resources");
+
+		if (index == relativePath.npos)
+		{
+			LOG("The resource specified isn't stored in a resource folder!");
+		}
+
+		relativePath = wstring(m_texNameBuffer).substr(index);
+
+		relativePath.copy(m_texNameBuffer, relativePath.size());
+
+		m_texNameBuffer[relativePath.size()] = L'\0';
+	}
 
 	IMGUI_LEFT_LABEL(ImGui::InputText, "Texture Name", texName, _countof(m_texNameBuffer));
 	IMGUI_LEFT_LABEL(ImGui::InputText, "Animation Name", buf, IM_ARRAYSIZE(buf));
@@ -740,6 +812,7 @@ void OpenFileExplorer(const WCHAR* fileFilters, WCHAR* buffer, int bufferSize)
 	ofn.nMaxFile = bufferSize;
 	ofn.lpstrFilter = fileFilters;
 	ofn.nFilterIndex = 0;
+	ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
 
 	GetOpenFileName(&ofn);
 }
