@@ -51,6 +51,7 @@
     <ClInclude Include="Engine\Physics\ParticleManager.h" />
     <ClInclude Include="Engine\Physics\ParticleSystem.h" />
     <ClInclude Include="Engine\Physics\Vector2.h" />
+    <ClInclude Include="Engine\Scene\Scene.h" />
     <ClInclude Include="Engine\stdafx.h" />
     <ClInclude Include="Engine\Tools\EventManager.h" />
     <ClInclude Include="Engine\Tools\Events.h" />
@@ -72,6 +73,7 @@
     <ClCompile Include="Engine\Includes\IMGUI\imgui_tables.cpp" />
     <ClCompile Include="Engine\Includes\IMGUI\imgui_widgets.cpp" />
     <ClCompile Include="Engine\Main.cpp" />
+    <ClCompile Include="Engine\Scene\Scene.cpp" />
     <ClCompile Include="Engine\Tools\EventManager.cpp" />
     <ClCompile Include="Engine\Tools\Events.cpp" />
     <ClCompile Include="Engine\Tools\EventObserver.cpp" />

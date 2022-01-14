@@ -1,5 +1,8 @@
 #include "GameManager.h"
 
+#include "Engine/GameObjects/GameObject.h"
+#include "Engine/Scene/Scene.h"
+
 Timer* GameManager::GetTimer()
 {
     return &m_timer;
@@ -18,15 +21,15 @@ void GameManager::Update()
     unordered_map<string, GameObject*> gameObjects = m_pcurrentScene->GetAllGameObjects();
 }
 
-void GameManager::Render(RenderStruct& renderStruct)
-{
-    if (!m_pcurrentScene)
-    {
-        return;
-    }
-
-    m_pcurrentScene->Render(renderStruct);
-}
+//void GameManager::Render(RenderStruct& renderStruct)
+//{
+//    if (!m_pcurrentScene)
+//    {
+//        return;
+//    }
+//
+//    m_pcurrentScene->Render(renderStruct);
+//}
 
 void GameManager::ChangeScene(string sceneIdentifier)
 {

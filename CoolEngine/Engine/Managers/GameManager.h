@@ -1,10 +1,9 @@
 #pragma once
-#include "Engine/GameObjects/GameObject.h"
 #include "Engine/Helpers/Timer.h"
 #include "Engine/Structure/Singleton.h"
-#include "Engine/Scene/Scene.h"
 
 class GameObject;
+class Scene;
 
 enum class SceneDesc
 {
@@ -22,16 +21,13 @@ private:
 	Timer m_timer;
 
 public:
-
-	GameObject* GetGameObject(string name);
-
 	Timer* GetTimer();
 
 	unordered_map<string, Scene*> m_sceneMap;
 	Scene* m_pcurrentScene;
 
 	void Update();
-	void Render(RenderStruct& renderStruct);
+	//void Render(RenderStruct& renderStruct);
 
 	void CreateScene(string sceneIdentifier);
 	void ChangeScene(string sceneIdentifier);

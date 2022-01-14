@@ -1,12 +1,14 @@
 #pragma once
 #include "Engine/Managers/GraphicsManager.h"
-#include "Engine/GameObjects/GameObject.h"
+
+class GameObject;
+
 class Scene
 {
 private:
 	string m_sceneIdentifier;
 
-	GameObject* m_pcurrentlySeceltedGameObject = nullptr;
+	GameObject* m_pcurrentlySelectedGameObject = nullptr;
 
 	unordered_map<string, GameObject*> m_gameObjectMap;
 public:
@@ -14,7 +16,7 @@ public:
 	~Scene();
 
 	virtual void Update();
-	virtual void Render(RenderStruct& renderStruct);
+	//virtual void Render(RenderStruct& renderStruct);
 
 	unordered_map<string, GameObject*>& GetAllGameObjects();
 	GameObject* GetGameObjectUsingIdentifier(string& identifier);
