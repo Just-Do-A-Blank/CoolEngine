@@ -35,5 +35,8 @@ public:
 
 	void CreateGameObject(string identifier);
 	void DeleteGameObject(string identifier);
+
+	//Getters
+	unordered_map<string, Scene*> GetSceneList();
 };
 

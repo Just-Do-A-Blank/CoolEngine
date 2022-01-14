@@ -25,5 +25,8 @@ public:
 	void CreateGameObject(string& identifier);
 	void DeleteGameObjectUsingIdentifier(string& identifier);
 	void DeleteSelectedGameObject();
+
+	//Getters
+	string& GetSceneName();
 };
 

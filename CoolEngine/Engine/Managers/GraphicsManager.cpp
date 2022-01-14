@@ -146,7 +146,7 @@ bool GraphicsManager::LoadAnimationFromFile(wstring animName, ID3D11Device* pdev
 	}
 
 	//Get information txt file and parse in
-	ifstream file(L"Resources/Animations/" + animName + L"/" + animName + L".txt", std::ios::in);
+	ifstream file(L"Resources\\Animations\\" + animName + L"\\" + animName + L".txt", std::ios::in);
 
 	if (file.is_open() == false)
 	{
@@ -170,7 +170,7 @@ bool GraphicsManager::LoadAnimationFromFile(wstring animName, ID3D11Device* pdev
 	{
 		file >> pframes->at(i).m_frameTime;
 
-		frameName = L"Resources/Animations/" + animName + L"/" + animName + to_wstring(i) + L".dds";
+		frameName = L"Resources\\Animations\\" + animName + L"\\" + animName + to_wstring(i) + L".dds";
 
 		if (LoadTextureFromFile(frameName, pdevice, maxSize, alphaMode) == false)
 		{
