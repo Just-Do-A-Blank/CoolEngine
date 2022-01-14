@@ -2,6 +2,8 @@
 
 #include <io.h>
 #include <fcntl.h>
+#include <locale>
+#include <codecvt>
 
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/Graphics/Mesh.h"
@@ -15,6 +17,12 @@
 #include "Includes/IMGUI/imgui.h"
 #include "Includes/IMGUI/imgui_impl_win32.h"
 #include "Includes/IMGUI/imgui_impl_dx11.h"
+#include "Engine/Scene/Scene.h"
+
+#define IMGUI_LEFT_LABEL(func, label, ...) (ImGui::TextUnformatted(label), ImGui::SameLine(), func("##" label, __VA_ARGS__))
+#define FILEPATH_BUFFER_SIZE 200
+#define DEFAULT_IMGUI_IMAGE L"Resources/Sprites/Brick.dds"
+#define DEFAULT_IMGUI_IMAGE_SIZE ImVec2(256, 256)
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
@@ -89,7 +97,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	EventManager::Instance()->AddEvent(new Event(EventType::KeyPressed));
 	//EventManager::Instance()->AddEvent(new KeyPressedEvent(0x43))
-  
+
 	GraphicsManager::GetInstance()->Init(g_pd3dDevice);
 
 	GraphicsManager::GetInstance()->LoadTextureFromFile(L"Resources/Sprites/Brick.dds", g_pd3dDevice);
@@ -137,7 +145,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 			DispatchMessage(&msg);
 
 
-			EventManager::Instance()->ProcessEvents(); 
+			EventManager::Instance()->ProcessEvents();
 
 		}
 		else
@@ -202,7 +210,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
 
-	
+
 
 	return 0;
 }
@@ -558,9 +566,180 @@ void CreateIMGUIWindow()
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
 
+void DrawMasterWindow()
+{
+	ImGui::Begin("Master Window");
+	ImGui::Checkbox("Scene Graph Window", &g_ShowSceneEditor);
+	ImGui::Checkbox("Scene Management Window", &g_ShowSceneManagement);
+	ImGui::Checkbox("GameObject Properties Window", &g_ShowGameObject);
+	ImGui::End();
+}
+
+struct SelectableText
+{
+	int index;
+	string identifier;
+};
+
+
+GameManager* gameManager;
+int num = 1;
+Scene* selectedScene = nullptr;
+
+void DrawSceneGraphWindow()
+{
+	ImGui::Begin("Scene Graph", nullptr, ImGuiWindowFlags_MenuBar);
+
+	if (ImGui::BeginMenuBar())
+	{
+		if (ImGui::BeginMenu("Create"))
+		{
+			if (ImGui::MenuItem("GameObject"))
+			{
+
+			}
+
+			if (ImGui::MenuItem("ParticleSystem"))
+			{
+
+			}
+
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMenuBar();
+	}
+	ImGui::End();
+}
+
+void DrawSceneManagementWindow()
+{
+	if (!gameManager)
+	{
+		gameManager = new GameManager();
+	}
+
+
+	ImGui::Begin("Scene Manager", nullptr, ImGuiWindowFlags_MenuBar);
+	bool flag = false;
+	if (ImGui::TreeNode("SceneList"))
+	{
+		static int selected = -1;
+		auto sceneList = gameManager->GetSceneList();
+		int sceneCount = 0;
+		ImGui::Indent();
+		for (unordered_map<string, Scene*>::iterator it = sceneList.begin(); it != sceneList.end(); ++it)
+		{
+			string sceneName = it->first;
+			if (ImGui::Selectable(sceneName.c_str(), selected == sceneCount))
+			{
+				selectedScene = it->second;
+				selected = sceneCount;
+			}
+			++sceneCount;
+		}
+		ImGui::TreePop();
+		if (selectedScene)
+		{
+			LOG(selectedScene->GetSceneName());
+		}
+	}
+	if (ImGui::BeginMenuBar())
+	{
+		if (ImGui::BeginMenu("File"))
+		{
+			if (ImGui::MenuItem("Create Scene", "Ctrl+C"))
+			{
+				string name = "Test" + to_string(num);
+				gameManager->CreateScene(name);
+				++num;
+			}
+
+			if (ImGui::MenuItem("Save Scene", "Ctrl+S"))
+			{
+				/* Do stuff */
+			}
+
+			if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
+			{
+				OpenFileExplorer(L"DDS files\0*.dds\0", m_texNameBuffer, _countof(m_texNameBuffer));
+			}
+
+			if (ImGui::MenuItem("Delete Scene", "Ctrl+D"))
+			{
+
+			}
+
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMenuBar();
+	}
+
+	ImGui::End();
+}
+
+float pos[3] =
+{
+	10, 1, 0
+};
+
+void DrawGameObjectPropertiesWindow()
+{
+	ImGui::Begin("GameObject Properties");
+
+	ImGui::Separator();
+	ImGui::Spacing();
+
+	//IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Position", g_ptestObject->GetTransform()->GetPositionRef().);
+	IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Position", pos);
+	IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Rotation", pos);
+	IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Scale", pos);
+
+	ImGui::Spacing();
+	ImGui::Separator();
+	ImGui::Spacing();
+	char buf[100];
+
+	char* texName = (char*)WStringToString(m_texNameBuffer).c_str();
+
+	ImGui::Image((void*)(intptr_t)GraphicsManager::GetInstance()->GetShaderResourceView(m_texNameBuffer), DEFAULT_IMGUI_IMAGE_SIZE);
+
+	IMGUI_LEFT_LABEL(ImGui::InputText, "Texture Name", texName, _countof(m_texNameBuffer));
+	IMGUI_LEFT_LABEL(ImGui::InputText, "Animation Name", buf, IM_ARRAYSIZE(buf));
+
+	ImGui::Spacing();
+	ImGui::Separator();
+	ImGui::Spacing();
+
+	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Renderable", &g_ShowSceneEditor);
+	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Collidable", &g_ShowSceneEditor);
+	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Trigger", &g_ShowSceneEditor);
+
+	ImGui::End();
+}
+
 void ShutdownIMGUI()
 {
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
+}
+
+void OpenFileExplorer(const WCHAR* fileFilters, WCHAR* buffer, int bufferSize)
+{
+	OPENFILENAME ofn;
+
+	//Null terminate first index so no information from buffer is displayed
+	buffer[0] = '\0';
+
+	ZeroMemory(&ofn, sizeof(OPENFILENAME));
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = g_hWnd;
+	ofn.lpstrFile = buffer;
+	ofn.nMaxFile = bufferSize;
+	ofn.lpstrFilter = fileFilters;
+	ofn.nFilterIndex = 0;
+
+	GetOpenFileName(&ofn);
 }

@@ -69,3 +69,8 @@ void Scene::DeleteSelectedGameObject()
 		}
 	}
 }
+
+string& Scene::GetSceneName()
+{
+	return m_sceneIdentifier;
+}
