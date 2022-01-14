@@ -70,6 +70,9 @@
     <Filter Include="Engine\Scenes">
       <UniqueIdentifier>{1dd4e68e-7a12-4c4c-9e2b-6c5bfd8206be}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\EditorUI">
+      <UniqueIdentifier>{f37b6a14-892f-408c-b813-6cd328411a91}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -186,6 +189,9 @@
     <ClInclude Include="Engine\Scene\Scene.h">
       <Filter>Engine\Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\EditorUI\EditorUI.h">
+      <Filter>Engine\EditorUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -265,6 +271,9 @@
     </ClCompile>
     <ClCompile Include="Engine\Scene\Scene.cpp">
       <Filter>Engine\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\EditorUI\EditorUI.cpp">
+      <Filter>Engine\EditorUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

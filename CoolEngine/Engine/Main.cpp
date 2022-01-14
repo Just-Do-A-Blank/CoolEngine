@@ -2,9 +2,6 @@
 
 #include <io.h>
 #include <fcntl.h>
-#include <locale>
-#include <algorithm>
-#include <codecvt>
 
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/Graphics/Mesh.h"
@@ -15,20 +12,7 @@
 #include "Engine/Tools/EventManager.h"
 #include "Engine/Tools/EventObserver.h"
 
-#include "Includes/IMGUI/imgui.h"
-#include "Includes/IMGUI/imgui_impl_win32.h"
-#include "Includes/IMGUI/imgui_impl_dx11.h"
-#include "Engine/Scene/Scene.h"
-
-#define IMGUI_LEFT_LABEL(func, label, ...) (ImGui::TextUnformatted(label), ImGui::SameLine(), func("##" label, __VA_ARGS__))
-#define FILEPATH_BUFFER_SIZE 200
-#define DEFAULT_IMGUI_IMAGE L"Resources/Sprites/Brick.dds"
-#define DEFAULT_IMGUI_IMAGE_SIZE ImVec2(256, 256)
-
-#define IMGUI_LEFT_LABEL(func, label, ...) (ImGui::TextUnformatted(label), ImGui::SameLine(), func("##" label, __VA_ARGS__))
-#define FILEPATH_BUFFER_SIZE 200
-#define DEFAULT_IMGUI_IMAGE L"Resources\\Sprites\\Brick.dds"
-#define DEFAULT_IMGUI_IMAGE_SIZE ImVec2(256, 256)
+#include "Engine/EditorUI/EditorUI.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
@@ -39,29 +23,6 @@ void Render();
 void Update();
 
 void BindQuadBuffers();
-
-wstring StringToWString(const string& str);
-string WStringToString(const wstring& str);
-
-void InitIMGUI();
-void CreateIMGUIWindows();
-void DrawMasterWindow();
-void DrawSceneGraphWindow();
-void DrawSceneManagementWindow();
-void DrawGameObjectPropertiesWindow();
-void ShutdownIMGUI();
-
-void OpenFileExplorer(const WCHAR* fileFilters, WCHAR* buffer, int bufferSize);
-
-//IMGUI variables
-
-//Master window
-bool g_ShowSceneEditor;
-bool g_ShowSceneManagement;
-bool g_ShowGameObject;
-
-//Gameobject properties
-WCHAR m_texNameBuffer[FILEPATH_BUFFER_SIZE] = DEFAULT_IMGUI_IMAGE;
 
 
 HINSTANCE g_hInstance;
@@ -84,6 +45,8 @@ GameObject* g_ptestObject;
 
 ConstantBuffer<PerFrameCB>* g_pperFrameCB;
 ConstantBuffer<PerInstanceCB>* g_pperInstanceCB;
+
+EditorUI* g_peditorUI;
 
 int g_Width = 1920;
 int g_Height = 1080;
@@ -114,7 +77,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		return 0;
 	}
 
-	InitIMGUI();
+	g_peditorUI = new EditorUI();
+	g_peditorUI->InitIMGUI(g_pImmediateContext, g_pd3dDevice, &g_hWnd);
 
 
 	ExampleObserver observer(new int(10));
@@ -181,7 +145,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		}
 	}
 
-	ShutdownIMGUI();
+	g_peditorUI->ShutdownIMGUI();
 
 	CleanupDevice();
 
@@ -536,7 +500,7 @@ void Render()
 
 	g_ptestObject->Render(g_pImmediateContext, g_pperInstanceCB);
 
-	CreateIMGUIWindows();
+	g_peditorUI->DrawEditorUI();
 
 	// Present our back buffer to our front buffer
 	g_pSwapChain->Present(0, 0);
@@ -561,258 +525,4 @@ void BindQuadBuffers()
 
 	g_pImmediateContext->IASetVertexBuffers(0, 1, &pvertexBuffer, &stride, &offset);
 	g_pImmediateContext->IASetIndexBuffer(pmesh->GetIndexBuffer(), DXGI_FORMAT_R16_UINT, 0);
-}
-
-wstring StringToWString(const string& str)
-{
-	std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
-
-	return converter.from_bytes(str);
-}
-
-string WStringToString(const wstring& str)
-{
-	std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
-
-	return converter.to_bytes(str);
-}
-
-void InitIMGUI()
-{
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO();
-	io.WantCaptureMouse = true;
-
-	(void)io;
-
-	ImGui::StyleColorsDark();
-
-	ImGui_ImplWin32_Init(g_hWnd);
-	ImGui_ImplDX11_Init(g_pd3dDevice, g_pImmediateContext);
-}
-
-void CreateIMGUIWindows()
-{
-	ImGui_ImplDX11_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
-
-	DrawMasterWindow();
-
-	if (g_ShowSceneEditor)
-	{
-		DrawSceneGraphWindow();
-	}
-
-	if (g_ShowSceneManagement)
-	{
-		DrawSceneManagementWindow();
-	}
-
-	if (g_ShowGameObject)
-	{
-		DrawGameObjectPropertiesWindow();
-	}
-
-	ImGui::Render();
-
-	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-}
-
-void DrawMasterWindow()
-{
-	ImGui::Begin("Master Window");
-	ImGui::Checkbox("Scene Graph Window", &g_ShowSceneEditor);
-	ImGui::Checkbox("Scene Management Window", &g_ShowSceneManagement);
-	ImGui::Checkbox("GameObject Properties Window", &g_ShowGameObject);
-	ImGui::End();
-}
-
-struct SelectableText
-{
-	int index;
-	string identifier;
-};
-
-
-GameManager* gameManager;
-int num = 1;
-Scene* selectedScene = nullptr;
-
-void DrawSceneGraphWindow()
-{
-	ImGui::Begin("Scene Graph", nullptr, ImGuiWindowFlags_MenuBar);
-
-	if (ImGui::BeginMenuBar())
-	{
-		if (ImGui::BeginMenu("Create"))
-		{
-			if (ImGui::MenuItem("GameObject"))
-			{
-
-			}
-
-			if (ImGui::MenuItem("ParticleSystem"))
-			{
-
-			}
-
-			ImGui::EndMenu();
-		}
-
-		ImGui::EndMenuBar();
-	}
-	ImGui::End();
-}
-
-void DrawSceneManagementWindow()
-{
-	if (!gameManager)
-	{
-		gameManager = new GameManager();
-	}
-
-
-	ImGui::Begin("Scene Manager", nullptr, ImGuiWindowFlags_MenuBar);
-	bool flag = false;
-	if (ImGui::TreeNode("SceneList"))
-	{
-		static int selected = -1;
-		auto sceneList = gameManager->GetSceneList();
-		int sceneCount = 0;
-		ImGui::Indent();
-		for (unordered_map<string, Scene*>::iterator it = sceneList.begin(); it != sceneList.end(); ++it)
-		{
-			string sceneName = it->first;
-			if (ImGui::Selectable(sceneName.c_str(), selected == sceneCount))
-			{
-				selectedScene = it->second;
-				selected = sceneCount;
-			}
-			++sceneCount;
-		}
-		ImGui::TreePop();
-		if (selectedScene)
-		{
-			LOG(selectedScene->GetSceneName());
-		}
-	}
-	if (ImGui::BeginMenuBar())
-	{
-		if (ImGui::BeginMenu("File"))
-		{
-			if (ImGui::MenuItem("Create Scene", "Ctrl+C"))
-			{
-				string name = "Test" + to_string(num);
-				gameManager->CreateScene(name);
-				++num;
-			}
-
-			if (ImGui::MenuItem("Save Scene", "Ctrl+S"))
-			{
-				/* Do stuff */
-			}
-
-			if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
-			{
-				OpenFileExplorer(L"DDS files\0*.dds\0", m_texNameBuffer, _countof(m_texNameBuffer));
-			}
-
-			if (ImGui::MenuItem("Delete Scene", "Ctrl+D"))
-			{
-
-			}
-
-			ImGui::EndMenu();
-		}
-
-		ImGui::EndMenuBar();
-	}
-
-	ImGui::End();
-}
-
-float pos[3] =
-{
-	10, 1, 0
-};
-
-void DrawGameObjectPropertiesWindow()
-{
-	ImGui::Begin("GameObject Properties");
-
-	ImGui::Separator();
-	ImGui::Spacing();
-
-	//IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Position", g_ptestObject->GetTransform()->GetPositionRef().);
-	IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Position", pos);
-	IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Rotation", pos);
-	IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Scale", pos);
-
-	ImGui::Spacing();
-	ImGui::Separator();
-	ImGui::Spacing();
-	char buf[100];
-
-	char* texName = (char*)WStringToString(m_texNameBuffer).c_str();
-
-	if (ImGui::ImageButton((void*)(intptr_t)GraphicsManager::GetInstance()->GetShaderResourceView(m_texNameBuffer), DEFAULT_IMGUI_IMAGE_SIZE))
-	{
-		OpenFileExplorer(L"DDS files\0*.dds\0", m_texNameBuffer, _countof(m_texNameBuffer));
-
-		wstring relativePath = m_texNameBuffer;
-
-		int index = relativePath.find(L"Resources");
-
-		if (index == relativePath.npos)
-		{
-			LOG("The resource specified isn't stored in a resource folder!");
-		}
-
-		relativePath = wstring(m_texNameBuffer).substr(index);
-
-		relativePath.copy(m_texNameBuffer, relativePath.size());
-
-		m_texNameBuffer[relativePath.size()] = L'\0';
-	}
-
-	IMGUI_LEFT_LABEL(ImGui::InputText, "Texture Name", texName, _countof(m_texNameBuffer));
-	IMGUI_LEFT_LABEL(ImGui::InputText, "Animation Name", buf, IM_ARRAYSIZE(buf));
-
-	ImGui::Spacing();
-	ImGui::Separator();
-	ImGui::Spacing();
-
-	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Renderable", &g_ShowSceneEditor);
-	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Collidable", &g_ShowSceneEditor);
-	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Trigger", &g_ShowSceneEditor);
-
-	ImGui::End();
-}
-
-void ShutdownIMGUI()
-{
-	ImGui_ImplDX11_Shutdown();
-	ImGui_ImplWin32_Shutdown();
-	ImGui::DestroyContext();
-}
-
-void OpenFileExplorer(const WCHAR* fileFilters, WCHAR* buffer, int bufferSize)
-{
-	OPENFILENAME ofn;
-
-	//Null terminate first index so no information from buffer is displayed
-	buffer[0] = '\0';
-
-	ZeroMemory(&ofn, sizeof(OPENFILENAME));
-	ofn.lStructSize = sizeof(OPENFILENAME);
-	ofn.hwndOwner = g_hWnd;
-	ofn.lpstrFile = buffer;
-	ofn.nMaxFile = bufferSize;
-	ofn.lpstrFilter = fileFilters;
-	ofn.nFilterIndex = 0;
-	ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
-
-	GetOpenFileName(&ofn);
 }
