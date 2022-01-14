@@ -1,16 +1,19 @@
 #pragma once
 #include "Engine/Managers/GraphicsManager.h"
 
+class SceneGraph;
 class GameObject;
+class TreeNode;
 
 class Scene
 {
 private:
 	string m_sceneIdentifier;
+	SceneGraph* m_psceneGraph;
 
 	GameObject* m_pcurrentlySelectedGameObject = nullptr;
-
 	unordered_map<string, GameObject*> m_gameObjectMap;
+	
 public:
 	Scene(string identifier);
 	~Scene();
@@ -22,7 +25,9 @@ public:
 	GameObject* GetGameObjectUsingIdentifier(string& identifier);
 	void SelectGameObjectUsingIdentifier(string& identifier);
 
-	void CreateGameObject(string& identifier);
+	GameObject* CreateGameObject(string identifier, GameObject* pparentObject = nullptr);
+	TreeNode* GetRootTreeNode();
+	TreeNode* GetTreeNode(GameObject* pgameObject);
 	void DeleteGameObjectUsingIdentifier(string& identifier);
 	void DeleteSelectedGameObject();
 

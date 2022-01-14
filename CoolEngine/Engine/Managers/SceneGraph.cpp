@@ -71,7 +71,7 @@ TreeNode* SceneGraph::TraverseTree(TreeNode* currentNode)
 
 	while (currentNode)
 	{
-		cout << currentNode->GameObject->GetIdentifier() << endl;
+		LOG(currentNode->GameObject->GetIdentifier());
 
 		if (currentNode->Child)
 		{

@@ -48,15 +48,15 @@ void GameManager::DeleteScene(string sceneIdentifier)
     m_sceneMap.erase(sceneIdentifier);
 }
 
-void GameManager::CreateGameObject(string identifier)
-{
-    m_pcurrentScene->CreateGameObject(identifier);
-}
-
-void GameManager::DeleteGameObject(string identifier)
-{
-    m_pcurrentScene->DeleteGameObjectUsingIdentifier(identifier);
-}
+//void GameManager::CreateGameObject(string identifier)
+//{
+//    m_pcurrentScene->CreateGameObject(identifier);
+//}
+//
+//void GameManager::DeleteGameObject(string identifier)
+//{
+//    m_pcurrentScene->DeleteGameObjectUsingIdentifier(identifier);
+//}
 
 unordered_map<string, Scene*> GameManager::GetSceneList()
 {

@@ -1,5 +1,6 @@
 #include "EditorUI.h"
 #include "Engine/Managers/GameManager.h"
+#include "Engine/Managers/SceneGraph.h"
 
 void EditorUI::InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, HWND* phwnd)
 {
@@ -57,7 +58,41 @@ void EditorUI::DrawMasterWindow()
 
 void EditorUI::DrawSceneGraphWindow()
 {
+	if (!m_pselectedScene)
+	{
+		return;
+	}
 	ImGui::Begin("Scene Graph", nullptr, ImGuiWindowFlags_MenuBar);
+
+	GameManager* pgameManager = GameManager::GetInstance();
+	static int selected = -1;
+	
+		TreeNode* prootNode = m_pselectedScene->GetRootTreeNode();
+	int gameObjectCount = 0;
+
+	//TreeNode* currentNode = prootNode;
+
+	TraverseTree(prootNode);
+
+	//while (currentNode)
+	//{
+	//	string gameObjectName = currentNode->GameObject->GetIdentifier();
+	//	if (ImGui::Selectable(gameObjectName.c_str(), selected == gameObjectCount))
+	//	{
+	//		if (selected != gameObjectCount)
+	//		{
+	//			m_pselectedGameObject = currentNode->GameObject;
+	//			selected = gameObjectCount;
+	//		}
+	//		else
+	//		{
+	//			m_pselectedGameObject = nullptr;
+	//			selected = -1;
+	//		}
+	//	}
+
+	//	//if(curre)
+	//}
 
 	if (ImGui::BeginMenuBar())
 	{
@@ -65,7 +100,15 @@ void EditorUI::DrawSceneGraphWindow()
 		{
 			if (ImGui::MenuItem("GameObject"))
 			{
-
+				if (!m_rootGameObject)
+				{
+					//CreateRootGameObject
+					m_rootGameObject = m_pselectedScene->CreateGameObject("Test");
+				}
+				else// if(m_pselectedGameObject != m_rootGameObject)
+				{
+					m_rootGameObject = m_pselectedScene->CreateGameObject("Test", m_rootGameObject);
+				}
 			}
 
 			if (ImGui::MenuItem("ParticleSystem"))
@@ -81,43 +124,71 @@ void EditorUI::DrawSceneGraphWindow()
 	ImGui::End();
 }
 
+void EditorUI::TraverseTree(TreeNode* pcurrentNode)
+{
+	if (!pcurrentNode)
+	{
+		return;
+	}
+
+	ImGui::TreeNode(pcurrentNode->GameObject->GetIdentifier().c_str());
+
+	if (pcurrentNode->Child)
+	{
+		TraverseTree(pcurrentNode->Child);
+	}
+
+	ImGui::TreePop();
+
+	if (pcurrentNode->Sibling)
+	{
+		TraverseTree(pcurrentNode->Sibling);
+	}
+}
+
 void EditorUI::DrawSceneManagementWindow()
 {
 	GameManager* pgameManager = GameManager::GetInstance();
 
 	ImGui::Begin("Scene Manager", nullptr, ImGuiWindowFlags_MenuBar);
 	bool flag = false;
-	if (ImGui::TreeNode("SceneList"))
+	//if (ImGui::TreeNode("SceneList"))
+	//{
+	static int selected = -1;
+	unordered_map<string, Scene*> sceneList = pgameManager->GetSceneList();
+	int sceneCount = 0;
+	for (unordered_map<string, Scene*>::iterator it = sceneList.begin(); it != sceneList.end(); ++it)
 	{
-		static int selected = -1;
-		unordered_map<string, Scene*> sceneList = pgameManager->GetSceneList();
-		int sceneCount = 0;
-		ImGui::Indent();
-		for (unordered_map<string, Scene*>::iterator it = sceneList.begin(); it != sceneList.end(); ++it)
+		string sceneName = it->first;
+		if (ImGui::Selectable(sceneName.c_str(), selected == sceneCount))
 		{
-			string sceneName = it->first;
-			if (ImGui::Selectable(sceneName.c_str(), selected == sceneCount))
+			if (selected != sceneCount)
 			{
-				selectedScene = it->second;
 				selected = sceneCount;
+				m_pselectedScene = it->second;
 			}
-			++sceneCount;
+
+			else
+			{
+				selected = -1;
+				m_pselectedScene = nullptr;
+			}
 		}
-		ImGui::TreePop();
-		if (selectedScene)
-		{
-			LOG(selectedScene->GetSceneName());
-		}
+		++sceneCount;
 	}
+	//ImGui::TreePop();
+	if (m_pselectedScene)
+	{
+		LOG(m_pselectedScene->GetSceneName());
+	}
+	//}
 	if (ImGui::BeginMenuBar())
 	{
 		if (ImGui::BeginMenu("File"))
 		{
 			if (ImGui::MenuItem("Create Scene", "Ctrl+C"))
 			{
-				string name = "Test" + to_string(num);
-				pgameManager->CreateScene(name);
-				++num;
+				m_createSceneClicked = true;
 			}
 
 			if (ImGui::MenuItem("Save Scene", "Ctrl+S"))
@@ -142,6 +213,26 @@ void EditorUI::DrawSceneManagementWindow()
 	}
 
 	ImGui::End();
+
+	if (m_createSceneClicked)
+	{
+		ImGui::Begin("New Scene");
+		static char sceneName[64] = "";
+		IMGUI_LEFT_LABEL(ImGui::InputText, "Scene Name", sceneName, 64);
+
+		int clicked = 0;
+		if (ImGui::Button("Create"))
+		{
+			clicked++;
+		}
+		if (clicked & 1)
+		{
+			pgameManager->CreateScene(sceneName);
+			m_createSceneClicked = false;
+			sceneName[0] = {};
+		}
+		ImGui::End();
+	}
 }
 
 float pos[3] =

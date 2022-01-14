@@ -1,10 +1,12 @@
 #include "Scene.h"
 
 #include "Engine/GameObjects/GameObject.h"
+#include "Engine/Managers/SceneGraph.h"
 
 Scene::Scene(string identifier)
 {
 	m_sceneIdentifier = identifier;
+	m_psceneGraph = new SceneGraph();
 }
 
 Scene::~Scene()
@@ -46,11 +48,32 @@ void Scene::SelectGameObjectUsingIdentifier(string& identifier)
 	m_pcurrentlySelectedGameObject = it->second;
 }
 
-void Scene::CreateGameObject(string& identifier)
+GameObject* Scene::CreateGameObject(string identifier, GameObject* pparentObject)
 {
 	GameObject* gameObject = new GameObject(identifier);
 
+	if (pparentObject)
+	{
+		m_psceneGraph->AddChild(m_psceneGraph->GetNodeUsingIdentifier(pparentObject->GetIdentifier()), gameObject);
+	}
+	else
+	{
+		m_psceneGraph->NewNode(gameObject);
+	}
+
 	m_gameObjectMap.insert(pair<string, GameObject*>(identifier, gameObject));
+
+	return gameObject;
+}
+
+TreeNode* Scene::GetRootTreeNode()
+{
+	return m_psceneGraph->GetRootNode();
+}
+
+TreeNode* Scene::GetTreeNode(GameObject* pgameObject)
+{
+	return m_psceneGraph->GetNodeUsingIdentifier(pgameObject->GetIdentifier());
 }
 
 void Scene::DeleteGameObjectUsingIdentifier(string& identifier)

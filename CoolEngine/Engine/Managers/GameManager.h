@@ -33,8 +33,8 @@ public:
 	void ChangeScene(string sceneIdentifier);
 	void DeleteScene(string sceneIdentifier);
 
-	void CreateGameObject(string identifier);
-	void DeleteGameObject(string identifier);
+	//void CreateGameObject(string identifier);
+	//void DeleteGameObject(string identifier);
 
 	//Getters
 	unordered_map<string, Scene*> GetSceneList();

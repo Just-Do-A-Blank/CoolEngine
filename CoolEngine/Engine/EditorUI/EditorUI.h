@@ -17,11 +17,18 @@ struct SelectableText
 	string identifier;
 };
 
+enum class SceneManagementState
+{
+	SCENE_WINDOW,
+	CREATE_SCENE_WINDOW
+};
+
 
 class EditorUI
 {
 private:
 	HWND* m_phwnd;
+	bool m_createSceneClicked = false;
 
 	//Master window
 	bool g_ShowSceneEditor;
@@ -29,7 +36,9 @@ private:
 	bool g_ShowGameObject;
 
 	int num = 1;
-	Scene* selectedScene = nullptr;
+	Scene* m_pselectedScene = nullptr;
+	GameObject* m_pselectedGameObject = nullptr;
+	GameObject* m_rootGameObject = nullptr;
 
 	//Gameobject properties
 	WCHAR m_texNameBuffer[FILEPATH_BUFFER_SIZE] = DEFAULT_IMGUI_IMAGE;
@@ -40,6 +49,7 @@ private:
 	void DrawSceneGraphWindow();
 	void DrawSceneManagementWindow();
 	void DrawGameObjectPropertiesWindow();
+	void TraverseTree(TreeNode* pcurrentNode);
 public:
 	void InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, HWND* hwnd);
 	void ShutdownIMGUI();
