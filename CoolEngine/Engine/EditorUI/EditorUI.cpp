@@ -177,24 +177,36 @@ void EditorUI::DrawGameObjectPropertiesWindow()
 
 	if (ImGui::ImageButton((void*)(intptr_t)GraphicsManager::GetInstance()->GetShaderResourceView(m_texNameBuffer), DEFAULT_IMGUI_IMAGE_SIZE))
 	{
+		WCHAR tempNameBuffer[FILEPATH_BUFFER_SIZE];
+		
+		memcpy(&tempNameBuffer, &m_texNameBuffer, FILEPATH_BUFFER_SIZE);
+
 		OpenFileExplorer(L"DDS files\0*.dds\0", m_texNameBuffer, _countof(m_texNameBuffer));
 
 		wstring relativePath = m_texNameBuffer;
 
-		int index = relativePath.find(L"Resources");
-
-		if (index == relativePath.npos)
+		if (relativePath == L"")
 		{
-			LOG("The resource specified isn't stored in a resource folder!");
+			memcpy(&m_texNameBuffer, &tempNameBuffer, FILEPATH_BUFFER_SIZE);
+		}
+		else
+		{
+			int index = relativePath.find(L"Resources");
 
-			return;
+			if (index == -1)
+			{
+				LOG("The resource specified isn't stored in a resource folder!");
+			}
+			else
+			{
+				relativePath = wstring(m_texNameBuffer).substr(index);
+
+				relativePath.copy(m_texNameBuffer, relativePath.size());
+
+				m_texNameBuffer[relativePath.size()] = L'\0';
+			}
 		}
 
-		relativePath = wstring(m_texNameBuffer).substr(index);
-
-		relativePath.copy(m_texNameBuffer, relativePath.size());
-
-		m_texNameBuffer[relativePath.size()] = L'\0';
 	}
 
 	ImGui::Spacing();
@@ -202,7 +214,18 @@ void EditorUI::DrawGameObjectPropertiesWindow()
 
 	if (ImGui::ImageButton((void*)(intptr_t)m_animation.GetCurrentFrame(), DEFAULT_IMGUI_IMAGE_SIZE))
 	{
+		WCHAR tempNameBuffer[FILEPATH_BUFFER_SIZE];
+
+		memcpy(&tempNameBuffer, &m_animNameBuffer, FILEPATH_BUFFER_SIZE);
+
 		OpenFolderExplorer(m_animNameBuffer, _countof(m_animNameBuffer));
+
+		wstring relativePath = m_animNameBuffer;
+
+		if (relativePath == L"")
+		{
+			memcpy(&m_animNameBuffer, &tempNameBuffer, FILEPATH_BUFFER_SIZE);
+		}
 	}
 
 	ImGui::Spacing();
