@@ -1,6 +1,8 @@
 #include "EditorUI.h"
 #include "Engine/Managers/GameManager.h"
 
+#include <ShlObj_core.h>
+
 void EditorUI::InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, HWND* phwnd)
 {
 	IMGUI_CHECKVERSION();
@@ -16,6 +18,8 @@ void EditorUI::InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, H
 
 	ImGui_ImplWin32_Init(*m_phwnd);
 	ImGui_ImplDX11_Init(pdevice, pcontext);
+
+	m_animation = GraphicsManager::GetInstance()->GetAnimation(DEFAULT_IMGUI_ANIMATION);
 }
 
 void EditorUI::DrawEditorUI()
@@ -44,6 +48,11 @@ void EditorUI::DrawEditorUI()
 	ImGui::Render();
 
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+}
+
+void EditorUI::Update()
+{
+	m_animation.Update();
 }
 
 void EditorUI::DrawMasterWindow()
@@ -156,7 +165,6 @@ void EditorUI::DrawGameObjectPropertiesWindow()
 	ImGui::Separator();
 	ImGui::Spacing();
 
-	//IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Position", g_ptestObject->GetTransform()->GetPositionRef().);
 	IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Position", pos);
 	IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Rotation", pos);
 	IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Scale", pos);
@@ -177,6 +185,8 @@ void EditorUI::DrawGameObjectPropertiesWindow()
 		if (index == relativePath.npos)
 		{
 			LOG("The resource specified isn't stored in a resource folder!");
+
+			return;
 		}
 
 		relativePath = wstring(m_texNameBuffer).substr(index);
@@ -184,6 +194,11 @@ void EditorUI::DrawGameObjectPropertiesWindow()
 		relativePath.copy(m_texNameBuffer, relativePath.size());
 
 		m_texNameBuffer[relativePath.size()] = L'\0';
+	}
+
+	if (ImGui::ImageButton((void*)(intptr_t)m_animation.GetCurrentFrame(), DEFAULT_IMGUI_IMAGE_SIZE))
+	{
+		OpenFolderExplorer(m_animNameBuffer, _countof(m_animNameBuffer));
 	}
 
 	IMGUI_LEFT_LABEL(ImGui::InputText, "Animation Name", buf, IM_ARRAYSIZE(buf));
@@ -223,4 +238,22 @@ void EditorUI::OpenFileExplorer(const WCHAR* fileFilters, WCHAR* buffer, int buf
 	ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
 
 	GetOpenFileName(&ofn);
+}
+
+void EditorUI::OpenFolderExplorer(WCHAR* buffer, int bufferSize)
+{
+	buffer[0] = '\0';
+
+	BROWSEINFOW browserInfo;
+	ZeroMemory(&browserInfo, sizeof(BROWSEINFOW));
+	browserInfo.hwndOwner = *m_phwnd;
+	browserInfo.pidlRoot = NULL;
+	browserInfo.pszDisplayName = buffer;
+	browserInfo.lpszTitle = L"Choose animation file";
+	browserInfo.ulFlags = BIF_EDITBOX;
+	browserInfo.lpfn = NULL;
+	browserInfo.lParam = NULL;
+	browserInfo.iImage = 0;
+
+	SHBrowseForFolder(&browserInfo);
 }

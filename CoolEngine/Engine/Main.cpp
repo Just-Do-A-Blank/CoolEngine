@@ -77,6 +77,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		return 0;
 	}
 
+	GraphicsManager::GetInstance()->LoadAnimationFromFile(L"TestAnim", g_pd3dDevice);
+
 	g_peditorUI = new EditorUI();
 	g_peditorUI->InitIMGUI(g_pImmediateContext, g_pd3dDevice, &g_hWnd);
 
@@ -111,8 +113,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_pperInstanceCB = new ConstantBuffer<PerInstanceCB>(g_pd3dDevice);
 
 	//Create test gameobject
-	GraphicsManager::GetInstance()->LoadAnimationFromFile(L"TestAnim", g_pd3dDevice);
-
 	XMFLOAT3 objectPos = XMFLOAT3(0, 0.0f, 5.0f);
 	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
 
@@ -509,6 +509,8 @@ void Render()
 void Update()
 {
 	GameManager::GetInstance()->GetTimer()->Tick();
+
+	g_peditorUI->Update();
 
 	g_ptestObject->Update();
 }
