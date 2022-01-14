@@ -123,7 +123,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_ptestObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 	g_ptestObject->GetTransform()->SetPosition(objectPos);
 	g_ptestObject->GetTransform()->SetScale(objectScale);
-	g_ptestObject->SetAnimation(L"TestAnim");
+	g_ptestObject->AddAnimation("Idle", L"TestAnim");
+
+	g_ptestObject->PlayAnimation("Idle");
 
 	// Main message loop
 	MSG msg = { 0 };
