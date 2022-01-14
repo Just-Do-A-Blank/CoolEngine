@@ -2,6 +2,7 @@
 
 #include "json.hpp"
 #include "Engine/Managers/GameManager.h"
+#include "Engine/Managers/GraphicsManager.h"
 #include <fstream>
 #include <iostream>
 #include <windows.h>
@@ -35,6 +36,18 @@ enum JSON_VARIABLE_TYPE
 	JSON_VARIABLE_TYPE_XMFLOAT4
 };
 
+enum ENGINE_TYPE
+{
+	ENGINE_TYPE_GAME_OBJECT
+};
+
+class LoadedObjectContainer
+{
+public:
+	ENGINE_TYPE m_ObjectType;
+private:
+	void* m_Data;
+};
 /// <summary>
 /// A struct that contains data related to a game object
 /// </summary>
@@ -115,14 +128,38 @@ public:
 	/// <param name="fileAddress"></param>
 	/// <param name="manager"></param>
 	/// <returns></returns>
-	static GameObjectData LoadGameObject(const char* fileAddress);
+	static GameObject LoadGameObject(const char* fileAddress);
+
+	/// <summary>
+	/// Loads a Game Object from a JSON file. This function also calls the load texture function
+	/// </summary>
+	/// <param name="fileAddress"></param>
+	/// <param name="manager"></param>
+	/// <returns></returns>
+	static GameObject LoadGameObject(const char* fileAddress, ID3D11Device* device);
 
 	/// <summary>
 	/// Loads multiple game objects from a singular JSON file
 	/// </summary>
 	/// <param name="fileAddress"></param>
-	/// <returns>std::vector<GameObjectData></returns>
-	static std::vector<GameObjectData> LoadMultipleGameObjects(const char* fileAddress);
+	/// <returns>std::vector<GameObject></returns>
+	static std::vector<GameObject> LoadMultipleGameObjects(const char* fileAddress);
+
+	/// <summary>
+	/// Loads multiple game objects from a singular JSON file
+	/// </summary>
+	/// <param name="fileAddress"></param>
+	/// <returns>std::vector<GameObject></returns>
+	static std::vector<GameObject> LoadMultipleGameObjects(json file);
+
+	static std::vector<GameObject> LoadMultipleTiles(json file);
+
+	static std::vector<GameObject> LoadMap(json file, std::vector<GameObject> tiles);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	static std::vector<std::vector<GameObject>>  LoadScene(const char* fileAddress);
 
 	/// <summary>
 	/// Loads the map from a JSON file. Needs a file address to do so. Code in this function is temorary until the structure of the object that needs loading is made clear

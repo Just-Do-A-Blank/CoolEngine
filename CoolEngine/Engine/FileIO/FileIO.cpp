@@ -62,52 +62,210 @@ t FileIO::LoadTextFile(const char* fileAddress)
 	}
 }
 
-std::vector<GameObjectData> FileIO::LoadMultipleGameObjects(const char* fileAddress)
+std::vector<GameObject> FileIO::LoadMultipleGameObjects(const char* fileAddress)
 {
 	json m_json = LoadJson(fileAddress);
 	json data = m_json["ObjectData"];
 	json metaData = m_json["MetaData"];
 
-	std::vector<GameObjectData> objects(metaData.at(0)["NumberOfObject"]);
+	std::vector<GameObject> objects((int)metaData.at(0)["NumberOfObject"]);
 
 	for (size_t i = 0; i < metaData.at(0)["NumberOfObject"]; i++)
 	{
-		//GameObject gameObject(data.at(i)["Name"]);
-		objects[i].m_Name = data.at(i)["Name"];
-		objects[i].m_Position = XMFLOAT3(data.at(i)["Position"][0], data.at(i)["Position"][1], data.at(i)["Position"][2]);
-		objects[i].m_Rotation = XMFLOAT3(data.at(i)["Rotation"][0], data.at(i)["Rotation"][1], data.at(i)["Rotation"][2]);
-		objects[i].m_Scale = XMFLOAT3(data.at(i)["Scale"][0], data.at(i)["Scale"][1], data.at(i)["Scale"][2]);
+		objects[i] = GameObject((std::string)data.at(i)["Name"]);
+		objects[i].GetTransform()->SetPosition(XMFLOAT3(data.at(i)["Position"][0], data.at(i)["Position"][1], data.at(i)["Position"][2]));
+		objects[i].GetTransform()->SetRotation(XMFLOAT3(data.at(i)["Rotation"][0], data.at(i)["Rotation"][1], data.at(i)["Rotation"][2]));
+		objects[i].GetTransform()->SetScale(XMFLOAT3(data.at(i)["Scale"][0], data.at(i)["Scale"][1], data.at(i)["Scale"][2]));
 
-		if (data.at(0)["IsRenderable"])
+		objects[i].SetMesh(QUAD_MESH_NAME);
+		objects[i].SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+		objects[i].SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+		objects[i].SetAlbedo(L"Resources/Sprites/Brick.dds");
+
+		bool renderable = false;
+		bool trigger = false;
+		bool collideable = false;
+
+		if (data.at(i)["IsRenderable"])
 		{
-			
-			objects[i].m_IsRenderable = true;
+			renderable = true;
+			objects[i].SetIsRenderable(renderable);
 		}
 		else
 		{
-			objects[i].m_TextureLocation = data.at(i)["TextureLocation"];
-			objects[i].m_IsRenderable = false;
+			objects[i].SetIsRenderable(renderable);
 		}
-		if (data.at(0)["IsTrigger"])
+		if (data.at(i)["IsTrigger"])
 		{
-			objects[i].m_IsTrigger = true;
-			objects[i].m_ColliderType = ColliderType(data.at(i)["ColliderType"]);
-		}
-		else
-		{
-			objects[i].m_IsTrigger = false;
-		}
-		if (data.at(0)["IsCollideable"])
-		{
-			objects[i].m_IsCollidable = true;
-			objects[i].m_ColliderType = ColliderType(data.at(i)["ColliderType"]);
+			trigger = true;
+			objects[i].SetIsTrigger(trigger);
 		}
 		else
 		{
-			objects[i].m_IsCollidable = false;
+			objects[i].SetIsTrigger(trigger);
+		}
+		if (data.at(i)["IsCollideable"])
+		{
+			collideable = true;
+			objects[i].SetIsCollidable(collideable);
+		}
+		else
+		{
+			objects[i].SetIsTrigger(collideable);
 		}
 	}
 	return objects;
+}
+
+std::vector<GameObject> FileIO::LoadMultipleGameObjects(json file)
+{
+	json data = file["ObjectData"];
+	json metaData = file["MetaData"];
+
+	std::vector<GameObject> objects((int)metaData.at(0)["NumberOfObject"]);
+
+	for (size_t i = 0; i < metaData.at(0)["NumberOfObject"]; i++)
+	{
+		objects[i] = GameObject((std::string)data.at(i)["Name"]);
+		objects[i].GetTransform()->SetPosition(XMFLOAT3(data.at(i)["Position"][0], data.at(i)["Position"][1], data.at(i)["Position"][2]));
+		objects[i].GetTransform()->SetRotation(XMFLOAT3(data.at(i)["Rotation"][0], data.at(i)["Rotation"][1], data.at(i)["Rotation"][2]));
+		objects[i].GetTransform()->SetScale(XMFLOAT3(data.at(i)["Scale"][0], data.at(i)["Scale"][1], data.at(i)["Scale"][2]));
+
+		objects[i].SetMesh(QUAD_MESH_NAME);
+		objects[i].SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+		objects[i].SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+		objects[i].SetAlbedo(L"Resources/Sprites/Brick.dds");
+
+		bool renderable = false;
+		bool trigger = false;
+		bool collideable = false;
+
+		if (data.at(i)["IsRenderable"])
+		{
+			renderable = true;
+			objects[i].SetIsRenderable(renderable);
+		}
+		else
+		{
+			objects[i].SetIsRenderable(renderable);
+		}
+		if (data.at(i)["IsTrigger"])
+		{
+			trigger = true;
+			objects[i].SetIsTrigger(trigger);
+		}
+		else
+		{
+			objects[i].SetIsTrigger(trigger);
+		}
+		if (data.at(i)["IsCollideable"])
+		{
+			collideable = true;
+			objects[i].SetIsCollidable(collideable);
+		}
+		else
+		{
+			objects[i].SetIsTrigger(collideable);
+		}
+	}
+	return objects;
+}
+
+std::vector<GameObject> FileIO::LoadMultipleTiles(json file)
+{
+	json data = file["TilesData"];
+	json metaData = file["MetaData"];
+
+	std::vector<GameObject> objects((int)metaData.at(0)["NumberOfObject"]);
+
+	for (size_t i = 0; i < metaData.at(0)["NumberOfTiles"]; i++)
+	{
+		objects[i] = GameObject((std::string)data.at(i)["Name"]);
+
+		bool renderable = false;
+		bool trigger = false;
+		bool collideable = false;
+
+		if (data.at(i)["IsRenderable"])
+		{
+			renderable = true;
+			objects[i].SetIsRenderable(renderable);
+		}
+		else
+		{
+			objects[i].SetIsRenderable(renderable);
+		}
+		if (data.at(i)["IsTrigger"])
+		{
+			trigger = true;
+			objects[i].SetIsTrigger(trigger);
+		}
+		else
+		{
+			objects[i].SetIsTrigger(trigger);
+		}
+		if (data.at(i)["IsCollideable"])
+		{
+			collideable = true;
+			objects[i].SetIsCollidable(collideable);
+		}
+		else
+		{
+			objects[i].SetIsTrigger(collideable);
+		}
+	}
+	return objects;
+}
+
+std::vector<std::vector<GameObject>> FileIO::LoadScene(const char* fileAddress)
+{
+	json j = FileIO::LoadJson(fileAddress);
+
+	std::vector<std::vector<GameObject>> fileData(3);
+	fileData[0] = std::vector<GameObject>((int)j["MetaData"].at(0)["NumberOfObject"]);
+	fileData[1] = std::vector<GameObject>((int)j["MetaData"].at(0)["NumberOfTiles"]);
+	fileData[2] = std::vector<GameObject>((int)j["MetaData"].at(0)["NumberOfTileZones"]);
+
+	std::vector<GameObject> gameObj = LoadMultipleGameObjects(j);
+	std::vector<GameObject> tileObj = LoadMultipleTiles(j);
+	std::vector<GameObject> mapObj = LoadMap(j, tileObj);
+
+	fileData[0] = gameObj;
+	fileData[1] = tileObj;
+	fileData[2] = mapObj;
+
+	return fileData;
+}
+
+
+std::vector<GameObject> FileIO::LoadMap(json file, std::vector<GameObject> tiles)
+{
+	json j = file["MapZones"];
+	int mapSize = j.at(0)["Area"][0] * (int)j.at(0)["Area"][1];
+	std::vector<GameObject> mapStorage = std::vector<GameObject>(mapSize);
+	for (size_t i = 1; i < file["MetaData"].at(0)["NumberOfTileZones"]; ++i)
+	{
+		GameObject obj("");
+		for (size_t count = 0; count < tiles.size(); ++count)
+		{
+			if (tiles[count].GetIdentifier() == j.at(i)["TileName"])
+			{
+				obj = tiles[count];
+			}
+		}
+
+		for (size_t yAxis = j.at(i)["AreaY"][0]; yAxis < j.at(i)["AreaY"][1]; ++yAxis)
+		{
+			for (size_t xAxis = j.at(i)["AreaX"][0]; xAxis < j.at(i)["AreaX"][1]; ++xAxis)
+			{
+				obj.GetTransform()->SetPosition(XMFLOAT3(xAxis, yAxis, 0.f));
+				mapStorage[xAxis + yAxis] = obj;
+			}
+		}
+	}
+
+
+	return mapStorage;
 }
 
 inline std::string FileIO::ExeLocation(bool removeExeName)
@@ -161,51 +319,106 @@ std::string FileIO::AttachDefaultFileLocation(const char* fileAddress)
 	return finalOutput.c_str();
 }
 
-GameObjectData FileIO::LoadGameObject(const char* fileAddress)
+GameObject FileIO::LoadGameObject(const char* fileAddress)
 {
 	json m_json = LoadJson(fileAddress);
 	json data = m_json["ObjectData"];
 
-	//GameObject gameObject(data.at(0)["Name"]);
+	GameObject gameObject((std::string)data.at(0)["Name"]);
 
-	GameObjectData gameObjData;
-	gameObjData.m_Name = data.at(0)["Name"];
-	gameObjData.m_Position = XMFLOAT3(data.at(0)["Position"][0], data.at(0)["Position"][1], data.at(0)["Position"][2]);
-	gameObjData.m_Rotation = XMFLOAT3(data.at(0)["Rotation"][0], data.at(0)["Rotation"][1], data.at(0)["Rotation"][2]) ;
-	gameObjData.m_Scale = XMFLOAT3(data.at(0)["Scale"][0], data.at(0)["Scale"][1], data.at(0)["Scale"][2]);
+	gameObject.GetTransform()->SetPosition(XMFLOAT3(data.at(0)["Position"][0], data.at(0)["Position"][1], data.at(0)["Position"][2]));
+	gameObject.GetTransform()->SetRotation(XMFLOAT3(data.at(0)["Rotation"][0], data.at(0)["Rotation"][1], data.at(0)["Rotation"][2]));
+	gameObject.GetTransform()->SetScale(XMFLOAT3(data.at(0)["Scale"][0], data.at(0)["Scale"][1], data.at(0)["Scale"][2]));
 
-	//gameObject.GetTransform()->SetPosition(XMFLOAT3(data.at(0)["Position"][0], data.at(0)["Position"][1], data.at(0)["Position"][2]));
-	//gameObject.GetTransform()->SetRotation(XMFLOAT3(data.at(0)["Position"][0], data.at(0)["Position"][1], data.at(0)["Position"][2]));
-	//gameObject.GetTransform()->SetScale(XMFLOAT3(data.at(0)["Position"][0], data.at(0)["Position"][1], data.at(0)["Position"][2]));
+
+	gameObject.SetMesh(QUAD_MESH_NAME);
+	gameObject.SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+	gameObject.SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+	gameObject.SetAlbedo(L"Resources/Sprites/Brick.dds");
+
+	bool renderable = false;
+	bool trigger = false;
+	bool collideable = false;
 
 	if (data.at(0)["IsRenderable"])
 	{
-		gameObjData.m_TextureLocation = data.at(0)["TextureLocation"];
-		gameObjData.m_IsRenderable = true;
+		renderable = true;
+		gameObject.SetIsRenderable(renderable);
 	}
 	else
 	{
-		gameObjData.m_IsRenderable = false;
+		gameObject.SetIsRenderable(renderable);
 	}
 	if (data.at(0)["IsTrigger"])
 	{
-		gameObjData.m_IsTrigger = true;
-		gameObjData.m_ColliderType = ColliderType(data.at(0)["ColliderType"]);
+		trigger = true;
+		gameObject.SetIsTrigger(trigger);
 	}
 	else
 	{
-		gameObjData.m_IsTrigger = false;
+		gameObject.SetIsTrigger(trigger);
 	}
 	if (data.at(0)["IsCollideable"])
 	{
-		gameObjData.m_IsCollidable = true;
-		gameObjData.m_ColliderType = ColliderType(data.at(0)["ColliderType"]);
+		collideable = true;
+		gameObject.SetIsCollidable(collideable);
 	}
 	else
 	{
-		gameObjData.m_IsCollidable = false;
+		gameObject.SetIsTrigger(collideable);
 	}
-	return gameObjData;
+	return gameObject;
+}
+
+GameObject FileIO::LoadGameObject(const char* fileAddress, ID3D11Device* device)
+{
+	json m_json = LoadJson(fileAddress);
+	json data = m_json["ObjectData"];
+
+	GameObject gameObject((std::string)data.at(0)["Name"]);
+
+	gameObject.GetTransform()->SetPosition(XMFLOAT3(data.at(0)["Position"][0], data.at(0)["Position"][1], data.at(0)["Position"][2]));
+	gameObject.GetTransform()->SetRotation(XMFLOAT3(data.at(0)["Rotation"][0], data.at(0)["Rotation"][1], data.at(0)["Rotation"][2]));
+	gameObject.GetTransform()->SetScale(XMFLOAT3(data.at(0)["Scale"][0], data.at(0)["Scale"][1], data.at(0)["Scale"][2]));
+
+	gameObject.SetMesh(QUAD_MESH_NAME);
+	gameObject.SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+	gameObject.SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+	gameObject.SetAlbedo(L"Resources/Sprites/Brick.dds");
+
+	bool renderable = false;
+	bool trigger = false;
+	bool collideable = false;
+
+	if (data.at(0)["IsRenderable"])
+	{
+		GraphicsManager::GetInstance()->LoadTextureFromFile(data.at(0)["TextureLocation"], device);
+	    renderable = true;
+		gameObject.SetIsRenderable(renderable);
+	}
+	else
+	{
+		gameObject.SetIsRenderable(renderable);
+	}
+	if (data.at(0)["IsTrigger"])
+	{
+		trigger = true;
+		gameObject.SetIsTrigger(trigger);
+	}
+	else
+	{
+		gameObject.SetIsTrigger(trigger);
+	}
+	if (data.at(0)["IsCollideable"])
+	{
+		collideable = true;
+		gameObject.SetIsCollidable(collideable);
+	}
+	else
+	{
+		gameObject.SetIsTrigger(collideable);
+	}
+	return gameObject;
 }
 
 void FileIO::LoadMap(const char* fileAddress)
@@ -269,7 +482,6 @@ void FileIO::SaveGameObject(GameObjectData gameObjData, const char* fileLocation
 
 bool FileIO::SaveObjectInJson(const char* fileLocation, std::vector<std::string> varNames, std::vector<JSON_VARIABLE_TYPE> types, std::vector<void*> data)
 {
-	int i;
 	try
 	{
 		std::ofstream outFile;

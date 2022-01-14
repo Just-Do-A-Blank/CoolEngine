@@ -1,0 +1,148 @@
+{
+  "MetaData": [
+    {
+      "NumberOfObject": 7,
+      "NumberOfTiles": 2,
+      "NumberOfTileZones": 2
+    }
+  ],
+  "TilesData": [
+    {
+      "Name": "Tile1",
+      "ColliderType": "BoxCollider",
+      "IsCollideable": false,
+      "IsRenderable": true,
+      "IsTrigger": false,
+      "TextureLocation": "ATexLocation"
+    },
+    {
+      "Name": "Tile2",
+      "ColliderType": "BoxCollider",
+      "IsCollideable": false,
+      "IsRenderable": true,
+      "IsTrigger": false,
+      "TextureLocation": "ATexLocation"
+    }
+  ],
+  "MapZones": [
+    {
+      "Name": "Zone0",
+      "ColliderType": "BoxCollider",
+      "Area": [ 300, 300 ],
+      "IsCollideable": false,
+      "IsRenderable": false,
+      "IsTrigger": false,
+      "TileName": "NoTile"
+    },
+    {
+      "Name": "Zone1",
+      "ColliderType": "BoxCollider",
+      "AreaX": [0, 150],
+      "AreaY": [0, 150],
+      "IsCollideable": false,
+      "IsRenderable": true,
+      "IsTrigger": false,
+      "TileName": "Tile1"
+    },
+    {
+      "Name": "Zone3",
+      "ColliderType": "BoxCollider",
+      "AreaX": [ 150, 300 ],
+      "AreaY": [ 150, 300 ],
+      "IsCollideable": false,
+      "IsRenderable": true,
+      "IsTrigger": false,
+      "TextureLocation": "ATexLocation"
+    }
+  ],
+  "ObjectData": [
+    {
+      "Name": "Object",
+      "ColliderType": "BoxCollider",
+      "IsCollideable": true,
+      "IsRenderable": true,
+      "IsTrigger": false,
+      "Position": [ 0.0, 0.0, 0.0 ],
+      "Rotation": [ 0.0, 0.0, 0.0 ],
+      "Scale": [ 0.0, 0.0, 0.0 ],
+      "TextureLocation": "ATexLocation"
+    },
+    {
+      "Name": "Object1",
+      "ColliderType": "BoxCollider",
+      "IsCollideable": true,
+      "IsRenderable": true,
+      "IsTrigger": false,
+      "Position": [ 0.0, 0.0, 0.0 ],
+      "Rotation": [ 0.0, 0.0, 0.0 ],
+      "Scale": [ 0.0, 0.0, 0.0 ],
+      "TextureLocation": "ATexLocation"
+    },
+    {
+      "Name": "Object2",
+      "ColliderType": "BoxCollider",
+      "IsCollideable": true,
+      "IsRenderable": true,
+      "IsTrigger": false,
+      "Position": [ 0.0, -5.0, 0.0 ],
+      "Rotation": [ 0.0, 0.0, 0.0 ],
+      "Scale": [ 100.0, 100.0, 100.0 ],
+      "TextureLocation": "L'C:\\Users\\Thoma\\Documents\\GitHub\\CoolEngine\\CoolEngine\\Resources\\Sprites\\Brick.dds'"
+    },
+    {
+      "Name": "Object3",
+      "ColliderType": "BoxCollider",
+      "IsCollideable": true,
+      "IsRenderable": true,
+      "IsTrigger": false,
+      "Position": [ 0.0, 0.0, 0.0 ],
+      "Rotation": [ 0.0, 0.0, 0.0 ],
+      "Scale": [ 0.0, 0.0, 0.0 ],
+      "TextureLocation": "ATexLocation"
+    },
+    {
+      "Name": "Object4",
+      "ColliderType": "BoxCollider",
+      "IsCollideable": true,
+      "IsRenderable": true,
+      "IsTrigger": false,
+      "Position": [ 0.0, 0.0, 0.0 ],
+      "Rotation": [ 0.0, 0.0, 0.0 ],
+      "Scale": [ 0.0, 0.0, 0.0 ],
+      "TextureLocation": "ATexLocation"
+    },
+    {
+      "Name": "Object5",
+      "ColliderType": "BoxCollider",
+      "IsCollideable": true,
+      "IsRenderable": true,
+      "IsTrigger": false,
+      "Position": [ 0.0, 0.0, 0.0 ],
+      "Rotation": [ 0.0, 0.0, 0.0 ],
+      "Scale": [ 0.0, 0.0, 0.0 ],
+      "TextureLocation": "ATexLocation"
+    },
+    {
+      "Name": "Object6",
+      "ColliderType": "BoxCollider",
+      "IsCollideable": true,
+      "IsRenderable": true,
+      "IsTrigger": false,
+      "Position": [ 0.0, 0.0, 0.0 ],
+      "Rotation": [ 0.0, 0.0, 0.0 ],
+      "Scale": [ 0.0, 0.0, 0.0 ],
+      "TextureLocation": "ATexLocation"
+    },
+    {
+      "Name": "Object7 ",
+      "ColliderType": "BoxCollider",
+      "IsCollideable": true,
+      "IsRenderable": true,
+      "IsTrigger": false,
+      "Position": [ 0.0, 0.0, 0.0 ],
+      "Rotation": [ 0.0, 0.0, 0.0 ],
+      "Scale": [ 0.0, 0.0, 0.0 ],
+      "TextureLocation": "ATexLocation"
+    }
+  ]
+}

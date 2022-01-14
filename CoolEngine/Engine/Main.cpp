@@ -121,7 +121,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	std::string location("\\Test.json");
 	std::string fileLocation = FileIO::AttachDefaultFileLocation(location);
 	FileIO::SaveObjectInJson(fileLocation.c_str(), names, types, data);
-
+	
 	if (FAILED(InitDevice()))
 	{
 		CleanupDevice();
@@ -168,6 +168,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_ptestObject->SetAlbedo(L"Resources/Sprites/Brick.dds");
 	g_ptestObject->GetTransform()->SetPosition(objectPos);
 	g_ptestObject->GetTransform()->SetScale(objectScale);
+
+	std::vector<std::vector<GameObject>> m_SceneData = FileIO::LoadScene("C:\\Users\\Thoma\\Documents\\GitHub\\CoolEngine\\CoolEngine\\Engine\\FileIO\\Scene.json");
+
+   g_ptestObject = &m_SceneData[0][2];
 
 	// Main message loop
 	MSG msg = { 0 };
