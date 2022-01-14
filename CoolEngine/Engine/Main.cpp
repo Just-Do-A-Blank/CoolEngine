@@ -3,6 +3,7 @@
 #include <io.h>
 #include <fcntl.h>
 #include <locale>
+#include <algorithm>
 #include <codecvt>
 
 #include "Engine/Managers/GraphicsManager.h"
@@ -20,7 +21,7 @@
 
 #define IMGUI_LEFT_LABEL(func, label, ...) (ImGui::TextUnformatted(label), ImGui::SameLine(), func("##" label, __VA_ARGS__))
 #define FILEPATH_BUFFER_SIZE 200
-#define DEFAULT_IMGUI_IMAGE L"Resources/Sprites/Brick.dds"
+#define DEFAULT_IMGUI_IMAGE L"Resources\\Sprites\\Brick.dds"
 #define DEFAULT_IMGUI_IMAGE_SIZE ImVec2(256, 256)
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -149,7 +150,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_ptestObject->SetMesh(QUAD_MESH_NAME);
 	g_ptestObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
 	g_ptestObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	g_ptestObject->SetAlbedo(L"Resources/Sprites/Brick.dds");
+	g_ptestObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 	g_ptestObject->GetTransform()->SetPosition(objectPos);
 	g_ptestObject->GetTransform()->SetScale(objectScale);
 	g_ptestObject->SetAnimation(L"TestAnim");
@@ -575,6 +576,8 @@ void InitIMGUI()
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
+	io.WantCaptureMouse = true;
+
 	(void)io;
 
 	ImGui::StyleColorsDark();
@@ -640,7 +643,7 @@ void DrawSceneGraphWindow()
 
 			if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
 			{
-				OpenFileExplorer(L"DDS files\0*.dds\0", m_texNameBuffer, _countof(m_texNameBuffer));
+
 			}
 
 			if (ImGui::MenuItem("Delete Scene", "Ctrl+D"))
@@ -703,7 +706,25 @@ void DrawGameObjectPropertiesWindow()
 
 	char* texName = (char*)WStringToString(m_texNameBuffer).c_str();
 
-	ImGui::Image((void*)(intptr_t)GraphicsManager::GetInstance()->GetShaderResourceView(m_texNameBuffer), DEFAULT_IMGUI_IMAGE_SIZE);
+	if (ImGui::ImageButton((void*)(intptr_t)GraphicsManager::GetInstance()->GetShaderResourceView(m_texNameBuffer), DEFAULT_IMGUI_IMAGE_SIZE))
+	{
+		OpenFileExplorer(L"DDS files\0*.dds\0", m_texNameBuffer, _countof(m_texNameBuffer));
+
+		wstring relativePath = m_texNameBuffer;
+
+		int index = relativePath.find(L"Resources");
+
+		if (index == relativePath.npos)
+		{
+			LOG("The resource specified isn't stored in a resource folder!");
+		}
+
+		relativePath = wstring(m_texNameBuffer).substr(index);
+
+		relativePath.copy(m_texNameBuffer, relativePath.size());
+
+		m_texNameBuffer[relativePath.size()] = L'\0';
+	}
 
 	IMGUI_LEFT_LABEL(ImGui::InputText, "Texture Name", texName, _countof(m_texNameBuffer));
 	IMGUI_LEFT_LABEL(ImGui::InputText, "Animation Name", buf, IM_ARRAYSIZE(buf));
@@ -740,6 +761,7 @@ void OpenFileExplorer(const WCHAR* fileFilters, WCHAR* buffer, int bufferSize)
 	ofn.nMaxFile = bufferSize;
 	ofn.lpstrFilter = fileFilters;
 	ofn.nFilterIndex = 0;
+	ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
 
 	GetOpenFileName(&ofn);
 }
