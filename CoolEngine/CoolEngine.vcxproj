@@ -27,6 +27,7 @@
     <ClInclude Include="Engine\Graphics\DDSTextureLoader.h" />
     <ClInclude Include="Engine\Graphics\Mesh.h" />
     <ClInclude Include="Engine\Graphics\Vertices.h" />
+    <ClInclude Include="Engine\Helpers\Inputs.h" />
     <ClInclude Include="Engine\Managers\AudioManager.h" />
     <ClInclude Include="Engine\Managers\DebugManager.h" />
     <ClInclude Include="Engine\Managers\Events\EventManager.h" />
@@ -45,13 +46,13 @@
     <ClInclude Include="Engine\Physics\Vector2.h" />
     <ClInclude Include="Engine\stdafx.h" />
     <ClInclude Include="Engine\Structure\Singleton.h" />
-    <ClInclude Include="Keyboard.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\GameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\Transform.cpp" />
     <ClCompile Include="Engine\Graphics\DDSTextureLoader.cpp" />
+    <ClCompile Include="Engine\Helpers\Inputs.cpp" />
     <ClCompile Include="Engine\Main.cpp" />
     <ClCompile Include="Engine\Managers\AudioManager.cpp" />
     <ClCompile Include="Engine\Managers\Events\EventManager.cpp" />
@@ -64,7 +65,6 @@
     <ClCompile Include="Engine\Physics\Particle.cpp" />
     <ClCompile Include="Engine\Physics\ParticleManager.cpp" />
     <ClCompile Include="Engine\Physics\ParticleSystem.cpp" />
-    <ClCompile Include="Keyboard.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">

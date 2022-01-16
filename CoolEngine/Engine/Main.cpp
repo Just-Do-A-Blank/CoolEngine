@@ -12,6 +12,8 @@
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/Managers/Events/EventObserver.h"
 
+#include "Engine/Helpers/Inputs.h"
+
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
 HRESULT	InitDevice();
@@ -44,6 +46,8 @@ ConstantBuffer<PerInstanceCB>* g_pperInstanceCB;
 
 int g_Width = 1920;
 int g_Height = 1080;
+
+Inputs* g_inputController;
 
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
 {
@@ -81,6 +85,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	GraphicsManager::GetInstance()->Init(g_pd3dDevice);
 
 	GraphicsManager::GetInstance()->LoadTextureFromFile(L"Resources/Sprites/Brick.dds", g_pd3dDevice);
+
+	//Setup input classes
+	g_inputController = new Inputs();
+
 
 	//Create camera
 	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, 0);
@@ -131,9 +139,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 			Render();
 			//LOG("Console output test");
 
-
-
-
 			EventManager::Instance()->ProcessEvents();
 		}
 	}
@@ -156,6 +161,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	PAINTSTRUCT ps;
 	HDC hdc;
+	
+
+	//Handing the keyboard inputs to a keyboard class & mouse inputs to a mouse class
+	g_keyboard->Update(&hWnd, &message, &wParam, &lParam);
+
+
+
 
 	switch (message)
 	{
