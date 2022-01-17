@@ -164,7 +164,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	
 
 	//Handing the keyboard inputs to a keyboard class & mouse inputs to a mouse class
-	g_keyboard->Update(&hWnd, &message, &wParam, &lParam);
+	g_inputController->Update(&hWnd, &message, &wParam, &lParam);
 
 
 
@@ -173,7 +173,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_LBUTTONDOWN:
 	{
-		EventManager::Instance()->AddEvent(new MouseButtonPressedEvent(WM_LBUTTONDOWN));
 		break;
 	}
 	case WM_PAINT:
@@ -184,23 +183,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
-
 	case WM_KEYDOWN:
-		EventManager::Instance()->AddEvent(new KeyPressedEvent(wParam));
-		
-		
-
 		if (wParam == VK_ESCAPE)
 		{
 			PostQuitMessage(0);
 		}
 		break;
 	case WM_KEYUP:
-		EventManager::Instance()->AddEvent(new KeyReleasedEvent(wParam));
 		break;
-
 	case WM_MOUSEMOVE:
-		EventManager::Instance()->AddEvent(new MouseMovedEvent(GET_X_LPARAM(lParam),GET_Y_LPARAM(lParam)));
 		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
