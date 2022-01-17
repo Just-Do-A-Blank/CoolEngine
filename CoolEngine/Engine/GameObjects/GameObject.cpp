@@ -249,6 +249,13 @@ void GameObject::SetIsTrigger(bool& condition)
 
 void GameObject::SetLayer(int layer)
 {
+	if (layer >= GraphicsManager::GetInstance()->GetNumLayers() || layer < 0)
+	{
+		LOG("Tried to set gameobject to a layer that doesn't exist!");
+
+		return;
+	}
+
 	m_layer = layer;
 }
 
