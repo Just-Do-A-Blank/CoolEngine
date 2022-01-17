@@ -96,4 +96,5 @@ public:
 	bool AddAnimation(string animName, SpriteAnimation& anim);
 	bool AddAnimation(string localAnimName, wstring animName);
 	bool RemoveAnimation(string animName);
+	bool OverwriteAnimation(string animName, SpriteAnimation& anim);
 };

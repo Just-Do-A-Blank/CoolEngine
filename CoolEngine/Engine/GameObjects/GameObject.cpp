@@ -298,6 +298,13 @@ bool GameObject::RemoveAnimation(string animName)
 	return true;
 }
 
+bool GameObject::OverwriteAnimation(string animName, SpriteAnimation& anim)
+{
+	m_animations[animName] = anim;
+
+	return true;
+}
+
 const string& GameObject::GetIdentifier()
 {
 	return m_identifier;
