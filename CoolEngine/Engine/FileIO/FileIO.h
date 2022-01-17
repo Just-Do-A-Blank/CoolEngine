@@ -145,19 +145,17 @@ public:
 	/// <returns>std::vector<GameObject></returns>
 	static std::vector<GameObject> LoadMultipleGameObjects(const char* fileAddress);
 
+
 	/// <summary>
-	/// Loads multiple game objects from a singular JSON file
+	/// Loads a map from a JSON file
 	/// </summary>
-	/// <param name="fileAddress"></param>
-	/// <returns>std::vector<GameObject></returns>
-	static std::vector<GameObject> LoadMultipleGameObjects(json file);
-
-	static std::vector<GameObject> LoadMultipleTiles(json file);
-
+	/// <param name="file"></param>
+	/// <param name="tiles"></param>
+	/// <returns></returns>
 	static std::vector<GameObject> LoadMap(json file, std::vector<GameObject> tiles);
 
 	/// <summary>
-	/// 
+	/// Loads game objects, tiles and a map from a JSON file. 
 	/// </summary>
 	static std::vector<std::vector<GameObject>>  LoadScene(const char* fileAddress);
 
@@ -217,4 +215,18 @@ private:
 	/// <param name="colliderType"></param>
 	/// <returns>COLLIDER_TYPE</returns>
 	static COLLIDER_TYPE ColliderType(std::string colliderType);
+
+	/// <summary>
+/// Loads multiple game objects from a singular JSON file
+/// </summary>
+/// <param name="fileAddress"></param>
+/// <returns>std::vector<GameObject></returns>
+	static std::vector<GameObject> LoadMultipleGameObjects(json file);
+
+	/// <summary>
+	/// Loads Multiple tiles from a JSON file
+	/// </summary>
+	/// <param name="file"></param>
+	/// <returns></returns>
+	static std::vector<GameObject> LoadMultipleTiles(json file);
 };
