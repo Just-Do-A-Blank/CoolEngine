@@ -201,6 +201,9 @@
     <ClInclude Include="Engine\TileMap\TileMap\Tile.h">
       <Filter>Engine\GameObjects\TileMap</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Physics\Shape.h">
+      <Filter>Engine\Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">

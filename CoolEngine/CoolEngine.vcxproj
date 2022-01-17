@@ -51,6 +51,7 @@
     <ClInclude Include="Engine\Physics\Particle.h" />
     <ClInclude Include="Engine\Physics\ParticleManager.h" />
     <ClInclude Include="Engine\Physics\ParticleSystem.h" />
+    <ClInclude Include="Engine\Physics\Shape.h" />
     <ClInclude Include="Engine\Physics\Vector2.h" />
     <ClInclude Include="Engine\Scene\Scene.h" />
     <ClInclude Include="Engine\stdafx.h" />
