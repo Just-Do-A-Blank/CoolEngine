@@ -22,7 +22,9 @@ private:
 
 	Mesh* m_pmesh;
 
-	SpriteAnimation m_animation;
+	std::unordered_map<std::string, SpriteAnimation> m_animations;
+
+	SpriteAnimation* m_pcurrentAnimation;
 
 	string m_identifier;
 
@@ -42,6 +44,7 @@ protected:
 	Transform m_transform;
 
 public:
+	GameObject();
 	GameObject(string identifier);
 
 	//Getters
@@ -55,7 +58,11 @@ public:
 	//Getters
 	Mesh* GetMesh() const;
 
-	SpriteAnimation& GetAnimation();
+	SpriteAnimation& GetAnimation(std::string name);
+
+	bool PlayAnimation(std::string name);
+
+	SpriteAnimation* GetCurrentAnimation();
 
 	ID3D11ShaderResourceView* GetAlbedoSRV() const;
 
@@ -81,9 +88,11 @@ public:
 	bool SetPixelShader(wstring shaderName);
 	void SetPixelShader(ID3D11PixelShader* ppixelShader);
 
-	bool SetAnimation(wstring animName);
-	void SetAnimation(SpriteAnimation& animation);
 	void SetIsRenderable(bool& condition);
 	void SetIsCollidable(bool& condition);
 	void SetIsTrigger(bool& condition);
+
+	bool AddAnimation(string animName, SpriteAnimation& anim);
+	bool AddAnimation(string localAnimName, wstring animName);
+	bool RemoveAnimation(string animName);
 };

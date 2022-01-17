@@ -69,16 +69,16 @@ void SpriteAnimation::Play()
 {
 	if (m_isPaused == false)
 	{
-		LOG("Tried to play animation when it wasn't paused!");
-
-		return;
+		Restart();
 	}
+	else
+	{
+		m_timeMilestone = GameManager::GetInstance()->GetTimer()->GameTime() + m_timeLeft;
 
-	m_timeMilestone = GameManager::GetInstance()->GetTimer()->GameTime() + m_timeLeft;
+		m_timeLeft = 0;
 
-	m_timeLeft = 0;
-
-	m_isPaused = false;
+		m_isPaused = false;
+	}
 }
 
 void SpriteAnimation::Pause()
