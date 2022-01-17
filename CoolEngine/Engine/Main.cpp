@@ -37,8 +37,6 @@ ID3D11Device* g_pd3dDevice = nullptr;
 ID3D11DeviceContext* g_pImmediateContext = nullptr;
 IDXGISwapChain* g_pSwapChain = nullptr;
 ID3D11RenderTargetView* g_pRenderTargetView = nullptr;
-ID3D11Texture2D* g_pDepthStencil = nullptr;
-ID3D11DepthStencilView* g_pDepthStencilView = nullptr;
 ID3D11RasterizerState* g_prasterState = nullptr;
 
 CameraGameObject* g_pcamera = nullptr;
@@ -49,6 +47,8 @@ ConstantBuffer<PerFrameCB>* g_pperFrameCB;
 ConstantBuffer<PerInstanceCB>* g_pperInstanceCB;
 
 EditorUI* g_peditorUI;
+
+Scene* g_pScene = nullptr;
 
 int g_Width = 1920;
 int g_Height = 1080;
@@ -93,6 +93,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	GraphicsManager::GetInstance()->Init(g_pd3dDevice);
 
 	GraphicsManager::GetInstance()->LoadTextureFromFile(DEFAULT_IMGUI_IMAGE, g_pd3dDevice);
+	GraphicsManager::GetInstance()->LoadTextureFromFile(L"Resources\\Sprites\\Test2.dds", g_pd3dDevice);
 
 	//Create camera
 	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, 0);
@@ -112,22 +113,43 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_pperFrameCB = new ConstantBuffer<PerFrameCB>(g_pd3dDevice);
 	g_pperInstanceCB = new ConstantBuffer<PerInstanceCB>(g_pd3dDevice);
 
-	//Create test gameobject
+	//Create scene
+	g_pScene = new Scene("TestScene");
+
+	//Load animations
 	GraphicsManager::GetInstance()->LoadAnimationFromFile(L"TestAnim", g_pd3dDevice);
+
+	//Create test gameobject
+	string obj0Name = "TestObject0";
+	string obj1Name = "TestObject1";
+
+	g_pScene->CreateGameObject(obj0Name);
+	g_pScene->CreateGameObject(obj1Name);
+
+	GameObject* pgameObject = g_pScene->GetGameObjectUsingIdentifier(obj0Name);
 
 	XMFLOAT3 objectPos = XMFLOAT3(0, 0.0f, 5.0f);
 	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
 
-	g_ptestObject = new GameObject("tempTile");
-	g_ptestObject->SetMesh(QUAD_MESH_NAME);
-	g_ptestObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-	g_ptestObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	g_ptestObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
-	g_ptestObject->GetTransform()->SetPosition(objectPos);
-	g_ptestObject->GetTransform()->SetScale(objectScale);
-	g_ptestObject->AddAnimation("Idle", L"TestAnim");
+	pgameObject->SetMesh(QUAD_MESH_NAME);
+	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
+	pgameObject->GetTransform()->SetPosition(objectPos);
+	pgameObject->GetTransform()->SetScale(objectScale);
 
-	g_ptestObject->PlayAnimation("Idle");
+	//Init second gameObject
+	pgameObject = g_pScene->GetGameObjectUsingIdentifier(obj1Name);
+
+	objectPos = XMFLOAT3(10.0f, 0.0f, 5.0f);
+	objectScale = XMFLOAT3(100, 100, 100);
+
+	pgameObject->SetMesh(QUAD_MESH_NAME);
+	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+	pgameObject->SetAlbedo(L"Resources\\Sprites\\Test2.dds");
+	pgameObject->GetTransform()->SetPosition(objectPos);
+	pgameObject->GetTransform()->SetScale(objectScale);
 
 	//Create test Tile Map
 	TileMap TestMap = TileMap(10, 10, "TestMap", XMFLOAT3(1,1,0));
@@ -358,33 +380,7 @@ inline HRESULT InitDevice()
 	if (FAILED(hr))
 		return hr;
 
-	// Create depth stencil texture
-	D3D11_TEXTURE2D_DESC descDepth = {};
-	descDepth.Width = width;
-	descDepth.Height = height;
-	descDepth.MipLevels = 1;
-	descDepth.ArraySize = 1;
-	descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	descDepth.SampleDesc.Count = 1;
-	descDepth.SampleDesc.Quality = 0;
-	descDepth.Usage = D3D11_USAGE_DEFAULT;
-	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	descDepth.CPUAccessFlags = 0;
-	descDepth.MiscFlags = 0;
-	hr = g_pd3dDevice->CreateTexture2D(&descDepth, nullptr, &g_pDepthStencil);
-	if (FAILED(hr))
-		return hr;
-
-	// Create the depth stencil view
-	D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
-	descDSV.Format = descDepth.Format;
-	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-	descDSV.Texture2D.MipSlice = 0;
-	hr = g_pd3dDevice->CreateDepthStencilView(g_pDepthStencil, &descDSV, &g_pDepthStencilView);
-	if (FAILED(hr))
-		return hr;
-
-	g_pImmediateContext->OMSetRenderTargets(1, &g_pRenderTargetView, g_pDepthStencilView);
+	g_pImmediateContext->OMSetRenderTargets(1, &g_pRenderTargetView, nullptr);
 
 	// Setup the viewport
 	D3D11_VIEWPORT vp;
@@ -433,16 +429,6 @@ void CleanupDevice()
 	// Flush the immediate context to force cleanup
 	g_pImmediateContext->Flush();
 
-	if (g_pDepthStencil)
-	{
-		g_pDepthStencil->Release();
-	}
-
-	if (g_pDepthStencilView)
-	{
-		g_pDepthStencilView->Release();
-	}
-
 	if (g_pRenderTargetView)
 	{
 		g_pRenderTargetView->Release();
@@ -482,9 +468,6 @@ void Render()
 	// Clear the back buffer
 	g_pImmediateContext->ClearRenderTargetView(g_pRenderTargetView, DirectX::Colors::MidnightBlue);
 
-	// Clear the depth buffer to 1.0 (max depth)
-	g_pImmediateContext->ClearDepthStencilView(g_pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
-
 	g_pImmediateContext->IASetInputLayout(GraphicsManager::GetInstance()->GetInputLayout(GraphicsManager::InputLayouts::POS_TEX));
 
 	BindQuadBuffers();
@@ -506,7 +489,11 @@ void Render()
 	g_pImmediateContext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pbuffer);
 	g_pImmediateContext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pbuffer);
 
-	g_ptestObject->Render(g_pImmediateContext, g_pperInstanceCB);
+	RenderStruct renderStruct;
+	renderStruct.m_pconstantBuffer = g_pperInstanceCB;
+	renderStruct.m_pcontext = g_pImmediateContext;
+
+	g_pScene->Render(renderStruct);
 
 	g_peditorUI->DrawEditorUI();
 
@@ -518,7 +505,7 @@ void Update()
 {
 	GameManager::GetInstance()->GetTimer()->Tick();
 
-	g_ptestObject->Update();
+	g_pScene->Update();
 }
 
 void BindQuadBuffers()
