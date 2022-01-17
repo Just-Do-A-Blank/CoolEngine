@@ -55,12 +55,12 @@
     <ClInclude Include="Engine\Physics\Vector2.h" />
     <ClInclude Include="Engine\Scene\Scene.h" />
     <ClInclude Include="Engine\stdafx.h" />
-    <ClInclude Include="Engine\Tools\EventManager.h" />
-    <ClInclude Include="Engine\Tools\Events.h" />
-    <ClInclude Include="Engine\Tools\EventObserver.h" />
     <ClInclude Include="Engine\Structure\Singleton.h" />
     <ClInclude Include="Engine\TileMap\TileMap\Tile.h" />
     <ClInclude Include="Engine\TileMap\TileMap\TileMap.h" />
+    <ClInclude Include="Engine\Tools\EventManager.h" />
+    <ClInclude Include="Engine\Tools\EventObserver.h" />
+    <ClInclude Include="Engine\Tools\Events.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\EditorUI\EditorUI.cpp" />
@@ -79,9 +79,6 @@
     <ClCompile Include="Engine\Includes\IMGUI\imgui_widgets.cpp" />
     <ClCompile Include="Engine\Main.cpp" />
     <ClCompile Include="Engine\Scene\Scene.cpp" />
-    <ClCompile Include="Engine\Tools\EventManager.cpp" />
-    <ClCompile Include="Engine\Tools\Events.cpp" />
-    <ClCompile Include="Engine\Tools\EventObserver.cpp" />
     <ClCompile Include="Engine\Managers\AudioManager.cpp" />
     <ClCompile Include="Engine\Managers\GameManager.cpp" />
     <ClCompile Include="Engine\Managers\GraphicsManager.cpp" />
@@ -92,6 +89,9 @@
     <ClCompile Include="Engine\Physics\ParticleSystem.cpp" />
     <ClCompile Include="Engine\TileMap\TileMap\Tile.cpp" />
     <ClCompile Include="Engine\TileMap\TileMap\TileMap.cpp" />
+    <ClCompile Include="Engine\Tools\EventManager.cpp" />
+    <ClCompile Include="Engine\Tools\EventObserver.cpp" />
+    <ClCompile Include="Engine\Tools\Events.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">
