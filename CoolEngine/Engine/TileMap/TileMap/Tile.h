@@ -3,20 +3,27 @@
 
 #include "Engine/GameObjects/GameObject.h"
 
-class TileGameObject : public GameObject
+class Tile : public GameObject
 {
 public:
-	TileGameObject(wstring path, int animFrames, int ID);
-	TileGameObject(int a);
+	//Constructors
 
-	int GetID() 
-	{ 
-		if (m_ID != NULL)
-		{
-			return m_ID;
-		}
-		return -25;
-	}
+	//Default
+	Tile();
+
+	Tile(wstring path, int animFrames, int ID, string identifier);
+	Tile(int a, string identifier);
+
+	//Setup
+
+	void InitSprites();
+	void LoadAnimSprites();
+
+	//Getters
+
+	int GetID() { return m_ID; }
+
+	//Setters
 
 	void SetID(int id) { m_ID = id; }
 
@@ -27,8 +34,7 @@ public:
 	void SetEdgeW(bool W);
 	void SetEdgeE(bool E);
 
-	void InitSprites();
-	void LoadAnimSprites();
+	
 
 protected:
 

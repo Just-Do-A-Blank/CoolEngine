@@ -1,16 +1,23 @@
 #include "TileMap.h"
 
 
-TileMap::TileMap(int width, int height)
+TileMap::TileMap(int width, int height, string identifier, XMFLOAT3 position) : GameObject(identifier)
 {
 	m_width = width, m_height = height;
 	m_totalTiles = m_width * m_height;
+
+	GetTransform()->SetPosition(position);
+
 	InitMap();
 	InitEdges();
 }
 
 TileMap::~TileMap()
 {
+	m_tiles.clear(); // Run first to allow each tile to release its memory, but this does not release the memory for the vector
+	// Memory reserved by vectors can be deleted by swapping a vector with an uninitialized vector, which means that all memory allocated to the initial vector is released. The temporary vector is then destroyed, since it is temporary
+	vector<vector<Tile>> tempVector;
+	m_tiles.swap(tempVector); 
 }
 
 void TileMap::InitMap()
@@ -26,7 +33,8 @@ void TileMap::InitMap()
 			{
 				m_tiles[i].resize(m_width);
 			}
-			m_tiles[i][j] = TileGameObject(ID);
+			m_tiles[i][j] = Tile(ID, "test");
+			InitTilePosition(m_tiles[i][j], i, j);
 			++ID;
 		}
 	}
@@ -84,12 +92,73 @@ void TileMap::InitEdges() // I don't know how this works but it does
 	}
 }
 
+void TileMap::InitTilePosition(Tile tile, int row, int column)
+{
+	XMFLOAT3 position = GetTransform()->GetPosition();
+
+	int spriteSize = 1;
+
+	float Xoffset = 0;
+	float Yoffset = 0;
+
+	switch (m_width % 2)
+	{
+		case(0):
+		{
+			Xoffset = ((m_width - 1) * 0.5);
+			position.x = (position.x + ((column - Xoffset) * spriteSize));
+
+			break;
+		}
+
+		case(1):
+		{
+			Xoffset = m_width / 2;
+			position.x = (position.x + ((column - Xoffset) * spriteSize));
+
+			break;
+		}
+
+		default:
+		{
+			break;
+		}
+	}
+
+	switch (m_height % 2)
+	{
+		case(0):
+		{
+			Yoffset = ((m_height - 1) * 0.5);
+			position.y = (position.y + ((row - Yoffset) * spriteSize));
+
+			break;
+		}
+
+		case(1):
+		{
+			Yoffset = m_height / 2;
+			position.y = (position.y + ((row - Yoffset) * spriteSize));
+
+			break;
+		}
+
+		default:
+		{
+			break;
+		}
+	}
+
+
+	tile.GetTransform()->SetPosition(position);
+}
+
 //Tile TileMap::GetTileFromWorldPos(int posX, int posY)
 //{
-//	return Tile();
+//	return Tile;
 //}
 
-TileGameObject* TileMap::GetTileFromMapPos(int x, int y)
+Tile* TileMap::GetTileFromMapPos(int x, int y)
 {
 	if (x < m_width && x >= 0 && y < m_height && y >= 0)
 	{
@@ -105,7 +174,7 @@ TileGameObject* TileMap::GetTileFromMapPos(int x, int y)
 
 void TileMap::SetEdges(int x, int y, bool N, bool S, bool W, bool E)
 {
-	TileGameObject* pTile = GetTileFromMapPos(x, y);
+	Tile* pTile = GetTileFromMapPos(x, y);
 
 	if (pTile->GetID() != -25)
 	{
@@ -115,7 +184,7 @@ void TileMap::SetEdges(int x, int y, bool N, bool S, bool W, bool E)
 
 void TileMap::Update(float d)
 {
-	for (int i; i < m_totalTiles; i++)
+	for (int i = 0; i < m_totalTiles; i++)
 	{
 		//TileGameObject tile = m_tiles[i];
 	}

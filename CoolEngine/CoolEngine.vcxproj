@@ -42,7 +42,7 @@
     <ClInclude Include="Engine\Physics\Vector2.h" />
     <ClInclude Include="Engine\stdafx.h" />
     <ClInclude Include="Engine\Structure\Singleton.h" />
-    <ClInclude Include="Engine\TileMap\TileMap\TileGameObject.h" />
+    <ClInclude Include="Engine\TileMap\TileMap\Tile.h" />
     <ClInclude Include="Engine\TileMap\TileMap\TileMap.h" />
   </ItemGroup>
   <ItemGroup>
@@ -59,8 +59,7 @@
     <ClCompile Include="Engine\Physics\Particle.cpp" />
     <ClCompile Include="Engine\Physics\ParticleManager.cpp" />
     <ClCompile Include="Engine\Physics\ParticleSystem.cpp" />
-    <ClCompile Include="Engine\TileMap\TileMap\TestSource.cpp" />
-    <ClCompile Include="Engine\TileMap\TileMap\TileGameObject.cpp" />
+    <ClCompile Include="Engine\TileMap\TileMap\Tile.cpp" />
     <ClCompile Include="Engine\TileMap\TileMap\TileMap.cpp" />
   </ItemGroup>
   <ItemGroup>
