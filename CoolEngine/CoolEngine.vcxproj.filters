@@ -139,7 +139,7 @@
       <Filter>Engine\Managers\Events</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Helpers\Inputs.h">
-      <Filter>Engine</Filter>
+      <Filter>Engine\Managers\Events</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -192,7 +192,7 @@
       <Filter>Engine\Managers\Events</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Helpers\Inputs.cpp">
-      <Filter>Engine</Filter>
+      <Filter>Engine\Managers\Events</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
