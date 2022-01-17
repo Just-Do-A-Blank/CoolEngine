@@ -72,6 +72,7 @@
     </Filter>
     <Filter Include="Engine\EditorUI">
       <UniqueIdentifier>{f37b6a14-892f-408c-b813-6cd328411a91}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Engine\GameObjects\TileMap">
       <UniqueIdentifier>{4362da10-2646-4398-9553-b164f7571686}</UniqueIdentifier>
     </Filter>
