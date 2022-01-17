@@ -29,6 +29,7 @@ class EditorUI
 private:
 	HWND* m_phwnd;
 	bool m_createSceneClicked = false;
+	bool m_createGameObjectClicked = false;
 
 	//Master window
 	bool g_ShowSceneEditor;
@@ -36,10 +37,13 @@ private:
 	bool g_ShowGameObject;
 
 	int num = 1;
-	int gameObjectCount = 0;
 	Scene* m_pselectedScene = nullptr;
 	GameObject* m_pselectedGameObject = nullptr;
 	GameObject* m_rootGameObject = nullptr;
+
+	ImGuiTreeNodeFlags m_base_flags;
+	int m_selectionMask;
+	int m_gameObjectNodeClicked = -1;
 
 	//Gameobject properties
 	WCHAR m_texNameBuffer[FILEPATH_BUFFER_SIZE] = DEFAULT_IMGUI_IMAGE;
@@ -50,7 +54,7 @@ private:
 	void DrawSceneGraphWindow();
 	void DrawSceneManagementWindow();
 	void DrawGameObjectPropertiesWindow();
-	void TraverseTree(TreeNode* pcurrentNode);
+	void TraverseTree(TreeNode* pcurrentNode, int& count);
 public:
 	void InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, HWND* hwnd);
 	void ShutdownIMGUI();

@@ -52,13 +52,20 @@ GameObject* Scene::CreateGameObject(string identifier, GameObject* pparentObject
 {
 	GameObject* gameObject = new GameObject(identifier);
 
-	if (pparentObject)
+	if (!m_prootTreeNode)
 	{
-		m_psceneGraph->AddSibling(m_psceneGraph->GetNodeUsingIdentifier(pparentObject->GetIdentifier()), gameObject);
+		m_prootTreeNode = m_psceneGraph->NewNode(gameObject);
 	}
 	else
 	{
-		m_psceneGraph->NewNode(gameObject);
+		if (!pparentObject)
+		{
+			m_psceneGraph->AddSibling(m_prootTreeNode, gameObject);
+		}
+		else
+		{
+			m_psceneGraph->AddChild(m_psceneGraph->GetNodeUsingIdentifier(pparentObject->GetIdentifier()), gameObject);
+		}
 	}
 
 	m_gameObjectMap.insert(pair<string, GameObject*>(identifier, gameObject));

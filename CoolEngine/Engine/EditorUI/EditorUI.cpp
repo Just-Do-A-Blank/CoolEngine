@@ -67,31 +67,11 @@ void EditorUI::DrawSceneGraphWindow()
 	GameManager* pgameManager = GameManager::GetInstance();
 	static int selected = -1;
 	
-		TreeNode* prootNode = m_pselectedScene->GetRootTreeNode();
+	TreeNode* prootNode = m_pselectedScene->GetRootTreeNode();
 
-	//TreeNode* currentNode = prootNode;
-
-	TraverseTree(prootNode);
-
-	//while (currentNode)
-	//{
-	//	string gameObjectName = currentNode->GameObject->GetIdentifier();
-	//	if (ImGui::Selectable(gameObjectName.c_str(), selected == gameObjectCount))
-	//	{
-	//		if (selected != gameObjectCount)
-	//		{
-	//			m_pselectedGameObject = currentNode->GameObject;
-	//			selected = gameObjectCount;
-	//		}
-	//		else
-	//		{
-	//			m_pselectedGameObject = nullptr;
-	//			selected = -1;
-	//		}
-	//	}
-
-	//	//if(curre)
-	//}
+	m_base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
+	int nodeCount = -1;
+	TraverseTree(prootNode, nodeCount);
 
 	if (ImGui::BeginMenuBar())
 	{
@@ -99,18 +79,7 @@ void EditorUI::DrawSceneGraphWindow()
 		{
 			if (ImGui::MenuItem("GameObject"))
 			{
-				++gameObjectCount;
-				string name = "GameObject" + to_string(gameObjectCount);
-				if (!m_rootGameObject)
-				{
-					//CreateRootGameObject
-					
-					m_rootGameObject = m_pselectedScene->CreateGameObject(name);
-				}
-				else// if(m_pselectedGameObject != m_rootGameObject)
-				{
-					m_pselectedScene->CreateGameObject(name, m_rootGameObject);
-				}
+				m_createGameObjectClicked = true;
 			}
 
 			if (ImGui::MenuItem("ParticleSystem"))
@@ -122,31 +91,48 @@ void EditorUI::DrawSceneGraphWindow()
 		}
 
 		ImGui::EndMenuBar();
-	}
-	ImGui::End();
-}
 
-void EditorUI::TraverseTree(TreeNode* pcurrentNode)
-{
-	if (!pcurrentNode)
-	{
-		return;
-	}
-
-	if (ImGui::TreeNode(pcurrentNode->GameObject->GetIdentifier().c_str()))
-	{
-
-		if (pcurrentNode->Child)
+		if (ImGui::BeginMenu("Delete"))
 		{
-			TraverseTree(pcurrentNode->Child);
+			if (ImGui::MenuItem("GameObject"))
+			{
+				m_createGameObjectClicked = true;
+			}
+
+			ImGui::EndMenu();
 		}
 
-		ImGui::TreePop();
+		ImGui::EndMenuBar();
 	}
+	ImGui::End();
 
-	if (pcurrentNode->Sibling)
+	if (m_createGameObjectClicked)
 	{
-		TraverseTree(pcurrentNode->Sibling);
+		ImGui::Begin("New GameObject");
+		static char gameObjectName[64] = "";
+		IMGUI_LEFT_LABEL(ImGui::InputText, "GameObject Name", gameObjectName, 64);
+
+		int clicked = 0;
+		if (ImGui::Button("Create"))
+		{
+			++clicked;
+		}
+		if (clicked & 1)
+		{
+			if (!m_rootGameObject || !m_pselectedGameObject)
+			{
+				//CreateRootGameObject
+				m_rootGameObject = m_pselectedScene->CreateGameObject(gameObjectName);
+			}
+			else
+			{
+				//Create child gameObject
+				m_pselectedScene->CreateGameObject(gameObjectName, m_pselectedGameObject);
+			}
+			m_createGameObjectClicked = false;
+			gameObjectName[0] = {};
+		}
+		ImGui::End();
 	}
 }
 
@@ -156,8 +142,7 @@ void EditorUI::DrawSceneManagementWindow()
 
 	ImGui::Begin("Scene Manager", nullptr, ImGuiWindowFlags_MenuBar);
 	bool flag = false;
-	//if (ImGui::TreeNode("SceneList"))
-	//{
+
 	static int selected = -1;
 	unordered_map<string, Scene*> sceneList = pgameManager->GetSceneList();
 	int sceneCount = 0;
@@ -180,12 +165,7 @@ void EditorUI::DrawSceneManagementWindow()
 		}
 		++sceneCount;
 	}
-	//ImGui::TreePop();
-	if (m_pselectedScene)
-	{
-		LOG(m_pselectedScene->GetSceneName());
-	}
-	//}
+	
 	if (ImGui::BeginMenuBar())
 	{
 		if (ImGui::BeginMenu("File"))
@@ -225,10 +205,12 @@ void EditorUI::DrawSceneManagementWindow()
 		IMGUI_LEFT_LABEL(ImGui::InputText, "Scene Name", sceneName, 64);
 
 		int clicked = 0;
+
 		if (ImGui::Button("Create"))
 		{
-			clicked++;
+			++clicked;
 		}
+
 		if (clicked & 1)
 		{
 			pgameManager->CreateScene(sceneName);
@@ -292,6 +274,69 @@ void EditorUI::DrawGameObjectPropertiesWindow()
 	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Trigger", &g_ShowSceneEditor);
 
 	ImGui::End();
+}
+
+void EditorUI::TraverseTree(TreeNode* pcurrentNode, int& nodeCount)
+{
+	if (!pcurrentNode)
+	{
+		return;
+	}
+
+	++nodeCount;
+	ImGuiTreeNodeFlags node_flags = m_base_flags;
+	const bool is_selected = (m_selectionMask & (1 << nodeCount)) != 0;
+
+
+	if (is_selected)
+	{
+		node_flags |= ImGuiTreeNodeFlags_Selected;
+	}
+
+	bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)nodeCount, node_flags, pcurrentNode->GameObject->GetIdentifier().c_str(), nodeCount);
+	if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+	{
+		if (nodeCount == m_gameObjectNodeClicked)
+		{
+			m_gameObjectNodeClicked = -1;
+			m_pselectedGameObject = nullptr;
+
+		}
+		else
+		{
+			m_gameObjectNodeClicked = nodeCount;
+			m_pselectedGameObject = pcurrentNode->GameObject;
+		}
+	}
+
+
+	if (node_open)
+	{
+		if (pcurrentNode->Child)
+		{
+			TraverseTree(pcurrentNode->Child, nodeCount);
+		}
+
+
+		ImGui::TreePop();
+	}
+
+	if (pcurrentNode->Sibling)
+	{
+		TraverseTree(pcurrentNode->Sibling, nodeCount);
+	}
+
+
+	if (m_gameObjectNodeClicked != -1)
+	{
+		m_selectionMask = (1 << m_gameObjectNodeClicked); // Click to single-select
+	}
+	else
+	{
+		//Resets selection
+		m_selectionMask = 0;
+	}
+
 }
 
 void EditorUI::ShutdownIMGUI()

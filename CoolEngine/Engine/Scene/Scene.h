@@ -12,6 +12,7 @@ private:
 	SceneGraph* m_psceneGraph;
 
 	GameObject* m_pcurrentlySelectedGameObject = nullptr;
+	TreeNode* m_prootTreeNode = nullptr;
 	unordered_map<string, GameObject*> m_gameObjectMap;
 	
 public:
