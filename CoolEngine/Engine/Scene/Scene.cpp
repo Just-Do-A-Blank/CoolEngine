@@ -19,13 +19,21 @@ void Scene::Update()
 	}
 }
 
-//void Scene::Render(RenderStruct& renderStruct)
-//{
-//	for (unordered_map<string, GameObject*>::iterator it = m_gameObjectMap.begin(); it != m_gameObjectMap.end(); ++it)
-//	{
-//		//it->second->Render(renderStruct);
-//	}
-//}
+void Scene::Render(RenderStruct& renderStruct)
+{
+	for (int i = 0; i < GraphicsManager::GetInstance()->GetNumLayers(); ++i)
+	{
+		for (unordered_map<string, GameObject*>::iterator it = m_gameObjectMap.begin(); it != m_gameObjectMap.end(); ++it)
+		{
+			if (it->second->IsRenderable() == false || it->second->GetLayer() != i)
+			{
+				continue;
+			}
+
+			it->second->Render(renderStruct);
+		}
+	}
+}
 
 unordered_map<string, GameObject*>& Scene::GetAllGameObjects()
 {
