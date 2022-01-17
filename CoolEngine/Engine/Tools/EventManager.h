@@ -19,7 +19,8 @@
 class EventManager
 {
 public:
-	
+
+
 	//Registers client to specific event
 	void AddClient(EventType eventid, Observer* client);
 
@@ -35,7 +36,6 @@ public:
 	//Sends the event to anyone registered
 	void SendEvent(Event* event);
 
-	//Adds events to the event buffers
 	void AddEvent(EventType eventid, void* data = 0);
 	void AddEvent(Event* event);
 
