@@ -7,9 +7,9 @@ class Transform
 	XMFLOAT3 m_rotation;
 	XMFLOAT3 m_scale = XMFLOAT3(1, 1, 1);
 
-	XMFLOAT3 m_forwardVector;
-	XMFLOAT3 m_upVector;
-	XMFLOAT3 m_leftVector;
+	XMFLOAT3 m_forwardVector = XMFLOAT3(0.0f, -1.0f, 0.0f);
+	XMFLOAT3 m_upVector = XMFLOAT3(0.0f, 0.0f, 1.0f);;
+	XMFLOAT3 m_leftVector = XMFLOAT3(-1.0f, 0.0f, 0.0f);;
 
 	//Matrices
 	XMMATRIX m_scaleMatrix;
@@ -23,6 +23,7 @@ public:
 	void Initialize(const XMFLOAT3& position, const XMFLOAT3& rotation, const XMFLOAT3& scale);
 
 	void UpdateMatrix();
+	void UpdateComponentVectors();
 
 	//Getters
 	const XMFLOAT3& GetPosition()const;

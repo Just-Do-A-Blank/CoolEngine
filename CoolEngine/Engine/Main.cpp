@@ -5,14 +5,18 @@
 
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/Graphics/Mesh.h"
-
-#include "Engine/GameObjects/CameraGameObject.h"
 #include "Engine/Graphics/ConstantBuffer.h"
+#include "Engine/Graphics/SpriteAnimation.h"
+#include "Engine/GameObjects/CameraGameObject.h"
 
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/Managers/Events/EventObserver.h"
 
 #include "Engine/Helpers/Inputs.h"
+
+#include "Engine/EditorUI/EditorUI.h"
+
+#include "Engine/TileMap/TileMap/TileMap.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
@@ -20,8 +24,10 @@ HRESULT	InitDevice();
 void CleanupDevice();
 
 void Render();
+void Update();
 
 void BindQuadBuffers();
+
 
 HINSTANCE g_hInstance;
 
@@ -43,6 +49,8 @@ GameObject* g_ptestObject;
 
 ConstantBuffer<PerFrameCB>* g_pperFrameCB;
 ConstantBuffer<PerInstanceCB>* g_pperInstanceCB;
+
+EditorUI* g_peditorUI;
 
 int g_Width = 1920;
 int g_Height = 1080;
@@ -75,16 +83,22 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		return 0;
 	}
 
-  ExampleObserver observer(new int(10));
+	g_peditorUI = new EditorUI();
+	g_peditorUI->InitIMGUI(g_pImmediateContext, g_pd3dDevice, &g_hWnd);
+
+
+	ExampleObserver observer(new int(10));
 	EventManager::Instance()->AddClient(EventType::KeyPressed,&observer);
 	EventManager::Instance()->AddClient(EventType::KeyReleased,&observer);
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, &observer);
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, &observer);
 	EventManager::Instance()->AddClient(EventType::MouseMoved, &observer);
 
+	EventManager::Instance()->AddEvent(new Event(EventType::KeyPressed));
+
 	GraphicsManager::GetInstance()->Init(g_pd3dDevice);
 
-	GraphicsManager::GetInstance()->LoadTextureFromFile(L"Resources/Sprites/Brick.dds", g_pd3dDevice);
+	GraphicsManager::GetInstance()->LoadTextureFromFile(DEFAULT_IMGUI_IMAGE, g_pd3dDevice);
 
 	//Setup input classes
 	g_inputController = new Inputs();
@@ -92,8 +106,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	//Create camera
 	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, 0);
-	XMFLOAT3 cameraForward = XMFLOAT3(0, -1, 0);
-	XMFLOAT3 cameraUp = XMFLOAT3(0, 0, 1);
+	XMFLOAT3 cameraForward = XMFLOAT3(0, 0, 1);
+	XMFLOAT3 cameraUp = XMFLOAT3(0, 1, 0);
 
 	float windowWidth = g_Width;
 	float windowHeight = g_Height;
@@ -109,16 +123,25 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_pperInstanceCB = new ConstantBuffer<PerInstanceCB>(g_pd3dDevice);
 
 	//Create test gameobject
-	XMFLOAT3 objectPos = XMFLOAT3(0, -5.0f, 0);
+	GraphicsManager::GetInstance()->LoadAnimationFromFile(L"TestAnim", g_pd3dDevice);
+
+	XMFLOAT3 objectPos = XMFLOAT3(0, 0.0f, 5.0f);
 	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
 
 	g_ptestObject = new GameObject("tempTile");
 	g_ptestObject->SetMesh(QUAD_MESH_NAME);
 	g_ptestObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
 	g_ptestObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	g_ptestObject->SetAlbedo(L"Resources/Sprites/Brick.dds");
+	g_ptestObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 	g_ptestObject->GetTransform()->SetPosition(objectPos);
 	g_ptestObject->GetTransform()->SetScale(objectScale);
+	g_ptestObject->AddAnimation("Idle", L"TestAnim");
+
+	g_ptestObject->PlayAnimation("Idle");
+
+	//Create test Tile Map
+	TileMap TestMap = TileMap(10, 10, "TestMap", XMFLOAT3(1,1,0));
+	TestMap.testFunc();
 
 
 	// Main message loop
@@ -130,18 +153,18 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 
-
-
-
 		}
 		else
 		{
-			Render();
+			Update();
+
 			//LOG("Console output test");
 
 			EventManager::Instance()->ProcessEvents();
 		}
 	}
+
+	g_peditorUI->ShutdownIMGUI();
 
 	CleanupDevice();
 
@@ -154,19 +177,21 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	return (int)msg.wParam;
 }
 
+// Forward declare message handler from imgui_impl_win32.cpp
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 //--------------------------------------------------------------------------------------
 // Called every time the application receives a message
 //--------------------------------------------------------------------------------------
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam);
+
 	PAINTSTRUCT ps;
 	HDC hdc;
-	
 
 	//Handing the keyboard inputs to a keyboard class & mouse inputs to a mouse class
 	g_inputController->Update(&hWnd, &message, &wParam, &lParam);
-
-
 
 
 	switch (message)
@@ -197,7 +222,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
 
-	
+
 
 	return 0;
 }
@@ -497,8 +522,17 @@ void Render()
 
 	g_ptestObject->Render(g_pImmediateContext, g_pperInstanceCB);
 
+	g_peditorUI->DrawEditorUI();
+
 	// Present our back buffer to our front buffer
 	g_pSwapChain->Present(0, 0);
+}
+
+void Update()
+{
+	GameManager::GetInstance()->GetTimer()->Tick();
+
+	g_ptestObject->Update();
 }
 
 void BindQuadBuffers()

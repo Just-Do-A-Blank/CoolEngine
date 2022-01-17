@@ -3,6 +3,7 @@
 #include "Line.h"
 #include "Circle.h"
 #include <math.h>
+#include "Engine/GameObjects/Transform.h"
 
 class Collision
 {
@@ -13,7 +14,15 @@ public:
 	/// <param name="box1"></param>
 	/// <param name="box2"></param>
 	/// <returns></returns>
-	static bool BoxCollision(Box box1, Box box2);
+	//static bool BoxCollision(Box box1, Box box2);
+
+	/// <summary>
+	/// Return true if two boxes overlap, otherwise false
+	/// </summary>
+	/// <param name="t1"></param>
+	/// <param name="t2"></param>
+	/// <returns></returns>
+	static bool BoxCollision(Transform* t1, Transform* t2);
 
 	/// <summary>
 	/// Calculates if two circles overlap
@@ -39,4 +48,6 @@ public:
 	/// <param name="box"></param>
 	/// <returns></returns>
 	static bool LineBoxCollision(Line line, Box box);
+
+	static bool BoxCollisionAndResponse(Transform* player, Transform* object);
 };

@@ -13,6 +13,20 @@ void Transform::UpdateMatrix()
 	m_translationalMatrix = XMMatrixTranslation(m_position.x, m_position.y, m_position.z);
 
     m_worldMatrix = m_scaleMatrix * m_rotationMatrix * m_translationalMatrix;
+
+    UpdateComponentVectors();
+}
+
+void Transform::UpdateComponentVectors()
+{
+    XMVECTOR tempForward, tempUp, tempLeft;
+    tempForward = XMVector3TransformNormal(XMLoadFloat3(&m_forwardVector), m_rotationMatrix);
+    tempUp = XMVector3TransformNormal(XMLoadFloat3(&m_upVector), m_rotationMatrix);
+    tempLeft = XMVector3TransformNormal(XMLoadFloat3(&m_leftVector), m_rotationMatrix);
+
+    XMStoreFloat3(&m_forwardVector, tempForward);
+    XMStoreFloat3(&m_upVector, tempUp);
+    XMStoreFloat3(&m_leftVector, tempLeft);
 }
 
 const XMFLOAT3& Transform::GetPosition() const

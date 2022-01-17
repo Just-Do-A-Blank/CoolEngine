@@ -46,7 +46,7 @@ void CameraGameObject::ReshapeCamera(float newWindowWidth, float newWindowHeight
 	CreateProjectionMatrix();
 }
 
-void CameraGameObject::Update(float deltaTime)
+void CameraGameObject::Update()
 {
 	CreateViewMatrix();
 }
