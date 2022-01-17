@@ -1,5 +1,6 @@
 #include "EditorUI.h"
 #include "Engine/Managers/GameManager.h"
+#include "Engine/GameObjects/GameObject.h"
 
 #include <ShlObj_core.h>
 
@@ -18,8 +19,6 @@ void EditorUI::InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, H
 
 	ImGui_ImplWin32_Init(*m_phwnd);
 	ImGui_ImplDX11_Init(pdevice, pcontext);
-
-	m_animation = GraphicsManager::GetInstance()->GetAnimation(DEFAULT_IMGUI_ANIMATION);
 }
 
 void EditorUI::DrawEditorUI()
@@ -52,7 +51,7 @@ void EditorUI::DrawEditorUI()
 
 void EditorUI::Update()
 {
-	m_animation.Update();
+	
 }
 
 void EditorUI::DrawMasterWindow()
@@ -153,6 +152,22 @@ void EditorUI::DrawSceneManagementWindow()
 	ImGui::End();
 }
 
+void EditorUI::OnGameObjectSelected()
+{
+	m_perAnimation.clear();
+
+	std::unordered_map<std::string, SpriteAnimation>* panimations = m_pselectedGameObject->GetAnimations();
+
+	m_perAnimation.reserve(panimations->size());
+
+	int count = 0;
+
+	for (std::unordered_map<std::string, SpriteAnimation>::iterator it = panimations->begin(); it != panimations->end(); ++it)
+	{
+		
+	}
+}
+
 float pos[3] =
 {
 	10, 1, 0
@@ -210,31 +225,63 @@ void EditorUI::DrawGameObjectPropertiesWindow()
 	}
 
 	ImGui::Spacing();
-	ImGui::TextUnformatted("Animation");
 
-	if (ImGui::ImageButton((void*)(intptr_t)m_animation.GetCurrentFrame(), DEFAULT_IMGUI_IMAGE_SIZE))
-	{
-		WCHAR tempNameBuffer[FILEPATH_BUFFER_SIZE];
-
-		memcpy(&tempNameBuffer, &m_animNameBuffer, FILEPATH_BUFFER_SIZE);
-
-		OpenFolderExplorer(m_animNameBuffer, _countof(m_animNameBuffer));
-
-		wstring relativePath = m_animNameBuffer;
-
-		if (relativePath == L"")
-		{
-			memcpy(&m_animNameBuffer, &tempNameBuffer, FILEPATH_BUFFER_SIZE);
-		}
-	}
+	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Renderable", &g_ShowSceneEditor);
+	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Collidable", &g_ShowSceneEditor);
+	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Trigger", &g_ShowSceneEditor);
 
 	ImGui::Spacing();
 	ImGui::Separator();
 	ImGui::Spacing();
 
-	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Renderable", &g_ShowSceneEditor);
-	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Collidable", &g_ShowSceneEditor);
-	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Trigger", &g_ShowSceneEditor);
+	ImGui::TextUnformatted("Animation");
+
+	std::unordered_map<std::string, SpriteAnimation>* panimations = m_pselectedGameObject->GetAnimations();
+
+	int count = 0;
+
+	for (std::unordered_map<std::string, SpriteAnimation>::iterator it = panimations->begin(); it != panimations->end(); ++it)
+	{
+		if (ImGui::InputText("Name", m_perAnimation[count].m_animName, ANIM_NAME_SIZE) == true)
+		{
+			if (m_pselectedGameObject->GetAnimations()->count(m_perAnimation[count].m_animName) == 0)
+			{
+				m_animNameUpdateIndex = count;
+				m_animUpdateName = it->first;
+			}
+			else
+			{
+
+			}
+		}
+
+		if (ImGui::ImageButton((void*)(intptr_t)it->second.GetCurrentFrame(), DEFAULT_IMGUI_IMAGE_SIZE))
+		{
+			WCHAR tempNameBuffer[FILEPATH_BUFFER_SIZE];
+
+			memcpy(&tempNameBuffer, &m_perAnimation[count].m_animNameBuffer, FILEPATH_BUFFER_SIZE);
+
+			OpenFolderExplorer(m_perAnimation[count].m_animNameBuffer, _countof(m_perAnimation[count].m_animNameBuffer));
+
+			wstring relativePath = m_perAnimation[count].m_animNameBuffer;
+
+			if (relativePath == L"")
+			{
+				memcpy(&m_perAnimation[count].m_animNameBuffer, &tempNameBuffer, FILEPATH_BUFFER_SIZE);
+			}
+		}
+
+		++count;
+	}
+
+	if (m_animNameUpdateIndex != -1)
+	{
+		SpriteAnimation tempAnim = panimations->at(m_animUpdateName);
+
+		panimations->erase(m_animUpdateName);
+
+		panimations->insert(pair<string, SpriteAnimation>(string(m_perAnimation[m_animNameUpdateIndex].m_animName), tempAnim));
+	}
 
 	ImGui::End();
 }
