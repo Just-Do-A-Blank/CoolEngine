@@ -24,6 +24,10 @@ void GameObject::AddTrigger()
 	m_isTrigger = true;
 }
 
+GameObject::GameObject()
+{
+}
+
 GameObject::GameObject(string identifier)
 {
 	m_identifier = identifier;

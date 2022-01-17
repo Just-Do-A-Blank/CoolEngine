@@ -44,6 +44,7 @@ protected:
 	Transform m_transform;
 
 public:
+	GameObject();
 	GameObject(string identifier);
 
 	//Getters

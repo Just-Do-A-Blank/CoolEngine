@@ -72,6 +72,8 @@
     </Filter>
     <Filter Include="Engine\EditorUI">
       <UniqueIdentifier>{f37b6a14-892f-408c-b813-6cd328411a91}</UniqueIdentifier>
+    <Filter Include="Engine\GameObjects\TileMap">
+      <UniqueIdentifier>{4362da10-2646-4398-9553-b164f7571686}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -192,6 +194,12 @@
     <ClInclude Include="Engine\EditorUI\EditorUI.h">
       <Filter>Engine\EditorUI</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\TileMap\TileMap\TileMap.h">
+      <Filter>Engine\GameObjects\TileMap</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\TileMap\TileMap\Tile.h">
+      <Filter>Engine\GameObjects\TileMap</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -274,6 +282,11 @@
     </ClCompile>
     <ClCompile Include="Engine\EditorUI\EditorUI.cpp">
       <Filter>Engine\EditorUI</Filter>
+    <ClCompile Include="Engine\TileMap\TileMap\TileMap.cpp">
+      <Filter>Engine\GameObjects\TileMap</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\TileMap\TileMap\Tile.cpp">
+      <Filter>Engine\GameObjects\TileMap</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
