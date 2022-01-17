@@ -76,6 +76,9 @@
     <Filter Include="Engine\GameObjects\TileMap">
       <UniqueIdentifier>{4362da10-2646-4398-9553-b164f7571686}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Animations">
+      <UniqueIdentifier>{7bcef011-3f8d-4e95-b07c-31531ff54f41}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -301,5 +304,21 @@
     <FxCompile Include="Engine\Graphics\Shaders\DummyPosTex.hlsl">
       <Filter>Engine\Graphics\Shaders</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Resources\Animations\TestAnim\TestAnim.txt">
+      <Filter>Resources\Animations</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\Animations\TestAnim\TestAnim0.dds">
+      <Filter>Resources\Animations</Filter>
+    </Image>
+    <Image Include="Resources\Animations\TestAnim\TestAnim1.dds">
+      <Filter>Resources\Animations</Filter>
+    </Image>
+    <Image Include="Resources\Animations\TestAnim\TestAnim2.dds">
+      <Filter>Resources\Animations</Filter>
+    </Image>
   </ItemGroup>
 </Project>

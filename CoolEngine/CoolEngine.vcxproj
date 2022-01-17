@@ -112,6 +112,14 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Resources\Animations\TestAnim\TestAnim.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\Animations\TestAnim\TestAnim0.dds" />
+    <Image Include="Resources\Animations\TestAnim\TestAnim1.dds" />
+    <Image Include="Resources\Animations\TestAnim\TestAnim2.dds" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

@@ -1,6 +1,15 @@
 #include "TileMap.h"
 
 
+TileMap::TileMap(string mapPath, XMFLOAT3 position, string identifier)
+{
+	LoadMap(mapPath);
+
+	GetTransform()->SetPosition(position);
+
+	InitMap();
+}
+
 TileMap::TileMap(int width, int height, string identifier, XMFLOAT3 position) : GameObject(identifier)
 {
 	m_width = width, m_height = height;
@@ -9,7 +18,6 @@ TileMap::TileMap(int width, int height, string identifier, XMFLOAT3 position) : 
 	GetTransform()->SetPosition(position);
 
 	InitMap();
-	InitEdges();
 }
 
 TileMap::~TileMap()
@@ -36,58 +44,6 @@ void TileMap::InitMap()
 			m_tiles[i][j] = Tile(ID, "test");
 			InitTilePosition(m_tiles[i][j], i, j);
 			++ID;
-		}
-	}
-}
-
-void TileMap::LoadSprites()
-{
-	
-}
-
-void TileMap::InitEdges() // I don't know how this works but it does
-{
-	char edge = 'N';
-	for (int j = 0; j < 10; j++)
-	{
-		switch (edge)
-		{
-			case('N'):
-			{
-				m_tiles[0][j].SetEdgeN(true);
-
-				if (j == 9)
-				{
-					edge = 'S';
-				}
-			}
-			case('S'):
-			{
-				m_tiles[m_height - 1][j].SetEdgeS(true);
-
-				if (j == 9)
-				{
-					edge = 'W';
-				}
-			}
-			case('W'):
-			{
-				m_tiles[j][0].SetEdgeW(true);
-
-				if (j == 9)
-				{
-					edge = 'E';
-				}
-			}
-			case('E'):
-			{
-				m_tiles[j][m_width - 1].SetEdgeE(true);
-
-				if (j == 9)
-				{
-					edge = ' ';
-				}
-			}
 		}
 	}
 }
@@ -153,8 +109,118 @@ void TileMap::InitTilePosition(Tile tile, int row, int column)
 	tile.GetTransform()->SetPosition(position);
 }
 
+void TileMap::LoadMap(string path)
+{
+	string parameter = "<DIMENSIONS>";
+	string line;
+
+	string data = "";
+	vector<string> dataVec = {};
+
+	ifstream mapFile(path);
+	if (mapFile.is_open())
+	{
+		while (getline(mapFile, line))
+		{
+			//Size
+			if (parameter == "<DIMENSIONS>")
+			{
+				if (line.find(parameter) != -1)
+				{
+					for (int i = parameter.size(); (i < line.size() + 1); i++)
+					{
+						if (line[i] == ',' || line[i] == '*')
+						{
+							dataVec.push_back(data);
+
+							data.clear();
+						}
+						else
+						{
+							if (line[i] != ' ')
+								data.push_back(line[i]);
+						}
+					}
+
+					if (dataVec.size() != 2)
+					{
+						LOG("ERROR WHEN LOADING TILE MAP DIMENSIONS - INVALID NUMBER OF PARAMETERS")
+					}
+					else
+					{
+						m_width  = stoi(dataVec[0]);
+						m_height = stoi(dataVec[1]);
+					}
+				}
+				else
+				{
+					LOG("ERROR WHEN LOADING TILE MAP - PARAMETER 'DIMENSIONS' NOT FOUND");
+				}
+
+				parameter = "<SPRITES> ";
+			}
+
+			//Sprites
+			if (parameter == "<SPRITES>")
+			{
+				//load vector the same as dimensions
+				if (line.find(parameter) != -1)
+				{
+					for (int i = parameter.size(); (i < line.size() + 1); i++)
+					{
+						if (line[i] == ',' || line[i] == '*')
+						{
+						}
+					}
+				}
+				//then load those paths
+
+				parameter = "<ANIMATIONS>";
+			}
+			
+			//Animations
+			if (parameter == "<ANIMATIONS>")
+			{
+				//copy sprites
+				if (line.find(parameter) != -1)
+				{
+					for (int i = parameter.size(); (i < line.size() + 1); i++)
+					{
+						if (line[i] == ',' || line[i] == '*')
+						{
+						}
+					}
+				}
+				//KEEP COUNT OF TOTALS
+				parameter = "<LAYOUT>";
+			}
+
+			//Positions
+			if (parameter == "<LAYOUT>")
+			{
+				if (line.find(parameter) != -1)
+				{
+					for (int i = parameter.size(); (i < line.size() + 1); i++)
+					{
+						if (line[i] == ',' || line[i] == '*')
+						{
+						}
+					}
+				}
+			}
+
+		}
+
+		mapFile.close();
+	}
+}
+
 //Tile TileMap::GetTileFromWorldPos(int posX, int posY)
 //{
+//  calculate which tile pos would be
+//	use tileMap location and use difference between the two, then divide by tile size
+//  if in range, return
+//  
 //	return Tile;
 //}
 
@@ -166,20 +232,19 @@ Tile* TileMap::GetTileFromMapPos(int x, int y)
 	}
 	else
 	{
-		//LOG("ERROR - INVALID TILEMAP COORDINATE: x:") << x << " y:" << y << "\n";
-		//LOG("Bounds for TileMap are " + string(m_width) + " width and " + string(m_height) + " height\n");
+		LOG("ERROR - INVALID TILEMAP COORDINATE");
 		return nullptr;
 	}
 }
 
-void TileMap::SetEdges(int x, int y, bool N, bool S, bool W, bool E)
+void TileMap::SetPassable(int x, int y, bool passable)
 {
-	Tile* pTile = GetTileFromMapPos(x, y);
+	m_tiles[x][y].SetPassable(passable);
+}
 
-	if (pTile->GetID() != -25)
-	{
-		pTile->SetEdges(N, S, W, E);
-	}
+void TileMap::SetPassable(Tile tile, bool passable)
+{
+	tile.SetPassable(passable);
 }
 
 void TileMap::Update(float d)
@@ -194,6 +259,6 @@ void TileMap::Update(float d)
 //{
 //}
 //
-//void TileMap::SetTileAtMapPos(int posX, int posY)
+//void TileMap::SetTileAtMapPos(int posX, int posY, Tile* tile)
 //{
 //}
