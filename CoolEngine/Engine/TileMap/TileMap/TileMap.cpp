@@ -1,7 +1,7 @@
 #include "TileMap.h"
 
 
-TileMap::TileMap(string mapPath, XMFLOAT3 position, string identifier)
+TileMap::TileMap(string mapPath, XMFLOAT3 position, string identifier) : GameObject(identifier)
 {
 	LoadMap(mapPath);
 
@@ -52,25 +52,23 @@ void TileMap::InitTilePosition(Tile tile, int row, int column)
 {
 	XMFLOAT3 position = GetTransform()->GetPosition();
 
-	int spriteSize = 1;
-
-	float Xoffset = 0;
-	float Yoffset = 0;
+	float xOffset = 0;
+	float yOffset = 0;
 
 	switch (m_width % 2)
 	{
-		case(0):
+		case(0): // WHY IS THIS A SWITCH CASE????
 		{
-			Xoffset = ((m_width - 1) * 0.5);
-			position.x = (position.x + ((column - Xoffset) * spriteSize));
+			xOffset = ((m_width - 1) * 0.5);
+			position.x = (position.x + ((column - xOffset) * TILE_SIZE));
 
 			break;
 		}
 
 		case(1):
 		{
-			Xoffset = m_width / 2;
-			position.x = (position.x + ((column - Xoffset) * spriteSize));
+			xOffset = m_width / 2;
+			position.x = (position.x + ((column - xOffset) * TILE_SIZE));
 
 			break;
 		}
@@ -85,16 +83,16 @@ void TileMap::InitTilePosition(Tile tile, int row, int column)
 	{
 		case(0):
 		{
-			Yoffset = ((m_height - 1) * 0.5);
-			position.y = (position.y + ((row - Yoffset) * spriteSize));
+			yOffset = ((m_height - 1) * 0.5);
+			position.y = (position.y + ((row - yOffset) * TILE_SIZE));
 
 			break;
 		}
 
 		case(1):
 		{
-			Yoffset = m_height / 2;
-			position.y = (position.y + ((row - Yoffset) * spriteSize));
+			yOffset = m_height / 2;
+			position.y = (position.y + ((row - yOffset) * TILE_SIZE));
 
 			break;
 		}
@@ -109,8 +107,9 @@ void TileMap::InitTilePosition(Tile tile, int row, int column)
 	tile.GetTransform()->SetPosition(position);
 }
 
-void TileMap::LoadMap(string path)
+void TileMap::LoadMap(string path) // TO DO - Due to layout, error messages can be triggered multiple times without reason. This is because the parameter is set before the line changes
 {
+	int count = 0;
 	string parameter = "<DIMENSIONS>";
 	string line;
 
@@ -122,6 +121,25 @@ void TileMap::LoadMap(string path)
 	{
 		while (getline(mapFile, line))
 		{
+			switch (count)
+			{
+				case(1):
+				{
+					parameter = "<SPRITES>";
+					break;
+				}
+				case(2):
+				{
+					parameter = "<ANIMATIONS>";
+					break;
+				}
+				case(3):
+				{
+					parameter = "<LAYOUT>";
+					break;
+				}
+			}
+
 			//Size
 			if (parameter == "<DIMENSIONS>")
 			{
@@ -132,7 +150,6 @@ void TileMap::LoadMap(string path)
 						if (line[i] == ',' || line[i] == '*')
 						{
 							dataVec.push_back(data);
-
 							data.clear();
 						}
 						else
@@ -151,13 +168,14 @@ void TileMap::LoadMap(string path)
 						m_width  = stoi(dataVec[0]);
 						m_height = stoi(dataVec[1]);
 					}
+
+					data = "";
+					dataVec.clear();
 				}
 				else
 				{
 					LOG("ERROR WHEN LOADING TILE MAP - PARAMETER 'DIMENSIONS' NOT FOUND");
 				}
-
-				parameter = "<SPRITES> ";
 			}
 
 			//Sprites
@@ -170,29 +188,61 @@ void TileMap::LoadMap(string path)
 					{
 						if (line[i] == ',' || line[i] == '*')
 						{
+							dataVec.push_back(data);
+							data.clear();
+						}
+						else
+						{
+							if (line[i] != ' ')
+								data.push_back(line[i]);
 						}
 					}
-				}
-				//then load those paths
 
-				parameter = "<ANIMATIONS>";
+					for (int j = 0; j < dataVec.size(); j++)
+					{
+						m_spritePaths.push_back(dataVec[j]);
+					}
+
+					data = "";
+					dataVec.clear();
+				}
+				else
+				{
+					LOG("ERROR WHEN LOADING TILE MAP - PARAMETER 'SPRITES' NOT FOUND");
+				}
 			}
 			
 			//Animations
 			if (parameter == "<ANIMATIONS>")
 			{
-				//copy sprites
 				if (line.find(parameter) != -1)
 				{
 					for (int i = parameter.size(); (i < line.size() + 1); i++)
 					{
 						if (line[i] == ',' || line[i] == '*')
 						{
+							dataVec.push_back(data);
+							data.clear();
+						}
+						else
+						{
+							if (line[i] != ' ')
+								data.push_back(line[i]);
 						}
 					}
+
+					for (int j = 0; j < dataVec.size(); j++)
+					{
+						m_animPaths.push_back(dataVec[j]);
+					}
+
+					data = "";
+					dataVec.clear();
 				}
-				//KEEP COUNT OF TOTALS
-				parameter = "<LAYOUT>";
+				else
+				{
+					LOG("ERROR WHEN LOADING TILE MAP - PARAMETER 'ANIMATIONS' NOT FOUND");
+				}
 			}
 
 			//Positions
@@ -204,25 +254,65 @@ void TileMap::LoadMap(string path)
 					{
 						if (line[i] == ',' || line[i] == '*')
 						{
+							dataVec.push_back(data);
+							data.clear();
+						}
+						else
+						{
+							if (line[i] != ' ')
+								data.push_back(line[i]);
 						}
 					}
+
+					for (int j = 0; j < dataVec.size(); j++)
+					{
+						m_tileSpriteIndex.push_back(stoi(dataVec[j]));
+					}
+
+					data = "";
+					dataVec.clear();
+				}
+				else
+				{
+					LOG("ERROR WHEN LOADING TILE MAP - PARAMETER 'LAYOUT' NOT FOUND");
 				}
 			}
-
+			count++;
 		}
-
 		mapFile.close();
 	}
 }
 
-//Tile TileMap::GetTileFromWorldPos(int posX, int posY)
-//{
-//  calculate which tile pos would be
-//	use tileMap location and use difference between the two, then divide by tile size
-//  if in range, return
-//  
-//	return Tile;
-//}
+Tile TileMap::GetTileFromWorldPos(int posX, int posY)
+{
+  /*calculate which tile pos would be
+	use tileMap location and use difference between the two, then divide by tile size
+  if in range, return*/
+	XMFLOAT3 newPos = XMFLOAT3(GetTransform()->GetPosition().x - posX, GetTransform()->GetPosition().y - posY, 0);
+	int xRange; = 1;//NEEDS TO BE DIFFERENT BASED ON %2
+	int yRange; = 1;//NEEDS TO BE DIFFERENT BASED ON %2
+
+	//if(m_width % 2 =)
+
+	if (newPos.x >= 0)
+	{
+
+	}
+	else
+	{
+
+	}
+
+	if (newPos.y >= 0)
+	{
+
+	}
+	else
+	{
+
+	}
+	return Tile();
+}
 
 Tile* TileMap::GetTileFromMapPos(int x, int y)
 {
@@ -255,10 +345,12 @@ void TileMap::Update(float d)
 	}
 }
 
-//void TileMap::SetTileAtWorldPos(int posX, int posY)
-//{
-//}
-//
-//void TileMap::SetTileAtMapPos(int posX, int posY, Tile* tile)
-//{
-//}
+void TileMap::SetTileAtWorldPos(int posX, int posY, Tile newTile)
+{
+
+}
+
+void TileMap::SetTileAtMapPos(int posX, int posY, Tile newTile)
+{
+
+}

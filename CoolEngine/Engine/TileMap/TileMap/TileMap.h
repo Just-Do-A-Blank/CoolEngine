@@ -1,5 +1,7 @@
 #pragma once
 
+#define TILE_SIZE 1
+
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -23,7 +25,7 @@ public:
 	//Destructor
 	~TileMap();
 
-	//Tile					GetTileFromWorldPos(int posX, int posY);
+	Tile					GetTileFromWorldPos(int posX, int posY);
 	Tile*					GetTileFromMapPos(int x, int y);
 
 protected:
@@ -40,13 +42,19 @@ private:
 	void					SetPassable(int x, int y, bool passable);
 	void					SetPassable(Tile tile, bool passable);
 
-	//void					SetTileAtWorldPos(int posX, int posY);
-	//void					SetTileAtMapPos(int posX, int posY);
+	void					SetTileAtWorldPos(int posX, int posY, Tile newTile);
+	void					SetTileAtMapPos(int mapPosX, int mapPosY, Tile newTile);
 
 
 	int									m_width;
 	int									m_height;
 	int									m_totalTiles;
+
+
 	
 	std::vector<std::vector<Tile>>		m_tiles;
+	
+	std::vector<int>					m_tileSpriteIndex;
+	std::vector<string>					m_spritePaths;
+	std::vector<string>					m_animPaths;
 };

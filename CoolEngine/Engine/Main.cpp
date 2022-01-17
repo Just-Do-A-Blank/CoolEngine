@@ -133,7 +133,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//TileMap TestMap = TileMap(10, 10, "TestMap", XMFLOAT3(0,0,0));
 
 	//Create new Tile Map from file
-	TileMap loadMap = TileMap("Resources/Levels/TileMaps/TestMap.txt", XMFLOAT3(0, 0, 0), "fileMap");
+	TileMap loadMap = TileMap("Resources/Levels/TileMaps/TestMap.txt", XMFLOAT3(0, 0, 0), "Map01");
+
+	TileMap newloadMap = TileMap("Resources/Levels/TileMaps/BetterTestMap.txt", XMFLOAT3(0, 0, 0), "Map02");
 
 	// Main message loop
 	MSG msg = { 0 };

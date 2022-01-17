@@ -1,4 +1,4 @@
-<DIMENSIONS> 3, 50*
-<SPRITES> *
-<ANIMATIONS> * 
-<LAYOUT> *
+<DIMENSIONS> 5, 1*
+<SPRITES> brick.dds, fake.dds*
+<ANIMATIONS> TestAnim* 
+<LAYOUT> 1,2,1,1,2*
