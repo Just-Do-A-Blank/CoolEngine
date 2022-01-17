@@ -58,7 +58,7 @@ void GameManager::DeleteGameObject(string identifier)
     m_pcurrentScene->DeleteGameObjectUsingIdentifier(identifier);
 }
 
-unordered_map<string, GameObject*> GameManager::GetAllGameObjects()
+unordered_map<string, GameObject*>& GameManager::GetAllGameObjectsInCurrentScene()
 {
     return m_pcurrentScene->GetAllGameObjects();
 }

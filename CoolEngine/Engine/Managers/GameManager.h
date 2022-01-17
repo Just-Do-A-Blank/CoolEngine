@@ -38,6 +38,6 @@ public:
 
 	//Getters
 	unordered_map<string, Scene*> GetSceneList();
-	unordered_map<string, GameObject*> GetAllGameObjectsInCurrentScene();
+	unordered_map<string, GameObject*>& GetAllGameObjectsInCurrentScene();
 };
 
