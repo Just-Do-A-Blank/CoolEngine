@@ -16,8 +16,7 @@ public:
 
 	//Setup
 
-	void InitSprites();
-	void LoadAnimSprites();
+	void InitAnimation(wstring animPath);
 
 	//Getters
 
@@ -41,9 +40,6 @@ protected:
 private:
 	bool m_edgeN, m_edgeS, m_edgeW, m_edgeE;
 	int	 m_ID = -25;
-
-	int  m_animFrames = 1;
-	vector<ID3D11ShaderResourceView*> m_sprites[1] = {};
 
 	void InitEdges();
 };
