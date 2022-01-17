@@ -6,9 +6,9 @@ Tile::Tile() : GameObject()
 Tile::Tile(wstring path, int animFrames, int ID, string identifier) : GameObject(identifier)
 {
 	InitEdges();
+	InitAnimation(path);
 
 	m_ID = ID;
-	m_animFrames = animFrames;
 	
 }
 
@@ -43,18 +43,10 @@ void Tile::SetEdgeE(bool E)
 	m_edgeE = E;
 }
 
-void Tile::InitSprites()
+void Tile::InitAnimation(wstring animPath)
 {
-	if (m_animFrames > 1)
-	{
-		LoadAnimSprites();
-	}
+	AddAnimation("default", animPath);
 	return;
-}
-
-void Tile::LoadAnimSprites()
-{
-	//loadAnimSprite();
 }
 
 void Tile::InitEdges()
