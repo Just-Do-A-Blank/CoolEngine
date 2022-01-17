@@ -102,6 +102,11 @@ SpriteAnimation& GameObject::GetAnimation(std::string name)
 	return m_animations[name];
 }
 
+unordered_map<std::string, SpriteAnimation>* GameObject::GetAnimations()
+{
+	return &m_animations;
+}
+
 bool GameObject::PlayAnimation(std::string name)
 {
 	m_pcurrentAnimation = &m_animations[name];

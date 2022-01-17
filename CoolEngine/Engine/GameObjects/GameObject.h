@@ -59,6 +59,7 @@ public:
 	Mesh* GetMesh() const;
 
 	SpriteAnimation& GetAnimation(std::string name);
+	std::unordered_map<std::string, SpriteAnimation>* GetAnimations();
 
 	bool PlayAnimation(std::string name);
 
