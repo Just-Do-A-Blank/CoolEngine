@@ -46,7 +46,7 @@ void Inputs::Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam)
 		break;
 
 	case(WM_MOUSEMOVE):
-		EventManager::Instance()->AddEvent(new MouseMovedEvent(GET_X_LPARAM(*lParam), GET_Y_LPARAM(*lParam)));
+		EventManager::Instance()->AddEvent(new MouseMovedEvent(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)));
 		break;
 
 	}
