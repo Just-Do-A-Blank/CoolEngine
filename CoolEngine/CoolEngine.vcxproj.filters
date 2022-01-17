@@ -283,6 +283,7 @@
     </ClCompile>
     <ClCompile Include="Engine\EditorUI\EditorUI.cpp">
       <Filter>Engine\EditorUI</Filter>
+    </ClCompile>
     <ClCompile Include="Engine\TileMap\TileMap\TileMap.cpp">
       <Filter>Engine\GameObjects\TileMap</Filter>
     </ClCompile>
