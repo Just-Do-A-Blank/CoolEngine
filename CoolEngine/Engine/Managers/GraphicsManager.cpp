@@ -212,6 +212,11 @@ SpriteAnimation& GraphicsManager::GetAnimation(wstring name) const
 	return SpriteAnimation(m_animationFrames.at(name));
 }
 
+int GraphicsManager::GetNumLayers()
+{
+	return m_NumLayers;
+}
+
 ID3D11InputLayout* GraphicsManager::GetInputLayout(InputLayouts inputLayout) const
 {
 	return m_inputLayouts[(int)inputLayout];

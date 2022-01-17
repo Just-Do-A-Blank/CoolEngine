@@ -11,6 +11,8 @@
 class SpriteAnimation;
 class Shape;
 
+struct RenderStruct;
+
 class GameObject
 {
 	friend class GameManager;
@@ -23,6 +25,8 @@ private:
 
 	Mesh* m_pmesh;
 
+	int m_layer = 0;
+
 	std::unordered_map<std::string, SpriteAnimation> m_animations;
 
 	SpriteAnimation* m_pcurrentAnimation;
@@ -30,7 +34,7 @@ private:
 	string m_identifier;
 
 	//Flags
-	bool m_isRenderable = false;
+	bool m_isRenderable = true;
 	bool m_isCollidable = false;
 	bool m_isTrigger = false;
 
@@ -54,13 +58,15 @@ public:
 	const bool& IsCollidable();
 	const bool& IsTrigger();
 
-	virtual void Render(ID3D11DeviceContext* pcontext, ConstantBuffer<PerInstanceCB>* pconstantBuffer);
+	virtual void Render(RenderStruct& renderStruct);
 	virtual void Update();
 
 	//Getters
 	Mesh* GetMesh() const;
 
 	SpriteAnimation& GetAnimation(std::string name);
+
+	int GetLayer() const;
 
 	bool PlayAnimation(std::string name);
 
@@ -95,6 +101,8 @@ public:
 	void SetIsRenderable(bool& condition);
 	void SetIsCollidable(bool& condition);
 	void SetIsTrigger(bool& condition);
+
+	void SetLayer(int layer);
 
 	bool AddAnimation(string animName, SpriteAnimation& anim);
 	bool AddAnimation(string localAnimName, wstring animName);

@@ -3,6 +3,8 @@
 #include "Engine/Graphics/Vertices.h"
 #include "Engine/Graphics/DDSTextureLoader.h"
 #include "Engine/Graphics/SpriteAnimation.h"
+#include "Engine/Graphics/ConstantBuffer.h"
+#include "Engine/Graphics/ConstantBuffers.h"
 
 #include <unordered_map>
 
@@ -15,11 +17,11 @@
 
 class Mesh;
 
-//struct RenderStruct
-//{
-//	ID3D11DeviceContext* m_pcontext;
-//	ConstantBuffer<PerInstanceCB>* m_pconstantBuffer;
-//};
+struct RenderStruct
+{
+	ID3D11DeviceContext* m_pcontext;
+	ConstantBuffer<PerInstanceCB>* m_pconstantBuffer;
+};
 
 class GraphicsManager : public Singleton<GraphicsManager>
 {
@@ -34,6 +36,8 @@ class GraphicsManager : public Singleton<GraphicsManager>
 
 	std::vector<ID3D11InputLayout*> m_inputLayouts;
 	std::vector<ID3D11SamplerState*> m_samplers;
+
+	int m_NumLayers = 5;
 
 public:
 	void Init(ID3D11Device* pdevice);
@@ -53,6 +57,8 @@ public:
 	Mesh* GetMesh(wstring name) const;
 
 	SpriteAnimation& GetAnimation(wstring name) const;
+
+	int GetNumLayers();
 
 	enum class InputLayouts
 	{
