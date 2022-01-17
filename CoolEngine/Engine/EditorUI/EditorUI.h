@@ -36,6 +36,7 @@ private:
 	bool g_ShowGameObject;
 
 	int num = 1;
+	int gameObjectCount = 0;
 	Scene* m_pselectedScene = nullptr;
 	GameObject* m_pselectedGameObject = nullptr;
 	GameObject* m_rootGameObject = nullptr;

@@ -54,7 +54,7 @@ GameObject* Scene::CreateGameObject(string identifier, GameObject* pparentObject
 
 	if (pparentObject)
 	{
-		m_psceneGraph->AddChild(m_psceneGraph->GetNodeUsingIdentifier(pparentObject->GetIdentifier()), gameObject);
+		m_psceneGraph->AddSibling(m_psceneGraph->GetNodeUsingIdentifier(pparentObject->GetIdentifier()), gameObject);
 	}
 	else
 	{

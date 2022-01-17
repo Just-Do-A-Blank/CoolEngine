@@ -68,7 +68,6 @@ void EditorUI::DrawSceneGraphWindow()
 	static int selected = -1;
 	
 		TreeNode* prootNode = m_pselectedScene->GetRootTreeNode();
-	int gameObjectCount = 0;
 
 	//TreeNode* currentNode = prootNode;
 
@@ -100,14 +99,17 @@ void EditorUI::DrawSceneGraphWindow()
 		{
 			if (ImGui::MenuItem("GameObject"))
 			{
+				++gameObjectCount;
+				string name = "GameObject" + to_string(gameObjectCount);
 				if (!m_rootGameObject)
 				{
 					//CreateRootGameObject
-					m_rootGameObject = m_pselectedScene->CreateGameObject("Test");
+					
+					m_rootGameObject = m_pselectedScene->CreateGameObject(name);
 				}
 				else// if(m_pselectedGameObject != m_rootGameObject)
 				{
-					m_rootGameObject = m_pselectedScene->CreateGameObject("Test", m_rootGameObject);
+					m_pselectedScene->CreateGameObject(name, m_rootGameObject);
 				}
 			}
 
@@ -131,14 +133,16 @@ void EditorUI::TraverseTree(TreeNode* pcurrentNode)
 		return;
 	}
 
-	ImGui::TreeNode(pcurrentNode->GameObject->GetIdentifier().c_str());
-
-	if (pcurrentNode->Child)
+	if (ImGui::TreeNode(pcurrentNode->GameObject->GetIdentifier().c_str()))
 	{
-		TraverseTree(pcurrentNode->Child);
-	}
 
-	ImGui::TreePop();
+		if (pcurrentNode->Child)
+		{
+			TraverseTree(pcurrentNode->Child);
+		}
+
+		ImGui::TreePop();
+	}
 
 	if (pcurrentNode->Sibling)
 	{
