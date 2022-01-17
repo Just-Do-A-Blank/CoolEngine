@@ -144,15 +144,6 @@
     <ClInclude Include="Engine\Managers\GraphicsManager.h">
       <Filter>Engine\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Tools\Events.h">
-      <Filter>Engine\Managers\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Tools\EventManager.h">
-      <Filter>Engine\Managers\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Tools\EventObserver.h">
-      <Filter>Engine\Managers\Events</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Helpers\DebugHelper.h">
       <Filter>Engine\Helpers</Filter>
     </ClInclude>
@@ -201,6 +192,15 @@
     <ClInclude Include="Engine\TileMap\TileMap\Tile.h">
       <Filter>Engine\GameObjects\TileMap</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Tools\EventManager.h">
+      <Filter>Engine\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Tools\EventObserver.h">
+      <Filter>Engine\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Tools\Events.h">
+      <Filter>Engine\Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -242,15 +242,6 @@
     <ClCompile Include="Engine\Managers\GraphicsManager.cpp">
       <Filter>Engine\Managers</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Tools\EventManager.cpp">
-      <Filter>Engine\Managers\Events</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Tools\EventObserver.cpp">
-      <Filter>Engine\Managers\Events</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Tools\Events.cpp">
-      <Filter>Engine\Managers\Events</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Graphics\SpriteAnimation.cpp">
       <Filter>Engine\Graphics</Filter>
     </ClCompile>
@@ -289,6 +280,15 @@
     </ClCompile>
     <ClCompile Include="Engine\TileMap\TileMap\Tile.cpp">
       <Filter>Engine\GameObjects\TileMap</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Tools\EventManager.cpp">
+      <Filter>Engine\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Tools\EventObserver.cpp">
+      <Filter>Engine\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Tools\Events.cpp">
+      <Filter>Engine\Tools</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
