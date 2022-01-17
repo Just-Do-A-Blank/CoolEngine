@@ -2,6 +2,8 @@
 
 #include "Engine/GameObjects/GameObject.h"
 
+#include "Engine/Physics/Collision.h"
+
 Scene::Scene(string identifier)
 {
 	m_sceneIdentifier = identifier;
@@ -17,6 +19,8 @@ void Scene::Update()
 	{
 		it->second->Update();
 	}
+
+	Collision::Update(m_gameObjectMap);
 }
 
 //void Scene::Render(RenderStruct& renderStruct)
