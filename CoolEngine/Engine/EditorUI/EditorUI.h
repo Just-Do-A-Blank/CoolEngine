@@ -22,8 +22,9 @@ struct SelectableText
 
 struct PerAnimation
 {
-	WCHAR m_animNameBuffer[FILEPATH_BUFFER_SIZE] = DEFAULT_IMGUI_ANIMATION;
 	char m_animName[ANIM_NAME_SIZE];
+
+	SpriteAnimation m_spriteAnim;
 };
 
 class EditorUI
@@ -41,6 +42,7 @@ private:
 
 	//Gameobject properties
 	WCHAR m_texNameBuffer[FILEPATH_BUFFER_SIZE] = DEFAULT_IMGUI_IMAGE;
+	WCHAR m_animFilepath[FILEPATH_BUFFER_SIZE] = DEFAULT_IMGUI_ANIMATION;
 
 	vector<PerAnimation> m_perAnimation;
 
@@ -61,7 +63,11 @@ private:
 
 	static ImGuiInputTextCallback AnimNameCallback();
 
+	ID3D11Device* m_pdevice = nullptr;
+
 public:
+	EditorUI(ID3D11Device* pdevice);
+
 	void InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, HWND* hwnd);
 	void ShutdownIMGUI();
 	void DrawEditorUI();

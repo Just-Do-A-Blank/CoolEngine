@@ -21,6 +21,11 @@ void EditorUI::InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, H
 	ImGui_ImplDX11_Init(pdevice, pcontext);
 }
 
+EditorUI::EditorUI(ID3D11Device* pdevice)
+{
+	m_pdevice = pdevice;
+}
+
 void EditorUI::DrawEditorUI()
 {
 	ImGui_ImplDX11_NewFrame();
@@ -51,7 +56,10 @@ void EditorUI::DrawEditorUI()
 
 void EditorUI::Update()
 {
-	
+	for (int i = 0; i < m_perAnimation.size(); ++i)
+	{
+		m_perAnimation[i].m_spriteAnim.Update();
+	}
 }
 
 void EditorUI::DrawMasterWindow()
@@ -164,7 +172,9 @@ void EditorUI::OnGameObjectSelected()
 
 	for (std::unordered_map<std::string, SpriteAnimation>::iterator it = panimations->begin(); it != panimations->end(); ++it)
 	{
-		
+		memcpy(m_perAnimation[count].m_animName, it->first.c_str(), it->first.length());
+
+		m_perAnimation[count].m_spriteAnim = it->second;
 	}
 }
 
@@ -251,7 +261,7 @@ void EditorUI::DrawGameObjectPropertiesWindow()
 			}
 			else
 			{
-
+				LOG("Tried to add an animation with the same local name as one that already exists!");
 			}
 		}
 
@@ -259,15 +269,24 @@ void EditorUI::DrawGameObjectPropertiesWindow()
 		{
 			WCHAR tempNameBuffer[FILEPATH_BUFFER_SIZE];
 
-			memcpy(&tempNameBuffer, &m_perAnimation[count].m_animNameBuffer, FILEPATH_BUFFER_SIZE);
+			memcpy(&tempNameBuffer, &m_animFilepath, FILEPATH_BUFFER_SIZE);
 
-			OpenFolderExplorer(m_perAnimation[count].m_animNameBuffer, _countof(m_perAnimation[count].m_animNameBuffer));
+			OpenFolderExplorer(m_animFilepath, _countof(m_animFilepath));
 
-			wstring relativePath = m_perAnimation[count].m_animNameBuffer;
+			wstring relativePath = m_animFilepath;
 
-			if (relativePath == L"")
+			if (GraphicsManager::GetInstance()->GetAnimation(m_animFilepath).GetFrames() == nullptr)
 			{
-				memcpy(&m_perAnimation[count].m_animNameBuffer, &tempNameBuffer, FILEPATH_BUFFER_SIZE);
+				if (GraphicsManager::GetInstance()->LoadAnimationFromFile(m_animFilepath, m_pdevice) == false)
+				{
+					LOG("Failed to load the animation!");
+				}
+				else
+				{
+					m_perAnimation[count].m_spriteAnim = GraphicsManager::GetInstance()->GetAnimation(m_animFilepath);
+
+					m_pselectedGameObject->OverwriteAnimation(it->first, m_perAnimation[count].m_spriteAnim);
+				}
 			}
 		}
 
@@ -281,6 +300,8 @@ void EditorUI::DrawGameObjectPropertiesWindow()
 		panimations->erase(m_animUpdateName);
 
 		panimations->insert(pair<string, SpriteAnimation>(string(m_perAnimation[m_animNameUpdateIndex].m_animName), tempAnim));
+
+		m_animNameUpdateIndex = -1;
 	}
 
 	ImGui::End();
