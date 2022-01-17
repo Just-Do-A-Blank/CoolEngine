@@ -9,11 +9,6 @@ class ParticleManager
 private:
 	ParticleSystem* m_pParticleSystems[PARTICLE_MANAGER_SIZE];
 
-	// These are used by every particle
-	ID3D11VertexShader* m_pVertexShader;
-	ID3D11PixelShader* m_pPixelShader;
-	Mesh* m_pMesh;
-
 public:
 	ParticleManager();
 	~ParticleManager();
@@ -25,22 +20,10 @@ public:
 	void Update(const float dTime);
 
 	/// <summary>
-	/// Draw all the particle systems, set up buffers
-	/// </summary>
-	/// <param name="pContext"></param>
-	/// <param name="pconstantBuffer"></param>
-	void Render(ID3D11DeviceContext* pContext, ConstantBuffer<PerInstanceCB>* pConstantBuffer);
-
-	/// <summary>
 	/// Find slot for a new system, and initialise it
 	/// </summary>
-	/// <param name="trans"></param>
+	/// <param name="pos"></param>
 	/// <param name="life"></param>
 	/// <param name="type"></param>
-	/// <param name="tex"></param>
-	void AddSystem(Transform trans, float life, SYSTEM_TYPE type, wstring albedoName);
-
-	bool SetVertexShader(wstring shaderName);
-	bool SetPixelShader(wstring shaderName);
-	bool SetMesh(wstring meshName);
+	void AddSystem(Box box, float life, SYSTEM_TYPE type);
 };

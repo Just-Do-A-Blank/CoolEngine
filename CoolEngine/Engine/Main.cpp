@@ -8,10 +8,11 @@
 
 #include "Engine/GameObjects/CameraGameObject.h"
 #include "Engine/Graphics/ConstantBuffer.h"
-#include "FileIO/FileIO.h"
 
-#include "Engine/Tools/EventManager.h"
-#include "Engine/Tools/EventObserver.h"
+#include "Engine/Managers/Events/EventManager.h"
+#include "Engine/Managers/Events/EventObserver.h"
+
+#include "Engine/Helpers/Inputs.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
@@ -46,6 +47,8 @@ ConstantBuffer<PerInstanceCB>* g_pperInstanceCB;
 int g_Width = 1920;
 int g_Height = 1080;
 
+Inputs* g_inputController;
+
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
@@ -66,62 +69,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	if (FAILED(InitWindow(hInstance, nCmdShow)))
 		return 0;
 
-	std::string test("Hello");
-
-	std::vector<std::string> names;
-	std::vector<JSON_VARIABLE_TYPE> types;
-	std::vector<void*> data;
-
-	for (size_t i = 0; i < 20; i++)
-	{
-		names.push_back(std::to_string(i));
-		types.push_back(JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_INT);
-		data.push_back(&i);
-	}
-
-	char* c = "Hello";
-	names.push_back("CharTest");
-	types.push_back(JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_CHAR);
-	data.push_back(c);
-
-	double d = double(647.56);
-	names.push_back("DoubleTest");
-	types.push_back(JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_DOUBLE);
-	data.push_back(&d);
-
-	float f = 6.56;
-	names.push_back("FloatTest");
-	types.push_back(JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_FLOAT);
-	data.push_back(&f);
-
-	names.push_back("StringTest");
-	types.push_back(JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_STRING);
-	data.push_back(&test);
-
-	wchar_t w = 'Fumo';
-	names.push_back("WCHARTest");
-	types.push_back(JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_WCHAR_T);
-	data.push_back(&w);
-
-	XMFLOAT2 XM2 = { 0,0 };
-	names.push_back("XMFLOAT2Test");
-	types.push_back(JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_XMFLOAT2);
-	data.push_back(&XM2);
-
-	XMFLOAT3 XM3 = { 0,0,0 };
-	names.push_back("XMFLOAT3Test");
-	types.push_back(JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_XMFLOAT3);
-	data.push_back(&XM3);
-
-	XMFLOAT4 XM4 = { 0,0,0,0 };
-	names.push_back("XMFLOAT4Test");
-	types.push_back(JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_XMFLOAT4);
-	data.push_back(&XM4);
-
-	std::string location("\\Test.json");
-	std::string fileLocation = FileIO::AttachDefaultFileLocation(location);
-	FileIO::SaveObjectInJson(fileLocation.c_str(), names, types, data);
-	
 	if (FAILED(InitDevice()))
 	{
 		CleanupDevice();
@@ -131,13 +78,17 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   ExampleObserver observer(new int(10));
 	EventManager::Instance()->AddClient(EventType::KeyPressed,&observer);
 	EventManager::Instance()->AddClient(EventType::KeyReleased,&observer);
+	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, &observer);
+	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, &observer);
+	EventManager::Instance()->AddClient(EventType::MouseMoved, &observer);
 
-	EventManager::Instance()->AddEvent(new Event(EventType::KeyPressed));
-	//EventManager::Instance()->AddEvent(new KeyPressedEvent(0x43))
-  
 	GraphicsManager::GetInstance()->Init(g_pd3dDevice);
 
 	GraphicsManager::GetInstance()->LoadTextureFromFile(L"Resources/Sprites/Brick.dds", g_pd3dDevice);
+
+	//Setup input classes
+	g_inputController = new Inputs();
+
 
 	//Create camera
 	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, 0);
@@ -169,9 +120,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_ptestObject->GetTransform()->SetPosition(objectPos);
 	g_ptestObject->GetTransform()->SetScale(objectScale);
 
-	std::vector<std::vector<GameObject>> m_SceneData = FileIO::LoadScene("C:\\Users\\Thoma\\Documents\\GitHub\\CoolEngine\\CoolEngine\\Engine\\FileIO\\Scene.json");
-
-   g_ptestObject = &m_SceneData[0][2];
 
 	// Main message loop
 	MSG msg = { 0 };
@@ -183,12 +131,15 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 			DispatchMessage(&msg);
 
 
-			EventManager::Instance()->ProcessEvents(); 
+
 
 		}
 		else
 		{
 			Render();
+			//LOG("Console output test");
+
+			EventManager::Instance()->ProcessEvents();
 		}
 	}
 
@@ -210,9 +161,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	PAINTSTRUCT ps;
 	HDC hdc;
-
-
 	
+
+	//Handing the keyboard inputs to a keyboard class & mouse inputs to a mouse class
+	g_inputController->Update(&hWnd, &message, &wParam, &lParam);
 
 
 
@@ -231,17 +183,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
-
 	case WM_KEYDOWN:
-		EventManager::Instance()->AddEvent(new KeyPressedEvent(wParam));
-
-
 		if (wParam == VK_ESCAPE)
 		{
 			PostQuitMessage(0);
 		}
 		break;
-
+	case WM_KEYUP:
+		break;
+	case WM_MOUSEMOVE:
+		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}

@@ -71,8 +71,4 @@ public:
 
 	bool SetPixelShader(wstring shaderName);
 	void SetPixelShader(ID3D11PixelShader* ppixelShader);
-
-	void SetIsRenderable(bool& condition);
-	void SetIsCollidable(bool& condition);
-	void SetIsTrigger(bool& condition);
 };
