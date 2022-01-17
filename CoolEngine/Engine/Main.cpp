@@ -14,6 +14,8 @@
 
 #include "Engine/EditorUI/EditorUI.h"
 
+#include "Engine/TileMap/TileMap/TileMap.h"
+
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
 HRESULT	InitDevice();
@@ -123,7 +125,13 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_ptestObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 	g_ptestObject->GetTransform()->SetPosition(objectPos);
 	g_ptestObject->GetTransform()->SetScale(objectScale);
-	g_ptestObject->SetAnimation(L"TestAnim");
+	g_ptestObject->AddAnimation("Idle", L"TestAnim");
+
+	g_ptestObject->PlayAnimation("Idle");
+
+	//Create test Tile Map
+	TileMap TestMap = TileMap(10, 10, "TestMap", XMFLOAT3(1,1,0));
+	TestMap.testFunc();
 
 	// Main message loop
 	MSG msg = { 0 };
