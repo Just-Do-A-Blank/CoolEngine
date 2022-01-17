@@ -293,6 +293,11 @@ bool GameObject::RemoveAnimation(string animName)
 	return true;
 }
 
+void GameObject::SetShape(Shape* collider)
+{
+	m_collider = collider;
+}
+
 const string& GameObject::GetIdentifier()
 {
 	return m_identifier;
@@ -301,4 +306,9 @@ const string& GameObject::GetIdentifier()
 bool GameObject::IsAnimated()
 {
 	return m_pcurrentAnimation == nullptr;
+}
+
+Shape* GameObject::GetShape()
+{
+	return m_collider;
 }

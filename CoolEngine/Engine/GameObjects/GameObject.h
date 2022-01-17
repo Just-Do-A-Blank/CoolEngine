@@ -9,6 +9,7 @@
 #include <string>
 
 class SpriteAnimation;
+class Shape;
 
 class GameObject
 {
@@ -42,6 +43,7 @@ private:
 
 protected:
 	Transform m_transform;
+	Shape* m_collider;
 
 public:
 	GameObject();
@@ -75,6 +77,8 @@ public:
 
 	bool IsAnimated();
 
+	Shape* GetShape();
+
 	//Setters
 	bool SetMesh(wstring meshName);
 	void SetMesh(Mesh* pmesh);
@@ -95,4 +99,6 @@ public:
 	bool AddAnimation(string animName, SpriteAnimation& anim);
 	bool AddAnimation(string localAnimName, wstring animName);
 	bool RemoveAnimation(string animName);
+
+	void SetShape(Shape* collider);
 };
