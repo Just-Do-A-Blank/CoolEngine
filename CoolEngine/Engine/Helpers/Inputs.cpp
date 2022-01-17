@@ -19,17 +19,19 @@ void Inputs::Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam)
 
 		//Mouse events
 	case(WM_LBUTTONDOWN):
-		EventManager::Instance()->AddEvent(new MouseButtonReleasedEvent(*wParam));
+		EventManager::Instance()->AddEvent(new MouseButtonPressedEvent(*wParam));
 		break;
 	case(WM_MBUTTONDOWN):
-		EventManager::Instance()->AddEvent(new MouseButtonReleasedEvent(*wParam));
+		EventManager::Instance()->AddEvent(new MouseButtonPressedEvent(*wParam));
 		break;
 	case(WM_RBUTTONDOWN):
-		EventManager::Instance()->AddEvent(new MouseButtonReleasedEvent(*wParam));
+		EventManager::Instance()->AddEvent(new MouseButtonPressedEvent(*wParam));
 		break;
 	case(WM_XBUTTONDOWN):
-		EventManager::Instance()->AddEvent(new MouseButtonReleasedEvent(*wParam));
+		EventManager::Instance()->AddEvent(new MouseButtonPressedEvent(*wParam));
 		break;
+
+
 	case(WM_LBUTTONUP):
 		EventManager::Instance()->AddEvent(new MouseButtonReleasedEvent(*wParam));
 		break;
@@ -41,6 +43,10 @@ void Inputs::Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam)
 		break;
 	case(WM_XBUTTONUP):
 		EventManager::Instance()->AddEvent(new MouseButtonReleasedEvent(*wParam));
+		break;
+
+	case(WM_MOUSEMOVE):
+		EventManager::Instance()->AddEvent(new MouseMovedEvent(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)));
 		break;
 
 	}

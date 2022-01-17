@@ -51,7 +51,6 @@ public:
 
 	void MouseButtonPressed(MouseButtonPressedEvent* e)
 	{
-		LOG("Im here");
 
 		if (e->GetButton() == MK_LBUTTON)
 		{
