@@ -42,6 +42,10 @@ public:
 	/// <returns></returns>
 	static bool LineBoxCollision(Line line, Box* box);
 
+	// I know this is terrible, but all of these functions assume the 1st item is the player, so the 2nd one will not move as a result of the collision!
+	// I don't dare change this until I know exactly what we want to do with these functions.
+	// If you need this changed in a specific way right now, tell me!
+
 	static bool BoxCollisionAndResponse(Box* player, Box* object);
 
 	static bool CircleBoxCollisionAndResponse(Circle* circle, Box* box);
