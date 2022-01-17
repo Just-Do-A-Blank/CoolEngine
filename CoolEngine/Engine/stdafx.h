@@ -6,8 +6,7 @@
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
 #include <DirectXColors.h>
-#include "Engine/Helpers/DebugHelper.h"
-#include "Helpers/MathHelper.h"
+#include "Managers/DebugManager.h"
 
 #include <unordered_map>
 #include <string>

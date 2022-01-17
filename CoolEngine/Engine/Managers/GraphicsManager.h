@@ -2,7 +2,6 @@
 #include "Engine/Structure/Singleton.h"
 #include "Engine/Graphics/Vertices.h"
 #include "Engine/Graphics/DDSTextureLoader.h"
-#include "Engine/Graphics/SpriteAnimation.h"
 
 #include <unordered_map>
 
@@ -15,12 +14,6 @@
 
 class Mesh;
 
-//struct RenderStruct
-//{
-//	ID3D11DeviceContext* m_pcontext;
-//	ConstantBuffer<PerInstanceCB>* m_pconstantBuffer;
-//};
-
 class GraphicsManager : public Singleton<GraphicsManager>
 {
 	std::unordered_map<wstring, ID3D11ShaderResourceView*> m_textureSRVs;
@@ -29,8 +22,6 @@ class GraphicsManager : public Singleton<GraphicsManager>
 	std::unordered_map<wstring, ID3D11PixelShader*> m_pixelShaders;
 
 	std::unordered_map<wstring, Mesh*> m_meshes;
-
-	std::unordered_map<wstring, std::vector<Frame>*> m_animationFrames;
 
 	std::vector<ID3D11InputLayout*> m_inputLayouts;
 	std::vector<ID3D11SamplerState*> m_samplers;
@@ -42,8 +33,6 @@ public:
 
 	bool LoadTextureFromFile(wstring filename, ID3D11Device* pdevice, size_t maxSize = 0, DDS_ALPHA_MODE* alphaMode = nullptr);
 
-	bool LoadAnimationFromFile(wstring animName, ID3D11Device* pdevice, size_t maxSize = 0, DDS_ALPHA_MODE* alphaMode = nullptr);
-
 	//Getters
 	ID3D11VertexShader* GetVertexShader(wstring name) const;
 	ID3D11PixelShader* GetPixelShader(wstring name) const;
@@ -51,8 +40,6 @@ public:
 	ID3D11ShaderResourceView* GetShaderResourceView(wstring name) const;
 
 	Mesh* GetMesh(wstring name) const;
-
-	SpriteAnimation& GetAnimation(wstring name) const;
 
 	enum class InputLayouts
 	{

@@ -24,10 +24,6 @@ void GameObject::AddTrigger()
 	m_isTrigger = true;
 }
 
-GameObject::GameObject()
-{
-}
-
 GameObject::GameObject(string identifier)
 {
 	m_identifier = identifier;
@@ -63,18 +59,8 @@ void GameObject::Render(ID3D11DeviceContext* pcontext, ConstantBuffer<PerInstanc
 	pcontext->VSSetShader(m_pvertexShader, nullptr, 0);
 
 	pcontext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 1, &pcbBuffer);
+	pcontext->PSSetShaderResources(0, 1, &m_palbedoSRV);
 	pcontext->PSSetShader(m_ppixelShader, nullptr, 0);
-
-	if (m_pcurrentAnimation->GetFrames() == nullptr)
-	{
-		pcontext->PSSetShaderResources(0, 1, &m_palbedoSRV);
-	}
-	else
-	{
-		ID3D11ShaderResourceView* psRV = m_pcurrentAnimation->GetCurrentFrame();
-
-		pcontext->PSSetShaderResources(0, 1, &psRV);
-	}
 
 	//Draw object
 	pcontext->DrawIndexed(m_pmesh->GetIndexCount(), 0, 0);
@@ -84,43 +70,9 @@ void GameObject::Render(ID3D11DeviceContext* pcontext, ConstantBuffer<PerInstanc
 	pcontext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 0, nullptr);
 }
 
-void GameObject::Update()
-{
-	if (m_pcurrentAnimation->GetFrames() != nullptr)
-	{
-		m_pcurrentAnimation->Update();
-	}
-}
-
 Mesh* GameObject::GetMesh() const
 {
 	return m_pmesh;
-}
-
-SpriteAnimation& GameObject::GetAnimation(std::string name)
-{
-	return m_animations[name];
-}
-
-bool GameObject::PlayAnimation(std::string name)
-{
-	m_pcurrentAnimation = &m_animations[name];
-
-	if (m_pcurrentAnimation == nullptr)
-	{
-		LOG("Couldn't find an animation with that name!");
-
-		return false;
-	}
-
-	m_pcurrentAnimation->Play();
-
-	return true;
-}
-
-SpriteAnimation* GameObject::GetCurrentAnimation()
-{
-	return m_pcurrentAnimation;
 }
 
 ID3D11ShaderResourceView* GameObject::GetAlbedoSRV() const
@@ -212,7 +164,7 @@ bool GameObject::SetPixelShader(std::wstring shaderName)
 
 	if (ppixelShader == nullptr)
 	{
-		LOG("Failed to find pixel shader with that name!");
+		std::cout << "Failed to find pixel shader with that name " << shaderName.c_str() << "!" << std::endl;
 
 		return false;
 	}
@@ -227,78 +179,7 @@ void GameObject::SetPixelShader(ID3D11PixelShader* ppixelShader)
 	m_ppixelShader = ppixelShader;
 }
 
-void GameObject::SetIsRenderable(bool& condition)
-{
-	m_isRenderable = condition;
-}
-
-void GameObject::SetIsCollidable(bool& condition)
-{
-	m_isCollidable = condition;
-}
-
-void GameObject::SetIsTrigger(bool& condition)
-{
-	m_isTrigger = condition;
-}
-
-bool GameObject::AddAnimation(string animName, SpriteAnimation& anim)
-{
-	if (m_animations.count(animName) != 0)
-	{
-		LOG("Tried to add an animation but one with that name already exists!");
-
-		return false;
-	}
-
-	m_animations[animName] = anim;
-
-	return true;
-}
-
-bool GameObject::AddAnimation(string localAnimName, wstring animName)
-{
-	SpriteAnimation anim = GraphicsManager::GetInstance()->GetAnimation(animName);
-
-	if (anim.GetFrames() == nullptr)
-	{
-		std::cout << "Failed to find animation with that name!" << std::endl;
-
-		return false;
-	}
-
-	if (m_animations.count(localAnimName) != 0)
-	{
-		LOG("Tried to add an animation but one with that name already exists!");
-
-		return false;
-	}
-
-	m_animations[localAnimName] = anim;
-
-	return true;
-}
-
-bool GameObject::RemoveAnimation(string animName)
-{
-	if (m_animations.count(animName) == 0)
-	{
-		LOG("Tried to remove an animation but one with that name doesn't exist!");
-
-		return false;
-	}
-
-	m_animations.erase(animName);
-
-	return true;
-}
-
 const string& GameObject::GetIdentifier()
 {
 	return m_identifier;
-}
-
-bool GameObject::IsAnimated()
-{
-	return m_pcurrentAnimation == nullptr;
 }
