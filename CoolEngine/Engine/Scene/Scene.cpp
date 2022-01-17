@@ -48,7 +48,7 @@ void Scene::SelectGameObjectUsingIdentifier(string& identifier)
 	m_pcurrentlySelectedGameObject = it->second;
 }
 
-GameObject* Scene::CreateGameObject(string identifier, GameObject* pparentObject)
+GameObject* Scene::CreateGameObject(string identifier, TreeNode* pparentNode)
 {
 	GameObject* gameObject = new GameObject(identifier);
 
@@ -58,19 +58,31 @@ GameObject* Scene::CreateGameObject(string identifier, GameObject* pparentObject
 	}
 	else
 	{
-		if (!pparentObject)
+		if (!pparentNode)
 		{
 			m_psceneGraph->AddSibling(m_prootTreeNode, gameObject);
 		}
 		else
 		{
-			m_psceneGraph->AddChild(m_psceneGraph->GetNodeUsingIdentifier(pparentObject->GetIdentifier()), gameObject);
+			m_psceneGraph->AddChild(pparentNode, gameObject);
 		}
 	}
 
 	m_gameObjectMap.insert(pair<string, GameObject*>(identifier, gameObject));
 
 	return gameObject;
+}
+
+bool& Scene::DeleteGameObject(TreeNode* pnode)
+{
+	bool deleteSuccessful = false;
+	if (!pnode)
+	{
+		return deleteSuccessful;
+	}
+	deleteSuccessful = m_gameObjectMap.erase(pnode->GameObject->GetIdentifier());
+	m_psceneGraph->DeleteGameObject(pnode);
+	return deleteSuccessful;
 }
 
 TreeNode* Scene::GetRootTreeNode()

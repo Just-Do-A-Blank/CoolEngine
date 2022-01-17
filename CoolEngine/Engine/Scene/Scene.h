@@ -26,7 +26,8 @@ public:
 	GameObject* GetGameObjectUsingIdentifier(string& identifier);
 	void SelectGameObjectUsingIdentifier(string& identifier);
 
-	GameObject* CreateGameObject(string identifier, GameObject* pparentObject = nullptr);
+	GameObject* CreateGameObject(string identifier, TreeNode* pparentNode = nullptr);
+	bool& DeleteGameObject(TreeNode* pnode);
 	TreeNode* GetRootTreeNode();
 	TreeNode* GetTreeNode(GameObject* pgameObject);
 	void DeleteGameObjectUsingIdentifier(string& identifier);

@@ -30,6 +30,7 @@ private:
 	HWND* m_phwnd;
 	bool m_createSceneClicked = false;
 	bool m_createGameObjectClicked = false;
+	bool m_deleteGameObjectClicked = false;
 
 	//Master window
 	bool g_ShowSceneEditor;
@@ -38,7 +39,7 @@ private:
 
 	int num = 1;
 	Scene* m_pselectedScene = nullptr;
-	GameObject* m_pselectedGameObject = nullptr;
+	TreeNode* m_pselectedGameObjectNode = nullptr;
 	GameObject* m_rootGameObject = nullptr;
 
 	ImGuiTreeNodeFlags m_base_flags;

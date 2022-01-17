@@ -41,8 +41,11 @@ TreeNode* SceneGraph::AddSibling(TreeNode* currentNode, GameObject* gameObject)
 	{
 		currentNode = currentNode->Sibling;
 	}
+		
+	currentNode->Sibling = NewNode(gameObject);
+	currentNode->Sibling->PreviousNode = currentNode;
 
-	return currentNode->Sibling = NewNode(gameObject);
+	return currentNode->Sibling;
 }
 
 TreeNode* SceneGraph::AddChild(TreeNode* currentNode, GameObject* gameObject)
@@ -58,7 +61,9 @@ TreeNode* SceneGraph::AddChild(TreeNode* currentNode, GameObject* gameObject)
 	}
 	else
 	{
-		return currentNode->Child = NewNode(gameObject);
+		currentNode->Child = NewNode(gameObject);
+		currentNode->Child->PreviousNode = currentNode;
+		return currentNode->Child;
 	}
 }
 
@@ -92,9 +97,49 @@ void SceneGraph::DeleteNode(TreeNode* currenNode)
 		DeleteNode(currenNode->Sibling);
 	}
 
+	delete currenNode->GameObject;
+	currenNode->GameObject = nullptr;
 	delete currenNode;
 	currenNode = nullptr;
 }
+
+void SceneGraph::DeleteGameObject(TreeNode* currenNode)
+{
+	if (currenNode->Child)
+	{
+		DeleteNode(currenNode->Child);
+	}
+
+	if (currenNode->PreviousNode)
+	{
+		if (currenNode->PreviousNode->Sibling == currenNode)
+		{
+			currenNode->PreviousNode->Sibling = currenNode->Sibling;
+		}
+		else if (currenNode->PreviousNode->Child == currenNode)
+		{
+			currenNode->PreviousNode->Child = currenNode->Sibling;
+		}
+	}
+	else
+	{
+		if (currenNode->Sibling)
+		{
+			m_rootNode = currenNode->Sibling;
+			currenNode->Sibling->PreviousNode = nullptr;
+		}
+		else
+		{
+			m_rootNode = nullptr;
+		}
+	}
+
+	delete currenNode->GameObject;
+	currenNode->GameObject = nullptr;
+	delete currenNode;
+	currenNode = nullptr;
+}
+
 
 TreeNode* SceneGraph::GetRootNode()
 {

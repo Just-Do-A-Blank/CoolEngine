@@ -44,6 +44,8 @@ void EditorUI::DrawEditorUI()
 
 	ImGui::Render();
 
+	m_deleteGameObjectClicked = false;
+
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
 
@@ -71,7 +73,11 @@ void EditorUI::DrawSceneGraphWindow()
 
 	m_base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
 	int nodeCount = -1;
-	TraverseTree(prootNode, nodeCount);
+
+	if (!m_deleteGameObjectClicked)
+	{
+		TraverseTree(prootNode, nodeCount);
+	}
 
 	if (ImGui::BeginMenuBar())
 	{
@@ -90,13 +96,15 @@ void EditorUI::DrawSceneGraphWindow()
 			ImGui::EndMenu();
 		}
 
-		ImGui::EndMenuBar();
-
 		if (ImGui::BeginMenu("Delete"))
 		{
 			if (ImGui::MenuItem("GameObject"))
 			{
-				m_createGameObjectClicked = true;
+				m_deleteGameObjectClicked = true;
+				m_pselectedScene->DeleteGameObject(m_pselectedGameObjectNode);
+
+				m_gameObjectNodeClicked = -1;
+				m_pselectedGameObjectNode = nullptr;
 			}
 
 			ImGui::EndMenu();
@@ -119,7 +127,7 @@ void EditorUI::DrawSceneGraphWindow()
 		}
 		if (clicked & 1)
 		{
-			if (!m_rootGameObject || !m_pselectedGameObject)
+			if (!m_rootGameObject || !m_pselectedGameObjectNode)
 			{
 				//CreateRootGameObject
 				m_rootGameObject = m_pselectedScene->CreateGameObject(gameObjectName);
@@ -127,7 +135,7 @@ void EditorUI::DrawSceneGraphWindow()
 			else
 			{
 				//Create child gameObject
-				m_pselectedScene->CreateGameObject(gameObjectName, m_pselectedGameObject);
+				m_pselectedScene->CreateGameObject(gameObjectName, m_pselectedGameObjectNode);
 			}
 			m_createGameObjectClicked = false;
 			gameObjectName[0] = {};
@@ -299,13 +307,13 @@ void EditorUI::TraverseTree(TreeNode* pcurrentNode, int& nodeCount)
 		if (nodeCount == m_gameObjectNodeClicked)
 		{
 			m_gameObjectNodeClicked = -1;
-			m_pselectedGameObject = nullptr;
+			m_pselectedGameObjectNode = nullptr;
 
 		}
 		else
 		{
 			m_gameObjectNodeClicked = nodeCount;
-			m_pselectedGameObject = pcurrentNode->GameObject;
+			m_pselectedGameObjectNode = pcurrentNode;
 		}
 	}
 
