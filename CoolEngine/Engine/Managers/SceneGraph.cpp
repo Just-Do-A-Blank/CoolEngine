@@ -15,17 +15,21 @@ TreeNode* SceneGraph::NewNode(GameObject* gameObject)
 	if (!m_rootNode)
 	{
 		m_rootNode = new TreeNode;
-		m_rootNode->Sibling = m_rootNode->Child = nullptr;
+		m_rootNode->Sibling = nullptr; 
+		m_rootNode->Child = nullptr;
 		m_rootNode->GameObject = gameObject;
-
+		m_rootNode->PreviousParent = nullptr; 
+		m_rootNode->PreviousSibling = nullptr;
 		m_sceneMap.insert(pair<string, TreeNode*>(gameObject->GetIdentifier(), m_rootNode));
 		return m_rootNode;		
 	}
 
 	TreeNode* newNode = new TreeNode();
-	newNode->Sibling = newNode->Child = nullptr;
+	newNode->Sibling = nullptr; 
+	newNode->Child = nullptr;
 	newNode->GameObject = gameObject;
-
+	newNode->PreviousParent = nullptr;
+	newNode->PreviousSibling = nullptr;
 	m_sceneMap.insert(pair<string, TreeNode*>(gameObject->GetIdentifier(), newNode));
 	return newNode;
 }
@@ -43,7 +47,7 @@ TreeNode* SceneGraph::AddSibling(TreeNode* currentNode, GameObject* gameObject)
 	}
 		
 	currentNode->Sibling = NewNode(gameObject);
-	currentNode->Sibling->PreviousNode = currentNode;
+	currentNode->Sibling->PreviousSibling = currentNode;
 
 	return currentNode->Sibling;
 }
@@ -62,7 +66,7 @@ TreeNode* SceneGraph::AddChild(TreeNode* currentNode, GameObject* gameObject)
 	else
 	{
 		currentNode->Child = NewNode(gameObject);
-		currentNode->Child->PreviousNode = currentNode;
+		currentNode->Child->PreviousParent = currentNode;
 		return currentNode->Child;
 	}
 }
@@ -110,27 +114,39 @@ void SceneGraph::DeleteGameObject(TreeNode* currenNode)
 		DeleteNode(currenNode->Child);
 	}
 
-	if (currenNode->PreviousNode)
+	if (currenNode->PreviousParent)
 	{
-		if (currenNode->PreviousNode->Sibling == currenNode)
+		if (currenNode->Sibling)
 		{
-			currenNode->PreviousNode->Sibling = currenNode->Sibling;
+			currenNode->PreviousParent->Child = currenNode->Sibling;
+			currenNode->Sibling->PreviousParent = currenNode->PreviousParent;
+			currenNode->Sibling->PreviousSibling = nullptr;
 		}
-		else if (currenNode->PreviousNode->Child == currenNode)
+		else
 		{
-			currenNode->PreviousNode->Child = currenNode->Sibling;
+			currenNode->PreviousParent->Child = nullptr;
+		}
+	}
+	else if (currenNode->PreviousSibling)
+	{
+		if (currenNode->Sibling)
+		{
+			currenNode->PreviousSibling->Sibling = currenNode->Sibling;
+			currenNode->Sibling->PreviousSibling = currenNode->PreviousSibling;
+			currenNode->Sibling->PreviousParent = nullptr;
+		}
+		else
+		{
+			currenNode->PreviousSibling->Sibling = nullptr;
 		}
 	}
 	else
 	{
+		m_rootNode = currenNode->Sibling;
 		if (currenNode->Sibling)
 		{
-			m_rootNode = currenNode->Sibling;
-			currenNode->Sibling->PreviousNode = nullptr;
-		}
-		else
-		{
-			m_rootNode = nullptr;
+			currenNode->Sibling->PreviousParent = nullptr;
+			currenNode->Sibling->PreviousSibling = nullptr;
 		}
 	}
 

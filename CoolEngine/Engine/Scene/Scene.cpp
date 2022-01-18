@@ -52,6 +52,7 @@ GameObject* Scene::CreateGameObject(string identifier, TreeNode* pparentNode)
 {
 	GameObject* gameObject = new GameObject(identifier);
 
+	m_prootTreeNode = m_psceneGraph->GetRootNode();
 	if (!m_prootTreeNode)
 	{
 		m_prootTreeNode = m_psceneGraph->NewNode(gameObject);

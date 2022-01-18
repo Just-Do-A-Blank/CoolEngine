@@ -5,7 +5,8 @@ struct TreeNode
 {
 	TreeNode* Sibling = nullptr;
 	TreeNode* Child = nullptr;
-	TreeNode* PreviousNode = nullptr;
+	TreeNode* PreviousParent = nullptr;
+	TreeNode* PreviousSibling = nullptr;
 	GameObject* GameObject = nullptr;
 };
 
