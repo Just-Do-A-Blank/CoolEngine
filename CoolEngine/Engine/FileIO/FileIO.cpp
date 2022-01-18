@@ -78,9 +78,35 @@ std::vector<GameObject> FileIO::LoadMultipleGameObjects(const char* fileAddress)
 		objects[i].GetTransform()->SetScale(XMFLOAT3(data.at(i)["Scale"][0], data.at(i)["Scale"][1], data.at(i)["Scale"][2]));
 
 		objects[i].SetMesh(QUAD_MESH_NAME);
-		objects[i].SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-		objects[i].SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-		objects[i].SetAlbedo(L"Resources/Sprites/Brick.dds");
+
+		if (data.at(i)["VertexShaderLocation"] == "NULL")
+		{
+			objects[i].SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+		}
+		else
+		{
+			objects[i].SetVertexShader(data.at(i)["VertexShaderLocation"]);
+		}
+		if (data.at(i)["PixelShaderLocation"] == "NULL")
+		{
+			objects[i].SetVertexShader(DEFAULT_PIXEL_SHADER_NAME);
+		}
+		else
+		{
+			objects[i].SetPixelShader(data.at(i)["PixelShaderLocation"]);
+		}
+		if (data.at(i)["Albedo"] == "NULL")
+		{
+			objects[i].SetAlbedo(L"Resources/Sprites/Brick.dds");
+		}
+		else
+		{
+			objects[i].SetAlbedo(data.at(i)["Albedo"]);
+		}
+
+		//objects[i].SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+		//objects[i].SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+
 
 		bool renderable = false;
 		bool trigger = false;
@@ -88,30 +114,30 @@ std::vector<GameObject> FileIO::LoadMultipleGameObjects(const char* fileAddress)
 
 		if (data.at(i)["IsRenderable"])
 		{
-			renderable = true;
-			objects[i].SetIsRenderable(renderable);
+			//renderable = true;
+			//objects[i].SetIsRenderable(renderable);
 		}
 		else
 		{
-			objects[i].SetIsRenderable(renderable);
+			//objects[i].SetIsRenderable(renderable);
 		}
 		if (data.at(i)["IsTrigger"])
 		{
-			trigger = true;
-			objects[i].SetIsTrigger(trigger);
+			//trigger = true;
+			//objects[i].SetIsTrigger(trigger);
 		}
 		else
 		{
-			objects[i].SetIsTrigger(trigger);
+			//objects[i].SetIsTrigger(trigger);
 		}
 		if (data.at(i)["IsCollideable"])
 		{
-			collideable = true;
-			objects[i].SetIsCollidable(collideable);
+			//collideable = true;
+			//objects[i].SetIsCollidable(collideable);
 		}
 		else
 		{
-			objects[i].SetIsTrigger(collideable);
+			//objects[i].SetIsTrigger(collideable);
 		}
 	}
 	return objects;
@@ -126,47 +152,8 @@ std::vector<GameObject> FileIO::LoadMultipleGameObjects(json file)
 
 	for (size_t i = 0; i < metaData.at(0)["NumberOfObject"]; i++)
 	{
-		objects[i] = GameObject((std::string)data.at(i)["Name"]);
-		objects[i].GetTransform()->SetPosition(XMFLOAT3(data.at(i)["Position"][0], data.at(i)["Position"][1], data.at(i)["Position"][2]));
-		objects[i].GetTransform()->SetRotation(XMFLOAT3(data.at(i)["Rotation"][0], data.at(i)["Rotation"][1], data.at(i)["Rotation"][2]));
-		objects[i].GetTransform()->SetScale(XMFLOAT3(data.at(i)["Scale"][0], data.at(i)["Scale"][1], data.at(i)["Scale"][2]));
-
-		objects[i].SetMesh(QUAD_MESH_NAME);
-		objects[i].SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-		objects[i].SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-		objects[i].SetAlbedo(L"Resources/Sprites/Brick.dds");
-
-		bool renderable = false;
-		bool trigger = false;
-		bool collideable = false;
-
-		if (data.at(i)["IsRenderable"])
-		{
-			renderable = true;
-			objects[i].SetIsRenderable(renderable);
-		}
-		else
-		{
-			objects[i].SetIsRenderable(renderable);
-		}
-		if (data.at(i)["IsTrigger"])
-		{
-			trigger = true;
-			objects[i].SetIsTrigger(trigger);
-		}
-		else
-		{
-			objects[i].SetIsTrigger(trigger);
-		}
-		if (data.at(i)["IsCollideable"])
-		{
-			collideable = true;
-			objects[i].SetIsCollidable(collideable);
-		}
-		else
-		{
-			objects[i].SetIsTrigger(collideable);
-		}
+		objects[i] = LoadGameObject(data, i);
+		int b = 0;
 	}
 	return objects;
 }
@@ -176,7 +163,7 @@ std::vector<GameObject> FileIO::LoadMultipleTiles(json file)
 	json data = file["TilesData"];
 	json metaData = file["MetaData"];
 
-	std::vector<GameObject> objects((int)metaData.at(0)["NumberOfObject"]);
+	std::vector<GameObject> objects((int)metaData.at(0)["NumberOfTiles"]);
 
 	for (size_t i = 0; i < metaData.at(0)["NumberOfTiles"]; i++)
 	{
@@ -189,32 +176,51 @@ std::vector<GameObject> FileIO::LoadMultipleTiles(json file)
 		if (data.at(i)["IsRenderable"])
 		{
 			renderable = true;
-			objects[i].SetIsRenderable(renderable);
+			//objects[i].SetIsRenderable(renderable);
 		}
 		else
 		{
-			objects[i].SetIsRenderable(renderable);
+			//objects[i].SetIsRenderable(renderable);
 		}
 		if (data.at(i)["IsTrigger"])
 		{
 			trigger = true;
-			objects[i].SetIsTrigger(trigger);
+			//objects[i].SetIsTrigger(trigger);
 		}
 		else
 		{
-			objects[i].SetIsTrigger(trigger);
+			//objects[i].SetIsTrigger(trigger);
 		}
 		if (data.at(i)["IsCollideable"])
 		{
 			collideable = true;
-			objects[i].SetIsCollidable(collideable);
+			//objects[i].SetIsCollidable(collideable);
 		}
 		else
 		{
-			objects[i].SetIsTrigger(collideable);
+			//objects[i].SetIsTrigger(collideable);
 		}
 	}
 	return objects;
+}
+
+std::vector<ParticleManager> FileIO::LoadMultipleParticles(json file)
+{
+
+	return std::vector<ParticleManager>();
+}
+
+std::string FileIO::ToString(std::wstring& wideString)
+{
+	std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
+	return conv.to_bytes(wideString);
+}
+
+std::wstring FileIO::ToWstring(std::string& string)
+{
+	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+	std::wstring wide = converter.from_bytes(string);
+	return wide;
 }
 
 std::vector<std::vector<GameObject>> FileIO::LoadScene(const char* fileAddress)
@@ -237,10 +243,9 @@ std::vector<std::vector<GameObject>> FileIO::LoadScene(const char* fileAddress)
 	return fileData;
 }
 
-
 std::vector<GameObject> FileIO::LoadMap(json file, std::vector<GameObject> tiles)
 {
-	json j = file["MapZones"];
+	json j = file["TileMap"];
 	int mapSize = j.at(0)["Area"][0] * (int)j.at(0)["Area"][1];
 	std::vector<GameObject> mapStorage = std::vector<GameObject>(mapSize);
 	for (size_t i = 1; i < file["MetaData"].at(0)["NumberOfTileZones"]; ++i)
@@ -319,116 +324,251 @@ std::string FileIO::AttachDefaultFileLocation(const char* fileAddress)
 	return finalOutput.c_str();
 }
 
-GameObject FileIO::LoadGameObject(const char* fileAddress)
+GameObject FileIO::LoadGameObject(const char* fileAddress, int objectCount)
 {
 	json m_json = LoadJson(fileAddress);
 	json data = m_json["ObjectData"];
 
-	GameObject gameObject((std::string)data.at(0)["Name"]);
+	GameObject gameObject((std::string)data.at(objectCount)["Name"]);
 
-	gameObject.GetTransform()->SetPosition(XMFLOAT3(data.at(0)["Position"][0], data.at(0)["Position"][1], data.at(0)["Position"][2]));
-	gameObject.GetTransform()->SetRotation(XMFLOAT3(data.at(0)["Rotation"][0], data.at(0)["Rotation"][1], data.at(0)["Rotation"][2]));
-	gameObject.GetTransform()->SetScale(XMFLOAT3(data.at(0)["Scale"][0], data.at(0)["Scale"][1], data.at(0)["Scale"][2]));
+	gameObject.GetTransform()->SetPosition(XMFLOAT3(data.at(objectCount)["Position"][0], data.at(objectCount)["Position"][1], data.at(objectCount)["Position"][2]));
+	gameObject.GetTransform()->SetRotation(XMFLOAT3(data.at(objectCount)["Rotation"][0], data.at(objectCount)["Rotation"][1], data.at(objectCount)["Rotation"][2]));
+	gameObject.GetTransform()->SetScale(XMFLOAT3(data.at(objectCount)["Scale"][0], data.at(objectCount)["Scale"][1], data.at(objectCount)["Scale"][2]));
 
 
 	gameObject.SetMesh(QUAD_MESH_NAME);
-	gameObject.SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-	gameObject.SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	gameObject.SetAlbedo(L"Resources/Sprites/Brick.dds");
+	if (data.at(objectCount)["VertexShaderLocation"] == "NULL")
+	{
+		gameObject.SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+	}
+	else
+	{
+		wstring location = ToWstring((std::string)data.at(objectCount)["VertexShaderLocation"]);
+		gameObject.SetVertexShader(location);
+	}
+	if (data.at(objectCount)["PixelShaderLocation"] == "NULL")
+	{
+		gameObject.SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+	}
+	else
+	{
+		wstring location = ToWstring((std::string)data.at(objectCount)["PixelShaderLocation"]);
+		gameObject.SetPixelShader(location);
+	}
+	if (data.at(objectCount)["Albedo"] == "NULL")
+	{
+		gameObject.SetAlbedo(L"Resources/Sprites/Brick.dds");
+	}
+	else
+	{
+		wstring location = ToWstring((std::string)data.at(objectCount)["AlbedoLocation"]);
+		gameObject.SetAlbedo(location);
+	}
 
 	bool renderable = false;
 	bool trigger = false;
 	bool collideable = false;
 
-	if (data.at(0)["IsRenderable"])
+	if (data.at(objectCount)["IsRenderable"])
 	{
 		renderable = true;
-		gameObject.SetIsRenderable(renderable);
+		//gameObject.SetIsRenderable(renderable);
 	}
 	else
 	{
-		gameObject.SetIsRenderable(renderable);
+		//gameObject.SetIsRenderable(renderable);
 	}
-	if (data.at(0)["IsTrigger"])
+	if (data.at(objectCount)["IsTrigger"])
 	{
 		trigger = true;
-		gameObject.SetIsTrigger(trigger);
+		//gameObject.SetIsTrigger(trigger);
 	}
 	else
 	{
-		gameObject.SetIsTrigger(trigger);
+		//gameObject.SetIsTrigger(trigger);
 	}
-	if (data.at(0)["IsCollideable"])
+	if (data.at(objectCount)["IsCollideable"])
 	{
 		collideable = true;
-		gameObject.SetIsCollidable(collideable);
+		//gameObject.SetIsCollidable(collideable);
 	}
 	else
 	{
-		gameObject.SetIsTrigger(collideable);
+		//gameObject.SetIsTrigger(collideable);
 	}
 	return gameObject;
 }
 
-GameObject FileIO::LoadGameObject(const char* fileAddress, ID3D11Device* device)
+GameObject FileIO::LoadGameObject(json file, int objectCount)
 {
-	json m_json = LoadJson(fileAddress);
-	json data = m_json["ObjectData"];
+	json data = file;
 
-	GameObject gameObject((std::string)data.at(0)["Name"]);
+	GameObject gameObject((std::string)data.at(objectCount)["Name"]);
 
-	gameObject.GetTransform()->SetPosition(XMFLOAT3(data.at(0)["Position"][0], data.at(0)["Position"][1], data.at(0)["Position"][2]));
-	gameObject.GetTransform()->SetRotation(XMFLOAT3(data.at(0)["Rotation"][0], data.at(0)["Rotation"][1], data.at(0)["Rotation"][2]));
-	gameObject.GetTransform()->SetScale(XMFLOAT3(data.at(0)["Scale"][0], data.at(0)["Scale"][1], data.at(0)["Scale"][2]));
+	gameObject.GetTransform()->SetPosition(XMFLOAT3(data.at(objectCount)["Position"][0], data.at(objectCount)["Position"][1], data.at(objectCount)["Position"][2]));
+	gameObject.GetTransform()->SetRotation(XMFLOAT3(data.at(objectCount)["Rotation"][0], data.at(objectCount)["Rotation"][1], data.at(objectCount)["Rotation"][2]));
+	gameObject.GetTransform()->SetScale(XMFLOAT3(data.at(objectCount)["Scale"][0], data.at(objectCount)["Scale"][1], data.at(objectCount)["Scale"][2]));
+
 
 	gameObject.SetMesh(QUAD_MESH_NAME);
-	gameObject.SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-	gameObject.SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	gameObject.SetAlbedo(L"Resources/Sprites/Brick.dds");
+	if (data.at(objectCount)["VertexShaderLocation"] == "NULL")
+	{
+		gameObject.SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+	}
+	else
+	{
+		wstring location = ToWstring((std::string)data.at(objectCount)["VertexShaderLocation"]);
+		gameObject.SetVertexShader(location);
+	}
+	if (data.at(objectCount)["PixelShaderLocation"] == "NULL")
+	{
+		gameObject.SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+	}
+	else
+	{
+		wstring location = ToWstring((std::string)data.at(objectCount)["PixelShaderLocation"]);
+		gameObject.SetPixelShader(location);
+	}
+	if (data.at(objectCount)["Albedo"] == "NULL")
+	{
+		gameObject.SetAlbedo(L"Resources/Sprites/Brick.dds");
+	}
+	else
+	{
+		wstring location = ToWstring((std::string)data.at(objectCount)["AlbedoLocation"]);
+		gameObject.SetAlbedo(location);
+	}
 
 	bool renderable = false;
 	bool trigger = false;
 	bool collideable = false;
 
-	if (data.at(0)["IsRenderable"])
+	if (data.at(objectCount)["IsRenderable"])
 	{
-		GraphicsManager::GetInstance()->LoadTextureFromFile(data.at(0)["TextureLocation"], device);
-	    renderable = true;
-		gameObject.SetIsRenderable(renderable);
+		renderable = true;
+		//gameObject.SetIsRenderable(renderable);
 	}
 	else
 	{
-		gameObject.SetIsRenderable(renderable);
+		//gameObject.SetIsRenderable(renderable);
 	}
-	if (data.at(0)["IsTrigger"])
+	if (data.at(objectCount)["IsTrigger"])
 	{
 		trigger = true;
-		gameObject.SetIsTrigger(trigger);
+		//gameObject.SetIsTrigger(trigger);
 	}
 	else
 	{
-		gameObject.SetIsTrigger(trigger);
+		//gameObject.SetIsTrigger(trigger);
 	}
-	if (data.at(0)["IsCollideable"])
+	if (data.at(objectCount)["IsCollideable"])
 	{
 		collideable = true;
-		gameObject.SetIsCollidable(collideable);
+		//gameObject.SetIsCollidable(collideable);
 	}
 	else
 	{
-		gameObject.SetIsTrigger(collideable);
+		//gameObject.SetIsTrigger(collideable);
 	}
 	return gameObject;
 }
 
-void FileIO::LoadMap(const char* fileAddress)
+GameObject FileIO::LoadGameObject(const char* fileAddress, ID3D11Device* device, int objectCount)
 {
+	json m_json = LoadJson(fileAddress);
+	json data = m_json["ObjectData"];
 
+	GameObject gameObject((std::string)data.at(objectCount)["Name"]);
+
+	gameObject.GetTransform()->SetPosition(XMFLOAT3(data.at(objectCount)["Position"][0], data.at(objectCount)["Position"][1], data.at(objectCount)["Position"][2]));
+	gameObject.GetTransform()->SetRotation(XMFLOAT3(data.at(objectCount)["Rotation"][0], data.at(objectCount)["Rotation"][1], data.at(objectCount)["Rotation"][2]));
+	gameObject.GetTransform()->SetScale(XMFLOAT3(data.at(objectCount)["Scale"][0], data.at(objectCount)["Scale"][1], data.at(objectCount)["Scale"][2]));
+
+	gameObject.SetMesh(QUAD_MESH_NAME);
+	if (data.at(objectCount)["VertexShaderLocation"] == "NULL")
+	{
+		gameObject.SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+	}
+	else
+	{
+		wstring location = ToWstring((std::string)data.at(objectCount)["VertexShaderLocation"]);
+		gameObject.SetVertexShader(location);
+	}
+	if (data.at(objectCount)["PixelShaderLocation"] == "NULL")
+	{
+		gameObject.SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+	}
+	else
+	{
+		wstring location = ToWstring((std::string)data.at(objectCount)["PixelShaderLocation"]);
+		gameObject.SetPixelShader(location);
+	}
+	if (data.at(objectCount)["Albedo"] == "NULL")
+	{
+		gameObject.SetAlbedo(L"Resources/Sprites/Brick.dds");
+	}
+	else
+	{
+		gameObject.SetAlbedo(data.at(objectCount)["Albedo"]);
+	}
+
+	bool renderable = false;
+	bool trigger = false;
+	bool collideable = false;
+
+	if (data.at(objectCount)["IsRenderable"])
+	{
+		GraphicsManager::GetInstance()->LoadTextureFromFile(data.at(objectCount)["TextureLocation"], device);
+	    renderable = true;
+		//gameObject.SetIsRenderable(renderable);
+	}
+	else
+	{
+		//gameObject.SetIsRenderable(renderable);
+	}
+	if (data.at(objectCount)["IsTrigger"])
+	{
+		trigger = true;
+		//gameObject.SetIsTrigger(trigger);
+	}
+	else
+	{
+		//gameObject.SetIsTrigger(trigger);
+	}
+	if (data.at(objectCount)["IsCollideable"])
+	{
+		collideable = true;
+		//gameObject.SetIsCollidable(collideable);
+	}
+	else
+	{
+		//gameObject.SetIsTrigger(collideable);
+	}
+	return gameObject;
 }
 
 void FileIO::LoadSavefile(const char* fileAddress)
 {
 
+}
+
+ParticleManager FileIO::LoadParticle(const char* fileLocation, int particleNumber)
+{
+	json m_json = LoadJson(fileLocation);
+	json data = m_json["ParticleData"];
+
+	ParticleManager particleManager;
+	Box box(m_json.at(particleNumber)["Transform"][0], m_json.at(particleNumber)["Transform"][1], 0, 0);
+	particleManager.AddSystem(box, m_json.at(particleNumber)["Life"], m_json.at(particleNumber)["SystemType"]);
+}
+
+ParticleManager FileIO::LoadParticle(json j, int particleNumber)
+{
+	json data = j["ParticleData"];
+
+	ParticleManager particleManager;
+	Box box(data.at(particleNumber)["Transform"][0], data.at(particleNumber)["Transform"][1], 0, 0);
+	particleManager.AddSystem(box, data.at(particleNumber)["Life"], data.at(particleNumber)["SystemType"]);
 }
 
 //////////////////////////SAVE FUNCTIONS ////////////////////////////////////////

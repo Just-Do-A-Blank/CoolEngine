@@ -3,28 +3,45 @@
     {
       "NumberOfObject": 7,
       "NumberOfTiles": 2,
-      "NumberOfTileZones": 2
+      "NumberOfTileZones": 2,
+      "NumberOfParticles": 1
     }
   ],
   "TilesData": [
     {
       "Name": "Tile1",
+      "CountPerScene": 1,
       "ColliderType": "BoxCollider",
-      "IsCollideable": false,
+      "IsCollideable": true,
       "IsRenderable": true,
       "IsTrigger": false,
-      "TextureLocation": "ATexLocation"
+      "Position": [ 0.0, 0.0, 0.0 ],
+      "Rotation": [ 0.0, 0.0, 0.0 ],
+      "Scale": [ 0.0, 0.0, 0.0 ],
+      "TextureLocation": "Resources\\Sprites\\Brick.dds",
+      "VertexShaderLocation": "Engine/Graphics/Shaders/BasicVertex.hlsl",
+      "PixelShaderLocation": "Engine/Graphics/Shaders/BasicPixel.hlsl",
+      "AlbedoLocation": "Resources/Sprites/Brick.dds",
+      "AnimationLocation": "Resources/Sprites/Brick.dds"
     },
     {
       "Name": "Tile2",
+      "CountPerScene": 1,
       "ColliderType": "BoxCollider",
-      "IsCollideable": false,
+      "IsCollideable": true,
       "IsRenderable": true,
       "IsTrigger": false,
-      "TextureLocation": "ATexLocation"
+      "Position": [ 0.0, 0.0, 0.0 ],
+      "Rotation": [ 0.0, 0.0, 0.0 ],
+      "Scale": [ 0.0, 0.0, 0.0 ],
+      "TextureLocation": "Resources\\Sprites\\Brick.dds",
+      "VertexShaderLocation": "Engine/Graphics/Shaders/BasicVertex.hlsl",
+      "PixelShaderLocation": "Engine/Graphics/Shaders/BasicPixel.hlsl",
+      "AlbedoLocation": "Resources/Sprites/Brick.dds",
+      "AnimationLocation": "Resources/Sprites/Brick.dds"
     }
   ],
-  "MapZones": [
+  "TileMap": [
     {
       "Name": "Zone0",
       "ColliderType": "BoxCollider",
@@ -37,8 +54,8 @@
     {
       "Name": "Zone1",
       "ColliderType": "BoxCollider",
-      "AreaX": [0, 150],
-      "AreaY": [0, 150],
+      "AreaX": [ 0, 150 ],
+      "AreaY": [ 0, 150 ],
       "IsCollideable": false,
       "IsRenderable": true,
       "IsTrigger": false,
@@ -52,12 +69,13 @@
       "IsCollideable": false,
       "IsRenderable": true,
       "IsTrigger": false,
-      "TextureLocation": "ATexLocation"
+      "TileName": "Tile2"
     }
   ],
   "ObjectData": [
     {
       "Name": "Object",
+      "CountPerScene": 1,
       "ColliderType": "BoxCollider",
       "IsCollideable": true,
       "IsRenderable": true,
@@ -65,7 +83,11 @@
       "Position": [ 0.0, 0.0, 0.0 ],
       "Rotation": [ 0.0, 0.0, 0.0 ],
       "Scale": [ 0.0, 0.0, 0.0 ],
-      "TextureLocation": "ATexLocation"
+      "TextureLocation": "Resources\\Sprites\\Brick.dds",
+      "VertexShaderLocation": "Engine/Graphics/Shaders/BasicVertex.hlsl",
+      "PixelShaderLocation": "Engine/Graphics/Shaders/BasicPixel.hlsl",
+      "AlbedoLocation": "Resources/Sprites/Brick.dds",
+      "AnimationLocation": "Resources/Sprites/Brick.dds"
     },
     {
       "Name": "Object1",
@@ -76,7 +98,10 @@
       "Position": [ 0.0, 0.0, 0.0 ],
       "Rotation": [ 0.0, 0.0, 0.0 ],
       "Scale": [ 0.0, 0.0, 0.0 ],
-      "TextureLocation": "ATexLocation"
+      "TextureLocation": "Resources\\Sprites\\Brick.dds",
+      "VertexShaderLocation": "Engine/Graphics/Shaders/BasicVertex.hlsl",
+      "PixelShaderLocation": "Engine/Graphics/Shaders/BasicPixel.hlsl",
+      "AlbedoLocation": "Resources/Sprites/Brick.dds"
     },
     {
       "Name": "Object2",
@@ -84,10 +109,13 @@
       "IsCollideable": true,
       "IsRenderable": true,
       "IsTrigger": false,
-      "Position": [ 0.0, -5.0, 0.0 ],
+      "Position": [ 0.0, 0.0, 0.0 ],
       "Rotation": [ 0.0, 0.0, 0.0 ],
-      "Scale": [ 100.0, 100.0, 100.0 ],
-      "TextureLocation": "L'C:\\Users\\Thoma\\Documents\\GitHub\\CoolEngine\\CoolEngine\\Resources\\Sprites\\Brick.dds'"
+      "Scale": [ 0.0, 0.0, 0.0 ],
+      "TextureLocation": "Resources\\Sprites\\Brick.dds",
+      "VertexShaderLocation": "Engine/Graphics/Shaders/BasicVertex.hlsl",
+      "PixelShaderLocation": "Engine/Graphics/Shaders/BasicPixel.hlsl",
+      "AlbedoLocation": "Resources/Sprites/Brick.dds"
     },
     {
       "Name": "Object3",
@@ -98,7 +126,10 @@
       "Position": [ 0.0, 0.0, 0.0 ],
       "Rotation": [ 0.0, 0.0, 0.0 ],
       "Scale": [ 0.0, 0.0, 0.0 ],
-      "TextureLocation": "ATexLocation"
+      "TextureLocation": "Resources\\Sprites\\Brick.dds",
+      "VertexShaderLocation": "Engine/Graphics/Shaders/BasicVertex.hlsl",
+      "PixelShaderLocation": "Engine/Graphics/Shaders/BasicPixel.hlsl",
+      "AlbedoLocation": "Resources/Sprites/Brick.dds"
     },
     {
       "Name": "Object4",
@@ -109,7 +140,10 @@
       "Position": [ 0.0, 0.0, 0.0 ],
       "Rotation": [ 0.0, 0.0, 0.0 ],
       "Scale": [ 0.0, 0.0, 0.0 ],
-      "TextureLocation": "ATexLocation"
+      "TextureLocation": "Resources\\Sprites\\Brick.dds",
+      "VertexShaderLocation": "Engine/Graphics/Shaders/BasicVertex.hlsl",
+      "PixelShaderLocation": "Engine/Graphics/Shaders/BasicPixel.hlsl",
+      "AlbedoLocation": "Resources/Sprites/Brick.dds"
     },
     {
       "Name": "Object5",
@@ -120,7 +154,10 @@
       "Position": [ 0.0, 0.0, 0.0 ],
       "Rotation": [ 0.0, 0.0, 0.0 ],
       "Scale": [ 0.0, 0.0, 0.0 ],
-      "TextureLocation": "ATexLocation"
+      "TextureLocation": "Resources\\Sprites\\Brick.dds",
+      "VertexShaderLocation": "Engine/Graphics/Shaders/BasicVertex.hlsl",
+      "PixelShaderLocation": "Engine/Graphics/Shaders/BasicPixel.hlsl",
+      "AlbedoLocation": "Resources/Sprites/Brick.dds"
     },
     {
       "Name": "Object6",
@@ -131,7 +168,10 @@
       "Position": [ 0.0, 0.0, 0.0 ],
       "Rotation": [ 0.0, 0.0, 0.0 ],
       "Scale": [ 0.0, 0.0, 0.0 ],
-      "TextureLocation": "ATexLocation"
+      "TextureLocation": "Resources\\Sprites\\Brick.dds",
+      "VertexShaderLocation": "Engine/Graphics/Shaders/BasicVertex.hlsl",
+      "PixelShaderLocation": "Engine/Graphics/Shaders/BasicPixel.hlsl",
+      "AlbedoLocation": "Resources/Sprites/Brick.dds"
     },
     {
       "Name": "Object7 ",
@@ -142,7 +182,18 @@
       "Position": [ 0.0, 0.0, 0.0 ],
       "Rotation": [ 0.0, 0.0, 0.0 ],
       "Scale": [ 0.0, 0.0, 0.0 ],
-      "TextureLocation": "ATexLocation"
+      "TextureLocation": "Resources\\Sprites\\Brick.dds",
+      "VertexShaderLocation": "Engine/Graphics/Shaders/BasicVertex.hlsl",
+      "PixelShaderLocation": "Engine/Graphics/Shaders/BasicPixel.hlsl",
+      "AlbedoLocation": "Resources/Sprites/Brick.dds"
+    }
+  ],
+  "ParticleData": [
+    {
+      "Transform": [ 0.0, 0.0 ],
+      "Life" : 0.0 ,
+      "SystemType" : 0,
+      "TextureLocation": "Resources\\Sprites\\Brick.dds"
     }
   ]
 }

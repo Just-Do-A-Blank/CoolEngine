@@ -3,9 +3,15 @@
 #include "json.hpp"
 #include "Engine/Managers/GameManager.h"
 #include "Engine/Managers/GraphicsManager.h"
+#include "Engine\Physics\ParticleManager.cpp"
 #include <fstream>
 #include <iostream>
 #include <windows.h>
+#include <codecvt>
+#include <locale>
+
+///All wstring handling is based off of this https://json.nlohmann.me/home/faq/#wide-string-handling & https://stackoverflow.com/questions/2573834/c-convert-string-or-char-to-wstring-or-wchar-t
+
 
 using namespace nlohmann;
 
@@ -128,7 +134,7 @@ public:
 	/// <param name="fileAddress"></param>
 	/// <param name="manager"></param>
 	/// <returns></returns>
-	static GameObject LoadGameObject(const char* fileAddress);
+	static GameObject LoadGameObject(const char* fileAddress, int objectCount);
 
 	/// <summary>
 	/// Loads a Game Object from a JSON file. This function also calls the load texture function
@@ -136,7 +142,7 @@ public:
 	/// <param name="fileAddress"></param>
 	/// <param name="manager"></param>
 	/// <returns></returns>
-	static GameObject LoadGameObject(const char* fileAddress, ID3D11Device* device);
+	static GameObject LoadGameObject(const char* fileAddress, ID3D11Device* device, int objectCount);
 
 	/// <summary>
 	/// Loads multiple game objects from a singular JSON file
@@ -188,6 +194,8 @@ public:
 	template <typename t>
 	static t LoadTextFile(const char* fileAddress);
 
+	static ParticleManager LoadParticle(const char* fileLocation, int particleNumber);
+
 
 
 	/// <summary>
@@ -220,8 +228,15 @@ private:
 /// Loads multiple game objects from a singular JSON file
 /// </summary>
 /// <param name="fileAddress"></param>
-/// <returns>std::vector<GameObject></returns>
+/// <returns></returns>
 	static std::vector<GameObject> LoadMultipleGameObjects(json file);
+
+	/// <summary>
+/// Loads multiple game objects from a singular JSON file
+/// </summary>
+/// <param name="fileAddress"></param>
+/// <returns>GameObject<GameObject></returns>
+	static GameObject LoadGameObject(json file, int objectCount);
 
 	/// <summary>
 	/// Loads Multiple tiles from a JSON file
@@ -229,4 +244,25 @@ private:
 	/// <param name="file"></param>
 	/// <returns></returns>
 	static std::vector<GameObject> LoadMultipleTiles(json file);
+
+	/// <summary>
+	/// Loads Multiple tiles from a JSON file
+	/// </summary>
+	/// <param name="file"></param>
+	/// <returns></returns>
+	static std::vector<ParticleManager> LoadMultipleParticles(json file);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="wide_string"></param>
+	/// <returns></returns>
+	static std::wstring ToWstring(std::string& wide_string);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="wide_string"></param>
+	/// <returns></returns>
+	static std::string FileIO::ToString(std::wstring& wide_string);
 };

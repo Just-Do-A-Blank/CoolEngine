@@ -17,9 +17,9 @@
       "Rotation": [ 0.0, 0.0, 0.0 ],
       "Scale": [ 0.0, 0.0, 0.0 ],
       "TextureLocation": "ATexLocation",
-      "VertexShaderLocation": "ATexLocation",
-      "PixelShaderLocation": "ATexLocation",
-      "AlbedoLocation": "ATexLocation"
+      "VertexShaderLocation": "Engine/Graphics/Shaders/BasicVertex.hlsl",
+      "PixelShaderLocation": "Engine/Graphics/Shaders/BasicPixel.hlsl",
+      "AlbedoLocation": "Resources/Sprites/Brick.dds"
     }
   ]
 }

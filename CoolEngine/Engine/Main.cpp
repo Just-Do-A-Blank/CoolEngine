@@ -14,6 +14,8 @@
 
 #include "Engine/Helpers/Inputs.h"
 
+#include "FileIO/FileIO.h"
+
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
 HRESULT	InitDevice();
@@ -120,6 +122,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_ptestObject->GetTransform()->SetPosition(objectPos);
 	g_ptestObject->GetTransform()->SetScale(objectScale);
 
+	FileIO::LoadGameObject("C:\\Users\\Thoma\\Documents\\GitHub\\CoolEngine\\CoolEngine\\Engine\\FileIO\\GameObjectTestFile.json", 0);
+	FileIO::LoadScene("C:\\Users\\Thoma\\Documents\\GitHub\\CoolEngine\\CoolEngine\\Engine\\FileIO\\Scene.json");
 
 	// Main message loop
 	MSG msg = { 0 };
@@ -404,6 +408,7 @@ inline HRESULT InitDevice()
 	g_pImmediateContext->RSSetState(g_prasterState);
 
 	g_pImmediateContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 
 	return S_OK;
 }
