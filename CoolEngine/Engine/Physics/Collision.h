@@ -1,8 +1,10 @@
 #pragma once
-#include "Box.h"
-#include "Line.h"
-#include "Circle.h"
 #include <math.h>
+#include "Engine/GameObjects/GameObject.h"
+#include "Engine/Physics/Line.h"
+
+class Box;
+class Circle;
 
 class Collision
 {
@@ -13,7 +15,7 @@ public:
 	/// <param name="box1"></param>
 	/// <param name="box2"></param>
 	/// <returns></returns>
-	static bool BoxCollision(Box box1, Box box2);
+	static bool BoxCollision(Box* box1, Box* box2);
 
 	/// <summary>
 	/// Calculates if two circles overlap
@@ -21,7 +23,7 @@ public:
 	/// <param name="circle1"></param>
 	/// <param name="circle2"></param>
 	/// <returns></returns>
-	static bool CircleCollision(Circle circle1, Circle circle2);
+	static bool CircleCollision(Circle* circle1, Circle* circle2);
 
 	/// <summary>
 	/// Return true if two box and circle overlap, otherwise false
@@ -29,7 +31,7 @@ public:
 	/// <param name="circle"></param>
 	/// <param name="box"></param>
 	/// <returns></returns>
-	static bool CircleBoxCollision(Circle circle, Box box);
+	static bool CircleBoxCollision(Circle* circle, Box* box);
 
 	/// <summary>
 	/// Return true if line and box overlap, otherwise false.
@@ -38,5 +40,17 @@ public:
 	/// <param name="line"></param>
 	/// <param name="box"></param>
 	/// <returns></returns>
-	static bool LineBoxCollision(Line line, Box box);
+	static bool LineBoxCollision(Line line, Box* box);
+
+	// I know this is terrible, but all of these functions assume the 1st item is the player, so the 2nd one will not move as a result of the collision!
+	// I don't dare change this until I know exactly what we want to do with these functions.
+	// If you need this changed in a specific way right now, tell me!
+
+	static bool BoxCollisionAndResponse(Box* player, Box* object);
+
+	static bool CircleBoxCollisionAndResponse(Circle* circle, Box* box);
+
+	static bool CircleCollisionAndResponse(Circle* circle1, Circle* circle2);
+
+	static void Update(unordered_map<string, GameObject*> gameObjectMap);
 };
