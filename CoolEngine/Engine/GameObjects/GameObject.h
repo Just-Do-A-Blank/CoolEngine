@@ -52,7 +52,6 @@ protected:
 public:
 	GameObject();
 	GameObject(string identifier);
-	GameObject() {};
 
 	//Getters
 	const bool& IsRenderable();

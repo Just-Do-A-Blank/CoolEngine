@@ -1,9 +1,9 @@
 #pragma once
 
 #include "json.hpp"
-#include "Engine/Managers/GameManager.h"
+#include "Engine/GameObjects/GameObject.h"
+#include "Engine/Physics/ParticleManager.h"
 #include "Engine/Managers/GraphicsManager.h"
-#include "Engine\Physics\ParticleManager.cpp"
 #include <fstream>
 #include <iostream>
 #include <windows.h>
@@ -166,13 +166,6 @@ public:
 	static std::vector<std::vector<GameObject>>  LoadScene(const char* fileAddress);
 
 	/// <summary>
-	/// Loads the map from a JSON file. Needs a file address to do so. Code in this function is temorary until the structure of the object that needs loading is made clear
-	/// </summary>
-	/// <param name="fileAddress"></param>
-	/// <returns></returns>
-	static void LoadMap(const char* fileAddress);
-
-	/// <summary>
 	/// Loads a Save File from a JSON file. Needs a file address to do so. Code in this function is temorary until the structure of the object that needs loading is made clear
 	/// </summary>
 	/// <param name="fileAddress"></param>
@@ -195,6 +188,9 @@ public:
 	static t LoadTextFile(const char* fileAddress);
 
 	static ParticleManager LoadParticle(const char* fileLocation, int particleNumber);
+
+
+	static ParticleManager LoadParticle(json j, int particleNumber);
 
 
 

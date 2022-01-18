@@ -104,9 +104,6 @@ std::vector<GameObject> FileIO::LoadMultipleGameObjects(const char* fileAddress)
 			objects[i].SetAlbedo(data.at(i)["Albedo"]);
 		}
 
-		//objects[i].SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-		//objects[i].SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-
 
 		bool renderable = false;
 		bool trigger = false;
@@ -114,17 +111,17 @@ std::vector<GameObject> FileIO::LoadMultipleGameObjects(const char* fileAddress)
 
 		if (data.at(i)["IsRenderable"])
 		{
-			//renderable = true;
-			//objects[i].SetIsRenderable(renderable);
+			renderable = true;
+			objects[i].SetIsRenderable(renderable);
 		}
 		else
 		{
-			//objects[i].SetIsRenderable(renderable);
+			objects[i].SetIsRenderable(renderable);
 		}
 		if (data.at(i)["IsTrigger"])
 		{
-			//trigger = true;
-			//objects[i].SetIsTrigger(trigger);
+			trigger = true;
+			objects[i].SetIsTrigger(trigger);
 		}
 		else
 		{
@@ -372,29 +369,29 @@ GameObject FileIO::LoadGameObject(const char* fileAddress, int objectCount)
 	if (data.at(objectCount)["IsRenderable"])
 	{
 		renderable = true;
-		//gameObject.SetIsRenderable(renderable);
+		gameObject.SetIsRenderable(renderable);
 	}
 	else
 	{
-		//gameObject.SetIsRenderable(renderable);
+		gameObject.SetIsRenderable(renderable);
 	}
 	if (data.at(objectCount)["IsTrigger"])
 	{
 		trigger = true;
-		//gameObject.SetIsTrigger(trigger);
+		gameObject.SetIsTrigger(trigger);
 	}
 	else
 	{
-		//gameObject.SetIsTrigger(trigger);
+		gameObject.SetIsTrigger(trigger);
 	}
 	if (data.at(objectCount)["IsCollideable"])
 	{
 		collideable = true;
-		//gameObject.SetIsCollidable(collideable);
+		gameObject.SetIsCollidable(collideable);
 	}
 	else
 	{
-		//gameObject.SetIsTrigger(collideable);
+		gameObject.SetIsTrigger(collideable);
 	}
 	return gameObject;
 }
@@ -446,29 +443,29 @@ GameObject FileIO::LoadGameObject(json file, int objectCount)
 	if (data.at(objectCount)["IsRenderable"])
 	{
 		renderable = true;
-		//gameObject.SetIsRenderable(renderable);
+		gameObject.SetIsRenderable(renderable);
 	}
 	else
 	{
-		//gameObject.SetIsRenderable(renderable);
+		gameObject.SetIsRenderable(renderable);
 	}
 	if (data.at(objectCount)["IsTrigger"])
 	{
 		trigger = true;
-		//gameObject.SetIsTrigger(trigger);
+		gameObject.SetIsTrigger(trigger);
 	}
 	else
 	{
-		//gameObject.SetIsTrigger(trigger);
+		gameObject.SetIsTrigger(trigger);
 	}
 	if (data.at(objectCount)["IsCollideable"])
 	{
 		collideable = true;
-		//gameObject.SetIsCollidable(collideable);
+		gameObject.SetIsCollidable(collideable);
 	}
 	else
 	{
-		//gameObject.SetIsTrigger(collideable);
+		gameObject.SetIsTrigger(collideable);
 	}
 	return gameObject;
 }
@@ -520,29 +517,29 @@ GameObject FileIO::LoadGameObject(const char* fileAddress, ID3D11Device* device,
 	{
 		GraphicsManager::GetInstance()->LoadTextureFromFile(data.at(objectCount)["TextureLocation"], device);
 	    renderable = true;
-		//gameObject.SetIsRenderable(renderable);
+		gameObject.SetIsRenderable(renderable);
 	}
 	else
 	{
-		//gameObject.SetIsRenderable(renderable);
+		gameObject.SetIsRenderable(renderable);
 	}
 	if (data.at(objectCount)["IsTrigger"])
 	{
 		trigger = true;
-		//gameObject.SetIsTrigger(trigger);
+		gameObject.SetIsTrigger(trigger);
 	}
 	else
 	{
-		//gameObject.SetIsTrigger(trigger);
+		gameObject.SetIsTrigger(trigger);
 	}
 	if (data.at(objectCount)["IsCollideable"])
 	{
 		collideable = true;
-		//gameObject.SetIsCollidable(collideable);
+		gameObject.SetIsCollidable(collideable);
 	}
 	else
 	{
-		//gameObject.SetIsTrigger(collideable);
+		gameObject.SetIsTrigger(collideable);
 	}
 	return gameObject;
 }
@@ -557,18 +554,35 @@ ParticleManager FileIO::LoadParticle(const char* fileLocation, int particleNumbe
 	json m_json = LoadJson(fileLocation);
 	json data = m_json["ParticleData"];
 
+
+	XMFLOAT3 postion(m_json.at(particleNumber)["Positon"][0], m_json.at(particleNumber)["Positon"][1], m_json.at(particleNumber)["Positon"][2]);
+	XMFLOAT3 rotation(m_json.at(particleNumber)["Rotation"][0], m_json.at(particleNumber)["Rotation"][1], m_json.at(particleNumber)["Rotation"][2]);
+	XMFLOAT3 scale(m_json.at(particleNumber)["Scale"][0], m_json.at(particleNumber)["Scale"][1], m_json.at(particleNumber)["Scale"][2]);
+
 	ParticleManager particleManager;
-	Box box(m_json.at(particleNumber)["Transform"][0], m_json.at(particleNumber)["Transform"][1], 0, 0);
-	particleManager.AddSystem(box, m_json.at(particleNumber)["Life"], m_json.at(particleNumber)["SystemType"]);
+
+	Transform transform;
+	transform.Initialize(postion, rotation, scale);
+
+	particleManager.AddSystem(transform, m_json.at(particleNumber)["Life"], m_json.at(particleNumber)["SystemType"], ToWstring((std::string)m_json.at(particleNumber)["AlbedoLocation"]));
+	return particleManager;
 }
 
 ParticleManager FileIO::LoadParticle(json j, int particleNumber)
 {
-	json data = j["ParticleData"];
+	json m_json = j["ParticleData"];
+
+	XMFLOAT3 postion(m_json.at(particleNumber)["Positon"][0], m_json.at(particleNumber)["Positon"][1], m_json.at(particleNumber)["Positon"][2]);
+	XMFLOAT3 rotation(m_json.at(particleNumber)["Rotation"][0], m_json.at(particleNumber)["Rotation"][1], m_json.at(particleNumber)["Rotation"][2]);
+	XMFLOAT3 scale(m_json.at(particleNumber)["Scale"][0], m_json.at(particleNumber)["Scale"][1], m_json.at(particleNumber)["Scale"][2]);
 
 	ParticleManager particleManager;
-	Box box(data.at(particleNumber)["Transform"][0], data.at(particleNumber)["Transform"][1], 0, 0);
-	particleManager.AddSystem(box, data.at(particleNumber)["Life"], data.at(particleNumber)["SystemType"]);
+
+	Transform transform;
+	transform.Initialize(postion, rotation, scale);
+
+	particleManager.AddSystem(transform, m_json.at(particleNumber)["Life"], m_json.at(particleNumber)["SystemType"], ToWstring((std::string)m_json.at(particleNumber)["AlbedoLocation"]));
+	return particleManager;
 }
 
 //////////////////////////SAVE FUNCTIONS ////////////////////////////////////////

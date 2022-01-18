@@ -190,10 +190,12 @@
   ],
   "ParticleData": [
     {
-      "Transform": [ 0.0, 0.0 ],
-      "Life" : 0.0 ,
-      "SystemType" : 0,
-      "TextureLocation": "Resources\\Sprites\\Brick.dds"
+      "Positon": [ 0.0, 0.0, 0.0 ],
+      "Rotation": [ 0.0, 0.0, 0.0 ],
+      "Scale": [ 0.0, 0.0, 0.0 ],
+      "Life": 0.0,
+      "SystemType": 0,
+      "AlbedoLocation": "Resources/Sprites/Brick.dds"
     }
   ]
 }
