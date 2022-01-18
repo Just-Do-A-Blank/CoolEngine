@@ -13,7 +13,6 @@ private:
 
 	GameObject* m_pcurrentlySelectedGameObject = nullptr;
 	TreeNode* m_prootTreeNode = nullptr;
-	unordered_map<string, GameObject*> m_gameObjectMap;
 	
 public:
 	Scene(string identifier);
@@ -25,17 +24,18 @@ public:
 	unordered_map<string, GameObject*>& GetAllGameObjects();
 	GameObject* GetGameObjectUsingIdentifier(string& identifier);
 	void SelectGameObjectUsingIdentifier(string& identifier);
+	void SelectGameObject(GameObject* pgameObject);
 
 	GameObject* CreateGameObject(string identifier);
 	GameObject* CreateGameObject(string identifier, TreeNode* pparentNode);
 
-	bool& DeleteGameObject(TreeNode* pnode);
-	TreeNode* GetRootTreeNode();
-	TreeNode* GetTreeNode(GameObject* pgameObject);
-	void DeleteGameObjectUsingIdentifier(string& identifier);
+	void DeleteGameObjectUsingNode(TreeNode* pnode);
+	void DeleteGameObjectUsingIdentifier(string identifier);
 	void DeleteSelectedGameObject();
 
 	//Getters
+	TreeNode* GetRootTreeNode();
+	TreeNode* GetTreeNode(GameObject* pgameObject);
 	string& GetSceneName();
 };
 
