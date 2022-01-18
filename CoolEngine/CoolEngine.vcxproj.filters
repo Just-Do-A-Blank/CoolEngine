@@ -192,17 +192,20 @@
     <ClInclude Include="Engine\TileMap\TileMap\Tile.h">
       <Filter>Engine\GameObjects\TileMap</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Tools\EventManager.h">
-      <Filter>Engine\Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Tools\EventObserver.h">
-      <Filter>Engine\Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Tools\Events.h">
-      <Filter>Engine\Tools</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Physics\Shape.h">
       <Filter>Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Helpers\Inputs.h">
+      <Filter>Engine\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\EventObserver.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\Events.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\EventManager.h">
+      <Filter>Engine\Managers\Events</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -284,14 +287,17 @@
     <ClCompile Include="Engine\TileMap\TileMap\Tile.cpp">
       <Filter>Engine\GameObjects\TileMap</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Tools\EventManager.cpp">
-      <Filter>Engine\Tools</Filter>
+    <ClCompile Include="Engine\Helpers\Inputs.cpp">
+      <Filter>Engine\Helpers</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Tools\EventObserver.cpp">
-      <Filter>Engine\Tools</Filter>
+    <ClCompile Include="Engine\Managers\Events\EventObserver.cpp">
+      <Filter>Engine\Managers\Events</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Tools\Events.cpp">
-      <Filter>Engine\Tools</Filter>
+    <ClCompile Include="Engine\Managers\Events\Events.cpp">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\Events\EventManager.cpp">
+      <Filter>Engine\Managers\Events</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

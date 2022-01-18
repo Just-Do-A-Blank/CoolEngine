@@ -9,8 +9,9 @@
 #include "Engine/Graphics/SpriteAnimation.h"
 #include "Engine/GameObjects/CameraGameObject.h"
 
-#include "Engine/Tools/EventManager.h"
-#include "Engine/Tools/EventObserver.h"
+#include "Engine/Managers/Events/EventManager.h"
+#include "Engine/Managers/Events/EventObserver.h"
+#include "Engine/Helpers/Inputs.h"
 
 #include "Engine/EditorUI/EditorUI.h"
 
@@ -50,6 +51,8 @@ EditorUI* g_peditorUI;
 
 Scene* g_pScene = nullptr;
 
+Inputs* g_inputController;
+
 int g_Width = 1920;
 int g_Height = 1080;
 
@@ -86,14 +89,16 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	ExampleObserver observer(new int(10));
 	EventManager::Instance()->AddClient(EventType::KeyPressed,&observer);
 	EventManager::Instance()->AddClient(EventType::KeyReleased,&observer);
-
-	EventManager::Instance()->AddEvent(new Event(EventType::KeyPressed));
-	//EventManager::Instance()->AddEvent(new KeyPressedEvent(0x43))
+	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, &observer);
+	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, &observer);
+	EventManager::Instance()->AddClient(EventType::MouseMoved, &observer);
 
 	GraphicsManager::GetInstance()->Init(g_pd3dDevice);
 
 	GraphicsManager::GetInstance()->LoadTextureFromFile(DEFAULT_IMGUI_IMAGE, g_pd3dDevice);
 	GraphicsManager::GetInstance()->LoadTextureFromFile(L"Resources\\Sprites\\Test2.dds", g_pd3dDevice);
+
+	g_inputController = new Inputs();
 
 	//Create camera
 	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, 0);
@@ -198,15 +203,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam);
 
+	g_inputController->Update(&hWnd, &message, &wParam, &lParam);
+	
 	PAINTSTRUCT ps;
 	HDC hdc;
 
 	switch (message)
 	{
-	case WM_LBUTTONDOWN:
-	{
-		break;
-	}
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 		EndPaint(hWnd, &ps);
@@ -217,9 +220,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_KEYDOWN:
-		EventManager::Instance()->AddEvent(new KeyPressedEvent(wParam));
-
-
 		if (wParam == VK_ESCAPE)
 		{
 			PostQuitMessage(0);

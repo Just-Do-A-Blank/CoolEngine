@@ -51,6 +51,20 @@ public:
 
 	void MouseButtonPressed(MouseButtonPressedEvent* e)
 	{
+		if (e->GetButton() == VK_LBUTTON)
+		{
+
+			LOG("MB1");
+
+		}
+
+		if (e->GetButton() == VK_RBUTTON)
+		{
+
+			LOG("MB2");
+
+		}
+
 
 	}
 
@@ -61,7 +75,8 @@ public:
 
 	void MouseMoved(MouseMovedEvent* e)
 	{
-
+		LOG(e->GetX()); 
+		LOG(e->GetY());
 	}
 
 	void Handle(Event* e)
