@@ -58,6 +58,24 @@
     <Filter Include="Engine\Managers\Events">
       <UniqueIdentifier>{fe343eac-e903-4a37-800d-6b7c75317835}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Helpers">
+      <UniqueIdentifier>{b7094138-64a7-40ab-b98e-13bc2b8ff7e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Includes">
+      <UniqueIdentifier>{849334a7-9492-4248-8ccb-4876c67dd766}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Includes\IMGUI">
+      <UniqueIdentifier>{25e05f73-ba22-439a-a374-c951e2bf745f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Scenes">
+      <UniqueIdentifier>{1dd4e68e-7a12-4c4c-9e2b-6c5bfd8206be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\EditorUI">
+      <UniqueIdentifier>{f37b6a14-892f-408c-b813-6cd328411a91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GameObjects\TileMap">
+      <UniqueIdentifier>{4362da10-2646-4398-9553-b164f7571686}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -126,11 +144,59 @@
     <ClInclude Include="Engine\Managers\GraphicsManager.h">
       <Filter>Engine\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Managers\DebugManager.h">
-      <Filter>Engine\Managers</Filter>
+    <ClInclude Include="Engine\Helpers\DebugHelper.h">
+      <Filter>Engine\Helpers</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Managers\Events\EventManager.h">
-      <Filter>Engine\Managers\Events</Filter>
+    <ClInclude Include="Engine\Helpers\MathHelper.h">
+      <Filter>Engine\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\SpriteAnimation.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Helpers\Timer.h">
+      <Filter>Engine\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\IMGUI\imconfig.h">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\IMGUI\imgui.h">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\IMGUI\imgui_internal.h">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\IMGUI\imstb_rectpack.h">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\IMGUI\imstb_textedit.h">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\IMGUI\imstb_truetype.h">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\IMGUI\imgui_impl_dx11.h">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\IMGUI\imgui_impl_win32.h">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Scene\Scene.h">
+      <Filter>Engine\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\EditorUI\EditorUI.h">
+      <Filter>Engine\EditorUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\TileMap\TileMap\TileMap.h">
+      <Filter>Engine\GameObjects\TileMap</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\TileMap\TileMap\Tile.h">
+      <Filter>Engine\GameObjects\TileMap</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Physics\Shape.h">
+      <Filter>Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Helpers\Inputs.h">
+      <Filter>Engine\Helpers</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Managers\Events\EventObserver.h">
       <Filter>Engine\Managers\Events</Filter>
@@ -138,7 +204,7 @@
     <ClInclude Include="Engine\Managers\Events\Events.h">
       <Filter>Engine\Managers\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Helpers\Inputs.h">
+    <ClInclude Include="Engine\Managers\Events\EventManager.h">
       <Filter>Engine\Managers\Events</Filter>
     </ClInclude>
   </ItemGroup>
@@ -182,6 +248,48 @@
     <ClCompile Include="Engine\Managers\GraphicsManager.cpp">
       <Filter>Engine\Managers</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Graphics\SpriteAnimation.cpp">
+      <Filter>Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Helpers\Timer.cpp">
+      <Filter>Engine\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Includes\IMGUI\imgui.cpp">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Includes\IMGUI\imgui_demo.cpp">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Includes\IMGUI\imgui_draw.cpp">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Includes\IMGUI\imgui_tables.cpp">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Includes\IMGUI\imgui_widgets.cpp">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Includes\IMGUI\imgui_impl_dx11.cpp">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Includes\IMGUI\imgui_impl_win32.cpp">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Scene\Scene.cpp">
+      <Filter>Engine\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\EditorUI\EditorUI.cpp">
+      <Filter>Engine\EditorUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\TileMap\TileMap\TileMap.cpp">
+      <Filter>Engine\GameObjects\TileMap</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\TileMap\TileMap\Tile.cpp">
+      <Filter>Engine\GameObjects\TileMap</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Helpers\Inputs.cpp">
+      <Filter>Engine\Helpers</Filter>
+    </ClCompile>
     <ClCompile Include="Engine\Managers\Events\EventObserver.cpp">
       <Filter>Engine\Managers\Events</Filter>
     </ClCompile>
@@ -189,9 +297,6 @@
       <Filter>Engine\Managers\Events</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Managers\Events\EventManager.cpp">
-      <Filter>Engine\Managers\Events</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Helpers\Inputs.cpp">
       <Filter>Engine\Managers\Events</Filter>
     </ClCompile>
   </ItemGroup>

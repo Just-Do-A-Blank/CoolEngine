@@ -30,7 +30,7 @@ public:
 		//Can use 'Letter' or the raw keycode for keyboard inputs.
 		if (e->GetKeyCode() == 'C')
 		{
-			LOG("Test");
+			int i = 0;
 		}
 
 		if (e->GetKeyCode() == 0x43)
@@ -51,11 +51,21 @@ public:
 
 	void MouseButtonPressed(MouseButtonPressedEvent* e)
 	{
-
-		if (e->GetButton() == MK_LBUTTON)
+		if (e->GetButton() == VK_LBUTTON)
 		{
-			LOG("RMB1");
+
+			LOG("MB1");
+
 		}
+
+		if (e->GetButton() == VK_RBUTTON)
+		{
+
+			LOG("MB2");
+
+		}
+
+
 	}
 
 	void MouseButtonReleased(MouseButtonReleasedEvent* e)
@@ -65,9 +75,8 @@ public:
 
 	void MouseMoved(MouseMovedEvent* e)
 	{
-		LOG(e->GetX());
+		LOG(e->GetX()); 
 		LOG(e->GetY());
-
 	}
 
 	void Handle(Event* e)
