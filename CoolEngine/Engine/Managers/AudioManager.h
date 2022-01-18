@@ -37,6 +37,9 @@ public:
 
 	bool Destroy();
 
+	bool SetMasterVolume(float volume);
+	float GetMasterVolume();
+
 protected:
 
 private:
@@ -51,5 +54,7 @@ private:
 	float m_musicVolume = 0.5f;
 
 	bool m_loopMusic = false;
+
+	float m_masterVolume = 1.0f;
 };
 

@@ -74,7 +74,7 @@ bool AudioManager::PlayMusic(string relativePath, float volume, bool loop)
 
 	m_psystem->playSound(m_music[relativePath], nullptr, true, &m_pmusicChannel);
 
-	m_pmusicChannel->setVolume(volume);
+	m_pmusicChannel->setVolume(m_masterVolume * volume);
 
 	m_pmusicChannel->setPaused(false);
 
@@ -132,7 +132,7 @@ bool AudioManager::Play(string relativePath, float volume)
 
 	m_psystem->playSound(m_sounds[relativePath], nullptr, true, &pchannel);
 
-	pchannel->setVolume(volume);
+	pchannel->setVolume(m_masterVolume * volume);
 
 	pchannel->setPaused(false);
 
@@ -160,7 +160,7 @@ bool AudioManager::Play(string relativePath, XMFLOAT3 position, float volume)
 	m_psystem->playSound(m_sounds[relativePath], nullptr, true, &pchannel);
 
 	pchannel->setMode(FMOD_3D);
-	pchannel->setVolume(volume);
+	pchannel->setVolume(m_masterVolume * volume);
 
 	FMOD_VECTOR pos;
 	pos.x = position.x;
@@ -189,7 +189,7 @@ void AudioManager::Update()
 		{
 			m_psystem->playSound(m_pcurrentMusic, nullptr, true, &m_pmusicChannel);
 
-			m_pmusicChannel->setVolume(m_musicVolume);
+			m_pmusicChannel->setVolume(m_masterVolume * m_musicVolume);
 
 			m_pmusicChannel->setPaused(false);
 		}
@@ -243,4 +243,23 @@ bool AudioManager::Destroy()
 	CoUninitialize();
 
 	return true;
+}
+
+bool AudioManager::SetMasterVolume(float volume)
+{
+	if (volume < 0 || volume > 1.0f)
+	{
+		LOG("All values for volume must be between 0 and 1!");
+
+		return false;
+	}
+
+	m_masterVolume = volume;
+
+	return true;
+}
+
+float AudioManager::GetMasterVolume()
+{
+	return m_masterVolume;
 }
