@@ -14,7 +14,8 @@ class SceneGraph
 {
 private:
 	TreeNode* m_rootNode;
-	unordered_map<string, TreeNode*> m_sceneMap;
+	unordered_map<string, TreeNode*> m_sceneTreeNodeMap;
+	unordered_map<string, GameObject*> m_sceneGameObjectsMap;
 
 public:
 	SceneGraph();
@@ -25,9 +26,15 @@ public:
 	TreeNode* AddChild(TreeNode* currentNode, GameObject* gameObject);
 	TreeNode* TraverseTree(TreeNode* currentNode);
 	void DeleteNode(TreeNode* currenNode);
-	void DeleteGameObject(TreeNode* currenNode);
+
+	void DeleteGameObjectUsingIdentifier(string identifier);
+	void DeleteGameObjectUsingNode(TreeNode* currenNode);
 
 	TreeNode* GetRootNode();
 	TreeNode* GetNodeUsingIdentifier(string identifier);
+
+	//Getters
+	unordered_map<string, GameObject*>& GetAllGameObjects();
+	GameObject* GetGameObjectUsingIdentifier(string& identifier);
 };
 

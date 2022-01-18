@@ -101,7 +101,7 @@ void EditorUI::DrawSceneGraphWindow()
 			if (ImGui::MenuItem("GameObject"))
 			{
 				m_deleteGameObjectClicked = true;
-				m_pselectedScene->DeleteGameObject(m_pselectedGameObjectNode);
+				m_pselectedScene->DeleteGameObjectUsingNode(m_pselectedGameObjectNode);
 
 				m_gameObjectNodeClicked = -1;
 				m_pselectedGameObjectNode = nullptr;
