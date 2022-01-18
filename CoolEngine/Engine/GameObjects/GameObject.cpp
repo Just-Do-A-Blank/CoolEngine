@@ -48,45 +48,45 @@ const bool& GameObject::IsTrigger()
 	return m_isTrigger;
 }
 
-void GameObject::Render(ID3D11DeviceContext* pcontext, ConstantBuffer<PerInstanceCB>* pconstantBuffer)
+void GameObject::Render(RenderStruct& renderStruct)
 {
 	//Update CB
 	PerInstanceCB cb;
 	XMStoreFloat4x4(&cb.world, XMMatrixTranspose(m_transform.GetWorldMatrix()));
 
-	pconstantBuffer->Update(cb, pcontext);
+	renderStruct.m_pconstantBuffer->Update(cb, renderStruct.m_pcontext);
 
-	ID3D11Buffer* pcbBuffer = pconstantBuffer->GetBuffer();
+	ID3D11Buffer* pcbBuffer = renderStruct.m_pconstantBuffer->GetBuffer();
 
 	//Bind CB and appropriate resources
-	pcontext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 1, &pcbBuffer);
-	pcontext->VSSetShader(m_pvertexShader, nullptr, 0);
+	renderStruct.m_pcontext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 1, &pcbBuffer);
+	renderStruct.m_pcontext->VSSetShader(m_pvertexShader, nullptr, 0);
 
-	pcontext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 1, &pcbBuffer);
-	pcontext->PSSetShader(m_ppixelShader, nullptr, 0);
+	renderStruct.m_pcontext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 1, &pcbBuffer);
+	renderStruct.m_pcontext->PSSetShader(m_ppixelShader, nullptr, 0);
 
-	if (m_pcurrentAnimation->GetFrames() == nullptr)
+	if (m_pcurrentAnimation == nullptr || m_pcurrentAnimation->GetFrames() == nullptr)
 	{
-		pcontext->PSSetShaderResources(0, 1, &m_palbedoSRV);
+		renderStruct.m_pcontext->PSSetShaderResources(0, 1, &m_palbedoSRV);
 	}
 	else
 	{
 		ID3D11ShaderResourceView* psRV = m_pcurrentAnimation->GetCurrentFrame();
 
-		pcontext->PSSetShaderResources(0, 1, &psRV);
+		renderStruct.m_pcontext->PSSetShaderResources(0, 1, &psRV);
 	}
 
 	//Draw object
-	pcontext->DrawIndexed(m_pmesh->GetIndexCount(), 0, 0);
+	renderStruct.m_pcontext->DrawIndexed(m_pmesh->GetIndexCount(), 0, 0);
 
 	//Unbind resources
-	pcontext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 0, nullptr);
-	pcontext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 0, nullptr);
+	renderStruct.m_pcontext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 0, nullptr);
+	renderStruct.m_pcontext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 0, nullptr);
 }
 
 void GameObject::Update()
 {
-	if (m_pcurrentAnimation->GetFrames() != nullptr)
+	if (m_pcurrentAnimation != nullptr && m_pcurrentAnimation->GetFrames() != nullptr)
 	{
 		m_pcurrentAnimation->Update();
 	}
@@ -100,6 +100,11 @@ Mesh* GameObject::GetMesh() const
 SpriteAnimation& GameObject::GetAnimation(std::string name)
 {
 	return m_animations[name];
+}
+
+int GameObject::GetLayer() const
+{
+	return m_layer;
 }
 
 bool GameObject::PlayAnimation(std::string name)
@@ -242,6 +247,18 @@ void GameObject::SetIsTrigger(bool& condition)
 	m_isTrigger = condition;
 }
 
+void GameObject::SetLayer(int layer)
+{
+	if (layer >= GraphicsManager::GetInstance()->GetNumLayers() || layer < 0)
+	{
+		LOG("Tried to set gameobject to a layer that doesn't exist!");
+
+		return;
+	}
+
+	m_layer = layer;
+}
+
 bool GameObject::AddAnimation(string animName, SpriteAnimation& anim)
 {
 	if (m_animations.count(animName) != 0)
@@ -293,6 +310,11 @@ bool GameObject::RemoveAnimation(string animName)
 	return true;
 }
 
+void GameObject::SetShape(Shape* collider)
+{
+	m_collider = collider;
+}
+
 const string& GameObject::GetIdentifier()
 {
 	return m_identifier;
@@ -301,4 +323,9 @@ const string& GameObject::GetIdentifier()
 bool GameObject::IsAnimated()
 {
 	return m_pcurrentAnimation == nullptr;
+}
+
+Shape* GameObject::GetShape()
+{
+	return m_collider;
 }

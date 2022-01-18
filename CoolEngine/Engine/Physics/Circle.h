@@ -1,9 +1,10 @@
 #pragma once
+#include "Engine/Physics/Shape.h"
 
 /// <summary>
 /// Circle class that contains its position and the radius. Used for Circle collisions.
 /// </summary>
-class Circle
+class Circle : public Shape
 {
 public:
 	/// <summary>
@@ -11,11 +12,9 @@ public:
 	/// </summary>
 	Circle()
 	{
-		m_x = 0;
-		m_y = 0;
+		m_transform = nullptr;
 		m_radius = 0;
 	};
-
 
 	/// <summary>
 	/// Constructor for circle.
@@ -23,11 +22,50 @@ public:
 	/// <param name="x"></param>
 	/// <param name="y"></param>
 	/// <param name="radius"></param>
-	Circle(float x, float y, float radius) : m_x(x), m_y(y), m_radius(radius) {};
+	Circle(Transform* t, float radius)
+	{
+		m_transform = t;
+		m_radius = radius;
+	}
 
-	float m_x, m_y, m_radius;
+	~Circle()
+	{
+		m_transform = nullptr;
+	}
 
-	Circle operator + (const Circle& c2)
+	float m_radius;
+
+	bool Collide(Shape* shape)
+	{
+		return shape->Collide(this);
+	}
+
+	bool Collide(Circle* circle)
+	{
+		return Collision::CircleCollision(circle, this);
+	}
+
+	bool Collide(Box* box)
+	{
+		return Collision::CircleBoxCollision(this, box);
+	}
+
+	bool CollideResponse(Shape* shape)
+	{
+		return shape->CollideResponse(this);
+	}
+
+	bool CollideResponse(Circle* circle)
+	{
+		return Collision::CircleCollisionAndResponse(circle, this);
+	}
+
+	bool CollideResponse(Box* box)
+	{
+		return Collision::CircleBoxCollisionAndResponse(this, box);
+	}
+
+	/*Circle operator + (const Circle& c2)
 	{
 		Circle output;
 		output.m_x = m_x + c2.m_x;
@@ -61,5 +99,5 @@ public:
 		output.m_y = m_y * c2.m_y;
 		output.m_radius = m_radius / c2.m_radius;
 		return output;
-	}
+	}*/
 };

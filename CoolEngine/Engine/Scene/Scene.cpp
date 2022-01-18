@@ -3,6 +3,8 @@
 #include "Engine/GameObjects/GameObject.h"
 #include "Engine/Managers/SceneGraph.h"
 
+#include "Engine/Physics/Collision.h"
+
 Scene::Scene(string identifier)
 {
 	m_sceneIdentifier = identifier;
@@ -19,15 +21,25 @@ void Scene::Update()
 	{
 		it->second->Update();
 	}
+
+	Collision::Update(m_gameObjectMap);
 }
 
-//void Scene::Render(RenderStruct& renderStruct)
-//{
-//	for (unordered_map<string, GameObject*>::iterator it = m_gameObjectMap.begin(); it != m_gameObjectMap.end(); ++it)
-//	{
-//		//it->second->Render(renderStruct);
-//	}
-//}
+void Scene::Render(RenderStruct& renderStruct)
+{
+	for (int i = 0; i < GraphicsManager::GetInstance()->GetNumLayers(); ++i)
+	{
+		for (unordered_map<string, GameObject*>::iterator it = m_gameObjectMap.begin(); it != m_gameObjectMap.end(); ++it)
+		{
+			if (it->second->IsRenderable() == false || it->second->GetLayer() != i)
+			{
+				continue;
+			}
+
+			it->second->Render(renderStruct);
+		}
+	}
+}
 
 unordered_map<string, GameObject*>& Scene::GetAllGameObjects()
 {

@@ -20,7 +20,7 @@ public:
 	~Scene();
 
 	virtual void Update();
-	//virtual void Render(RenderStruct& renderStruct);
+	virtual void Render(RenderStruct& renderStruct);
 
 	unordered_map<string, GameObject*>& GetAllGameObjects();
 	GameObject* GetGameObjectUsingIdentifier(string& identifier);
