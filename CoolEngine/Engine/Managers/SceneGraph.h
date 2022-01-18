@@ -3,9 +3,11 @@
 
 struct TreeNode
 {
-	TreeNode* Sibling;
-	TreeNode* Child;
-	GameObject* GameObject;
+	TreeNode* Sibling = nullptr;
+	TreeNode* Child = nullptr;
+	TreeNode* PreviousParent = nullptr;
+	TreeNode* PreviousSibling = nullptr;
+	GameObject* GameObject = nullptr;
 };
 
 class SceneGraph
@@ -23,6 +25,7 @@ public:
 	TreeNode* AddChild(TreeNode* currentNode, GameObject* gameObject);
 	TreeNode* TraverseTree(TreeNode* currentNode);
 	void DeleteNode(TreeNode* currenNode);
+	void DeleteGameObject(TreeNode* currenNode);
 
 	TreeNode* GetRootNode();
 	TreeNode* GetNodeUsingIdentifier(string identifier);

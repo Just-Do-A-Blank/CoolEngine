@@ -1,12 +1,14 @@
 #include "Scene.h"
 
 #include "Engine/GameObjects/GameObject.h"
+#include "Engine/Managers/SceneGraph.h"
 
 #include "Engine/Physics/Collision.h"
 
 Scene::Scene(string identifier)
 {
 	m_sceneIdentifier = identifier;
+	m_psceneGraph = new SceneGraph();
 }
 
 Scene::~Scene()
@@ -58,11 +60,57 @@ void Scene::SelectGameObjectUsingIdentifier(string& identifier)
 	m_pcurrentlySelectedGameObject = it->second;
 }
 
-void Scene::CreateGameObject(string& identifier)
+GameObject* Scene::CreateGameObject(string identifier)
+{
+	return CreateGameObject(identifier, nullptr);
+}
+
+GameObject* Scene::CreateGameObject(string identifier, TreeNode* pparentNode)
 {
 	GameObject* gameObject = new GameObject(identifier);
 
+	m_prootTreeNode = m_psceneGraph->GetRootNode();
+	if (!m_prootTreeNode)
+	{
+		m_prootTreeNode = m_psceneGraph->NewNode(gameObject);
+	}
+	else
+	{
+		if (!pparentNode)
+		{
+			m_psceneGraph->AddSibling(m_prootTreeNode, gameObject);
+		}
+		else
+		{
+			m_psceneGraph->AddChild(pparentNode, gameObject);
+		}
+	}
+
 	m_gameObjectMap.insert(pair<string, GameObject*>(identifier, gameObject));
+
+	return gameObject;
+}
+
+bool& Scene::DeleteGameObject(TreeNode* pnode)
+{
+	bool deleteSuccessful = false;
+	if (!pnode)
+	{
+		return deleteSuccessful;
+	}
+	deleteSuccessful = m_gameObjectMap.erase(pnode->GameObject->GetIdentifier());
+	m_psceneGraph->DeleteGameObject(pnode);
+	return deleteSuccessful;
+}
+
+TreeNode* Scene::GetRootTreeNode()
+{
+	return m_psceneGraph->GetRootNode();
+}
+
+TreeNode* Scene::GetTreeNode(GameObject* pgameObject)
+{
+	return m_psceneGraph->GetNodeUsingIdentifier(pgameObject->GetIdentifier());
 }
 
 void Scene::DeleteGameObjectUsingIdentifier(string& identifier)
