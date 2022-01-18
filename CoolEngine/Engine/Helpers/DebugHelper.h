@@ -16,7 +16,7 @@ static std::string className(const std::string& prettyFunction)
 #define __CLASS_NAME__ className(__FUNCSIG__)
 
 #if _DEBUG 
-#define LOG(message)cout<< __CLASS_NAME__ << ", " << __LINE__ << ": " << message <<endl;
+#define LOG(message)cout << message << " - " << __CLASS_NAME__ << ", " << __LINE__ <<endl;
 #else
 #define LOG(message)
 #endif
