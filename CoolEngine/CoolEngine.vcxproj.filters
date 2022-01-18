@@ -76,6 +76,9 @@
     <Filter Include="Engine\GameObjects\TileMap">
       <UniqueIdentifier>{4362da10-2646-4398-9553-b164f7571686}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Includes\FMOD">
+      <UniqueIdentifier>{c843e429-6caa-48d0-bfb4-53854ba97bf5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -206,6 +209,30 @@
     </ClInclude>
     <ClInclude Include="Engine\Managers\Events\EventManager.h">
       <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\FMOD\fmod.h">
+      <Filter>Engine\Includes\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\FMOD\fmod.hpp">
+      <Filter>Engine\Includes\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\FMOD\fmod_codec.h">
+      <Filter>Engine\Includes\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\FMOD\fmod_common.h">
+      <Filter>Engine\Includes\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\FMOD\fmod_dsp.h">
+      <Filter>Engine\Includes\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\FMOD\fmod_dsp_effects.h">
+      <Filter>Engine\Includes\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\FMOD\fmod_errors.h">
+      <Filter>Engine\Includes\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\FMOD\fmod_output.h">
+      <Filter>Engine\Includes\FMOD</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

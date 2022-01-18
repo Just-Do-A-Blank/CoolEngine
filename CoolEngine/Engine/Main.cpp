@@ -4,6 +4,7 @@
 #include <fcntl.h>
 
 #include "Engine/Managers/GraphicsManager.h"
+#include "Engine/Managers/AudioManager.h"
 #include "Engine/Graphics/Mesh.h"
 #include "Engine/Graphics/ConstantBuffer.h"
 #include "Engine/Graphics/SpriteAnimation.h"
@@ -84,6 +85,22 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	g_peditorUI = new EditorUI();
 	g_peditorUI->InitIMGUI(g_pImmediateContext, g_pd3dDevice, &g_hWnd);
+
+	//Setup audio stuff
+	AudioManager::GetInstance()->Init();
+
+	AudioManager::GetInstance()->SetListenerPosition(XMFLOAT3(0, 0, 0));
+
+	//Music
+	AudioManager::GetInstance()->LoadMusic("Resources/Audio/CrabRave.mp3");
+
+	AudioManager::GetInstance()->PlayMusic("Resources/Audio/CrabRave.mp3", 0.001f, true);
+
+	//Sound
+	AudioManager::GetInstance()->Load("Resources/Audio/Wilhelm-Scream.mp3");
+
+	AudioManager::GetInstance()->Play("Resources/Audio/Wilhelm-Scream.mp3", 0.01f);
+
 
 
 	ExampleObserver observer(new int(10));
@@ -501,9 +518,13 @@ void Render()
 	g_pSwapChain->Present(0, 0);
 }
 
+float temp;
+
 void Update()
 {
 	GameManager::GetInstance()->GetTimer()->Tick();
+
+	AudioManager::GetInstance()->Update();
 
 	g_pScene->Update();
 }
