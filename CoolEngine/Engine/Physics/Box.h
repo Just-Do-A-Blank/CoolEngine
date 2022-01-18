@@ -1,51 +1,77 @@
 #pragma once
-#include "Engine/Physics/Shape.h"
 
-class Box : public Shape
+class Box
 {
 public:
+	int m_x, m_y, m_width, m_height;
+
 	Box()
 	{
-		m_transform = nullptr;
+		m_x = 0;
+		m_y = 0;
+		m_width = 1;
+		m_height = 1;
 	}
 
-	Box(Transform* trans)
+	Box(int x, int y, int width, int height)
 	{
-		m_transform = trans;
+		m_x = x;
+		m_y = y;
+		m_width = width;
+		m_height = height;
 	}
 
-	~Box()
+	/// <summary>
+	/// Returns X coord of the middle of the box
+	/// </summary>
+	/// <returns></returns>
+	int GetCentreX()
 	{
-		m_transform = nullptr;
+		return m_x + m_width / 2;
 	}
 
-	bool Collide(Shape* shape)
+	/// <summary>
+	/// Returns Y coord of the middle of the box
+	/// </summary>
+	/// <returns></returns>
+	int GetCentreY()
 	{
-		return shape->Collide(this);
+		return m_y + m_height / 2;
 	}
 
-	bool Collide(Circle* circle)
+	inline Box operator+(Box box)
 	{
-		return Collision::CircleBoxCollision(circle, this);
+		return Box(m_x + box.m_x, m_y + box.m_y, m_width + box.m_width, m_height + box.m_height);
 	}
 
-	bool Collide(Box* box)
+	inline Box operator-(Box box)
 	{
-		return Collision::BoxCollision(box, this);
+		return Box(m_x - box.m_x, m_y - box.m_y, m_width - box.m_width, m_height - box.m_height);
 	}
 
-	bool CollideResponse(Shape* shape)
+	inline Box operator*(Box box)
 	{
-		return shape->CollideResponse(this);
+		return Box(m_x * box.m_x, m_y * box.m_y, m_width * box.m_width, m_height * box.m_height);
 	}
 
-	bool CollideResponse(Circle* circle)
+	inline Box operator/(Box box)
 	{
-		return Collision::CircleBoxCollisionAndResponse(circle, this);
+		return Box(m_x / box.m_x, m_y / box.m_y, m_width / box.m_width, m_height / box.m_height);
 	}
 
-	bool CollideResponse(Box* box)
+	inline void operator+=(Box box)
 	{
-		return Collision::BoxCollisionAndResponse(box, this);
+		m_x += box.m_x;
+		m_y += box.m_y;
+		m_width += box.m_width;
+		m_height += box.m_height;
+	}
+
+	inline void operator-=(Box box)
+	{
+		m_x -= box.m_x;
+		m_y -= box.m_y;
+		m_width -= box.m_width;
+		m_height -= box.m_height;
 	}
 };

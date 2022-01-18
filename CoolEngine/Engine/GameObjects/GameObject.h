@@ -4,14 +4,8 @@
 #include "Engine/Graphics/Mesh.h"
 #include "Engine/Graphics/ConstantBuffer.h"
 #include "Engine/Graphics/ConstantBuffers.h"
-#include "Engine/Graphics/SpriteAnimation.h"
 
 #include <string>
-
-class SpriteAnimation;
-class Shape;
-
-struct RenderStruct;
 
 class GameObject
 {
@@ -25,16 +19,10 @@ private:
 
 	Mesh* m_pmesh;
 
-	int m_layer = 0;
-
-	std::unordered_map<std::string, SpriteAnimation> m_animations;
-
-	SpriteAnimation* m_pcurrentAnimation;
-
 	string m_identifier;
 
 	//Flags
-	bool m_isRenderable = true;
+	bool m_isRenderable = false;
 	bool m_isCollidable = false;
 	bool m_isTrigger = false;
 
@@ -47,10 +35,8 @@ private:
 
 protected:
 	Transform m_transform;
-	Shape* m_collider;
 
 public:
-	GameObject();
 	GameObject(string identifier);
 
 	//Getters
@@ -58,19 +44,10 @@ public:
 	const bool& IsCollidable();
 	const bool& IsTrigger();
 
-	virtual void Render(RenderStruct& renderStruct);
-	virtual void Update();
+	void Render(ID3D11DeviceContext* pcontext, ConstantBuffer<PerInstanceCB>* pconstantBuffer);
 
 	//Getters
 	Mesh* GetMesh() const;
-
-	SpriteAnimation& GetAnimation(std::string name);
-
-	int GetLayer() const;
-
-	bool PlayAnimation(std::string name);
-
-	SpriteAnimation* GetCurrentAnimation();
 
 	ID3D11ShaderResourceView* GetAlbedoSRV() const;
 
@@ -80,10 +57,6 @@ public:
 	Transform* GetTransform();
 
 	const string& GetIdentifier();
-
-	bool IsAnimated();
-
-	Shape* GetShape();
 
 	//Setters
 	bool SetMesh(wstring meshName);
@@ -97,16 +70,4 @@ public:
 
 	bool SetPixelShader(wstring shaderName);
 	void SetPixelShader(ID3D11PixelShader* ppixelShader);
-
-	void SetIsRenderable(bool& condition);
-	void SetIsCollidable(bool& condition);
-	void SetIsTrigger(bool& condition);
-
-	void SetLayer(int layer);
-
-	bool AddAnimation(string animName, SpriteAnimation& anim);
-	bool AddAnimation(string localAnimName, wstring animName);
-	bool RemoveAnimation(string animName);
-
-	void SetShape(Shape* collider);
 };

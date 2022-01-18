@@ -3,7 +3,6 @@
 #include "Engine/Graphics/Mesh.h"
 
 #include <iostream>
-#include <fstream>
 
 void GraphicsManager::Init(ID3D11Device* pdevice)
 {
@@ -136,57 +135,6 @@ bool GraphicsManager::LoadTextureFromFile(wstring filename, ID3D11Device* pdevic
 	return true;
 }
 
-bool GraphicsManager::LoadAnimationFromFile(wstring animName, ID3D11Device* pdevice, size_t maxSize, DDS_ALPHA_MODE* alphaMode)
-{
-	if (m_animationFrames.count(animName) != 0)
-	{
-		LOG("Tried to load an animation but one with that name already exists!");
-
-		return false;
-	}
-
-	//Get information txt file and parse in
-	ifstream file(L"Resources\\Animations\\" + animName + L"\\" + animName + L".txt", std::ios::in);
-
-	if (file.is_open() == false)
-	{
-		LOG("Failed to load animation from file as couldn't open corresponding text file");
-
-		return false;
-	}
-
-	//Get num frames and pre allocate vector memory
-	int numFrames;
-	file >> numFrames;
-
-	std::vector<Frame>* pframes = new std::vector<Frame>();
-	pframes->resize(numFrames);
-
-	//Read in frame times and textures
-
-	wstring frameName;
-
-	for(int i = 0; i < pframes->size(); ++i)
-	{
-		file >> pframes->at(i).m_frameTime;
-
-		frameName = L"Resources\\Animations\\" + animName + L"\\" + animName + to_wstring(i) + L".dds";
-
-		if (LoadTextureFromFile(frameName, pdevice, maxSize, alphaMode) == false)
-		{
-			LOG("Failed tp load animation from file as failed to load animation frame!");
-
-			return false;
-		}
-
-		pframes->at(i).m_ptexture = m_textureSRVs[frameName];
-	}
-
-	m_animationFrames[animName] = pframes;
-
-	return true;
-}
-
 ID3D11VertexShader* GraphicsManager::GetVertexShader(wstring name) const
 {
 	return m_vertexShaders.at(name);
@@ -205,16 +153,6 @@ ID3D11ShaderResourceView* GraphicsManager::GetShaderResourceView(wstring name) c
 Mesh* GraphicsManager::GetMesh(wstring name) const
 {
 	return m_meshes.at(name);
-}
-
-SpriteAnimation& GraphicsManager::GetAnimation(wstring name) const
-{
-	return SpriteAnimation(m_animationFrames.at(name));
-}
-
-int GraphicsManager::GetNumLayers()
-{
-	return m_NumLayers;
 }
 
 ID3D11InputLayout* GraphicsManager::GetInputLayout(InputLayouts inputLayout) const
@@ -260,10 +198,10 @@ void GraphicsManager::CreateQuadMesh(ID3D11Device* pdevice)
 	//Create default mesh for plane
 	const Vertex_PosTex quadVertices[4] =
 	{
-		Vertex_PosTex(XMFLOAT3(-1, 1, 0), XMFLOAT2(0, 0)),
-		Vertex_PosTex(XMFLOAT3(-1, -1, 0), XMFLOAT2(0, 1)),
-		Vertex_PosTex(XMFLOAT3(1, -1, 0), XMFLOAT2(1, 1)),
-		Vertex_PosTex(XMFLOAT3(1, 1, 0), XMFLOAT2(1, 0)),
+		Vertex_PosTex(XMFLOAT3(-1, 0, 1), XMFLOAT2(0, 0)),
+		Vertex_PosTex(XMFLOAT3(-1, 0, -1), XMFLOAT2(0, 1)),
+		Vertex_PosTex(XMFLOAT3(1, 0, -1), XMFLOAT2(1, 1)),
+		Vertex_PosTex(XMFLOAT3(1, 0, 1), XMFLOAT2(1, 0)),
 	};
 
 	const UINT16 quadIndices[6] =
