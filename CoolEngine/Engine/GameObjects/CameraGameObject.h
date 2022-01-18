@@ -24,7 +24,7 @@ public:
     void ReshapeCamera(float newWindowWidth, float newWindowHeight, float
         newNearDepth, float newFarDepth);
 
-    void Update(float deltaTime);
+    void Update();
 
 	//Getters
 	XMFLOAT4X4 GetView() const;

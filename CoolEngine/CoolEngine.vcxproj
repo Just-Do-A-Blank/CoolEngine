@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\EditorUI\EditorUI.h" />
     <ClInclude Include="Engine\GameObjects\CameraGameObject.h" />
     <ClInclude Include="Engine\GameObjects\GameObject.h" />
     <ClInclude Include="Engine\GameObjects\Transform.h" />
@@ -26,13 +27,20 @@
     <ClInclude Include="Engine\Graphics\ConstantBuffers.h" />
     <ClInclude Include="Engine\Graphics\DDSTextureLoader.h" />
     <ClInclude Include="Engine\Graphics\Mesh.h" />
+    <ClInclude Include="Engine\Graphics\SpriteAnimation.h" />
     <ClInclude Include="Engine\Graphics\Vertices.h" />
-    <ClInclude Include="Engine\Helpers\Inputs.h" />
+    <ClInclude Include="Engine\Helpers\Timer.h" />
+    <ClInclude Include="Engine\Helpers\DebugHelper.h" />
+    <ClInclude Include="Engine\Helpers\MathHelper.h" />
+    <ClInclude Include="Engine\Includes\IMGUI\imconfig.h" />
+    <ClInclude Include="Engine\Includes\IMGUI\imgui.h" />
+    <ClInclude Include="Engine\Includes\IMGUI\imgui_impl_dx11.h" />
+    <ClInclude Include="Engine\Includes\IMGUI\imgui_impl_win32.h" />
+    <ClInclude Include="Engine\Includes\IMGUI\imgui_internal.h" />
+    <ClInclude Include="Engine\Includes\IMGUI\imstb_rectpack.h" />
+    <ClInclude Include="Engine\Includes\IMGUI\imstb_textedit.h" />
+    <ClInclude Include="Engine\Includes\IMGUI\imstb_truetype.h" />
     <ClInclude Include="Engine\Managers\AudioManager.h" />
-    <ClInclude Include="Engine\Managers\DebugManager.h" />
-    <ClInclude Include="Engine\Managers\Events\EventManager.h" />
-    <ClInclude Include="Engine\Managers\Events\EventObserver.h" />
-    <ClInclude Include="Engine\Managers\Events\Events.h" />
     <ClInclude Include="Engine\Managers\GameManager.h" />
     <ClInclude Include="Engine\Managers\GraphicsManager.h" />
     <ClInclude Include="Engine\Managers\SceneGraph.h" />
@@ -43,21 +51,35 @@
     <ClInclude Include="Engine\Physics\Particle.h" />
     <ClInclude Include="Engine\Physics\ParticleManager.h" />
     <ClInclude Include="Engine\Physics\ParticleSystem.h" />
+    <ClInclude Include="Engine\Physics\Shape.h" />
     <ClInclude Include="Engine\Physics\Vector2.h" />
+    <ClInclude Include="Engine\Scene\Scene.h" />
     <ClInclude Include="Engine\stdafx.h" />
     <ClInclude Include="Engine\Structure\Singleton.h" />
+    <ClInclude Include="Engine\TileMap\TileMap\Tile.h" />
+    <ClInclude Include="Engine\TileMap\TileMap\TileMap.h" />
+    <ClInclude Include="Engine\Tools\EventManager.h" />
+    <ClInclude Include="Engine\Tools\EventObserver.h" />
+    <ClInclude Include="Engine\Tools\Events.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\EditorUI\EditorUI.cpp" />
     <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\GameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\Transform.cpp" />
     <ClCompile Include="Engine\Graphics\DDSTextureLoader.cpp" />
-    <ClCompile Include="Engine\Helpers\Inputs.cpp" />
+    <ClCompile Include="Engine\Graphics\SpriteAnimation.cpp" />
+    <ClCompile Include="Engine\Helpers\Timer.cpp" />
+    <ClCompile Include="Engine\Includes\IMGUI\imgui.cpp" />
+    <ClCompile Include="Engine\Includes\IMGUI\imgui_demo.cpp" />
+    <ClCompile Include="Engine\Includes\IMGUI\imgui_draw.cpp" />
+    <ClCompile Include="Engine\Includes\IMGUI\imgui_impl_dx11.cpp" />
+    <ClCompile Include="Engine\Includes\IMGUI\imgui_impl_win32.cpp" />
+    <ClCompile Include="Engine\Includes\IMGUI\imgui_tables.cpp" />
+    <ClCompile Include="Engine\Includes\IMGUI\imgui_widgets.cpp" />
     <ClCompile Include="Engine\Main.cpp" />
+    <ClCompile Include="Engine\Scene\Scene.cpp" />
     <ClCompile Include="Engine\Managers\AudioManager.cpp" />
-    <ClCompile Include="Engine\Managers\Events\EventManager.cpp" />
-    <ClCompile Include="Engine\Managers\Events\EventObserver.cpp" />
-    <ClCompile Include="Engine\Managers\Events\Events.cpp" />
     <ClCompile Include="Engine\Managers\GameManager.cpp" />
     <ClCompile Include="Engine\Managers\GraphicsManager.cpp" />
     <ClCompile Include="Engine\Managers\SceneGraph.cpp" />
@@ -65,6 +87,11 @@
     <ClCompile Include="Engine\Physics\Particle.cpp" />
     <ClCompile Include="Engine\Physics\ParticleManager.cpp" />
     <ClCompile Include="Engine\Physics\ParticleSystem.cpp" />
+    <ClCompile Include="Engine\TileMap\TileMap\Tile.cpp" />
+    <ClCompile Include="Engine\TileMap\TileMap\TileMap.cpp" />
+    <ClCompile Include="Engine\Tools\EventManager.cpp" />
+    <ClCompile Include="Engine\Tools\EventObserver.cpp" />
+    <ClCompile Include="Engine\Tools\Events.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">

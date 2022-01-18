@@ -1,77 +1,51 @@
 #pragma once
+#include "Engine/Physics/Shape.h"
 
-class Box
+class Box : public Shape
 {
 public:
-	int m_x, m_y, m_width, m_height;
-
 	Box()
 	{
-		m_x = 0;
-		m_y = 0;
-		m_width = 1;
-		m_height = 1;
+		m_transform = nullptr;
 	}
 
-	Box(int x, int y, int width, int height)
+	Box(Transform* trans)
 	{
-		m_x = x;
-		m_y = y;
-		m_width = width;
-		m_height = height;
+		m_transform = trans;
 	}
 
-	/// <summary>
-	/// Returns X coord of the middle of the box
-	/// </summary>
-	/// <returns></returns>
-	int GetCentreX()
+	~Box()
 	{
-		return m_x + m_width / 2;
+		m_transform = nullptr;
 	}
 
-	/// <summary>
-	/// Returns Y coord of the middle of the box
-	/// </summary>
-	/// <returns></returns>
-	int GetCentreY()
+	bool Collide(Shape* shape)
 	{
-		return m_y + m_height / 2;
+		return shape->Collide(this);
 	}
 
-	inline Box operator+(Box box)
+	bool Collide(Circle* circle)
 	{
-		return Box(m_x + box.m_x, m_y + box.m_y, m_width + box.m_width, m_height + box.m_height);
+		return Collision::CircleBoxCollision(circle, this);
 	}
 
-	inline Box operator-(Box box)
+	bool Collide(Box* box)
 	{
-		return Box(m_x - box.m_x, m_y - box.m_y, m_width - box.m_width, m_height - box.m_height);
+		return Collision::BoxCollision(box, this);
 	}
 
-	inline Box operator*(Box box)
+	bool CollideResponse(Shape* shape)
 	{
-		return Box(m_x * box.m_x, m_y * box.m_y, m_width * box.m_width, m_height * box.m_height);
+		return shape->CollideResponse(this);
 	}
 
-	inline Box operator/(Box box)
+	bool CollideResponse(Circle* circle)
 	{
-		return Box(m_x / box.m_x, m_y / box.m_y, m_width / box.m_width, m_height / box.m_height);
+		return Collision::CircleBoxCollisionAndResponse(circle, this);
 	}
 
-	inline void operator+=(Box box)
+	bool CollideResponse(Box* box)
 	{
-		m_x += box.m_x;
-		m_y += box.m_y;
-		m_width += box.m_width;
-		m_height += box.m_height;
-	}
-
-	inline void operator-=(Box box)
-	{
-		m_x -= box.m_x;
-		m_y -= box.m_y;
-		m_width -= box.m_width;
-		m_height -= box.m_height;
+		return Collision::BoxCollisionAndResponse(box, this);
 	}
 };

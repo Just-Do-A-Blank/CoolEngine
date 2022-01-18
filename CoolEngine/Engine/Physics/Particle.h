@@ -1,18 +1,20 @@
 #pragma once
-#include "Box.h"
-
-// Placeholder
-class Texture {};
+//#include "Box.h"
+#include "Engine/GameObjects/Transform.h"
+#include <Engine/Graphics/Mesh.h>
+#include <Engine/Graphics/ConstantBuffer.h>
+#include <Engine/Graphics/ConstantBuffers.h>
+#include <Engine/Managers/GraphicsManager.h>
 
 // A sprite that disappears over time
 class Particle
 {
 private:
-	Box m_box;
+	//Box m_box;
+	Transform m_transform;
 	XMFLOAT2 m_velocity;
 	XMFLOAT2 m_accel;
 
-	Texture* m_pTexture;
 	float m_lifetime;
 	bool m_isActive;
 
@@ -26,6 +28,9 @@ public:
 	/// <param name="dTime"></param>
 	void Update(const float dTime);
 
+	
+	void Render(ID3D11DeviceContext* pContext, ConstantBuffer<PerInstanceCB>* pConstantBuffer, Mesh* mesh);
+
 	/// <summary>
 	/// Mark the particle as free
 	/// </summary>
@@ -34,12 +39,11 @@ public:
 	/// <summary>
 	/// Activate a free particle slot
 	/// </summary>
-	/// <param name="box"></param>
+	/// <param name="trans"></param>
 	/// <param name="vel"></param>
 	/// <param name="accel"></param>
-	/// <param name="tex"></param>
 	/// <param name="life"></param>
-	void Initialise(Box box, XMFLOAT2 vel, XMFLOAT2 accel, Texture* tex, float life);
+	void Initialise(Transform trans, XMFLOAT2 vel, XMFLOAT2 accel, float life);
 
 	bool IsActive() { return m_isActive; }
 };
