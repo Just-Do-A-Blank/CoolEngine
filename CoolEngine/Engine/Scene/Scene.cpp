@@ -60,6 +60,11 @@ void Scene::SelectGameObjectUsingIdentifier(string& identifier)
 	m_pcurrentlySelectedGameObject = it->second;
 }
 
+GameObject* Scene::CreateGameObject(string identifier)
+{
+	return CreateGameObject(identifier, nullptr);
+}
+
 GameObject* Scene::CreateGameObject(string identifier, TreeNode* pparentNode)
 {
 	GameObject* gameObject = new GameObject(identifier);
