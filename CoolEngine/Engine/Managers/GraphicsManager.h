@@ -10,17 +10,11 @@
 
 #define QUAD_MESH_NAME L"quad"
 
-#define DEFAULT_VERTEX_SHADER_NAME L"Engine/Graphics/Shaders/BasicVertex.hlsl"
-#define DEFAULT_PIXEL_SHADER_NAME L"Engine/Graphics/Shaders/BasicPixel.hlsl"
-
-#define POS_TEX_DUMMY_FILE_NAME L"Engine/Graphics/Shaders/DummyPosTex.hlsl"
-
 class Mesh;
 
 struct RenderStruct
 {
 	ID3D11DeviceContext* m_pcontext;
-	ConstantBuffer<PerInstanceCB>* m_pconstantBuffer;
 };
 
 class GraphicsManager : public Singleton<GraphicsManager>
@@ -40,6 +34,10 @@ class GraphicsManager : public Singleton<GraphicsManager>
 	int m_NumLayers = 5;
 
 public:
+	ConstantBuffer<PerFrameCB>* m_pperFrameCB = nullptr;
+	ConstantBuffer<PerInstanceCB>* m_pperInstanceCB = nullptr;
+	ConstantBuffer<DebugPerInstanceCB>* m_pdebugPerInstanceCB = nullptr;
+
 	void Init(ID3D11Device* pdevice);
 
 	bool CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3D11Device* pdevice);

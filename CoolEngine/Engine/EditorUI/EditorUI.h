@@ -3,10 +3,10 @@
 #include "Engine/Includes/IMGUI/imgui_impl_win32.h"
 #include "Engine/Includes/IMGUI/imgui_impl_dx11.h"
 #include "Engine/Scene/Scene.h"
+#include "Engine/ResourceDefines.h"
 
 #define IMGUI_LEFT_LABEL(func, label, ...) (ImGui::TextUnformatted(label), ImGui::SameLine(), func("##" label, __VA_ARGS__))
 #define FILEPATH_BUFFER_SIZE 200
-#define DEFAULT_IMGUI_IMAGE L"Resources\\Sprites\\Brick.dds"
 #define DEFAULT_IMGUI_IMAGE_SIZE ImVec2(256, 256)
 
 class GameManager;

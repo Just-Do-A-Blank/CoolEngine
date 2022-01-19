@@ -17,6 +17,7 @@
 #include "Engine/EditorUI/EditorUI.h"
 
 #include "Engine/TileMap/TileMap/TileMap.h"
+#include "Engine/ResourceDefines.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
@@ -42,11 +43,6 @@ ID3D11RenderTargetView* g_pRenderTargetView = nullptr;
 ID3D11RasterizerState* g_prasterState = nullptr;
 
 CameraGameObject* g_pcamera = nullptr;
-
-GameObject* g_ptestObject;
-
-ConstantBuffer<PerFrameCB>* g_pperFrameCB;
-ConstantBuffer<PerInstanceCB>* g_pperInstanceCB;
 
 EditorUI* g_peditorUI;
 
@@ -92,14 +88,14 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	AudioManager::GetInstance()->SetListenerPosition(XMFLOAT3(0, 0, 0));
 
 	//Music
-	AudioManager::GetInstance()->LoadMusic("Resources/Audio/CrabRave.mp3");
+	AudioManager::GetInstance()->LoadMusic(TEST_MUSIC);
 
-	AudioManager::GetInstance()->PlayMusic("Resources/Audio/CrabRave.mp3", 0.001f, true);
+	AudioManager::GetInstance()->PlayMusic(TEST_MUSIC, 0.001f, true);
 
 	//Sound
-	AudioManager::GetInstance()->Load("Resources/Audio/Wilhelm-Scream.mp3");
+	AudioManager::GetInstance()->Load(TEST_SOUND);
 
-	AudioManager::GetInstance()->Play("Resources/Audio/Wilhelm-Scream.mp3", 0.01f);
+	AudioManager::GetInstance()->Play(TEST_SOUND, 0.01f);
 
 
 
@@ -113,7 +109,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	GraphicsManager::GetInstance()->Init(g_pd3dDevice);
 
 	GraphicsManager::GetInstance()->LoadTextureFromFile(DEFAULT_IMGUI_IMAGE, g_pd3dDevice);
-	GraphicsManager::GetInstance()->LoadTextureFromFile(L"Resources\\Sprites\\Test2.dds", g_pd3dDevice);
+	GraphicsManager::GetInstance()->LoadTextureFromFile(TEST2, g_pd3dDevice);
 
 	g_inputController = new Inputs();
 
@@ -131,15 +127,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_pcamera = new CameraGameObject("Camera");
 	g_pcamera->Initialize(cameraPos, cameraForward, cameraUp, windowWidth, windowHeight, nearDepth, farDepth);
 
-	//Create constant buffers
-	g_pperFrameCB = new ConstantBuffer<PerFrameCB>(g_pd3dDevice);
-	g_pperInstanceCB = new ConstantBuffer<PerInstanceCB>(g_pd3dDevice);
-
 	//Create scene
 	g_pScene = new Scene("TestScene");
 
 	//Load animations
-	GraphicsManager::GetInstance()->LoadAnimationFromFile(L"TestAnim", g_pd3dDevice);
+	GraphicsManager::GetInstance()->LoadAnimationFromFile(TEST_ANIM, g_pd3dDevice);
 
 	//Create test gameobject
 	string obj0Name = "TestObject0";
@@ -169,7 +161,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetMesh(QUAD_MESH_NAME);
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
 	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	pgameObject->SetAlbedo(L"Resources\\Sprites\\Test2.dds");
+	pgameObject->SetAlbedo(TEST2);
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
 
@@ -200,12 +192,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_peditorUI->ShutdownIMGUI();
 
 	CleanupDevice();
-
-	delete g_pperFrameCB;
-	g_pperFrameCB = nullptr;
-
-	delete g_pperInstanceCB;
-	g_pperInstanceCB = nullptr;
 
 	return (int)msg.wParam;
 }
@@ -498,16 +484,15 @@ void Render()
 	PerFrameCB perFrameCB;
 	XMStoreFloat4x4(&perFrameCB.viewProjection, XMMatrixTranspose(XMLoadFloat4x4(&g_pcamera->GetViewProjection())));
 
-	g_pperFrameCB->Update(perFrameCB, g_pImmediateContext);
+	GraphicsManager::GetInstance()->m_pperFrameCB->Update(perFrameCB, g_pImmediateContext);
 
 	//Bind per frame CB
-	ID3D11Buffer* pbuffer = g_pperFrameCB->GetBuffer();
+	ID3D11Buffer* pbuffer = GraphicsManager::GetInstance()->m_pperFrameCB->GetBuffer();
 
 	g_pImmediateContext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pbuffer);
 	g_pImmediateContext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pbuffer);
 
 	RenderStruct renderStruct;
-	renderStruct.m_pconstantBuffer = g_pperInstanceCB;
 	renderStruct.m_pcontext = g_pImmediateContext;
 
 	g_pScene->Render(renderStruct);
