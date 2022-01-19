@@ -526,8 +526,6 @@ void Update()
 {
 	GameManager::GetInstance()->GetTimer()->Tick();
 
-	g_peditorUI->Update();
-
 	AudioManager::GetInstance()->Update();
 
 	g_pScene->Update();
