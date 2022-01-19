@@ -27,10 +27,20 @@ struct PerAnimation
 	SpriteAnimation m_spriteAnim;
 };
 
+enum class SceneManagementState
+{
+	SCENE_WINDOW,
+	CREATE_SCENE_WINDOW
+};
+
+
 class EditorUI
 {
 private:
 	HWND* m_phwnd;
+	bool m_createSceneClicked = false;
+	bool m_createGameObjectClicked = false;
+	bool m_deleteGameObjectClicked = false;
 
 	//Master window
 	bool g_ShowSceneEditor;
@@ -38,7 +48,13 @@ private:
 	bool g_ShowGameObject;
 
 	int num = 1;
-	Scene* selectedScene = nullptr;
+	Scene* m_pselectedScene = nullptr;
+	TreeNode* m_pselectedGameObjectNode = nullptr;
+	GameObject* m_rootGameObject = nullptr;
+
+	ImGuiTreeNodeFlags m_base_flags;
+	int m_selectionMask;
+	int m_gameObjectNodeClicked = -1;
 
 	//Gameobject properties
 	WCHAR m_texNameBuffer[FILEPATH_BUFFER_SIZE] = DEFAULT_IMGUI_IMAGE;
@@ -65,6 +81,7 @@ private:
 
 	ID3D11Device* m_pdevice = nullptr;
 
+	void TraverseTree(TreeNode* pcurrentNode, int& count);
 public:
 	EditorUI(ID3D11Device* pdevice);
 
@@ -74,4 +91,3 @@ public:
 
 	void Update();
 };
-
