@@ -40,6 +40,10 @@ class GraphicsManager : public Singleton<GraphicsManager>
 	int m_NumLayers = 5;
 
 public:
+	ConstantBuffer<PerInstanceCB>* m_pperInstanceCB = nullptr;
+	ConstantBuffer<DebugPerInstanceCB>* m_pdebugPerInstanceCB = nullptr;
+
+
 	void Init(ID3D11Device* pdevice);
 
 	bool CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3D11Device* pdevice);

@@ -11,3 +11,8 @@ struct PerInstanceCB
 {
 	DirectX::XMFLOAT4X4 world;
 };
+
+struct DebugPerInstanceCB
+{
+
+};
