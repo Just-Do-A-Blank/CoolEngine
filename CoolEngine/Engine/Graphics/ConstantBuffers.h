@@ -14,5 +14,5 @@ struct PerInstanceCB
 
 struct DebugPerInstanceCB
 {
-
+	DirectX::XMFLOAT4X4 placeholder;
 };

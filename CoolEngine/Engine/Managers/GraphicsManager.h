@@ -20,7 +20,6 @@ class Mesh;
 struct RenderStruct
 {
 	ID3D11DeviceContext* m_pcontext;
-	ConstantBuffer<PerInstanceCB>* m_pconstantBuffer;
 };
 
 class GraphicsManager : public Singleton<GraphicsManager>
@@ -40,9 +39,9 @@ class GraphicsManager : public Singleton<GraphicsManager>
 	int m_NumLayers = 5;
 
 public:
+	ConstantBuffer<PerFrameCB>* m_pperFrameCB = nullptr;
 	ConstantBuffer<PerInstanceCB>* m_pperInstanceCB = nullptr;
 	ConstantBuffer<DebugPerInstanceCB>* m_pdebugPerInstanceCB = nullptr;
-
 
 	void Init(ID3D11Device* pdevice);
 
