@@ -4,33 +4,19 @@
 
 #include <iostream>
 
-void GameObject::CreateRenderableGameObject()
-{
-	m_isRenderable = true;
-}
-
-void GameObject::CreateNonRenderableGameObject()
-{
-	m_isRenderable = false;
-}
-
-void GameObject::AddCollision()
-{
-	m_isCollidable = true;
-}
-
-void GameObject::AddTrigger()
-{
-	m_isTrigger = true;
-}
-
 GameObject::GameObject()
 {
+	m_pvertexShader = GraphicsManager::GetInstance()->GetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+	m_ppixelShader = GraphicsManager::GetInstance()->GetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+
+	m_pmesh = GraphicsManager::GetInstance()->GetMesh(QUAD_MESH_NAME);
 }
 
 GameObject::GameObject(string identifier)
 {
 	m_identifier = identifier;
+
+	GameObject();
 }
 
 const bool& GameObject::IsRenderable()
