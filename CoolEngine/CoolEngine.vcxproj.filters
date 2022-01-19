@@ -234,6 +234,7 @@
     <ClInclude Include="Engine\Includes\FMOD\fmod_output.h">
       <Filter>Engine\Includes\FMOD</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\GameObjects\DebugRect.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -326,6 +327,7 @@
     <ClCompile Include="Engine\Managers\Events\EventManager.cpp">
       <Filter>Engine\Managers\Events</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GameObjects\DebugRect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">
