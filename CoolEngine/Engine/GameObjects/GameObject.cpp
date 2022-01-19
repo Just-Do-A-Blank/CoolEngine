@@ -41,9 +41,9 @@ void GameObject::Render(RenderStruct& renderStruct)
 	PerInstanceCB cb;
 	XMStoreFloat4x4(&cb.world, XMMatrixTranspose(m_transform.GetWorldMatrix()));
 
-	renderStruct.m_pconstantBuffer->Update(cb, renderStruct.m_pcontext);
+	GraphicsManager::GetInstance()->m_pperInstanceCB->Update(cb, renderStruct.m_pcontext);
 
-	ID3D11Buffer* pcbBuffer = renderStruct.m_pconstantBuffer->GetBuffer();
+	ID3D11Buffer* pcbBuffer = GraphicsManager::GetInstance()->m_pperInstanceCB->GetBuffer();
 
 	//Bind CB and appropriate resources
 	renderStruct.m_pcontext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 1, &pcbBuffer);

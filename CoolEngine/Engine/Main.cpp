@@ -44,11 +44,6 @@ ID3D11RasterizerState* g_prasterState = nullptr;
 
 CameraGameObject* g_pcamera = nullptr;
 
-GameObject* g_ptestObject;
-
-ConstantBuffer<PerFrameCB>* g_pperFrameCB;
-ConstantBuffer<PerInstanceCB>* g_pperInstanceCB;
-
 EditorUI* g_peditorUI;
 
 Scene* g_pScene = nullptr;
@@ -132,10 +127,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_pcamera = new CameraGameObject("Camera");
 	g_pcamera->Initialize(cameraPos, cameraForward, cameraUp, windowWidth, windowHeight, nearDepth, farDepth);
 
-	//Create constant buffers
-	g_pperFrameCB = new ConstantBuffer<PerFrameCB>(g_pd3dDevice);
-	g_pperInstanceCB = new ConstantBuffer<PerInstanceCB>(g_pd3dDevice);
-
 	//Create scene
 	g_pScene = new Scene("TestScene");
 
@@ -201,12 +192,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_peditorUI->ShutdownIMGUI();
 
 	CleanupDevice();
-
-	delete g_pperFrameCB;
-	g_pperFrameCB = nullptr;
-
-	delete g_pperInstanceCB;
-	g_pperInstanceCB = nullptr;
 
 	return (int)msg.wParam;
 }
@@ -499,16 +484,15 @@ void Render()
 	PerFrameCB perFrameCB;
 	XMStoreFloat4x4(&perFrameCB.viewProjection, XMMatrixTranspose(XMLoadFloat4x4(&g_pcamera->GetViewProjection())));
 
-	g_pperFrameCB->Update(perFrameCB, g_pImmediateContext);
+	GraphicsManager::GetInstance()->m_pperFrameCB->Update(perFrameCB, g_pImmediateContext);
 
 	//Bind per frame CB
-	ID3D11Buffer* pbuffer = g_pperFrameCB->GetBuffer();
+	ID3D11Buffer* pbuffer = GraphicsManager::GetInstance()->m_pperFrameCB->GetBuffer();
 
 	g_pImmediateContext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pbuffer);
 	g_pImmediateContext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pbuffer);
 
 	RenderStruct renderStruct;
-	renderStruct.m_pconstantBuffer = g_pperInstanceCB;
 	renderStruct.m_pcontext = g_pImmediateContext;
 
 	g_pScene->Render(renderStruct);
