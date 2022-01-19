@@ -5,6 +5,7 @@
 #include "Engine/Graphics/ConstantBuffer.h"
 #include "Engine/Graphics/ConstantBuffers.h"
 #include "Engine/Graphics/SpriteAnimation.h"
+#include "Engine/EditorUI/EditorUI.h"
 
 #include <string>
 
@@ -38,6 +39,16 @@ private:
 	bool m_isCollidable = false;
 	bool m_isTrigger = false;
 
+	//ImGui variables
+	WCHAR m_texNameBuffer[FILEPATH_BUFFER_SIZE] = DEFAULT_IMGUI_IMAGE;
+	char m_animName[ANIM_NAME_SIZE];
+	WCHAR m_animFilepath[FILEPATH_BUFFER_SIZE] = DEFAULT_IMGUI_ANIMATION;
+
+	std::string m_animUpdateName = "";
+
+	bool m_updateAnim = false;
+	bool m_updateAnimName = false;
+
 	//GameObject Setup
 	void CreateRenderableGameObject();
 	void CreateNonRenderableGameObject();
@@ -60,6 +71,9 @@ public:
 
 	virtual void Render(RenderStruct& renderStruct);
 	virtual void Update();
+
+	virtual void ShowEngineUI(ID3D11Device* pdevice);
+	virtual void CreateEngineUI(ID3D11Device* pdevice);
 
 	//Getters
 	Mesh* GetMesh() const;

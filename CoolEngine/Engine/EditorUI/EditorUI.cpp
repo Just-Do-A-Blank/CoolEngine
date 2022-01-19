@@ -5,6 +5,8 @@
 #include <ShlObj_core.h>
 #include "Engine/Managers/SceneGraph.h"
 
+HWND* EditorUI::m_phwnd = nullptr;
+
 void EditorUI::InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, HWND* phwnd)
 {
 	IMGUI_CHECKVERSION();
@@ -45,24 +47,11 @@ void EditorUI::DrawEditorUI()
 		DrawSceneManagementWindow();
 	}
 
-	if (g_ShowGameObject)
-	{
-		DrawGameObjectPropertiesWindow();
-	}
-
 	ImGui::Render();
 
 	m_deleteGameObjectClicked = false;
 
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-}
-
-void EditorUI::Update()
-{
-	for (int i = 0; i < m_perAnimation.size(); ++i)
-	{
-		m_perAnimation[i].m_spriteAnim.Update();
-	}
 }
 
 void EditorUI::DrawMasterWindow()
@@ -121,6 +110,7 @@ void EditorUI::DrawSceneGraphWindow()
 
 				m_gameObjectNodeClicked = -1;
 				m_pselectedGameObjectNode = nullptr;
+				m_pselectedGameObject = nullptr;
 			}
 
 			ImGui::EndMenu();
@@ -245,153 +235,6 @@ void EditorUI::DrawSceneManagementWindow()
 	}
 }
 
-void EditorUI::OnGameObjectSelected()
-{
-	m_perAnimation.clear();
-
-	std::unordered_map<std::string, SpriteAnimation>* panimations = m_pselectedGameObject->GetAnimations();
-
-	m_perAnimation.reserve(panimations->size());
-
-	int count = 0;
-
-	for (std::unordered_map<std::string, SpriteAnimation>::iterator it = panimations->begin(); it != panimations->end(); ++it)
-	{
-		memcpy(m_perAnimation[count].m_animName, it->first.c_str(), it->first.length());
-
-		m_perAnimation[count].m_spriteAnim = it->second;
-	}
-}
-
-float pos[3] =
-{
-	10, 1, 0
-};
-
-void EditorUI::DrawGameObjectPropertiesWindow()
-{
-	ImGui::Begin("GameObject Properties");
-
-	ImGui::Separator();
-	ImGui::Spacing();
-
-	IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Position", pos);
-	IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Rotation", pos);
-	IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Scale", pos);
-
-	ImGui::Spacing();
-	ImGui::Separator();
-	ImGui::Spacing();
-
-	ImGui::TextUnformatted("Texture");
-
-	if (ImGui::ImageButton((void*)(intptr_t)GraphicsManager::GetInstance()->GetShaderResourceView(m_texNameBuffer), DEFAULT_IMGUI_IMAGE_SIZE))
-	{
-		WCHAR tempNameBuffer[FILEPATH_BUFFER_SIZE];
-
-		memcpy(&tempNameBuffer, &m_texNameBuffer, FILEPATH_BUFFER_SIZE);
-
-		OpenFileExplorer(L"DDS files\0*.dds\0", m_texNameBuffer, _countof(m_texNameBuffer));
-
-		wstring relativePath = m_texNameBuffer;
-
-		if (relativePath == L"")
-		{
-			memcpy(&m_texNameBuffer, &tempNameBuffer, FILEPATH_BUFFER_SIZE);
-		}
-		else
-		{
-			int index = relativePath.find(L"Resources");
-
-			if (index == -1)
-			{
-				LOG("The resource specified isn't stored in a resource folder!");
-			}
-			else
-			{
-				relativePath = wstring(m_texNameBuffer).substr(index);
-
-				relativePath.copy(m_texNameBuffer, relativePath.size());
-
-				m_texNameBuffer[relativePath.size()] = L'\0';
-			}
-		}
-
-	}
-
-	ImGui::Spacing();
-
-	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Renderable", &g_ShowSceneEditor);
-	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Collidable", &g_ShowSceneEditor);
-	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Trigger", &g_ShowSceneEditor);
-
-	ImGui::Spacing();
-	ImGui::Separator();
-	ImGui::Spacing();
-
-	ImGui::TextUnformatted("Animation");
-
-	std::unordered_map<std::string, SpriteAnimation>* panimations = m_pselectedGameObject->GetAnimations();
-
-	int count = 0;
-
-	for (std::unordered_map<std::string, SpriteAnimation>::iterator it = panimations->begin(); it != panimations->end(); ++it)
-	{
-		if (ImGui::InputText("Name", m_perAnimation[count].m_animName, ANIM_NAME_SIZE) == true)
-		{
-			if (m_pselectedGameObject->GetAnimations()->count(m_perAnimation[count].m_animName) == 0)
-			{
-				m_animNameUpdateIndex = count;
-				m_animUpdateName = it->first;
-			}
-			else
-			{
-				LOG("Tried to add an animation with the same local name as one that already exists!");
-			}
-		}
-
-		if (ImGui::ImageButton((void*)(intptr_t)it->second.GetCurrentFrame(), DEFAULT_IMGUI_IMAGE_SIZE))
-		{
-			WCHAR tempNameBuffer[FILEPATH_BUFFER_SIZE];
-
-			memcpy(&tempNameBuffer, &m_animFilepath, FILEPATH_BUFFER_SIZE);
-
-			OpenFolderExplorer(m_animFilepath, _countof(m_animFilepath));
-
-			wstring relativePath = m_animFilepath;
-
-			if (GraphicsManager::GetInstance()->GetAnimation(m_animFilepath).GetFrames() == nullptr)
-			{
-				if (GraphicsManager::GetInstance()->LoadAnimationFromFile(m_animFilepath, m_pdevice) == false)
-				{
-					LOG("Failed to load the animation!");
-				}
-				else
-				{
-					m_perAnimation[count].m_spriteAnim = GraphicsManager::GetInstance()->GetAnimation(m_animFilepath);
-
-					m_pselectedGameObject->OverwriteAnimation(it->first, m_perAnimation[count].m_spriteAnim);
-				}
-			}
-		}
-
-		++count;
-	}
-
-	if (m_animNameUpdateIndex != -1)
-	{
-		SpriteAnimation tempAnim = panimations->at(m_animUpdateName);
-
-		panimations->erase(m_animUpdateName);
-
-		panimations->insert(pair<string, SpriteAnimation>(string(m_perAnimation[m_animNameUpdateIndex].m_animName), tempAnim));
-
-		m_animNameUpdateIndex = -1;
-	}
-
-	ImGui::End();
-}
-
 void EditorUI::TraverseTree(TreeNode* pcurrentNode, int& nodeCount)
 {
 	if (!pcurrentNode)
@@ -416,12 +259,14 @@ void EditorUI::TraverseTree(TreeNode* pcurrentNode, int& nodeCount)
 		{
 			m_gameObjectNodeClicked = -1;
 			m_pselectedGameObjectNode = nullptr;
+			m_pselectedGameObject = nullptr;
 
 		}
 		else
 		{
 			m_gameObjectNodeClicked = nodeCount;
 			m_pselectedGameObjectNode = pcurrentNode;
+			m_pselectedGameObject = m_pselectedGameObjectNode->GameObject;
 		}
 	}
 

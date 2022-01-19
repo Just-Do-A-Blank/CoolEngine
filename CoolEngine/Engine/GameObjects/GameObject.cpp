@@ -1,6 +1,7 @@
 #include "GameObject.h"
 
 #include "Engine/Managers/GraphicsManager.h"
+#include "Engine/Includes/IMGUI/imgui.h"
 
 #include <iostream>
 
@@ -89,6 +90,174 @@ void GameObject::Update()
 	if (m_pcurrentAnimation != nullptr && m_pcurrentAnimation->GetFrames() != nullptr)
 	{
 		m_pcurrentAnimation->Update();
+	}
+}
+
+void GameObject::ShowEngineUI(ID3D11Device* pdevice)
+{
+	ImGui::Begin("Properties");
+
+	CreateEngineUI(pdevice);
+
+	ImGui::End();
+}
+
+void GameObject::CreateEngineUI(ID3D11Device* pdevice)
+{
+	ImGui::Separator();
+	ImGui::Spacing();
+
+	XMFLOAT3 value = m_transform.GetPosition();
+	float positionArray[3] =
+	{
+		value.x,
+		value.y,
+		value.z
+	};
+
+	value = m_transform.GetRotation();
+	float rotationArray[3] =
+	{
+		value.x,
+		value.y,
+		value.z
+	};
+
+	value = m_transform.GetScale();
+	float scaleArray[3] =
+	{
+		value.x,
+		value.y,
+		value.z
+	};
+
+	if (IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Position", positionArray))
+	{
+		XMFLOAT3 position = XMFLOAT3(positionArray[0], positionArray[1], positionArray[2]);
+
+		m_transform.SetPosition(position);
+	}
+
+	if (IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Rotation", rotationArray))
+	{
+		XMFLOAT3 rotation = XMFLOAT3(rotationArray[0], rotationArray[1], rotationArray[2]);
+
+		m_transform.SetRotation(rotation);
+	}
+
+	if (IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Scale", scaleArray))
+	{
+		XMFLOAT3 scale = XMFLOAT3(scaleArray[0], scaleArray[1], scaleArray[2]);
+
+		m_transform.SetScale(scale);
+	}
+
+	ImGui::Spacing();
+	ImGui::Separator();
+	ImGui::Spacing();
+
+	ImGui::TextUnformatted("Texture");
+
+	if (ImGui::ImageButton((void*)(intptr_t)m_palbedoSRV, DEFAULT_IMGUI_IMAGE_SIZE))
+	{
+		EditorUI::OpenFileExplorer(L"DDS files\0*.dds\0", m_texNameBuffer, _countof(m_texNameBuffer));
+
+		wstring relativePath = m_texNameBuffer;
+
+		//Check if that path points to an asset in the resources folder
+		int index = relativePath.find(L"Resources");
+
+		if (index == -1)
+		{
+			LOG("The resource specified isn't stored in a resource folder!");
+		}
+		else
+		{
+			//Get relative file path
+			relativePath = wstring(m_texNameBuffer).substr(index);
+
+			relativePath.copy(m_texNameBuffer, relativePath.size());
+
+			m_texNameBuffer[relativePath.size()] = L'\0';
+
+			//Load texture if not loaded
+			if (GraphicsManager::GetInstance()->IsTextureLoaded(m_texNameBuffer) == true)
+			{
+				GraphicsManager::GetInstance()->LoadTextureFromFile(m_texNameBuffer, pdevice);
+			}
+
+			m_palbedoSRV = GraphicsManager::GetInstance()->GetShaderResourceView(m_texNameBuffer);
+		}
+	}
+
+	ImGui::Spacing();
+
+	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Renderable", &m_isRenderable);
+	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Collidable", &m_isCollidable);
+	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Trigger", &m_isTrigger);
+
+	ImGui::Spacing();
+	ImGui::Separator();
+	ImGui::Spacing();
+
+	ImGui::TextUnformatted("Animation");
+
+	for (std::unordered_map<std::string, SpriteAnimation>::iterator it = m_animations.begin(); it != m_animations.end(); ++it)
+	{
+		//Animation text
+		if (ImGui::InputText("Name", m_animName, ANIM_NAME_SIZE) == true)
+		{
+			if (m_animations.count(m_animName) == 0)
+			{
+				m_animUpdateName = it->first;
+
+				m_updateAnimName = true;
+			}
+			else
+			{
+				LOG("Tried to add an animation with the same local name as one that already exists!");
+			}
+		}
+
+		//Animation images
+		if (ImGui::ImageButton((void*)(intptr_t)it->second.GetCurrentFrame(), DEFAULT_IMGUI_IMAGE_SIZE))
+		{
+			EditorUI::OpenFolderExplorer(m_animFilepath, _countof(m_animFilepath));
+
+			wstring relativePath = m_animFilepath;
+
+			m_updateAnim = relativePath != L"";
+
+			m_animUpdateName = it->first;
+		}
+	}
+
+	if (m_updateAnimName == true)
+	{
+		SpriteAnimation tempAnim = m_animations[m_animUpdateName];
+
+		m_animations.erase(m_animUpdateName);
+
+		m_animations.insert(pair<string, SpriteAnimation>(m_animUpdateName, tempAnim));
+
+		m_updateAnimName = false;
+	}
+
+	if (m_updateAnim == true)
+	{
+		if (GraphicsManager::GetInstance()->GetAnimation(m_animFilepath).GetFrames() == nullptr)
+		{
+			if (GraphicsManager::GetInstance()->LoadAnimationFromFile(m_animFilepath, pdevice) == false)
+			{
+				m_animations[m_animUpdateName] = GraphicsManager::GetInstance()->GetAnimation(m_animFilepath);
+			}
+			else
+			{
+				LOG("Failed to load the animation!");
+			}
+		}
+
+		m_updateAnim = false;
 	}
 }
 

@@ -20,13 +20,6 @@ struct SelectableText
 	string identifier;
 };
 
-struct PerAnimation
-{
-	char m_animName[ANIM_NAME_SIZE];
-
-	SpriteAnimation m_spriteAnim;
-};
-
 enum class SceneManagementState
 {
 	SCENE_WINDOW,
@@ -37,7 +30,7 @@ enum class SceneManagementState
 class EditorUI
 {
 private:
-	HWND* m_phwnd;
+	static HWND* m_phwnd;
 	bool m_createSceneClicked = false;
 	bool m_createGameObjectClicked = false;
 	bool m_deleteGameObjectClicked = false;
@@ -56,28 +49,16 @@ private:
 	int m_selectionMask;
 	int m_gameObjectNodeClicked = -1;
 
-	//Gameobject properties
 	WCHAR m_texNameBuffer[FILEPATH_BUFFER_SIZE] = DEFAULT_IMGUI_IMAGE;
-	WCHAR m_animFilepath[FILEPATH_BUFFER_SIZE] = DEFAULT_IMGUI_ANIMATION;
-
-	vector<PerAnimation> m_perAnimation;
 
 	int m_animNameUpdateIndex = -1;
 	string m_animUpdateName = "";
 
 	GameObject* m_pselectedGameObject;
 
-	void OnGameObjectSelected();
-
-	void OpenFileExplorer(const WCHAR* fileFilters, WCHAR* buffer, int bufferSize);
-	void OpenFolderExplorer(WCHAR* buffer, int bufferSize);
-
 	void DrawMasterWindow();
 	void DrawSceneGraphWindow();
 	void DrawSceneManagementWindow();
-	void DrawGameObjectPropertiesWindow();
-
-	static ImGuiInputTextCallback AnimNameCallback();
 
 	ID3D11Device* m_pdevice = nullptr;
 
@@ -89,5 +70,6 @@ public:
 	void ShutdownIMGUI();
 	void DrawEditorUI();
 
-	void Update();
+	static void OpenFileExplorer(const WCHAR* fileFilters, WCHAR* buffer, int bufferSize);
+	static void OpenFolderExplorer(WCHAR* buffer, int bufferSize);
 };
