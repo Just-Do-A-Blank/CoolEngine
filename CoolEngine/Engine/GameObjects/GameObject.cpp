@@ -1,6 +1,7 @@
 #include "GameObject.h"
 
 #include "Engine/Managers/GraphicsManager.h"
+#include "Engine/ResourceDefines.h"
 
 #include <iostream>
 

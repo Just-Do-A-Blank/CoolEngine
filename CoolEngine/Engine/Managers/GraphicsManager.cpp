@@ -1,6 +1,7 @@
 #include "GraphicsManager.h"
 
 #include "Engine/Graphics/Mesh.h"
+#include "Engine/ResourceDefines.h"
 
 #include <iostream>
 #include <fstream>

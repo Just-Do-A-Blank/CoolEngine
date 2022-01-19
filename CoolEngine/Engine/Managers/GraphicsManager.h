@@ -10,11 +10,6 @@
 
 #define QUAD_MESH_NAME L"quad"
 
-#define DEFAULT_VERTEX_SHADER_NAME L"Engine/Graphics/Shaders/BasicVertex.hlsl"
-#define DEFAULT_PIXEL_SHADER_NAME L"Engine/Graphics/Shaders/BasicPixel.hlsl"
-
-#define POS_TEX_DUMMY_FILE_NAME L"Engine/Graphics/Shaders/DummyPosTex.hlsl"
-
 class Mesh;
 
 struct RenderStruct
