@@ -217,6 +217,11 @@ int GraphicsManager::GetNumLayers()
 	return m_NumLayers;
 }
 
+bool GraphicsManager::IsTextureLoaded(wstring filename)
+{
+	return m_textureSRVs.count(filename) != 0;
+}
+
 ID3D11InputLayout* GraphicsManager::GetInputLayout(InputLayouts inputLayout) const
 {
 	return m_inputLayouts[(int)inputLayout];

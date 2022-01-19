@@ -60,6 +60,8 @@ public:
 
 	int GetNumLayers();
 
+	bool IsTextureLoaded(wstring filename);
+
 	enum class InputLayouts
 	{
 		POS_TEX = 0,
