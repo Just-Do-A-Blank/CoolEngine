@@ -33,7 +33,6 @@ public:
 	void Render(RenderStruct& renderStruct);
 
 	void CreateScene(string sceneIdentifier);
-	//void ChangeScene(string sceneIdentifier);
 	void SelectScene(Scene* psnene);
 	void SelectSceneUsingIdentifier(string sceneIdentifier);
 	void DeleteScene(Scene* pscene);

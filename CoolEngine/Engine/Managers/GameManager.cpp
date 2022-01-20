@@ -34,18 +34,6 @@ void GameManager::Render(RenderStruct& renderStruct)
     m_pcurrentScene->Render(renderStruct);
 }
 
-//void GameManager::ChangeScene(string sceneIdentifier)
-//{
-//    unordered_map<string, Scene*>::iterator iterator;
-//
-//    iterator = m_sceneMap.find(sceneIdentifier);
-//
-//    if (iterator->second)
-//    {
-//        m_pcurrentScene = iterator->second;
-//    }
-//}
-
 void GameManager::DeleteSceneUsingIdentifier(string sceneIdentifier)
 {
     m_sceneMap.erase(sceneIdentifier);
