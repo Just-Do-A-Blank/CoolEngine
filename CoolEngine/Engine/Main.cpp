@@ -46,6 +46,10 @@ CameraGameObject* g_pcamera = nullptr;
 
 EditorUI* g_peditorUI;
 
+TileMap g_testMap = TileMap("Resources/Levels/TileMaps/TestMap.txt", XMFLOAT3(200, 0, 0), "testMap");;
+
+ConstantBuffer<PerFrameCB>* g_pperFrameCB;
+ConstantBuffer<PerInstanceCB>* g_pperInstanceCB;
 Scene* g_pScene = nullptr;
 
 Inputs* g_inputController;
@@ -164,10 +168,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetAlbedo(TEST2);
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
-
-	//Create test Tile Map
-	TileMap TestMap = TileMap(10, 10, "TestMap", XMFLOAT3(1,1,0));
-	TestMap.testFunc();
 
 	// Main message loop
 	MSG msg = { 0 };
@@ -492,6 +492,10 @@ void Render()
 	g_pImmediateContext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pbuffer);
 	g_pImmediateContext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pbuffer);
 
+	//g_ptestObject->Render(g_pImmediateContext, g_pperInstanceCB);
+
+	g_testMap.Render(g_pImmediateContext, g_pperInstanceCB);
+  
 	RenderStruct renderStruct;
 	renderStruct.m_pcontext = g_pImmediateContext;
 
