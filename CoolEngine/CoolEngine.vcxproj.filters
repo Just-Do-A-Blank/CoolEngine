@@ -237,6 +237,12 @@
     <ClInclude Include="Engine\ResourceDefines.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\GameObjects\PlayerGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\CharacterGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -328,6 +334,12 @@
     </ClCompile>
     <ClCompile Include="Engine\Managers\Events\EventManager.cpp">
       <Filter>Engine\Managers\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\PlayerGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\CharacterGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

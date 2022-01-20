@@ -40,11 +40,11 @@ public:
 
 	void Init(ID3D11Device* pdevice);
 
-	bool CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3D11Device* pdevice);
+	bool CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel);
 
-	bool LoadTextureFromFile(wstring filename, ID3D11Device* pdevice, size_t maxSize = 0, DDS_ALPHA_MODE* alphaMode = nullptr);
+	bool LoadTextureFromFile(wstring filename, size_t maxSize = 0, DDS_ALPHA_MODE* alphaMode = nullptr);
 
-	bool LoadAnimationFromFile(wstring animName, ID3D11Device* pdevice, size_t maxSize = 0, DDS_ALPHA_MODE* alphaMode = nullptr);
+	bool LoadAnimationFromFile(wstring animName, size_t maxSize = 0, DDS_ALPHA_MODE* alphaMode = nullptr);
 
 	//Getters
 	ID3D11VertexShader* GetVertexShader(wstring name) const;
@@ -87,14 +87,16 @@ public:
 private:
 
 	//Init functions
-	void CreateInputLayouts(ID3D11Device* pdevice);
+	void CreateInputLayouts();
 
-	void CreateQuadMesh(ID3D11Device* pdevice);
+	void CreateQuadMesh();
 
-	void CreateSamplers(ID3D11Device* pdevice);
+	void CreateSamplers();
 
-	void CompileDefaultShaders(ID3D11Device* pdevice);
+	void CompileDefaultShaders();
 
-	bool CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3D11Device* pdevice, ID3DBlob*& pblob);
+	bool CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob*& pblob);
+
+	ID3D11Device* m_pdevice = nullptr;
 };
 
