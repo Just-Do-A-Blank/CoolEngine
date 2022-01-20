@@ -9,6 +9,7 @@
 #include "Engine/Graphics/ConstantBuffer.h"
 #include "Engine/Graphics/SpriteAnimation.h"
 #include "Engine/GameObjects/CameraGameObject.h"
+#include "Engine/GameObjects/PlayerGameObject.h"
 
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/Managers/Events/EventObserver.h"
@@ -18,6 +19,7 @@
 
 #include "Engine/TileMap/TileMap/TileMap.h"
 #include "Engine/ResourceDefines.h"
+#include <Engine/Physics/Box.h>
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
@@ -43,6 +45,7 @@ ID3D11RenderTargetView* g_pRenderTargetView = nullptr;
 ID3D11RasterizerState* g_prasterState = nullptr;
 
 CameraGameObject* g_pcamera = nullptr;
+PlayerGameObject* g_pplayer = nullptr;
 
 EditorUI* g_peditorUI;
 
@@ -97,15 +100,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	AudioManager::GetInstance()->Play(TEST_SOUND, 0.01f);
 
-
-
-	ExampleObserver observer(new int(10));
-	EventManager::Instance()->AddClient(EventType::KeyPressed,&observer);
-	EventManager::Instance()->AddClient(EventType::KeyReleased,&observer);
-	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, &observer);
-	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, &observer);
-	EventManager::Instance()->AddClient(EventType::MouseMoved, &observer);
-
 	GraphicsManager::GetInstance()->Init(g_pd3dDevice);
 
 	GraphicsManager::GetInstance()->LoadTextureFromFile(DEFAULT_IMGUI_IMAGE);
@@ -133,17 +127,24 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//Load animations
 	GraphicsManager::GetInstance()->LoadAnimationFromFile(TEST_ANIM);
 
+	// Create player
+	//g_pplayer = new PlayerGameObject("Player");
+	//g_pplayer->Initialize(XMFLOAT3(200, 0, 5), XMFLOAT3(50, 50, 50));
+
 	//Create test gameobject
 	string obj0Name = "TestObject0";
 	string obj1Name = "TestObject1";
+	string playerName = "Player";
 
 	g_pScene->CreateGameObject(obj0Name);
 	g_pScene->CreateGameObject(obj1Name);
+	g_pScene->CreatePlayerGameObject(playerName);
 
 	GameObject* pgameObject = g_pScene->GetGameObjectUsingIdentifier(obj0Name);
 
 	XMFLOAT3 objectPos = XMFLOAT3(0, 0.0f, 5.0f);
 	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
+	bool isCollision = true;
 
 	pgameObject->SetMesh(QUAD_MESH_NAME);
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
@@ -151,6 +152,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
+	pgameObject->SetIsCollidable(isCollision);
+	pgameObject->SetIsTrigger(isCollision);
+	pgameObject->SetShape(new Box(pgameObject->GetTransform()));
 
 	//Init second gameObject
 	pgameObject = g_pScene->GetGameObjectUsingIdentifier(obj1Name);
@@ -164,6 +168,32 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetAlbedo(TEST2);
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
+	pgameObject->SetIsCollidable(isCollision);
+	pgameObject->SetIsTrigger(isCollision);
+	pgameObject->SetShape(new Box(pgameObject->GetTransform()));
+
+	// Init player object
+	pgameObject = g_pScene->GetPlayerGameObjectUsingIdentifier(playerName);
+
+	objectPos = XMFLOAT3(200.0f, 0.0f, 5.0f);
+	objectScale = XMFLOAT3(50, 50, 50);
+
+	pgameObject->SetMesh(QUAD_MESH_NAME);
+	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
+	pgameObject->GetTransform()->SetPosition(objectPos);
+	pgameObject->GetTransform()->SetScale(objectScale);
+	pgameObject->SetIsCollidable(isCollision);
+	pgameObject->SetIsTrigger(isCollision);
+	pgameObject->SetShape(new Box(pgameObject->GetTransform()));
+
+	ExampleObserver observer(new int(10), g_pScene->GetPlayerGameObjectUsingIdentifier(playerName));
+	EventManager::Instance()->AddClient(EventType::KeyPressed, &observer);
+	EventManager::Instance()->AddClient(EventType::KeyReleased, &observer);
+	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, &observer);
+	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, &observer);
+	EventManager::Instance()->AddClient(EventType::MouseMoved, &observer);
 
 	//Create test Tile Map
 	TileMap TestMap = TileMap(10, 10, "TestMap", XMFLOAT3(1,1,0));

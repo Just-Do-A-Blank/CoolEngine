@@ -1,5 +1,6 @@
 #pragma once
 #include "Events.h"
+#include "Engine/GameObjects/PlayerGameObject.h"
 
 /// <summary>
 /// 
@@ -41,6 +42,31 @@ public:
 		if (e->GetKeyCode() == 0x44)
 		{
 			int i = 0;
+		}
+
+		// Player movement
+		XMFLOAT3 vector = XMFLOAT3(0, 0, 0);
+		if (e->GetKeyCode() == 'W')
+		{
+			vector.y = 1.0f;
+		}
+		if (e->GetKeyCode() == 'S')
+		{
+			vector.y = -1.0f;
+		}
+		if (e->GetKeyCode() == 'A')
+		{
+			vector.x = -1.0f;
+		}
+		if (e->GetKeyCode() == 'D')
+		{
+			vector.x = 1.0f;
+		}
+		if (vector.x != 0.0f || vector.y != 0.0f)
+		{
+			float size = sqrt(vector.x * vector.x + vector.y * vector.y);
+			vector = XMFLOAT3( (m_playerObject->GetMoveSpeed() * vector.x) / size, (m_playerObject->GetMoveSpeed() * vector.y) / size, 0 );
+			m_playerObject->GetTransform()->Translate(vector);
 		}
 	}
 
@@ -107,12 +133,12 @@ public:
 	//Event processing all happens in 1 place for each object that wants access to the event classes. Controllers can be placed in their own classes if they have access to the headers for the 
 	//Observed class & EventObserver.h for access to the Observer based class for inheritance 
 	
-	ExampleObserver(int* i) { this->m_i = i; }
+	ExampleObserver(int* i, PlayerGameObject* player) { this->m_i = i; this->m_playerObject = player; }
 
 
 private:
 	int* m_i;
-
+	PlayerGameObject* m_playerObject;
 
 
 };
