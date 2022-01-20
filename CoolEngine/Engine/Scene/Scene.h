@@ -8,7 +8,7 @@ class TreeNode;
 
 class Scene
 {
-	//friend class GameManager;
+	friend class GameManager;
 private:
 	string m_sceneIdentifier;
 	SceneGraph* m_psceneGraph;
@@ -24,7 +24,7 @@ public:
 	virtual void Update();
 	virtual void Render(RenderStruct& renderStruct);
 
-//private:
+private:
 
 	unordered_map<string, GameObject*>& GetAllGameObjects();
 	GameObject* GetGameObjectUsingIdentifier(string& identifier);
@@ -35,9 +35,7 @@ public:
 	PlayerGameObject* GetPlayerGameObjectUsingIdentifier(string& identifier);
 
 	GameObject* CreateGameObject(string identifier);
-	GameObject* CreateGameObject(string identifier, TreeNode* pparentNode);
 	GameObject* CreatePlayerGameObject(string identifier);
-	GameObject* CreatePlayerGameObject(string identifier, TreeNode* pparentNode);
 
 	void DeleteSelectedGameObject();
 	void DeleteGameObjectUsingIdentifier(string identifier);

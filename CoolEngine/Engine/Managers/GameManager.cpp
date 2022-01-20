@@ -3,6 +3,8 @@
 #include "Engine/GameObjects/GameObject.h"
 #include "Engine/Scene/Scene.h"
 #include "SceneGraph.h"
+#include "Engine/GameObjects/PlayerGameObject.h"
+#include "GraphicsManager.h"
 
 Timer* GameManager::GetTimer()
 {
@@ -22,15 +24,15 @@ void GameManager::Update()
     unordered_map<string, GameObject*> gameObjects = m_pcurrentScene->GetAllGameObjects();
 }
 
-//void GameManager::Render(RenderStruct& renderStruct)
-//{
-//    if (!m_pcurrentScene)
-//    {
-//        return;
-//    }
-//
-//    m_pcurrentScene->Render(renderStruct);
-//}
+void GameManager::Render(RenderStruct& renderStruct)
+{
+    if (!m_pcurrentScene)
+    {
+        return;
+    }
+
+    m_pcurrentScene->Render(renderStruct);
+}
 
 //void GameManager::ChangeScene(string sceneIdentifier)
 //{
@@ -64,6 +66,16 @@ void GameManager::SelectScene(Scene* pscene)
     m_pcurrentScene = pscene;
 }
 
+void GameManager::SelectSceneUsingIdentifier(string sceneIdentifier)
+{
+    if (m_sceneMap.count(sceneIdentifier) == 0)
+    {
+        LOG("Scene : " << sceneIdentifier << "; was not found in Scene Map ");
+        return;
+    }
+    m_pcurrentScene = m_sceneMap.find(sceneIdentifier)->second;
+}
+
 void GameManager::DeleteScene(Scene* pscene)
 {
     m_sceneMap.erase(pscene->GetSceneIdentifier());
@@ -77,6 +89,11 @@ unordered_map<string, GameObject*>& GameManager::GetAllGameObjects()
 GameObject* GameManager::GetGameObjectUsingIdentifier(string& identifier)
 {
     return m_pcurrentScene->GetGameObjectUsingIdentifier(identifier);
+}
+
+PlayerGameObject* GameManager::GetPlayerGameObjectUsingIdentifier(string& identifier)
+{
+    return m_pcurrentScene->GetPlayerGameObjectUsingIdentifier(identifier);
 }
 
 void GameManager::SelectGameObjectUsingIdentifier(string& identifier)
@@ -97,6 +114,11 @@ void GameManager::SelectGameObjectUsingTreeNode(TreeNode* pnode)
 GameObject* GameManager::CreateGameObject(string identifier)
 {
     return m_pcurrentScene->CreateGameObject(identifier);
+}
+
+GameObject* GameManager::CreatePlayerGameObject(string identifier)
+{
+    return m_pcurrentScene->CreatePlayerGameObject(identifier);
 }
 
 void GameManager::DeleteSelectedGameObject()

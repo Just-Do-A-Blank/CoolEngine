@@ -116,11 +116,6 @@ GameObject* Scene::CreateGameObject(string identifier)
 
 GameObject* Scene::CreatePlayerGameObject(string identifier)
 {
-	return CreatePlayerGameObject(identifier, nullptr);
-}
-
-GameObject* Scene::CreatePlayerGameObject(string identifier, TreeNode* pparentNode)
-{
 	PlayerGameObject* gameObject = new PlayerGameObject(identifier);
 
 	m_prootTreeNode = m_psceneGraph->GetRootNode();
@@ -130,13 +125,13 @@ GameObject* Scene::CreatePlayerGameObject(string identifier, TreeNode* pparentNo
 	}
 	else
 	{
-		if (!pparentNode)
+		if (!m_pselectedGameObject)
 		{
 			m_psceneGraph->AddSibling(m_prootTreeNode, gameObject);
 		}
 		else
 		{
-			m_psceneGraph->AddChild(pparentNode, gameObject);
+			m_psceneGraph->AddChild(m_psceneGraph->GetNodeUsingIdentifier(m_pselectedGameObject->GetIdentifier()), gameObject);
 		}
 	}
 

@@ -45,7 +45,6 @@ void EditorUI::DrawEditorUI()
 
 	ImGui::Render();
 
-	m_deleteGameObjectClicked = false;
 
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
@@ -75,10 +74,7 @@ void EditorUI::DrawSceneGraphWindow()
 	m_base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
 	int nodeCount = -1;
 
-	if (!m_deleteGameObjectClicked)
-	{
-		TraverseTree(prootNode, nodeCount);
-	}
+	TraverseTree(prootNode, nodeCount);
 
 	if (ImGui::BeginMenuBar())
 	{
@@ -101,7 +97,6 @@ void EditorUI::DrawSceneGraphWindow()
 		{
 			if (ImGui::MenuItem("GameObject"))
 			{
-				m_deleteGameObjectClicked = true;
 				pgameManager->DeleteSelectedGameObject();
 
 				m_gameObjectNodeClicked = -1;
@@ -309,6 +304,7 @@ void EditorUI::TraverseTree(TreeNode* pcurrentNode, int& nodeCount)
 		}
 		else
 		{
+			m_gameObjectNodeClicked = nodeCount;
 			pgameManager->SelectGameObjectUsingTreeNode(pcurrentNode);
 		}
 	}
