@@ -1,7 +1,5 @@
 #pragma once
 
-#define TILE_SIZE 1
-
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -22,7 +20,7 @@ public:
 	TileMap();
 
 	// Load from file
-	TileMap(string mapPath, XMFLOAT3 position, string identifier);
+	TileMap(string mapPath, XMFLOAT3 position, XMFLOAT3 scale, string identifier);
 
 	// Load from parameters
 	TileMap(int width, int height, string identifier, XMFLOAT3 position);
@@ -38,6 +36,15 @@ public:
 
 	vector<vector<Tile>>	GetTiles();
 
+	void					SetPassable(int x, int y, bool passable);
+	void					SetPassable(Tile tile, bool passable);
+
+	void					SetTileAtWorldPos(int posX, int posY, Tile newTile);
+	void					SetTileAtMapPos(int mapPosX, int mapPosY, Tile newTile);
+
+	XMFLOAT3				GetScale();
+	void					SetScale(XMFLOAT3 newScale);
+
 protected:
 	
 
@@ -47,20 +54,15 @@ private:
 
 	void					LoadMap(string path);
 
-	void					AssignSprites();
-
-	void					SetPassable(int x, int y, bool passable);
-	void					SetPassable(Tile tile, bool passable);
-
-	void					SetTileAtWorldPos(int posX, int posY, Tile newTile);
-	void					SetTileAtMapPos(int mapPosX, int mapPosY, Tile newTile);
+	void					AssignSprites();	
 
 
 	int									m_width;
 	int									m_height;
 	int									m_totalTiles;
 
-
+	int									m_tileScaleInt;
+	XMFLOAT3							m_tileScale;
 	
 	std::vector<std::vector<Tile>>		m_tiles;
 	

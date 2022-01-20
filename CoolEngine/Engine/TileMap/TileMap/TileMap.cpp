@@ -5,11 +5,13 @@ TileMap::TileMap() : GameObject()
 
 }
 
-TileMap::TileMap(string mapPath, XMFLOAT3 position, string identifier) : GameObject(identifier)
+TileMap::TileMap(string mapPath, XMFLOAT3 position, XMFLOAT3 scale, string identifier) : GameObject(identifier)
 {
 	LoadMap(mapPath);
 
 	GetTransform()->SetPosition(position);
+	GetTransform()->SetScale(scale);
+	m_tileScaleInt = scale.x;
 
 	InitMap();
 }
@@ -45,6 +47,7 @@ void TileMap::Update(float d)
 
 void TileMap::Render(RenderStruct renderStruct)
 {
+	LOG("TEST TILE MAP RENDER()");
 	for (int i = 0; i < m_height; ++i)
 	{
 		for (int j = 0; j < m_width; ++j)
@@ -87,23 +90,23 @@ void TileMap::InitTilePosition(Tile tile, int row, int column) // Give tiles pos
 	if (m_width % 2 == 0)
 	{
 		xOffset = ((m_width - 1) * 0.5);
-		position.x = (position.x + ((column - xOffset) * TILE_SIZE));
+		position.x = (position.x + ((column - xOffset) * m_tileScaleInt));
 	}
 	else
 	{
 		xOffset = m_width / 2;
-		position.x = (position.x + ((column - xOffset) * TILE_SIZE));
+		position.x = (position.x + ((column - xOffset) * m_tileScaleInt));
 	}
 
 	if (m_height % 2 == 0)
 	{
 		yOffset = ((m_height - 1) * 0.5);
-		position.y = (position.y + ((row - yOffset) * TILE_SIZE));
+		position.y = (position.y + ((row - yOffset) * m_tileScaleInt));
 	}
 	else
 	{
 		yOffset = m_height / 2;
-		position.y = (position.y + ((row - yOffset) * TILE_SIZE));
+		position.y = (position.y + ((row - yOffset) * m_tileScaleInt));
 
 	}
 
@@ -357,39 +360,39 @@ Tile TileMap::GetTileFromWorldPos(int posX, int posY) // Takes a set of coordina
 	int tileX = 0;
 	int tileY = 0;
 
-	if (worldPos.x > GetTransform()->GetPosition().x + (m_width/2) * TILE_SIZE || worldPos.x < GetTransform()->GetPosition().x - (m_width / 2) * TILE_SIZE)
+	if (worldPos.x > GetTransform()->GetPosition().x + (m_width/2) * m_tileScaleInt || worldPos.x < GetTransform()->GetPosition().x - (m_width / 2) * m_tileScaleInt)
 	{
 		return Tile();
 	}
 	else
 	{
-		if (worldPos.y > GetTransform()->GetPosition().y + (m_height / 2) * TILE_SIZE || worldPos.y < GetTransform()->GetPosition().y - (m_height / 2) * TILE_SIZE)
+		if (worldPos.y > GetTransform()->GetPosition().y + (m_height / 2) * m_tileScaleInt || worldPos.y < GetTransform()->GetPosition().y - (m_height / 2) * m_tileScaleInt)
 		{
 			return Tile();
 		}
 		else
 		{
-			XMFLOAT3 topLeftPos = XMFLOAT3(GetTransform()->GetPosition().x - (m_width / 2) * TILE_SIZE, GetTransform()->GetPosition().y - (m_height / 2) * TILE_SIZE, 0);
+			XMFLOAT3 topLeftPos = XMFLOAT3(GetTransform()->GetPosition().x - (m_width / 2) * m_tileScaleInt, GetTransform()->GetPosition().y - (m_height / 2) * m_tileScaleInt, 0);
 
 			int xDiff = worldPos.x - topLeftPos.x;
 			int yDiff = worldPos.y - topLeftPos.y;
 
-			if (xDiff % TILE_SIZE == 0)
+			if (xDiff % m_tileScaleInt == 0)
 			{
-				tileX = xDiff / TILE_SIZE;
+				tileX = xDiff / m_tileScaleInt;
 			}
 			else
 			{
-				tileX = std::div(xDiff, TILE_SIZE).quot + 1;
+				tileX = std::div(xDiff, m_tileScaleInt).quot + 1;
 			}
 
-			if (yDiff % TILE_SIZE == 0)
+			if (yDiff % m_tileScaleInt == 0)
 			{
-				tileY = yDiff / TILE_SIZE;
+				tileY = yDiff / m_tileScaleInt;
 			}
 			else
 			{
-				tileY = std::div(yDiff, TILE_SIZE).quot + 1;
+				tileY = std::div(yDiff, m_tileScaleInt).quot + 1;
 			}
 		}
 
@@ -418,6 +421,11 @@ void TileMap::SetTileAtWorldPos(int posX, int posY, Tile newTile)
 void TileMap::SetTileAtMapPos(int posX, int posY, Tile newTile)
 {
 	m_tiles[posY][posX] = newTile;
+}
+
+XMFLOAT3 TileMap::GetScale()
+{
+	return XMFLOAT3();
 }
 
 

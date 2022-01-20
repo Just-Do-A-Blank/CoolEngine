@@ -169,7 +169,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
 
-	testMap1 = new TileMap("Resources/Levels/TileMaps/TestMap.txt", XMFLOAT3(0, 0, 0), "Map01");
+	testMap1 = new TileMap("Resources/Levels/TileMaps/TestMap.txt", XMFLOAT3(400, 0, 0), XMFLOAT3(20,20,20), "Map01");
+
 	//testMap2 = new TileMap("Resources/Levels/TileMaps/TestMap2.txt", XMFLOAT3(0, 0, 0), "Map02");
 
 	// Main message loop
