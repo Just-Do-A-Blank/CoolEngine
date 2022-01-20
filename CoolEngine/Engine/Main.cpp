@@ -108,8 +108,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	GraphicsManager::GetInstance()->Init(g_pd3dDevice);
 
-	GraphicsManager::GetInstance()->LoadTextureFromFile(DEFAULT_IMGUI_IMAGE, g_pd3dDevice);
-	GraphicsManager::GetInstance()->LoadTextureFromFile(TEST2, g_pd3dDevice);
+	GraphicsManager::GetInstance()->LoadTextureFromFile(DEFAULT_IMGUI_IMAGE);
+	GraphicsManager::GetInstance()->LoadTextureFromFile(TEST2);
 
 	g_inputController = new Inputs();
 
@@ -131,7 +131,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_pScene = new Scene("TestScene");
 
 	//Load animations
-	GraphicsManager::GetInstance()->LoadAnimationFromFile(TEST_ANIM, g_pd3dDevice);
+	GraphicsManager::GetInstance()->LoadAnimationFromFile(TEST_ANIM);
 
 	//Create test gameobject
 	string obj0Name = "TestObject0";
