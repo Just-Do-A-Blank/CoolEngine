@@ -18,6 +18,7 @@
 
 #include "Engine/TileMap/TileMap/TileMap.h"
 #include "Engine/ResourceDefines.h"
+#include "Managers/DebugDrawManager.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
@@ -113,8 +114,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	g_inputController = new Inputs();
 
+	//Debug Manager
+	DebugDrawManager::GetInstance()->Init(g_pd3dDevice);
+
 	//Create camera
-	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, 0);
+	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, -5);
 	XMFLOAT3 cameraForward = XMFLOAT3(0, 0, 1);
 	XMFLOAT3 cameraUp = XMFLOAT3(0, 1, 0);
 
@@ -142,7 +146,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	GameObject* pgameObject = g_pScene->GetGameObjectUsingIdentifier(obj0Name);
 
-	XMFLOAT3 objectPos = XMFLOAT3(0, 0.0f, 5.0f);
+	XMFLOAT3 objectPos = XMFLOAT3(0, 0.0f, 0.0f);
 	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
 
 	pgameObject->SetMesh(QUAD_MESH_NAME);
@@ -155,7 +159,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//Init second gameObject
 	pgameObject = g_pScene->GetGameObjectUsingIdentifier(obj1Name);
 
-	objectPos = XMFLOAT3(10.0f, 0.0f, 5.0f);
+	objectPos = XMFLOAT3(10.0f, 0.0f, 0.0f);
 	objectScale = XMFLOAT3(100, 100, 100);
 
 	pgameObject->SetMesh(QUAD_MESH_NAME);
@@ -164,6 +168,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetAlbedo(TEST2);
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
+
+#if _DEBUG
+	DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect("DebugRact1", XMFLOAT3(5.0f, -5.0f, 0.0f), 70, 30, DebugDrawManager::DebugColour::BLUE);
+#endif //_DEBUG
 
 	//Create test Tile Map
 	TileMap TestMap = TileMap(10, 10, "TestMap", XMFLOAT3(1,1,0));
