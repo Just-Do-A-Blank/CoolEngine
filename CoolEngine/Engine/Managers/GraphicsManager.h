@@ -10,17 +10,11 @@
 
 #define QUAD_MESH_NAME L"quad"
 
-#define DEFAULT_VERTEX_SHADER_NAME L"Engine/Graphics/Shaders/BasicVertex.hlsl"
-#define DEFAULT_PIXEL_SHADER_NAME L"Engine/Graphics/Shaders/BasicPixel.hlsl"
-
-#define POS_TEX_DUMMY_FILE_NAME L"Engine/Graphics/Shaders/DummyPosTex.hlsl"
-
 class Mesh;
 
 struct RenderStruct
 {
 	ID3D11DeviceContext* m_pcontext;
-	ConstantBuffer<PerInstanceCB>* m_pconstantBuffer;
 };
 
 class GraphicsManager : public Singleton<GraphicsManager>
@@ -40,13 +34,17 @@ class GraphicsManager : public Singleton<GraphicsManager>
 	int m_NumLayers = 5;
 
 public:
+	ConstantBuffer<PerFrameCB>* m_pperFrameCB = nullptr;
+	ConstantBuffer<PerInstanceCB>* m_pperInstanceCB = nullptr;
+	ConstantBuffer<DebugPerInstanceCB>* m_pdebugPerInstanceCB = nullptr;
+
 	void Init(ID3D11Device* pdevice);
 
-	bool CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3D11Device* pdevice);
+	bool CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel);
 
-	bool LoadTextureFromFile(wstring filename, ID3D11Device* pdevice, size_t maxSize = 0, DDS_ALPHA_MODE* alphaMode = nullptr);
+	bool LoadTextureFromFile(wstring filename, size_t maxSize = 0, DDS_ALPHA_MODE* alphaMode = nullptr);
 
-	bool LoadAnimationFromFile(wstring animName, ID3D11Device* pdevice, size_t maxSize = 0, DDS_ALPHA_MODE* alphaMode = nullptr);
+	bool LoadAnimationFromFile(wstring animName, size_t maxSize = 0, DDS_ALPHA_MODE* alphaMode = nullptr);
 
 	//Getters
 	ID3D11VertexShader* GetVertexShader(wstring name) const;
@@ -87,14 +85,16 @@ public:
 private:
 
 	//Init functions
-	void CreateInputLayouts(ID3D11Device* pdevice);
+	void CreateInputLayouts();
 
-	void CreateQuadMesh(ID3D11Device* pdevice);
+	void CreateQuadMesh();
 
-	void CreateSamplers(ID3D11Device* pdevice);
+	void CreateSamplers();
 
-	void CompileDefaultShaders(ID3D11Device* pdevice);
+	void CompileDefaultShaders();
 
-	bool CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3D11Device* pdevice, ID3DBlob*& pblob);
+	bool CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob*& pblob);
+
+	ID3D11Device* m_pdevice = nullptr;
 };
 

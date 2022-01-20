@@ -11,7 +11,8 @@ public:
 	Inputs() {}
 	~Inputs() {}
 
+	void Initialize();
+	void Update();
 
-
-
+	bool m_keyState[256] = { false };
 };

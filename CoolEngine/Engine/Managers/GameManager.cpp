@@ -2,6 +2,9 @@
 
 #include "Engine/GameObjects/GameObject.h"
 #include "Engine/Scene/Scene.h"
+#include "SceneGraph.h"
+#include "Engine/GameObjects/PlayerGameObject.h"
+#include "GraphicsManager.h"
 
 Timer* GameManager::GetTimer()
 {
@@ -21,41 +24,114 @@ void GameManager::Update()
     unordered_map<string, GameObject*> gameObjects = m_pcurrentScene->GetAllGameObjects();
 }
 
-//void GameManager::Render(RenderStruct& renderStruct)
-//{
-//    if (!m_pcurrentScene)
-//    {
-//        return;
-//    }
-//
-//    m_pcurrentScene->Render(renderStruct);
-//}
-
-void GameManager::ChangeScene(string sceneIdentifier)
+void GameManager::Render(RenderStruct& renderStruct)
 {
-    unordered_map<string, Scene*>::iterator iterator;
-
-    iterator = m_sceneMap.find(sceneIdentifier);
-
-    if (iterator->second)
+    if (!m_pcurrentScene)
     {
-        m_pcurrentScene = iterator->second;
+        return;
     }
+
+    m_pcurrentScene->Render(renderStruct);
 }
 
-void GameManager::DeleteScene(string sceneIdentifier)
+void GameManager::DeleteSceneUsingIdentifier(string sceneIdentifier)
 {
     m_sceneMap.erase(sceneIdentifier);
 }
 
-void GameManager::CreateGameObject(string identifier)
+void GameManager::DeleteSelectedScene()
 {
-    m_pcurrentScene->CreateGameObject(identifier);
+    m_sceneMap.erase(m_pcurrentScene->GetSceneIdentifier());
 }
 
-void GameManager::DeleteGameObject(string identifier)
+Scene* GameManager::GetCurrentScene()
+{
+    return m_pcurrentScene;
+}
+
+void GameManager::SelectScene(Scene* pscene)
+{
+    m_pcurrentScene = pscene;
+}
+
+void GameManager::SelectSceneUsingIdentifier(string sceneIdentifier)
+{
+    if (m_sceneMap.count(sceneIdentifier) == 0)
+    {
+        LOG("Scene : " << sceneIdentifier << "; was not found in Scene Map ");
+        return;
+    }
+    m_pcurrentScene = m_sceneMap.find(sceneIdentifier)->second;
+}
+
+void GameManager::DeleteScene(Scene* pscene)
+{
+    m_sceneMap.erase(pscene->GetSceneIdentifier());
+}
+
+unordered_map<string, GameObject*>& GameManager::GetAllGameObjects()
+{
+    return m_pcurrentScene->GetAllGameObjects();
+}
+
+GameObject* GameManager::GetGameObjectUsingIdentifier(string& identifier)
+{
+    return m_pcurrentScene->GetGameObjectUsingIdentifier(identifier);
+}
+
+PlayerGameObject* GameManager::GetPlayerGameObjectUsingIdentifier(string& identifier)
+{
+    return m_pcurrentScene->GetPlayerGameObjectUsingIdentifier(identifier);
+}
+
+void GameManager::SelectGameObjectUsingIdentifier(string& identifier)
+{
+    m_pcurrentScene->SelectGameObjectUsingIdentifier(identifier);
+}
+
+void GameManager::SelectGameObject(GameObject* pgameObject)
+{
+    m_pcurrentScene->SelectGameObject(pgameObject);
+}
+
+void GameManager::SelectGameObjectUsingTreeNode(TreeNode* pnode)
+{
+    m_pcurrentScene->SelectGameObjectUsingTreeNode(pnode);
+}
+
+GameObject* GameManager::CreateGameObject(string identifier)
+{
+    return m_pcurrentScene->CreateGameObject(identifier);
+}
+
+GameObject* GameManager::CreatePlayerGameObject(string identifier)
+{
+    return m_pcurrentScene->CreatePlayerGameObject(identifier);
+}
+
+void GameManager::DeleteSelectedGameObject()
+{
+    m_pcurrentScene->DeleteSelectedGameObject();
+}
+
+void GameManager::DeleteGameObjectUsingIdentifier(string identifier)
 {
     m_pcurrentScene->DeleteGameObjectUsingIdentifier(identifier);
+}
+
+TreeNode* GameManager::GetRootTreeNode()
+{
+    return m_pcurrentScene->GetRootTreeNode();
+}
+
+TreeNode* GameManager::GetTreeNode(GameObject* pgameObject)
+{
+    return m_pcurrentScene->GetTreeNode(pgameObject);
+}
+
+string& GameManager::GetCurrentSceneName()
+{
+    return m_pcurrentScene->GetSceneIdentifier();
 }
 
 unordered_map<string, GameObject*>& GameManager::GetAllGameObjectsInCurrentScene()

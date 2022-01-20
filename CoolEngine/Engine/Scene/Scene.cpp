@@ -1,12 +1,14 @@
 #include "Scene.h"
 
 #include "Engine/GameObjects/GameObject.h"
+#include "Engine/Managers/SceneGraph.h"
 
 #include "Engine/Physics/Collision.h"
 
 Scene::Scene(string identifier)
 {
 	m_sceneIdentifier = identifier;
+	m_psceneGraph = new SceneGraph();
 }
 
 Scene::~Scene()
@@ -15,19 +17,21 @@ Scene::~Scene()
 
 void Scene::Update()
 {
-	for (unordered_map<string, GameObject*>::iterator it = m_gameObjectMap.begin(); it != m_gameObjectMap.end(); ++it)
+	unordered_map<string, GameObject*> gameObjectList = m_psceneGraph->GetAllGameObjects();
+	for (unordered_map<string, GameObject*>::iterator it = gameObjectList.begin(); it != gameObjectList.end(); ++it)
 	{
 		it->second->Update();
 	}
 
-	Collision::Update(m_gameObjectMap);
+	Collision::Update(gameObjectList);
 }
 
 void Scene::Render(RenderStruct& renderStruct)
 {
 	for (int i = 0; i < GraphicsManager::GetInstance()->GetNumLayers(); ++i)
 	{
-		for (unordered_map<string, GameObject*>::iterator it = m_gameObjectMap.begin(); it != m_gameObjectMap.end(); ++it)
+		unordered_map<string, GameObject*> gameObjectList = m_psceneGraph->GetAllGameObjects();
+		for (unordered_map<string, GameObject*>::iterator it = gameObjectList.begin(); it != gameObjectList.end(); ++it)
 		{
 			if (it->second->IsRenderable() == false || it->second->GetLayer() != i)
 			{
@@ -41,48 +45,129 @@ void Scene::Render(RenderStruct& renderStruct)
 
 unordered_map<string, GameObject*>& Scene::GetAllGameObjects()
 {
-	return m_gameObjectMap;
+	return m_psceneGraph->GetAllGameObjects();
 }
 
 GameObject* Scene::GetGameObjectUsingIdentifier(string& identifier)
-{
-	unordered_map<string, GameObject*>::iterator it;
-	it = m_gameObjectMap.find(identifier);
-	return it->second;
+{	
+	return  m_psceneGraph->GetGameObjectUsingIdentifier(identifier);
 }
 
-void Scene::SelectGameObjectUsingIdentifier(string& identifier)
+void Scene::SelectGameObjectUsingIdentifier(string identifier)
 {
-	unordered_map<string, GameObject*>::iterator it;
-	it = m_gameObjectMap.find(identifier);
-	m_pcurrentlySelectedGameObject = it->second;
+	m_pselectedNode = m_psceneGraph->GetNodeUsingIdentifier(identifier);
+	m_pselectedGameObject = m_pselectedNode->GameObject;
 }
 
-void Scene::CreateGameObject(string& identifier)
+PlayerGameObject* Scene::GetPlayerGameObjectUsingIdentifier(string& identifier)
+{
+	return  static_cast<PlayerGameObject*>(m_psceneGraph->GetGameObjectUsingIdentifier(identifier));
+}
+
+void Scene::SelectGameObject(GameObject* pgameObject)
+{
+	if (pgameObject)
+	{
+		SelectGameObjectUsingIdentifier(pgameObject->GetIdentifier());
+	}
+	else
+	{
+		m_pselectedNode = nullptr;
+		m_pselectedGameObject = nullptr;
+	}
+}
+
+void Scene::SelectGameObjectUsingTreeNode(TreeNode* pnode)
+{
+	if (!pnode)
+	{
+		m_pselectedNode = nullptr;
+		m_pselectedGameObject = nullptr;
+		return;
+	}
+
+	m_pselectedNode = pnode;
+	m_pselectedGameObject = pnode->GameObject;
+}
+
+GameObject* Scene::CreateGameObject(string identifier)
 {
 	GameObject* gameObject = new GameObject(identifier);
 
-	m_gameObjectMap.insert(pair<string, GameObject*>(identifier, gameObject));
+	m_prootTreeNode = m_psceneGraph->GetRootNode();
+	if (!m_prootTreeNode)
+	{
+		m_prootTreeNode = m_psceneGraph->NewNode(gameObject);
+	}
+	else
+	{
+		if (!m_pselectedGameObject)
+		{
+			m_psceneGraph->AddSibling(m_prootTreeNode, gameObject);
+		}
+		else
+		{
+			m_psceneGraph->AddChild(m_psceneGraph->GetNodeUsingIdentifier(m_pselectedGameObject->GetIdentifier()), gameObject);
+		}
+	}
+
+	return gameObject;
 }
 
-void Scene::DeleteGameObjectUsingIdentifier(string& identifier)
+GameObject* Scene::CreatePlayerGameObject(string identifier)
 {
-	m_gameObjectMap.erase(identifier);
+	PlayerGameObject* gameObject = new PlayerGameObject(identifier);
+
+	m_prootTreeNode = m_psceneGraph->GetRootNode();
+	if (!m_prootTreeNode)
+	{
+		m_prootTreeNode = m_psceneGraph->NewNode(gameObject);
+	}
+	else
+	{
+		if (!m_pselectedGameObject)
+		{
+			m_psceneGraph->AddSibling(m_prootTreeNode, gameObject);
+		}
+		else
+		{
+			m_psceneGraph->AddChild(m_psceneGraph->GetNodeUsingIdentifier(m_pselectedGameObject->GetIdentifier()), gameObject);
+		}
+	}
+
+	return gameObject;
 }
 
 void Scene::DeleteSelectedGameObject()
 {
-	for (unordered_map<string, GameObject*>::iterator it = m_gameObjectMap.begin(); it != m_gameObjectMap.end(); ++it)
+	if (!m_pselectedNode)
 	{
-		//it->second->Render(renderStruct);
-		if (it->second == m_pcurrentlySelectedGameObject)
-		{
-			m_gameObjectMap.erase(it->first);
-		}
+		return;
 	}
+	m_psceneGraph->DeleteGameObjectUsingNode(m_pselectedNode);
 }
 
-string& Scene::GetSceneName()
+void Scene::DeleteGameObjectUsingIdentifier(string identifier)
+{
+	m_psceneGraph->DeleteGameObjectUsingIdentifier(identifier);
+}
+
+TreeNode* Scene::GetRootTreeNode()
+{
+	return m_psceneGraph->GetRootNode();
+}
+
+TreeNode* Scene::GetTreeNode(GameObject* pgameObject)
+{
+	return m_psceneGraph->GetNodeUsingIdentifier(pgameObject->GetIdentifier());
+}
+
+string& Scene::GetSceneIdentifier()
 {
 	return m_sceneIdentifier;
+}
+
+GameObject* Scene::GetSelectedGameObject()
+{
+	return m_pselectedGameObject;
 }

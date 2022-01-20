@@ -47,5 +47,7 @@ public:
 	void SetForwardVector(XMFLOAT3& forwardVector);
 	void SetUpVector(XMFLOAT3& upVector);
 	void SetLeftVector(XMFLOAT3& leftVector);
+
+	void Translate(XMFLOAT3 vector);
 };
 
