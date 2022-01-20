@@ -4,6 +4,9 @@
 
 class GameObject;
 class Scene;
+class TreeNode;
+class PlayerGameObject;
+class RenderStruct;
 
 enum class SceneDesc
 {
@@ -27,14 +30,36 @@ public:
 	Scene* m_pcurrentScene;
 
 	void Update();
-	//void Render(RenderStruct& renderStruct);
+	void Render(RenderStruct& renderStruct);
 
 	void CreateScene(string sceneIdentifier);
-	void ChangeScene(string sceneIdentifier);
-	void DeleteScene(string sceneIdentifier);
+	void SelectScene(Scene* psnene);
+	void SelectSceneUsingIdentifier(string sceneIdentifier);
+	void DeleteScene(Scene* pscene);
+	void DeleteSceneUsingIdentifier(string sceneIdentifier);
+	void DeleteSelectedScene();
 
-	//void CreateGameObject(string identifier);
-	//void DeleteGameObject(string identifier);
+	Scene* GetCurrentScene();
+
+
+	unordered_map<string, GameObject*>& GetAllGameObjects();
+	GameObject* GetGameObjectUsingIdentifier(string& identifier);
+	PlayerGameObject* GetPlayerGameObjectUsingIdentifier(string& identifier);
+
+	void SelectGameObjectUsingIdentifier(string& identifier);
+	void SelectGameObject(GameObject* pgameObject);
+	void SelectGameObjectUsingTreeNode(TreeNode* pnode);
+
+	GameObject* CreateGameObject(string identifier);
+	GameObject* CreatePlayerGameObject(string identifier);
+
+	void DeleteSelectedGameObject();
+	void DeleteGameObjectUsingIdentifier(string identifier);
+
+	TreeNode* GetRootTreeNode();
+	TreeNode* GetTreeNode(GameObject* pgameObject);
+	string& GetCurrentSceneName();
+
 
 	//Getters
 	unordered_map<string, Scene*> GetSceneList();

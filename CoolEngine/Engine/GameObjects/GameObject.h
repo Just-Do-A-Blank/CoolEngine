@@ -1,6 +1,5 @@
 #pragma once
 #include "Transform.h"
-#include "Engine/Managers/GameManager.h"
 #include "Engine/Graphics/Mesh.h"
 #include "Engine/Graphics/ConstantBuffer.h"
 #include "Engine/Graphics/ConstantBuffers.h"

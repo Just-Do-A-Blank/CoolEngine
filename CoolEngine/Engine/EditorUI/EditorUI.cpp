@@ -4,6 +4,7 @@
 
 #include <ShlObj_core.h>
 #include "Engine/Managers/SceneGraph.h"
+#include "Engine/Managers/GraphicsManager.h"
 
 HWND* EditorUI::m_phwnd = nullptr;
 
@@ -54,7 +55,6 @@ void EditorUI::DrawEditorUI(ID3D11Device* pdevice)
 
 	ImGui::Render();
 
-	m_deleteGameObjectClicked = false;
 
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
@@ -70,7 +70,7 @@ void EditorUI::DrawMasterWindow()
 
 void EditorUI::DrawSceneGraphWindow()
 {
-	if (!m_pselectedScene)
+	if (!GameManager::GetInstance()->GetCurrentScene())
 	{
 		return;
 	}
@@ -78,16 +78,13 @@ void EditorUI::DrawSceneGraphWindow()
 
 	GameManager* pgameManager = GameManager::GetInstance();
 	static int selected = -1;
-
-	TreeNode* prootNode = m_pselectedScene->GetRootTreeNode();
+	
+	TreeNode* prootNode = pgameManager->GetRootTreeNode();
 
 	m_base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
 	int nodeCount = -1;
 
-	if (!m_deleteGameObjectClicked)
-	{
-		TraverseTree(prootNode, nodeCount);
-	}
+	TraverseTree(prootNode, nodeCount);
 
 	if (ImGui::BeginMenuBar())
 	{
@@ -110,12 +107,10 @@ void EditorUI::DrawSceneGraphWindow()
 		{
 			if (ImGui::MenuItem("GameObject"))
 			{
-				m_deleteGameObjectClicked = true;
-				m_pselectedScene->DeleteGameObjectUsingNode(m_pselectedGameObjectNode);
+				pgameManager->DeleteSelectedGameObject();
 
 				m_gameObjectNodeClicked = -1;
-				m_pselectedGameObjectNode = nullptr;
-				m_pselectedGameObject = nullptr;
+				pgameManager->SelectGameObject(nullptr);
 			}
 
 			ImGui::EndMenu();
@@ -138,16 +133,7 @@ void EditorUI::DrawSceneGraphWindow()
 		}
 		if (clicked & 1)
 		{
-			if (!m_rootGameObject || !m_pselectedGameObjectNode)
-			{
-				//CreateRootGameObject
-				m_rootGameObject = m_pselectedScene->CreateGameObject(gameObjectName);
-			}
-			else
-			{
-				//Create child gameObject
-				m_pselectedScene->CreateGameObject(gameObjectName, m_pselectedGameObjectNode);
-			}
+			pgameManager->CreateGameObject(gameObjectName);
 			m_createGameObjectClicked = false;
 			gameObjectName[0] = {};
 		}
@@ -173,13 +159,13 @@ void EditorUI::DrawSceneManagementWindow()
 			if (selected != sceneCount)
 			{
 				selected = sceneCount;
-				m_pselectedScene = it->second;
+				pgameManager->SelectScene(it->second);
 			}
 
 			else
 			{
 				selected = -1;
-				m_pselectedScene = nullptr;
+				pgameManager->SelectScene(nullptr);
 			}
 		}
 		++sceneCount;
@@ -206,7 +192,9 @@ void EditorUI::DrawSceneManagementWindow()
 
 			if (ImGui::MenuItem("Delete Scene", "Ctrl+D"))
 			{
-
+				pgameManager->DeleteSelectedScene();
+				selected = -1;
+				pgameManager->SelectScene(nullptr);
 			}
 
 			ImGui::EndMenu();
@@ -247,6 +235,8 @@ void EditorUI::TraverseTree(TreeNode* pcurrentNode, int& nodeCount)
 		return;
 	}
 
+	GameManager* pgameManager = GameManager::GetInstance();
+
 	++nodeCount;
 	ImGuiTreeNodeFlags node_flags = m_base_flags;
 	const bool is_selected = (m_selectionMask & (1 << nodeCount)) != 0;
@@ -263,15 +253,14 @@ void EditorUI::TraverseTree(TreeNode* pcurrentNode, int& nodeCount)
 		if (nodeCount == m_gameObjectNodeClicked)
 		{
 			m_gameObjectNodeClicked = -1;
-			m_pselectedGameObjectNode = nullptr;
-			m_pselectedGameObject = nullptr;
+			pgameManager->SelectGameObject(nullptr);
+
 
 		}
 		else
 		{
 			m_gameObjectNodeClicked = nodeCount;
-			m_pselectedGameObjectNode = pcurrentNode;
-			m_pselectedGameObject = m_pselectedGameObjectNode->GameObject;
+			pgameManager->SelectGameObjectUsingTreeNode(pcurrentNode);
 		}
 	}
 

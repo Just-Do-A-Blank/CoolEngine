@@ -1,6 +1,7 @@
 #pragma once
 #include "Events.h"
 #include "Engine/GameObjects/PlayerGameObject.h"
+#include "Engine/Managers/GameManager.h"
 
 /// <summary>
 /// 
@@ -31,17 +32,17 @@ public:
 		//Can use 'Letter' or the raw keycode for keyboard inputs.
 		if (e->GetKeyCode() == 'C')
 		{
-			int i = 0;
+			LOG("C");
 		}
 
 		if (e->GetKeyCode() == 0x43)
 		{
-			int i = 0;
+			
 		}
 
 		if (e->GetKeyCode() == 0x44)
 		{
-			int i = 0;
+			LOG("D");
 		}
 
 		// Player movement
@@ -65,7 +66,7 @@ public:
 		if (vector.x != 0.0f || vector.y != 0.0f)
 		{
 			float size = sqrt(vector.x * vector.x + vector.y * vector.y);
-			vector = XMFLOAT3( (m_playerObject->GetMoveSpeed() * vector.x) / size, (m_playerObject->GetMoveSpeed() * vector.y) / size, 0 );
+			vector = MathHelper::Multiply(XMFLOAT3( (m_playerObject->GetMoveSpeed() * vector.x) / size, (m_playerObject->GetMoveSpeed() * vector.y) / size, 0 ),GameManager::GetInstance()->GetTimer()->DeltaTime());
 			m_playerObject->GetTransform()->Translate(vector);
 		}
 	}

@@ -5,7 +5,7 @@ class CharacterGameObject : public GameObject
 {
 private:
 
-	float m_moveSpeed = 10.0f;
+	float m_moveSpeed = 100.0f;
 
 	float m_health = 42.0f;
 
