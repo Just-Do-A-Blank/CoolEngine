@@ -204,7 +204,12 @@ ID3D11PixelShader* GraphicsManager::GetPixelShader(wstring name) const
 
 ID3D11ShaderResourceView* GraphicsManager::GetShaderResourceView(wstring name) const
 {
-	return m_textureSRVs.at(name);
+	if (m_textureSRVs.count(name) == 0)
+	{
+		LOG("Shader Resource not found in m_textureSRV Map");
+		return nullptr;
+	}
+	return m_textureSRVs.find(name)->second;
 }
 
 Mesh* GraphicsManager::GetMesh(wstring name) const
