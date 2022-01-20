@@ -3,6 +3,7 @@
 #include "DebugDrawManager.h"
 #include "Engine/GameObjects/DebugRect.h"
 #include "Engine/Managers/GraphicsManager.h"
+#include "Engine/ResourceDefines.h"
 
 void DebugDrawManager::Init(ID3D11Device* pd3dDevice)
 {
@@ -10,10 +11,11 @@ void DebugDrawManager::Init(ID3D11Device* pd3dDevice)
 	//Load Textures PerColour
 	for (int i = 0; i < (int)DebugColour::SIZE; ++i)
 	{
-		textureName = L"Resources\\Debug\\DebugColour" + to_wstring(i) + L".dds";
-		GraphicsManager::GetInstance()->LoadTextureFromFile(textureName, pd3dDevice);
-
-		m_albedoMap.insert(pair<DebugColour, wstring>(DebugColour(i), textureName));
+		textureName = DEBUG_COLOUR + to_wstring(i) + L".dds";
+		if (GraphicsManager::GetInstance()->LoadTextureFromFile(textureName))
+		{
+			m_albedoMap.insert(pair<DebugColour, wstring>(DebugColour(i), textureName));
+		}
 	}	
 }
 

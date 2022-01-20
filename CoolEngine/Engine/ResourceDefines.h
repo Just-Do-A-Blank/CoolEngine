@@ -3,6 +3,7 @@
 //Sprites
 #define DEFAULT_IMGUI_IMAGE L"Resources\\Sprites\\Brick.dds"
 #define TEST2 L"Resources\\Sprites\\Test2.dds"
+#define DEBUG_COLOUR L"Resources\\Debug\\DebugColour"
 
 //Animations
 #define TEST_ANIM L"TestAnim"
