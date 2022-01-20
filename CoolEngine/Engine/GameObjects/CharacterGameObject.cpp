@@ -10,16 +10,10 @@ CharacterGameObject::~CharacterGameObject()
 
 }
 
-void CharacterGameObject::MoveX(float x)
+void CharacterGameObject::Translate(XMFLOAT2 vector)
 {
 	XMFLOAT3 pos = m_transform.GetPosition();
-	pos.x += x;
-	m_transform.SetPosition(pos);
-}
-
-void CharacterGameObject::MoveY(float y)
-{
-	XMFLOAT3 pos = m_transform.GetPosition();
-	pos.y += y;
+	pos.x += vector.x;
+	pos.y += vector.y;
 	m_transform.SetPosition(pos);
 }

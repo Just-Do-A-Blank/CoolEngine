@@ -45,21 +45,28 @@ public:
 		}
 
 		// Player movement
+		XMFLOAT2 vector = XMFLOAT2(0, 0);
 		if (e->GetKeyCode() == 'W')
 		{
-			m_playerObject->MoveY(m_playerObject->GetMoveSpeed());
+			vector.y = 1.0f;
 		}
 		if (e->GetKeyCode() == 'S')
 		{
-			m_playerObject->MoveY(-1 * m_playerObject->GetMoveSpeed());
+			vector.y = -1.0f;
 		}
 		if (e->GetKeyCode() == 'A')
 		{
-			m_playerObject->MoveX(-1 * m_playerObject->GetMoveSpeed());
+			vector.x = -1.0f;
 		}
 		if (e->GetKeyCode() == 'D')
 		{
-			m_playerObject->MoveX(m_playerObject->GetMoveSpeed());
+			vector.x = 1.0f;
+		}
+		if (vector.x != 0.0f || vector.y != 0.0f)
+		{
+			float size = sqrt(vector.x * vector.x + vector.y * vector.y);
+			vector = XMFLOAT2( (m_playerObject->GetMoveSpeed() * vector.x) / size, (m_playerObject->GetMoveSpeed() * vector.y) / size );
+			m_playerObject->Translate(vector);
 		}
 	}
 
