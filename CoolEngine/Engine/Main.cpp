@@ -9,6 +9,8 @@
 #include "Engine/Graphics/SpriteAnimation.h"
 #include "Engine/GameObjects/CameraGameObject.h"
 
+#include "FileIO/FileIO.h"
+
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/Managers/Events/EventObserver.h"
 #include "Engine/Helpers/Inputs.h"
@@ -155,6 +157,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetAlbedo(L"Resources\\Sprites\\Test2.dds");
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
+
+	FileIO::LoadScene("C:\\Users\\Thoma\\Documents\\GitHub\\CoolEngine\\CoolEngine\\Engine\\FileIO\\Scene.json", g_pScene);
+	FileIO::SaveScene("C:\\Users\\Thoma\\Documents\\GitHub\\CoolEngine\\CoolEngine\\Engine\\FileIO\\Scene2.json", g_pScene);
 
 	//Create test Tile Map
 	TileMap TestMap = TileMap(10, 10, "TestMap", XMFLOAT3(1,1,0));

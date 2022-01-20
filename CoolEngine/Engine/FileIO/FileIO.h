@@ -1,9 +1,15 @@
 #pragma once
 
-#include "json.hpp"
 #include "Engine/GameObjects/GameObject.h"
 #include "Engine/Physics/ParticleManager.h"
+#include "Engine/Physics/Circle.h"
+#include "Engine/Physics/Box.h"
+#include "Engine/Physics/ParticleManager.h"
 #include "Engine/Managers/GraphicsManager.h"
+#include "Engine/Scene/Scene.h"
+#include  "Engine/Includes/json.hpp"
+#include "Engine/TileMap/TileMap/TileMap.h"
+#include "FileIOCache.h"
 #include <fstream>
 #include <iostream>
 #include <windows.h>
@@ -136,21 +142,7 @@ public:
 	/// <returns></returns>
 	static GameObject LoadGameObject(const char* fileAddress, int objectCount);
 
-	/// <summary>
-	/// Loads a Game Object from a JSON file. This function also calls the load texture function
-	/// </summary>
-	/// <param name="fileAddress"></param>
-	/// <param name="manager"></param>
-	/// <returns></returns>
-	static GameObject LoadGameObject(const char* fileAddress, ID3D11Device* device, int objectCount);
-
-	/// <summary>
-	/// Loads multiple game objects from a singular JSON file
-	/// </summary>
-	/// <param name="fileAddress"></param>
-	/// <returns>std::vector<GameObject></returns>
-	static std::vector<GameObject> LoadMultipleGameObjects(const char* fileAddress);
-
+	static std::vector<GameObject> FileIO::LoadMultipleGameObjects(const char* fileAddress);
 
 	/// <summary>
 	/// Loads a map from a JSON file
@@ -158,12 +150,12 @@ public:
 	/// <param name="file"></param>
 	/// <param name="tiles"></param>
 	/// <returns></returns>
-	static std::vector<GameObject> LoadMap(json file, std::vector<GameObject> tiles);
+	static void LoadMap(json file, Scene* scene);
 
 	/// <summary>
 	/// Loads game objects, tiles and a map from a JSON file. 
 	/// </summary>
-	static std::vector<std::vector<GameObject>>  LoadScene(const char* fileAddress);
+	static void LoadScene(const char* fileAddress, Scene* scene);
 
 	/// <summary>
 	/// Loads a Save File from a JSON file. Needs a file address to do so. Code in this function is temorary until the structure of the object that needs loading is made clear
@@ -187,19 +179,10 @@ public:
 	template <typename t>
 	static t LoadTextFile(const char* fileAddress);
 
-	static ParticleManager LoadParticle(const char* fileLocation, int particleNumber);
+	//static ParticleManager LoadParticle(const char* fileLocation, int particleNumber);
 
 
-	static ParticleManager LoadParticle(json j, int particleNumber);
-
-
-
-	/// <summary>
-	/// A function that saves data related to a Game Object and saves it to a file. Ensure to specify the file type in the string
-	/// </summary>
-	/// <param name="gameObjData"></param>
-	/// <param name="fileLocation"></param>
-	static void SaveGameObject(GameObjectData gameObjData, const char* fileLocation);
+	static ParticleSystem LoadParticle(json j, int particleNumber);
 
 	/// <summary>
 	/// This function allows for the saving of a custom json file.
@@ -210,6 +193,14 @@ public:
 	/// <param name="data"></param>
 	/// <returns></returns>
 	static bool SaveObjectInJson(const char* fileLocation, std::vector<std::string> varNames, std::vector<JSON_VARIABLE_TYPE> types, std::vector<void*> data);
+
+	static void SaveScene(const char* fileLocation, Scene* scene);
+
+	static wstring GrabVertexShaderName(ID3D11VertexShader* shader);
+	static wstring GrabPixelShaderName(ID3D11PixelShader* shader);
+	static wstring GrabTextureName(ID3D11ShaderResourceView* texture);
+	static wstring GrabAlbedoName(ID3D11ShaderResourceView* albedo);
+
 
 private:
 
@@ -224,15 +215,11 @@ private:
 /// Loads multiple game objects from a singular JSON file
 /// </summary>
 /// <param name="fileAddress"></param>
-/// <returns></returns>
-	static std::vector<GameObject> LoadMultipleGameObjects(json file);
-
-	/// <summary>
-/// Loads multiple game objects from a singular JSON file
-/// </summary>
-/// <param name="fileAddress"></param>
 /// <returns>GameObject<GameObject></returns>
 	static GameObject LoadGameObject(json file, int objectCount);
+
+	static std::vector<GameObject> FileIO::LoadMultipleGameObjects(json j);
+
 
 	/// <summary>
 	/// Loads Multiple tiles from a JSON file
@@ -246,7 +233,7 @@ private:
 	/// </summary>
 	/// <param name="file"></param>
 	/// <returns></returns>
-	static std::vector<ParticleManager> LoadMultipleParticles(json file);
+	static std::vector<ParticleSystem> LoadMultipleParticles(json file);
 
 	/// <summary>
 	/// 
@@ -261,4 +248,6 @@ private:
 	/// <param name="wide_string"></param>
 	/// <returns></returns>
 	static std::string FileIO::ToString(std::wstring& wide_string);
+
+	 static FileIOCache m_Cache;
 };

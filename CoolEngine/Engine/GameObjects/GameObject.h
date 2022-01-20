@@ -5,6 +5,7 @@
 #include "Engine/Graphics/ConstantBuffer.h"
 #include "Engine/Graphics/ConstantBuffers.h"
 #include "Engine/Graphics/SpriteAnimation.h"
+#include "Engine/Includes/json.hpp"
 
 #include <string>
 
@@ -109,4 +110,5 @@ public:
 	bool RemoveAnimation(string animName);
 
 	void SetShape(Shape* collider);
+
 };
