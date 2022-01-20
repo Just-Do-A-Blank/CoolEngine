@@ -47,6 +47,8 @@ void EditorUI::DrawEditorUI()
 	m_deleteGameObjectClicked = false;
 
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+	ImGui::EndFrame();
 }
 
 void EditorUI::DrawMasterWindow()

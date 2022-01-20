@@ -21,6 +21,12 @@
 #include "Engine/ResourceDefines.h"
 #include <Engine/Physics/Box.h>
 
+#if TOOL
+#include "Engine/Tools/ToolBase.h"
+
+#include "Engine/Tools/TileMapTool.h"
+#endif
+
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
 HRESULT	InitDevice();
@@ -56,6 +62,10 @@ Inputs* g_inputController;
 int g_Width = 1920;
 int g_Height = 1080;
 
+#if TOOL
+ToolBase* g_ptoolBase = nullptr;
+#endif
+
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
@@ -90,20 +100,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	AudioManager::GetInstance()->SetListenerPosition(XMFLOAT3(0, 0, 0));
 
-	//Music
-	AudioManager::GetInstance()->LoadMusic(TEST_MUSIC);
-
-	AudioManager::GetInstance()->PlayMusic(TEST_MUSIC, 0.001f, true);
-
-	//Sound
-	AudioManager::GetInstance()->Load(TEST_SOUND);
-
-	AudioManager::GetInstance()->Play(TEST_SOUND, 0.01f);
-
 	GraphicsManager::GetInstance()->Init(g_pd3dDevice);
-
-	GraphicsManager::GetInstance()->LoadTextureFromFile(DEFAULT_IMGUI_IMAGE);
-	GraphicsManager::GetInstance()->LoadTextureFromFile(TEST2);
 
 	g_inputController = new Inputs();
 
@@ -123,6 +120,28 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	//Create scene
 	g_pScene = new Scene("TestScene");
+
+#if TOOL
+
+#if TILE_MAP_TOOL
+	g_ptoolBase = new TileMapTool();
+#endif
+
+	g_ptoolBase->Init();
+#else
+
+	//Music
+	AudioManager::GetInstance()->LoadMusic(TEST_MUSIC);
+
+	AudioManager::GetInstance()->PlayMusic(TEST_MUSIC, 0.001f, true);
+
+	//Sound
+	AudioManager::GetInstance()->Load(TEST_SOUND);
+
+	AudioManager::GetInstance()->Play(TEST_SOUND, 0.01f);
+
+	GraphicsManager::GetInstance()->LoadTextureFromFile(DEFAULT_IMGUI_IMAGE);
+	GraphicsManager::GetInstance()->LoadTextureFromFile(TEST2);
 
 	//Load animations
 	GraphicsManager::GetInstance()->LoadAnimationFromFile(TEST_ANIM);
@@ -198,6 +217,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//Create test Tile Map
 	TileMap TestMap = TileMap(10, 10, "TestMap", XMFLOAT3(1,1,0));
 	TestMap.testFunc();
+#endif
 
 	// Main message loop
 	MSG msg = { 0 };
@@ -527,7 +547,11 @@ void Render()
 
 	g_pScene->Render(renderStruct);
 
+#if TOOL
+	g_ptoolBase->Render();
+#else
 	g_peditorUI->DrawEditorUI();
+#endif
 
 	// Present our back buffer to our front buffer
 	g_pSwapChain->Present(0, 0);
@@ -542,6 +566,10 @@ void Update()
 	AudioManager::GetInstance()->Update();
 
 	g_pScene->Update();
+
+#if TOOL
+	g_ptoolBase->Update();
+#endif
 }
 
 void BindQuadBuffers()
