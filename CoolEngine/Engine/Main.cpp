@@ -555,7 +555,7 @@ void Render()
 #if TOOL
 	g_ptoolBase->Render();
 #else
-	g_peditorUI->DrawEditorUI();
+	g_peditorUI->DrawEditorUI(g_pd3dDevice);
 #endif
 
 	// Present our back buffer to our front buffer
