@@ -3,6 +3,7 @@
 #include "Engine/Structure/Singleton.h"
 
 class DebugRect;
+class RenderStruct;
 
 class DebugDrawManager : public Singleton<DebugDrawManager>
 {
@@ -18,7 +19,7 @@ public:
 		SIZE
 	};
 
-	void Init();
+	void Init(ID3D11Device* pd3dDevice);
 	void CreateWorldSpaceDebugRect(string identifier, XMFLOAT3 position, float width, float height, DebugColour colour);
 	void CreateScreenSpaceDebugRect(string identifier, XMFLOAT3 position, float width, float height, DebugColour colour);
 	void Render(RenderStruct& renderStruct);
