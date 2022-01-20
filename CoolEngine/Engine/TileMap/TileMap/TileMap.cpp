@@ -1,15 +1,6 @@
 #include "TileMap.h"
 
 
-TileMap::TileMap(string mapPath, XMFLOAT3 position, string identifier) : GameObject(identifier)
-{
-	LoadMap(mapPath);
-
-	GetTransform()->SetPosition(position);
-
-	InitMap();
-}
-
 TileMap::TileMap(int width, int height, string identifier, XMFLOAT3 position) : GameObject(identifier)
 {
 	m_width = width, m_height = height;
@@ -18,6 +9,7 @@ TileMap::TileMap(int width, int height, string identifier, XMFLOAT3 position) : 
 	GetTransform()->SetPosition(position);
 
 	InitMap();
+	InitEdges();
 }
 
 TileMap::~TileMap()
@@ -46,331 +38,125 @@ void TileMap::InitMap()
 			++ID;
 		}
 	}
+}
 
-	//AssignSprites();
+void TileMap::LoadSprites()
+{
+	
+}
+
+void TileMap::InitEdges() // I don't know how this works but it does
+{
+	char edge = 'N';
+	for (int j = 0; j < 10; j++)
+	{
+		switch (edge)
+		{
+			case('N'):
+			{
+				m_tiles[0][j].SetEdgeN(true);
+
+				if (j == 9)
+				{
+					edge = 'S';
+				}
+			}
+			case('S'):
+			{
+				m_tiles[m_height - 1][j].SetEdgeS(true);
+
+				if (j == 9)
+				{
+					edge = 'W';
+				}
+			}
+			case('W'):
+			{
+				m_tiles[j][0].SetEdgeW(true);
+
+				if (j == 9)
+				{
+					edge = 'E';
+				}
+			}
+			case('E'):
+			{
+				m_tiles[j][m_width - 1].SetEdgeE(true);
+
+				if (j == 9)
+				{
+					edge = ' ';
+				}
+			}
+		}
+	}
 }
 
 void TileMap::InitTilePosition(Tile tile, int row, int column)
 {
 	XMFLOAT3 position = GetTransform()->GetPosition();
 
-	float xOffset = 0;
-	float yOffset = 0;
+	int spriteSize = 1;
 
-	if (m_width % 2 == 0)
+	float Xoffset = 0;
+	float Yoffset = 0;
+
+	switch (m_width % 2)
 	{
-		xOffset = ((m_width - 1) * 0.5);
-		position.x = (position.x + ((column - xOffset) * TILE_SIZE));
-	}
-	else
-	{
-		xOffset = m_width / 2;
-		position.x = (position.x + ((column - xOffset) * TILE_SIZE));
+		case(0):
+		{
+			Xoffset = ((m_width - 1) * 0.5);
+			position.x = (position.x + ((column - Xoffset) * spriteSize));
+
+			break;
+		}
+
+		case(1):
+		{
+			Xoffset = m_width / 2;
+			position.x = (position.x + ((column - Xoffset) * spriteSize));
+
+			break;
+		}
+
+		default:
+		{
+			break;
+		}
 	}
 
-	if (m_height % 2 == 0)
+	switch (m_height % 2)
 	{
-		yOffset = ((m_height - 1) * 0.5);
-		position.y = (position.y + ((row - yOffset) * TILE_SIZE));
-	}
-	else
-	{
-		yOffset = m_height / 2;
-		position.y = (position.y + ((row - yOffset) * TILE_SIZE));
+		case(0):
+		{
+			Yoffset = ((m_height - 1) * 0.5);
+			position.y = (position.y + ((row - Yoffset) * spriteSize));
 
+			break;
+		}
+
+		case(1):
+		{
+			Yoffset = m_height / 2;
+			position.y = (position.y + ((row - Yoffset) * spriteSize));
+
+			break;
+		}
+
+		default:
+		{
+			break;
+		}
 	}
+
 
 	tile.GetTransform()->SetPosition(position);
 }
 
-void TileMap::LoadMap(string path)
-{
-	int count = 0;
-	string parameter;
-	string line;
-
-	string data = "";
-	vector<string> dataVec = {};
-
-	ifstream mapFile(path);
-	if (mapFile.is_open())
-	{
-		while (getline(mapFile, line))
-		{
-			count++;
-
-			switch (count)
-			{
-				case(1):
-				{
-					parameter = "<DIMENSIONS>";
-					break;
-				}
-				case(2):
-				{
-					parameter = "<SPRITES>";
-					break;
-				}
-				case(3):
-				{
-					parameter = "<ANIMATIONS>";
-					break;
-				}
-				case(4):
-				{
-					parameter = "<LAYOUT>";
-					break;
-				}
-			}
-
-			//Size
-			if (parameter == "<DIMENSIONS>")
-			{
-				if (line.find(parameter) != -1)
-				{
-					for (int i = parameter.size(); (i < line.size() + 1); i++)
-					{
-						if (line[i] == ',' || line[i] == '*')
-						{
-							dataVec.push_back(data);
-							data.clear();
-						}
-						else
-						{
-							if (line[i] != ' ')
-								data.push_back(line[i]);
-						}
-					}
-
-					if (dataVec.size() != 2)
-					{
-						LOG("ERROR WHEN LOADING TILE MAP DIMENSIONS - INVALID NUMBER OF PARAMETERS")
-					}
-					else
-					{
-						m_width  = stoi(dataVec[0]);
-						m_height = stoi(dataVec[1]);
-					}
-
-					data = "";
-					dataVec.clear();
-				}
-				else
-				{
-					LOG("ERROR WHEN LOADING TILE MAP - PARAMETER 'DIMENSIONS' NOT FOUND");
-				}
-			}
-
-			//Sprites
-			if (parameter == "<SPRITES>")
-			{
-				//load vector the same as dimensions
-				if (line.find(parameter) != -1)
-				{
-					for (int i = parameter.size(); (i < line.size() + 1); i++)
-					{
-						if (line[i] == ',' || line[i] == '*')
-						{
-							dataVec.push_back(data);
-							data.clear();
-						}
-						else
-						{
-							if (line[i] != ' ')
-								data.push_back(line[i]);
-						}
-					}
-
-					for (int j = 0; j < dataVec.size(); j++)
-					{
-						m_spritePaths.push_back(dataVec[j]);
-					}
-
-					data = "";
-					dataVec.clear();
-				}
-				else
-				{
-					LOG("ERROR WHEN LOADING TILE MAP - PARAMETER 'SPRITES' NOT FOUND");
-				}
-			}
-			
-			//Animations
-			if (parameter == "<ANIMATIONS>")
-			{
-				if (line.find(parameter) != -1)
-				{
-					for (int i = parameter.size(); (i < line.size() + 1); i++)
-					{
-						if (line[i] == ',' || line[i] == '*')
-						{
-							dataVec.push_back(data);
-							data.clear();
-						}
-						else
-						{
-							if (line[i] != ' ')
-								data.push_back(line[i]);
-						}
-					}
-
-					for (int j = 0; j < dataVec.size(); j++)
-					{
-						m_animPaths.push_back(dataVec[j]);
-					}
-
-					data = "";
-					dataVec.clear();
-				}
-				else
-				{
-					LOG("ERROR WHEN LOADING TILE MAP - PARAMETER 'ANIMATIONS' NOT FOUND");
-				}
-			}
-
-			//Positions
-			if (parameter == "<LAYOUT>")
-			{
-				if (line.find(parameter) != -1)
-				{
-					for (int i = parameter.size(); (i < line.size() + 1); i++)
-					{
-						if (line[i] == ',' || line[i] == '*')
-						{
-							dataVec.push_back(data);
-							data.clear();
-						}
-						else
-						{
-							if (line[i] != ' ')
-								data.push_back(line[i]);
-						}
-					}
-
-					for (int j = 0; j < dataVec.size(); j++)
-					{
-						m_tileSpriteIndex.push_back(stoi(dataVec[j]));
-					}
-
-					data = "";
-					dataVec.clear();
-				}
-				else
-				{
-					LOG("ERROR WHEN LOADING TILE MAP - PARAMETER 'LAYOUT' NOT FOUND");
-				}
-			}
-		}
-
-		mapFile.close();
-	}
-}
-
-void TileMap::AssignSprites()
-{
-	int totalSprites = m_animPaths.size() + m_spritePaths.size();
-	int count = 0;
-
-	for (int i = 0; i < m_height; ++i)
-	{
-		for (int j = 0; j < m_width; ++j)
-		{
-			if (m_tileSpriteIndex[(i * 10 + j)] > m_spritePaths.size())
-			{
-				if (m_tileSpriteIndex[(i * 10 + j)] > m_spritePaths.size() + m_animPaths.size())
-				{
-					LOG("ERROR WHEN LOADING ASSIGNING TILE SPRITE - INDEX OUT OF RANGE");
-				}
-				else
-				{
-					// String to wString conversion code from RipTutorial.com
-					std::string stringPath = m_animPaths[m_tileSpriteIndex[count]];
-					std::wstring wStringPath;
-
-					// convert to wstring
-					wStringPath = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(stringPath);
-					//std::string wstr_turned_to_str = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(wStringPath);
-
-					//m_tiles[i][j].AddAnimation(stringPath, wStringPath);
-
-					m_tiles[i][j].SetAlbedo(wStringPath);
-
-					count++;
-				}
-			}
-			else
-			{
-				if (m_tileSpriteIndex[(i * 10 + j)] > m_spritePaths.size() + m_animPaths.size())
-				{
-					LOG("ERROR WHEN LOADING ASSIGNING TILE ANIMATION - INDEX OUT OF RANGE");
-				}
-				else
-				{
-					// String to wString conversion code from RipTutorial.com
-					std::string stringPath = m_animPaths[m_tileSpriteIndex[count]];
-					std::wstring wStringPath;
-
-					// convert to wstring
-					wStringPath = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(stringPath);
-					//std::string wstr_turned_to_str = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(wStringPath);
-
-					m_tiles[i][j].AddAnimation(stringPath, wStringPath);
-					count++;
-				}
-			}
-		}
-	}
-
-}
-
-Tile TileMap::GetTileFromWorldPos(int posX, int posY)
-{
-	//use tileMap location and pos, use difference between the two, then divide by tile size
-    //if in range, return
-	XMFLOAT3 worldPos = XMFLOAT3(GetTransform()->GetPosition().x - posX, GetTransform()->GetPosition().y - posY, 0);
-
-	int tileX = 0;
-	int tileY = 0;
-
-	if (worldPos.x > GetTransform()->GetPosition().x + (m_width/2) * TILE_SIZE || worldPos.x < GetTransform()->GetPosition().x - (m_width / 2) * TILE_SIZE)
-	{
-		return Tile();
-	}
-	else
-	{
-		if (worldPos.y > GetTransform()->GetPosition().y + (m_height / 2) * TILE_SIZE || worldPos.y < GetTransform()->GetPosition().y - (m_height / 2) * TILE_SIZE)
-		{
-			return Tile();
-		}
-		else
-		{
-			XMFLOAT3 topLeftPos = XMFLOAT3(GetTransform()->GetPosition().x - (m_width / 2) * TILE_SIZE, GetTransform()->GetPosition().y - (m_height / 2) * TILE_SIZE, 0);
-
-			int xDiff = worldPos.x - topLeftPos.x;
-			int yDiff = worldPos.y - topLeftPos.y;
-
-			if (xDiff % TILE_SIZE == 0)
-			{
-				tileX = xDiff / TILE_SIZE;
-			}
-			else
-			{
-				tileX = std::div(xDiff, TILE_SIZE).quot + 1;
-			}
-
-			if (yDiff % TILE_SIZE == 0)
-			{
-				tileY = yDiff / TILE_SIZE;
-			}
-			else
-			{
-				tileY = std::div(yDiff, TILE_SIZE).quot + 1;
-			}
-		}
-
-		return m_tiles[tileX][tileY];
-	}
-}
+//Tile TileMap::GetTileFromWorldPos(int posX, int posY)
+//{
+//	return Tile;
+//}
 
 Tile* TileMap::GetTileFromMapPos(int x, int y)
 {
@@ -380,49 +166,34 @@ Tile* TileMap::GetTileFromMapPos(int x, int y)
 	}
 	else
 	{
-		LOG("ERROR - INVALID TILEMAP COORDINATE");
+		//LOG("ERROR - INVALID TILEMAP COORDINATE: x:") << x << " y:" << y << "\n";
+		//LOG("Bounds for TileMap are " + string(m_width) + " width and " + string(m_height) + " height\n");
 		return nullptr;
 	}
 }
 
-void TileMap::SetPassable(int x, int y, bool passable)
+void TileMap::SetEdges(int x, int y, bool N, bool S, bool W, bool E)
 {
-	m_tiles[x][y].SetPassable(passable);
-}
+	Tile* pTile = GetTileFromMapPos(x, y);
 
-void TileMap::SetPassable(Tile tile, bool passable)
-{
-	tile.SetPassable(passable);
+	if (pTile->GetID() != -25)
+	{
+		pTile->SetEdges(N, S, W, E);
+	}
 }
 
 void TileMap::Update(float d)
 {
-	for (int i = 0; i < m_height; i++)
+	for (int i = 0; i < m_totalTiles; i++)
 	{
-		for (int j = 0; j < m_width; j++)
-		{
-			m_tiles[i][j].Update();
-		}
+		//TileGameObject tile = m_tiles[i];
 	}
 }
 
-void TileMap::Render(ID3D11DeviceContext* pcontext, ConstantBuffer<PerInstanceCB>* pconstantBuffer)
-{
-	for (int i = 0; i < m_height; ++i)
-	{
-		for (int j = 0; j < m_width; ++j)
-		{
-			m_tiles[i][j].Render(pcontext, pconstantBuffer);
-		}
-	}
-}
-
-void TileMap::SetTileAtWorldPos(int posX, int posY, Tile newTile)
-{
-	GetTileFromWorldPos(posX, posY) = newTile;
-}
-
-void TileMap::SetTileAtMapPos(int posX, int posY, Tile newTile)
-{
-	m_tiles[posY][posX] = newTile;
-}
+//void TileMap::SetTileAtWorldPos(int posX, int posY)
+//{
+//}
+//
+//void TileMap::SetTileAtMapPos(int posX, int posY)
+//{
+//}

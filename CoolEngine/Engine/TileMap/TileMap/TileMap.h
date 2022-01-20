@@ -1,13 +1,7 @@
 #pragma once
 
-#define TILE_SIZE 1
-
 #include <vector>
 #include <iostream>
-#include <fstream>
-#include <locale>
-#include <codecvt>
-
 
 #include "Tile.h"
 #include "Engine/GameObjects/GameObject.h"
@@ -17,21 +11,12 @@ class TileMap  : public GameObject
 {
 
 public:
-	// Constructors
+	void testFunc() { std::cout << "Test" << std::endl; }
 
-	// Load from file
-	TileMap(string mapPath, XMFLOAT3 position, string identifier);
-
-	// Load from parameters
 	TileMap(int width, int height, string identifier, XMFLOAT3 position);
-
-	//Destructor
 	~TileMap();
 
-	void					Update(float d);
-	void					Render(ID3D11DeviceContext* pcontext, ConstantBuffer<PerInstanceCB>* pconstantBuffer);
-
-	Tile					GetTileFromWorldPos(int posX, int posY);
+	//Tile					GetTileFromWorldPos(int posX, int posY);
 	Tile*					GetTileFromMapPos(int x, int y);
 
 protected:
@@ -39,28 +24,27 @@ protected:
 
 private:
 	void					InitMap();
+	void					InitEdges();
 	void					InitTilePosition(Tile tile, int row, int column);
+	//void					PopulateMap(); // TODO ONCE LEVEL MAPS ARE DESIGNED
 
-	void					LoadMap(string path);
+	//						Loads sprites for the current room 
+	void					LoadSprites(); //Loading sprites through the Tile Map when it is initialized prevents all tiles doing it themselves, saving many pointless load calls. Once all sprites are loaded, AssignSprites will be run to pass the sprite to the tiles that need it
+	//void					AssignSprites(); // TODO ONCE MAP DATA FORMATTING IS DEFINED
 
-	void					AssignSprites();
 
-	void					SetPassable(int x, int y, bool passable);
-	void					SetPassable(Tile tile, bool passable);
+	//Allows the user to define which edges of a tile are collideable. x, y = TileMap Coordinates of tile to be modified.   N, E, S & W - True = Collideable Edge
+	void					SetEdges(int x, int y, bool N, bool E, bool S, bool W);
+	
+	void					Update(float d);
 
-	void					SetTileAtWorldPos(int posX, int posY, Tile newTile);
-	void					SetTileAtMapPos(int mapPosX, int mapPosY, Tile newTile);
+	//void					SetTileAtWorldPos(int posX, int posY);
+	//void					SetTileAtMapPos(int posX, int posY);
 
 
 	int									m_width;
 	int									m_height;
 	int									m_totalTiles;
-
-
 	
 	std::vector<std::vector<Tile>>		m_tiles;
-	
-	std::vector<int>					m_tileSpriteIndex;
-	std::vector<string>					m_spritePaths;
-	std::vector<string>					m_animPaths;
 };
