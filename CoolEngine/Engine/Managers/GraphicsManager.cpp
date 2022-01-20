@@ -196,7 +196,7 @@ bool GraphicsManager::LoadAnimationFromFile(wstring animName, size_t maxSize, DD
 
 ID3D11VertexShader* GraphicsManager::GetVertexShader(wstring name) const
 {
-	if (m_vertexShaders.count(name) != 0)
+	if (m_vertexShaders.count(name) == 0)
 	{
 		LOG("Tried to get a vertex shader that hasn't been compiled!");
 
@@ -208,7 +208,7 @@ ID3D11VertexShader* GraphicsManager::GetVertexShader(wstring name) const
 
 ID3D11PixelShader* GraphicsManager::GetPixelShader(wstring name) const
 {
-	if (m_pixelShaders.count(name) != 0)
+	if (m_pixelShaders.count(name) == 0)
 	{
 		LOG("Tried to get a pixel shader that hasn't been compiled!");
 
