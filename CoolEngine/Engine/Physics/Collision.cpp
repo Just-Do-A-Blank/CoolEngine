@@ -12,19 +12,6 @@ bool Collision::BoxCollision(Box* box1, Box* box2)
 	return (middle1.x + halfSize1.x > middle2.x - halfSize2.x && middle1.x - halfSize1.x < middle2.x + halfSize2.x && middle1.y + halfSize1.y > middle2.y - halfSize2.y && middle1.y - halfSize1.y < middle2.y + halfSize2.y);
 }
 
-//bool Collision::LineBoxCollision(Line line, Box box)
-//{
-//	return (box.m_x + box.m_width > line.m_point1.x && box.m_x < line.m_point1.x && box.m_y + box.m_height > line.m_point1.y && box.m_y < line.m_point1.y);
-//}
-
-bool Collision::LineBoxCollision(Line line, Box* box)
-{
-	XMFLOAT2 halfSize = { box->m_transform->GetScale().x, box->m_transform->GetScale().y };
-	XMFLOAT2 middle = { box->m_transform->GetPosition().x, box->m_transform->GetPosition().y };
-
-	return (middle.x + halfSize.x > line.m_point1.x && middle.x - halfSize.x < line.m_point1.x && middle.y + halfSize.y > line.m_point1.y && middle.y - halfSize.y < line.m_point1.y);
-}
-
 bool Collision::CircleCollision(Circle* circle1, Circle* circle2)
 {
 	XMFLOAT2 pos1 = { circle1->m_transform->GetPosition().x, circle1->m_transform->GetPosition().y };
@@ -38,49 +25,18 @@ bool Collision::CircleCollision(Circle* circle1, Circle* circle2)
 	return false;
 }
 
-//bool Collision::CircleBoxCollision(Circle circle, Box box)
-//{
-//	float distanceX = abs(circle.m_x - box.m_x);
-//	float distanceY = abs(circle.m_y - box.m_y);
-//
-//	if (distanceX > (box.m_width / 2) + circle.m_radius || distanceY > (box.m_height / 2) + circle.m_radius)
-//	{
-//		return false;
-//	}
-//	else if (distanceX <= box.m_width / 2 || distanceY <= box.m_height / 2)
-//	{
-//		return true;
-//	}
-//
-//	// Pythagoras
-//	float cornerDistance = (distanceX - box.m_width / 2) * (distanceX - box.m_width / 2) + (distanceY - box.m_height / 2) * (distanceY - box.m_height / 2);
-//	cornerDistance = sqrt(cornerDistance);
-//
-//	return (cornerDistance <= circle.m_radius);
-//}
-
 bool Collision::CircleBoxCollision(Circle* circle, Box* box)
 {
 	XMFLOAT2 halfSize = { box->m_transform->GetScale().x, box->m_transform->GetScale().y };
 	XMFLOAT2 middle = { box->m_transform->GetPosition().x, box->m_transform->GetPosition().y };
 
-	float distanceX = abs(circle->m_transform->GetPosition().x - middle.x);
-	float distanceY = abs(circle->m_transform->GetPosition().y - middle.y);
+	float x = max(middle.x - halfSize.x, min(circle->m_transform->GetPosition().x, middle.x + halfSize.x));
+	float y = max(middle.y - halfSize.y, min(circle->m_transform->GetPosition().y, middle.y + halfSize.y));
 
-	if (distanceX > halfSize.x + circle->m_radius || distanceY > halfSize.y + circle->m_radius)
-	{
-		return false;
-	}
-	else if (distanceX <= halfSize.x || distanceY <= halfSize.y)
-	{
-		return true;
-	}
+	XMFLOAT2 distance = { x - circle->m_transform->GetPosition().x , y - circle->m_transform->GetPosition().y };
+	float distMagnitude = sqrt(distance.x * distance.x + distance.y * distance.y);
 
-	// Pythagoras
-	float cornerDistance = (distanceX - halfSize.x) * (distanceX - halfSize.x) + (distanceY - halfSize.y) * (distanceY - halfSize.y);
-	cornerDistance = sqrt(cornerDistance);
-
-	if (cornerDistance <= circle->m_radius)
+	if (distMagnitude < circle->m_radius)
 	{
 		return true;
 	}
@@ -173,88 +129,37 @@ bool Collision::CircleBoxCollisionAndResponse(Circle* circle, Box* box)
 	XMFLOAT2 halfSize = { box->m_transform->GetScale().x, box->m_transform->GetScale().y };
 	XMFLOAT2 middle = { box->m_transform->GetPosition().x, box->m_transform->GetPosition().y };
 
-	float distanceX = abs(circle->m_transform->GetPosition().x - middle.x);
-	float distanceY = abs(circle->m_transform->GetPosition().y - middle.y);
+	float x = max(middle.x - halfSize.x, min(circle->m_transform->GetPosition().x, middle.x + halfSize.x));
+	float y = max(middle.y - halfSize.y, min(circle->m_transform->GetPosition().y, middle.y + halfSize.y));
 
-	if (distanceX > halfSize.x + circle->m_radius || distanceY > halfSize.y + circle->m_radius)
-	{
-		return false;
-	}
-	else if (distanceX <= halfSize.x || distanceY <= halfSize.y)
-	{
-		return true;
-	}
+	XMFLOAT2 distance = { x - circle->m_transform->GetPosition().x , y - circle->m_transform->GetPosition().y };
+	float distMagnitude = sqrt(distance.x * distance.x + distance.y * distance.y);
 
-	// Pythagoras
-	float cornerDistance = (distanceX - halfSize.x) * (distanceX - halfSize.x) + (distanceY - halfSize.y) * (distanceY - halfSize.y);
-	cornerDistance = sqrt(cornerDistance);
-
-	if (cornerDistance <= circle->m_radius)
+	if (distMagnitude < circle->m_radius)
 	{
-		// To do - test it!!!!!
+		XMFLOAT2 norm = { distance.x / distMagnitude, distance.y / distMagnitude };
+		XMFLOAT2 penetration = { norm.x * circle->m_radius, norm.y * circle->m_radius };
+		penetration = { penetration.x - distance.x, penetration.y - distance.y };
 
 		XMFLOAT2 vertexToPlayer = XMFLOAT2(circle->m_transform->GetPosition().x - middle.x, circle->m_transform->GetPosition().y - middle.y);
 		// Left to right - positive
 		// Bottom to top - positive
-		if (vertexToPlayer.y > 0 && vertexToPlayer.x < vertexToPlayer.y && vertexToPlayer.x > vertexToPlayer.y * -1)
+		if (vertexToPlayer.y > 0 && vertexToPlayer.x < vertexToPlayer.y && vertexToPlayer.x > vertexToPlayer.y * -1 || vertexToPlayer.y < 0 && vertexToPlayer.x > vertexToPlayer.y && vertexToPlayer.x < vertexToPlayer.y * -1)
 		{
-			// Up side
-			XMFLOAT3 pos = { circle->m_transform->GetPosition().x, middle.y + halfSize.y + circle->m_radius, circle->m_transform->GetPosition().z };
+			// Up/Down side
+			XMFLOAT3 pos = { circle->m_transform->GetPosition().x, circle->m_transform->GetPosition().y - penetration.y, circle->m_transform->GetPosition().z };
 			circle->m_transform->SetPosition(pos);
 		}
-		else if (vertexToPlayer.y < 0 && vertexToPlayer.x > vertexToPlayer.y && vertexToPlayer.x < vertexToPlayer.y * -1)
+		else if (vertexToPlayer.x > 0 && vertexToPlayer.y < vertexToPlayer.x && vertexToPlayer.y > vertexToPlayer.x * -1 || vertexToPlayer.x < 0 && vertexToPlayer.y > vertexToPlayer.x && vertexToPlayer.y < vertexToPlayer.x * -1)
 		{
-			// Down side
-			XMFLOAT3 pos = { circle->m_transform->GetPosition().x, middle.y - halfSize.y - circle->m_radius, circle->m_transform->GetPosition().z };
+			// Left/Right side
+			//XMFLOAT3 pos = { middle.x + halfSize.x + circle->m_radius, circle->m_transform->GetPosition().y, circle->m_transform->GetPosition().z };
+			XMFLOAT3 pos = { circle->m_transform->GetPosition().x - penetration.x, circle->m_transform->GetPosition().y, circle->m_transform->GetPosition().z };
 			circle->m_transform->SetPosition(pos);
-		}
-		else if (vertexToPlayer.x > 0 && vertexToPlayer.y < vertexToPlayer.x && vertexToPlayer.y > vertexToPlayer.x * -1)
-		{
-			// Right side
-			XMFLOAT3 pos = { middle.x + halfSize.x + circle->m_radius, circle->m_transform->GetPosition().y, circle->m_transform->GetPosition().z };
-			circle->m_transform->SetPosition(pos);
-		}
-		else if (vertexToPlayer.x < 0 && vertexToPlayer.y > vertexToPlayer.x && vertexToPlayer.y < vertexToPlayer.x * -1)
-		{
-			// Left side
-			XMFLOAT3 pos = { middle.x - halfSize.x - circle->m_radius, circle->m_transform->GetPosition().y, circle->m_transform->GetPosition().z };
-			circle->m_transform->SetPosition(pos);
-		}
-		else if (vertexToPlayer.x == vertexToPlayer.y)
-		{
-			if (vertexToPlayer.x > 0)
-			{
-				// Top right corner
-				XMFLOAT3 pos = { middle.x + halfSize.x + circle->m_radius, middle.y + halfSize.y + circle->m_radius, circle->m_transform->GetPosition().z };
-				circle->m_transform->SetPosition(pos);
-			}
-			else if (vertexToPlayer.x < 0)
-			{
-				// Bottom left corner
-				XMFLOAT3 pos = { middle.x - halfSize.x - circle->m_radius, middle.y - halfSize.y - circle->m_radius, circle->m_transform->GetPosition().z };
-				circle->m_transform->SetPosition(pos);
-			}
-		}
-		else if (vertexToPlayer.x == vertexToPlayer.y * -1)
-		{
-			if (vertexToPlayer.x > 0)
-			{
-				// Bottom right corner
-				XMFLOAT3 pos = { middle.x + halfSize.x + circle->m_radius, middle.y - halfSize.y - circle->m_radius, circle->m_transform->GetPosition().z };
-				circle->m_transform->SetPosition(pos);
-			}
-			else if (vertexToPlayer.x < 0)
-			{
-				// Top left corner
-				XMFLOAT3 pos = { middle.x - halfSize.x - circle->m_radius, middle.y + halfSize.y + circle->m_radius, circle->m_transform->GetPosition().z };
-				circle->m_transform->SetPosition(pos);
-			}
 		}
 		else
 		{
-			// Default to top side
-			// Should only happen if player is somehow at exact position of object
-			XMFLOAT3 pos = { circle->m_transform->GetPosition().x, middle.y + halfSize.y + circle->m_radius, circle->m_transform->GetPosition().z };
+			XMFLOAT3 pos = { circle->m_transform->GetPosition().x - penetration.x, circle->m_transform->GetPosition().y - penetration.y, circle->m_transform->GetPosition().z };
 			circle->m_transform->SetPosition(pos);
 		}
 
