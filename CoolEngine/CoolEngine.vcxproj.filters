@@ -237,9 +237,17 @@
     <ClInclude Include="Engine\ResourceDefines.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\GameObjects\DebugRect.h" />
-    <ClInclude Include="Engine\Managers\DebugDrawManager.h">
-      <Filter>Engine\Managers</Filter>
+    <ClInclude Include="Engine\GameObjects\PlayerGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\CharacterGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Tools\ToolBase.h">
+      <Filter>Engine\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Tools\TileMapTool.h">
+      <Filter>Engine\Tools</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -333,9 +341,17 @@
     <ClCompile Include="Engine\Managers\Events\EventManager.cpp">
       <Filter>Engine\Managers\Events</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GameObjects\DebugRect.cpp" />
-    <ClCompile Include="Engine\Managers\DebugDrawManager.cpp">
-      <Filter>Engine\Managers</Filter>
+    <ClCompile Include="Engine\GameObjects\PlayerGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\CharacterGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Tools\ToolBase.cpp">
+      <Filter>Engine\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Tools\TileMapTool.cpp">
+      <Filter>Engine\Tools</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
