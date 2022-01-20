@@ -237,6 +237,10 @@
     <ClInclude Include="Engine\ResourceDefines.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\GameObjects\DebugRect.h" />
+    <ClInclude Include="Engine\Managers\DebugDrawManager.h">
+      <Filter>Engine\Managers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -328,6 +332,10 @@
     </ClCompile>
     <ClCompile Include="Engine\Managers\Events\EventManager.cpp">
       <Filter>Engine\Managers\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\DebugRect.cpp" />
+    <ClCompile Include="Engine\Managers\DebugDrawManager.cpp">
+      <Filter>Engine\Managers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

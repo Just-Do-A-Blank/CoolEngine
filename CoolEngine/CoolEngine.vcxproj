@@ -51,6 +51,7 @@
     <ClInclude Include="Engine\Includes\IMGUI\imstb_textedit.h" />
     <ClInclude Include="Engine\Includes\IMGUI\imstb_truetype.h" />
     <ClInclude Include="Engine\Managers\AudioManager.h" />
+    <ClInclude Include="Engine\Managers\DebugDrawManager.h" />
     <ClInclude Include="Engine\Managers\Events\EventManager.h" />
     <ClInclude Include="Engine\Managers\Events\EventObserver.h" />
     <ClInclude Include="Engine\Managers\Events\Events.h" />
@@ -91,6 +92,7 @@
     <ClCompile Include="Engine\Includes\IMGUI\imgui_tables.cpp" />
     <ClCompile Include="Engine\Includes\IMGUI\imgui_widgets.cpp" />
     <ClCompile Include="Engine\Main.cpp" />
+    <ClCompile Include="Engine\Managers\DebugDrawManager.cpp" />
     <ClCompile Include="Engine\Managers\Events\EventManager.cpp" />
     <ClCompile Include="Engine\Managers\Events\EventObserver.cpp" />
     <ClCompile Include="Engine\Managers\Events\Events.cpp" />
