@@ -1,4 +1,4 @@
 <DIMENSIONS> 5, 1*
 <SPRITES> brick.dds, fake.dds*
-<ANIMATIONS> TestAnim* 
-<LAYOUT> 1,2,1,1,2*
+<ANIMATIONS> TestAnim.txt*
+<LAYOUT> 0,1,1,0,0*

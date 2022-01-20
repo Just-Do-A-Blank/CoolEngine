@@ -5,6 +5,9 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <locale>
+#include <codecvt>
+
 
 #include "Tile.h"
 #include "Engine/GameObjects/GameObject.h"
@@ -25,6 +28,9 @@ public:
 	//Destructor
 	~TileMap();
 
+	void					Update(float d);
+	void					Render(ID3D11DeviceContext* pcontext, ConstantBuffer<PerInstanceCB>* pconstantBuffer);
+
 	Tile					GetTileFromWorldPos(int posX, int posY);
 	Tile*					GetTileFromMapPos(int x, int y);
 
@@ -36,8 +42,8 @@ private:
 	void					InitTilePosition(Tile tile, int row, int column);
 
 	void					LoadMap(string path);
-	
-	void					Update(float d);
+
+	void					AssignSprites();
 
 	void					SetPassable(int x, int y, bool passable);
 	void					SetPassable(Tile tile, bool passable);

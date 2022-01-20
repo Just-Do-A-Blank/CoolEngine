@@ -46,6 +46,8 @@ void TileMap::InitMap()
 			++ID;
 		}
 	}
+
+	//AssignSprites();
 }
 
 void TileMap::InitTilePosition(Tile tile, int row, int column)
@@ -55,62 +57,36 @@ void TileMap::InitTilePosition(Tile tile, int row, int column)
 	float xOffset = 0;
 	float yOffset = 0;
 
-	switch (m_width % 2)
+	if (m_width % 2 == 0)
 	{
-		case(0): // WHY IS THIS A SWITCH CASE????
-		{
-			xOffset = ((m_width - 1) * 0.5);
-			position.x = (position.x + ((column - xOffset) * TILE_SIZE));
-
-			break;
-		}
-
-		case(1):
-		{
-			xOffset = m_width / 2;
-			position.x = (position.x + ((column - xOffset) * TILE_SIZE));
-
-			break;
-		}
-
-		default:
-		{
-			break;
-		}
+		xOffset = ((m_width - 1) * 0.5);
+		position.x = (position.x + ((column - xOffset) * TILE_SIZE));
+	}
+	else
+	{
+		xOffset = m_width / 2;
+		position.x = (position.x + ((column - xOffset) * TILE_SIZE));
 	}
 
-	switch (m_height % 2)
+	if (m_height % 2 == 0)
 	{
-		case(0):
-		{
-			yOffset = ((m_height - 1) * 0.5);
-			position.y = (position.y + ((row - yOffset) * TILE_SIZE));
-
-			break;
-		}
-
-		case(1):
-		{
-			yOffset = m_height / 2;
-			position.y = (position.y + ((row - yOffset) * TILE_SIZE));
-
-			break;
-		}
-
-		default:
-		{
-			break;
-		}
+		yOffset = ((m_height - 1) * 0.5);
+		position.y = (position.y + ((row - yOffset) * TILE_SIZE));
 	}
+	else
+	{
+		yOffset = m_height / 2;
+		position.y = (position.y + ((row - yOffset) * TILE_SIZE));
 
+	}
 
 	tile.GetTransform()->SetPosition(position);
 }
 
-void TileMap::LoadMap(string path) // TO DO - Due to layout, error messages can be triggered multiple times without reason. This is because the parameter is set before the line changes
+void TileMap::LoadMap(string path)
 {
 	int count = 0;
-	string parameter = "<DIMENSIONS>";
+	string parameter;
 	string line;
 
 	string data = "";
@@ -121,19 +97,26 @@ void TileMap::LoadMap(string path) // TO DO - Due to layout, error messages can 
 	{
 		while (getline(mapFile, line))
 		{
+			count++;
+
 			switch (count)
 			{
 				case(1):
 				{
-					parameter = "<SPRITES>";
+					parameter = "<DIMENSIONS>";
 					break;
 				}
 				case(2):
 				{
-					parameter = "<ANIMATIONS>";
+					parameter = "<SPRITES>";
 					break;
 				}
 				case(3):
+				{
+					parameter = "<ANIMATIONS>";
+					break;
+				}
+				case(4):
 				{
 					parameter = "<LAYOUT>";
 					break;
@@ -277,41 +260,116 @@ void TileMap::LoadMap(string path) // TO DO - Due to layout, error messages can 
 					LOG("ERROR WHEN LOADING TILE MAP - PARAMETER 'LAYOUT' NOT FOUND");
 				}
 			}
-			count++;
 		}
+
 		mapFile.close();
 	}
 }
 
+void TileMap::AssignSprites()
+{
+	int totalSprites = m_animPaths.size() + m_spritePaths.size();
+	int count = 0;
+
+	for (int i = 0; i < m_height; ++i)
+	{
+		for (int j = 0; j < m_width; ++j)
+		{
+			if (m_tileSpriteIndex[(i * 10 + j)] > m_spritePaths.size())
+			{
+				if (m_tileSpriteIndex[(i * 10 + j)] > m_spritePaths.size() + m_animPaths.size())
+				{
+					LOG("ERROR WHEN LOADING ASSIGNING TILE SPRITE - INDEX OUT OF RANGE");
+				}
+				else
+				{
+					// String to wString conversion code from RipTutorial.com
+					std::string stringPath = m_animPaths[m_tileSpriteIndex[count]];
+					std::wstring wStringPath;
+
+					// convert to wstring
+					wStringPath = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(stringPath);
+					//std::string wstr_turned_to_str = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(wStringPath);
+
+					//m_tiles[i][j].AddAnimation(stringPath, wStringPath);
+
+					m_tiles[i][j].SetAlbedo(wStringPath);
+
+					count++;
+				}
+			}
+			else
+			{
+				if (m_tileSpriteIndex[(i * 10 + j)] > m_spritePaths.size() + m_animPaths.size())
+				{
+					LOG("ERROR WHEN LOADING ASSIGNING TILE ANIMATION - INDEX OUT OF RANGE");
+				}
+				else
+				{
+					// String to wString conversion code from RipTutorial.com
+					std::string stringPath = m_animPaths[m_tileSpriteIndex[count]];
+					std::wstring wStringPath;
+
+					// convert to wstring
+					wStringPath = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(stringPath);
+					//std::string wstr_turned_to_str = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(wStringPath);
+
+					m_tiles[i][j].AddAnimation(stringPath, wStringPath);
+					count++;
+				}
+			}
+		}
+	}
+
+}
+
 Tile TileMap::GetTileFromWorldPos(int posX, int posY)
 {
-  /*calculate which tile pos would be
-	use tileMap location and use difference between the two, then divide by tile size
-  if in range, return*/
-	XMFLOAT3 newPos = XMFLOAT3(GetTransform()->GetPosition().x - posX, GetTransform()->GetPosition().y - posY, 0);
-	int xRange; = 1;//NEEDS TO BE DIFFERENT BASED ON %2
-	int yRange; = 1;//NEEDS TO BE DIFFERENT BASED ON %2
+	//use tileMap location and pos, use difference between the two, then divide by tile size
+    //if in range, return
+	XMFLOAT3 worldPos = XMFLOAT3(GetTransform()->GetPosition().x - posX, GetTransform()->GetPosition().y - posY, 0);
 
-	//if(m_width % 2 =)
+	int tileX = 0;
+	int tileY = 0;
 
-	if (newPos.x >= 0)
+	if (worldPos.x > GetTransform()->GetPosition().x + (m_width/2) * TILE_SIZE || worldPos.x < GetTransform()->GetPosition().x - (m_width / 2) * TILE_SIZE)
 	{
-
+		return Tile();
 	}
 	else
 	{
+		if (worldPos.y > GetTransform()->GetPosition().y + (m_height / 2) * TILE_SIZE || worldPos.y < GetTransform()->GetPosition().y - (m_height / 2) * TILE_SIZE)
+		{
+			return Tile();
+		}
+		else
+		{
+			XMFLOAT3 topLeftPos = XMFLOAT3(GetTransform()->GetPosition().x - (m_width / 2) * TILE_SIZE, GetTransform()->GetPosition().y - (m_height / 2) * TILE_SIZE, 0);
 
+			int xDiff = worldPos.x - topLeftPos.x;
+			int yDiff = worldPos.y - topLeftPos.y;
+
+			if (xDiff % TILE_SIZE == 0)
+			{
+				tileX = xDiff / TILE_SIZE;
+			}
+			else
+			{
+				tileX = std::div(xDiff, TILE_SIZE).quot + 1;
+			}
+
+			if (yDiff % TILE_SIZE == 0)
+			{
+				tileY = yDiff / TILE_SIZE;
+			}
+			else
+			{
+				tileY = std::div(yDiff, TILE_SIZE).quot + 1;
+			}
+		}
+
+		return m_tiles[tileX][tileY];
 	}
-
-	if (newPos.y >= 0)
-	{
-
-	}
-	else
-	{
-
-	}
-	return Tile();
 }
 
 Tile* TileMap::GetTileFromMapPos(int x, int y)
@@ -339,18 +397,32 @@ void TileMap::SetPassable(Tile tile, bool passable)
 
 void TileMap::Update(float d)
 {
-	for (int i = 0; i < m_totalTiles; i++)
+	for (int i = 0; i < m_height; i++)
 	{
-		//TileGameObject tile = m_tiles[i];
+		for (int j = 0; j < m_width; j++)
+		{
+			m_tiles[i][j].Update();
+		}
+	}
+}
+
+void TileMap::Render(ID3D11DeviceContext* pcontext, ConstantBuffer<PerInstanceCB>* pconstantBuffer)
+{
+	for (int i = 0; i < m_height; ++i)
+	{
+		for (int j = 0; j < m_width; ++j)
+		{
+			m_tiles[i][j].Render(pcontext, pconstantBuffer);
+		}
 	}
 }
 
 void TileMap::SetTileAtWorldPos(int posX, int posY, Tile newTile)
 {
-
+	GetTileFromWorldPos(posX, posY) = newTile;
 }
 
 void TileMap::SetTileAtMapPos(int posX, int posY, Tile newTile)
 {
-
+	m_tiles[posY][posX] = newTile;
 }

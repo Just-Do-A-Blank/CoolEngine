@@ -45,6 +45,8 @@ CameraGameObject* g_pcamera = nullptr;
 
 GameObject* g_ptestObject;
 
+TileMap g_testMap = TileMap("Resources/Levels/TileMaps/TestMap.txt", XMFLOAT3(200, 0, 0), "testMap");;
+
 ConstantBuffer<PerFrameCB>* g_pperFrameCB;
 ConstantBuffer<PerInstanceCB>* g_pperInstanceCB;
 
@@ -128,14 +130,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_ptestObject->AddAnimation("Idle", L"TestAnim");
 
 	g_ptestObject->PlayAnimation("Idle");
-
-	//Create test Tile Map
-	//TileMap TestMap = TileMap(10, 10, "TestMap", XMFLOAT3(0,0,0));
-
-	//Create new Tile Map from file
-	TileMap loadMap = TileMap("Resources/Levels/TileMaps/TestMap.txt", XMFLOAT3(0, 0, 0), "Map01");
-
-	TileMap newloadMap = TileMap("Resources/Levels/TileMaps/BetterTestMap.txt", XMFLOAT3(0, 0, 0), "Map02");
 
 	// Main message loop
 	MSG msg = { 0 };
@@ -510,7 +504,9 @@ void Render()
 	g_pImmediateContext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pbuffer);
 	g_pImmediateContext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pbuffer);
 
-	g_ptestObject->Render(g_pImmediateContext, g_pperInstanceCB);
+	//g_ptestObject->Render(g_pImmediateContext, g_pperInstanceCB);
+
+	g_testMap.Render(g_pImmediateContext, g_pperInstanceCB);
 
 	g_peditorUI->DrawEditorUI();
 

@@ -12,7 +12,7 @@ public:
 	Tile();
 
 	// Load from parameters
-	Tile(wstring path, int animFrames, int ID, string identifier);
+	Tile(wstring path, int ID, string identifier);
 
 	// Load empty
 	Tile(int a, string identifier);
