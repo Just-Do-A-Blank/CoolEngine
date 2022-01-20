@@ -2,7 +2,6 @@
 #include "Engine/Includes/IMGUI/imgui.h"
 #include "Engine/Includes/IMGUI/imgui_impl_win32.h"
 #include "Engine/Includes/IMGUI/imgui_impl_dx11.h"
-#include "Engine/Scene/Scene.h"
 #include "Engine/ResourceDefines.h"
 
 #define IMGUI_LEFT_LABEL(func, label, ...) (ImGui::TextUnformatted(label), ImGui::SameLine(), func("##" label, __VA_ARGS__))
@@ -10,7 +9,7 @@
 #define DEFAULT_IMGUI_IMAGE_SIZE ImVec2(256, 256)
 
 class GameManager;
-class GameObject;
+class TreeNode;
 
 struct SelectableText
 {
@@ -43,9 +42,6 @@ private:
 	bool g_ShowTileMapManager;
 
 	int num = 1;
-	Scene* m_pselectedScene = nullptr;
-	TreeNode* m_pselectedGameObjectNode = nullptr;
-	GameObject* m_rootGameObject = nullptr;
 
 	ImGuiTreeNodeFlags m_base_flags;
 	int m_selectionMask;
