@@ -1,6 +1,6 @@
 #if _DEBUG
 #include "DebugRect.h"
-#include "Engine/Managers/GraphicsManager.h"
+#include "Engine/ResourceDefines.h"
 
 DebugRect::DebugRect(wstring albedoName, bool screenSpace)
 {
