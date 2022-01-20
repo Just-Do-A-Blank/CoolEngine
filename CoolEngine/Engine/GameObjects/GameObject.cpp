@@ -2,36 +2,23 @@
 
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/Includes/IMGUI/imgui.h"
+#include "Engine/ResourceDefines.h"
 
 #include <iostream>
 
-void GameObject::CreateRenderableGameObject()
-{
-	m_isRenderable = true;
-}
-
-void GameObject::CreateNonRenderableGameObject()
-{
-	m_isRenderable = false;
-}
-
-void GameObject::AddCollision()
-{
-	m_isCollidable = true;
-}
-
-void GameObject::AddTrigger()
-{
-	m_isTrigger = true;
-}
-
 GameObject::GameObject()
 {
+	m_pvertexShader = GraphicsManager::GetInstance()->GetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+	m_ppixelShader = GraphicsManager::GetInstance()->GetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+
+	m_pmesh = GraphicsManager::GetInstance()->GetMesh(QUAD_MESH_NAME);
 }
 
 GameObject::GameObject(string identifier)
 {
 	m_identifier = identifier;
+
+	GameObject();
 }
 
 const bool& GameObject::IsRenderable()
@@ -55,9 +42,9 @@ void GameObject::Render(RenderStruct& renderStruct)
 	PerInstanceCB cb;
 	XMStoreFloat4x4(&cb.world, XMMatrixTranspose(m_transform.GetWorldMatrix()));
 
-	renderStruct.m_pconstantBuffer->Update(cb, renderStruct.m_pcontext);
+	GraphicsManager::GetInstance()->m_pperInstanceCB->Update(cb, renderStruct.m_pcontext);
 
-	ID3D11Buffer* pcbBuffer = renderStruct.m_pconstantBuffer->GetBuffer();
+	ID3D11Buffer* pcbBuffer = GraphicsManager::GetInstance()->m_pperInstanceCB->GetBuffer();
 
 	//Bind CB and appropriate resources
 	renderStruct.m_pcontext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 1, &pcbBuffer);

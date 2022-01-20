@@ -19,18 +19,18 @@ class GameObject
 	friend class GameManager;
 private:
 	//Graphics variables
-	ID3D11ShaderResourceView* m_palbedoSRV;
+	ID3D11ShaderResourceView* m_palbedoSRV = nullptr;
 
-	ID3D11VertexShader* m_pvertexShader;
-	ID3D11PixelShader* m_ppixelShader;
+	ID3D11VertexShader* m_pvertexShader = nullptr;
+	ID3D11PixelShader* m_ppixelShader = nullptr;
 
-	Mesh* m_pmesh;
+	Mesh* m_pmesh = nullptr;
 
 	int m_layer = 0;
 
 	std::unordered_map<std::string, SpriteAnimation> m_animations;
 
-	SpriteAnimation* m_pcurrentAnimation;
+	SpriteAnimation* m_pcurrentAnimation = nullptr;
 
 	string m_identifier;
 
@@ -39,26 +39,9 @@ private:
 	bool m_isCollidable = false;
 	bool m_isTrigger = false;
 
-	//ImGui variables
-	WCHAR m_texNameBuffer[FILEPATH_BUFFER_SIZE] = DEFAULT_IMGUI_IMAGE;
-	char m_animName[ANIM_NAME_SIZE];
-	WCHAR m_animFilepath[FILEPATH_BUFFER_SIZE] = DEFAULT_IMGUI_ANIMATION;
-
-	std::string m_animUpdateName = "";
-
-	bool m_updateAnim = false;
-	bool m_updateAnimName = false;
-
-	//GameObject Setup
-	void CreateRenderableGameObject();
-	void CreateNonRenderableGameObject();
-
-	void AddCollision();
-	void AddTrigger();
-
 protected:
 	Transform m_transform;
-	Shape* m_collider;
+	Shape* m_collider = nullptr;
 
 public:
 	GameObject();

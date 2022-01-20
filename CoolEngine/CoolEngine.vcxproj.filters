@@ -234,6 +234,9 @@
     <ClInclude Include="Engine\Includes\FMOD\fmod_output.h">
       <Filter>Engine\Includes\FMOD</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\ResourceDefines.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
