@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/GameObjects/PlayerGameObject.h"
+#include "Engine/Managers/SceneGraph.h"
 
 class SceneGraph;
 class GameObject;
@@ -27,15 +28,43 @@ public:
 private:
 
 	unordered_map<string, GameObject*>& GetAllGameObjects();
-	GameObject* GetGameObjectUsingIdentifier(string& identifier);
+
+	template<typename T>
+	T* GetGameObjectUsingIdentifier(string& identifier)
+	{
+		return  static_cast<T*>(m_psceneGraph->GetGameObjectUsingIdentifier(identifier));
+	}
+
 	void SelectGameObjectUsingIdentifier(string identifier);
 	void SelectGameObject(GameObject* pgameObject);
 	void SelectGameObjectUsingTreeNode(TreeNode* pnode);
 
-	PlayerGameObject* GetPlayerGameObjectUsingIdentifier(string& identifier);
 
-	GameObject* CreateGameObject(string identifier);
-	GameObject* CreatePlayerGameObject(string identifier);
+	template<typename T>
+	T* CreateGameObject(string identifier)
+	{
+		T* gameObject = new T(identifier);
+
+		m_prootTreeNode = m_psceneGraph->GetRootNode();
+		if (!m_prootTreeNode)
+		{
+			m_prootTreeNode = m_psceneGraph->NewNode(gameObject);
+		}
+		else
+		{
+			if (!m_pselectedGameObject)
+			{
+				m_psceneGraph->AddSibling(m_prootTreeNode, gameObject);
+			}
+			else
+			{
+				m_psceneGraph->AddChild(m_psceneGraph->GetNodeUsingIdentifier(m_pselectedGameObject->GetIdentifier()), gameObject);
+			}
+		}
+
+		return gameObject;
+	}
+
 
 	void DeleteSelectedGameObject();
 	void DeleteGameObjectUsingIdentifier(string identifier);

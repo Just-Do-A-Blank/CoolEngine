@@ -74,16 +74,6 @@ unordered_map<string, GameObject*>& GameManager::GetAllGameObjects()
     return m_pcurrentScene->GetAllGameObjects();
 }
 
-GameObject* GameManager::GetGameObjectUsingIdentifier(string& identifier)
-{
-    return m_pcurrentScene->GetGameObjectUsingIdentifier(identifier);
-}
-
-PlayerGameObject* GameManager::GetPlayerGameObjectUsingIdentifier(string& identifier)
-{
-    return m_pcurrentScene->GetPlayerGameObjectUsingIdentifier(identifier);
-}
-
 void GameManager::SelectGameObjectUsingIdentifier(string& identifier)
 {
     m_pcurrentScene->SelectGameObjectUsingIdentifier(identifier);
@@ -97,16 +87,6 @@ void GameManager::SelectGameObject(GameObject* pgameObject)
 void GameManager::SelectGameObjectUsingTreeNode(TreeNode* pnode)
 {
     m_pcurrentScene->SelectGameObjectUsingTreeNode(pnode);
-}
-
-GameObject* GameManager::CreateGameObject(string identifier)
-{
-    return m_pcurrentScene->CreateGameObject(identifier);
-}
-
-GameObject* GameManager::CreatePlayerGameObject(string identifier)
-{
-    return m_pcurrentScene->CreatePlayerGameObject(identifier);
 }
 
 void GameManager::DeleteSelectedGameObject()

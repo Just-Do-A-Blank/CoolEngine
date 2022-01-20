@@ -23,6 +23,12 @@
 #include "Engine/Managers/GameManager.h"
 #include <Engine/Physics/Box.h>
 
+#if TOOL
+#include "Engine/Tools/ToolBase.h"
+
+#include "Engine/Tools/TileMapTool.h"
+#endif
+
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
 HRESULT	InitDevice();
@@ -55,6 +61,10 @@ Inputs* g_inputController;
 
 int g_Width = 1920;
 int g_Height = 1080;
+
+#if TOOL
+ToolBase* g_ptoolBase = nullptr;
+#endif
 
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
 {
@@ -92,20 +102,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	AudioManager::GetInstance()->SetListenerPosition(XMFLOAT3(0, 0, 0));
 
-	//Music
-	AudioManager::GetInstance()->LoadMusic(TEST_MUSIC);
-
-	AudioManager::GetInstance()->PlayMusic(TEST_MUSIC, 0.001f, true);
-
-	//Sound
-	AudioManager::GetInstance()->Load(TEST_SOUND);
-
-	AudioManager::GetInstance()->Play(TEST_SOUND, 0.01f);
-
 	GraphicsManager::GetInstance()->Init(g_pd3dDevice);
-
-	GraphicsManager::GetInstance()->LoadTextureFromFile(DEFAULT_IMGUI_IMAGE);
-	GraphicsManager::GetInstance()->LoadTextureFromFile(TEST2);
 
 	g_inputController = new Inputs();
 
@@ -128,6 +125,28 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameManager->CreateScene("TestScene");
 	pgameManager->SelectSceneUsingIdentifier("TestScene");
 
+#if TOOL
+
+#if TILE_MAP_TOOL
+	g_ptoolBase = new TileMapTool();
+#endif
+
+	g_ptoolBase->Init(g_pd3dDevice);
+#else
+
+	//Music
+	AudioManager::GetInstance()->LoadMusic(TEST_MUSIC);
+
+	AudioManager::GetInstance()->PlayMusic(TEST_MUSIC, 0.001f, true);
+
+	//Sound
+	AudioManager::GetInstance()->Load(TEST_SOUND);
+
+	AudioManager::GetInstance()->Play(TEST_SOUND, 0.01f);
+
+	GraphicsManager::GetInstance()->LoadTextureFromFile(DEFAULT_IMGUI_IMAGE);
+	GraphicsManager::GetInstance()->LoadTextureFromFile(TEST2);
+
 	//Load animations
 	GraphicsManager::GetInstance()->LoadAnimationFromFile(TEST_ANIM);
 
@@ -140,11 +159,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	string obj1Name = "TestObject1";
 	string playerName = "Player";
 
-	pgameManager->CreateGameObject(obj0Name);
-	pgameManager->CreateGameObject(obj1Name);
-	pgameManager->CreatePlayerGameObject(playerName);
+	pgameManager->CreateGameObject<GameObject>(obj0Name);
+	pgameManager->CreateGameObject<GameObject>(obj1Name);
+	pgameManager->CreateGameObject<PlayerGameObject>(playerName);
 
-	GameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier(obj0Name);
+	GameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<GameObject>(obj0Name);
 
 	XMFLOAT3 objectPos = XMFLOAT3(0, 0.0f, 5.0f);
 	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
@@ -161,7 +180,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetShape(new Box(pgameObject->GetTransform()));
 
 	//Init second gameObject
-	pgameObject = pgameManager->GetGameObjectUsingIdentifier(obj1Name);
+	pgameObject = pgameManager->GetGameObjectUsingIdentifier<GameObject>(obj1Name);
 
 	objectPos = XMFLOAT3(10.0f, 0.0f, 5.0f);
 	objectScale = XMFLOAT3(100, 100, 100);
@@ -177,7 +196,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetShape(new Box(pgameObject->GetTransform()));
 
 	// Init player object
-	pgameObject = pgameManager->GetPlayerGameObjectUsingIdentifier(playerName);
+	pgameObject = pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName);
 
 	objectPos = XMFLOAT3(200.0f, 0.0f, 5.0f);
 	objectScale = XMFLOAT3(50, 50, 50);
@@ -192,7 +211,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetIsTrigger(isCollision);
 	pgameObject->SetShape(new Box(pgameObject->GetTransform()));
 
-	ExampleObserver observer(new int(10), pgameManager->GetPlayerGameObjectUsingIdentifier(playerName));
+	ExampleObserver observer(new int(10), pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName));
 	EventManager::Instance()->AddClient(EventType::KeyPressed, &observer);
 	EventManager::Instance()->AddClient(EventType::KeyReleased, &observer);
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, &observer);
@@ -202,6 +221,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//Create test Tile Map
 	TileMap TestMap = TileMap(10, 10, "TestMap", XMFLOAT3(1,1,0));
 	TestMap.testFunc();
+#endif
 
 	// Main message loop
 	MSG msg = { 0 };
@@ -532,7 +552,11 @@ void Render()
 	GameManager* pgamemanager = GameManager::GetInstance();
 	pgamemanager->Render(renderStruct);
 
-	g_peditorUI->DrawEditorUI(g_pd3dDevice);
+#if TOOL
+	g_ptoolBase->Render();
+#else
+	g_peditorUI->DrawEditorUI();
+#endif
 
 	// Present our back buffer to our front buffer
 	g_pSwapChain->Present(0, 0);
@@ -552,6 +576,10 @@ void Update()
 	EventManager::Instance()->ProcessEvents();
 
 	g_inputController->Update();
+	
+#if TOOL
+	g_ptoolBase->Update();
+#endif
 }
 
 void BindQuadBuffers()

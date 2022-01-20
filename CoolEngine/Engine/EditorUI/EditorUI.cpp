@@ -57,6 +57,8 @@ void EditorUI::DrawEditorUI(ID3D11Device* pdevice)
 	ImGui::Render();
 
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+	ImGui::EndFrame();
 }
 
 void EditorUI::DrawMasterWindow()
@@ -133,7 +135,7 @@ void EditorUI::DrawSceneGraphWindow()
 		}
 		if (clicked & 1)
 		{
-			pgameManager->CreateGameObject(gameObjectName);
+			pgameManager->CreateGameObject<GameObject>(gameObjectName);
 			m_createGameObjectClicked = false;
 			gameObjectName[0] = {};
 		}
