@@ -114,7 +114,7 @@ GameObject* Scene::CreateGameObject(string identifier)
 	return gameObject;
 }
 
-ameObject* Scene::CreatePlayerGameObject(string identifier)
+GameObject* Scene::CreatePlayerGameObject(string identifier)
 {
 	return CreatePlayerGameObject(identifier, nullptr);
 }

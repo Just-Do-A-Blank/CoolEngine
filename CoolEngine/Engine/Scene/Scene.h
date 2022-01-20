@@ -33,7 +33,6 @@ public:
 	void SelectGameObjectUsingTreeNode(TreeNode* pnode);
 
 	PlayerGameObject* GetPlayerGameObjectUsingIdentifier(string& identifier);
-	void SelectGameObjectUsingIdentifier(string& identifier);
 
 	GameObject* CreateGameObject(string identifier);
 	GameObject* CreateGameObject(string identifier, TreeNode* pparentNode);
