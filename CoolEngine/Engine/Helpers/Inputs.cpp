@@ -1,6 +1,8 @@
 #include "Inputs.h"
 #include "Engine/Managers/Events/EventManager.h"
 
+
+
 void Inputs::Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam)
 {
 	switch (*message)
@@ -8,9 +10,11 @@ void Inputs::Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam)
 
 		//Keyboard events
 	case(WM_KEYDOWN):
-		EventManager::Instance()->AddEvent(new KeyPressedEvent(*wParam));
+
+		m_keyState[*wParam] = true;
 		break;
 	case(WM_KEYUP):
+		m_keyState[*wParam] = false;
 		EventManager::Instance()->AddEvent(new KeyReleasedEvent(*wParam));
 		break;
 
@@ -56,3 +60,16 @@ void Inputs::Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam)
 
 
 }
+
+
+void Inputs::Update()
+{
+	for (int i = 0; i < 256; ++i)
+	{
+		if (m_keyState[i])
+		{
+			EventManager::Instance()->AddEvent(new KeyPressedEvent(i));
+		}
+	}
+}
+
