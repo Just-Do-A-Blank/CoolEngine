@@ -7,11 +7,13 @@ class TreeNode;
 
 class Scene
 {
+	//friend class GameManager;
 private:
 	string m_sceneIdentifier;
 	SceneGraph* m_psceneGraph;
 
-	GameObject* m_pcurrentlySelectedGameObject = nullptr;
+	GameObject* m_pselectedGameObject = nullptr;
+	TreeNode* m_pselectedNode = nullptr;
 	TreeNode* m_prootTreeNode = nullptr;
 	
 public:
@@ -21,21 +23,23 @@ public:
 	virtual void Update();
 	virtual void Render(RenderStruct& renderStruct);
 
+//private:
+
 	unordered_map<string, GameObject*>& GetAllGameObjects();
 	GameObject* GetGameObjectUsingIdentifier(string& identifier);
-	void SelectGameObjectUsingIdentifier(string& identifier);
+	void SelectGameObjectUsingIdentifier(string identifier);
 	void SelectGameObject(GameObject* pgameObject);
+	void SelectGameObjectUsingTreeNode(TreeNode* pnode);
 
 	GameObject* CreateGameObject(string identifier);
-	GameObject* CreateGameObject(string identifier, TreeNode* pparentNode);
 
-	void DeleteGameObjectUsingNode(TreeNode* pnode);
-	void DeleteGameObjectUsingIdentifier(string identifier);
 	void DeleteSelectedGameObject();
+	void DeleteGameObjectUsingIdentifier(string identifier);
 
 	//Getters
 	TreeNode* GetRootTreeNode();
 	TreeNode* GetTreeNode(GameObject* pgameObject);
-	string& GetSceneName();
+	string& GetSceneIdentifier();
+	GameObject* GetSelectedGameObject();
 };
 
