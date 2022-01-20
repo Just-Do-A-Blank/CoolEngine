@@ -170,7 +170,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->GetTransform()->SetScale(objectScale);
 
 #if _DEBUG
-	DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect("DebugRact1", XMFLOAT3(5.0f, -5.0f, 0.0f), 70, 30, DebugDrawManager::DebugColour::BLUE);
+	//DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect("DebugRect1", XMFLOAT3(-100.0f, -100.0f, 0.0f), objectScale, DebugDrawManager::DebugColour::BEIGE);
 #endif //_DEBUG
 
 	//Create test Tile Map
@@ -504,6 +504,10 @@ void Render()
 	renderStruct.m_pcontext = g_pImmediateContext;
 
 	g_pScene->Render(renderStruct);
+
+#if _DEBUG
+	DebugDrawManager::GetInstance()->Render(renderStruct);
+#endif
 
 	g_peditorUI->DrawEditorUI();
 

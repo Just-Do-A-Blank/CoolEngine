@@ -25,6 +25,7 @@ void DebugRect::SetDebugColour(DebugDrawManager::DebugColour colour)
 
 void DebugRect::Render(RenderStruct& renderStruct)
 {
+	GameObject::Render(renderStruct);
 }
 
 void DebugRect::Update()

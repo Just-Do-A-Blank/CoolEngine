@@ -10,27 +10,27 @@ void DebugDrawManager::Init(ID3D11Device* pd3dDevice)
 	//Load Textures PerColour
 	for (int i = 0; i < (int)DebugColour::SIZE; ++i)
 	{
-		textureName = L"Resources\\Sprites\\DebugColour" + to_wstring(i) + L".dds";
+		textureName = L"Resources\\Debug\\DebugColour" + to_wstring(i) + L".dds";
 		GraphicsManager::GetInstance()->LoadTextureFromFile(textureName, pd3dDevice);
 
 		m_albedoMap.insert(pair<DebugColour, wstring>(DebugColour(i), textureName));
 	}	
 }
 
-void DebugDrawManager::CreateWorldSpaceDebugRect(string identifier, XMFLOAT3 position, float width, float height, DebugColour colour)
+void DebugDrawManager::CreateWorldSpaceDebugRect(string identifier, XMFLOAT3& position, XMFLOAT3& dimension, DebugColour colour)
 {
 	DebugRect* debugRect = new DebugRect(m_albedoMap.find(colour)->second, false);
 	debugRect->GetTransform()->SetPosition(position);
-	debugRect->GetTransform()->SetScale(XMFLOAT3(width, height, 1.0f));
+	debugRect->GetTransform()->SetScale(dimension);
 
 	m_debugRectMap.insert(pair<string, DebugRect*>(identifier, debugRect));
 }
 
-void DebugDrawManager::CreateScreenSpaceDebugRect(string identifier, XMFLOAT3 position, float width, float height, DebugColour colour)
+void DebugDrawManager::CreateScreenSpaceDebugRect(string identifier, XMFLOAT3& position, XMFLOAT3& dimension, DebugColour colour)
 {
 	DebugRect* debugRect = new DebugRect(m_albedoMap.find(colour)->second, true);
 	debugRect->GetTransform()->SetPosition(position);
-	debugRect->GetTransform()->SetScale(XMFLOAT3(width, height, 1.0f));
+	debugRect->GetTransform()->SetScale(dimension);
 
 	m_debugRectMap.insert(pair<string, DebugRect*>(identifier, debugRect));
 }
