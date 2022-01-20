@@ -541,6 +541,10 @@ void Update()
 
 	AudioManager::GetInstance()->Update();
 
+	EventManager::Instance()->ProcessEvents();
+
+	g_inputController->Update();
+
 	g_pScene->Update();
 }
 
