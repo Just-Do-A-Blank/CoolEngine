@@ -51,8 +51,6 @@ PlayerGameObject* g_pplayer = nullptr;
 
 EditorUI* g_peditorUI;
 
-Scene* g_pScene = nullptr;
-
 Inputs* g_inputController;
 
 int g_Width = 1920;
@@ -125,7 +123,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	//Create scene
 	GameManager* pgameManager = GameManager::GetInstance();
-	//g_pScene = new Scene("TestScene");
 	pgameManager->CreateScene("TestScene");
 	pgameManager->SelectSceneUsingIdentifier("TestScene");
 
