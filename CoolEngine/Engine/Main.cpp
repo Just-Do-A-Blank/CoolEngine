@@ -129,7 +129,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_ptoolBase = new TileMapTool();
 #endif
 
-	g_ptoolBase->Init();
+	g_ptoolBase->Init(g_pd3dDevice);
 #else
 
 	//Music
