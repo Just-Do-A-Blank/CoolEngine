@@ -5,6 +5,8 @@
 #include <ShlObj_core.h>
 #include "Engine/Managers/SceneGraph.h"
 
+#include "Engine/TileMap/TileMap/TileMap.h"
+
 HWND* EditorUI::m_phwnd = nullptr;
 
 void EditorUI::InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, HWND* phwnd)
@@ -47,6 +49,11 @@ void EditorUI::DrawEditorUI(ID3D11Device* pdevice)
 		DrawSceneManagementWindow();
 	}
 
+	if (g_ShowTileMapManager)
+	{
+		DrawTileMapManager();
+	}
+
 	if (m_pselectedGameObject != nullptr)
 	{
 		m_pselectedGameObject->ShowEngineUI(pdevice);
@@ -65,6 +72,7 @@ void EditorUI::DrawMasterWindow()
 	ImGui::Checkbox("Scene Graph Window", &g_ShowSceneEditor);
 	ImGui::Checkbox("Scene Management Window", &g_ShowSceneManagement);
 	ImGui::Checkbox("GameObject Properties Window", &g_ShowGameObject);
+	ImGui::Checkbox("Tile Map Manager", &g_ShowTileMapManager);
 	ImGui::End();
 }
 
@@ -238,6 +246,71 @@ void EditorUI::DrawSceneManagementWindow()
 		}
 		ImGui::End();
 	}
+}
+
+void EditorUI::DrawTileMapManager()
+{
+	ImGui::Begin("Tile Map Manager", nullptr, ImGuiWindowFlags_MenuBar);
+	//ImGui::Begin("Tile Map Manager");
+
+	if (ImGui::BeginMenuBar())
+	{
+		if (ImGui::BeginMenu("File"))
+		{
+			if (ImGui::MenuItem("Create Tile Map", "Ctrl+C"))
+			{
+				m_createTileMapClicked = true;
+
+			}
+
+			if (ImGui::MenuItem("Save Tile Map", "Ctrl+S"))
+			{
+				// Do stuff
+			}
+
+			if (ImGui::MenuItem("Open Tile Map", "Ctrl+O"))
+			{
+				//OpenFileExplorer(L"DDS files\0*.dds\0", m_texNameBuffer, _countof(m_texNameBuffer));
+			}
+
+			if (ImGui::MenuItem("Delete Tile Map", "Ctrl+D"))
+			{
+
+			}
+
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMenuBar();
+		
+	}
+
+	if (m_createTileMapClicked)
+	{
+		ImGui::Begin("New Tile Map");
+		static char tileMapName[64] = "";
+		IMGUI_LEFT_LABEL(ImGui::InputText, "Tile Map Name", tileMapName, 64);
+
+		int clicked = 0;
+
+		if (ImGui::Button("Create"))
+		{
+			++clicked;
+		}
+
+		if (clicked & 1)
+		{
+			TileMap tileMap();
+			//pgameManager->CreateScene(sceneName);
+			//m_createSceneClicked = false;
+			//sceneName[0] = {};
+		}
+		ImGui::End();
+	}
+
+
+
+	ImGui::End();
 }
 
 void EditorUI::TraverseTree(TreeNode* pcurrentNode, int& nodeCount)

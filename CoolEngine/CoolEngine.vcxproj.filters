@@ -90,9 +90,6 @@
     <ClInclude Include="Engine\GameObjects\GameObject.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\GameObjects\Transform.h">
-      <Filter>Engine\GameObjects</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Managers\GameManager.h">
       <Filter>Engine\Managers</Filter>
     </ClInclude>
@@ -189,12 +186,6 @@
     <ClInclude Include="Engine\EditorUI\EditorUI.h">
       <Filter>Engine\EditorUI</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\TileMap\TileMap\TileMap.h">
-      <Filter>Engine\GameObjects\TileMap</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\TileMap\TileMap\Tile.h">
-      <Filter>Engine\GameObjects\TileMap</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Physics\Shape.h">
       <Filter>Engine\Physics</Filter>
     </ClInclude>
@@ -237,6 +228,15 @@
     <ClInclude Include="Engine\ResourceDefines.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\TileMap\TileMap\Tile.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\TileMap\TileMap\TileMap.h">
+      <Filter>Engine\GameObjects\TileMap</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Transform.h">
+      <Filter>Engine\GameObjects\TileMap</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -246,9 +246,6 @@
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\GameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\Transform.cpp">
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Managers\GameManager.cpp">
@@ -311,12 +308,6 @@
     <ClCompile Include="Engine\EditorUI\EditorUI.cpp">
       <Filter>Engine\EditorUI</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\TileMap\TileMap\TileMap.cpp">
-      <Filter>Engine\GameObjects\TileMap</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\TileMap\TileMap\Tile.cpp">
-      <Filter>Engine\GameObjects\TileMap</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Helpers\Inputs.cpp">
       <Filter>Engine\Helpers</Filter>
     </ClCompile>
@@ -328,6 +319,15 @@
     </ClCompile>
     <ClCompile Include="Engine\Managers\Events\EventManager.cpp">
       <Filter>Engine\Managers\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\TileMap\TileMap\Tile.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\TileMap\TileMap\TileMap.cpp">
+      <Filter>Engine\GameObjects\TileMap</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\Transform.cpp">
+      <Filter>Engine\GameObjects\TileMap</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

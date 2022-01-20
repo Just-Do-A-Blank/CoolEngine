@@ -3,6 +3,8 @@
 #include "Engine/GameObjects/GameObject.h"
 #include "Engine/Scene/Scene.h"
 
+#include "Engine/TileMap/TileMap/TileMap.h"
+
 Timer* GameManager::GetTimer()
 {
     return &m_timer;

@@ -168,8 +168,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->GetTransform()->SetScale(objectScale);
 
 	//Create test Tile Map
-	TileMap TestMap = TileMap(10, 10, "TestMap", XMFLOAT3(1,1,0));
-	TestMap.testFunc();
+	//TileMap TestMap = TileMap(10, 10, "TestMap", XMFLOAT3(1,1,0));
+	//TestMap.testFunc();
 
 	// Main message loop
 	MSG msg = { 0 };

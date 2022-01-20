@@ -33,10 +33,14 @@ private:
 	bool m_createGameObjectClicked = false;
 	bool m_deleteGameObjectClicked = false;
 
+	bool m_createTileMapClicked = false;
+
+
 	//Master window
 	bool g_ShowSceneEditor;
 	bool g_ShowSceneManagement;
 	bool g_ShowGameObject;
+	bool g_ShowTileMapManager;
 
 	int num = 1;
 	Scene* m_pselectedScene = nullptr;
@@ -57,6 +61,8 @@ private:
 	void DrawMasterWindow();
 	void DrawSceneGraphWindow();
 	void DrawSceneManagementWindow();
+
+	void DrawTileMapManager();
 
 	ID3D11Device* m_pdevice = nullptr;
 
