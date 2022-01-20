@@ -1,6 +1,7 @@
 #include "GraphicsManager.h"
 
 #include "Engine/Graphics/Mesh.h"
+#include "Engine/ResourceDefines.h"
 
 #include <iostream>
 #include <fstream>
@@ -14,6 +15,10 @@ void GraphicsManager::Init(ID3D11Device* pdevice)
 	CreateSamplers(pdevice);
 
 	CompileDefaultShaders(pdevice);
+
+	m_pperFrameCB = new ConstantBuffer<PerFrameCB>(pdevice);
+	m_pdebugPerInstanceCB = new ConstantBuffer<DebugPerInstanceCB>(pdevice);
+	m_pperInstanceCB = new ConstantBuffer<PerInstanceCB>(pdevice);
 }
 
 bool GraphicsManager::CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3D11Device* pdevice)
@@ -210,6 +215,11 @@ Mesh* GraphicsManager::GetMesh(wstring name) const
 SpriteAnimation& GraphicsManager::GetAnimation(wstring name) const
 {
 	return SpriteAnimation(m_animationFrames.at(name));
+}
+
+int GraphicsManager::GetNumLayers()
+{
+	return m_NumLayers;
 }
 
 ID3D11InputLayout* GraphicsManager::GetInputLayout(InputLayouts inputLayout) const

@@ -3,23 +3,19 @@
 #include "Engine/Graphics/Vertices.h"
 #include "Engine/Graphics/DDSTextureLoader.h"
 #include "Engine/Graphics/SpriteAnimation.h"
+#include "Engine/Graphics/ConstantBuffer.h"
+#include "Engine/Graphics/ConstantBuffers.h"
 
 #include <unordered_map>
 
 #define QUAD_MESH_NAME L"quad"
 
-#define DEFAULT_VERTEX_SHADER_NAME L"Engine/Graphics/Shaders/BasicVertex.hlsl"
-#define DEFAULT_PIXEL_SHADER_NAME L"Engine/Graphics/Shaders/BasicPixel.hlsl"
-
-#define POS_TEX_DUMMY_FILE_NAME L"Engine/Graphics/Shaders/DummyPosTex.hlsl"
-
 class Mesh;
 
-//struct RenderStruct
-//{
-//	ID3D11DeviceContext* m_pcontext;
-//	ConstantBuffer<PerInstanceCB>* m_pconstantBuffer;
-//};
+struct RenderStruct
+{
+	ID3D11DeviceContext* m_pcontext;
+};
 
 class GraphicsManager : public Singleton<GraphicsManager>
 {
@@ -35,7 +31,13 @@ class GraphicsManager : public Singleton<GraphicsManager>
 	std::vector<ID3D11InputLayout*> m_inputLayouts;
 	std::vector<ID3D11SamplerState*> m_samplers;
 
+	int m_NumLayers = 5;
+
 public:
+	ConstantBuffer<PerFrameCB>* m_pperFrameCB = nullptr;
+	ConstantBuffer<PerInstanceCB>* m_pperInstanceCB = nullptr;
+	ConstantBuffer<DebugPerInstanceCB>* m_pdebugPerInstanceCB = nullptr;
+
 	void Init(ID3D11Device* pdevice);
 
 	bool CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3D11Device* pdevice);
@@ -53,6 +55,8 @@ public:
 	Mesh* GetMesh(wstring name) const;
 
 	SpriteAnimation& GetAnimation(wstring name) const;
+
+	int GetNumLayers();
 
 	enum class InputLayouts
 	{
