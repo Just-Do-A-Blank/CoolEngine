@@ -10,11 +10,8 @@ void pop_front(vector<T>& vec)
 	vec.erase(vec.begin());
 }
 
-Pathfinding::Pathfinding(XMFLOAT3* pos)
+Pathfinding::Pathfinding()
 {
-	//Store the pos of the object we are part of
-	m_curPos = pos;
-
 	//setting up a tile grid for testing. This will be come from the premade tile grid
 	nodes = new node[mapwidth * mapheight];
 	for (int x = 0; x < mapwidth; x++)
@@ -78,15 +75,12 @@ Pathfinding::Pathfinding(XMFLOAT3* pos)
 /// 
 /// </summary>
 /// <returns></returns>
-void Pathfinding::Solve(XMFLOAT3* tarPos)
+vector<node*> Pathfinding::FindPath(XMFLOAT3 curPos, XMFLOAT3 tarPos)
 {
-	//Empty the current path buffer
-	m_path.clear();
-
-	m_nodeStart = FindClosestNode(m_curPos);
-	m_nodeEnd = FindClosestNode(tarPos);
 
 
+	m_nodeStart = FindClosestNode(&curPos);
+	m_nodeEnd = FindClosestNode(&tarPos);
 
 	//Reset navigation grid
 	for (int x = 0; x < mapwidth; x++)
@@ -170,37 +164,30 @@ void Pathfinding::Solve(XMFLOAT3* tarPos)
 	//Constructing the "path"
 	//Follow the parent of the end node to the start node
 	//Path is backwards in this setting, use std::list if wanting front to back but std list is bad so using vector and doing it backwards
-	
+	vector<node*>path;
+
 	if (m_nodeEnd != nullptr)
 	{
 		nodeCurrentTemp = m_nodeEnd;
 		
 		while (nodeCurrentTemp->m_parent != nullptr)
 		{
-			m_path.push_back(nodeCurrentTemp);
+			path.push_back(nodeCurrentTemp);
 			nodeCurrentTemp = nodeCurrentTemp->m_parent;
 		}
 
 
 	}
 
+	return path;
+
 }
 
-
-void Pathfinding::Update()
+Pathfinding* Pathfinding::Instance()
 {
-	if (m_path.size() != 0)
-	{
-		//if the closest node to us is the target node change to next node in the sequence, if this creates weird interactions then change.
-		if (m_path.back() == FindClosestNode(m_curPos))
-		{
-			m_path.pop_back();
-		}
-
-	}
-
+	static Pathfinding instance;
+	return &instance;
 }
-
 
 /// <summary>
 /// 
@@ -218,9 +205,9 @@ node* Pathfinding::FindClosestNode(XMFLOAT3* pos)
 	{
 		for (int y = 0; y < mapheight; y++)
 		{
-			currDist = sqrtf((pos->x - nodes[y * mapwidth + x].x) * (pos->x - nodes[y * mapwidth + x].x) + (pos->y - nodes[y * mapwidth + x].y) * (pos->y - nodes[y * mapwidth + x].y));
+			currDist = sqrtf((pos->x - nodes[y * mapwidth + x].x) * (pos->x - nodes[y * mapwidth + x].x) + (pos->z - nodes[y * mapwidth + x].y) * (pos->z - nodes[y * mapwidth + x].y));
 
-			if (currDist > closestDist)
+			if (currDist < closestDist)
 			{
 				closestDist = currDist;
 				l_closestNode = &nodes[y * mapwidth + x];
@@ -231,10 +218,4 @@ node* Pathfinding::FindClosestNode(XMFLOAT3* pos)
 	return l_closestNode;
 	
 
-}
-
-
-node* Pathfinding::GetCurrentNode()
-{
-	return m_path.back();
 }

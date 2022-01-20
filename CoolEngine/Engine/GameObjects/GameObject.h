@@ -5,7 +5,6 @@
 #include "Engine/Graphics/ConstantBuffer.h"
 #include "Engine/Graphics/ConstantBuffers.h"
 #include "Engine/Graphics/SpriteAnimation.h"
-#include "Engine/AI/Pathfinding.h"
 #include <string>
 
 class SpriteAnimation;
@@ -112,6 +111,4 @@ public:
 	void SetShape(Shape* collider);
 
 
-
-	Pathfinding* path;
 };

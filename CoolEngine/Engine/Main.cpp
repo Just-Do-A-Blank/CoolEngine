@@ -156,9 +156,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
 	
+	vector<node*> path = Pathfinding::Instance()->FindPath(pgameObject->GetTransform()->GetPosition(), XMFLOAT3(0, 0, 15));
 	
-	pgameObject->path = new Pathfinding();
-	vector<node*> path = pgameObject->path->Solve(pgameObject->GetTransform()->GetPosition());
+	vector<node*> path2 = Pathfinding::Instance()->FindPath(pgameObject->GetTransform()->GetPosition(), XMFLOAT3(15, 0, 15));
+
+
 
 	//Create test Tile Map
 	TileMap TestMap = TileMap(10, 10, "TestMap", XMFLOAT3(1,1,0));
