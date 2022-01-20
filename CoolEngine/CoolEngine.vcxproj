@@ -22,6 +22,7 @@
     <ClInclude Include="Engine\AI\Pathfinding.h" />
     <ClInclude Include="Engine\EditorUI\EditorUI.h" />
     <ClInclude Include="Engine\GameObjects\CameraGameObject.h" />
+    <ClInclude Include="Engine\GameObjects\EnemyGameObject.h" />
     <ClInclude Include="Engine\GameObjects\GameObject.h" />
     <ClInclude Include="Engine\GameObjects\Transform.h" />
     <ClInclude Include="Engine\Graphics\ConstantBuffer.h" />
@@ -68,6 +69,7 @@
     <ClCompile Include="Engine\AI\Pathfinding.cpp" />
     <ClCompile Include="Engine\EditorUI\EditorUI.cpp" />
     <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp" />
+    <ClCompile Include="Engine\GameObjects\EnemyGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\GameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\Transform.cpp" />
     <ClCompile Include="Engine\Graphics\DDSTextureLoader.cpp" />

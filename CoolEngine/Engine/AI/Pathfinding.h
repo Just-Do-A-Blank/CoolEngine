@@ -7,8 +7,8 @@ struct node
 {
 	bool m_obstacle = false;
 	bool m_visited = false;
-	int x;
-	int y;
+
+	XMFLOAT3 pos;
 
 	float m_gCost; //total distance travelled to get to node
 	float m_hCost; //heuristic cost (do we move towards the goal)
@@ -25,9 +25,9 @@ class Pathfinding
 {
 public:
 	vector<node*> FindPath(XMFLOAT3 curPos,XMFLOAT3 tarPos);
-
+	
 	static Pathfinding* Instance();
-
+	node* FindClosestNode(XMFLOAT3 pos);
 	//pass in current unit pos & destination pos
 	//returns array of orders
 
@@ -44,7 +44,7 @@ private:
 	node* m_nodeStart = nullptr;
 	node* m_nodeEnd = nullptr;
 
-	node* FindClosestNode(XMFLOAT3* pos);
+
 
 
 };

@@ -210,6 +210,9 @@
     <ClInclude Include="Engine\AI\Pathfinding.h">
       <Filter>Engine\AI</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\GameObjects\EnemyGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -304,6 +307,9 @@
     </ClCompile>
     <ClCompile Include="Engine\AI\Pathfinding.cpp">
       <Filter>Engine\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\EnemyGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
