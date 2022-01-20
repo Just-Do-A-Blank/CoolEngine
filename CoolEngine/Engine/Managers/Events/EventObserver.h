@@ -1,6 +1,7 @@
 #pragma once
 #include "Events.h"
 #include "Engine/GameObjects/PlayerGameObject.h"
+#include "Engine/Managers/GameManager.h"
 
 /// <summary>
 /// 

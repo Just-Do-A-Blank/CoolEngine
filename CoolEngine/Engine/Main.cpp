@@ -19,6 +19,8 @@
 
 #include "Engine/TileMap/TileMap/TileMap.h"
 #include "Engine/ResourceDefines.h"
+#include "Scene/Scene.h"
+#include "Engine/Managers/GameManager.h"
 #include <Engine/Physics/Box.h>
 
 #if TOOL
@@ -54,8 +56,6 @@ CameraGameObject* g_pcamera = nullptr;
 PlayerGameObject* g_pplayer = nullptr;
 
 EditorUI* g_peditorUI;
-
-Scene* g_pScene = nullptr;
 
 Inputs* g_inputController;
 
@@ -119,7 +119,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_pcamera->Initialize(cameraPos, cameraForward, cameraUp, windowWidth, windowHeight, nearDepth, farDepth);
 
 	//Create scene
-	g_pScene = new Scene("TestScene");
+	GameManager* pgameManager = GameManager::GetInstance();
+	pgameManager->CreateScene("TestScene");
+	pgameManager->SelectSceneUsingIdentifier("TestScene");
 
 #if TOOL
 
@@ -155,11 +157,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	string obj1Name = "TestObject1";
 	string playerName = "Player";
 
-	g_pScene->CreateGameObject(obj0Name);
-	g_pScene->CreateGameObject(obj1Name);
-	g_pScene->CreatePlayerGameObject(playerName);
+	pgameManager->CreateGameObject(obj0Name);
+	pgameManager->CreateGameObject(obj1Name);
+	pgameManager->CreatePlayerGameObject(playerName);
 
-	GameObject* pgameObject = g_pScene->GetGameObjectUsingIdentifier(obj0Name);
+	GameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier(obj0Name);
 
 	XMFLOAT3 objectPos = XMFLOAT3(0, 0.0f, 5.0f);
 	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
@@ -176,7 +178,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetShape(new Box(pgameObject->GetTransform()));
 
 	//Init second gameObject
-	pgameObject = g_pScene->GetGameObjectUsingIdentifier(obj1Name);
+	pgameObject = pgameManager->GetGameObjectUsingIdentifier(obj1Name);
 
 	objectPos = XMFLOAT3(10.0f, 0.0f, 5.0f);
 	objectScale = XMFLOAT3(100, 100, 100);
@@ -192,7 +194,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetShape(new Box(pgameObject->GetTransform()));
 
 	// Init player object
-	pgameObject = g_pScene->GetPlayerGameObjectUsingIdentifier(playerName);
+	pgameObject = pgameManager->GetPlayerGameObjectUsingIdentifier(playerName);
 
 	objectPos = XMFLOAT3(200.0f, 0.0f, 5.0f);
 	objectScale = XMFLOAT3(50, 50, 50);
@@ -207,7 +209,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetIsTrigger(isCollision);
 	pgameObject->SetShape(new Box(pgameObject->GetTransform()));
 
-	ExampleObserver observer(new int(10), g_pScene->GetPlayerGameObjectUsingIdentifier(playerName));
+	ExampleObserver observer(new int(10), pgameManager->GetPlayerGameObjectUsingIdentifier(playerName));
 	EventManager::Instance()->AddClient(EventType::KeyPressed, &observer);
 	EventManager::Instance()->AddClient(EventType::KeyReleased, &observer);
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, &observer);
@@ -545,7 +547,8 @@ void Render()
 	RenderStruct renderStruct;
 	renderStruct.m_pcontext = g_pImmediateContext;
 
-	g_pScene->Render(renderStruct);
+	GameManager* pgamemanager = GameManager::GetInstance();
+	pgamemanager->Render(renderStruct);
 
 #if TOOL
 	g_ptoolBase->Render();
@@ -561,16 +564,17 @@ float temp;
 
 void Update()
 {
-	GameManager::GetInstance()->GetTimer()->Tick();
+	GameManager* pgamemanager = GameManager::GetInstance();
+
+	pgamemanager->GetTimer()->Tick();
+	pgamemanager->Update();
 
 	AudioManager::GetInstance()->Update();
 
 	EventManager::Instance()->ProcessEvents();
 
 	g_inputController->Update();
-
-	g_pScene->Update();
-
+	
 #if TOOL
 	g_ptoolBase->Update();
 #endif
