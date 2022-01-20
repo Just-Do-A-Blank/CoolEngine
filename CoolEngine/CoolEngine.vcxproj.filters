@@ -207,6 +207,9 @@
     <ClInclude Include="Engine\Managers\Events\EventManager.h">
       <Filter>Engine\Managers\Events</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\AI\Pathfinding.h">
+      <Filter>Engine\AI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -298,6 +301,9 @@
     </ClCompile>
     <ClCompile Include="Engine\Managers\Events\EventManager.cpp">
       <Filter>Engine\Managers\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\Pathfinding.cpp">
+      <Filter>Engine\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
