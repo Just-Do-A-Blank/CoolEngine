@@ -45,7 +45,7 @@ public:
 		}
 
 		// Player movement
-		XMFLOAT2 vector = XMFLOAT2(0, 0);
+		XMFLOAT3 vector = XMFLOAT3(0, 0, 0);
 		if (e->GetKeyCode() == 'W')
 		{
 			vector.y = 1.0f;
@@ -65,8 +65,8 @@ public:
 		if (vector.x != 0.0f || vector.y != 0.0f)
 		{
 			float size = sqrt(vector.x * vector.x + vector.y * vector.y);
-			vector = XMFLOAT2( (m_playerObject->GetMoveSpeed() * vector.x) / size, (m_playerObject->GetMoveSpeed() * vector.y) / size );
-			m_playerObject->Translate(vector);
+			vector = XMFLOAT3( (m_playerObject->GetMoveSpeed() * vector.x) / size, (m_playerObject->GetMoveSpeed() * vector.y) / size, 0 );
+			m_playerObject->GetTransform()->Translate(vector);
 		}
 	}
 

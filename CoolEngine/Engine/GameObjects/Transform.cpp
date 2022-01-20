@@ -124,3 +124,12 @@ void Transform::SetLeftVector(XMFLOAT3& leftVector)
 
 	UpdateMatrix();
 }
+
+void Transform::Translate(XMFLOAT3 vector)
+{
+    m_position.x += vector.x;
+    m_position.y += vector.y;
+    m_position.z += vector.z;
+
+    UpdateMatrix();
+}

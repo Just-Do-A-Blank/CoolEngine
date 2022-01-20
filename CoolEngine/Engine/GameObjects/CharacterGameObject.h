@@ -14,7 +14,5 @@ public:
 	CharacterGameObject(string identifier);
 	~CharacterGameObject();
 
-	void Translate(XMFLOAT2 vector);
-
 	float GetMoveSpeed() { return m_moveSpeed; }
 };
