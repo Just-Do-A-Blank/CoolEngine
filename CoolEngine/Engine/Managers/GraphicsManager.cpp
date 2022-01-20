@@ -8,20 +8,22 @@
 
 void GraphicsManager::Init(ID3D11Device* pdevice)
 {
-	CreateQuadMesh(pdevice);
+	m_pdevice = pdevice;
 
-	CreateInputLayouts(pdevice);
+	CreateQuadMesh();
 
-	CreateSamplers(pdevice);
+	CreateInputLayouts();
 
-	CompileDefaultShaders(pdevice);
+	CreateSamplers();
+
+	CompileDefaultShaders();
 
 	m_pperFrameCB = new ConstantBuffer<PerFrameCB>(pdevice);
 	m_pdebugPerInstanceCB = new ConstantBuffer<DebugPerInstanceCB>(pdevice);
 	m_pperInstanceCB = new ConstantBuffer<PerInstanceCB>(pdevice);
 }
 
-bool GraphicsManager::CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3D11Device* pdevice)
+bool GraphicsManager::CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel)
 {
 	//Check if shader has already been compiled
 	string shaderType = string(szShaderModel).substr(0, 2);
@@ -75,7 +77,7 @@ bool GraphicsManager::CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPo
 	if (shaderType == "vs")
 	{
 		ID3D11VertexShader* pvertexShader;
-		hr = pdevice->CreateVertexShader(pblob->GetBufferPointer(), pblob->GetBufferSize(), nullptr, &pvertexShader);
+		hr = m_pdevice->CreateVertexShader(pblob->GetBufferPointer(), pblob->GetBufferSize(), nullptr, &pvertexShader);
 
 		if (FAILED(hr))
 		{
@@ -91,7 +93,7 @@ bool GraphicsManager::CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPo
 	else if (shaderType == "ps")
 	{
 		ID3D11PixelShader* ppixelShader;
-		hr = pdevice->CreatePixelShader(pblob->GetBufferPointer(), pblob->GetBufferSize(), nullptr, &ppixelShader);
+		hr = m_pdevice->CreatePixelShader(pblob->GetBufferPointer(), pblob->GetBufferSize(), nullptr, &ppixelShader);
 
 		if (FAILED(hr))
 		{
@@ -118,7 +120,7 @@ bool GraphicsManager::CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPo
 	return true;
 }
 
-bool GraphicsManager::LoadTextureFromFile(wstring filename, ID3D11Device* pdevice, size_t maxSize, DDS_ALPHA_MODE* alphaMode)
+bool GraphicsManager::LoadTextureFromFile(wstring filename, size_t maxSize, DDS_ALPHA_MODE* alphaMode)
 {
 	if (m_textureSRVs.count(filename) != 0)
 	{
@@ -129,7 +131,7 @@ bool GraphicsManager::LoadTextureFromFile(wstring filename, ID3D11Device* pdevic
 
 	ID3D11ShaderResourceView* psRV;
 
-	if (FAILED(CreateDDSTextureFromFile(pdevice, filename.c_str(), nullptr, &psRV, maxSize, alphaMode)))
+	if (FAILED(CreateDDSTextureFromFile(m_pdevice, filename.c_str(), nullptr, &psRV, maxSize, alphaMode)))
 	{
 		std::cout << "Failed to load dds texture file!" << std::endl;
 
@@ -141,7 +143,7 @@ bool GraphicsManager::LoadTextureFromFile(wstring filename, ID3D11Device* pdevic
 	return true;
 }
 
-bool GraphicsManager::LoadAnimationFromFile(wstring animName, ID3D11Device* pdevice, size_t maxSize, DDS_ALPHA_MODE* alphaMode)
+bool GraphicsManager::LoadAnimationFromFile(wstring animName, size_t maxSize, DDS_ALPHA_MODE* alphaMode)
 {
 	if (m_animationFrames.count(animName) != 0)
 	{
@@ -177,7 +179,7 @@ bool GraphicsManager::LoadAnimationFromFile(wstring animName, ID3D11Device* pdev
 
 		frameName = L"Resources\\Animations\\" + animName + L"\\" + animName + to_wstring(i) + L".dds";
 
-		if (LoadTextureFromFile(frameName, pdevice, maxSize, alphaMode) == false)
+		if (LoadTextureFromFile(frameName, maxSize, alphaMode) == false)
 		{
 			LOG("Failed tp load animation from file as failed to load animation frame!");
 
@@ -194,26 +196,63 @@ bool GraphicsManager::LoadAnimationFromFile(wstring animName, ID3D11Device* pdev
 
 ID3D11VertexShader* GraphicsManager::GetVertexShader(wstring name) const
 {
+	if (m_vertexShaders.count(name) != 0)
+	{
+		LOG("Tried to get a vertex shader that hasn't been compiled!");
+
+		return nullptr;
+	}
+
 	return m_vertexShaders.at(name);
 }
 
 ID3D11PixelShader* GraphicsManager::GetPixelShader(wstring name) const
 {
+	if (m_pixelShaders.count(name) != 0)
+	{
+		LOG("Tried to get a pixel shader that hasn't been compiled!");
+
+		return nullptr;
+	}
+
 	return m_pixelShaders.at(name);
 }
 
 ID3D11ShaderResourceView* GraphicsManager::GetShaderResourceView(wstring name) const
 {
+	if (m_textureSRVs.count(name) == 0)
+	{
+		if (GetInstance()->LoadTextureFromFile(name) == false)
+		{
+			return nullptr;
+		}
+	}
+
 	return m_textureSRVs.at(name);
 }
 
 Mesh* GraphicsManager::GetMesh(wstring name) const
 {
+	if (m_meshes.count(name) == 0)
+	{
+		LOG("Tried to get a mesh that doesn't exist!");
+
+		return nullptr;
+	}
+
 	return m_meshes.at(name);
 }
 
 SpriteAnimation& GraphicsManager::GetAnimation(wstring name) const
 {
+	if (m_animationFrames.count(name) == 0)
+	{
+		if (GetInstance()->LoadAnimationFromFile(name) == false)
+		{
+			return SpriteAnimation(nullptr);
+		}
+	}
+
 	return SpriteAnimation(m_animationFrames.at(name));
 }
 
@@ -232,7 +271,7 @@ ID3D11SamplerState* GraphicsManager::GetSampler(Samplers sampler)
 	return m_samplers[(int)sampler];
 }
 
-void GraphicsManager::CreateInputLayouts(ID3D11Device* pdevice)
+void GraphicsManager::CreateInputLayouts()
 {
 	m_inputLayouts.resize((int)InputLayouts::COUNT);
 
@@ -247,10 +286,10 @@ void GraphicsManager::CreateInputLayouts(ID3D11Device* pdevice)
 	//Compile dummy shader and use blob to verify the input layout
 	ID3DBlob* pblob = nullptr;
 
-	CompileShaderFromFile(POS_TEX_DUMMY_FILE_NAME, "main", "vs_4_0", pdevice, pblob);
+	CompileShaderFromFile(POS_TEX_DUMMY_FILE_NAME, "main", "vs_4_0", pblob);
 
 	// Create the input layout
-	HRESULT hr = pdevice->CreateInputLayout(layout, numElements, pblob->GetBufferPointer(), pblob->GetBufferSize(), &m_inputLayouts[(int)InputLayouts::POS_TEX]);
+	HRESULT hr = m_pdevice->CreateInputLayout(layout, numElements, pblob->GetBufferPointer(), pblob->GetBufferSize(), &m_inputLayouts[(int)InputLayouts::POS_TEX]);
 
 	pblob->Release();
 
@@ -260,7 +299,7 @@ void GraphicsManager::CreateInputLayouts(ID3D11Device* pdevice)
 	}
 }
 
-void GraphicsManager::CreateQuadMesh(ID3D11Device* pdevice)
+void GraphicsManager::CreateQuadMesh()
 {
 	//Create default mesh for plane
 	const Vertex_PosTex quadVertices[4] =
@@ -290,7 +329,7 @@ void GraphicsManager::CreateQuadMesh(ID3D11Device* pdevice)
 	ZeroMemory(&InitData, sizeof(InitData));
 	InitData.pSysMem = quadVertices;
 
-	pdevice->CreateBuffer(&bd, &InitData, &pvertexBuffer);
+	m_pdevice->CreateBuffer(&bd, &InitData, &pvertexBuffer);
 
 	ID3D11Buffer* pindexBuffer;
 
@@ -302,12 +341,12 @@ void GraphicsManager::CreateQuadMesh(ID3D11Device* pdevice)
 
 	ZeroMemory(&InitData, sizeof(InitData));
 	InitData.pSysMem = quadIndices;
-	pdevice->CreateBuffer(&bd, &InitData, &pindexBuffer);
+	m_pdevice->CreateBuffer(&bd, &InitData, &pindexBuffer);
 
 	m_meshes[QUAD_MESH_NAME] = new Mesh(pvertexBuffer, pindexBuffer, sizeof(Vertex_PosTex), 0, _countof(quadIndices));
 }
 
-void GraphicsManager::CreateSamplers(ID3D11Device* pdevice)
+void GraphicsManager::CreateSamplers()
 {
 	m_samplers.resize((int)Samplers::COUNT);
 
@@ -322,7 +361,7 @@ void GraphicsManager::CreateSamplers(ID3D11Device* pdevice)
 	sampDesc.MinLOD = 0;
 	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-	HRESULT hr = pdevice->CreateSamplerState(&sampDesc, &m_samplers[(int)Samplers::LINEAR_CLAMP]);
+	HRESULT hr = m_pdevice->CreateSamplerState(&sampDesc, &m_samplers[(int)Samplers::LINEAR_CLAMP]);
 
 	if (FAILED(hr))
 	{
@@ -341,7 +380,7 @@ void GraphicsManager::CreateSamplers(ID3D11Device* pdevice)
 	sampDesc.MinLOD = 0;
 	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-	hr = pdevice->CreateSamplerState(&sampDesc, &m_samplers[(int)Samplers::LINEAR_WRAP]);
+	hr = m_pdevice->CreateSamplerState(&sampDesc, &m_samplers[(int)Samplers::LINEAR_WRAP]);
 
 	if (FAILED(hr))
 	{
@@ -351,13 +390,13 @@ void GraphicsManager::CreateSamplers(ID3D11Device* pdevice)
 	}
 }
 
-void GraphicsManager::CompileDefaultShaders(ID3D11Device* pdevice)
+void GraphicsManager::CompileDefaultShaders()
 {
-	CompileShaderFromFile(DEFAULT_VERTEX_SHADER_NAME, "main", "vs_4_0", pdevice);
-	CompileShaderFromFile(DEFAULT_PIXEL_SHADER_NAME, "main", "ps_4_0", pdevice);
+	CompileShaderFromFile(DEFAULT_VERTEX_SHADER_NAME, "main", "vs_4_0");
+	CompileShaderFromFile(DEFAULT_PIXEL_SHADER_NAME, "main", "ps_4_0");
 }
 
-bool GraphicsManager::CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3D11Device* pdevice, ID3DBlob*& pblob)
+bool GraphicsManager::CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob*& pblob)
 {
 	//Check if shader has already been compiled
 	string shaderType = string(szShaderModel).substr(0, 2);
@@ -409,7 +448,7 @@ bool GraphicsManager::CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPo
 	if (shaderType == "vs")
 	{
 		ID3D11VertexShader* pvertexShader;
-		hr = pdevice->CreateVertexShader(pblob->GetBufferPointer(), pblob->GetBufferSize(), nullptr, &pvertexShader);
+		hr = m_pdevice->CreateVertexShader(pblob->GetBufferPointer(), pblob->GetBufferSize(), nullptr, &pvertexShader);
 
 		if (FAILED(hr))
 		{
@@ -425,7 +464,7 @@ bool GraphicsManager::CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPo
 	else if (shaderType == "ps")
 	{
 		ID3D11PixelShader* ppixelShader;
-		hr = pdevice->CreatePixelShader(pblob->GetBufferPointer(), pblob->GetBufferSize(), nullptr, &ppixelShader);
+		hr = m_pdevice->CreatePixelShader(pblob->GetBufferPointer(), pblob->GetBufferSize(), nullptr, &ppixelShader);
 
 		if (FAILED(hr))
 		{

@@ -65,9 +65,10 @@ bool AudioManager::PlayMusic(string relativePath, float volume, bool loop)
 
 	if (m_music.count(relativePath) == 0)
 	{
-		LOG("Tried to play music that hasn't been loaded!");
-
-		return false;
+		if (GetInstance()->LoadMusic(relativePath) == false)
+		{
+			return false;
+		}
 	}
 
 	FMOD::Channel* pchannel;
@@ -123,9 +124,10 @@ bool AudioManager::Play(string relativePath, float volume)
 
 	if (m_sounds.count(relativePath) == 0)
 	{
-		LOG("Tried to play a sound that hasn't been loaded!");
-
-		return false;
+		if (GetInstance()->Load(relativePath) == false)
+		{
+			return false;
+		}
 	}
 
 	FMOD::Channel* pchannel;
@@ -150,9 +152,10 @@ bool AudioManager::Play(string relativePath, XMFLOAT3 position, float volume)
 
 	if (m_sounds.count(relativePath) == 0)
 	{
-		LOG("Tried to play a sound that hasn't been loaded!");
-
-		return false;
+		if (GetInstance()->Load(relativePath) == false)
+		{
+			return false;
+		}
 	}
 
 	FMOD::Channel* pchannel;
@@ -177,8 +180,6 @@ bool AudioManager::Play(string relativePath, XMFLOAT3 position, float volume)
 void AudioManager::Update()
 {
 	m_psystem->update();
-
-
 
 	if (m_loopMusic == true)
 	{
