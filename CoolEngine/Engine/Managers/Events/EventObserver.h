@@ -32,7 +32,7 @@ public:
 		//Can use 'Letter' or the raw keycode for keyboard inputs.
 		if (e->GetKeyCode() == 'C')
 		{
-			LOG("C");
+			//LOG("C");
 		}
 
 		if (e->GetKeyCode() == 0x43)
@@ -42,7 +42,7 @@ public:
 
 		if (e->GetKeyCode() == 0x44)
 		{
-			LOG("D");
+			//LOG("D");
 		}
 
 		// Player movement
@@ -81,14 +81,14 @@ public:
 		if (e->GetButton() == VK_LBUTTON)
 		{
 
-			LOG("MB1");
+			//LOG("MB1");
 
 		}
 
 		if (e->GetButton() == VK_RBUTTON)
 		{
 
-			LOG("MB2");
+			//LOG("MB2");
 
 		}
 
@@ -102,8 +102,8 @@ public:
 
 	void MouseMoved(MouseMovedEvent* e)
 	{
-		LOG(e->GetX()); 
-		LOG(e->GetY());
+		//LOG(e->GetX()); 
+		//LOG(e->GetY());
 	}
 
 	void Handle(Event* e)

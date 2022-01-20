@@ -5,6 +5,7 @@
 #include <ShlObj_core.h>
 #include "Engine/Managers/SceneGraph.h"
 #include "Engine/Managers/GraphicsManager.h"
+#include "Engine/Scene/Scene.h"
 
 HWND* EditorUI::m_phwnd = nullptr;
 
@@ -48,13 +49,12 @@ void EditorUI::DrawEditorUI(ID3D11Device* pdevice)
 		DrawSceneManagementWindow();
 	}
 
-	if (m_pselectedGameObject != nullptr)
+	if (GameManager::GetInstance()->GetSelectedGameObject() != nullptr)
 	{
-		m_pselectedGameObject->ShowEngineUI(pdevice);
+		GameManager::GetInstance()->GetSelectedGameObject()->ShowEngineUI(pdevice);
 	}
 
 	ImGui::Render();
-
 
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }

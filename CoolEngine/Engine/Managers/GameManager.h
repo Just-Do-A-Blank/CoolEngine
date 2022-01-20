@@ -41,6 +41,7 @@ public:
 
 	Scene* GetCurrentScene();
 
+	GameObject* GetSelectedGameObject();
 
 	unordered_map<string, GameObject*>& GetAllGameObjects();
 	GameObject* GetGameObjectUsingIdentifier(string& identifier);

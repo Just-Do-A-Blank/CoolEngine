@@ -82,7 +82,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		return 0;
 	}
 
-	GraphicsManager::GetInstance()->LoadAnimationFromFile(L"TestAnim", g_pd3dDevice);
+	GraphicsManager::GetInstance()->LoadAnimationFromFile(L"TestAnim");
 
 	g_peditorUI = new EditorUI(g_pd3dDevice);
 	g_peditorUI->InitIMGUI(g_pImmediateContext, g_pd3dDevice, &g_hWnd);
