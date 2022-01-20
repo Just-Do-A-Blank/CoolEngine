@@ -167,14 +167,14 @@ void SceneGraph::DeleteGameObjectUsingNode(TreeNode* currentNode)
 		}
 	}
 
-	delete currentNode->GameObject;
-	currentNode->GameObject = nullptr;
-	delete currentNode;
-	currentNode = nullptr;
-
 	string gameObjectName = currentNode->GameObject->GetIdentifier();
 	m_sceneTreeNodeMap.erase(gameObjectName);
 	m_sceneGameObjectsMap.erase(gameObjectName);
+
+	delete currentNode->GameObject;
+	currentNode->GameObject = nullptr;
+	delete currentNode;
+	currentNode = nullptr;	
 }
 
 
