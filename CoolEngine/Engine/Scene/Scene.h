@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/Managers/GraphicsManager.h"
+#include "Engine/GameObjects/PlayerGameObject.h"
 
 class SceneGraph;
 class GameObject;
@@ -23,11 +24,14 @@ public:
 
 	unordered_map<string, GameObject*>& GetAllGameObjects();
 	GameObject* GetGameObjectUsingIdentifier(string& identifier);
+	PlayerGameObject* GetPlayerGameObjectUsingIdentifier(string& identifier);
 	void SelectGameObjectUsingIdentifier(string& identifier);
 	void SelectGameObject(GameObject* pgameObject);
 
 	GameObject* CreateGameObject(string identifier);
 	GameObject* CreateGameObject(string identifier, TreeNode* pparentNode);
+	GameObject* CreatePlayerGameObject(string identifier);
+	GameObject* CreatePlayerGameObject(string identifier, TreeNode* pparentNode);
 
 	void DeleteGameObjectUsingNode(TreeNode* pnode);
 	void DeleteGameObjectUsingIdentifier(string identifier);

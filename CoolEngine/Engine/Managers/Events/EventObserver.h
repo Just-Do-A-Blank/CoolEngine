@@ -1,5 +1,6 @@
 #pragma once
 #include "Events.h"
+#include "Engine/GameObjects/PlayerGameObject.h"
 
 /// <summary>
 /// 
@@ -41,6 +42,24 @@ public:
 		if (e->GetKeyCode() == 0x44)
 		{
 			int i = 0;
+		}
+
+		// Player movement
+		if (e->GetKeyCode() == 'W')
+		{
+			m_playerObject->MoveY(m_playerObject->GetMoveSpeed());
+		}
+		if (e->GetKeyCode() == 'S')
+		{
+			m_playerObject->MoveY(-1 * m_playerObject->GetMoveSpeed());
+		}
+		if (e->GetKeyCode() == 'A')
+		{
+			m_playerObject->MoveX(-1 * m_playerObject->GetMoveSpeed());
+		}
+		if (e->GetKeyCode() == 'D')
+		{
+			m_playerObject->MoveX(m_playerObject->GetMoveSpeed());
 		}
 	}
 
@@ -107,12 +126,12 @@ public:
 	//Event processing all happens in 1 place for each object that wants access to the event classes. Controllers can be placed in their own classes if they have access to the headers for the 
 	//Observed class & EventObserver.h for access to the Observer based class for inheritance 
 	
-	ExampleObserver(int* i) { this->m_i = i; }
+	ExampleObserver(int* i, PlayerGameObject* player) { this->m_i = i; this->m_playerObject = player; }
 
 
 private:
 	int* m_i;
-
+	PlayerGameObject* m_playerObject;
 
 
 };

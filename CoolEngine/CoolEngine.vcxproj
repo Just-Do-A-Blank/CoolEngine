@@ -21,7 +21,9 @@
   <ItemGroup>
     <ClInclude Include="Engine\EditorUI\EditorUI.h" />
     <ClInclude Include="Engine\GameObjects\CameraGameObject.h" />
+    <ClInclude Include="Engine\GameObjects\CharacterGameObject.h" />
     <ClInclude Include="Engine\GameObjects\GameObject.h" />
+    <ClInclude Include="Engine\GameObjects\PlayerGameObject.h" />
     <ClInclude Include="Engine\GameObjects\Transform.h" />
     <ClInclude Include="Engine\Graphics\ConstantBuffer.h" />
     <ClInclude Include="Engine\Graphics\ConstantBuffers.h" />
@@ -75,7 +77,9 @@
   <ItemGroup>
     <ClCompile Include="Engine\EditorUI\EditorUI.cpp" />
     <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp" />
+    <ClCompile Include="Engine\GameObjects\CharacterGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\GameObject.cpp" />
+    <ClCompile Include="Engine\GameObjects\PlayerGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\Transform.cpp" />
     <ClCompile Include="Engine\Graphics\DDSTextureLoader.cpp" />
     <ClCompile Include="Engine\Graphics\SpriteAnimation.cpp" />
