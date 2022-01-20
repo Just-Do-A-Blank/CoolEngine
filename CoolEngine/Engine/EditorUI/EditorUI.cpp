@@ -125,7 +125,7 @@ void EditorUI::DrawSceneGraphWindow()
 		}
 		if (clicked & 1)
 		{
-			pgameManager->CreateGameObject(gameObjectName);
+			pgameManager->CreateGameObject<GameObject>(gameObjectName);
 			m_createGameObjectClicked = false;
 			gameObjectName[0] = {};
 		}

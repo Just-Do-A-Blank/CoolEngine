@@ -48,20 +48,10 @@ unordered_map<string, GameObject*>& Scene::GetAllGameObjects()
 	return m_psceneGraph->GetAllGameObjects();
 }
 
-GameObject* Scene::GetGameObjectUsingIdentifier(string& identifier)
-{	
-	return  m_psceneGraph->GetGameObjectUsingIdentifier(identifier);
-}
-
 void Scene::SelectGameObjectUsingIdentifier(string identifier)
 {
 	m_pselectedNode = m_psceneGraph->GetNodeUsingIdentifier(identifier);
 	m_pselectedGameObject = m_pselectedNode->GameObject;
-}
-
-PlayerGameObject* Scene::GetPlayerGameObjectUsingIdentifier(string& identifier)
-{
-	return  static_cast<PlayerGameObject*>(m_psceneGraph->GetGameObjectUsingIdentifier(identifier));
 }
 
 void Scene::SelectGameObject(GameObject* pgameObject)
@@ -90,53 +80,6 @@ void Scene::SelectGameObjectUsingTreeNode(TreeNode* pnode)
 	m_pselectedGameObject = pnode->GameObject;
 }
 
-GameObject* Scene::CreateGameObject(string identifier)
-{
-	GameObject* gameObject = new GameObject(identifier);
-
-	m_prootTreeNode = m_psceneGraph->GetRootNode();
-	if (!m_prootTreeNode)
-	{
-		m_prootTreeNode = m_psceneGraph->NewNode(gameObject);
-	}
-	else
-	{
-		if (!m_pselectedGameObject)
-		{
-			m_psceneGraph->AddSibling(m_prootTreeNode, gameObject);
-		}
-		else
-		{
-			m_psceneGraph->AddChild(m_psceneGraph->GetNodeUsingIdentifier(m_pselectedGameObject->GetIdentifier()), gameObject);
-		}
-	}
-
-	return gameObject;
-}
-
-GameObject* Scene::CreatePlayerGameObject(string identifier)
-{
-	PlayerGameObject* gameObject = new PlayerGameObject(identifier);
-
-	m_prootTreeNode = m_psceneGraph->GetRootNode();
-	if (!m_prootTreeNode)
-	{
-		m_prootTreeNode = m_psceneGraph->NewNode(gameObject);
-	}
-	else
-	{
-		if (!m_pselectedGameObject)
-		{
-			m_psceneGraph->AddSibling(m_prootTreeNode, gameObject);
-		}
-		else
-		{
-			m_psceneGraph->AddChild(m_psceneGraph->GetNodeUsingIdentifier(m_pselectedGameObject->GetIdentifier()), gameObject);
-		}
-	}
-
-	return gameObject;
-}
 
 void Scene::DeleteSelectedGameObject()
 {

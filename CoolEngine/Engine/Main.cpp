@@ -157,11 +157,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	string obj1Name = "TestObject1";
 	string playerName = "Player";
 
-	pgameManager->CreateGameObject(obj0Name);
-	pgameManager->CreateGameObject(obj1Name);
-	pgameManager->CreatePlayerGameObject(playerName);
+	pgameManager->CreateGameObject<GameObject>(obj0Name);
+	pgameManager->CreateGameObject<GameObject>(obj1Name);
+	pgameManager->CreateGameObject<PlayerGameObject>(playerName);
 
-	GameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier(obj0Name);
+	GameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<GameObject>(obj0Name);
 
 	XMFLOAT3 objectPos = XMFLOAT3(0, 0.0f, 5.0f);
 	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
@@ -178,7 +178,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetShape(new Box(pgameObject->GetTransform()));
 
 	//Init second gameObject
-	pgameObject = pgameManager->GetGameObjectUsingIdentifier(obj1Name);
+	pgameObject = pgameManager->GetGameObjectUsingIdentifier<GameObject>(obj1Name);
 
 	objectPos = XMFLOAT3(10.0f, 0.0f, 5.0f);
 	objectScale = XMFLOAT3(100, 100, 100);
@@ -194,7 +194,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetShape(new Box(pgameObject->GetTransform()));
 
 	// Init player object
-	pgameObject = pgameManager->GetPlayerGameObjectUsingIdentifier(playerName);
+	pgameObject = pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName);
 
 	objectPos = XMFLOAT3(200.0f, 0.0f, 5.0f);
 	objectScale = XMFLOAT3(50, 50, 50);
@@ -209,7 +209,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetIsTrigger(isCollision);
 	pgameObject->SetShape(new Box(pgameObject->GetTransform()));
 
-	ExampleObserver observer(new int(10), pgameManager->GetPlayerGameObjectUsingIdentifier(playerName));
+	ExampleObserver observer(new int(10), pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName));
 	EventManager::Instance()->AddClient(EventType::KeyPressed, &observer);
 	EventManager::Instance()->AddClient(EventType::KeyReleased, &observer);
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, &observer);
