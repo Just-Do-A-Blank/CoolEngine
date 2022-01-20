@@ -34,6 +34,8 @@ private:
 	//ImGui variables
 	WCHAR m_texNameBuffer[FILEPATH_BUFFER_SIZE];
 	char m_animName[ANIM_NAME_SIZE];
+	string m_animNewName;
+	char m_createDeleteAnimName[ANIM_NAME_SIZE];
 	WCHAR m_animFilepath[FILEPATH_BUFFER_SIZE];
 
 	std::string m_animUpdateName = "";

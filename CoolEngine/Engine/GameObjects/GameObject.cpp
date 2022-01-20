@@ -191,31 +191,68 @@ void GameObject::CreateEngineUI(ID3D11Device* pdevice)
 
 	for (std::unordered_map<std::string, SpriteAnimation>::iterator it = m_animations.begin(); it != m_animations.end(); ++it)
 	{
-		//Animation text
-		if (ImGui::InputText("Name", m_animName, ANIM_NAME_SIZE) == true)
+		if (ImGui::TreeNode(it->first.c_str()) == true)
 		{
-			if (m_animations.count(m_animName) == 0)
+			//Animation text
+			strcpy_s(m_animName, it->first.c_str());
+
+			if (IMGUI_LEFT_LABEL(ImGui::InputText, "Name", m_animName, ANIM_NAME_SIZE) == true)
 			{
+
+
+				if (m_animations.count(m_animName) == 0)
+				{
+					m_animUpdateName = it->first;
+
+					m_animNewName = m_animName;
+
+					m_updateAnimName = true;
+				}
+				else
+				{
+					LOG("Tried to add an animation with the same local name as one that already exists!");
+				}
+			}
+
+			//Animation images
+			if (ImGui::ImageButton((void*)(intptr_t)it->second.GetCurrentFrame(), DEFAULT_IMGUI_IMAGE_SIZE) == true)
+			{
+				EditorUI::OpenFolderExplorer(m_animFilepath, _countof(m_animFilepath));
+
+				wstring relativePath = m_animFilepath;
+
+				m_updateAnim = relativePath != L"";
+
 				m_animUpdateName = it->first;
+			}
 
-				m_updateAnimName = true;
-			}
-			else
-			{
-				LOG("Tried to add an animation with the same local name as one that already exists!");
-			}
+			ImGui::TreePop();
 		}
+	}
 
-		//Animation images
-		if (ImGui::ImageButton((void*)(intptr_t)it->second.GetCurrentFrame(), DEFAULT_IMGUI_IMAGE_SIZE))
+	//Create button for adding animations to object
+	IMGUI_LEFT_LABEL(ImGui::InputText, "Name", m_createDeleteAnimName, ANIM_NAME_SIZE);
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("New") == true && m_animations.count(m_createDeleteAnimName) == 0)
+	{
+		if (AddAnimation(m_createDeleteAnimName, SpriteAnimation()) == true)
 		{
-			EditorUI::OpenFolderExplorer(m_animFilepath, _countof(m_animFilepath));
+			//Add string terminator so it appears the field has been wiped
+			m_createDeleteAnimName[0] = '\0';
+		}
+	}
+	
+	//Create button for deleting animations from object
+	ImGui::SameLine();
 
-			wstring relativePath = m_animFilepath;
-
-			m_updateAnim = relativePath != L"";
-
-			m_animUpdateName = it->first;
+	if (ImGui::Button("Delete") == true)
+	{
+		if (RemoveAnimation(m_createDeleteAnimName) == true)
+		{
+			//Add string terminator so it appears the field has been wiped
+			m_createDeleteAnimName[0] = '\0';
 		}
 	}
 
@@ -225,7 +262,7 @@ void GameObject::CreateEngineUI(ID3D11Device* pdevice)
 
 		m_animations.erase(m_animUpdateName);
 
-		m_animations.insert(pair<string, SpriteAnimation>(m_animUpdateName, tempAnim));
+		m_animations.insert(pair<string, SpriteAnimation>(m_animNewName, tempAnim));
 
 		m_updateAnimName = false;
 	}
