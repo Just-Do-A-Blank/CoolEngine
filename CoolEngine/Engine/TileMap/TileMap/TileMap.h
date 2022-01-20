@@ -19,6 +19,8 @@ class TileMap  : public GameObject
 public:
 	// Constructors
 
+	TileMap();
+
 	// Load from file
 	TileMap(string mapPath, XMFLOAT3 position, string identifier);
 
@@ -29,10 +31,12 @@ public:
 	~TileMap();
 
 	void					Update(float d);
-	void					Render(ID3D11DeviceContext* pcontext, ConstantBuffer<PerInstanceCB>* pconstantBuffer);
+	void					Render(RenderStruct renderStruct);
 
 	Tile					GetTileFromWorldPos(int posX, int posY);
 	Tile*					GetTileFromMapPos(int x, int y);
+
+	vector<vector<Tile>>	GetTiles();
 
 protected:
 	

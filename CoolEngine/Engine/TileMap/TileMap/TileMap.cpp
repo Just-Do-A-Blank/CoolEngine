@@ -1,5 +1,9 @@
 #include "TileMap.h"
 
+TileMap::TileMap() : GameObject()
+{
+
+}
 
 TileMap::TileMap(string mapPath, XMFLOAT3 position, string identifier) : GameObject(identifier)
 {
@@ -28,7 +32,30 @@ TileMap::~TileMap()
 	m_tiles.swap(tempVector); 
 }
 
-void TileMap::InitMap()
+void TileMap::Update(float d)
+{
+	for (int i = 0; i < m_height; i++)
+	{
+		for (int j = 0; j < m_width; j++)
+		{
+			m_tiles[i][j].Update();
+		}
+	}
+}
+
+void TileMap::Render(RenderStruct renderStruct)
+{
+	for (int i = 0; i < m_height; ++i)
+	{
+		for (int j = 0; j < m_width; ++j)
+		{
+			m_tiles[i][j].Render(renderStruct);
+		}
+	}
+}
+
+
+void TileMap::InitMap() // Create and store tiles in m_Tiles
 {
 	m_tiles.resize(m_height);
 
@@ -47,10 +74,10 @@ void TileMap::InitMap()
 		}
 	}
 
-	//AssignSprites();
+	AssignSprites();
 }
 
-void TileMap::InitTilePosition(Tile tile, int row, int column)
+void TileMap::InitTilePosition(Tile tile, int row, int column) // Give tiles positions in the world relative to the TileMaps position
 {
 	XMFLOAT3 position = GetTransform()->GetPosition();
 
@@ -83,7 +110,7 @@ void TileMap::InitTilePosition(Tile tile, int row, int column)
 	tile.GetTransform()->SetPosition(position);
 }
 
-void TileMap::LoadMap(string path)
+void TileMap::LoadMap(string path) // Load data for the map from a given path
 {
 	int count = 0;
 	string parameter;
@@ -266,7 +293,7 @@ void TileMap::LoadMap(string path)
 	}
 }
 
-void TileMap::AssignSprites()
+void TileMap::AssignSprites() // Sets each tiles sprite or animaton based off of the data from a file
 {
 	int totalSprites = m_animPaths.size() + m_spritePaths.size();
 	int count = 0;
@@ -275,16 +302,16 @@ void TileMap::AssignSprites()
 	{
 		for (int j = 0; j < m_width; ++j)
 		{
-			if (m_tileSpriteIndex[(i * 10 + j)] > m_spritePaths.size())
+			if (m_tileSpriteIndex[((i * 10) + j)] < m_spritePaths.size())
 			{
-				if (m_tileSpriteIndex[(i * 10 + j)] > m_spritePaths.size() + m_animPaths.size())
+				if (m_tileSpriteIndex[((i * 10) + j)] > m_spritePaths.size() + m_animPaths.size())
 				{
 					LOG("ERROR WHEN LOADING ASSIGNING TILE SPRITE - INDEX OUT OF RANGE");
 				}
 				else
 				{
 					// String to wString conversion code from RipTutorial.com
-					std::string stringPath = m_animPaths[m_tileSpriteIndex[count]];
+					std::string stringPath = m_spritePaths[m_tileSpriteIndex[count]];
 					std::wstring wStringPath;
 
 					// convert to wstring
@@ -293,14 +320,14 @@ void TileMap::AssignSprites()
 
 					//m_tiles[i][j].AddAnimation(stringPath, wStringPath);
 
-					m_tiles[i][j].SetAlbedo(wStringPath);
+					m_tiles[i][j].SetAlbedo(L"Resources\\Sprites\\Brick.dds");
 
 					count++;
 				}
 			}
 			else
 			{
-				if (m_tileSpriteIndex[(i * 10 + j)] > m_spritePaths.size() + m_animPaths.size())
+				if (m_tileSpriteIndex[((i * 10) + j)] > m_spritePaths.size() + m_animPaths.size())
 				{
 					LOG("ERROR WHEN LOADING ASSIGNING TILE ANIMATION - INDEX OUT OF RANGE");
 				}
@@ -314,7 +341,7 @@ void TileMap::AssignSprites()
 					wStringPath = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(stringPath);
 					//std::string wstr_turned_to_str = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(wStringPath);
 
-					m_tiles[i][j].AddAnimation(stringPath, wStringPath);
+					m_tiles[i][j].AddAnimation("TestAnim", L"TestAnim");
 					count++;
 				}
 			}
@@ -323,10 +350,8 @@ void TileMap::AssignSprites()
 
 }
 
-Tile TileMap::GetTileFromWorldPos(int posX, int posY)
+Tile TileMap::GetTileFromWorldPos(int posX, int posY) // Takes a set of coordinates and finds if a tile is there
 {
-	//use tileMap location and pos, use difference between the two, then divide by tile size
-    //if in range, return
 	XMFLOAT3 worldPos = XMFLOAT3(GetTransform()->GetPosition().x - posX, GetTransform()->GetPosition().y - posY, 0);
 
 	int tileX = 0;
@@ -372,7 +397,7 @@ Tile TileMap::GetTileFromWorldPos(int posX, int posY)
 	}
 }
 
-Tile* TileMap::GetTileFromMapPos(int x, int y)
+Tile* TileMap::GetTileFromMapPos(int x, int y) // Returns the tile in the given TileMap coordinates
 {
 	if (x < m_width && x >= 0 && y < m_height && y >= 0)
 	{
@@ -385,38 +410,6 @@ Tile* TileMap::GetTileFromMapPos(int x, int y)
 	}
 }
 
-void TileMap::SetPassable(int x, int y, bool passable)
-{
-	m_tiles[x][y].SetPassable(passable);
-}
-
-void TileMap::SetPassable(Tile tile, bool passable)
-{
-	tile.SetPassable(passable);
-}
-
-void TileMap::Update(float d)
-{
-	for (int i = 0; i < m_height; i++)
-	{
-		for (int j = 0; j < m_width; j++)
-		{
-			m_tiles[i][j].Update();
-		}
-	}
-}
-
-void TileMap::Render(ID3D11DeviceContext* pcontext, ConstantBuffer<PerInstanceCB>* pconstantBuffer)
-{
-	for (int i = 0; i < m_height; ++i)
-	{
-		for (int j = 0; j < m_width; ++j)
-		{
-			m_tiles[i][j].Render(pcontext, pconstantBuffer);
-		}
-	}
-}
-
 void TileMap::SetTileAtWorldPos(int posX, int posY, Tile newTile)
 {
 	GetTileFromWorldPos(posX, posY) = newTile;
@@ -425,4 +418,20 @@ void TileMap::SetTileAtWorldPos(int posX, int posY, Tile newTile)
 void TileMap::SetTileAtMapPos(int posX, int posY, Tile newTile)
 {
 	m_tiles[posY][posX] = newTile;
+}
+
+
+vector<vector<Tile>> TileMap::GetTiles() // Return the vector containing all tiles
+{
+	return m_tiles;
+}
+
+void TileMap::SetPassable(int x, int y, bool passable)
+{
+	m_tiles[x][y].SetPassable(passable);
+}
+
+void TileMap::SetPassable(Tile tile, bool passable)
+{
+	tile.SetPassable(passable);
 }

@@ -44,6 +44,10 @@ ID3D11RasterizerState* g_prasterState = nullptr;
 
 CameraGameObject* g_pcamera = nullptr;
 
+TileMap* testMap1;
+
+TileMap* testMap2;
+
 EditorUI* g_peditorUI;
 
 Scene* g_pScene = nullptr;
@@ -165,9 +169,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
 
-	//Create test Tile Map
-	TileMap TestMap = TileMap(10, 10, "TestMap", XMFLOAT3(1,1,0));
-	TestMap.testFunc();
+	testMap1 = new TileMap("Resources/Levels/TileMaps/TestMap.txt", XMFLOAT3(0, 0, 0), "Map01");
+	//testMap2 = new TileMap("Resources/Levels/TileMaps/TestMap2.txt", XMFLOAT3(0, 0, 0), "Map02");
 
 	// Main message loop
 	MSG msg = { 0 };
