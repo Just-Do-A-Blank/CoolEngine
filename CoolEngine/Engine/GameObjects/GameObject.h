@@ -6,6 +6,7 @@
 #include "Engine/Graphics/ConstantBuffers.h"
 #include "Engine/Graphics/SpriteAnimation.h"
 #include "Engine/EditorUI/EditorUI.h"
+#include "Engine/ResourceDefines.h"
 
 #include <string>
 
@@ -13,6 +14,8 @@ class SpriteAnimation;
 class Shape;
 
 struct RenderStruct;
+
+#define ANIM_NAME_SIZE 50
 
 class GameObject
 {
@@ -27,6 +30,16 @@ private:
 	Mesh* m_pmesh = nullptr;
 
 	int m_layer = 0;
+
+	//ImGui variables
+	WCHAR m_texNameBuffer[FILEPATH_BUFFER_SIZE];
+	char m_animName[ANIM_NAME_SIZE];
+	WCHAR m_animFilepath[FILEPATH_BUFFER_SIZE];
+
+	std::string m_animUpdateName = "";
+
+	bool m_updateAnim = false;
+	bool m_updateAnimName = false;
 
 	std::unordered_map<std::string, SpriteAnimation> m_animations;
 
@@ -43,6 +56,8 @@ protected:
 	Transform m_transform;
 	Shape* m_collider = nullptr;
 
+	virtual void CreateEngineUI(ID3D11Device* pdevice);
+
 public:
 	GameObject();
 	GameObject(string identifier);
@@ -56,7 +71,6 @@ public:
 	virtual void Update();
 
 	virtual void ShowEngineUI(ID3D11Device* pdevice);
-	virtual void CreateEngineUI(ID3D11Device* pdevice);
 
 	//Getters
 	Mesh* GetMesh() const;

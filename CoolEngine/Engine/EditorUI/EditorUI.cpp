@@ -29,7 +29,7 @@ EditorUI::EditorUI(ID3D11Device* pdevice)
 	m_pdevice = pdevice;
 }
 
-void EditorUI::DrawEditorUI()
+void EditorUI::DrawEditorUI(ID3D11Device* pdevice)
 {
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
@@ -45,6 +45,11 @@ void EditorUI::DrawEditorUI()
 	if (g_ShowSceneManagement)
 	{
 		DrawSceneManagementWindow();
+	}
+
+	if (m_pselectedGameObject != nullptr)
+	{
+		m_pselectedGameObject->ShowEngineUI(pdevice);
 	}
 
 	ImGui::Render();

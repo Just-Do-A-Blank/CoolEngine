@@ -499,7 +499,7 @@ void Render()
 
 	g_pScene->Render(renderStruct);
 
-	g_peditorUI->DrawEditorUI();
+	g_peditorUI->DrawEditorUI(g_pd3dDevice);
 
 	// Present our back buffer to our front buffer
 	g_pSwapChain->Present(0, 0);
