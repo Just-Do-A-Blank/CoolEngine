@@ -29,8 +29,6 @@ public:
 	unordered_map<string, Scene*> m_sceneMap;
 	Scene* m_pcurrentScene;
 
-	unordered_map<string, TileMap*> m_tileMapMap;
-
 	void Update();
 	void Render(RenderStruct& renderStruct);
 

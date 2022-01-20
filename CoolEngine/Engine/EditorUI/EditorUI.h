@@ -52,8 +52,6 @@ private:
 	int m_animNameUpdateIndex = -1;
 	string m_animUpdateName = "";
 
-	GameObject* m_pselectedGameObject;
-
 	void DrawMasterWindow();
 	void DrawSceneGraphWindow();
 	void DrawSceneManagementWindow();

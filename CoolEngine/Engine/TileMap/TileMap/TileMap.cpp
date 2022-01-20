@@ -1,6 +1,10 @@
 #include "TileMap.h"
 
 
+TileMap::TileMap()
+{
+}
+
 TileMap::TileMap(int width, int height, string identifier, XMFLOAT3 position) : GameObject(identifier)
 {
 	m_width = width, m_height = height;

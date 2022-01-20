@@ -55,11 +55,6 @@ void EditorUI::DrawEditorUI(ID3D11Device* pdevice)
 		DrawTileMapManager();
 	}
 
-	if (m_pselectedGameObject != nullptr)
-	{
-		m_pselectedGameObject->ShowEngineUI(pdevice);
-	}
-
 	ImGui::Render();
 
 

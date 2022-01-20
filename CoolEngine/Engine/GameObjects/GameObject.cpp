@@ -170,7 +170,7 @@ void GameObject::CreateEngineUI(ID3D11Device* pdevice)
 			//Load texture if not loaded
 			if (GraphicsManager::GetInstance()->IsTextureLoaded(m_texNameBuffer) == true)
 			{
-				GraphicsManager::GetInstance()->LoadTextureFromFile(m_texNameBuffer, pdevice);
+				GraphicsManager::GetInstance()->LoadTextureFromFile(m_texNameBuffer);
 			}
 
 			m_palbedoSRV = GraphicsManager::GetInstance()->GetShaderResourceView(m_texNameBuffer);
@@ -234,7 +234,7 @@ void GameObject::CreateEngineUI(ID3D11Device* pdevice)
 	{
 		if (GraphicsManager::GetInstance()->GetAnimation(m_animFilepath).GetFrames() == nullptr)
 		{
-			if (GraphicsManager::GetInstance()->LoadAnimationFromFile(m_animFilepath, pdevice) == false)
+			if (GraphicsManager::GetInstance()->LoadAnimationFromFile(m_animFilepath) == false)
 			{
 				m_animations[m_animUpdateName] = GraphicsManager::GetInstance()->GetAnimation(m_animFilepath);
 			}

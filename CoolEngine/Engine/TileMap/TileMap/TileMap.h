@@ -13,6 +13,8 @@ class TileMap  : public GameObject
 public:
 	void testFunc() { std::cout << "Test" << std::endl; }
 
+	TileMap();
+
 	TileMap(int width, int height, string identifier, XMFLOAT3 position);
 	~TileMap();
 
