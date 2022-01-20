@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/Managers/GraphicsManager.h"
+#include "Engine/GameObjects/PlayerGameObject.h"
 
 class SceneGraph;
 class GameObject;
@@ -31,7 +32,13 @@ public:
 	void SelectGameObject(GameObject* pgameObject);
 	void SelectGameObjectUsingTreeNode(TreeNode* pnode);
 
+	PlayerGameObject* GetPlayerGameObjectUsingIdentifier(string& identifier);
+	void SelectGameObjectUsingIdentifier(string& identifier);
+
 	GameObject* CreateGameObject(string identifier);
+	GameObject* CreateGameObject(string identifier, TreeNode* pparentNode);
+	GameObject* CreatePlayerGameObject(string identifier);
+	GameObject* CreatePlayerGameObject(string identifier, TreeNode* pparentNode);
 
 	void DeleteSelectedGameObject();
 	void DeleteGameObjectUsingIdentifier(string identifier);

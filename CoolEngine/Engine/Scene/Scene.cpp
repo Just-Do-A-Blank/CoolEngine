@@ -59,6 +59,11 @@ void Scene::SelectGameObjectUsingIdentifier(string identifier)
 	m_pselectedGameObject = m_pselectedNode->GameObject;
 }
 
+PlayerGameObject* Scene::GetPlayerGameObjectUsingIdentifier(string& identifier)
+{
+	return  static_cast<PlayerGameObject*>(m_psceneGraph->GetGameObjectUsingIdentifier(identifier));
+}
+
 void Scene::SelectGameObject(GameObject* pgameObject)
 {
 	if (pgameObject)
@@ -103,6 +108,35 @@ GameObject* Scene::CreateGameObject(string identifier)
 		else
 		{
 			m_psceneGraph->AddChild(m_psceneGraph->GetNodeUsingIdentifier(m_pselectedGameObject->GetIdentifier()), gameObject);
+		}
+	}
+
+	return gameObject;
+}
+
+ameObject* Scene::CreatePlayerGameObject(string identifier)
+{
+	return CreatePlayerGameObject(identifier, nullptr);
+}
+
+GameObject* Scene::CreatePlayerGameObject(string identifier, TreeNode* pparentNode)
+{
+	PlayerGameObject* gameObject = new PlayerGameObject(identifier);
+
+	m_prootTreeNode = m_psceneGraph->GetRootNode();
+	if (!m_prootTreeNode)
+	{
+		m_prootTreeNode = m_psceneGraph->NewNode(gameObject);
+	}
+	else
+	{
+		if (!pparentNode)
+		{
+			m_psceneGraph->AddSibling(m_prootTreeNode, gameObject);
+		}
+		else
+		{
+			m_psceneGraph->AddChild(pparentNode, gameObject);
 		}
 	}
 
