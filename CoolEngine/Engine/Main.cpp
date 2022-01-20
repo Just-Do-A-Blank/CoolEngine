@@ -546,10 +546,13 @@ void Update()
 	GameManager* pgamemanager = GameManager::GetInstance();
 
 	pgamemanager->GetTimer()->Tick();
+	pgamemanager->Update();
 
 	AudioManager::GetInstance()->Update();
 
-	pgamemanager->Update();
+	EventManager::Instance()->ProcessEvents();
+
+	g_inputController->Update();
 }
 
 void BindQuadBuffers()
