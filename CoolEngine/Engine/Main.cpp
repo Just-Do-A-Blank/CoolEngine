@@ -16,6 +16,7 @@
 #include "Engine/EditorUI/EditorUI.h"
 
 #include "Engine/TileMap/TileMap/TileMap.h"
+#include "Engine/AI/Pathfinding.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
@@ -156,9 +157,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
 	
-	vector<node*> path = Pathfinding::Instance()->FindPath(pgameObject->GetTransform()->GetPosition(), XMFLOAT3(0, 0, 15));
+	vector<node*> path = Pathfinding::Instance()->FindPath(pgameObject->GetTransform()->GetPosition(), XMFLOAT3(0, 15, 0));
 	
-	vector<node*> path2 = Pathfinding::Instance()->FindPath(pgameObject->GetTransform()->GetPosition(), XMFLOAT3(15, 0, 15));
+	vector<node*> path2 = Pathfinding::Instance()->FindPath(pgameObject->GetTransform()->GetPosition(), XMFLOAT3(15, 15, 0));
 
 
 

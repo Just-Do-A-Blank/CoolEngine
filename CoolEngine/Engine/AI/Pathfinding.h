@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 
+#define DIAGONAL_ENABLED true
 
 //We need access to the floor map & any extra information such as up/down componants to create the neighbours list
 struct node
@@ -25,11 +26,12 @@ class Pathfinding
 {
 public:
 	vector<node*> FindPath(XMFLOAT3 curPos,XMFLOAT3 tarPos);
-	
+	vector<node*> FindPerfectPath(XMFLOAT3 curPos, XMFLOAT3 tarPos);
+
+
 	static Pathfinding* Instance();
 	node* FindClosestNode(XMFLOAT3 pos);
-	//pass in current unit pos & destination pos
-	//returns array of orders
+	
 
 private:
 
@@ -39,8 +41,11 @@ private:
 	node* nodes = nullptr;
 
 	Pathfinding();
+	void SetupPath(XMFLOAT3 curPos,XMFLOAT3 tarPos);
 
-	//These will need to be worked out based on the current positions of the destination, which may not be exactly on a node, so will need to lock the destination node?
+
+	vector<node*> m_nodesToTest;
+
 	node* m_nodeStart = nullptr;
 	node* m_nodeEnd = nullptr;
 
