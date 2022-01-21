@@ -79,6 +79,9 @@
     <Filter Include="Engine\Includes\FMOD">
       <UniqueIdentifier>{c843e429-6caa-48d0-bfb4-53854ba97bf5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\DebugColours">
+      <UniqueIdentifier>{e1480dde-4628-43e7-af6d-078fd29de11b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
