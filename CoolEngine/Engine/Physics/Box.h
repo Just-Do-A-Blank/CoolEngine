@@ -55,6 +55,6 @@ public:
 
 	void CreateEngineUI() override
 	{
-
+		Shape::CreateEngineUI();
 	}
 };

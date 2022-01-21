@@ -72,5 +72,7 @@ public:
 	void CreateEngineUI() override
 	{
 		IMGUI_LEFT_LABEL(ImGui::DragFloat, "Radius", &m_radius, 1.0f, 0.0f);
+
+		Shape::CreateEngineUI();
 	}
 };

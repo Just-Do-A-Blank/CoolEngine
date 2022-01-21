@@ -50,8 +50,6 @@ private:
 
 	//Flags
 	bool m_isRenderable = true;
-	bool m_isCollidable = false;
-	bool m_isTrigger = false;
 
 protected:
 	Transform m_transform;
@@ -65,8 +63,6 @@ public:
 
 	//Getters
 	const bool& IsRenderable();
-	const bool& IsCollidable();
-	const bool& IsTrigger();
 
 	virtual void Render(RenderStruct& renderStruct);
 	virtual void Update();
@@ -112,8 +108,6 @@ public:
 	void SetPixelShader(ID3D11PixelShader* ppixelShader);
 
 	void SetIsRenderable(bool& condition);
-	void SetIsCollidable(bool& condition);
-	void SetIsTrigger(bool& condition);
 
 	void SetLayer(int layer);
 

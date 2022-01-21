@@ -30,10 +30,19 @@ public:
 
 	static string ShapeTypeToString(ShapeType type);
 
-	virtual void CreateEngineUI() = 0;
+	virtual void CreateEngineUI();
+
+	void SetIsTrigger(bool value);
+	void SetIsCollidable(bool value);
+
+	bool IsTrigger() const;
+	bool IsCollidable() const;
 
 	Transform* m_transform;
 
 protected:
 	ShapeType m_shapeType;
+
+	bool m_isTrigger = false;
+	bool m_isCollidable = true;
 };

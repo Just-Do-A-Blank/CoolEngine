@@ -169,15 +169,17 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
 	bool isCollision = true;
 
+	Box* pbox = new Box(pgameObject->GetTransform());
+	pbox->SetIsCollidable(isCollision);
+	pbox->SetIsTrigger(isCollision);
+
 	pgameObject->SetMesh(QUAD_MESH_NAME);
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
 	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
 	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
-	pgameObject->SetIsCollidable(isCollision);
-	pgameObject->SetIsTrigger(isCollision);
-	pgameObject->SetShape(new Box(pgameObject->GetTransform()));
+	pgameObject->SetShape(pbox);
 
 	//Init second gameObject
 	pgameObject = pgameManager->GetGameObjectUsingIdentifier<GameObject>(obj1Name);
@@ -185,15 +187,17 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	objectPos = XMFLOAT3(10.0f, 0.0f, 5.0f);
 	objectScale = XMFLOAT3(100, 100, 100);
 
+	pbox = new Box(pgameObject->GetTransform());
+	pbox->SetIsCollidable(isCollision);
+	pbox->SetIsTrigger(isCollision);
+
 	pgameObject->SetMesh(QUAD_MESH_NAME);
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
 	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
 	pgameObject->SetAlbedo(TEST2);
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
-	pgameObject->SetIsCollidable(isCollision);
-	pgameObject->SetIsTrigger(isCollision);
-	pgameObject->SetShape(new Box(pgameObject->GetTransform()));
+	pgameObject->SetShape(pbox);
 
 	// Init player object
 	pgameObject = pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName);
@@ -201,15 +205,17 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	objectPos = XMFLOAT3(200.0f, 0.0f, 5.0f);
 	objectScale = XMFLOAT3(50, 50, 50);
 
+	pbox = new Box(pgameObject->GetTransform());
+	pbox->SetIsCollidable(isCollision);
+	pbox->SetIsTrigger(isCollision);
+
 	pgameObject->SetMesh(QUAD_MESH_NAME);
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
 	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
 	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
-	pgameObject->SetIsCollidable(isCollision);
-	pgameObject->SetIsTrigger(isCollision);
-	pgameObject->SetShape(new Box(pgameObject->GetTransform()));
+	pgameObject->SetShape(pbox);
 
 	ExampleObserver observer(new int(10), pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName));
 	EventManager::Instance()->AddClient(EventType::KeyPressed, &observer);

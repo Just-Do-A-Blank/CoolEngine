@@ -205,12 +205,12 @@ void Collision::Update(unordered_map<string, GameObject*> gameObjectMap)
 				}
 
 				// Whether to just collisde or collide with response
-				if (it1->second->IsCollidable() && it2->second->IsCollidable())
+				if (it1->second->GetShape()->IsCollidable() && it2->second->GetShape()->IsCollidable())
 				{
 					// To Do - Find a way to do something with hasCollided
 					bool hasCollided = it1->second->GetShape()->CollideResponse(it2->second->GetShape());
 				}
-				else if (it1->second->IsTrigger() && it2->second->IsTrigger() || it1->second->IsCollidable() && it2->second->IsTrigger() || it2->second->IsCollidable() && it1->second->IsTrigger())
+				else if (it1->second->GetShape()->IsTrigger() && it2->second->GetShape()->IsTrigger() || it1->second->GetShape()->IsCollidable() && it2->second->GetShape()->IsTrigger() || it2->second->GetShape()->IsCollidable() && it1->second->GetShape()->IsTrigger())
 				{
 					bool hasCollided = it1->second->GetShape()->Collide(it2->second->GetShape());
 				}

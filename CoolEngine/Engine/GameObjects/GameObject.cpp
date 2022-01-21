@@ -3,6 +3,9 @@
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/Includes/IMGUI/imgui.h"
 #include "Engine/ResourceDefines.h"
+#include "Engine/Physics/Shape.h"
+#include "Engine/Physics/Circle.h"
+#include "Engine/Physics/Box.h"
 
 #include <iostream>
 
@@ -24,16 +27,6 @@ GameObject::GameObject(string identifier)
 const bool& GameObject::IsRenderable()
 {
 	return m_isRenderable;
-}
-
-const bool& GameObject::IsCollidable()
-{
-	return m_isCollidable;
-}
-
-const bool& GameObject::IsTrigger()
-{
-	return m_isTrigger;
 }
 
 void GameObject::Render(RenderStruct& renderStruct)
@@ -179,9 +172,12 @@ void GameObject::CreateEngineUI(ID3D11Device* pdevice)
 
 	ImGui::Spacing();
 
+	IMGUI_LEFT_LABEL(ImGui::DragInt, "Layer", &m_layer, 1, 0, GraphicsManager::GetInstance()->GetNumLayers() - 1);
+
+	ImGui::Spacing();
+
 	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Renderable", &m_isRenderable);
-	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Collidable", &m_isCollidable);
-	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Trigger", &m_isTrigger);
+
 
 	ImGui::Spacing();
 	ImGui::Separator();
@@ -254,6 +250,47 @@ void GameObject::CreateEngineUI(ID3D11Device* pdevice)
 			//Add string terminator so it appears the field has been wiped
 			m_createDeleteAnimName[0] = '\0';
 		}
+	}
+
+	ImGui::Spacing();
+	ImGui::Separator();
+	ImGui::Spacing();
+
+	string currentSelected;
+
+	if (m_collider != nullptr)
+	{
+		currentSelected = Shape::ShapeTypeToString(m_collider->GetShapeType());
+	}
+	else
+	{
+		currentSelected = Shape::ShapeTypeToString(ShapeType::COUNT);
+	}
+
+	if (IMGUI_LEFT_LABEL(ImGui::BeginCombo, "Collider", currentSelected.c_str()) == true)
+	{
+		if (ImGui::Selectable(Shape::ShapeTypeToString(ShapeType::COUNT).c_str(), m_collider == nullptr))
+		{
+			delete m_collider;
+			m_collider = nullptr;
+		}
+		else if (ImGui::Selectable(Shape::ShapeTypeToString(ShapeType::BOX).c_str(), m_collider->GetShapeType() == ShapeType::BOX))
+		{
+			delete m_collider;
+			m_collider = new Box(&m_transform);
+		}
+		else if (ImGui::Selectable(Shape::ShapeTypeToString(ShapeType::CIRCLE).c_str(), m_collider->GetShapeType() == ShapeType::CIRCLE))
+		{
+			delete m_collider;
+			m_collider = new Circle(&m_transform, 1.0f);
+		}
+
+		ImGui::EndCombo();
+	}
+
+	if (m_collider != nullptr)
+	{
+		m_collider->CreateEngineUI();
 	}
 
 	if (m_updateAnimName == true)
@@ -439,16 +476,6 @@ void GameObject::SetPixelShader(ID3D11PixelShader* ppixelShader)
 void GameObject::SetIsRenderable(bool& condition)
 {
 	m_isRenderable = condition;
-}
-
-void GameObject::SetIsCollidable(bool& condition)
-{
-	m_isCollidable = condition;
-}
-
-void GameObject::SetIsTrigger(bool& condition)
-{
-	m_isTrigger = condition;
 }
 
 void GameObject::SetLayer(int layer)
