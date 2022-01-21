@@ -5,7 +5,7 @@
 
 class GameObject;
 class Scene;
-class TreeNode;
+template<class T>class TreeNode;
 class PlayerGameObject;
 class RenderStruct;
 
@@ -55,7 +55,7 @@ public:
 
 	void SelectGameObjectUsingIdentifier(string& identifier);
 	void SelectGameObject(GameObject* pgameObject);
-	void SelectGameObjectUsingTreeNode(TreeNode* pnode);
+	void SelectGameObjectUsingTreeNode(TreeNode<GameObject>* pnode);
 
 	template<typename T>
 	T* CreateGameObject(string identifier)
@@ -66,8 +66,8 @@ public:
 	void DeleteSelectedGameObject();
 	void DeleteGameObjectUsingIdentifier(string identifier);
 
-	TreeNode* GetRootTreeNode();
-	TreeNode* GetTreeNode(GameObject* pgameObject);
+	TreeNode<GameObject>* GetRootTreeNode();
+	TreeNode<GameObject>* GetTreeNode(GameObject* pgameObject);
 	string& GetCurrentSceneName();
 
 
