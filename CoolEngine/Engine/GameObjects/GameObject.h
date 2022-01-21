@@ -44,6 +44,7 @@ protected:
 public:
 	GameObject();
 	GameObject(string identifier);
+	void InitGraphics();
 
 	//Getters
 	const bool& IsRenderable();
