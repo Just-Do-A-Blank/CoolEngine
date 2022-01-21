@@ -1,12 +1,14 @@
 #pragma once
 #include "Engine/Helpers/Timer.h"
 #include "Engine/Structure/Singleton.h"
+#include "Engine/Scene/Scene.h"
 
 class GameObject;
 class Scene;
 class TreeNode;
 class PlayerGameObject;
 class RenderStruct;
+
 
 enum class SceneDesc
 {
@@ -41,17 +43,25 @@ public:
 
 	Scene* GetCurrentScene();
 
+	GameObject* GetSelectedGameObject();
 
 	unordered_map<string, GameObject*>& GetAllGameObjects();
-	GameObject* GetGameObjectUsingIdentifier(string& identifier);
-	PlayerGameObject* GetPlayerGameObjectUsingIdentifier(string& identifier);
+
+	template<typename T>
+	T* GetGameObjectUsingIdentifier(string& identifier)
+	{
+		return m_pcurrentScene->GetGameObjectUsingIdentifier<T>(identifier);
+	}
 
 	void SelectGameObjectUsingIdentifier(string& identifier);
 	void SelectGameObject(GameObject* pgameObject);
 	void SelectGameObjectUsingTreeNode(TreeNode* pnode);
 
-	GameObject* CreateGameObject(string identifier);
-	GameObject* CreatePlayerGameObject(string identifier);
+	template<typename T>
+	T* CreateGameObject(string identifier)
+	{
+		return m_pcurrentScene->CreateGameObject<T>(identifier);
+	}
 
 	void DeleteSelectedGameObject();
 	void DeleteGameObjectUsingIdentifier(string identifier);

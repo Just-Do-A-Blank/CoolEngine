@@ -6,7 +6,7 @@ SpriteAnimation::SpriteAnimation()
 {
 	m_pframes = nullptr;
 
-	m_currentFrameIndex = 0;
+	m_currentFrameIndex = -1;
 	m_timeMilestone = 0;
 }
 
@@ -108,5 +108,10 @@ void SpriteAnimation::Restart()
 
 ID3D11ShaderResourceView* SpriteAnimation::GetCurrentFrame()
 {
+	if (m_currentFrameIndex == -1)
+	{
+		return nullptr;
+	}
+
 	return m_pframes->at(m_currentFrameIndex).m_ptexture;
 }

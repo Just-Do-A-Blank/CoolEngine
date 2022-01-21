@@ -1,10 +1,45 @@
 #include "Inputs.h"
 #include "Engine/Managers/Events/EventManager.h"
-
+#include "Engine/Includes/IMGUI/imgui.h"
 
 
 void Inputs::Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam)
 {
+	switch (*message)
+	{
+	case(WM_KEYDOWN):
+	case(WM_KEYUP):
+	{
+		ImGuiIO io = ImGui::GetIO();
+
+		if (io.WantCaptureKeyboard == true)
+		{
+			return;
+		}
+	}
+	break;
+
+	case(WM_LBUTTONDOWN):
+	case(WM_MBUTTONDOWN):
+	case(WM_RBUTTONDOWN):
+	case(WM_XBUTTONDOWN):
+	case(WM_LBUTTONUP):
+	case(WM_MBUTTONUP):
+	case(WM_RBUTTONUP):
+	case(WM_XBUTTONUP):
+	case(WM_MOUSEMOVE):
+	{
+		ImGuiIO io = ImGui::GetIO();
+
+		if (io.WantCaptureMouse == true)
+		{
+			return;
+		}
+	}
+	break;
+
+	}
+
 	switch (*message)
 	{
 
