@@ -3,8 +3,8 @@
 
 TileMap::TileMap(int width, int height, string identifier, XMFLOAT3 position) : GameObject(identifier)
 {
-	m_width = width, m_height = height;
-	m_totalTiles = m_width * m_height;
+	m_width = width;
+	m_height = height;
 
 	GetTransform()->SetPosition(position);
 
