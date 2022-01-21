@@ -48,57 +48,46 @@ unordered_map<string, GameObject*>& Scene::GetAllGameObjects()
 	return m_psceneGraph->GetAllGameObjects();
 }
 
-GameObject* Scene::GetGameObjectUsingIdentifier(string& identifier)
-{	
-	return  m_psceneGraph->GetGameObjectUsingIdentifier(identifier);
-}
-
-void Scene::SelectGameObjectUsingIdentifier(string& identifier)
+void Scene::SelectGameObjectUsingIdentifier(string identifier)
 {
-	m_pcurrentlySelectedGameObject = m_psceneGraph->GetGameObjectUsingIdentifier(identifier);
+	m_pselectedNode = m_psceneGraph->GetNodeUsingIdentifier(identifier);
+	m_pselectedGameObject = m_pselectedNode->GameObject;
 }
 
 void Scene::SelectGameObject(GameObject* pgameObject)
 {
-	m_pcurrentlySelectedGameObject = pgameObject;
-}
-
-GameObject* Scene::CreateGameObject(string identifier)
-{
-	return CreateGameObject(identifier, nullptr);
-}
-
-GameObject* Scene::CreateGameObject(string identifier, TreeNode* pparentNode)
-{
-	GameObject* gameObject = new GameObject(identifier);
-
-	m_prootTreeNode = m_psceneGraph->GetRootNode();
-	if (!m_prootTreeNode)
+	if (pgameObject)
 	{
-		m_prootTreeNode = m_psceneGraph->NewNode(gameObject);
+		SelectGameObjectUsingIdentifier(pgameObject->GetIdentifier());
 	}
 	else
 	{
-		if (!pparentNode)
-		{
-			m_psceneGraph->AddSibling(m_prootTreeNode, gameObject);
-		}
-		else
-		{
-			m_psceneGraph->AddChild(pparentNode, gameObject);
-		}
+		m_pselectedNode = nullptr;
+		m_pselectedGameObject = nullptr;
 	}
-
-	return gameObject;
 }
 
-void Scene::DeleteGameObjectUsingNode(TreeNode* pnode)
+void Scene::SelectGameObjectUsingTreeNode(TreeNode* pnode)
 {
 	if (!pnode)
 	{
+		m_pselectedNode = nullptr;
+		m_pselectedGameObject = nullptr;
 		return;
 	}
-	m_psceneGraph->DeleteGameObjectUsingNode(pnode);
+
+	m_pselectedNode = pnode;
+	m_pselectedGameObject = pnode->GameObject;
+}
+
+
+void Scene::DeleteSelectedGameObject()
+{
+	if (!m_pselectedNode)
+	{
+		return;
+	}
+	m_psceneGraph->DeleteGameObjectUsingNode(m_pselectedNode);
 }
 
 void Scene::DeleteGameObjectUsingIdentifier(string identifier)
@@ -116,20 +105,12 @@ TreeNode* Scene::GetTreeNode(GameObject* pgameObject)
 	return m_psceneGraph->GetNodeUsingIdentifier(pgameObject->GetIdentifier());
 }
 
-void Scene::DeleteSelectedGameObject()
-{
-	unordered_map<string, GameObject*> gameObjectList = m_psceneGraph->GetAllGameObjects();
-	for (unordered_map<string, GameObject*>::iterator it = gameObjectList.begin(); it != gameObjectList.end(); ++it)
-	{
-		//it->second->Render(renderStruct);
-		if (it->second == m_pcurrentlySelectedGameObject)
-		{
-			m_psceneGraph->DeleteGameObjectUsingIdentifier(it->first);
-		}
-	}
-}
-
-string& Scene::GetSceneName()
+string& Scene::GetSceneIdentifier()
 {
 	return m_sceneIdentifier;
+}
+
+GameObject* Scene::GetSelectedGameObject()
+{
+	return m_pselectedGameObject;
 }
