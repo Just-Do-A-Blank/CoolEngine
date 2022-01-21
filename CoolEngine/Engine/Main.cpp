@@ -93,7 +93,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		return 0;
 	}
 
-	g_peditorUI = new EditorUI();
+	GraphicsManager::GetInstance()->LoadAnimationFromFile(L"TestAnim");
+
+	g_peditorUI = new EditorUI(g_pd3dDevice);
 	g_peditorUI->InitIMGUI(g_pImmediateContext, g_pd3dDevice, &g_hWnd);
 
 	//Setup audio stuff
@@ -171,15 +173,17 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
 	bool isCollision = true;
 
+	Box* pbox = new Box(pgameObject->GetTransform());
+	pbox->SetIsCollidable(isCollision);
+	pbox->SetIsTrigger(isCollision);
+
 	pgameObject->SetMesh(QUAD_MESH_NAME);
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
 	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
 	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
-	pgameObject->SetIsCollidable(isCollision);
-	pgameObject->SetIsTrigger(isCollision);
-	pgameObject->SetShape(new Box(pgameObject->GetTransform()));
+	pgameObject->SetShape(pbox);
 
 	//Init second gameObject
 	pgameObject = pgameManager->GetGameObjectUsingIdentifier<GameObject>(obj1Name);
@@ -187,15 +191,17 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	objectPos = XMFLOAT3(10.0f, 0.0f, 0.0f);
 	objectScale = XMFLOAT3(100, 100, 100);
 
+	pbox = new Box(pgameObject->GetTransform());
+	pbox->SetIsCollidable(isCollision);
+	pbox->SetIsTrigger(isCollision);
+
 	pgameObject->SetMesh(QUAD_MESH_NAME);
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
 	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
 	pgameObject->SetAlbedo(TEST2);
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
-	pgameObject->SetIsCollidable(isCollision);
-	pgameObject->SetIsTrigger(isCollision);
-	pgameObject->SetShape(new Box(pgameObject->GetTransform()));
+	pgameObject->SetShape(pbox);
 
 	// Init player object
 	pgameObject = pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName);
@@ -203,15 +209,17 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	objectPos = XMFLOAT3(200.0f, 0.0f, 5.0f);
 	objectScale = XMFLOAT3(50, 50, 50);
 
+	pbox = new Box(pgameObject->GetTransform());
+	pbox->SetIsCollidable(isCollision);
+	pbox->SetIsTrigger(isCollision);
+
 	pgameObject->SetMesh(QUAD_MESH_NAME);
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
 	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
 	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
-	pgameObject->SetIsCollidable(isCollision);
-	pgameObject->SetIsTrigger(isCollision);
-	pgameObject->SetShape(new Box(pgameObject->GetTransform()));
+	pgameObject->SetShape(pbox);
 
 	ExampleObserver observer(new int(10), pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName));
 	EventManager::Instance()->AddClient(EventType::KeyPressed, &observer);
@@ -264,10 +272,13 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 //--------------------------------------------------------------------------------------
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam);
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
+	{
+		return true;
+	}
 
 	g_inputController->Update(&hWnd, &message, &wParam, &lParam);
-	
+
 	PAINTSTRUCT ps;
 	HDC hdc;
 
@@ -565,7 +576,7 @@ void Render()
 #if TOOL
 	g_ptoolBase->Render();
 #else
-	g_peditorUI->DrawEditorUI();
+	g_peditorUI->DrawEditorUI(g_pd3dDevice);
 #endif
 
 	// Present our back buffer to our front buffer

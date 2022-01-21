@@ -27,7 +27,7 @@ enum class SceneManagementState
 class EditorUI
 {
 private:
-	HWND* m_phwnd;
+	static HWND* m_phwnd;
 	bool m_createSceneClicked = false;
 	bool m_createGameObjectClicked = false;
 	bool m_deleteGameObjectClicked = false;
@@ -43,21 +43,25 @@ private:
 	int m_selectionMask;
 	int m_gameObjectNodeClicked = -1;
 
-	//Gameobject properties
-	WCHAR m_texNameBuffer[FILEPATH_BUFFER_SIZE] = DEFAULT_IMGUI_IMAGE;
+	WCHAR m_texNameBuffer[FILEPATH_BUFFER_SIZE];
 
-	void OpenFileExplorer(const WCHAR* fileFilters, WCHAR* buffer, int bufferSize);
+	int m_animNameUpdateIndex = -1;
+	string m_animUpdateName = "";
 
 	void DrawMasterWindow();
 	void DrawSceneGraphWindow();
 	void DrawSceneManagementWindow();
-	void DrawGameObjectPropertiesWindow();
+
+	ID3D11Device* m_pdevice = nullptr;
+
 	void TraverseTree(TreeNode* pcurrentNode, int& count);
 public:
+	EditorUI(ID3D11Device* pdevice);
+
 	void InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, HWND* hwnd);
 	void ShutdownIMGUI();
-	void DrawEditorUI();
+	void DrawEditorUI(ID3D11Device* pdevice);
 
-
+	static void OpenFileExplorer(const WCHAR* fileFilters, WCHAR* buffer, int bufferSize);
+	static void OpenFolderExplorer(WCHAR* buffer, int bufferSize);
 };
-

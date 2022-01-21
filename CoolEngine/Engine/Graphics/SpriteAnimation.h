@@ -12,7 +12,7 @@ class SpriteAnimation
 {
 	std::vector<Frame>* m_pframes;
 
-	int m_currentFrameIndex = 0;
+	int m_currentFrameIndex = -1;
 
 	float m_timeMilestone = 0.0f;
 	float m_timeLeft = 0.0f;

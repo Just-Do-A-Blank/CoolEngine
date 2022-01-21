@@ -43,6 +43,8 @@ public:
 
 	Scene* GetCurrentScene();
 
+	GameObject* GetSelectedGameObject();
+
 	unordered_map<string, GameObject*>& GetAllGameObjects();
 
 	template<typename T>

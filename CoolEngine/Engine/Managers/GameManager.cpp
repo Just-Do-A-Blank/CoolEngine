@@ -134,3 +134,8 @@ void GameManager::CreateScene(string sceneIdentifier)
         m_pcurrentScene = newScene;
     }
 }
+
+GameObject* GameManager::GetSelectedGameObject()
+{
+    return m_pcurrentScene->GetSelectedGameObject();
+}

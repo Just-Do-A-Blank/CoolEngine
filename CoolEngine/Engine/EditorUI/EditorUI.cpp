@@ -1,7 +1,13 @@
 #include "EditorUI.h"
 #include "Engine/Managers/GameManager.h"
+#include "Engine/GameObjects/GameObject.h"
+
+#include <ShlObj_core.h>
 #include "Engine/Managers/SceneGraph.h"
 #include "Engine/Managers/GraphicsManager.h"
+#include "Engine/Scene/Scene.h"
+
+HWND* EditorUI::m_phwnd = nullptr;
 
 void EditorUI::InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, HWND* phwnd)
 {
@@ -20,7 +26,12 @@ void EditorUI::InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, H
 	ImGui_ImplDX11_Init(pdevice, pcontext);
 }
 
-void EditorUI::DrawEditorUI()
+EditorUI::EditorUI(ID3D11Device* pdevice)
+{
+	m_pdevice = pdevice;
+}
+
+void EditorUI::DrawEditorUI(ID3D11Device* pdevice)
 {
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
@@ -38,13 +49,12 @@ void EditorUI::DrawEditorUI()
 		DrawSceneManagementWindow();
 	}
 
-	if (g_ShowGameObject)
+	if (GameManager::GetInstance()->GetSelectedGameObject() != nullptr)
 	{
-		DrawGameObjectPropertiesWindow();
+		GameManager::GetInstance()->GetSelectedGameObject()->ShowEngineUI(pdevice);
 	}
 
 	ImGui::Render();
-
 
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
@@ -162,7 +172,7 @@ void EditorUI::DrawSceneManagementWindow()
 		}
 		++sceneCount;
 	}
-	
+
 	if (ImGui::BeginMenuBar())
 	{
 		if (ImGui::BeginMenu("File"))
@@ -218,61 +228,6 @@ void EditorUI::DrawSceneManagementWindow()
 		}
 		ImGui::End();
 	}
-}
-
-float pos[3] =
-{
-	10, 1, 0
-};
-
-void EditorUI::DrawGameObjectPropertiesWindow()
-{
-	ImGui::Begin("GameObject Properties");
-
-	ImGui::Separator();
-	ImGui::Spacing();
-
-	//IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Position", g_ptestObject->GetTransform()->GetPositionRef().);
-	IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Position", pos);
-	IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Rotation", pos);
-	IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Scale", pos);
-
-	ImGui::Spacing();
-	ImGui::Separator();
-	ImGui::Spacing();
-	char buf[100];
-
-	if (ImGui::ImageButton((void*)(intptr_t)GraphicsManager::GetInstance()->GetShaderResourceView(m_texNameBuffer), DEFAULT_IMGUI_IMAGE_SIZE))
-	{
-		OpenFileExplorer(L"DDS files\0*.dds\0", m_texNameBuffer, _countof(m_texNameBuffer));
-
-		wstring relativePath = m_texNameBuffer;
-
-		int index = relativePath.find(L"Resources");
-
-		if (index == relativePath.npos)
-		{
-			LOG("The resource specified isn't stored in a resource folder!");
-		}
-
-		relativePath = wstring(m_texNameBuffer).substr(index);
-
-		relativePath.copy(m_texNameBuffer, relativePath.size());
-
-		m_texNameBuffer[relativePath.size()] = L'\0';
-	}
-
-	IMGUI_LEFT_LABEL(ImGui::InputText, "Animation Name", buf, IM_ARRAYSIZE(buf));
-
-	ImGui::Spacing();
-	ImGui::Separator();
-	ImGui::Spacing();
-
-	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Renderable", &g_ShowSceneEditor);
-	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Collidable", &g_ShowSceneEditor);
-	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Trigger", &g_ShowSceneEditor);
-
-	ImGui::End();
 }
 
 void EditorUI::TraverseTree(TreeNode* pcurrentNode, int& nodeCount)
@@ -365,4 +320,22 @@ void EditorUI::OpenFileExplorer(const WCHAR* fileFilters, WCHAR* buffer, int buf
 	ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
 
 	GetOpenFileName(&ofn);
+}
+
+void EditorUI::OpenFolderExplorer(WCHAR* buffer, int bufferSize)
+{
+	buffer[0] = '\0';
+
+	BROWSEINFOW browserInfo;
+	ZeroMemory(&browserInfo, sizeof(BROWSEINFOW));
+	browserInfo.hwndOwner = *m_phwnd;
+	browserInfo.pidlRoot = NULL;
+	browserInfo.pszDisplayName = buffer;
+	browserInfo.lpszTitle = L"Choose animation file";
+	browserInfo.ulFlags = BIF_EDITBOX;
+	browserInfo.lpfn = NULL;
+	browserInfo.lParam = NULL;
+	browserInfo.iImage = 0;
+
+	SHBrowseForFolder(&browserInfo);
 }
