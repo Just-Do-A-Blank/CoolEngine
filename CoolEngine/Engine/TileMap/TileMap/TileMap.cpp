@@ -5,7 +5,11 @@ TileMap::TileMap() : GameObject()
 
 }
 
-TileMap::TileMap(string mapPath, XMFLOAT3 position, XMFLOAT3 scale, string identifier) : GameObject(identifier)
+TileMap::TileMap(string identifier) : GameObject(identifier)
+{
+}
+
+TileMap::TileMap(wstring mapPath, XMFLOAT3 position, XMFLOAT3 scale, string identifier) : GameObject(identifier)
 {
 	LoadMap(mapPath);
 
@@ -30,7 +34,7 @@ TileMap::~TileMap()
 {
 	m_tiles.clear(); // Run first to allow each tile to release its memory, but this does not release the memory for the vector
 	// Memory reserved by vectors can be deleted by swapping a vector with an uninitialized vector, which means that all memory allocated to the initial vector is released. The temporary vector is then destroyed, since it is temporary
-	vector<vector<Tile>> tempVector;
+	vector<vector<Tile*>> tempVector;
 	m_tiles.swap(tempVector); 
 }
 
@@ -40,12 +44,12 @@ void TileMap::Update(float d)
 	{
 		for (int j = 0; j < m_width; j++)
 		{
-			m_tiles[i][j].Update();
+			m_tiles[i][j]->Update();
 		}
 	}
 }
 
-void TileMap::Render(RenderStruct renderStruct)
+/*void TileMap::Render(RenderStruct renderStruct)
 {
 	LOG("TEST TILE MAP RENDER()");
 	for (int i = 0; i < m_height; ++i)
@@ -55,12 +59,14 @@ void TileMap::Render(RenderStruct renderStruct)
 			m_tiles[i][j].Render(renderStruct);
 		}
 	}
-}
+}*/
 
 
 void TileMap::InitMap() // Create and store tiles in m_Tiles
 {
 	GameManager* pGameManager = GameManager::GetInstance();
+
+	XMFLOAT3 scale = GetTransform()->GetScale();
 
 	m_tiles.resize(m_height);
 
@@ -76,7 +82,9 @@ void TileMap::InitMap() // Create and store tiles in m_Tiles
 
 			string name = "Tile-" + to_string(ID);
 
-			m_tiles[i][j] = *(pGameManager->CreateGameObject<Tile>(name));
+			m_tiles[i][j] = (pGameManager->CreateGameObject<Tile>(name));
+
+			m_tiles[i][j]->GetTransform()->SetScale(scale);
 			InitTilePosition(m_tiles[i][j], i, j);
 			++ID;
 		}
@@ -85,7 +93,18 @@ void TileMap::InitMap() // Create and store tiles in m_Tiles
 	AssignSprites();
 }
 
-void TileMap::InitTilePosition(Tile tile, int row, int column) // Give tiles positions in the world relative to the TileMaps position
+void TileMap::InitMapData(wstring mapPath, XMFLOAT3 position, XMFLOAT3 scale)
+{
+	LoadMap(mapPath);
+
+	GetTransform()->SetPosition(position);
+	GetTransform()->SetScale(scale);
+	m_tileScaleInt = scale.x;
+
+	InitMap();
+}
+
+void TileMap::InitTilePosition(Tile* tile, int row, int column) // Give tiles positions in the world relative to the TileMaps position
 {
 	XMFLOAT3 position = GetTransform()->GetPosition();
 
@@ -95,30 +114,30 @@ void TileMap::InitTilePosition(Tile tile, int row, int column) // Give tiles pos
 	if (m_width % 2 == 0)
 	{
 		xOffset = ((m_width - 1) * 0.5);
-		position.x = (position.x + ((column - xOffset) * m_tileScaleInt));
+		position.x = (position.x + ((column - xOffset) * (m_tileScaleInt * 2)));
 	}
 	else
 	{
 		xOffset = m_width / 2;
-		position.x = (position.x + ((column - xOffset) * m_tileScaleInt));
+		position.x = (position.x + ((column - xOffset) * (m_tileScaleInt * 2)));
 	}
 
 	if (m_height % 2 == 0)
 	{
 		yOffset = ((m_height - 1) * 0.5);
-		position.y = (position.y + ((row - yOffset) * m_tileScaleInt));
+		position.y = (position.y + ((row - yOffset) * (m_tileScaleInt * 2)));
 	}
 	else
 	{
 		yOffset = m_height / 2;
-		position.y = (position.y + ((row - yOffset) * m_tileScaleInt));
+		position.y = (position.y + ((row - yOffset) * (m_tileScaleInt * 2)));
 
 	}
 
-	tile.GetTransform()->SetPosition(position);
+	tile->GetTransform()->SetPosition(position);
 }
 
-void TileMap::LoadMap(string path) // Load data for the map from a given path
+void TileMap::LoadMap(wstring path) // Load data for the map from a given path
 {
 	int count = 0;
 	string parameter;
@@ -189,6 +208,8 @@ void TileMap::LoadMap(string path) // Load data for the map from a given path
 
 					data = "";
 					dataVec.clear();
+
+					m_tileSpriteIndex = vector<int>( m_width * m_height );
 				}
 				else
 				{
@@ -284,7 +305,7 @@ void TileMap::LoadMap(string path) // Load data for the map from a given path
 
 					for (int j = 0; j < dataVec.size(); j++)
 					{
-						m_tileSpriteIndex.push_back(stoi(dataVec[j]));
+						m_tileSpriteIndex[j] = stoi(dataVec[j]);
 					}
 
 					data = "";
@@ -310,52 +331,58 @@ void TileMap::AssignSprites() // Sets each tiles sprite or animaton based off of
 	{
 		for (int j = 0; j < m_width; ++j)
 		{
-			if (m_tileSpriteIndex[((i * 10) + j)] < m_spritePaths.size())
+			if (m_tileSpriteIndex[count] < m_spritePaths.size())
 			{
-				if (m_tileSpriteIndex[((i * 10) + j)] > m_spritePaths.size() + m_animPaths.size())
+				if (m_tileSpriteIndex[count] > m_spritePaths.size() + m_animPaths.size())
 				{
 					LOG("ERROR WHEN LOADING ASSIGNING TILE SPRITE - INDEX OUT OF RANGE");
 				}
 				else
 				{
-					// String to wString conversion code from RipTutorial.com
-					std::string stringPath = m_spritePaths[m_tileSpriteIndex[count]];
-					std::wstring wStringPath;
+					try
+					{
+						// String to wString conversion code from RipTutorial.com
+						std::string stringPath = m_spritePaths[m_tileSpriteIndex[count]];
+						std::wstring wStringPath;
 
-					// convert to wstring
-					wStringPath = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(stringPath);
-					//std::string wstr_turned_to_str = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(wStringPath);
+						// convert to wstring
+						wStringPath = L"Resources\\Sprites\\" + std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(stringPath);
+						//std::string wstr_turned_to_str = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(wStringPath);
 
-					//m_tiles[i][j].AddAnimation(stringPath, wStringPath);
+						//m_tiles[i][j].AddAnimation(stringPath, wStringPath);
 
-					m_tiles[i][j].SetAlbedo(L"Resources\\Sprites\\Brick.dds");
+						m_tiles[i][j]->SetAlbedo(wStringPath);
+					}
+					catch(...)
+					{
+						m_tiles[i][j]->SetAlbedo(DEFAULT_TILE);
+					}
 
 					count++;
 				}
 			}
 			else
 			{
-				if (m_tileSpriteIndex[((i * 10) + j)] > m_spritePaths.size() + m_animPaths.size())
+				if (m_tileSpriteIndex[count] > m_spritePaths.size() + m_animPaths.size())
 				{
 					LOG("ERROR WHEN LOADING ASSIGNING TILE ANIMATION - INDEX OUT OF RANGE");
 				}
 				else
 				{
 					// String to wString conversion code from RipTutorial.com
-					std::string stringPath = m_animPaths[m_tileSpriteIndex[count]];
+					std::string stringPath = m_animPaths[m_tileSpriteIndex[count] - m_spritePaths.size()];
 					std::wstring wStringPath;
 
 					// convert to wstring
 					wStringPath = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(stringPath);
 					//std::string wstr_turned_to_str = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(wStringPath);
 
-					m_tiles[i][j].AddAnimation("TestAnim", L"TestAnim");
+					m_tiles[i][j]->AddAnimation("TestAnim", wStringPath);
 					count++;
 				}
 			}
 		}
 	}
-
 }
 
 Tile TileMap::GetTileFromWorldPos(int posX, int posY) // Takes a set of coordinates and finds if a tile is there
@@ -364,6 +391,8 @@ Tile TileMap::GetTileFromWorldPos(int posX, int posY) // Takes a set of coordina
 
 	int tileX = 0;
 	int tileY = 0;
+
+	Tile* outputTile;
 
 	if (worldPos.x > GetTransform()->GetPosition().x + (m_width/2) * m_tileScaleInt || worldPos.x < GetTransform()->GetPosition().x - (m_width / 2) * m_tileScaleInt)
 	{
@@ -401,7 +430,7 @@ Tile TileMap::GetTileFromWorldPos(int posX, int posY) // Takes a set of coordina
 			}
 		}
 
-		return m_tiles[tileX][tileY];
+		return *m_tiles[tileX][tileY];
 	}
 }
 
@@ -409,7 +438,7 @@ Tile* TileMap::GetTileFromMapPos(int x, int y) // Returns the tile in the given 
 {
 	if (x < m_width && x >= 0 && y < m_height && y >= 0)
 	{
-		return &m_tiles[x][y];
+		return m_tiles[x][y];
 	}
 	else
 	{
@@ -423,7 +452,7 @@ void TileMap::SetTileAtWorldPos(int posX, int posY, Tile newTile)
 	GetTileFromWorldPos(posX, posY) = newTile;
 }
 
-void TileMap::SetTileAtMapPos(int posX, int posY, Tile newTile)
+void TileMap::SetTileAtMapPos(int posX, int posY, Tile* newTile)
 {
 	m_tiles[posY][posX] = newTile;
 }
@@ -438,14 +467,14 @@ void TileMap::SetScale(XMFLOAT3 newScale)
 	GetTransform()->SetScale(newScale);
 }
 
-vector<vector<Tile>> TileMap::GetTiles() // Return the vector containing all tiles
+vector<vector<Tile*>> TileMap::GetTiles() // Return the vector containing all tiles
 {
 	return m_tiles;
 }
 
 void TileMap::SetPassable(int x, int y, bool passable)
 {
-	m_tiles[x][y].SetPassable(passable);
+	m_tiles[x][y]->SetPassable(passable);
 }
 
 void TileMap::SetPassable(Tile tile, bool passable)

@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "Engine/GameObjects/GameObject.h"
+#include "Engine/ResourceDefines.h"
 
 class Tile : public GameObject
 {

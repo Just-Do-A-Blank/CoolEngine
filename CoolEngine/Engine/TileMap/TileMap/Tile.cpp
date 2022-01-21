@@ -6,6 +6,7 @@ Tile::Tile() : GameObject()
 
 Tile::Tile(string identifier) : GameObject(identifier)
 {
+	//SetAlbedo(DEFAULT_TILE);
 }
 
 Tile::Tile(wstring path, int ID, string identifier) : GameObject(identifier)

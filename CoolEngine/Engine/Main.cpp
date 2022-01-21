@@ -186,7 +186,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetIsTrigger(isCollision);
 	pgameObject->SetShape(new Box(pgameObject->GetTransform()));
 
-	//Init second gameObject
+	////Init second gameObject
 	pgameObject = pgameManager->GetGameObjectUsingIdentifier<GameObject>(obj1Name);
 
 	objectPos = XMFLOAT3(10.0f, 0.0f, 0.0f);
@@ -218,6 +218,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetIsTrigger(isCollision);
 	pgameObject->SetShape(new Box(pgameObject->GetTransform()));
 
+	testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, 0, 0), XMFLOAT3(25, 25, 25), "TestMap");
+
 	ExampleObserver observer(new int(10), pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName));
 	EventManager::Instance()->AddClient(EventType::KeyPressed, &observer);
 	EventManager::Instance()->AddClient(EventType::KeyReleased, &observer);
@@ -230,9 +232,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 #endif //_DEBUG
 
 	//Create test Tile Map
-	TileMap TestMap = TileMap(10, 10, "TestMap", XMFLOAT3(1,1,0));
-	TestMap.testFunc();
-#endif
 
 	// Main message loop
 	MSG msg = { 0 };
