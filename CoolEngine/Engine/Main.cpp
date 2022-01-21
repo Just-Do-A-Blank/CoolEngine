@@ -19,6 +19,7 @@
 
 #include "Engine/TileMap/TileMap/TileMap.h"
 #include "Engine/ResourceDefines.h"
+#include "Managers/DebugDrawManager.h"
 #include "Scene/Scene.h"
 #include "Engine/Managers/GameManager.h"
 #include <Engine/Physics/Box.h>
@@ -106,8 +107,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	g_inputController = new Inputs();
 
+	//Debug Manager
+	DebugDrawManager::GetInstance()->Init(g_pd3dDevice);
+
 	//Create camera
-	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, 0);
+	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, -5);
 	XMFLOAT3 cameraForward = XMFLOAT3(0, 0, 1);
 	XMFLOAT3 cameraUp = XMFLOAT3(0, 1, 0);
 
@@ -165,7 +169,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	GameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<GameObject>(obj0Name);
 
-	XMFLOAT3 objectPos = XMFLOAT3(0, 0.0f, 5.0f);
+	XMFLOAT3 objectPos = XMFLOAT3(0, 0.0f, 0.0f);
 	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
 	bool isCollision = true;
 
@@ -184,7 +188,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//Init second gameObject
 	pgameObject = pgameManager->GetGameObjectUsingIdentifier<GameObject>(obj1Name);
 
-	objectPos = XMFLOAT3(10.0f, 0.0f, 5.0f);
+	objectPos = XMFLOAT3(10.0f, 0.0f, 0.0f);
 	objectScale = XMFLOAT3(100, 100, 100);
 
 	pbox = new Box(pgameObject->GetTransform());
@@ -223,6 +227,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, &observer);
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, &observer);
 	EventManager::Instance()->AddClient(EventType::MouseMoved, &observer);
+
+#if _DEBUG
+	DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect("DebugRect1", XMFLOAT3(-100.0f, -100.0f, 0.0f), objectScale, DebugDrawManager::DebugColour::BEIGE);
+#endif //_DEBUG
 
 	//Create test Tile Map
 	TileMap TestMap = TileMap(10, 10, "TestMap", XMFLOAT3(1,1,0));
@@ -560,6 +568,10 @@ void Render()
 
 	GameManager* pgamemanager = GameManager::GetInstance();
 	pgamemanager->Render(renderStruct);
+
+#if _DEBUG
+	DebugDrawManager::GetInstance()->Render(renderStruct);
+#endif
 
 #if TOOL
 	g_ptoolBase->Render();

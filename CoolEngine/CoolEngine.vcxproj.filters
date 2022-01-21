@@ -79,6 +79,9 @@
     <Filter Include="Engine\Includes\FMOD">
       <UniqueIdentifier>{c843e429-6caa-48d0-bfb4-53854ba97bf5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\DebugColours">
+      <UniqueIdentifier>{e1480dde-4628-43e7-af6d-078fd29de11b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -246,8 +249,11 @@
     <ClInclude Include="Engine\Tools\TileMapTool.h">
       <Filter>Engine\Tools</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Structure\UIComponent.h">
-      <Filter>Engine\Structure</Filter>
+    <ClInclude Include="Engine\Managers\DebugDrawManager.h">
+      <Filter>Engine\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\DebugRect.h">
+      <Filter>Engine\GameObjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -353,8 +359,11 @@
     <ClCompile Include="Engine\Tools\TileMapTool.cpp">
       <Filter>Engine\Tools</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Physics\Shape.cpp">
-      <Filter>Engine\Physics</Filter>
+    <ClCompile Include="Engine\Managers\DebugDrawManager.cpp">
+      <Filter>Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\DebugRect.cpp">
+      <Filter>Engine\GameObjects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

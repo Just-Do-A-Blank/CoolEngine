@@ -11,17 +11,22 @@
 
 GameObject::GameObject()
 {
-	m_pvertexShader = GraphicsManager::GetInstance()->GetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-	m_ppixelShader = GraphicsManager::GetInstance()->GetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-
-	m_pmesh = GraphicsManager::GetInstance()->GetMesh(QUAD_MESH_NAME);
+	InitGraphics();
 }
 
 GameObject::GameObject(string identifier)
 {
 	m_identifier = identifier;
 
-	GameObject();
+	InitGraphics();
+}
+
+void GameObject::InitGraphics()
+{
+	m_pvertexShader = GraphicsManager::GetInstance()->GetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+	m_ppixelShader = GraphicsManager::GetInstance()->GetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+
+	m_pmesh = GraphicsManager::GetInstance()->GetMesh(QUAD_MESH_NAME);
 }
 
 const bool& GameObject::IsRenderable()
