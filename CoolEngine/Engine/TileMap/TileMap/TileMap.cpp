@@ -6,6 +6,8 @@ TileMap::TileMap(int width, int height, string identifier, XMFLOAT3 position) : 
 	m_width = width;
 	m_height = height;
 
+	m_totalTiles = m_width * m_height;
+
 	GetTransform()->SetPosition(position);
 
 	InitMap();
