@@ -87,50 +87,7 @@ void GameObject::CreateEngineUI(ID3D11Device* pdevice)
 	ImGui::Separator();
 	ImGui::Spacing();
 
-	XMFLOAT3 value = m_transform.GetPosition();
-	float positionArray[3] =
-	{
-		value.x,
-		value.y,
-		value.z
-	};
-
-	value = m_transform.GetRotation();
-	float rotationArray[3] =
-	{
-		value.x,
-		value.y,
-		value.z
-	};
-
-	value = m_transform.GetScale();
-	float scaleArray[3] =
-	{
-		value.x,
-		value.y,
-		value.z
-	};
-
-	if (IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Position", positionArray))
-	{
-		XMFLOAT3 position = XMFLOAT3(positionArray[0], positionArray[1], positionArray[2]);
-
-		m_transform.SetPosition(position);
-	}
-
-	if (IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Rotation", rotationArray))
-	{
-		XMFLOAT3 rotation = XMFLOAT3(rotationArray[0], rotationArray[1], rotationArray[2]);
-
-		m_transform.SetRotation(rotation);
-	}
-
-	if (IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Scale", scaleArray))
-	{
-		XMFLOAT3 scale = XMFLOAT3(scaleArray[0], scaleArray[1], scaleArray[2]);
-
-		m_transform.SetScale(scale);
-	}
+	m_transform.CreateEngineUI();
 
 	ImGui::Spacing();
 	ImGui::Separator();
@@ -194,8 +151,6 @@ void GameObject::CreateEngineUI(ID3D11Device* pdevice)
 
 			if (IMGUI_LEFT_LABEL(ImGui::InputText, "Name", m_animName, ANIM_NAME_SIZE) == true)
 			{
-
-
 				if (m_animations.count(m_animName) == 0)
 				{
 					m_animUpdateName = it->first;
@@ -313,6 +268,8 @@ void GameObject::CreateEngineUI(ID3D11Device* pdevice)
 			if (GraphicsManager::GetInstance()->LoadAnimationFromFile(m_animFilepath) == false)
 			{
 				m_animations[m_animUpdateName] = GraphicsManager::GetInstance()->GetAnimation(m_animFilepath);
+
+				PlayAnimation(m_animUpdateName);
 			}
 			else
 			{
@@ -322,6 +279,8 @@ void GameObject::CreateEngineUI(ID3D11Device* pdevice)
 		else
 		{
 			m_animations[m_animUpdateName] = anim;
+
+			PlayAnimation(m_animUpdateName);
 		}
 
 		m_updateAnim = false;
@@ -358,6 +317,8 @@ bool GameObject::PlayAnimation(std::string name)
 
 		return false;
 	}
+
+	m_currentAnimationName = name;
 
 	m_pcurrentAnimation->Play();
 
@@ -534,6 +495,12 @@ bool GameObject::RemoveAnimation(string animName)
 		LOG("Tried to remove an animation but one with that name doesn't exist!");
 
 		return false;
+	}
+
+	if (m_currentAnimationName == animName)
+	{
+		m_pcurrentAnimation = nullptr;
+		m_currentAnimationName = "";
 	}
 
 	m_animations.erase(animName);

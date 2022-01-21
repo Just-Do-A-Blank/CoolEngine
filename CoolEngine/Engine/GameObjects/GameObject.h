@@ -45,6 +45,7 @@ private:
 	std::unordered_map<std::string, SpriteAnimation> m_animations;
 
 	SpriteAnimation* m_pcurrentAnimation = nullptr;
+	string m_currentAnimationName = "";
 
 	string m_identifier;
 

@@ -49,5 +49,7 @@ public:
 	void SetLeftVector(XMFLOAT3& leftVector);
 
 	void Translate(XMFLOAT3 vector);
+
+	void CreateEngineUI();
 };
 
