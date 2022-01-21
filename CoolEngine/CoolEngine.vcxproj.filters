@@ -141,9 +141,6 @@
     <ClInclude Include="Engine\Physics\ParticleSystem.h">
       <Filter>Engine\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Physics\Vector2.h">
-      <Filter>Engine\Physics</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Managers\GraphicsManager.h">
       <Filter>Engine\Managers</Filter>
     </ClInclude>
@@ -352,6 +349,9 @@
     </ClCompile>
     <ClCompile Include="Engine\Tools\TileMapTool.cpp">
       <Filter>Engine\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Physics\Shape.cpp">
+      <Filter>Engine\Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
