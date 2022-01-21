@@ -135,6 +135,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	g_ptoolBase->Init(g_pd3dDevice);
 #else
+#endif
 
 	//Music
 	AudioManager::GetInstance()->LoadMusic(TEST_MUSIC);

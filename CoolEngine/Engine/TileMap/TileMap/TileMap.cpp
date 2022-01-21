@@ -60,6 +60,8 @@ void TileMap::Render(RenderStruct renderStruct)
 
 void TileMap::InitMap() // Create and store tiles in m_Tiles
 {
+	GameManager* pGameManager = GameManager::GetInstance();
+
 	m_tiles.resize(m_height);
 
 	int ID = 0;
@@ -71,7 +73,10 @@ void TileMap::InitMap() // Create and store tiles in m_Tiles
 			{
 				m_tiles[i].resize(m_width);
 			}
-			m_tiles[i][j] = Tile(ID, "test");
+
+			string name = "Tile-" + to_string(ID);
+
+			m_tiles[i][j] = *(pGameManager->CreateGameObject<Tile>(name));
 			InitTilePosition(m_tiles[i][j], i, j);
 			++ID;
 		}
@@ -428,6 +433,10 @@ XMFLOAT3 TileMap::GetScale()
 	return XMFLOAT3();
 }
 
+void TileMap::SetScale(XMFLOAT3 newScale)
+{
+	GetTransform()->SetScale(newScale);
+}
 
 vector<vector<Tile>> TileMap::GetTiles() // Return the vector containing all tiles
 {

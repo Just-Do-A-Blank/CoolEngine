@@ -17,6 +17,8 @@ public:
 	// Load empty
 	Tile(int a, string identifier);
 
+	Tile(string identifier);
+
 	//Setup
 
 	void InitAnimation(wstring animPath);

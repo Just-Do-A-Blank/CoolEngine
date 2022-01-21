@@ -9,7 +9,9 @@
 
 #include "Tile.h"
 #include "Engine/GameObjects/GameObject.h"
+
 #include "Engine/Managers/GraphicsManager.h"
+#include "Engine/Managers/GameManager.h"
 
 class TileMap  : public GameObject
 {

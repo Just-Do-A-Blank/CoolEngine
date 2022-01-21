@@ -4,6 +4,10 @@ Tile::Tile() : GameObject()
 {
 }
 
+Tile::Tile(string identifier) : GameObject(identifier)
+{
+}
+
 Tile::Tile(wstring path, int ID, string identifier) : GameObject(identifier)
 {
 	InitAnimation(path);
