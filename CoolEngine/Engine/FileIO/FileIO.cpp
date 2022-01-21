@@ -100,14 +100,25 @@ std::vector<GameObject> FileIO::LoadMultipleTiles(json file)
 
 std::vector<ParticleSystem> FileIO::LoadMultipleParticles(json file)
 {
-	json data = file["ObjectData"];
+	json data = file["ParticleSystemData"];
 	json metaData = file["MetaData"];
+	json particleData = file["ParticleData"];
 
-	std::vector<ParticleSystem> objects((int)metaData.at(0)["NumberOfObject"]);
+	std::vector<ParticleSystem> objects((int)metaData.at(0)["NumberOfParticlesSystems"]);
 
-	for (size_t i = 0; i < metaData.at(0)["NumberOfObject"]; i++)
+	for (size_t i = 0; i < metaData.at(0)["NumberOfParticlesSystems"]; i++)
 	{
-		objects[i] = LoadParticle(data, i);
+		ParticleData p = LoadParticle(particleData, i);
+		//objects[i] = ParticleSystem();
+
+
+		Transform t;
+		t.SetPosition(XMFLOAT3(data.at(i)["Position"][0], data.at(i)["Position"][1], data.at(i)["Position"][2]));
+		t.SetRotation(XMFLOAT3(data.at(i)["Rotation"][0], data.at(i)["Rotation"][1], data.at(i)["Rotation"][2]));
+		t.SetScale(XMFLOAT3(data.at(i)["Scale"][0], data.at(i)["Scale"][1], data.at(i)["Scale"][2]));
+
+		objects[i].Initialise(t , data.at(i)["Life"], data.at(i)["SystemType"], nullptr);
+		objects[i].AddParticle(p.m_Transform, p.m_Velocity, p.m_Acceleration, nullptr,p.m_Life);
 	}
 	return objects;
 }
@@ -125,13 +136,12 @@ std::wstring FileIO::ToWstring(std::string& string)
 	return wide;
 }
 
-void FileIO::LoadScene(const char* fileAddress, Scene* scene)
+void FileIO::LoadScene(const char* fileAddress, GameManager* scene, ParticleManager* pManager)
 {
 	json j = FileIO::LoadJson(fileAddress);
 
-	std::vector<GameObject> gameObj = LoadMultipleGameObjects(j);
 	LoadMap(j, scene);
-
+	std::vector<GameObject> gameObj = LoadMultipleGameObjects(j);
 	std::vector<ParticleSystem> particles = LoadMultipleParticles(j);
 
 	std::string identifer;
@@ -147,30 +157,16 @@ void FileIO::LoadScene(const char* fileAddress, Scene* scene)
 
 	for (size_t i = 0; i < particles.size(); ++i)
 	{
-		identifer = particles[i].;
-		scene->CreateGameObject(identifer);
-		gO = scene->GetGameObjectUsingIdentifier(identifer);
-		*gO = gameObj[i];
+		//pManager->AddSystem(particles[i]);
 	}
 
-	//for (size_t i = 0; i < tileObj.size(); ++i)
-	//{
-	//	identifer = tileObj[i].GetIdentifier();
-	//	scene->CreateGameObject(identifer);
-	//	gO = scene->GetGameObjectUsingIdentifier(identifer);
-	//	*gO = tileObj[i];
-	//}
+	unordered_map<std::string, GameObject*> stuff = scene->GetAllGameObjects();
 
-	//for (size_t i = 0; i < mapObj.size(); ++i)
-	//{
-	//	identifer = mapObj[i].GetIdentifier();
-	//	scene->CreateGameObject(identifer);
-	//	gO = scene->GetGameObjectUsingIdentifier(identifer);
-	//	*gO = mapObj[i];
-	//}
+	TileMap* map = static_cast<TileMap*>(stuff["TestTile"]);
+	int i = 0;
 }
 
-void FileIO::LoadMap(json file, Scene* scene)
+void FileIO::LoadMap(json file, GameManager* scene)
 {
 	json j = file["TileMap"];
 
@@ -182,7 +178,7 @@ void FileIO::LoadMap(json file, Scene* scene)
 		tileMap.SetMesh(QUAD_MESH_NAME);
 		if (j.at(i)["VertexShaderLocation"] == "NULL")
 		{
-			tileMap.SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+			LOG("NO VERTEX SHADER WAS SPECIFIED");
 		}
 		else
 		{
@@ -191,7 +187,7 @@ void FileIO::LoadMap(json file, Scene* scene)
 		}
 		if (j.at(i)["PixelShaderLocation"] == "NULL")
 		{
-			tileMap.SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+			LOG("NO PIXEL SHADER WAS SPECIFIED");
 		}
 		else
 		{
@@ -200,7 +196,7 @@ void FileIO::LoadMap(json file, Scene* scene)
 		}
 		if (j.at(i)["Albedo"] == "NULL")
 		{
-			tileMap.SetAlbedo(L"Resources/Sprites/Brick.dds");
+			LOG("NO ALBEDO SHADER WAS SPECIFIED");
 		}
 		else
 		{
@@ -334,7 +330,7 @@ GameObject FileIO::LoadGameObject(json file, int objectCount)
 	gameObject.SetMesh(QUAD_MESH_NAME);
 	if (data.at(objectCount)["VertexShaderLocation"] == "NULL")
 	{
-		gameObject.SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+		LOG("NO VERTEX SHADER WAS SPECIFIED")
 	}
 	else
 	{
@@ -344,7 +340,7 @@ GameObject FileIO::LoadGameObject(json file, int objectCount)
 	}
 	if (data.at(objectCount)["PixelShaderLocation"] == "NULL")
 	{
-		gameObject.SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+		LOG("NO PIXEL SHADER WAS SPECIFIED")
 	}
 	else
 	{
@@ -417,41 +413,26 @@ void FileIO::LoadSavefile(const char* fileAddress)
 
 }
 
-//ParticleManager FileIO::LoadParticle(const char* fileLocation, int particleNumber)
-//{
-//	json m_json = LoadJson(fileLocation);
-//	json data = m_json["ParticleData"];
-//
-//
-//	XMFLOAT3 postion(m_json.at(particleNumber)["Positon"][0], m_json.at(particleNumber)["Positon"][1], m_json.at(particleNumber)["Positon"][2]);
-//	XMFLOAT3 rotation(m_json.at(particleNumber)["Rotation"][0], m_json.at(particleNumber)["Rotation"][1], m_json.at(particleNumber)["Rotation"][2]);
-//	XMFLOAT3 scale(m_json.at(particleNumber)["Scale"][0], m_json.at(particleNumber)["Scale"][1], m_json.at(particleNumber)["Scale"][2]);
-//
-//	ParticleManager particleManager;
-//
-//	Transform transform;
-//	transform.Initialize(postion, rotation, scale);
-//
-//	particleManager.AddSystem(transform, m_json.at(particleNumber)["Life"], m_json.at(particleNumber)["SystemType"], ToWstring((std::string)m_json.at(particleNumber)["AlbedoLocation"]));
-//	return particleManager;
-//}
-//
-//ParticleSystem FileIO::LoadParticle(json j, int particleNumber)
-//{
-//	json m_json = j["ParticleData"];
-//
-//	XMFLOAT3 postion(m_json.at(particleNumber)["Positon"][0], m_json.at(particleNumber)["Positon"][1], m_json.at(particleNumber)["Positon"][2]);
-//	XMFLOAT3 rotation(m_json.at(particleNumber)["Rotation"][0], m_json.at(particleNumber)["Rotation"][1], m_json.at(particleNumber)["Rotation"][2]);
-//	XMFLOAT3 scale(m_json.at(particleNumber)["Scale"][0], m_json.at(particleNumber)["Scale"][1], m_json.at(particleNumber)["Scale"][2]);
-//
-//	ParticleManager particleManager;
-//
-//	Transform transform;
-//	transform.Initialize(postion, rotation, scale);
-//
-//	particleManager.AddSystem(transform, m_json.at(particleNumber)["Life"], m_json.at(particleNumber)["SystemType"], ToWstring((std::string)m_json.at(particleNumber)["AlbedoLocation"]));
-//	return particleManager;
-//}
+ParticleData FileIO::LoadParticle(json j, int particleNumber)
+{
+
+	Transform t = Transform();
+
+
+	t.SetPosition(XMFLOAT3(j.at(particleNumber)["Position"][0], j.at(particleNumber)["Position"][1], j.at(particleNumber)["Position"][2]));
+	t.SetRotation(XMFLOAT3(j.at(particleNumber)["Rotation"][0], j.at(particleNumber)["Rotation"][1], j.at(particleNumber)["Rotation"][2]));
+	t.SetScale(XMFLOAT3(j.at(particleNumber)["Scale"][0], j.at(particleNumber)["Scale"][1], j.at(particleNumber)["Scale"][2]));
+	XMFLOAT2 vel = XMFLOAT2(j.at(particleNumber)["Velocity"][0], j.at(particleNumber)["Velocity"][1]);
+	XMFLOAT2 accl = XMFLOAT2(j.at(particleNumber)["Acceleration"][0], j.at(particleNumber)["Acceleration"][1]);
+
+	ParticleData p = ParticleData();
+	p.m_Transform = t;
+	p.m_Acceleration = accl;
+	p.m_Velocity = vel;
+	p.m_Life = j.at(particleNumber)["Life"];
+
+	return p;
+}
 
 //////////////////////////SAVE FUNCTIONS ////////////////////////////////////////
 
@@ -511,7 +492,7 @@ bool FileIO::SaveObjectInJson(const char* fileLocation, std::vector<std::string>
 	}
 }
 
-void FileIO::SaveScene(const char* fileLocation, Scene* scene)
+void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 {
 	unordered_map<std::string, GameObject*> gameObjects = scene->GetAllGameObjects();
 	std::ofstream outFile;
@@ -525,13 +506,13 @@ void FileIO::SaveScene(const char* fileLocation, Scene* scene)
 	
 	jsonOutput["MetaData"].push_back({ "NumberOfObject", gameObjects.size() });
 
-	
 	int count = 0;
 
 	for (unordered_map<string, GameObject*>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
 	{
 		GameObject* gameObjectToStore = it->second;
 
+		
 
 		std::string vSL = ToString(GrabVertexShaderName(gameObjectToStore->GetVertexShader()));
 		std::string pSL = ToString(GrabPixelShaderName(gameObjectToStore->GetPixelShader()));

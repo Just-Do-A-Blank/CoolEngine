@@ -4,6 +4,7 @@
       "NumberOfObject": 7,
       "NumberOfTiles": 2,
       "NumberOfTileZones": 1,
+      "NumberOfParticlesSystems": 1,
       "NumberOfParticles": 1
     }
   ],
@@ -149,7 +150,7 @@
     {
       "Name": "Object6",
       "ColliderType": "CircleCollider",
-      "CircleRadius" :  1,  
+      "CircleRadius": 1,
       "IsCollideable": true,
       "IsRenderable": true,
       "IsTrigger": false,
@@ -176,14 +177,25 @@
       "AlbedoLocation": "Resources\\Sprites\\Brick.dds"
     }
   ],
-  "ParticleData": [
+  "ParticleSystemData": [
     {
-      "Positon": [ 0.0, 0.0, 0.0 ],
+      "Position": [ 0.0, 0.0, 0.0 ],
       "Rotation": [ 0.0, 0.0, 0.0 ],
       "Scale": [ 100.0, 100.0, 100.0 ],
       "Life": 0.0,
       "SystemType": 0,
       "AlbedoLocation": "Resources\\Sprites\\Brick.dds"
+    }
+  ],
+  "ParticleData": 
+  [
+    {
+      "Position": [ 0.0, 0.0, 0.0 ],
+      "Rotation": [ 0.0, 0.0, 0.0 ],
+      "Scale": [ 100.0, 100.0, 100.0 ],
+      "Velocity": [ 0.0, 0.0 ],
+      "Acceleration": [ 0.0, 0.0 ],
+      "Life": 0.0
     }
   ]
 }

@@ -6,6 +6,7 @@
 #include "Engine/Physics/Box.h"
 #include "Engine/Physics/ParticleManager.h"
 #include "Engine/Managers/GraphicsManager.h"
+#include "Engine/Managers/GameManager.h"
 #include "Engine/Scene/Scene.h"
 #include  "Engine/Includes/json.hpp"
 #include "Engine/TileMap/TileMap/TileMap.h"
@@ -30,6 +31,22 @@ enum COLLIDER_TYPE
 	COLLIDER_TYPE_CIRCLE,
 	COLLIDER_TYPE_LINE,
 	COLLIDER_TYPE_NO_COLLIDER
+};
+
+struct ParticleSystemData
+{
+	Transform m_Transform;
+	wstring m_Albedo;
+	int m_SystemType;
+	float m_Life;
+};
+
+struct ParticleData
+{
+	Transform m_Transform;
+	XMFLOAT2 m_Velocity;
+	XMFLOAT2 m_Acceleration;
+	float m_Life;
 };
 
 /// <summary>
@@ -59,29 +76,6 @@ public:
 	ENGINE_TYPE m_ObjectType;
 private:
 	void* m_Data;
-};
-/// <summary>
-/// A struct that contains data related to a game object
-/// </summary>
-struct GameObjectData
-{
-	GameObjectData() 
-	{ 
-		m_Position = XMFLOAT3();
-		m_Rotation = XMFLOAT3();
-		m_Scale = XMFLOAT3();
-		m_TextureLocation = "";
-		m_Name = "";
-		m_IsRenderable = false;
-		m_IsCollidable = false;
-		m_IsTrigger = false;
-		m_ColliderType = COLLIDER_TYPE_NO_COLLIDER;
-	};
-
-	XMFLOAT3 m_Position, m_Rotation, m_Scale;
-	bool m_IsRenderable, m_IsCollidable, m_IsTrigger;
-	std::string m_TextureLocation, m_Name;
-	COLLIDER_TYPE m_ColliderType;
 };
 
 /// <summary>
@@ -150,12 +144,12 @@ public:
 	/// <param name="file"></param>
 	/// <param name="tiles"></param>
 	/// <returns></returns>
-	static void LoadMap(json file, Scene* scene);
+	static void LoadMap(json file, GameManager* scene);
 
 	/// <summary>
 	/// Loads game objects, tiles and a map from a JSON file. 
 	/// </summary>
-	static void LoadScene(const char* fileAddress, Scene* scene);
+	static void LoadScene(const char* fileAddress, GameManager* scene, ParticleManager* pManager);
 
 	/// <summary>
 	/// Loads a Save File from a JSON file. Needs a file address to do so. Code in this function is temorary until the structure of the object that needs loading is made clear
@@ -182,7 +176,8 @@ public:
 	//static ParticleManager LoadParticle(const char* fileLocation, int particleNumber);
 
 
-	static ParticleSystem LoadParticle(json j, int particleNumber);
+	static ParticleData FileIO::LoadParticle(json j, int particleNumber);
+
 
 	/// <summary>
 	/// This function allows for the saving of a custom json file.
@@ -194,7 +189,7 @@ public:
 	/// <returns></returns>
 	static bool SaveObjectInJson(const char* fileLocation, std::vector<std::string> varNames, std::vector<JSON_VARIABLE_TYPE> types, std::vector<void*> data);
 
-	static void SaveScene(const char* fileLocation, Scene* scene);
+	static void SaveScene(const char* fileLocation, GameManager* scene);
 
 	static wstring GrabVertexShaderName(ID3D11VertexShader* shader);
 	static wstring GrabPixelShaderName(ID3D11PixelShader* shader);
