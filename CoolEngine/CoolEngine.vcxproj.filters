@@ -255,6 +255,9 @@
     <ClInclude Include="Engine\GameObjects\DebugRect.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Structure\UIComponent.h">
+      <Filter>Engine\Structure</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -364,6 +367,9 @@
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\DebugRect.cpp">
       <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Physics\Shape.cpp">
+      <Filter>Engine\Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
