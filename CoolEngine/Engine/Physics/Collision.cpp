@@ -199,6 +199,11 @@ void Collision::Update(unordered_map<string, GameObject*> gameObjectMap)
 		{
 			if (it1 != it2)
 			{
+				if (it1->second->GetShape() == nullptr || it2->second->GetShape() == nullptr)
+				{
+					continue;
+				}
+
 				// Whether to just collisde or collide with response
 				if (it1->second->IsCollidable() && it2->second->IsCollidable())
 				{

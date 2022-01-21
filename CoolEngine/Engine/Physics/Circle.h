@@ -14,6 +14,8 @@ public:
 	{
 		m_transform = nullptr;
 		m_radius = 0;
+
+		m_shapeType = ShapeType::CIRCLE;
 	};
 
 	/// <summary>
@@ -26,6 +28,8 @@ public:
 	{
 		m_transform = t;
 		m_radius = radius;
+
+		m_shapeType = ShapeType::CIRCLE;
 	}
 
 	~Circle()
@@ -65,39 +69,8 @@ public:
 		return Collision::CircleBoxCollisionAndResponse(this, box);
 	}
 
-	/*Circle operator + (const Circle& c2)
+	void CreateEngineUI() override
 	{
-		Circle output;
-		output.m_x = m_x + c2.m_x;
-		output.m_y = m_y + c2.m_y;
-		output.m_radius = m_radius + c2.m_radius;
-		return output;
+		IMGUI_LEFT_LABEL(ImGui::DragFloat, "Radius", &m_radius, 1.0f, 0.0f);
 	}
-
-	Circle operator - (const Circle& c2)
-	{
-		Circle output;
-		output.m_x = m_x - c2.m_x;
-		output.m_y = m_y - c2.m_y;
-		output.m_radius = m_radius - c2.m_radius;
-		return output;
-	}
-
-	Circle operator / (const Circle& c2)
-	{
-		Circle output;
-		output.m_x = m_x / c2.m_x;
-		output.m_y = m_y / c2.m_y;
-		output.m_radius = m_radius / c2.m_radius;
-		return output;
-	}
-
-	Circle operator * (const Circle& c2)
-	{
-		Circle output;
-		output.m_x = m_x * c2.m_x;
-		output.m_y = m_y * c2.m_y;
-		output.m_radius = m_radius / c2.m_radius;
-		return output;
-	}*/
 };

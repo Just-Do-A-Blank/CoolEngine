@@ -5,6 +5,13 @@ class Transform;
 class Circle;
 class Box;
 
+enum class ShapeType
+{
+	BOX = 0,
+	CIRCLE,
+	COUNT
+};
+
 // For double dispatch pattern
 class Shape
 {
@@ -19,5 +26,14 @@ public:
 	virtual bool CollideResponse(Circle* circle) = 0;
 	virtual bool CollideResponse(Box* box) = 0;
 
+	ShapeType GetShapeType();
+
+	static string ShapeTypeToString(ShapeType type);
+
+	virtual void CreateEngineUI() = 0;
+
 	Transform* m_transform;
+
+protected:
+	ShapeType m_shapeType;
 };
