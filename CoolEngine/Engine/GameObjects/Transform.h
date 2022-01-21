@@ -1,7 +1,8 @@
 #pragma once
 
+#include "Engine/Structure/UIComponent.h"
 
-class Transform
+class Transform : UIComponent
 {
 	XMFLOAT3 m_position;
 	XMFLOAT3 m_rotation;
@@ -50,6 +51,6 @@ public:
 
 	void Translate(XMFLOAT3 vector);
 
-	void CreateEngineUI();
+	void CreateEngineUI() override;
 };
 

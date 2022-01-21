@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/Physics/Collision.h"
+#include "Engine/Structure/UIComponent.h"
 
 class Transform;
 class Circle;
@@ -13,7 +14,7 @@ enum class ShapeType
 };
 
 // For double dispatch pattern
-class Shape
+class Shape : UIComponent
 {
 public:
 
@@ -30,7 +31,7 @@ public:
 
 	static string ShapeTypeToString(ShapeType type);
 
-	virtual void CreateEngineUI();
+	virtual void CreateEngineUI() override;
 
 	void SetIsTrigger(bool value);
 	void SetIsCollidable(bool value);
