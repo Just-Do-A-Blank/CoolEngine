@@ -246,6 +246,9 @@
     <ClInclude Include="Engine\Tools\TileMapTool.h">
       <Filter>Engine\Tools</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Structure\UIComponent.h">
+      <Filter>Engine\Structure</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
