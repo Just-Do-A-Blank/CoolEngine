@@ -4,6 +4,11 @@
 #define DEFAULT_IMGUI_IMAGE L"Resources\\Sprites\\Brick.dds"
 #define TEST2 L"Resources\\Sprites\\Test2.dds"
 
+#define DEFAULT_TILE L"Resources\\Sprites\\Default_Tile.dds"
+
+//Debug
+#define DEBUG_COLOUR L"Resources\\DebugColours\\DebugColour"
+
 //Animations
 #define TEST_ANIM L"TestAnim"
 
@@ -21,3 +26,7 @@
 
 //Misc
 #define POS_TEX_DUMMY_FILE_NAME L"Engine\\Graphics\\Shaders\\DummyPosTex.hlsl"
+
+//TileMaps
+#define TEST_MAP L"Resources\\Levels\\TileMaps\\TestMap.txt"
+

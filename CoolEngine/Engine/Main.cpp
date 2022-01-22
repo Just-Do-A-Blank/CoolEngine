@@ -19,6 +19,7 @@
 
 #include "Engine/TileMap/TileMap/TileMap.h"
 #include "Engine/ResourceDefines.h"
+#include "Managers/DebugDrawManager.h"
 #include "Scene/Scene.h"
 #include "Engine/Managers/GameManager.h"
 #include <Engine/Physics/Box.h>
@@ -54,6 +55,10 @@ ID3D11RasterizerState* g_prasterState = nullptr;
 
 CameraGameObject* g_pcamera = nullptr;
 PlayerGameObject* g_pplayer = nullptr;
+
+TileMap* g_testMap1;
+
+TileMap* g_testMap2;
 
 EditorUI* g_peditorUI;
 
@@ -106,8 +111,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	g_inputController = new Inputs();
 
+	//Debug Manager
+	DebugDrawManager::GetInstance()->Init(g_pd3dDevice);
+
 	//Create camera
-	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, 0);
+	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, -5);
 	XMFLOAT3 cameraForward = XMFLOAT3(0, 0, 1);
 	XMFLOAT3 cameraUp = XMFLOAT3(0, 1, 0);
 
@@ -133,6 +141,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	g_ptoolBase->Init(g_pd3dDevice);
 #else
+#endif
 
 	//Music
 	AudioManager::GetInstance()->LoadMusic(TEST_MUSIC);
@@ -159,15 +168,19 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	string obj1Name = "TestObject1";
 	string playerName = "Player";
 
-	pgameManager->CreateGameObject(obj0Name);
-	pgameManager->CreateGameObject(obj1Name);
-	pgameManager->CreatePlayerGameObject(playerName);
+	pgameManager->CreateGameObject<GameObject>(obj0Name);
+	pgameManager->CreateGameObject<GameObject>(obj1Name);
+	pgameManager->CreateGameObject<PlayerGameObject>(playerName);
 
-	GameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier(obj0Name);
+	GameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<GameObject>(obj0Name);
 
-	XMFLOAT3 objectPos = XMFLOAT3(0, 0.0f, 5.0f);
+	XMFLOAT3 objectPos = XMFLOAT3(0, 0.0f, 0.0f);
 	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
 	bool isCollision = true;
+
+	Box* pbox = new Box(pgameObject->GetTransform());
+	pbox->SetIsCollidable(isCollision);
+	pbox->SetIsTrigger(isCollision);
 
 	pgameObject->SetMesh(QUAD_MESH_NAME);
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
@@ -175,15 +188,17 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
-	pgameObject->SetIsCollidable(isCollision);
-	pgameObject->SetIsTrigger(isCollision);
-	pgameObject->SetShape(new Box(pgameObject->GetTransform()));
+	pgameObject->SetShape(pbox);
 
-	//Init second gameObject
-	pgameObject = pgameManager->GetGameObjectUsingIdentifier(obj1Name);
+	////Init second gameObject
+	pgameObject = pgameManager->GetGameObjectUsingIdentifier<GameObject>(obj1Name);
 
-	objectPos = XMFLOAT3(10.0f, 0.0f, 5.0f);
+	objectPos = XMFLOAT3(10.0f, 0.0f, 0.0f);
 	objectScale = XMFLOAT3(100, 100, 100);
+
+	pbox = new Box(pgameObject->GetTransform());
+	pbox->SetIsCollidable(isCollision);
+	pbox->SetIsTrigger(isCollision);
 
 	pgameObject->SetMesh(QUAD_MESH_NAME);
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
@@ -191,15 +206,17 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetAlbedo(TEST2);
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
-	pgameObject->SetIsCollidable(isCollision);
-	pgameObject->SetIsTrigger(isCollision);
-	pgameObject->SetShape(new Box(pgameObject->GetTransform()));
+	pgameObject->SetShape(pbox);
 
 	// Init player object
-	pgameObject = pgameManager->GetPlayerGameObjectUsingIdentifier(playerName);
+	pgameObject = pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName);
 
 	objectPos = XMFLOAT3(200.0f, 0.0f, 5.0f);
 	objectScale = XMFLOAT3(50, 50, 50);
+
+	pbox = new Box(pgameObject->GetTransform());
+	pbox->SetIsCollidable(isCollision);
+	pbox->SetIsTrigger(isCollision);
 
 	pgameObject->SetMesh(QUAD_MESH_NAME);
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
@@ -207,18 +224,22 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
-	pgameObject->SetIsCollidable(isCollision);
-	pgameObject->SetIsTrigger(isCollision);
-	pgameObject->SetShape(new Box(pgameObject->GetTransform()));
+	pgameObject->SetShape(pbox);
 
-	ExampleObserver observer(new int(10), pgameManager->GetPlayerGameObjectUsingIdentifier(playerName));
+	g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, 0, 0), XMFLOAT3(25, 25, 25), "TestMap");
+
+	ExampleObserver observer(new int(10), pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName));
 	EventManager::Instance()->AddClient(EventType::KeyPressed, &observer);
 	EventManager::Instance()->AddClient(EventType::KeyReleased, &observer);
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, &observer);
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, &observer);
 	EventManager::Instance()->AddClient(EventType::MouseMoved, &observer);
 
-#endif
+#if _DEBUG
+	DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect("DebugRect1", XMFLOAT3(-100.0f, -100.0f, 0.0f), objectScale, DebugDrawManager::DebugColour::BEIGE);
+#endif //_DEBUG
+
+	//Create test Tile Map
 
 	// Main message loop
 	MSG msg = { 0 };
@@ -255,7 +276,10 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 //--------------------------------------------------------------------------------------
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam);
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
+	{
+		return true;
+	}
 
 	g_inputController->Update(&hWnd, &message, &wParam, &lParam);
 
@@ -549,6 +573,10 @@ void Render()
 	GameManager* pgamemanager = GameManager::GetInstance();
 	pgamemanager->Render(renderStruct);
 
+#if _DEBUG
+	DebugDrawManager::GetInstance()->Render(renderStruct);
+#endif
+
 #if TOOL
 	g_ptoolBase->Render();
 #else
@@ -573,7 +601,7 @@ void Update()
 	EventManager::Instance()->ProcessEvents();
 
 	g_inputController->Update();
-	
+
 #if TOOL
 	g_ptoolBase->Update();
 #endif

@@ -5,6 +5,7 @@
 #include <ShlObj_core.h>
 #include "Engine/Managers/SceneGraph.h"
 #include "Engine/Managers/GraphicsManager.h"
+#include "Engine/Scene/Scene.h"
 
 #include "Engine/TileMap/TileMap/TileMap.h"
 
@@ -50,13 +51,19 @@ void EditorUI::DrawEditorUI(ID3D11Device* pdevice)
 		DrawSceneManagementWindow();
 	}
 
+
 	if (g_ShowTileMapManager)
 	{
 		DrawTileMapManager();
 	}
 
-	ImGui::Render();
+	if (GameManager::GetInstance()->GetSelectedGameObject() != nullptr)
+	{
+		GameManager::GetInstance()->GetSelectedGameObject()->ShowEngineUI(pdevice);
+	}
+	}
 
+	ImGui::Render();
 
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
@@ -83,7 +90,7 @@ void EditorUI::DrawSceneGraphWindow()
 
 	GameManager* pgameManager = GameManager::GetInstance();
 	static int selected = -1;
-	
+
 	TreeNode* prootNode = pgameManager->GetRootTreeNode();
 
 	m_base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
@@ -138,7 +145,7 @@ void EditorUI::DrawSceneGraphWindow()
 		}
 		if (clicked & 1)
 		{
-			pgameManager->CreateGameObject(gameObjectName);
+			pgameManager->CreateGameObject<GameObject>(gameObjectName);
 			m_createGameObjectClicked = false;
 			gameObjectName[0] = {};
 		}
@@ -267,7 +274,7 @@ void EditorUI::DrawTileMapManager()
 		}
 
 		ImGui::EndMenuBar();
-		
+
 	}
 
 	if (m_createTileMapClicked)

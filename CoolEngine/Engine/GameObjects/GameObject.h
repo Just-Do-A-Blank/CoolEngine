@@ -33,6 +33,8 @@ private:
 	//ImGui variables
 	WCHAR m_texNameBuffer[FILEPATH_BUFFER_SIZE];
 	char m_animName[ANIM_NAME_SIZE];
+	string m_animNewName;
+	char m_createDeleteAnimName[ANIM_NAME_SIZE];
 	WCHAR m_animFilepath[FILEPATH_BUFFER_SIZE];
 
 	std::string m_animUpdateName = "";
@@ -43,13 +45,12 @@ private:
 	std::unordered_map<std::string, SpriteAnimation> m_animations;
 
 	SpriteAnimation* m_pcurrentAnimation = nullptr;
+	string m_currentAnimationName = "";
 
 	string m_identifier;
 
 	//Flags
 	bool m_isRenderable = true;
-	bool m_isCollidable = false;
-	bool m_isTrigger = false;
 
 protected:
 	Transform m_transform;
@@ -60,11 +61,10 @@ protected:
 public:
 	GameObject();
 	GameObject(string identifier);
+	void InitGraphics();
 
 	//Getters
 	const bool& IsRenderable();
-	const bool& IsCollidable();
-	const bool& IsTrigger();
 
 	virtual void Render(RenderStruct& renderStruct);
 	virtual void Update();
@@ -110,8 +110,6 @@ public:
 	void SetPixelShader(ID3D11PixelShader* ppixelShader);
 
 	void SetIsRenderable(bool& condition);
-	void SetIsCollidable(bool& condition);
-	void SetIsTrigger(bool& condition);
 
 	void SetLayer(int layer);
 
