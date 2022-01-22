@@ -226,7 +226,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->GetTransform()->SetScale(objectScale);
 	pgameObject->SetShape(pbox);
 
-	testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, 0, 0), XMFLOAT3(25, 25, 25), "TestMap");
+	g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, 0, 0), XMFLOAT3(25, 25, 25), "TestMap");
 
 	ExampleObserver observer(new int(10), pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName));
 	EventManager::Instance()->AddClient(EventType::KeyPressed, &observer);

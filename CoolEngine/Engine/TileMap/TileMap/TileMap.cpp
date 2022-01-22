@@ -2,7 +2,6 @@
 
 TileMap::TileMap() : GameObject()
 {
-
 }
 
 TileMap::TileMap(string identifier) : GameObject(identifier)
@@ -18,6 +17,8 @@ TileMap::TileMap(wstring mapPath, XMFLOAT3 position, XMFLOAT3 scale, string iden
 	m_tileScaleInt = scale.x;
 
 	InitMap();
+
+	AssignSprites();
 }
 
 TileMap::TileMap(int width, int height, string identifier, XMFLOAT3 position) : GameObject(identifier)
@@ -35,9 +36,16 @@ TileMap::TileMap(int width, int height, string identifier, XMFLOAT3 position) : 
 TileMap::~TileMap()
 {
 	m_tiles.clear(); // Run first to allow each tile to release its memory, but this does not release the memory for the vector
+	
 	// Memory reserved by vectors can be deleted by swapping a vector with an uninitialized vector, which means that all memory allocated to the initial vector is released. The temporary vector is then destroyed, since it is temporary
-	vector<vector<Tile*>> tempVector;
-	m_tiles.swap(tempVector); 
+	vector<vector<Tile*>> tileEmptyVector;
+	vector<int> intEmptyVector;
+	vector<string>	stringEmptyVector;
+
+	m_tiles.swap(tileEmptyVector);
+	m_tileSpriteIndex.swap(intEmptyVector);
+	m_spritePaths.swap(stringEmptyVector);
+	m_animPaths.swap(stringEmptyVector);
 }
 
 void TileMap::Update(float d)
@@ -78,8 +86,6 @@ void TileMap::InitMap() // Create and store tiles in m_Tiles
 			++ID;
 		}
 	}
-
-	AssignSprites();
 }
 
 void TileMap::InitMapData(wstring mapPath, XMFLOAT3 position, XMFLOAT3 scale)
@@ -136,7 +142,7 @@ void TileMap::LoadMap(wstring path) // Load data for the map from a given path
 	vector<string> dataVec = {};
 
 	ifstream mapFile(path);
-	if (mapFile.is_open())
+	if (mapFile.is_open()) // Loads data by reading each line
 	{
 		while (getline(mapFile, line))
 		{
@@ -306,12 +312,11 @@ void TileMap::LoadMap(wstring path) // Load data for the map from a given path
 				}
 			}
 		}
-
 		mapFile.close();
 	}
 }
 
-void TileMap::AssignSprites() // Sets each tiles sprite or animaton based off of the data from a file
+void TileMap::AssignSprites() // Sets each tiles sprite or animaton based off of the layout data from a file
 {
 	int totalSprites = m_animPaths.size() + m_spritePaths.size();
 	int count = 0;
