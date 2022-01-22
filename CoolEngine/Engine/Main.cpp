@@ -28,6 +28,7 @@
 #include "Engine/Tools/ToolBase.h"
 
 #include "Engine/Tools/TileMapTool.h"
+#include "Engine/Tools/AnimationTool.h"
 #endif
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -137,11 +138,12 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 #if TILE_MAP_TOOL
 	g_ptoolBase = new TileMapTool();
+#elif ANIMATION_TOOL
+	g_ptoolBase = new AnimationTool();
 #endif
 
 	g_ptoolBase->Init(g_pd3dDevice);
 #else
-#endif
 
 	//Music
 	AudioManager::GetInstance()->LoadMusic(TEST_MUSIC);
@@ -238,6 +240,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 #if _DEBUG
 	DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect("DebugRect1", XMFLOAT3(-100.0f, -100.0f, 0.0f), objectScale, DebugDrawManager::DebugColour::BEIGE);
 #endif //_DEBUG
+
+#endif
 
 	//Create test Tile Map
 
