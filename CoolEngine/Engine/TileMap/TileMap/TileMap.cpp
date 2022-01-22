@@ -49,19 +49,6 @@ void TileMap::Update(float d)
 	}
 }
 
-/*void TileMap::Render(RenderStruct renderStruct)
-{
-	LOG("TEST TILE MAP RENDER()");
-	for (int i = 0; i < m_height; ++i)
-	{
-		for (int j = 0; j < m_width; ++j)
-		{
-			m_tiles[i][j].Render(renderStruct);
-		}
-	}
-}*/
-
-
 void TileMap::InitMap() // Create and store tiles in m_Tiles
 {
 	GameManager* pGameManager = GameManager::GetInstance();
@@ -347,9 +334,6 @@ void TileMap::AssignSprites() // Sets each tiles sprite or animaton based off of
 
 						// convert to wstring
 						wStringPath = L"Resources\\Sprites\\" + std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(stringPath);
-						//std::string wstr_turned_to_str = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(wStringPath);
-
-						//m_tiles[i][j].AddAnimation(stringPath, wStringPath);
 
 						m_tiles[i][j]->SetAlbedo(wStringPath);
 					}
@@ -375,7 +359,6 @@ void TileMap::AssignSprites() // Sets each tiles sprite or animaton based off of
 
 					// convert to wstring
 					wStringPath = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(stringPath);
-					//std::string wstr_turned_to_str = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(wStringPath);
 
 					m_tiles[i][j]->AddAnimation("TestAnim", wStringPath);
 					count++;

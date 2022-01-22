@@ -32,48 +32,47 @@ public:
 	//Destructor
 	~TileMap();
 
-	void					Update(float d);
-	//void					Render(RenderStruct renderStruct);
+	void Update(float d);
 
-	Tile					GetTileFromWorldPos(int posX, int posY);
-	Tile*					GetTileFromMapPos(int x, int y);
+	Tile GetTileFromWorldPos(int posX, int posY);
+	Tile* GetTileFromMapPos(int x, int y);
 
-	vector<vector<Tile*>>	GetTiles();
+	vector<vector<Tile*>> GetTiles();
 
-	void					SetPassable(int x, int y, bool passable);
-	void					SetPassable(Tile tile, bool passable);
+	void SetPassable(int x, int y, bool passable);
+	void SetPassable(Tile tile, bool passable);
 
-	void					SetTileAtWorldPos(int posX, int posY, Tile newTile);
-	void					SetTileAtMapPos(int mapPosX, int mapPosY, Tile* newTile);
+	void SetTileAtWorldPos(int posX, int posY, Tile newTile);
+	void SetTileAtMapPos(int mapPosX, int mapPosY, Tile* newTile);
 
-	XMFLOAT3				GetScale();
-	void					SetScale(XMFLOAT3 newScale);
+	XMFLOAT3 GetScale();
+	void SetScale(XMFLOAT3 newScale);
 
 protected:
 	
 
 private:
-	void					InitMap();
+	void InitMap();
 
-	void					InitMapData(wstring mapPath, XMFLOAT3 position, XMFLOAT3 scale);
+	void InitMapData(wstring mapPath, XMFLOAT3 position, XMFLOAT3 scale);
 
-	void					InitTilePosition(Tile* tile, int row, int column);
+	void InitTilePosition(Tile* tile, int row, int column);
 
-	void					LoadMap(wstring path);
+	void LoadMap(wstring path);
 
-	void					AssignSprites();	
+	void AssignSprites();	
 
 
-	int									m_width;
-	int									m_height;
-	int									m_totalTiles;
+	int	m_width;
+	int	m_height;
+	int	m_totalTiles;
 
-	int									m_tileScaleInt;
-	XMFLOAT3							m_tileScale;
+	int	m_tileScaleInt;
+	XMFLOAT3 m_tileScale;
 	
-	std::vector<std::vector<Tile*>>		m_tiles;
+	std::vector<std::vector<Tile*>>	m_tiles;
 	
-	std::vector<int>					m_tileSpriteIndex;
-	std::vector<string>					m_spritePaths;
-	std::vector<string>					m_animPaths;
+	std::vector<int> m_tileSpriteIndex;
+	std::vector<string>	m_spritePaths;
+	std::vector<string>	m_animPaths;
 };

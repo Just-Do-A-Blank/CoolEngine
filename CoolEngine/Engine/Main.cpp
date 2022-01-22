@@ -56,9 +56,9 @@ ID3D11RasterizerState* g_prasterState = nullptr;
 CameraGameObject* g_pcamera = nullptr;
 PlayerGameObject* g_pplayer = nullptr;
 
-TileMap* testMap1;
+TileMap* g_testMap1;
 
-TileMap* testMap2;
+TileMap* g_testMap2;
 
 EditorUI* g_peditorUI;
 
