@@ -174,7 +174,7 @@ void Transform::CreateEngineUI()
 		SetRotation(rotation);
 	}
 
-	if (IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Scale", scaleArray))
+	if (IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Scale   ", scaleArray))
 	{
 		XMFLOAT3 scale = XMFLOAT3(scaleArray[0], scaleArray[1], scaleArray[2]);
 
