@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "Engine/GameObjects/GameObject.h"
+#include "Engine/ResourceDefines.h"
 
 class Tile : public GameObject
 {
@@ -11,8 +12,13 @@ public:
 	//Default
 	Tile();
 
-	Tile(wstring path, int animFrames, int ID, string identifier);
+	// Load from parameters
+	Tile(wstring path, int ID, string identifier);
+
+	// Load empty
 	Tile(int a, string identifier);
+
+	Tile(string identifier);
 
 	//Setup
 
@@ -21,26 +27,18 @@ public:
 	//Getters
 
 	int GetID() { return m_ID; }
+	bool SetPassable() { return m_Passable; }
 
 	//Setters
 
 	void SetID(int id) { m_ID = id; }
-
-	void SetEdges(bool N, bool E, bool S, bool W);
-
-	void SetEdgeN(bool N);
-	void SetEdgeS(bool S);
-	void SetEdgeW(bool W);
-	void SetEdgeE(bool E);
-
-	
+	void SetPassable(bool passable);
 
 protected:
 
 private:
-	bool m_edgeN, m_edgeS, m_edgeW, m_edgeE;
 	int	 m_ID = -25;
-
-	void InitEdges();
+	// True = walkable, False = Blocked
+	bool m_Passable = false; 
 };
 
