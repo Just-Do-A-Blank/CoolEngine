@@ -1,10 +1,12 @@
 #pragma once
 #include "Transform.h"
-#include "Engine/Managers/GameManager.h"
 #include "Engine/Graphics/Mesh.h"
 #include "Engine/Graphics/ConstantBuffer.h"
 #include "Engine/Graphics/ConstantBuffers.h"
 #include "Engine/Graphics/SpriteAnimation.h"
+#include "Engine/EditorUI/EditorUI.h"
+#include "Engine/ResourceDefines.h"
+
 #include <string>
 
 class SpriteAnimation;
@@ -13,58 +15,68 @@ class Shape;
 
 struct RenderStruct;
 
+#define ANIM_NAME_SIZE 50
+
 class GameObject
 {
 	friend class GameManager;
 private:
 	//Graphics variables
-	ID3D11ShaderResourceView* m_palbedoSRV;
+	ID3D11ShaderResourceView* m_palbedoSRV = nullptr;
 
-	ID3D11VertexShader* m_pvertexShader;
-	ID3D11PixelShader* m_ppixelShader;
+	ID3D11VertexShader* m_pvertexShader = nullptr;
+	ID3D11PixelShader* m_ppixelShader = nullptr;
 
-	Mesh* m_pmesh;
+	Mesh* m_pmesh = nullptr;
 
 	int m_layer = 0;
 
+	//ImGui variables
+	WCHAR m_texNameBuffer[FILEPATH_BUFFER_SIZE];
+	char m_animName[ANIM_NAME_SIZE];
+	string m_animNewName;
+	char m_createDeleteAnimName[ANIM_NAME_SIZE];
+	WCHAR m_animFilepath[FILEPATH_BUFFER_SIZE];
+
+	std::string m_animUpdateName = "";
+
+	bool m_updateAnim = false;
+	bool m_updateAnimName = false;
+
 	std::unordered_map<std::string, SpriteAnimation> m_animations;
 
-	SpriteAnimation* m_pcurrentAnimation;
+	SpriteAnimation* m_pcurrentAnimation = nullptr;
+	string m_currentAnimationName = "";
 
 	string m_identifier;
 
 	//Flags
 	bool m_isRenderable = true;
-	bool m_isCollidable = false;
-	bool m_isTrigger = false;
-
-	//GameObject Setup
-	void CreateRenderableGameObject();
-	void CreateNonRenderableGameObject();
-
-	void AddCollision();
-	void AddTrigger();
 
 protected:
 	Transform m_transform;
-	Shape* m_collider;
+	Shape* m_collider = nullptr;
+
+	virtual void CreateEngineUI(ID3D11Device* pdevice);
 
 public:
 	GameObject();
 	GameObject(string identifier);
+	void InitGraphics();
 
 	//Getters
 	const bool& IsRenderable();
-	const bool& IsCollidable();
-	const bool& IsTrigger();
 
 	virtual void Render(RenderStruct& renderStruct);
 	virtual void Update();
+
+	virtual void ShowEngineUI(ID3D11Device* pdevice);
 
 	//Getters
 	Mesh* GetMesh() const;
 
 	SpriteAnimation& GetAnimation(std::string name);
+	std::unordered_map<std::string, SpriteAnimation>* GetAnimations();
 
 	int GetLayer() const;
 
@@ -99,14 +111,13 @@ public:
 	void SetPixelShader(ID3D11PixelShader* ppixelShader);
 
 	void SetIsRenderable(bool& condition);
-	void SetIsCollidable(bool& condition);
-	void SetIsTrigger(bool& condition);
 
 	void SetLayer(int layer);
 
 	bool AddAnimation(string animName, SpriteAnimation& anim);
 	bool AddAnimation(string localAnimName, wstring animName);
 	bool RemoveAnimation(string animName);
+	bool OverwriteAnimation(string animName, SpriteAnimation& anim);
 
 	void SetShape(Shape* collider);
 

@@ -1,5 +1,8 @@
 #include "Transform.h"
 
+#include "Engine/Includes/IMGUI/imgui.h"
+#include "Engine/EditorUI/EditorUI.h"
+
 void Transform::Initialize(const XMFLOAT3& position, const XMFLOAT3& rotation, const XMFLOAT3& scale)
 {
     m_position = position;
@@ -123,4 +126,52 @@ void Transform::SetLeftVector(XMFLOAT3& leftVector)
     m_leftVector = leftVector;
 
 	UpdateMatrix();
+}
+
+void Transform::Translate(XMFLOAT3 vector)
+{
+    m_position.x += vector.x;
+    m_position.y += vector.y;
+    m_position.z += vector.z;
+
+    UpdateMatrix();
+}
+
+void Transform::CreateEngineUI()
+{
+	float positionArray[3] =
+	{
+		m_position.x,
+		m_position.y,
+		m_position.z
+	};
+
+	float rotationArray[3] =
+	{
+		m_rotation.x,
+		m_rotation.y,
+		m_rotation.z
+	};
+
+	float scaleArray[3] =
+	{
+		m_scale.x,
+		m_scale.y,
+		m_scale.z
+	};
+
+	if (IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Position", positionArray))
+	{
+		m_position = XMFLOAT3(positionArray[0], positionArray[1], positionArray[2]);
+	}
+
+	if (IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Rotation", rotationArray))
+	{
+		m_rotation = XMFLOAT3(rotationArray[0], rotationArray[1], rotationArray[2]);
+	}
+
+	if (IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Scale", scaleArray))
+	{
+		m_scale = XMFLOAT3(scaleArray[0], scaleArray[1], scaleArray[2]);
+	}
 }

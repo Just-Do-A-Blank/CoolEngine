@@ -7,11 +7,15 @@ public:
 	Box()
 	{
 		m_transform = nullptr;
+
+		m_shapeType = ShapeType::BOX;
 	}
 
 	Box(Transform* trans)
 	{
 		m_transform = trans;
+
+		m_shapeType = ShapeType::BOX;
 	}
 
 	~Box()
@@ -47,5 +51,10 @@ public:
 	bool CollideResponse(Box* box)
 	{
 		return Collision::BoxCollisionAndResponse(box, this);
+	}
+
+	void CreateEngineUI() override
+	{
+		Shape::CreateEngineUI();
 	}
 };

@@ -1,16 +1,55 @@
 #include "Inputs.h"
 #include "Engine/Managers/Events/EventManager.h"
+#include "Engine/Includes/IMGUI/imgui.h"
+
 
 void Inputs::Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam)
 {
 	switch (*message)
 	{
+	case(WM_KEYDOWN):
+	case(WM_KEYUP):
+	{
+		ImGuiIO io = ImGui::GetIO();
+
+		if (io.WantCaptureKeyboard == true)
+		{
+			return;
+		}
+	}
+	break;
+
+	case(WM_LBUTTONDOWN):
+	case(WM_MBUTTONDOWN):
+	case(WM_RBUTTONDOWN):
+	case(WM_XBUTTONDOWN):
+	case(WM_LBUTTONUP):
+	case(WM_MBUTTONUP):
+	case(WM_RBUTTONUP):
+	case(WM_XBUTTONUP):
+	case(WM_MOUSEMOVE):
+	{
+		ImGuiIO io = ImGui::GetIO();
+
+		if (io.WantCaptureMouse == true)
+		{
+			return;
+		}
+	}
+	break;
+
+	}
+
+	switch (*message)
+	{
 
 		//Keyboard events
 	case(WM_KEYDOWN):
-		EventManager::Instance()->AddEvent(new KeyPressedEvent(*wParam));
+
+		m_keyState[*wParam] = true;
 		break;
 	case(WM_KEYUP):
+		m_keyState[*wParam] = false;
 		EventManager::Instance()->AddEvent(new KeyReleasedEvent(*wParam));
 		break;
 
@@ -56,3 +95,16 @@ void Inputs::Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam)
 
 
 }
+
+
+void Inputs::Update()
+{
+	for (int i = 0; i < 256; ++i)
+	{
+		if (m_keyState[i])
+		{
+			EventManager::Instance()->AddEvent(new KeyPressedEvent(i));
+		}
+	}
+}
+

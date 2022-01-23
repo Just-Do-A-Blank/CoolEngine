@@ -76,6 +76,12 @@
     <Filter Include="Engine\GameObjects\TileMap">
       <UniqueIdentifier>{4362da10-2646-4398-9553-b164f7571686}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Includes\FMOD">
+      <UniqueIdentifier>{c843e429-6caa-48d0-bfb4-53854ba97bf5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\DebugColours">
+      <UniqueIdentifier>{e1480dde-4628-43e7-af6d-078fd29de11b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -136,9 +142,6 @@
       <Filter>Engine\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Physics\ParticleSystem.h">
-      <Filter>Engine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Physics\Vector2.h">
       <Filter>Engine\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Managers\GraphicsManager.h">
@@ -207,11 +210,53 @@
     <ClInclude Include="Engine\Managers\Events\EventManager.h">
       <Filter>Engine\Managers\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\AI\Pathfinding.h">
-      <Filter>Engine\AI</Filter>
+    <ClInclude Include="Engine\Includes\FMOD\fmod.h">
+      <Filter>Engine\Includes\FMOD</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\GameObjects\EnemyGameObject.h">
+    <ClInclude Include="Engine\Includes\FMOD\fmod.hpp">
+      <Filter>Engine\Includes\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\FMOD\fmod_codec.h">
+      <Filter>Engine\Includes\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\FMOD\fmod_common.h">
+      <Filter>Engine\Includes\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\FMOD\fmod_dsp.h">
+      <Filter>Engine\Includes\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\FMOD\fmod_dsp_effects.h">
+      <Filter>Engine\Includes\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\FMOD\fmod_errors.h">
+      <Filter>Engine\Includes\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\FMOD\fmod_output.h">
+      <Filter>Engine\Includes\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\ResourceDefines.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\PlayerGameObject.h">
       <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\CharacterGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Tools\ToolBase.h">
+      <Filter>Engine\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Tools\TileMapTool.h">
+      <Filter>Engine\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\DebugDrawManager.h">
+      <Filter>Engine\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\DebugRect.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Structure\UIComponent.h">
+      <Filter>Engine\Structure</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -305,11 +350,26 @@
     <ClCompile Include="Engine\Managers\Events\EventManager.cpp">
       <Filter>Engine\Managers\Events</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\AI\Pathfinding.cpp">
-      <Filter>Engine\AI</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\EnemyGameObject.cpp">
+    <ClCompile Include="Engine\GameObjects\PlayerGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\CharacterGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Tools\ToolBase.cpp">
+      <Filter>Engine\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Tools\TileMapTool.cpp">
+      <Filter>Engine\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\DebugDrawManager.cpp">
+      <Filter>Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\DebugRect.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Physics\Shape.cpp">
+      <Filter>Engine\Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

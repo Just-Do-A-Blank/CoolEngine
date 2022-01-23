@@ -15,18 +15,26 @@ TreeNode* SceneGraph::NewNode(GameObject* gameObject)
 	if (!m_rootNode)
 	{
 		m_rootNode = new TreeNode;
-		m_rootNode->Sibling = m_rootNode->Child = nullptr;
+		m_rootNode->Sibling = nullptr; 
+		m_rootNode->Child = nullptr;
 		m_rootNode->GameObject = gameObject;
-
-		m_sceneMap.insert(pair<string, TreeNode*>(gameObject->GetIdentifier(), m_rootNode));
+		m_rootNode->PreviousParent = nullptr; 
+		m_rootNode->PreviousSibling = nullptr;
+		m_sceneTreeNodeMap.insert(pair<string, TreeNode*>(gameObject->GetIdentifier(), m_rootNode));
+		m_sceneGameObjectsMap.insert(pair<string, GameObject*>(gameObject->GetIdentifier(), gameObject));
 		return m_rootNode;		
 	}
 
 	TreeNode* newNode = new TreeNode();
-	newNode->Sibling = newNode->Child = nullptr;
+	newNode->Sibling = nullptr; 
+	newNode->Child = nullptr;
 	newNode->GameObject = gameObject;
+	newNode->PreviousParent = nullptr;
+	newNode->PreviousSibling = nullptr;
 
-	m_sceneMap.insert(pair<string, TreeNode*>(gameObject->GetIdentifier(), newNode));
+	string gameObjectName = gameObject->GetIdentifier();
+	m_sceneTreeNodeMap.insert(pair<string, TreeNode*>(gameObjectName, newNode));
+	m_sceneGameObjectsMap.insert(pair<string, GameObject*>(gameObjectName, gameObject));
 	return newNode;
 }
 
@@ -41,8 +49,11 @@ TreeNode* SceneGraph::AddSibling(TreeNode* currentNode, GameObject* gameObject)
 	{
 		currentNode = currentNode->Sibling;
 	}
+		
+	currentNode->Sibling = NewNode(gameObject);
+	currentNode->Sibling->PreviousSibling = currentNode;
 
-	return currentNode->Sibling = NewNode(gameObject);
+	return currentNode->Sibling;
 }
 
 TreeNode* SceneGraph::AddChild(TreeNode* currentNode, GameObject* gameObject)
@@ -58,7 +69,9 @@ TreeNode* SceneGraph::AddChild(TreeNode* currentNode, GameObject* gameObject)
 	}
 	else
 	{
-		return currentNode->Child = NewNode(gameObject);
+		currentNode->Child = NewNode(gameObject);
+		currentNode->Child->PreviousParent = currentNode;
+		return currentNode->Child;
 	}
 }
 
@@ -71,7 +84,7 @@ TreeNode* SceneGraph::TraverseTree(TreeNode* currentNode)
 
 	while (currentNode)
 	{
-		cout << currentNode->GameObject->GetIdentifier() << endl;
+		LOG(currentNode->GameObject->GetIdentifier());
 
 		if (currentNode->Child)
 		{
@@ -81,20 +94,89 @@ TreeNode* SceneGraph::TraverseTree(TreeNode* currentNode)
 	}
 }
 
-void SceneGraph::DeleteNode(TreeNode* currenNode)
+void SceneGraph::DeleteNode(TreeNode* currentNode)
 {
-	if (currenNode->Child)
+	if (currentNode->Child)
 	{
-		DeleteNode(currenNode->Child);
+		DeleteNode(currentNode->Child);
 	}
-	if (currenNode->Sibling)
+	if (currentNode->Sibling)
 	{
-		DeleteNode(currenNode->Sibling);
+		DeleteNode(currentNode->Sibling);
 	}
 
-	delete currenNode;
-	currenNode = nullptr;
+	delete currentNode->GameObject;
+	currentNode->GameObject = nullptr;
+	delete currentNode;
+	currentNode = nullptr;
+
+	string gameObjectName = currentNode->GameObject->GetIdentifier();
+	m_sceneTreeNodeMap.erase(gameObjectName);
+	m_sceneGameObjectsMap.erase(gameObjectName);
 }
+
+void SceneGraph::DeleteGameObjectUsingIdentifier(string identifier)
+{
+	unordered_map<string, TreeNode*>::iterator it = m_sceneTreeNodeMap.find(identifier);
+	if (it->second)
+	{
+		DeleteGameObjectUsingNode(it->second);
+	}
+}
+
+void SceneGraph::DeleteGameObjectUsingNode(TreeNode* currentNode)
+{
+	if (currentNode->Child)
+	{
+		DeleteNode(currentNode->Child);
+	}
+
+	if (currentNode->PreviousParent)
+	{
+		if (currentNode->Sibling)
+		{
+			currentNode->PreviousParent->Child = currentNode->Sibling;
+			currentNode->Sibling->PreviousParent = currentNode->PreviousParent;
+			currentNode->Sibling->PreviousSibling = nullptr;
+		}
+		else
+		{
+			currentNode->PreviousParent->Child = nullptr;
+		}
+	}
+	else if (currentNode->PreviousSibling)
+	{
+		if (currentNode->Sibling)
+		{
+			currentNode->PreviousSibling->Sibling = currentNode->Sibling;
+			currentNode->Sibling->PreviousSibling = currentNode->PreviousSibling;
+			currentNode->Sibling->PreviousParent = nullptr;
+		}
+		else
+		{
+			currentNode->PreviousSibling->Sibling = nullptr;
+		}
+	}
+	else
+	{
+		m_rootNode = currentNode->Sibling;
+		if (currentNode->Sibling)
+		{
+			currentNode->Sibling->PreviousParent = nullptr;
+			currentNode->Sibling->PreviousSibling = nullptr;
+		}
+	}
+
+	string gameObjectName = currentNode->GameObject->GetIdentifier();
+	m_sceneTreeNodeMap.erase(gameObjectName);
+	m_sceneGameObjectsMap.erase(gameObjectName);
+
+	delete currentNode->GameObject;
+	currentNode->GameObject = nullptr;
+	delete currentNode;
+	currentNode = nullptr;	
+}
+
 
 TreeNode* SceneGraph::GetRootNode()
 {
@@ -103,11 +185,29 @@ TreeNode* SceneGraph::GetRootNode()
 
 TreeNode* SceneGraph::GetNodeUsingIdentifier(string identifier)
 {
-	unordered_map<string, TreeNode*>::iterator iterator;
+	unordered_map<string, TreeNode*>::iterator it;
+	it = m_sceneTreeNodeMap.find(identifier);
 
-	iterator = m_sceneMap.find(identifier);
+	if (!it->second)
+	{
+		return nullptr;
+	}
+	return it->second;
+}
 
-	return iterator->second;
+unordered_map<string, GameObject*>& SceneGraph::GetAllGameObjects()
+{
+	return m_sceneGameObjectsMap;
+}
+
+GameObject* SceneGraph::GetGameObjectUsingIdentifier(string& identifier)
+{
+	unordered_map<string, GameObject*>::iterator it = m_sceneGameObjectsMap.find(identifier);
+	if (!it->second)
+	{
+		return nullptr;
+	}
+	return it->second;
 }
 
 
