@@ -391,3 +391,75 @@ void EditorUI::DragFloat3(const string& label, XMFLOAT3& values, const float& co
 
 	ImGui::PopID();
 }
+
+void EditorUI::DragInt(const string& label, int& value, const float& columnWidth, const float& speed, const float& min, const float& max)
+{
+	ImGui::PushID(label.c_str());
+
+	ImGui::Columns(2);
+
+	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::Text(label.c_str());
+	ImGui::NextColumn();
+
+	ImGui::PushItemWidth(ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+	ImGui::DragInt("##Int", &value, speed, min, max, "%.2f");
+
+	ImGui::PopItemWidth();
+
+	ImGui::PopStyleVar();
+
+	ImGui::Columns(1);
+
+	ImGui::PopID();
+}
+
+void EditorUI::Checkbox(const string& label, bool& value, const float& columnWidth)
+{
+	ImGui::PushID(label.c_str());
+
+	ImGui::Columns(2);
+
+	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::Text(label.c_str());
+	ImGui::NextColumn();
+
+	ImGui::PushItemWidth(ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+	ImGui::Checkbox("##Checkbox", &value);
+
+	ImGui::PopItemWidth();
+
+	ImGui::PopStyleVar();
+
+	ImGui::Columns(1);
+
+	ImGui::PopID();
+}
+
+void EditorUI::DragFloat(const string& label, float& value, const float& columnWidth)
+{
+	ImGui::PushID(label.c_str());
+
+	ImGui::Columns(2);
+
+	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::Text(label.c_str());
+	ImGui::NextColumn();
+
+	ImGui::PushItemWidth(ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+	ImGui::DragFloat("##Float", &value, 0.1f, 0.0f, 0.0f, "%.2f");
+
+	ImGui::PopItemWidth();
+
+	ImGui::PopStyleVar();
+
+	ImGui::Columns(1);
+
+	ImGui::PopID();
+}
