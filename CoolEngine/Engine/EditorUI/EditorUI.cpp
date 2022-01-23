@@ -6,6 +6,7 @@
 #include "Engine/Managers/SceneGraph.h"
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/Scene/Scene.h"
+#include "Engine/Includes/IMGUI/imgui_internal.h"
 
 HWND* EditorUI::m_phwnd = nullptr;
 
@@ -16,7 +17,8 @@ void EditorUI::InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, H
 	ImGuiIO& io = ImGui::GetIO();
 	io.WantCaptureMouse = true;
 
-	(void)io;
+	float fontSize = 18.0f;
+	io.FontDefault = io.Fonts->AddFontFromFileTTF("Resources/UI/Fonts/OpenSans-Regular.ttf", fontSize);
 
 	ImGui::StyleColorsDark();
 
@@ -59,6 +61,15 @@ void EditorUI::DrawEditorUI(ID3D11Device* pdevice)
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
 	ImGui::EndFrame();
+}
+
+void EditorUI::Update()
+{
+	ImGuiIO& io = ImGui::GetIO();
+
+	io.DisplaySize = ImVec2(GraphicsManager::GetInstance()->GetWindowDimensions().x, GraphicsManager::GetInstance()->GetWindowDimensions().y);
+
+	io.DeltaTime = GameManager::GetInstance()->GetTimer()->DeltaTime();
 }
 
 void EditorUI::DrawMasterWindow()
@@ -338,4 +349,45 @@ void EditorUI::OpenFolderExplorer(WCHAR* buffer, int bufferSize)
 	browserInfo.iImage = 0;
 
 	SHBrowseForFolder(&browserInfo);
+}
+
+void EditorUI::DragFloat3(const string& label, XMFLOAT3& values, const float& columnWidth)
+{
+	ImGuiIO& io = ImGui::GetIO();
+
+	ImGui::PushID(label.c_str());
+
+	ImGui::Columns(2);
+	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::Text(label.c_str());
+	ImGui::NextColumn();
+
+	ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+	float lineHeight = io.FontDefault->FontSize + ImGui::GetStyle().FramePadding.y * 2.0f;
+	ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
+
+	ImGui::Button("X", buttonSize);
+	ImGui::SameLine();
+	ImGui::DragFloat("##X", &values.x, 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::PopItemWidth();
+	ImGui::SameLine();
+
+	ImGui::Button("Y", buttonSize);
+	ImGui::SameLine();
+	ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::PopItemWidth();
+	ImGui::SameLine();
+
+	ImGui::Button("Z", buttonSize);
+	ImGui::SameLine();
+	ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::PopItemWidth();
+
+	ImGui::PopStyleVar();
+
+	ImGui::Columns(1);
+
+	ImGui::PopID();
 }

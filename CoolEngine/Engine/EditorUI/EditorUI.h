@@ -62,6 +62,10 @@ public:
 	void ShutdownIMGUI();
 	void DrawEditorUI(ID3D11Device* pdevice);
 
+	void Update();
+
 	static void OpenFileExplorer(const WCHAR* fileFilters, WCHAR* buffer, int bufferSize);
 	static void OpenFolderExplorer(WCHAR* buffer, int bufferSize);
+
+	static void DragFloat3(const string& label, XMFLOAT3& values, const float& columnWidth = 100.0f);
 };
