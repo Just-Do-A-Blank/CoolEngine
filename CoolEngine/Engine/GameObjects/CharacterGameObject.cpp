@@ -1,4 +1,5 @@
 #include "CharacterGameObject.h"
+#include "Engine/Managers/GameManager.h"
 
 CharacterGameObject::CharacterGameObject(string identifier) : GameObject(identifier)
 {
@@ -6,6 +7,11 @@ CharacterGameObject::CharacterGameObject(string identifier) : GameObject(identif
 }
 
 CharacterGameObject::~CharacterGameObject()
+{
+
+}
+
+void CharacterGameObject::Update()
 {
 
 }

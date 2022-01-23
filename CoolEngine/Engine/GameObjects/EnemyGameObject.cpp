@@ -1,8 +1,8 @@
 #include "EnemyGameObject.h"
+#include "Engine/Managers/GameManager.h"
 
 
-
-EnemyGameObject::EnemyGameObject(string identifier) : GameObject(identifier)
+EnemyGameObject::EnemyGameObject(string identifier) : CharacterGameObject(identifier)
 {
 
 }
@@ -19,22 +19,41 @@ void EnemyGameObject::Update()
 		if (m_curPath.back() == Pathfinding::Instance()->FindClosestNode(m_transform.GetPosition()))
 		{
 			m_curPath.pop_back();
+			LOG("New Node");
 		}
+
+
+		float step = m_moveSpeed *GameManager::GetInstance()->GetTimer()->DeltaTime();
+
+
+
+		m_direction = MathHelper::Normalize(m_direction);
+
+		XMFLOAT3 stepPos = MathHelper::Multiply(m_direction, step);
+		stepPos = MathHelper::Plus(stepPos, m_transform.GetPosition());
+		m_transform.SetPosition(stepPos);
+		
+		//CharacterGameObject::Update();
+
+
+	}
+	else
+	{
+		LOG("NO PATH");
+		m_curPath = Pathfinding::Instance()->FindPath(m_transform.GetPosition(), XMFLOAT3(100, 500, 0));
 	}
 
-	//Move, should probably be in Gameobject? (since it'll need to be in the character aswell
-	float step = m_speed * GameManager::GetInstance()->GetTimer()->DeltaTime();
-	m_direction = MathHelper::Normalize(m_direction);
-	m_transform.SetPosition(MathHelper::Multiply(m_direction, step));
-	m_transform.SetRotation(MathHelper::Multiply(m_direction, -1));
+
+
+
+
+
+
 }
 
 void EnemyGameObject::SetPath(vector<node*> path)
 {
-
 	m_curPath = path;
-
-
 }
 
 const vector<node*> EnemyGameObject::GetPath() const
