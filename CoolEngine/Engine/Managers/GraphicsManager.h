@@ -33,6 +33,8 @@ class GraphicsManager : public Singleton<GraphicsManager>
 
 	int m_NumLayers = 5;
 
+	XMFLOAT2 m_windowDimensions = XMFLOAT2(1920, 1080);
+
 public:
 	ConstantBuffer<PerFrameCB>* m_pperFrameCB = nullptr;
 	ConstantBuffer<PerInstanceCB>* m_pperInstanceCB = nullptr;
@@ -45,6 +47,8 @@ public:
 	bool LoadTextureFromFile(wstring filename, size_t maxSize = 0, DDS_ALPHA_MODE* alphaMode = nullptr);
 
 	bool LoadAnimationFromFile(wstring animName, size_t maxSize = 0, DDS_ALPHA_MODE* alphaMode = nullptr);
+
+	void SetWindowDimensions(XMFLOAT2 dimensions);
 
 	//Getters
 	ID3D11VertexShader* GetVertexShader(wstring name) const;
@@ -59,6 +63,8 @@ public:
 	int GetNumLayers();
 
 	bool IsTextureLoaded(wstring filename);
+
+	const XMFLOAT2& GetWindowDimensions() const;
 
 	enum class InputLayouts
 	{

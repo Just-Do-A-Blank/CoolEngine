@@ -194,6 +194,11 @@ bool GraphicsManager::LoadAnimationFromFile(wstring animName, size_t maxSize, DD
 	return true;
 }
 
+void GraphicsManager::SetWindowDimensions(XMFLOAT2 dimensions)
+{
+	m_windowDimensions = dimensions;
+}
+
 ID3D11VertexShader* GraphicsManager::GetVertexShader(wstring name) const
 {
 	if (m_vertexShaders.count(name) == 0)
@@ -264,6 +269,11 @@ int GraphicsManager::GetNumLayers()
 bool GraphicsManager::IsTextureLoaded(wstring filename)
 {
 	return m_textureSRVs.count(filename) != 0;
+}
+
+const XMFLOAT2& GraphicsManager::GetWindowDimensions() const
+{
+	return m_windowDimensions;
 }
 
 ID3D11InputLayout* GraphicsManager::GetInputLayout(InputLayouts inputLayout) const
