@@ -134,12 +134,11 @@ void GameObject::CreateEngineUI(ID3D11Device* pdevice)
 
 	ImGui::Spacing();
 
-	IMGUI_LEFT_LABEL(ImGui::DragInt, "Layer", &m_layer, 1, 0, GraphicsManager::GetInstance()->GetNumLayers() - 1);
+	EditorUI::DragInt("Layer", m_layer, 100.0f, 0.1f, 0, GraphicsManager::GetInstance()->GetNumLayers() - 1);
 
 	ImGui::Spacing();
 
-	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Renderable", &m_isRenderable);
-
+	EditorUI::Checkbox("Renderable", m_isRenderable);
 
 	ImGui::Spacing();
 	ImGui::Separator();

@@ -1,5 +1,7 @@
 #include "Shape.h"
 
+
+
 ShapeType Shape::GetShapeType()
 {
 	return m_shapeType;
@@ -22,8 +24,11 @@ string Shape::ShapeTypeToString(ShapeType type)
 
 void Shape::CreateEngineUI()
 {
-	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Collidable", &m_isCollidable);
-	IMGUI_LEFT_LABEL(ImGui::Checkbox, "Trigger", &m_isTrigger);
+	EditorUI::Checkbox("Collidable", m_isCollidable);
+
+	ImGui::Spacing();
+
+	EditorUI::Checkbox("Trigger", m_isTrigger);
 }
 
 void Shape::SetIsTrigger(bool value)
