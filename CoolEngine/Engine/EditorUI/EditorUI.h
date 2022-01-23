@@ -74,6 +74,6 @@ public:
 
 	static void Checkbox(const string& label, bool& value, const float& columnWidth = 100.0f);
 
-	static void Texture(const string& label, float& values, const float& columnWidth = 100.0f);
-	static void Animation(const string& label, float& values, const float& columnWidth = 100.0f);
+	static void Texture(const string& label, wstring& filepath, ID3D11ShaderResourceView* psrv, const float& columnWidth = 100.0f);
+	static void Animation(const string& label, wstring& filepath, SpriteAnimation& animation, const float& columnWidth = 100.0f);
 };
