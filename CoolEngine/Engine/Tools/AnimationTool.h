@@ -11,7 +11,7 @@ class GameObject;
 struct FrameInfo
 {
 	Frame m_frame;
-	WCHAR m_texName[FILEPATH_BUFFER_SIZE];
+	wstring m_filepath;
 };
 
 class AnimationTool : public ToolBase
@@ -28,10 +28,11 @@ private:
 
 	GameObject* m_pgameObject = nullptr;
 
-	vector<FrameInfo> m_frames;
+	vector<FrameInfo> m_frameInfos;
+	vector<Frame> m_frames;
 
 	int m_selectedIndex = -1;
 
-	WCHAR m_savePath[FILEPATH_BUFFER_SIZE];
+	wstring m_savePath;
 };
 

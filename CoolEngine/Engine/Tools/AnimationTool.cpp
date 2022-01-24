@@ -12,7 +12,6 @@ void AnimationTool::Init(ID3D11Device* pdevice)
 	m_pgameObject = GameManager::GetInstance()->CreateGameObject<GameObject>("AnimModel");
 	m_pgameObject->GetTransform()->SetPosition(pos);
 	m_pgameObject->GetTransform()->SetScale(scale);
-	m_pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 }
 
 void AnimationTool::Update()
@@ -21,13 +20,15 @@ void AnimationTool::Update()
 
 void AnimationTool::Render()
 {
+	bool updateAnim = false;
+
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
 	ImGui::Begin("Animation");
 
-	for (int i = 0; i < m_frames.size(); ++i)
+	for (int i = 0; i < m_frameInfos.size(); ++i)
 	{
 		ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
 		if (m_selectedIndex == i)
@@ -49,54 +50,43 @@ void AnimationTool::Render()
 				}
 			}
 
-			if (ImGui::ImageButton((void*)(intptr_t)m_frames[i].m_frame.m_ptexture, DEFAULT_IMGUI_IMAGE_SIZE))
+			if (updateAnim == false)
 			{
-				EditorUI::OpenFileExplorer(L"DDS files\0*.dds\0", m_frames[i].m_texName, _countof(m_frames[i].m_texName));
-
-				wstring relativePath = m_frames[i].m_texName;
-
-				//Check if that path points to an asset in the resources folder
-				int index = relativePath.find(L"Resources");
-
-				if (index == -1)
-				{
-					LOG("The resource specified isn't stored in a resource folder!");
-				}
-				else
-				{
-					//Get relative file path
-					relativePath = wstring(m_frames[i].m_texName).substr(index);
-
-					relativePath.copy(m_frames[i].m_texName, relativePath.size());
-
-					m_frames[i].m_texName[relativePath.size()] = L'\0';
-
-					//Load texture if not loaded
-					if (GraphicsManager::GetInstance()->IsTextureLoaded(m_frames[i].m_texName) == true)
-					{
-						GraphicsManager::GetInstance()->LoadTextureFromFile(m_frames[i].m_texName);
-					}
-
-					m_frames[i].m_frame.m_ptexture = GraphicsManager::GetInstance()->GetShaderResourceView(m_frames[i].m_texName);
-				}
+				updateAnim = EditorUI::Texture("Texture", m_frameInfos[i].m_filepath, m_frameInfos[i].m_frame.m_ptexture);
+			}
+			else
+			{
+				EditorUI::Texture("Texture", m_frameInfos[i].m_filepath, m_frameInfos[i].m_frame.m_ptexture);
 			}
 
-			ImGui::DragFloat("Time (s)", &m_frames[i].m_frame.m_frameTime, 0.1f, 0.0f);
+			ImGui::Spacing();
+
+			if (updateAnim == false)
+			{
+				updateAnim = EditorUI::DragFloat("Time (s)", m_frameInfos[i].m_frame.m_frameTime);
+			}
+			else
+			{
+				EditorUI::DragFloat("Time (s)", m_frameInfos[i].m_frame.m_frameTime);
+			}
+
 
 			ImGui::TreePop();
 		}
 	}
 
+	ImGui::Spacing();
+
 	if (ImGui::Button("New") == true)
 	{
-		m_frames.push_back(FrameInfo());
+		m_frameInfos.push_back(FrameInfo());
 	}
 
 	ImGui::SameLine();
 
 	if (ImGui::Button("Delete") == true && m_selectedIndex != -1)
 	{
-		m_frames.erase(m_frames.begin() + m_selectedIndex);
+		m_frameInfos.erase(m_frameInfos.begin() + m_selectedIndex);
 
 		m_selectedIndex = -1;
 	}
@@ -105,11 +95,12 @@ void AnimationTool::Render()
 
 	if (ImGui::Button("Save") == true)
 	{
-		EditorUI::OpenFolderExplorer(m_savePath, _countof(m_savePath));
+		WCHAR savePath[FILEPATH_BUFFER_SIZE];
+		EditorUI::OpenFolderExplorer(savePath, FILEPATH_BUFFER_SIZE);
 
-		wstring relativePath = m_savePath;
+		m_savePath = savePath;
 
-		if (relativePath != L"")
+		if (m_savePath != L"")	//If path specified then create folder
 		{
 
 		}
@@ -122,6 +113,24 @@ void AnimationTool::Render()
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
 	ImGui::EndFrame();
+
+	if (updateAnim)
+	{
+		SpriteAnimation anim;
+
+		m_frames.clear();
+
+		for (int i = 0; i < m_frameInfos.size(); ++i)
+		{
+			m_frames.push_back(m_frameInfos[i].m_frame);
+		}
+
+		anim.SetFrames(&m_frames);
+
+		m_pgameObject->RemoveAnimation("Anim");
+
+		m_pgameObject->AddAnimation("Anim", anim);
+	}
 }
 
 void AnimationTool::Destroy()

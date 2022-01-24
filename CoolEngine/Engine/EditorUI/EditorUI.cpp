@@ -436,8 +436,10 @@ void EditorUI::Checkbox(const string& label, bool& value, const float& columnWid
 	ImGui::PopID();
 }
 
-void EditorUI::Texture(const string& label, wstring& filepath, ID3D11ShaderResourceView*& psrv, const float& columnWidth)
+bool EditorUI::Texture(const string& label, wstring& filepath, ID3D11ShaderResourceView*& psrv, const float& columnWidth)
 {
+	bool interacted = false;
+
 	ImGui::PushID(label.c_str());
 
 	ImGui::Columns(2);
@@ -470,12 +472,14 @@ void EditorUI::Texture(const string& label, wstring& filepath, ID3D11ShaderResou
 			filepath = filepath.substr(index);
 
 			//Load texture if not loaded
-			if (GraphicsManager::GetInstance()->IsTextureLoaded(filepath) == true)
+			if (GraphicsManager::GetInstance()->IsTextureLoaded(filepath) == false)
 			{
 				GraphicsManager::GetInstance()->LoadTextureFromFile(filepath);
 			}
 
 			psrv = GraphicsManager::GetInstance()->GetShaderResourceView(filepath);
+
+			interacted = true;
 		}
 	}
 
@@ -486,6 +490,8 @@ void EditorUI::Texture(const string& label, wstring& filepath, ID3D11ShaderResou
 	ImGui::Columns(1);
 
 	ImGui::PopID();
+
+	return interacted;
 }
 
 void EditorUI::Animation(const string& label, wstring& filepath, SpriteAnimation& animation, const float& columnWidth)
@@ -622,8 +628,10 @@ void EditorUI::Animations(const string& label, unordered_map<string, SpriteAnima
 	}
 }
 
-void EditorUI::DragFloat(const string& label, float& value, const float& columnWidth)
+bool EditorUI::DragFloat(const string& label, float& value, const float& columnWidth)
 {
+	bool interacted = false;
+
 	ImGui::PushID(label.c_str());
 
 	ImGui::Columns(2);
@@ -635,7 +643,7 @@ void EditorUI::DragFloat(const string& label, float& value, const float& columnW
 	ImGui::PushItemWidth(ImGui::CalcItemWidth());
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
 
-	ImGui::DragFloat("##Float", &value, 0.1f, 0.0f, 0.0f, "%.2f");
+	interacted = ImGui::DragFloat("##Float", &value, 0.1f, 0.0f, 0.0f, "%.2f");
 
 	ImGui::PopItemWidth();
 
@@ -644,4 +652,6 @@ void EditorUI::DragFloat(const string& label, float& value, const float& columnW
 	ImGui::Columns(1);
 
 	ImGui::PopID();
+
+	return interacted;
 }
