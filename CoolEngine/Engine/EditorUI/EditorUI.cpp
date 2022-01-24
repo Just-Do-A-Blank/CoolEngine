@@ -1,6 +1,8 @@
 #include "EditorUI.h"
 #include "Engine/Managers/GameManager.h"
 #include "Engine/Managers/GraphicsManager.h"
+#include "Engine/Scene/Scene.h"
+#include "Engine/Includes/IMGUI/imgui_internal.h"
 #include <ShlObj_core.h>
 
 HWND* EditorUI::m_phwnd = nullptr;
@@ -12,7 +14,8 @@ void EditorUI::InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, H
 	ImGuiIO& io = ImGui::GetIO();
 	io.WantCaptureMouse = true;
 
-	(void)io;
+	float fontSize = 18.0f;
+	io.FontDefault = io.Fonts->AddFontFromFileTTF("Resources/UI/Fonts/OpenSans-Regular.ttf", fontSize);
 
 	ImGui::StyleColorsDark();
 
@@ -54,6 +57,15 @@ void EditorUI::DrawEditorUI(ID3D11Device* pdevice)
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
 	ImGui::EndFrame();
+}
+
+void EditorUI::Update()
+{
+	ImGuiIO& io = ImGui::GetIO();
+
+	io.DisplaySize = ImVec2(GraphicsManager::GetInstance()->GetWindowDimensions().x, GraphicsManager::GetInstance()->GetWindowDimensions().y);
+
+	io.DeltaTime = GameManager::GetInstance()->GetTimer()->DeltaTime();
 }
 
 void EditorUI::DrawMasterWindow()
@@ -333,4 +345,303 @@ void EditorUI::OpenFolderExplorer(WCHAR* buffer, int bufferSize)
 	browserInfo.iImage = 0;
 
 	SHBrowseForFolder(&browserInfo);
+}
+
+void EditorUI::DragFloat3(const string& label, XMFLOAT3& values, const float& columnWidth)
+{
+	ImGuiIO& io = ImGui::GetIO();
+
+	ImGui::PushID(label.c_str());
+
+	ImGui::Columns(2);
+	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::Text(label.c_str());
+	ImGui::NextColumn();
+
+	ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+	float lineHeight = io.FontDefault->FontSize + ImGui::GetStyle().FramePadding.y * 2.0f;
+	ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
+
+	ImGui::Button("X", buttonSize);
+	ImGui::SameLine();
+	ImGui::DragFloat("##X", &values.x, 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::PopItemWidth();
+	ImGui::SameLine();
+
+	ImGui::Button("Y", buttonSize);
+	ImGui::SameLine();
+	ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::PopItemWidth();
+	ImGui::SameLine();
+
+	ImGui::Button("Z", buttonSize);
+	ImGui::SameLine();
+	ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::PopItemWidth();
+
+	ImGui::PopStyleVar();
+
+	ImGui::Columns(1);
+
+	ImGui::PopID();
+}
+
+void EditorUI::DragInt(const string& label, int& value, const float& columnWidth, const float& speed, const float& min, const float& max)
+{
+	ImGui::PushID(label.c_str());
+
+	ImGui::Columns(2);
+
+	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::Text(label.c_str());
+	ImGui::NextColumn();
+
+	ImGui::PushItemWidth(ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+	ImGui::DragInt("##Int", &value, speed, min, max, "%.2f");
+
+	ImGui::PopItemWidth();
+
+	ImGui::PopStyleVar();
+
+	ImGui::Columns(1);
+
+	ImGui::PopID();
+}
+
+void EditorUI::Checkbox(const string& label, bool& value, const float& columnWidth)
+{
+	ImGui::PushID(label.c_str());
+
+	ImGui::Columns(2);
+
+	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::Text(label.c_str());
+	ImGui::NextColumn();
+
+	ImGui::PushItemWidth(ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+	ImGui::Checkbox("##Checkbox", &value);
+
+	ImGui::PopItemWidth();
+
+	ImGui::PopStyleVar();
+
+	ImGui::Columns(1);
+
+	ImGui::PopID();
+}
+
+void EditorUI::Texture(const string& label, wstring& filepath, ID3D11ShaderResourceView*& psrv, const float& columnWidth)
+{
+	ImGui::PushID(label.c_str());
+
+	ImGui::Columns(2);
+
+	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::Text(label.c_str());
+	ImGui::NextColumn();
+
+	ImGui::PushItemWidth(ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+	if (ImGui::ImageButton((void*)(intptr_t)psrv, DEFAULT_IMGUI_IMAGE_SIZE))
+	{
+		WCHAR buffer[FILEPATH_BUFFER_SIZE];
+
+		EditorUI::OpenFileExplorer(L"DDS files\0*.dds\0", buffer, FILEPATH_BUFFER_SIZE);
+
+		filepath = wstring(buffer);
+
+		//Check if that path points to an asset in the resources folder
+		int index = filepath.find(L"Resources");
+
+		if (index == -1)
+		{
+			LOG("The resource specified isn't stored in a resource folder!");
+		}
+		else
+		{
+			//Get relative file path
+			filepath = filepath.substr(index);
+
+			//Load texture if not loaded
+			if (GraphicsManager::GetInstance()->IsTextureLoaded(filepath) == true)
+			{
+				GraphicsManager::GetInstance()->LoadTextureFromFile(filepath);
+			}
+
+			psrv = GraphicsManager::GetInstance()->GetShaderResourceView(filepath);
+		}
+	}
+
+	ImGui::PopItemWidth();
+
+	ImGui::PopStyleVar();
+
+	ImGui::Columns(1);
+
+	ImGui::PopID();
+}
+
+void EditorUI::Animation(const string& label, wstring& filepath, SpriteAnimation& animation, const float& columnWidth)
+{
+	ImGui::PushID(label.c_str());
+
+	ImGui::Columns(2);
+
+	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::Text(label.c_str());
+	ImGui::NextColumn();
+
+	ImGui::PushItemWidth(ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+	if (ImGui::TreeNode(label.c_str()) == true)
+	{
+		//Animation images
+		if (ImGui::ImageButton((void*)(intptr_t)animation.GetCurrentFrame(), DEFAULT_IMGUI_IMAGE_SIZE) == true)
+		{
+			WCHAR buffer[FILEPATH_BUFFER_SIZE];
+
+			EditorUI::OpenFolderExplorer(buffer, FILEPATH_BUFFER_SIZE);
+
+			if (buffer[0] != '\0')
+			{
+				filepath = wstring(buffer);
+			}
+		}
+
+		ImGui::TreePop();
+	}
+
+	ImGui::PopItemWidth();
+
+	ImGui::PopStyleVar();
+
+	ImGui::Columns(1);
+
+	ImGui::PopID();
+}
+
+void EditorUI::Animations(const string& label, unordered_map<string, SpriteAnimation>& animations, const float& columnWidth)
+{
+	char animName[ANIM_NAME_SIZE];
+
+	wstring filepath = L"";
+
+	string animOldName = "";
+	string animNewName = "";
+
+	bool updateAnim = false;
+	bool updateAnimName = false;
+
+	for (unordered_map<string, SpriteAnimation>::iterator it = animations.begin(); it != animations.end(); ++it)
+	{
+		ImGui::PushID(label.c_str());
+
+		ImGui::Columns(2);
+
+		ImGui::SetColumnWidth(0, columnWidth);
+
+		strcpy_s(animName, it->first.c_str());
+
+		if (ImGui::InputText("##Name", animName, ANIM_NAME_SIZE) == true)
+		{
+			animOldName = it->first;
+			animNewName = string(animName);
+
+			updateAnimName = animNewName != "";
+		}
+
+		ImGui::NextColumn();
+
+		ImGui::PushItemWidth(ImGui::CalcItemWidth());
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+		if (ImGui::TreeNode(label.c_str()) == true)
+		{
+			//Animation images
+			if (ImGui::ImageButton((void*)(intptr_t)it->second.GetCurrentFrame(), DEFAULT_IMGUI_IMAGE_SIZE) == true)
+			{
+				WCHAR buffer[FILEPATH_BUFFER_SIZE];
+
+				EditorUI::OpenFolderExplorer(buffer, FILEPATH_BUFFER_SIZE);
+
+				filepath = wstring(buffer);
+
+				animOldName = it->first;
+
+				updateAnim = filepath != L"";
+			}
+
+			ImGui::TreePop();
+		}
+
+		ImGui::PopItemWidth();
+
+		ImGui::PopStyleVar();
+
+		ImGui::Columns(1);
+
+		ImGui::PopID();
+	}
+
+	if (updateAnimName == true)
+	{
+		SpriteAnimation tempAnim = animations[animOldName];
+
+		animations.erase(animOldName);
+
+		animations.insert(pair<string, SpriteAnimation>(animNewName, tempAnim));
+	}
+
+	if (updateAnim == true)
+	{
+		SpriteAnimation anim = GraphicsManager::GetInstance()->GetAnimation(filepath);
+
+		if (anim.GetFrames() == nullptr)
+		{
+			if (GraphicsManager::GetInstance()->LoadAnimationFromFile(filepath) == false)
+			{
+				animations[animName] = GraphicsManager::GetInstance()->GetAnimation(filepath);
+			}
+			else
+			{
+				LOG("Failed to load the animation!");
+			}
+		}
+		else
+		{
+			animations[animName] = anim;
+		}
+	}
+}
+
+void EditorUI::DragFloat(const string& label, float& value, const float& columnWidth)
+{
+	ImGui::PushID(label.c_str());
+
+	ImGui::Columns(2);
+
+	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::Text(label.c_str());
+	ImGui::NextColumn();
+
+	ImGui::PushItemWidth(ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+	ImGui::DragFloat("##Float", &value, 0.1f, 0.0f, 0.0f, "%.2f");
+
+	ImGui::PopItemWidth();
+
+	ImGui::PopStyleVar();
+
+	ImGui::Columns(1);
+
+	ImGui::PopID();
 }
