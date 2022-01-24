@@ -26,7 +26,7 @@ private:
 	ID3D11ShaderResourceView* m_pTexture;
 
 public:
-	ParticleSystem();
+	ParticleSystem(string identifier);
 	~ParticleSystem();
 
 	/// <summary>

@@ -1,6 +1,6 @@
 #include "ParticleSystem.h"
 
-ParticleSystem::ParticleSystem()
+ParticleSystem::ParticleSystem(string identifier) : GameObject(identifier)
 {
 	for (unsigned int i = 0; i < PARTICLE_SYSTEM_SIZE; ++i)
 	{
@@ -12,6 +12,10 @@ ParticleSystem::ParticleSystem()
 	m_isActive = false;
 	m_systemType = SYSTEM_NONE;
 	m_pTexture = nullptr;
+
+
+	bool renderable = false;
+	SetIsRenderable(renderable);
 }
 
 ParticleSystem::~ParticleSystem()
