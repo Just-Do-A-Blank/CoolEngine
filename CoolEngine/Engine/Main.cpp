@@ -65,9 +65,6 @@ EditorUI* g_peditorUI;
 
 Inputs* g_inputController;
 
-int g_Width = 1920;
-int g_Height = 1080;
-
 #if TOOL
 ToolBase* g_ptoolBase = nullptr;
 #endif
@@ -120,8 +117,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	XMFLOAT3 cameraForward = XMFLOAT3(0, 0, 1);
 	XMFLOAT3 cameraUp = XMFLOAT3(0, 1, 0);
 
-	float windowWidth = g_Width;
-	float windowHeight = g_Height;
+	float windowWidth = GraphicsManager::GetInstance()->GetWindowDimensions().x;
+	float windowHeight = GraphicsManager::GetInstance()->GetWindowDimensions().y;
 
 	float nearDepth = 0.01f;
 	float farDepth = 1000.0f;
@@ -227,6 +224,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
 	pgameObject->SetShape(pbox);
+	pgameObject->AddAnimation("Test", TEST_ANIM);
 
 	g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, 0, 0), XMFLOAT3(25, 25, 25), "TestMap");
 
@@ -339,7 +337,7 @@ inline HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow)
 
 	// Create window
 	g_hInstance = hInstance;
-	RECT rc = { 0, 0, g_Width, g_Height };
+	RECT rc = { 0, 0, GraphicsManager::GetInstance()->GetWindowDimensions().x, GraphicsManager::GetInstance()->GetWindowDimensions().y };
 
 	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 	g_hWnd = CreateWindow(L"TutorialWindowClass", L"Cool Engine",
@@ -603,6 +601,8 @@ void Update()
 	AudioManager::GetInstance()->Update();
 
 	EventManager::Instance()->ProcessEvents();
+
+	g_peditorUI->Update();
 
 	g_inputController->Update();
 

@@ -8,7 +8,7 @@
 Scene::Scene(string identifier)
 {
 	m_sceneIdentifier = identifier;
-	m_psceneGraph = new SceneGraph();
+	m_psceneGraph = new SceneGraph<GameObject>();
 }
 
 Scene::~Scene()
@@ -67,7 +67,7 @@ void Scene::SelectGameObject(GameObject* pgameObject)
 	}
 }
 
-void Scene::SelectGameObjectUsingTreeNode(TreeNode* pnode)
+void Scene::SelectGameObjectUsingTreeNode(TreeNode<GameObject>* pnode)
 {
 	if (!pnode)
 	{
@@ -95,12 +95,12 @@ void Scene::DeleteGameObjectUsingIdentifier(string identifier)
 	m_psceneGraph->DeleteGameObjectUsingIdentifier(identifier);
 }
 
-TreeNode* Scene::GetRootTreeNode()
+TreeNode<GameObject>* Scene::GetRootTreeNode()
 {
 	return m_psceneGraph->GetRootNode();
 }
 
-TreeNode* Scene::GetTreeNode(GameObject* pgameObject)
+TreeNode<GameObject>* Scene::GetTreeNode(GameObject* pgameObject)
 {
 	return m_psceneGraph->GetNodeUsingIdentifier(pgameObject->GetIdentifier());
 }

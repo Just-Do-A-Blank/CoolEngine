@@ -25,10 +25,6 @@
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="TileMapDebug|Win32">
-      <Configuration>TileMapDebug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="TileMapDebug|x64">
       <Configuration>TileMapDebug</Configuration>
       <Platform>x64</Platform>
