@@ -63,7 +63,7 @@ public:
 	static void OpenFileExplorer(const WCHAR* fileFilters, WCHAR* buffer, int bufferSize);
 	static void OpenFolderExplorer(WCHAR* buffer, int bufferSize);
 
-	static bool DragFloat(const string& label, float& value, const float& columnWidth = 100.0f);
+	static bool DragFloat(const string& label, float& value, const float& columnWidth = 100.0f, const float& speed = 0.1f, const float& min = 0, const float& max = 0);
 	static void DragFloat3(const string& label, XMFLOAT3& values, const float& columnWidth = 100.0f);
 
 	static void DragInt(const string& label, int& value, const float& columnWidth = 100.0f, const float& speed = 0.1f, const float& min = 0, const float& max = 0);
