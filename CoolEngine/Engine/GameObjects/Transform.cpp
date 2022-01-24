@@ -16,7 +16,18 @@ void Transform::UpdateMatrix()
 	m_scaleMatrix = XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);
 	m_translationalMatrix = XMMatrixTranslation(m_position.x, m_position.y, m_position.z);
 
-    m_worldMatrix = m_scaleMatrix * m_rotationMatrix * m_translationalMatrix;
+	m_worldMatrix = m_scaleMatrix * m_rotationMatrix * m_translationalMatrix;
+
+	if (m_pparentTransform)
+	{
+		m_worldMatrix = m_worldMatrix * m_pparentTransform->GetWorldMatrix();
+	}
+
+
+	for (int i = 0; i < m_childrenTransformList.size(); ++i)
+	{
+		m_childrenTransformList[i]->UpdateMatrix();
+	}
 
     UpdateComponentVectors();
 }
@@ -56,6 +67,11 @@ const XMMATRIX& Transform::GetScaleMatrix() const
 const XMMATRIX& Transform::GetRotationMatrix() const
 {
     return m_rotationMatrix;
+}
+
+const XMMATRIX& Transform::GetTranslationMatrix() const
+{
+	return m_translationalMatrix;
 }
 
 const XMMATRIX& Transform::GetWorldMatrix() const
@@ -143,4 +159,14 @@ void Transform::CreateEngineUI()
 	EditorUI::DragFloat3("Scale", m_scale);
 
 	UpdateMatrix();
+}
+
+void Transform::SetParentTransform(Transform* pparentTransform)
+{
+	m_pparentTransform = pparentTransform;
+}
+
+void Transform::AddChildTransform(Transform* pchildTransform)
+{
+	m_childrenTransformList.push_back(pchildTransform);
 }

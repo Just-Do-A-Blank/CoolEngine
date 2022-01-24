@@ -12,13 +12,14 @@
 GameObject::GameObject()
 {
 	InitGraphics();
+	m_transform = new Transform();
 }
 
 GameObject::GameObject(string identifier)
 {
 	m_identifier = identifier;
-
 	InitGraphics();
+	m_transform = new Transform();
 }
 
 void GameObject::InitGraphics()
@@ -38,7 +39,7 @@ void GameObject::Render(RenderStruct& renderStruct)
 {
 	//Update CB
 	PerInstanceCB cb;
-	XMStoreFloat4x4(&cb.world, XMMatrixTranspose(m_transform.GetWorldMatrix()));
+	XMStoreFloat4x4(&cb.world, XMMatrixTranspose(m_transform->GetWorldMatrix()));
 
 	GraphicsManager::GetInstance()->m_pperInstanceCB->Update(cb, renderStruct.m_pcontext);
 
@@ -92,7 +93,7 @@ void GameObject::CreateEngineUI(ID3D11Device* pdevice)
 	ImGui::Separator();
 	ImGui::Spacing();
 
-	m_transform.CreateEngineUI();
+	m_transform->CreateEngineUI();
 
 	ImGui::Spacing();
 	ImGui::Separator();
@@ -178,12 +179,12 @@ void GameObject::CreateEngineUI(ID3D11Device* pdevice)
 		else if (ImGui::Selectable(Shape::ShapeTypeToString(ShapeType::BOX).c_str(), shapeType == ShapeType::BOX))
 		{
 			delete m_collider;
-			m_collider = new Box(&m_transform);
+			m_collider = new Box(m_transform);
 		}
 		else if (ImGui::Selectable(Shape::ShapeTypeToString(ShapeType::CIRCLE).c_str(), shapeType == ShapeType::CIRCLE))
 		{
 			delete m_collider;
-			m_collider = new Circle(&m_transform, 1.0f);
+			m_collider = new Circle(m_transform, 1.0f);
 		}
 
 		ImGui::EndCombo();
@@ -255,7 +256,7 @@ ID3D11PixelShader* GameObject::GetPixelShader() const
 
 Transform* GameObject::GetTransform()
 {
-	return &m_transform;
+	return m_transform;
 }
 
 bool GameObject::SetMesh(std::wstring meshName)

@@ -258,6 +258,9 @@
     <ClInclude Include="Engine\Structure\UIComponent.h">
       <Filter>Engine\Structure</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Managers\UiManager.h" />
+    <ClInclude Include="Engine\GameUI\UiElement.h" />
+    <ClInclude Include="Engine\GameUI\UiCanvas.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -371,6 +374,9 @@
     <ClCompile Include="Engine\Physics\Shape.cpp">
       <Filter>Engine\Physics</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Managers\UiManager.cpp" />
+    <ClCompile Include="Engine\GameUI\UiElement.cpp" />
+    <ClCompile Include="Engine\GameUI\UiCanvas.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">
@@ -382,5 +388,6 @@
     <FxCompile Include="Engine\Graphics\Shaders\DummyPosTex.hlsl">
       <Filter>Engine\Graphics\Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\PassthroughVertex.hlsl" />
   </ItemGroup>
 </Project>
