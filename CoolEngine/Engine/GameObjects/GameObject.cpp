@@ -6,6 +6,7 @@
 #include "Engine/Physics/Shape.h"
 #include "Engine/Physics/Circle.h"
 #include "Engine/Physics/Box.h"
+#include "Engine/EditorUI/EditorUI.h"
 
 #include <iostream>
 

@@ -84,7 +84,7 @@ void GameManager::SelectGameObject(GameObject* pgameObject)
     m_pcurrentScene->SelectGameObject(pgameObject);
 }
 
-void GameManager::SelectGameObjectUsingTreeNode(TreeNode* pnode)
+void GameManager::SelectGameObjectUsingTreeNode(TreeNode<GameObject>* pnode)
 {
     m_pcurrentScene->SelectGameObjectUsingTreeNode(pnode);
 }
@@ -99,12 +99,12 @@ void GameManager::DeleteGameObjectUsingIdentifier(string identifier)
     m_pcurrentScene->DeleteGameObjectUsingIdentifier(identifier);
 }
 
-TreeNode* GameManager::GetRootTreeNode()
+TreeNode<GameObject>* GameManager::GetRootTreeNode()
 {
     return m_pcurrentScene->GetRootTreeNode();
 }
 
-TreeNode* GameManager::GetTreeNode(GameObject* pgameObject)
+TreeNode<GameObject>* GameManager::GetTreeNode(GameObject* pgameObject)
 {
     return m_pcurrentScene->GetTreeNode(pgameObject);
 }

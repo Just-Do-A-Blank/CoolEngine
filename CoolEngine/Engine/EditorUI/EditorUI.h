@@ -3,13 +3,12 @@
 #include "Engine/Includes/IMGUI/imgui_impl_win32.h"
 #include "Engine/Includes/IMGUI/imgui_impl_dx11.h"
 #include "Engine/ResourceDefines.h"
+#include "Engine/Managers/SceneGraph.h"
 
 #define IMGUI_LEFT_LABEL(func, label, ...) (ImGui::TextUnformatted(label), ImGui::SameLine(), func("##" label, __VA_ARGS__))
-#define FILEPATH_BUFFER_SIZE 200
 #define DEFAULT_IMGUI_IMAGE_SIZE ImVec2(256, 256)
 
 class GameManager;
-class TreeNode;
 
 struct SelectableText
 {
@@ -51,10 +50,7 @@ private:
 	void DrawMasterWindow();
 	void DrawSceneGraphWindow();
 	void DrawSceneManagementWindow();
-
-	ID3D11Device* m_pdevice = nullptr;
-
-	void TraverseTree(TreeNode* pcurrentNode, int& count);
+	void TraverseTree(TreeNode<GameObject>* pcurrentNode, int& count);
 public:
 	EditorUI(ID3D11Device* pdevice);
 
