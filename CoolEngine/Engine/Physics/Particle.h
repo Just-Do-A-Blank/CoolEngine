@@ -10,7 +10,6 @@
 class Particle
 {
 private:
-	//Box m_box;
 	Transform m_transform;
 	XMFLOAT2 m_velocity;
 	XMFLOAT2 m_accel;
@@ -28,8 +27,7 @@ public:
 	/// <param name="dTime"></param>
 	void Update(const float dTime);
 
-	
-	void Render(ID3D11DeviceContext* pContext, ConstantBuffer<PerInstanceCB>* pConstantBuffer, Mesh* mesh);
+	void Render(ID3D11DeviceContext* pContext, Mesh* mesh);
 
 	/// <summary>
 	/// Mark the particle as free
@@ -45,5 +43,18 @@ public:
 	/// <param name="life"></param>
 	void Initialise(Transform trans, XMFLOAT2 vel, XMFLOAT2 accel, float life);
 
-	bool IsActive() { return m_isActive; }
+	// Getters
+	bool		GetActive() { return m_isActive; }
+	XMFLOAT2	GetVelocity() { return m_velocity; }
+	XMFLOAT2	GetAccel() { return m_accel; }
+	float		GetLife() { return m_lifetime; }
+	Transform	GetTrans() { return m_transform; }
+
+	// Setters
+	void SetActive(bool active) { m_isActive = active; }
+	void SetVelocity(XMFLOAT2 vel) { m_velocity = vel; }
+	void SetAccel(XMFLOAT2 acc) { m_accel = acc; }
+	void SetLife(float life) { m_lifetime = life; }
+	void SetPosition(XMFLOAT3 pos) { m_transform.SetPosition(pos); }
+	void SetScale(XMFLOAT3 scale) { m_transform.SetScale(scale); }
 };

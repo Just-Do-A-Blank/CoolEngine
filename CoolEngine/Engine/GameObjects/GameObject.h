@@ -46,7 +46,7 @@ private:
 	bool m_isRenderable = true;
 
 protected:
-	Transform m_transform;
+	Transform* m_transform;
 	Shape* m_collider = nullptr;
 
 	virtual void CreateEngineUI(ID3D11Device* pdevice);

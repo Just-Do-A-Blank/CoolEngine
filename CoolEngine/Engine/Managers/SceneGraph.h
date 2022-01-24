@@ -1,6 +1,8 @@
 #pragma once
 #include "Engine/GameObjects/GameObject.h"
 
+class UiElement;
+
 template<class T>
 struct TreeNode
 {
@@ -40,3 +42,4 @@ public:
 	T* GetGameObjectUsingIdentifier(string& identifier);
 };
 template class SceneGraph<GameObject>;
+template class SceneGraph<UiElement>;
