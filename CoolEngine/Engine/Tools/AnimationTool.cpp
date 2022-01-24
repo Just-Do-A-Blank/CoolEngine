@@ -2,6 +2,9 @@
 #include "Engine/Managers/GameManager.h"
 #include "Engine/ResourceDefines.h"
 
+#include <direct.h>
+#include <fstream>
+
 void AnimationTool::Init(ID3D11Device* pdevice)
 {
 	ToolBase::Init(pdevice);
@@ -16,6 +19,7 @@ void AnimationTool::Init(ID3D11Device* pdevice)
 
 void AnimationTool::Update()
 {
+	m_pgameObject->Update();
 }
 
 void AnimationTool::Render()
@@ -77,6 +81,10 @@ void AnimationTool::Render()
 
 	ImGui::Spacing();
 
+	EditorUI::InputText("Name", m_animName);
+
+	ImGui::Spacing();
+
 	if (ImGui::Button("New") == true)
 	{
 		m_frameInfos.push_back(FrameInfo());
@@ -89,21 +97,15 @@ void AnimationTool::Render()
 		m_frameInfos.erase(m_frameInfos.begin() + m_selectedIndex);
 
 		m_selectedIndex = -1;
+
+		updateAnim = true;
 	}
 
 	ImGui::SameLine();
 
-	if (ImGui::Button("Save") == true)
+	if (ImGui::Button("Save") == true && m_animName != "")
 	{
-		WCHAR savePath[FILEPATH_BUFFER_SIZE];
-		EditorUI::OpenFolderExplorer(savePath, FILEPATH_BUFFER_SIZE);
-
-		m_savePath = savePath;
-
-		if (m_savePath != L"")	//If path specified then create folder
-		{
-
-		}
+		SaveAnim(m_animName);
 	}
 
 	ImGui::End();
@@ -130,9 +132,61 @@ void AnimationTool::Render()
 		m_pgameObject->RemoveAnimation("Anim");
 
 		m_pgameObject->AddAnimation("Anim", anim);
+
+		m_pgameObject->PlayAnimation("Anim");
 	}
 }
 
 void AnimationTool::Destroy()
 {
+}
+
+bool AnimationTool::SaveAnim(string animName)
+{
+	string filepath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Animations\\" + m_animName;
+
+	int result = _mkdir(filepath.c_str());
+
+	if (result != 0)
+	{
+		LOG("Failed to create the file to save the animation!");
+
+		return false;
+	}
+
+	//Copy all the frames to the correct locations
+	for (int i = 0; i < m_frameInfos.size(); ++i)
+	{
+		string frameName = animName + to_string(i) + ".dds";
+
+		string tempPath = filepath + "\\" + frameName;
+		wstring destPath = wstring(tempPath.begin(), tempPath.end());
+		wstring sourcePath = GameManager::GetInstance()->GetWideWorkingDirectory() + L"\\" + m_frameInfos[i].m_filepath;
+
+		if (CopyFile(sourcePath.c_str(), destPath.c_str(), true) == false)
+		{
+			LOG("Failed to copy one of the files of the animation!");
+		}
+
+	}
+
+	ofstream textFile = ofstream(filepath + "\\" + animName + ".txt");
+	
+	if (textFile.is_open() == false)
+	{
+		LOG("Failed to create the text file for the animation!");
+
+		return false;
+	}
+
+	textFile << m_frameInfos.size() << endl;
+	
+	for (int i = 0; i < m_frameInfos.size(); ++i)
+	{
+		textFile << m_frameInfos[i].m_frame.m_frameTime << endl;
+	}
+
+	textFile.close();
+
+	return true;
 }

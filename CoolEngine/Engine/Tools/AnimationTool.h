@@ -33,6 +33,10 @@ private:
 
 	int m_selectedIndex = -1;
 
+	string m_animName = "";
+
 	wstring m_savePath;
+
+	bool SaveAnim(string animName);
 };
 
