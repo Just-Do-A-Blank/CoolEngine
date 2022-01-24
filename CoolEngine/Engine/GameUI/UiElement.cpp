@@ -15,10 +15,20 @@ void UiElement::SetIsRenderable(bool& condition)
 
 int& UiElement::GetLayer()
 {
-	m_layer;
+	return m_layer;
 }
 
 const bool& UiElement::IsRenderable()
 {
 	return m_isRenderable;
+}
+
+Transform* UiElement::GetTransform()
+{
+	return m_transform;
+}
+
+const string& UiElement::GetIdentifier()
+{
+	return m_uiElementIdentifier;
 }

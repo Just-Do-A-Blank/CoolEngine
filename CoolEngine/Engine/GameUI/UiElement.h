@@ -6,7 +6,7 @@ class Transform;
 class UiElement
 {
 private:
-
+	string m_uiElementIdentifier;
 	int m_layer = 0;
 	Transform* m_transform;
 
@@ -21,6 +21,8 @@ public:
 	//Getters
 	int& GetLayer();
 	const bool& IsRenderable();
+	Transform* GetTransform();
+	const string& GetIdentifier();
 
 	//Setters
 	void SetIsRenderable(bool& condition);
