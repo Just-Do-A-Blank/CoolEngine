@@ -255,15 +255,15 @@
     <ClInclude Include="Engine\GameObjects\DebugRect.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Structure\UIComponent.h">
-      <Filter>Engine\Structure</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Tools\AnimationTool.h">
       <Filter>Engine\Tools</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Managers\UiManager.h" />
     <ClInclude Include="Engine\GameUI\UiElement.h" />
     <ClInclude Include="Engine\GameUI\UiCanvas.h" />
+    <ClInclude Include="Engine\Structure\EditorUIComponent.h">
+      <Filter>Engine\Structure</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">

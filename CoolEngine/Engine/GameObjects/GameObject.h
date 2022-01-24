@@ -4,7 +4,7 @@
 #include "Engine/Graphics/ConstantBuffer.h"
 #include "Engine/Graphics/ConstantBuffers.h"
 #include "Engine/Graphics/SpriteAnimation.h"
-#include "Engine/Structure/UIComponent.h"
+#include "Engine/Structure/EditorUIComponent.h"
 #include "Engine/ResourceDefines.h"
 
 #include <string>
@@ -17,7 +17,7 @@ struct RenderStruct;
 #define FILEPATH_BUFFER_SIZE 200
 #define ANIM_NAME_SIZE 50
 
-class GameObject : public UIComponent
+class GameObject : public EditorUIComponent
 {
 	friend class GameManager;
 private:

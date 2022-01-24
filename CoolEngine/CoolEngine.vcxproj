@@ -72,7 +72,7 @@
     <ClInclude Include="Engine\Scene\Scene.h" />
     <ClInclude Include="Engine\stdafx.h" />
     <ClInclude Include="Engine\Structure\Singleton.h" />
-    <ClInclude Include="Engine\Structure\UIComponent.h" />
+    <ClInclude Include="Engine\Structure\EditorUIComponent.h" />
     <ClInclude Include="Engine\TileMap\TileMap\Tile.h" />
     <ClInclude Include="Engine\TileMap\TileMap\TileMap.h" />
     <ClInclude Include="Engine\Tools\AnimationTool.h" />
