@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="AnimationDebug|Win32">
@@ -28,6 +28,10 @@
     <ProjectConfiguration Include="TileMapDebug|x64">
       <Configuration>TileMapDebug</Configuration>
       <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="TileMapDebug|Win32">
+      <Configuration>TileMapDebug</Configuration>
+      <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
