@@ -440,6 +440,80 @@ void EditorUI::Checkbox(const string& label, bool& value, const float& columnWid
 	ImGui::PopID();
 }
 
+void EditorUI::Texture(const string& label, wstring& filepath, ID3D11ShaderResourceView*& psrv, const float& columnWidth)
+{
+	ImGui::PushID(label.c_str());
+
+	ImGui::Columns(2);
+
+	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::Text(label.c_str());
+	ImGui::NextColumn();
+
+	ImGui::PushItemWidth(ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+	if (ImGui::ImageButton((void*)(intptr_t)psrv, DEFAULT_IMGUI_IMAGE_SIZE))
+	{
+		WCHAR buffer[FILEPATH_BUFFER_SIZE];
+
+		EditorUI::OpenFileExplorer(L"DDS files\0*.dds\0", buffer, FILEPATH_BUFFER_SIZE);
+
+		filepath = wstring(buffer);
+
+		//Check if that path points to an asset in the resources folder
+		int index = filepath.find(L"Resources");
+
+		if (index == -1)
+		{
+			LOG("The resource specified isn't stored in a resource folder!");
+		}
+		else
+		{
+			//Get relative file path
+			filepath = filepath.substr(index);
+
+			//Load texture if not loaded
+			if (GraphicsManager::GetInstance()->IsTextureLoaded(filepath) == true)
+			{
+				GraphicsManager::GetInstance()->LoadTextureFromFile(filepath);
+			}
+
+			psrv = GraphicsManager::GetInstance()->GetShaderResourceView(filepath);
+		}
+	}
+
+	ImGui::PopItemWidth();
+
+	ImGui::PopStyleVar();
+
+	ImGui::Columns(1);
+
+	ImGui::PopID();
+}
+
+void EditorUI::Animation(const string& label, wstring& filepath, SpriteAnimation& animation, const float& columnWidth)
+{
+	ImGui::PushID(label.c_str());
+
+	ImGui::Columns(2);
+
+	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::Text(label.c_str());
+	ImGui::NextColumn();
+
+	ImGui::PushItemWidth(ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+	ImGui::PopItemWidth();
+
+	ImGui::PopStyleVar();
+
+	ImGui::Columns(1);
+
+	ImGui::PopID();
+}
+
 void EditorUI::DragFloat(const string& label, float& value, const float& columnWidth)
 {
 	ImGui::PushID(label.c_str());

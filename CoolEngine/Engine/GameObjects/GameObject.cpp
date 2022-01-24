@@ -98,39 +98,7 @@ void GameObject::CreateEngineUI(ID3D11Device* pdevice)
 	ImGui::Separator();
 	ImGui::Spacing();
 
-	ImGui::TextUnformatted("Texture");
-
-	if (ImGui::ImageButton((void*)(intptr_t)m_palbedoSRV, DEFAULT_IMGUI_IMAGE_SIZE))
-	{
-		EditorUI::OpenFileExplorer(L"DDS files\0*.dds\0", m_texNameBuffer, _countof(m_texNameBuffer));
-
-		wstring relativePath = m_texNameBuffer;
-
-		//Check if that path points to an asset in the resources folder
-		int index = relativePath.find(L"Resources");
-
-		if (index == -1)
-		{
-			LOG("The resource specified isn't stored in a resource folder!");
-		}
-		else
-		{
-			//Get relative file path
-			relativePath = wstring(m_texNameBuffer).substr(index);
-
-			relativePath.copy(m_texNameBuffer, relativePath.size());
-
-			m_texNameBuffer[relativePath.size()] = L'\0';
-
-			//Load texture if not loaded
-			if (GraphicsManager::GetInstance()->IsTextureLoaded(m_texNameBuffer) == true)
-			{
-				GraphicsManager::GetInstance()->LoadTextureFromFile(m_texNameBuffer);
-			}
-
-			m_palbedoSRV = GraphicsManager::GetInstance()->GetShaderResourceView(m_texNameBuffer);
-		}
-	}
+	EditorUI::Texture("Texture", m_texFilepath, m_palbedoSRV);
 
 	ImGui::Spacing();
 

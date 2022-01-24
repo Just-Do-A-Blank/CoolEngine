@@ -3,6 +3,7 @@
 #include "Engine/Includes/IMGUI/imgui_impl_win32.h"
 #include "Engine/Includes/IMGUI/imgui_impl_dx11.h"
 #include "Engine/ResourceDefines.h"
+#include "Engine/Graphics/SpriteAnimation.h"
 
 #define IMGUI_LEFT_LABEL(func, label, ...) (ImGui::TextUnformatted(label), ImGui::SameLine(), func("##" label, __VA_ARGS__))
 #define FILEPATH_BUFFER_SIZE 200
@@ -74,6 +75,6 @@ public:
 
 	static void Checkbox(const string& label, bool& value, const float& columnWidth = 100.0f);
 
-	static void Texture(const string& label, wstring& filepath, ID3D11ShaderResourceView* psrv, const float& columnWidth = 100.0f);
+	static void Texture(const string& label, wstring& filepath, ID3D11ShaderResourceView*& psrv, const float& columnWidth = 100.0f);
 	static void Animation(const string& label, wstring& filepath, SpriteAnimation& animation, const float& columnWidth = 100.0f);
 };

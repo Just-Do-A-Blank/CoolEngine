@@ -31,7 +31,8 @@ private:
 	int m_layer = 0;
 
 	//ImGui variables
-	WCHAR m_texNameBuffer[FILEPATH_BUFFER_SIZE];
+	wstring m_texFilepath;
+
 	char m_animName[ANIM_NAME_SIZE];
 	string m_animNewName;
 	char m_createDeleteAnimName[ANIM_NAME_SIZE];
