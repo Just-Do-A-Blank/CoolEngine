@@ -20,12 +20,7 @@ void Transform::UpdateMatrix()
 
 	if (m_pparentTransform)
 	{
-		XMMATRIX parentScale = m_pparentTransform->GetScaleMatrix();
-		XMMATRIX parentRotation = m_pparentTransform->GetRotationMatrix();
-		XMMATRIX parentTranslation = m_pparentTransform->GetTranslationMatrix();
-
-		XMMATRIX parentWorld = m_pparentTransform->GetWorldMatrix();
-		m_worldMatrix = m_worldMatrix * parentWorld;
+		m_worldMatrix = m_worldMatrix * m_pparentTransform->GetWorldMatrix();
 	}
 
 
