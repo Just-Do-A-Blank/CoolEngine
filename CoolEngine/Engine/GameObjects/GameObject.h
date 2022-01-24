@@ -33,15 +33,7 @@ private:
 	//ImGui variables
 	wstring m_texFilepath;
 
-	char m_animName[ANIM_NAME_SIZE];
-	string m_animNewName;
 	char m_createDeleteAnimName[ANIM_NAME_SIZE];
-	WCHAR m_animFilepath[FILEPATH_BUFFER_SIZE];
-
-	std::string m_animUpdateName = "";
-
-	bool m_updateAnim = false;
-	bool m_updateAnimName = false;
 
 	std::unordered_map<std::string, SpriteAnimation> m_animations;
 
