@@ -49,7 +49,7 @@ void EditorUI::DrawEditorUI(ID3D11Device* pdevice)
 
 	if (GameManager::GetInstance()->GetSelectedGameObject() != nullptr)
 	{
-		GameManager::GetInstance()->GetSelectedGameObject()->ShowEngineUI(pdevice);
+		GameManager::GetInstance()->GetSelectedGameObject()->ShowEngineUI();
 	}
 
 	ImGui::Render();

@@ -51,6 +51,8 @@ public:
 	/// </summary>
 	void AddParticle(Transform trans, XMFLOAT2 vel, XMFLOAT2 accel, float life);
 
+	void CreateEngineUI() override;
+
 	// Getters
 	bool GetActive() 
 	{ 

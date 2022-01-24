@@ -1,5 +1,7 @@
 #include "ParticleSystem.h"
 
+#include "Engine/EditorUI/EditorUI.h"
+
 ParticleSystem::ParticleSystem(string identifier) : GameObject(identifier)
 {
 	for (unsigned int i = 0; i < PARTICLE_SYSTEM_SIZE; ++i)
@@ -100,4 +102,12 @@ void ParticleSystem::AddParticle(Transform trans, XMFLOAT2 vel, XMFLOAT2 accel, 
 			break;
 		}
 	}
+}
+
+void ParticleSystem::CreateEngineUI()
+{
+	ImGui::Separator();
+	ImGui::Spacing();
+
+	m_transform->CreateEngineUI();
 }

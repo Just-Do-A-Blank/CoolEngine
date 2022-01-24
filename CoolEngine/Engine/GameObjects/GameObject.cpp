@@ -79,16 +79,16 @@ void GameObject::Update()
 	}
 }
 
-void GameObject::ShowEngineUI(ID3D11Device* pdevice)
+void GameObject::ShowEngineUI()
 {
 	ImGui::Begin("Properties");
 
-	CreateEngineUI(pdevice);
+	CreateEngineUI();
 
 	ImGui::End();
 }
 
-void GameObject::CreateEngineUI(ID3D11Device* pdevice)
+void GameObject::CreateEngineUI()
 {
 	ImGui::Separator();
 	ImGui::Spacing();
