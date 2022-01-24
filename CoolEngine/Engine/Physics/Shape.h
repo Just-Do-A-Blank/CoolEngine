@@ -18,7 +18,6 @@ class Shape : UIComponent
 {
 public:
 
-	// To Do - Add line collision, if you want it
 	virtual bool Collide(Shape* shape) = 0;
 	virtual bool Collide(Circle* circle) = 0;
 	virtual bool Collide(Box* box) = 0;
