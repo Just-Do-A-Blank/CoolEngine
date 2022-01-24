@@ -4,6 +4,7 @@
 #include "Engine/Graphics/ConstantBuffer.h"
 #include "Engine/Graphics/ConstantBuffers.h"
 #include "Engine/Graphics/SpriteAnimation.h"
+#include "Engine/Structure/EditorUIComponent.h"
 #include "Engine/ResourceDefines.h"
 
 #include <string>
@@ -16,7 +17,7 @@ struct RenderStruct;
 #define FILEPATH_BUFFER_SIZE 200
 #define ANIM_NAME_SIZE 50
 
-class GameObject
+class GameObject : public EditorUIComponent
 {
 	friend class GameManager;
 private:
@@ -49,7 +50,7 @@ protected:
 	Transform* m_transform;
 	Shape* m_collider = nullptr;
 
-	virtual void CreateEngineUI(ID3D11Device* pdevice);
+	virtual void CreateEngineUI() override;
 
 public:
 	GameObject();
@@ -62,7 +63,7 @@ public:
 	virtual void Render(RenderStruct& renderStruct);
 	virtual void Update();
 
-	virtual void ShowEngineUI(ID3D11Device* pdevice);
+	virtual void ShowEngineUI();
 
 	//Getters
 	Mesh* GetMesh() const;

@@ -1,6 +1,8 @@
 #include "ParticleSystem.h"
 
-ParticleSystem::ParticleSystem()
+#include "Engine/EditorUI/EditorUI.h"
+
+ParticleSystem::ParticleSystem(string identifier) : GameObject(identifier)
 {
 	for (unsigned int i = 0; i < PARTICLE_SYSTEM_SIZE; ++i)
 	{
@@ -12,28 +14,22 @@ ParticleSystem::ParticleSystem()
 	m_isActive = false;
 	m_systemType = SYSTEM_NONE;
 	m_pTexture = nullptr;
-	m_pGameObject = new GameObject();
+
+
+	bool renderable = false;
+	SetIsRenderable(renderable);
 }
 
 ParticleSystem::~ParticleSystem()
 {
 	delete[] m_pParticles;
-	if (m_pTexture)
-	{
-		m_pTexture->Release();
-	}
-
-	delete m_pGameObject;
 }
 
 void ParticleSystem::Initialise(Transform trans, float life, SYSTEM_TYPE type, ID3D11ShaderResourceView* tex)
 {
-	XMFLOAT3 pos = trans.GetPosition();
-	XMFLOAT3 scale = trans.GetScale();
-	XMFLOAT3 rot = trans.GetRotation();
-	m_pGameObject->GetTransform()->SetPosition(pos);
-	m_pGameObject->GetTransform()->SetScale(scale);
-	m_pGameObject->GetTransform()->SetRotation(rot);
+	*m_transform = trans;
+	m_transform->UpdateMatrix();
+
 	m_lifetime = life;
 	m_timer = 0.0f;
 	m_isActive = true;
@@ -62,7 +58,7 @@ void ParticleSystem::Update(const float dTime)
 		// Basic test particle effect
 		if (m_timer >= 1.0f)
 		{
-			AddParticle(*m_pGameObject->GetTransform(), XMFLOAT2(0, 0), XMFLOAT2(0, 0), 0.5f);
+			AddParticle(*m_transform, XMFLOAT2(0, 0), XMFLOAT2(0, 0), 0.5f);
 			m_timer = 0;
 		}
 		break;
@@ -106,4 +102,12 @@ void ParticleSystem::AddParticle(Transform trans, XMFLOAT2 vel, XMFLOAT2 accel, 
 			break;
 		}
 	}
+}
+
+void ParticleSystem::CreateEngineUI()
+{
+	ImGui::Separator();
+	ImGui::Spacing();
+
+	m_transform->CreateEngineUI();
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include "Engine/Physics/Collision.h"
-#include "Engine/Structure/UIComponent.h"
+#include "Engine/Structure/EditorUIComponent.h"
 
 class Transform;
 class Circle;
@@ -14,7 +14,7 @@ enum class ShapeType
 };
 
 // For double dispatch pattern
-class Shape : UIComponent
+class Shape : EditorUIComponent
 {
 public:
 

@@ -1,10 +1,14 @@
 #include "ParticleManager.h"
 
+#include "Engine/Managers/GameManager.h"
+
 ParticleManager::ParticleManager(wstring meshName, wstring vShaderName, wstring pShaderName)
 {
 	for (unsigned int i = 0; i < PARTICLE_MANAGER_SIZE; ++i)
 	{
-		m_pParticleSystems[i] = new ParticleSystem();
+		string systemName = "particleSystem" + to_string(i);
+
+		m_pParticleSystems[i] = GameManager::GetInstance()->CreateGameObject<ParticleSystem>(systemName);
 	}
 
 	Mesh* pmesh = GraphicsManager::GetInstance()->GetMesh(meshName);

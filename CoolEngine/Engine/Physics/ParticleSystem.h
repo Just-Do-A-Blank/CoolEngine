@@ -11,13 +11,12 @@ enum SYSTEM_TYPE
 };
 
 // This class will manage the movement and life of particles in a single effect. It is initialised when the effect begins and deactivated when the effect is over, but never deleted from the memory pool.
-class ParticleSystem
+class ParticleSystem : public GameObject
 {
 private:
 	Particle* m_pParticles[PARTICLE_SYSTEM_SIZE];
 
 	// The box of the particle system carries over to the particles, so right now particles generated will have the same size box.
-	GameObject* m_pGameObject;
 	float m_lifetime;
 	float m_timer;
 	bool m_isActive;
@@ -27,7 +26,7 @@ private:
 	ID3D11ShaderResourceView* m_pTexture;
 
 public:
-	ParticleSystem();
+	ParticleSystem(string identifier);
 	~ParticleSystem();
 
 	/// <summary>
@@ -52,18 +51,52 @@ public:
 	/// </summary>
 	void AddParticle(Transform trans, XMFLOAT2 vel, XMFLOAT2 accel, float life);
 
+	void CreateEngineUI() override;
+
 	// Getters
-	bool						GetActive() { return m_isActive; }
-	ID3D11ShaderResourceView*	GetTexture() { return m_pTexture; }
-	float						GetLife() { return m_lifetime; }
-	Transform*					GetTrans() { return m_pGameObject->GetTransform(); }
-	SYSTEM_TYPE					GetType() { return m_systemType; }
+	bool GetActive() 
+	{ 
+		return m_isActive; 
+	}
+
+	ID3D11ShaderResourceView* GetTexture() 
+	{ 
+		return m_pTexture; 
+	}
+
+	float GetLife() 
+	{ 
+		return m_lifetime; 
+	}
+
+	Transform* GetTrans() 
+	{
+		return m_transform; 
+	}
+
+	SYSTEM_TYPE	GetType() 
+	{ 
+		return m_systemType; 
+	}
 
 	// Setters
-	void SetActive(bool active) { m_isActive = active; }
-	void SetTexture(ID3D11ShaderResourceView* tex) { m_pTexture = tex; }
-	void SetLife(float life) { m_lifetime = life; }
-	void SetPosition(XMFLOAT3 pos) { m_pGameObject->GetTransform()->SetPosition(pos); }
-	void SetScale(XMFLOAT3 scale) { m_pGameObject->GetTransform()->SetScale(scale); }
-	void SetType(SYSTEM_TYPE type) { m_systemType = type; }
+	void SetActive(bool active) 
+	{ 
+		m_isActive = active; 
+	}
+
+	void SetTexture(ID3D11ShaderResourceView* tex) 
+	{ 
+		m_pTexture = tex; 
+	}
+
+	void SetLife(float life) 
+	{ 
+		m_lifetime = life; 
+	}
+
+	void SetType(SYSTEM_TYPE type) 
+	{ 
+		m_systemType = type; 
+	}
 };

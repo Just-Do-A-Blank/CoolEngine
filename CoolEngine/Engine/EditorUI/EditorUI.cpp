@@ -49,7 +49,7 @@ void EditorUI::DrawEditorUI(ID3D11Device* pdevice)
 
 	if (GameManager::GetInstance()->GetSelectedGameObject() != nullptr)
 	{
-		GameManager::GetInstance()->GetSelectedGameObject()->ShowEngineUI(pdevice);
+		GameManager::GetInstance()->GetSelectedGameObject()->ShowEngineUI();
 	}
 
 	ImGui::Render();
@@ -659,7 +659,7 @@ void EditorUI::Animations(const string& label, unordered_map<string, SpriteAnima
 	}
 }
 
-bool EditorUI::DragFloat(const string& label, float& value, const float& columnWidth)
+bool EditorUI::DragFloat(const string& label, float& value, const float& columnWidth, const float& speed, const float& min, const float& max)
 {
 	bool interacted = false;
 
@@ -674,7 +674,7 @@ bool EditorUI::DragFloat(const string& label, float& value, const float& columnW
 	ImGui::PushItemWidth(ImGui::CalcItemWidth());
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
 
-	interacted = ImGui::DragFloat("##Float", &value, 0.1f, 0.0f, 0.0f, "%.2f");
+	interacted = ImGui::DragFloat("##Float", &value, speed, min, max, "%.2f");
 
 	ImGui::PopItemWidth();
 
