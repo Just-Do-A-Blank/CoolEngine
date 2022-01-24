@@ -24,6 +24,8 @@
 #include "Engine/Managers/GameManager.h"
 #include <Engine/Physics/Box.h>
 
+#include "Physics/ParticleManager.h"
+
 #if TOOL
 #include "Engine/Tools/ToolBase.h"
 
@@ -63,6 +65,8 @@ TileMap* g_testMap2;
 EditorUI* g_peditorUI;
 
 Inputs* g_inputController;
+
+ParticleManager* g_particleManager;
 
 #if TOOL
 ToolBase* g_ptoolBase = nullptr;
@@ -232,6 +236,18 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, &observer);
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, &observer);
 	EventManager::Instance()->AddClient(EventType::MouseMoved, &observer);
+
+	g_particleManager = new ParticleManager(QUAD_MESH_NAME, DEFAULT_VERTEX_SHADER_NAME, DEFAULT_PIXEL_SHADER_NAME);
+	XMFLOAT3 pos = XMFLOAT3( 300, 300, 5 );
+	XMFLOAT3 rot = XMFLOAT3(0, 0, 0 );
+	XMFLOAT3 scale = XMFLOAT3(25, 25, 25);
+	Transform trans = Transform();
+	trans.SetPosition(pos);
+	trans.SetRotation(rot);
+	trans.SetScale(scale);
+	g_particleManager->AddSystem(trans, 10.0f, SYSTEM_TEST, DEFAULT_IMGUI_IMAGE);
+
+	GameManager::GetInstance()->GetTimer()->Tick();
 
 #if _DEBUG
 	DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect("DebugRect1", XMFLOAT3(-100.0f, -100.0f, 0.0f), objectScale, DebugDrawManager::DebugColour::BEIGE);
@@ -571,6 +587,8 @@ void Render()
 	GameManager* pgamemanager = GameManager::GetInstance();
 	pgamemanager->Render(renderStruct);
 
+	g_particleManager->Render(renderStruct.m_pcontext);
+
 #if _DEBUG
 	DebugDrawManager::GetInstance()->Render(renderStruct);
 #endif
@@ -593,6 +611,8 @@ void Update()
 
 	pgamemanager->GetTimer()->Tick();
 	pgamemanager->Update();
+
+	g_particleManager->Update(GameManager::GetInstance()->GetTimer()->DeltaTime());
 
 	AudioManager::GetInstance()->Update();
 
