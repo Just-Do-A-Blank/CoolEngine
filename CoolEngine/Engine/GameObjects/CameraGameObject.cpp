@@ -13,9 +13,9 @@ void CameraGameObject::Initialize(XMFLOAT3& position, XMFLOAT3& forwardVector, X
 	m_nearDepth = nearDepth;
 	m_farDepth = farDepth;
 
-	m_transform.Initialize(position, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f));
-	m_transform.SetForwardVector(forwardVector);
-	m_transform.SetUpVector(upVector);
+	m_transform->Initialize(position, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f));
+	m_transform->SetForwardVector(forwardVector);
+	m_transform->SetUpVector(upVector);
 
 	CreateViewMatrix();
 	CreateProjectionMatrix();
@@ -23,9 +23,9 @@ void CameraGameObject::Initialize(XMFLOAT3& position, XMFLOAT3& forwardVector, X
 
 void CameraGameObject::CreateViewMatrix()
 {
-	XMFLOAT3 position = m_transform.GetPosition();
-	XMFLOAT3 forwardVector = m_transform.GetForwardVector();
-	XMFLOAT3 upVector = m_transform.GetUpVector();
+	XMFLOAT3 position = m_transform->GetPosition();
+	XMFLOAT3 forwardVector = m_transform->GetForwardVector();
+	XMFLOAT3 upVector = m_transform->GetUpVector();
 
 	XMStoreFloat4x4(&m_viewMatrix, XMMatrixLookToLH(XMLoadFloat3(&position),
 		XMLoadFloat3(&forwardVector),	XMLoadFloat3(&upVector)));

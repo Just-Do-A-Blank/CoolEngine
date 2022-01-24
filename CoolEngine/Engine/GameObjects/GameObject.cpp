@@ -13,13 +13,14 @@
 GameObject::GameObject()
 {
 	InitGraphics();
+	m_transform = new Transform();
 }
 
 GameObject::GameObject(string identifier)
 {
 	m_identifier = identifier;
-
 	InitGraphics();
+	m_transform = new Transform();
 }
 
 void GameObject::InitGraphics()
