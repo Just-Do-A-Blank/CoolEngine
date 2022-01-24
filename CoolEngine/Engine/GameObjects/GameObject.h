@@ -4,7 +4,6 @@
 #include "Engine/Graphics/ConstantBuffer.h"
 #include "Engine/Graphics/ConstantBuffers.h"
 #include "Engine/Graphics/SpriteAnimation.h"
-#include "Engine/EditorUI/EditorUI.h"
 #include "Engine/ResourceDefines.h"
 
 #include <string>
@@ -14,6 +13,7 @@ class Shape;
 
 struct RenderStruct;
 
+#define FILEPATH_BUFFER_SIZE 200
 #define ANIM_NAME_SIZE 50
 
 class GameObject

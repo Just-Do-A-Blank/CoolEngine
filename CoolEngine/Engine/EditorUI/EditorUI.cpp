@@ -1,12 +1,9 @@
 #include "EditorUI.h"
 #include "Engine/Managers/GameManager.h"
-#include "Engine/GameObjects/GameObject.h"
-
-#include <ShlObj_core.h>
-#include "Engine/Managers/SceneGraph.h"
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/Scene/Scene.h"
 #include "Engine/Includes/IMGUI/imgui_internal.h"
+#include <ShlObj_core.h>
 
 HWND* EditorUI::m_phwnd = nullptr;
 
@@ -30,7 +27,6 @@ void EditorUI::InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, H
 
 EditorUI::EditorUI(ID3D11Device* pdevice)
 {
-	m_pdevice = pdevice;
 }
 
 void EditorUI::DrawEditorUI(ID3D11Device* pdevice)
@@ -92,7 +88,7 @@ void EditorUI::DrawSceneGraphWindow()
 	GameManager* pgameManager = GameManager::GetInstance();
 	static int selected = -1;
 	
-	TreeNode* prootNode = pgameManager->GetRootTreeNode();
+	TreeNode<GameObject>* prootNode = pgameManager->GetRootTreeNode();
 
 	m_base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
 	int nodeCount = -1;
@@ -241,7 +237,7 @@ void EditorUI::DrawSceneManagementWindow()
 	}
 }
 
-void EditorUI::TraverseTree(TreeNode* pcurrentNode, int& nodeCount)
+void EditorUI::TraverseTree(TreeNode<GameObject>* pcurrentNode, int& nodeCount)
 {
 	if (!pcurrentNode)
 	{
