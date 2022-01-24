@@ -505,6 +505,24 @@ void EditorUI::Animation(const string& label, wstring& filepath, SpriteAnimation
 	ImGui::PushItemWidth(ImGui::CalcItemWidth());
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
 
+	if (ImGui::TreeNode(label.c_str()) == true)
+	{
+		//Animation images
+		if (ImGui::ImageButton((void*)(intptr_t)animation.GetCurrentFrame(), DEFAULT_IMGUI_IMAGE_SIZE) == true)
+		{
+			WCHAR buffer[FILEPATH_BUFFER_SIZE];
+
+			EditorUI::OpenFolderExplorer(buffer, FILEPATH_BUFFER_SIZE);
+
+			if (buffer[0] != '\0')
+			{
+				filepath = wstring(buffer);
+			}
+		}
+
+		ImGui::TreePop();
+	}
+
 	ImGui::PopItemWidth();
 
 	ImGui::PopStyleVar();
@@ -512,6 +530,100 @@ void EditorUI::Animation(const string& label, wstring& filepath, SpriteAnimation
 	ImGui::Columns(1);
 
 	ImGui::PopID();
+}
+
+void EditorUI::Animations(const string& label, unordered_map<string, SpriteAnimation>& animations, const float& columnWidth)
+{
+	char animName[ANIM_NAME_SIZE];
+
+	wstring filepath = L"";
+
+	string animOldName = "";
+	string animNewName = "";
+
+	bool updateAnim = false;
+	bool updateAnimName = false;
+
+	for (unordered_map<string, SpriteAnimation>::iterator it = animations.begin(); it != animations.end(); ++it)
+	{
+		ImGui::PushID(label.c_str());
+
+		ImGui::Columns(2);
+
+		ImGui::SetColumnWidth(0, columnWidth);
+
+		strcpy_s(animName, it->first.c_str());
+
+		if (ImGui::InputText("##Name", animName, ANIM_NAME_SIZE) == true)
+		{
+			animOldName = it->first;
+			animNewName = string(animName);
+
+			updateAnimName = animNewName != "";
+		}
+
+		ImGui::NextColumn();
+
+		ImGui::PushItemWidth(ImGui::CalcItemWidth());
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+		if (ImGui::TreeNode(label.c_str()) == true)
+		{
+			//Animation images
+			if (ImGui::ImageButton((void*)(intptr_t)it->second.GetCurrentFrame(), DEFAULT_IMGUI_IMAGE_SIZE) == true)
+			{
+				WCHAR buffer[FILEPATH_BUFFER_SIZE];
+
+				EditorUI::OpenFolderExplorer(buffer, FILEPATH_BUFFER_SIZE);
+
+				filepath = wstring(buffer);
+
+				animOldName = it->first;
+
+				updateAnim = filepath != L"";
+			}
+
+			ImGui::TreePop();
+		}
+
+		ImGui::PopItemWidth();
+
+		ImGui::PopStyleVar();
+
+		ImGui::Columns(1);
+
+		ImGui::PopID();
+	}
+
+	if (updateAnimName == true)
+	{
+		SpriteAnimation tempAnim = animations[animOldName];
+
+		animations.erase(animOldName);
+
+		animations.insert(pair<string, SpriteAnimation>(animNewName, tempAnim));
+	}
+
+	if (updateAnim == true)
+	{
+		SpriteAnimation anim = GraphicsManager::GetInstance()->GetAnimation(filepath);
+
+		if (anim.GetFrames() == nullptr)
+		{
+			if (GraphicsManager::GetInstance()->LoadAnimationFromFile(filepath) == false)
+			{
+				animations[animName] = GraphicsManager::GetInstance()->GetAnimation(filepath);
+			}
+			else
+			{
+				LOG("Failed to load the animation!");
+			}
+		}
+		else
+		{
+			animations[animName] = anim;
+		}
+	}
 }
 
 void EditorUI::DragFloat(const string& label, float& value, const float& columnWidth)
