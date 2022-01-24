@@ -494,6 +494,37 @@ bool EditorUI::Texture(const string& label, wstring& filepath, ID3D11ShaderResou
 	return interacted;
 }
 
+void EditorUI::InputText(const string& label, string& text, const float& columnWidth)
+{
+	ImGui::PushID(label.c_str());
+
+	ImGui::Columns(2);
+
+	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::Text(label.c_str());
+	ImGui::NextColumn();
+
+	ImGui::PushItemWidth(ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+
+	char buffer[FILEPATH_BUFFER_SIZE];
+
+	strcpy_s(buffer, text.c_str());
+
+	ImGui::InputText("##text", buffer, FILEPATH_BUFFER_SIZE);
+
+	text = string(buffer);
+
+	ImGui::PopItemWidth();
+
+	ImGui::PopStyleVar();
+
+	ImGui::Columns(1);
+
+	ImGui::PopID();
+}
+
 void EditorUI::Animation(const string& label, wstring& filepath, SpriteAnimation& animation, const float& columnWidth)
 {
 	ImGui::PushID(label.c_str());

@@ -70,6 +70,8 @@ public:
 
 	static void Checkbox(const string& label, bool& value, const float& columnWidth = 100.0f);
 
+	static void InputText(const string& label, string& text, const float& columnWidth = 100.0f);
+
 	static bool Texture(const string& label, wstring& filepath, ID3D11ShaderResourceView*& psrv, const float& columnWidth = 100.0f);
 	static void Animation(const string& label, wstring& filepath, SpriteAnimation& animation, const float& columnWidth = 100.0f);
 
