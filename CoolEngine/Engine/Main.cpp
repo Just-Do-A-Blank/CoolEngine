@@ -23,6 +23,9 @@
 #include "Scene/Scene.h"
 #include "Engine/Managers/GameManager.h"
 #include <Engine/Physics/Box.h>
+#include "Engine/Managers/UIManager.h"
+#include "Engine/GameUI/GameUIComponent.h"
+#include "Engine/GameUI/ImageComponent.h"
 
 #if TOOL
 #include "Engine/Tools/ToolBase.h"
@@ -232,6 +235,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, &observer);
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, &observer);
 	EventManager::Instance()->AddClient(EventType::MouseMoved, &observer);
+
+
+	UIManager::GetInstance()->CreateCanvas("testCanvas", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
+	UIManager::GetInstance()->CreateUIComponent<ImageComponent>("TestUIImage", XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT3(0.2f, 0.2f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
 
 #if _DEBUG
 	DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect("DebugRect1", XMFLOAT3(-100.0f, -100.0f, 0.0f), objectScale, DebugDrawManager::DebugColour::BEIGE);
@@ -570,6 +577,8 @@ void Render()
 
 	GameManager* pgamemanager = GameManager::GetInstance();
 	pgamemanager->Render(renderStruct);
+
+	UIManager::GetInstance()->Render(renderStruct);
 
 #if _DEBUG
 	DebugDrawManager::GetInstance()->Render(renderStruct);
