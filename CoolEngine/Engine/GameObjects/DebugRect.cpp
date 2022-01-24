@@ -2,7 +2,7 @@
 #include "DebugRect.h"
 #include "Engine/ResourceDefines.h"
 
-DebugRect::DebugRect(wstring albedoName, bool screenSpace)
+DebugRect::DebugRect(wstring albedoName, string identifier, bool screenSpace) : GameObject(identifier)
 {
 	SetAlbedo(albedoName);
 
