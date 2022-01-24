@@ -258,9 +258,10 @@
     <ClInclude Include="Engine\Structure\UIComponent.h">
       <Filter>Engine\Structure</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Managers\UiManager.h" />
-    <ClInclude Include="Engine\GameUI\UiElement.h" />
-    <ClInclude Include="Engine\GameUI\UiCanvas.h" />
+    <ClInclude Include="Engine\Managers\UIManager.h" />
+    <ClInclude Include="Engine\GameUI\GameUIComponent.h" />
+    <ClInclude Include="Engine\GameUI\UICanvas.h" />
+    <ClInclude Include="Engine\GameUI\ImageComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -374,9 +375,10 @@
     <ClCompile Include="Engine\Physics\Shape.cpp">
       <Filter>Engine\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Managers\UiManager.cpp" />
-    <ClCompile Include="Engine\GameUI\UiElement.cpp" />
-    <ClCompile Include="Engine\GameUI\UiCanvas.cpp" />
+    <ClCompile Include="Engine\Managers\UIManager.cpp" />
+    <ClCompile Include="Engine\GameUI\GameUIComponent.cpp" />
+    <ClCompile Include="Engine\GameUI\UICanvas.cpp" />
+    <ClCompile Include="Engine\GameUI\ImageComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">
@@ -388,6 +390,6 @@
     <FxCompile Include="Engine\Graphics\Shaders\DummyPosTex.hlsl">
       <Filter>Engine\Graphics\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Engine\Graphics\Shaders\PassthroughVertex.hlsl" />
+    <FxCompile Include="Engine\Graphics\Shaders\ScreenSpaceVertex.hlsl" />
   </ItemGroup>
 </Project>
