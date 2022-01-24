@@ -25,7 +25,12 @@ private:
 
 	Timer m_timer;
 
+	string m_workingDirectory = "";
+	wstring m_wideWorkingDirectory = L"";
+
 public:
+	void Init();
+
 	Timer* GetTimer();
 
 	unordered_map<string, Scene*> m_sceneMap;
@@ -40,6 +45,9 @@ public:
 	void DeleteScene(Scene* pscene);
 	void DeleteSceneUsingIdentifier(string sceneIdentifier);
 	void DeleteSelectedScene();
+
+	string GetWorkingDirectory();
+	wstring GetWideWorkingDirectory();
 
 	Scene* GetCurrentScene();
 

@@ -6,6 +6,18 @@
 #include "Engine/GameObjects/PlayerGameObject.h"
 #include "GraphicsManager.h"
 
+#include <direct.h>
+
+void GameManager::Init()
+{
+    char buffer[FILEPATH_BUFFER_SIZE];
+    _getcwd(buffer, FILEPATH_BUFFER_SIZE);
+
+    m_workingDirectory = string(buffer);
+
+    m_wideWorkingDirectory = wstring(m_workingDirectory.begin(), m_workingDirectory.end());
+}
+
 Timer* GameManager::GetTimer()
 {
     return &m_timer;
@@ -42,6 +54,16 @@ void GameManager::DeleteSceneUsingIdentifier(string sceneIdentifier)
 void GameManager::DeleteSelectedScene()
 {
     m_sceneMap.erase(m_pcurrentScene->GetSceneIdentifier());
+}
+
+string GameManager::GetWorkingDirectory()
+{
+    return m_workingDirectory;
+}
+
+wstring GameManager::GetWideWorkingDirectory()
+{
+    return m_wideWorkingDirectory;
 }
 
 Scene* GameManager::GetCurrentScene()

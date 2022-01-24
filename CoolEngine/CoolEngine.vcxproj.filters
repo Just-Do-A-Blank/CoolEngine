@@ -258,6 +258,9 @@
     <ClInclude Include="Engine\Structure\UIComponent.h">
       <Filter>Engine\Structure</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Tools\AnimationTool.h">
+      <Filter>Engine\Tools</Filter>
+    </ClInclude>
     <ClInclude Include="Engine\Managers\UiManager.h" />
     <ClInclude Include="Engine\GameUI\UiElement.h" />
     <ClInclude Include="Engine\GameUI\UiCanvas.h" />
@@ -373,6 +376,9 @@
     </ClCompile>
     <ClCompile Include="Engine\Physics\Shape.cpp">
       <Filter>Engine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Tools\AnimationTool.cpp">
+      <Filter>Engine\Tools</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Managers\UiManager.cpp" />
     <ClCompile Include="Engine\GameUI\UiElement.cpp" />
