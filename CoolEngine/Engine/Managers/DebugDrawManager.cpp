@@ -21,7 +21,7 @@ void DebugDrawManager::Init(ID3D11Device* pd3dDevice)
 
 void DebugDrawManager::CreateWorldSpaceDebugRect(string identifier, XMFLOAT3& position, XMFLOAT3& dimension, DebugColour colour)
 {
-	DebugRect* debugRect = new DebugRect(m_albedoMap.find(colour)->second, false);
+	DebugRect* debugRect = new DebugRect(m_albedoMap.find(colour)->second, identifier, false);
 	debugRect->GetTransform()->SetPosition(position);
 	debugRect->GetTransform()->SetScale(dimension);
 
@@ -30,7 +30,7 @@ void DebugDrawManager::CreateWorldSpaceDebugRect(string identifier, XMFLOAT3& po
 
 void DebugDrawManager::CreateScreenSpaceDebugRect(string identifier, XMFLOAT3& position, XMFLOAT3& dimension, DebugColour colour)
 {
-	DebugRect* debugRect = new DebugRect(m_albedoMap.find(colour)->second, true);
+	DebugRect* debugRect = new DebugRect(m_albedoMap.find(colour)->second, identifier, true);
 	debugRect->GetTransform()->SetPosition(position);
 	debugRect->GetTransform()->SetScale(dimension);
 

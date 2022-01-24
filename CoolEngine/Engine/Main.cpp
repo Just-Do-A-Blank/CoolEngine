@@ -57,12 +57,13 @@ ID3D11RasterizerState* g_prasterState = nullptr;
 CameraGameObject* g_pcamera = nullptr;
 PlayerGameObject* g_pplayer = nullptr;
 
+TileMap* g_testMap1;
+
+TileMap* g_testMap2;
+
 EditorUI* g_peditorUI;
 
 Inputs* g_inputController;
-
-int g_Width = 1920;
-int g_Height = 1080;
 
 #if TOOL
 ToolBase* g_ptoolBase = nullptr;
@@ -116,8 +117,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	XMFLOAT3 cameraForward = XMFLOAT3(0, 0, 1);
 	XMFLOAT3 cameraUp = XMFLOAT3(0, 1, 0);
 
-	float windowWidth = g_Width;
-	float windowHeight = g_Height;
+	float windowWidth = GraphicsManager::GetInstance()->GetWindowDimensions().x;
+	float windowHeight = GraphicsManager::GetInstance()->GetWindowDimensions().y;
 
 	float nearDepth = 0.01f;
 	float farDepth = 1000.0f;
@@ -140,6 +141,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	g_ptoolBase->Init(g_pd3dDevice);
 #else
+#endif
 
 	//Music
 	AudioManager::GetInstance()->LoadMusic(TEST_MUSIC);
@@ -188,7 +190,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->GetTransform()->SetScale(objectScale);
 	pgameObject->SetShape(pbox);
 
-	//Init second gameObject
+	////Init second gameObject
 	pgameObject = pgameManager->GetGameObjectUsingIdentifier<GameObject>(obj1Name);
 
 	objectPos = XMFLOAT3(10.0f, 0.0f, 0.0f);
@@ -223,6 +225,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
 	pgameObject->SetShape(pbox);
+	pgameObject->AddAnimation("Test", TEST_ANIM);
+
+	g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, 0, 0), XMFLOAT3(25, 25, 25), "TestMap");
 
 	ExampleObserver observer(new int(10), pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName));
 	EventManager::Instance()->AddClient(EventType::KeyPressed, &observer);
@@ -238,9 +243,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 #endif //_DEBUG
 
 	//Create test Tile Map
-	TileMap TestMap = TileMap(10, 10, "TestMap", XMFLOAT3(1,1,0));
-	TestMap.testFunc();
-#endif
 
 	// Main message loop
 	MSG msg = { 0 };
@@ -336,7 +338,7 @@ inline HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow)
 
 	// Create window
 	g_hInstance = hInstance;
-	RECT rc = { 0, 0, g_Width, g_Height };
+	RECT rc = { 0, 0, GraphicsManager::GetInstance()->GetWindowDimensions().x, GraphicsManager::GetInstance()->GetWindowDimensions().y };
 
 	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 	g_hWnd = CreateWindow(L"TutorialWindowClass", L"Cool Engine",
@@ -601,8 +603,10 @@ void Update()
 
 	EventManager::Instance()->ProcessEvents();
 
+	g_peditorUI->Update();
+
 	g_inputController->Update();
-	
+
 #if TOOL
 	g_ptoolBase->Update();
 #endif

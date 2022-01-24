@@ -53,69 +53,81 @@ bool Collision::BoxCollisionAndResponse(Box* player, Box* object)
 
 	if (middleP.x + halfSizeP.x > middleO.x - halfSizeO.x && middleP.x - halfSizeP.x < middleO.x + halfSizeO.x && middleP.y + halfSizeP.y > middleO.y - halfSizeO.y && middleP.y - halfSizeP.y < middleO.y + halfSizeO.y)
 	{
-		XMFLOAT2 vertexToPlayer = XMFLOAT2(middleP.x - middleO.x, middleP.y - middleO.y);
 		// Left to right - positive
 		// Bottom to top - positive
-		if (vertexToPlayer.y > 0 && vertexToPlayer.x < vertexToPlayer.y && vertexToPlayer.x > vertexToPlayer.y * -1)
+
+		// Based on stackoverflow.com/questions/46172953/aabb-collision-resolution-slipping-sides
+		XMFLOAT2 penetration = { 0, 0 };
+		XMFLOAT2 vertexToPlayerCentre = XMFLOAT2(middleP.x - middleO.x, middleP.y - middleO.y);
+		XMFLOAT2 minDistance = XMFLOAT2(halfSizeO.x + halfSizeP.x, halfSizeO.y + halfSizeP.y);
+		if (abs(vertexToPlayerCentre.x) < minDistance.x && abs(vertexToPlayerCentre.y) < minDistance.y)
 		{
-			// Up side
-			XMFLOAT3 pos = { middleP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_transform->GetPosition().z };
-			player->m_transform->SetPosition(pos);
+			penetration.x = ( vertexToPlayerCentre.x > 0 ? minDistance.x - vertexToPlayerCentre.x : -minDistance.x - vertexToPlayerCentre.x );
+			penetration.y = ( vertexToPlayerCentre.y > 0 ? minDistance.y - vertexToPlayerCentre.y : -minDistance.y - vertexToPlayerCentre.y );
 		}
-		else if (vertexToPlayer.y < 0 && vertexToPlayer.x > vertexToPlayer.y && vertexToPlayer.x < vertexToPlayer.y * -1)
+
+		if (abs(penetration.x) < abs(penetration.y))
 		{
-			// Down side
-			XMFLOAT3 pos = { middleP.x, middleO.y - halfSizeO.y - halfSizeP.y, player->m_transform->GetPosition().z };
-			player->m_transform->SetPosition(pos);
-		}
-		else if (vertexToPlayer.x > 0 && vertexToPlayer.y < vertexToPlayer.x && vertexToPlayer.y > vertexToPlayer.x * -1)
-		{
-			// Right side
-			XMFLOAT3 pos = { middleO.x + halfSizeO.x + halfSizeP.x, middleP.y, player->m_transform->GetPosition().z };
-			player->m_transform->SetPosition(pos);
-		}
-		else if (vertexToPlayer.x < 0 && vertexToPlayer.y > vertexToPlayer.x && vertexToPlayer.y < vertexToPlayer.x * -1)
-		{
-			// Left side
-			XMFLOAT3 pos = { middleO.x - halfSizeO.x - halfSizeP.x, middleP.y, player->m_transform->GetPosition().z };
-			player->m_transform->SetPosition(pos);
-		}
-		else if (vertexToPlayer.x == vertexToPlayer.y)
-		{
-			if (vertexToPlayer.x > 0)
+			if (penetration.x < 0)
 			{
-				// Top right corner
-				XMFLOAT3 pos = { middleO.x + halfSizeO.x + halfSizeP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_transform->GetPosition().z };
+				// Left side
+				XMFLOAT3 pos = { middleO.x - halfSizeO.x - halfSizeP.x, middleP.y, player->m_transform->GetPosition().z };
 				player->m_transform->SetPosition(pos);
 			}
-			else if(vertexToPlayer.x < 0)
+			else
 			{
-				// Bottom left corner
-				XMFLOAT3 pos = { middleO.x - halfSizeO.x - halfSizeP.x, middleO.y - halfSizeO.y - halfSizeP.y, player->m_transform->GetPosition().z };
+				// Right side
+				XMFLOAT3 pos = { middleO.x + halfSizeO.x + halfSizeP.x, middleP.y, player->m_transform->GetPosition().z };
 				player->m_transform->SetPosition(pos);
 			}
 		}
-		else if (vertexToPlayer.x == vertexToPlayer.y * -1)
+		else if (abs(penetration.x) > abs(penetration.y))
 		{
-			if (vertexToPlayer.x > 0)
+			if (penetration.y < 0)
 			{
-				// Bottom right corner
-				XMFLOAT3 pos = { middleO.x + halfSizeO.x + halfSizeP.x, middleO.y - halfSizeO.y - halfSizeP.y, player->m_transform->GetPosition().z };
+				// Bottom side
+				XMFLOAT3 pos = { middleP.x, middleO.y - halfSizeO.y - halfSizeP.y, player->m_transform->GetPosition().z };
 				player->m_transform->SetPosition(pos);
 			}
-			else if (vertexToPlayer.x < 0)
+			else
 			{
-				// Top left corner
-				XMFLOAT3 pos = { middleO.x - halfSizeO.x - halfSizeP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_transform->GetPosition().z };
+				// Top side
+				XMFLOAT3 pos = { middleP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_transform->GetPosition().z };
 				player->m_transform->SetPosition(pos);
 			}
 		}
 		else
 		{
-			// Default to top side
-			// Should only happen if player is somehow at exact position of object
-			XMFLOAT3 pos = { middleP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_transform->GetPosition().z };
-			player->m_transform->SetPosition(pos);
+			if (penetration.x > 0)
+			{
+				if (penetration.y > 0)
+				{
+					// Top right corner
+					XMFLOAT3 pos = { middleO.x + halfSizeO.x + halfSizeP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_transform->GetPosition().z };
+					player->m_transform->SetPosition(pos);
+				}
+				else
+				{
+					// Bottom right corner
+					XMFLOAT3 pos = { middleO.x + halfSizeO.x + halfSizeP.x, middleO.y - halfSizeO.y - halfSizeP.y, player->m_transform->GetPosition().z };
+					player->m_transform->SetPosition(pos);
+				}
+			}
+			else if(penetration.x < 0)
+			{
+				if (penetration.y > 0)
+				{
+					// Top left corner
+					XMFLOAT3 pos = { middleO.x - halfSizeO.x - halfSizeP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_transform->GetPosition().z };
+					player->m_transform->SetPosition(pos);
+				}
+				else
+				{
+					// Top right corner
+					XMFLOAT3 pos = { middleO.x + halfSizeO.x + halfSizeP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_transform->GetPosition().z };
+					player->m_transform->SetPosition(pos);
+				}
+			}
 		}
 
 		return true;
@@ -137,30 +149,30 @@ bool Collision::CircleBoxCollisionAndResponse(Circle* circle, Box* box)
 
 	if (distMagnitude < circle->m_radius)
 	{
+		// Left to right - positive
+		// Bottom to top - positive
+
 		XMFLOAT2 norm = { distance.x / distMagnitude, distance.y / distMagnitude };
 		XMFLOAT2 penetration = { norm.x * circle->m_radius, norm.y * circle->m_radius };
 		penetration = { penetration.x - distance.x, penetration.y - distance.y };
 
-		XMFLOAT2 vertexToPlayer = XMFLOAT2(circle->m_transform->GetPosition().x - middle.x, circle->m_transform->GetPosition().y - middle.y);
-		// Left to right - positive
-		// Bottom to top - positive
-		if (vertexToPlayer.y > 0 && vertexToPlayer.x < vertexToPlayer.y && vertexToPlayer.x > vertexToPlayer.y * -1 || vertexToPlayer.y < 0 && vertexToPlayer.x > vertexToPlayer.y && vertexToPlayer.x < vertexToPlayer.y * -1)
+		XMFLOAT2 penetrationDepth = { 0, 0 };
+		XMFLOAT2 minDistance = { halfSize.x + circle->m_radius, halfSize.y + circle->m_radius };
+		if (abs(distance.x) < minDistance.x && abs(distance.y) < minDistance.y)
 		{
-			// Up/Down side
-			XMFLOAT3 pos = { circle->m_transform->GetPosition().x, circle->m_transform->GetPosition().y - penetration.y, circle->m_transform->GetPosition().z };
-			circle->m_transform->SetPosition(pos);
+			penetrationDepth.x = (distance.x > 0 ? minDistance.x - distance.x : -minDistance.x - distance.x);
+			penetrationDepth.y = (distance.y > 0 ? minDistance.y - distance.y : -minDistance.y - distance.y);
 		}
-		else if (vertexToPlayer.x > 0 && vertexToPlayer.y < vertexToPlayer.x && vertexToPlayer.y > vertexToPlayer.x * -1 || vertexToPlayer.x < 0 && vertexToPlayer.y > vertexToPlayer.x && vertexToPlayer.y < vertexToPlayer.x * -1)
+
+		if (abs(penetrationDepth.x) < abs(penetrationDepth.y))
 		{
-			// Left/Right side
-			//XMFLOAT3 pos = { middle.x + halfSize.x + circle->m_radius, circle->m_transform->GetPosition().y, circle->m_transform->GetPosition().z };
-			XMFLOAT3 pos = { circle->m_transform->GetPosition().x - penetration.x, circle->m_transform->GetPosition().y, circle->m_transform->GetPosition().z };
-			circle->m_transform->SetPosition(pos);
+			XMFLOAT3 pos = { box->m_transform->GetPosition().x + penetration.x, box->m_transform->GetPosition().y + penetration.y, box->m_transform->GetPosition().z };
+			box->m_transform->SetPosition(pos);
 		}
-		else
+		else if (abs(penetrationDepth.x) > abs(penetrationDepth.y))
 		{
-			XMFLOAT3 pos = { circle->m_transform->GetPosition().x - penetration.x, circle->m_transform->GetPosition().y - penetration.y, circle->m_transform->GetPosition().z };
-			circle->m_transform->SetPosition(pos);
+			XMFLOAT3 pos = { box->m_transform->GetPosition().x + penetration.x, box->m_transform->GetPosition().y + penetration.y, box->m_transform->GetPosition().z };
+			box->m_transform->SetPosition(pos);
 		}
 
 		return true;
@@ -177,8 +189,6 @@ bool Collision::CircleCollisionAndResponse(Circle* circle1, Circle* circle2)
 	float m_distanceBetweenCircles = sqrt((pos2.x - pos1.x) * (pos2.x - pos1.x) + (pos2.y - pos1.y) * (pos2.y - pos1.y));
 	if (m_distanceBetweenCircles <= circle1->m_radius + circle2->m_radius)
 	{
-		// To Do - test it!
-
 		XMFLOAT2 vectorToPlayer = XMFLOAT2( pos1.x - pos2.x, pos1.y - pos2.y );
 		float penetration = circle1->m_radius + circle2->m_radius - m_distanceBetweenCircles;
 

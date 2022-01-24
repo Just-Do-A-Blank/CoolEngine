@@ -183,7 +183,7 @@ bool GraphicsManager::LoadAnimationFromFile(wstring animName, size_t maxSize, DD
 
 		if (LoadTextureFromFile(frameName, maxSize, alphaMode) == false)
 		{
-			LOG("Failed tp load animation from file as failed to load animation frame!");
+			LOG("Failed to load animation from file as failed to load animation frame!");
 
 			return false;
 		}
@@ -194,6 +194,11 @@ bool GraphicsManager::LoadAnimationFromFile(wstring animName, size_t maxSize, DD
 	m_animationFrames[animName] = pframes;
 
 	return true;
+}
+
+void GraphicsManager::SetWindowDimensions(XMFLOAT2 dimensions)
+{
+	m_windowDimensions = dimensions;
 }
 
 ID3D11VertexShader* GraphicsManager::GetVertexShader(wstring name) const
@@ -266,6 +271,11 @@ int GraphicsManager::GetNumLayers()
 bool GraphicsManager::IsTextureLoaded(wstring filename)
 {
 	return m_textureSRVs.count(filename) != 0;
+}
+
+const XMFLOAT2& GraphicsManager::GetWindowDimensions() const
+{
+	return m_windowDimensions;
 }
 
 ID3D11InputLayout* GraphicsManager::GetInputLayout(InputLayouts inputLayout) const
@@ -400,6 +410,7 @@ void GraphicsManager::CreateSamplers()
 void GraphicsManager::CompileDefaultShaders()
 {
 	CompileShaderFromFile(DEFAULT_VERTEX_SHADER_NAME, "main", "vs_4_0");
+	CompileShaderFromFile(PASSTHROUGH_VERTEX_SHADER_NAME, "main", "vs_4_0");
 	CompileShaderFromFile(DEFAULT_PIXEL_SHADER_NAME, "main", "ps_4_0");
 }
 

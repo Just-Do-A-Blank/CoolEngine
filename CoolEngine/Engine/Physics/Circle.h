@@ -1,5 +1,7 @@
 #pragma once
 #include "Engine/Physics/Shape.h"
+#include "Engine/EditorUI/EditorUI.h"
+
 
 /// <summary>
 /// Circle class that contains its position and the radius. Used for Circle collisions.

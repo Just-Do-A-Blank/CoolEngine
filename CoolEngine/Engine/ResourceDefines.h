@@ -4,6 +4,8 @@
 #define DEFAULT_IMGUI_IMAGE L"Resources\\Sprites\\Brick.dds"
 #define TEST2 L"Resources\\Sprites\\Test2.dds"
 
+#define DEFAULT_TILE L"Resources\\Sprites\\Default_Tile.dds"
+
 //Debug
 #define DEBUG_COLOUR L"Resources\\DebugColours\\DebugColour"
 
@@ -18,9 +20,14 @@
 
 //Vertex shaders
 #define DEFAULT_VERTEX_SHADER_NAME L"Engine\\Graphics\\Shaders\\BasicVertex.hlsl"
+#define PASSTHROUGH_VERTEX_SHADER_NAME L"Engine\\Graphics\\Shaders\\PassthroughVertex.hlsl"
 
 //Pixel shaders
 #define DEFAULT_PIXEL_SHADER_NAME L"Engine\\Graphics\\Shaders\\BasicPixel.hlsl"
 
 //Misc
 #define POS_TEX_DUMMY_FILE_NAME L"Engine\\Graphics\\Shaders\\DummyPosTex.hlsl"
+
+//TileMaps
+#define TEST_MAP L"Resources\\Levels\\TileMaps\\TestMap.txt"
+
