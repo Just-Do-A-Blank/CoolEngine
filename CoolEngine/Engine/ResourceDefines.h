@@ -20,7 +20,7 @@
 
 //Vertex shaders
 #define DEFAULT_VERTEX_SHADER_NAME L"Engine\\Graphics\\Shaders\\BasicVertex.hlsl"
-#define PASSTHROUGH_VERTEX_SHADER_NAME L"Engine\\Graphics\\Shaders\\PassthroughVertex.hlsl"
+#define SCREENSPACE_VERTEX_SHADER_NAME L"Engine\\Graphics\\Shaders\\ScreenSpaceVertex.hlsl"
 
 //Pixel shaders
 #define DEFAULT_PIXEL_SHADER_NAME L"Engine\\Graphics\\Shaders\\BasicPixel.hlsl"

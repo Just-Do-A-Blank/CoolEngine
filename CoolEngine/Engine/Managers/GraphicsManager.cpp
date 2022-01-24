@@ -408,7 +408,7 @@ void GraphicsManager::CreateSamplers()
 void GraphicsManager::CompileDefaultShaders()
 {
 	CompileShaderFromFile(DEFAULT_VERTEX_SHADER_NAME, "main", "vs_4_0");
-	CompileShaderFromFile(PASSTHROUGH_VERTEX_SHADER_NAME, "main", "vs_4_0");
+	CompileShaderFromFile(SCREENSPACE_VERTEX_SHADER_NAME, "main", "vs_4_0");
 	CompileShaderFromFile(DEFAULT_PIXEL_SHADER_NAME, "main", "ps_4_0");
 }
 
