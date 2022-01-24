@@ -2,9 +2,44 @@
   "MetaData": [
     {
       "NumberOfObject": 7,
+      "NumberOfTiles": 2,
       "NumberOfTileZones": 1,
       "NumberOfParticlesSystems": 1,
       "NumberOfParticles": 1
+    }
+  ],
+  "TilesData": [
+    {
+      "Name": "Tile1",
+      "CountPerScene": 1,
+      "ColliderType": "BoxCollider",
+      "IsCollideable": true,
+      "IsRenderable": true,
+      "IsTrigger": false,
+      "Position": [ 0.0, 0.0, 0.0 ],
+      "Rotation": [ 0.0, 0.0, 0.0 ],
+      "Scale": [ 100.0, 100.0, 100.0 ],
+      "TextureLocation": "Resources\\Sprites\\Brick.dds",
+      "VertexShaderLocation": "Engine\\Graphics\\Shaders\\BasicVertex.hlsl",
+      "PixelShaderLocation": "Engine\\Graphics\\Shaders\\BasicPixel.hlsl",
+      "AlbedoLocation": "Resources\\Sprites\\Brick.dds",
+      "AnimationLocation": "Resources/Sprites/Brick.dds"
+    },
+    {
+      "Name": "Tile2",
+      "CountPerScene": 1,
+      "ColliderType": "BoxCollider",
+      "IsCollideable": true,
+      "IsRenderable": true,
+      "IsTrigger": false,
+      "Position": [ 0.0, 0.0, 0.0 ],
+      "Rotation": [ 0.0, 0.0, 0.0 ],
+      "Scale": [ 100.0, 100.0, 100.0 ],
+      "TextureLocation": "Resources\\Sprites\\Brick.dds",
+      "VertexShaderLocation": "Engine\\Graphics\\Shaders\\BasicVertex.hlsl",
+      "PixelShaderLocation": "Engine\\Graphics\\Shaders\\BasicPixel.hlsl",
+      "AlbedoLocation": "Resources\\Sprites\\Brick.dds",
+      "AnimationLocation": "Resources/Sprites/Brick.dds"
     }
   ],
   "TileMap": [
@@ -32,7 +67,7 @@
       "ColliderType": "BoxCollider",
       "IsCollideable": true,
       "IsRenderable": true,
-      "IsTrigger": true,
+      "IsTrigger": false,
       "Position": [ 300.0, 400.0, 0.0 ],
       "Rotation": [ 0.0, 0.0, 0.0 ],
       "Scale": [ 100.0, 100.0, 100.0 ],
@@ -40,99 +75,77 @@
       "VertexShaderLocation": "Engine\\Graphics\\Shaders\\BasicVertex.hlsl",
       "PixelShaderLocation": "Engine\\Graphics\\Shaders\\BasicPixel.hlsl",
       "AlbedoLocation": "Resources\\Sprites\\Brick.dds",
-      "NumberOfAnimations": 2,
-      "AnimationFile": [ "TestAnim", "TestAnim" ],
-
-      "AnimationFrameTime": [ 0.2, 0.2 ]
+      "AnimationLocation": "Resources/Sprites/Brick.dds"
     },
     {
       "Name": "Object1",
       "ColliderType": "BoxCollider",
       "IsCollideable": true,
       "IsRenderable": true,
-      "IsTrigger": true,
+      "IsTrigger": false,
       "Position": [ 190.0, 430.0, 0.0 ],
       "Rotation": [ 0.0, 0.0, 0.0 ],
       "Scale": [ 100.0, 100.0, 100.0 ],
       "TextureLocation": "Resources\\Sprites\\Brick.dds",
       "VertexShaderLocation": "Engine\\Graphics\\Shaders\\BasicVertex.hlsl",
       "PixelShaderLocation": "Engine\\Graphics\\Shaders\\BasicPixel.hlsl",
-      "AlbedoLocation": "Resources\\Sprites\\Brick.dds",
-      "NumberOfAnimations": 2,
-      "AnimationFile": [ "TestAnim", "TestAnim" ],
-
-      "AnimationFrameTime": [ 0.2, 0.2 ]
+      "AlbedoLocation": "Resources\\Sprites\\Brick.dds"
     },
     {
       "Name": "Object2",
       "ColliderType": "BoxCollider",
       "IsCollideable": true,
       "IsRenderable": true,
-      "IsTrigger": true,
+      "IsTrigger": false,
       "Position": [ -750.0, 12.0, 0.0 ],
       "Rotation": [ 0.0, 0.0, 0.0 ],
       "Scale": [ 100.0, 100.0, 100.0 ],
       "TextureLocation": "Resources\\Sprites\\Brick.dds",
       "VertexShaderLocation": "Engine\\Graphics\\Shaders\\BasicVertex.hlsl",
       "PixelShaderLocation": "Engine\\Graphics\\Shaders\\BasicPixel.hlsl",
-      "AlbedoLocation": "Resources\\Sprites\\Brick.dds",
-      "NumberOfAnimations": 2,
-      "AnimationFile": [ "TestAnim", "TestAnim" ],
-      "AnimationFrameTime": [ 0.2, 0.2 ]
+      "AlbedoLocation": "Resources\\Sprites\\Brick.dds"
     },
     {
       "Name": "Object3",
       "ColliderType": "BoxCollider",
       "IsCollideable": true,
       "IsRenderable": true,
-      "IsTrigger": true,
+      "IsTrigger": false,
       "Position": [ 500.0, 600.0, 0.0 ],
       "Rotation": [ 0.0, 0.0, 0.0 ],
       "Scale": [ 100.0, 100.0, 100.0 ],
       "TextureLocation": "Resources\\Sprites\\Brick.dds",
       "VertexShaderLocation": "Engine\\Graphics\\Shaders\\BasicVertex.hlsl",
       "PixelShaderLocation": "Engine\\Graphics\\Shaders\\BasicPixel.hlsl",
-      "AlbedoLocation": "Resources\\Sprites\\Brick.dds",
-      "NumberOfAnimations": 2,
-      "AnimationFile": [ "TestAnim", "TestAnim" ],
-
-      "AnimationFrameTime": [ 0.2, 0.2 ]
+      "AlbedoLocation": "Resources\\Sprites\\Brick.dds"
     },
     {
       "Name": "Object4",
       "ColliderType": "BoxCollider",
       "IsCollideable": true,
       "IsRenderable": true,
-      "IsTrigger": true,
+      "IsTrigger": false,
       "Position": [ -600.0, 600.0, 0.0 ],
       "Rotation": [ 0.0, 0.0, 0.0 ],
       "Scale": [ 100.0, 100.0, 100.0 ],
       "TextureLocation": "Resources\\Sprites\\Brick.dds",
       "VertexShaderLocation": "Engine\\Graphics\\Shaders\\BasicVertex.hlsl",
       "PixelShaderLocation": "Engine\\Graphics\\Shaders\\BasicPixel.hlsl",
-      "AlbedoLocation": "Resources\\Sprites\\Brick.dds",
-      "NumberOfAnimations": 2,
-      "AnimationFile": [ "TestAnim", "TestAnim" ],
-
-      "AnimationFrameTime": [ 0.2, 0.2 ]
+      "AlbedoLocation": "Resources\\Sprites\\Brick.dds"
     },
     {
       "Name": "Object5",
       "ColliderType": "BoxCollider",
       "IsCollideable": true,
       "IsRenderable": true,
-      "IsTrigger": true,
-      "Position": [ 800.0, -200.0, 0.0 ],
+      "IsTrigger": false,
+      "Position": [ 0.0, 0.0, 0.0 ],
       "Rotation": [ 0.0, 0.0, 0.0 ],
       "Scale": [ 100.0, 100.0, 100.0 ],
       "TextureLocation": "Resources\\Sprites\\Brick.dds",
       "VertexShaderLocation": "Engine\\Graphics\\Shaders\\BasicVertex.hlsl",
       "PixelShaderLocation": "Engine\\Graphics\\Shaders\\BasicPixel.hlsl",
-      "AlbedoLocation": "Resources\\Sprites\\Brick.dds",
-      "NumberOfAnimations": 2,
-      "AnimationFile": [ "TestAnim", "TestAnim" ],
-
-      "AnimationFrameTime": [ 0.2, 0.2 ]
+      "AlbedoLocation": "Resources\\Sprites\\Brick.dds"
     },
     {
       "Name": "Object6",
@@ -140,18 +153,14 @@
       "CircleRadius": 1,
       "IsCollideable": true,
       "IsRenderable": true,
-      "IsTrigger": true,
-      "Position": [ -900.0, -300.0, 0.0 ],
+      "IsTrigger": false,
+      "Position": [ 0.0, 0.0, 0.0 ],
       "Rotation": [ 0.0, 0.0, 0.0 ],
       "Scale": [ 100.0, 100.0, 100.0 ],
       "TextureLocation": "Resources\\Sprites\\Brick.dds",
       "VertexShaderLocation": "Engine\\Graphics\\Shaders\\BasicVertex.hlsl",
       "PixelShaderLocation": "Engine\\Graphics\\Shaders\\BasicPixel.hlsl",
-      "AlbedoLocation": "Resources\\Sprites\\Brick.dds",
-      "NumberOfAnimations": 2,
-      "AnimationFile": [ "TestAnim", "TestAnim" ],
-
-      "AnimationFrameTime": [ 0.2, 0.2 ]
+      "AlbedoLocation": "Resources\\Sprites\\Brick.dds"
     },
     {
       "Name": "Object7 ",
@@ -159,17 +168,13 @@
       "IsCollideable": true,
       "IsRenderable": true,
       "IsTrigger": false,
-      "Position": [ 780.0, -600.0, 0.0 ],
+      "Position": [ 0.0, 0.0, 0.0 ],
       "Rotation": [ 0.0, 0.0, 0.0 ],
       "Scale": [ 100.0, 100.0, 100.0 ],
       "TextureLocation": "Resources\\Sprites\\Brick.dds",
       "VertexShaderLocation": "Engine\\Graphics\\Shaders\\BasicVertex.hlsl",
       "PixelShaderLocation": "Engine\\Graphics\\Shaders\\BasicPixel.hlsl",
-      "AlbedoLocation": "Resources\\Sprites\\Brick.dds",
-      "NumberOfAnimations": 2,
-      "AnimationFile": [ "TestAnim", "TestAnim" ],
-
-      "AnimationFrameTime": [ 0.2, 0.2 ]
+      "AlbedoLocation": "Resources\\Sprites\\Brick.dds"
     }
   ],
   "ParticleSystemData": [

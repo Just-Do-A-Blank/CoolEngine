@@ -10,7 +10,9 @@
 #include "Engine/Scene/Scene.h"
 #include  "Engine/Includes/json.hpp"
 #include "Engine/TileMap/TileMap/TileMap.h"
-#include "FileIOCache.h"
+#include "Engine/FileIO/FileIOCache.h"
+#include "Engine/Graphics/SpriteAnimation.h"
+
 #include <fstream>
 #include <iostream>
 #include <windows.h>

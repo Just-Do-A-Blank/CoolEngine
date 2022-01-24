@@ -23,6 +23,7 @@
 #include "Scene/Scene.h"
 #include "Engine/Managers/GameManager.h"
 #include <Engine/Physics/Box.h>
+#include "FileIO/FileIO.h"
 
 #if TOOL
 #include "Engine/Tools/ToolBase.h"
@@ -129,6 +130,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameManager->CreateScene("TestScene");
 	pgameManager->SelectSceneUsingIdentifier("TestScene");
 
+	FileIO::LoadScene("C:\\Users\\Thoma\\Documents\\GitHub\\CoolEngine\\CoolEngine\\Engine\\FileIO\\Scene.json", pgameManager, nullptr);
+
 #if TOOL
 
 #if TILE_MAP_TOOL
@@ -227,6 +230,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, &observer);
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, &observer);
 	EventManager::Instance()->AddClient(EventType::MouseMoved, &observer);
+
+	FileIO::SaveScene("C:\\Users\\Thoma\\Documents\\GitHub\\CoolEngine\\CoolEngine\\Engine\\FileIO\\Scene2.json" , pgameManager);
 
 #if _DEBUG
 	DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect("DebugRect1", XMFLOAT3(-100.0f, -100.0f, 0.0f), objectScale, DebugDrawManager::DebugColour::BEIGE);
