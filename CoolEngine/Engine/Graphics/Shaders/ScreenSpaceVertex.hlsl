@@ -23,10 +23,9 @@ cbuffer perInstanceCB : register(b1)
 
 VS_OUTPUT main(VS_INPUT input)
 {	
-	VS_OUTPUT output;
-	output.posH.w = 1.0f;
-	output.posH = input.posL;
-	output.texCoords = input.texCoords;
-	
-	return output;
+    VS_OUTPUT output;
+    output.posH = mul(float4(input.posL, 1.0f), world);
+    output.texCoords = input.texCoords;
+
+    return output;
 }
