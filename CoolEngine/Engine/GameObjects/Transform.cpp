@@ -162,16 +162,22 @@ void Transform::CreateEngineUI()
 
 	if (IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Position", positionArray))
 	{
-		m_position = XMFLOAT3(positionArray[0], positionArray[1], positionArray[2]);
+		XMFLOAT3 pos = XMFLOAT3(positionArray[0], positionArray[1], positionArray[2]);
+
+		SetPosition(pos);
 	}
 
 	if (IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Rotation", rotationArray))
 	{
-		m_rotation = XMFLOAT3(rotationArray[0], rotationArray[1], rotationArray[2]);
+		XMFLOAT3 rotation = XMFLOAT3(rotationArray[0], rotationArray[1], rotationArray[2]);
+
+		SetRotation(rotation);
 	}
 
-	if (IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Scale", scaleArray))
+	if (IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Scale   ", scaleArray))
 	{
-		m_scale = XMFLOAT3(scaleArray[0], scaleArray[1], scaleArray[2]);
+		XMFLOAT3 scale = XMFLOAT3(scaleArray[0], scaleArray[1], scaleArray[2]);
+
+		SetScale(scale);
 	}
 }

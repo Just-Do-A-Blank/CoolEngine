@@ -181,7 +181,7 @@ bool GraphicsManager::LoadAnimationFromFile(wstring animName, size_t maxSize, DD
 
 		if (LoadTextureFromFile(frameName, maxSize, alphaMode) == false)
 		{
-			LOG("Failed tp load animation from file as failed to load animation frame!");
+			LOG("Failed to load animation from file as failed to load animation frame!");
 
 			return false;
 		}
