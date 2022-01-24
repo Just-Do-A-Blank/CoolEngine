@@ -1,4 +1,6 @@
 #include "SceneGraph.h"
+#include "Engine/GameObjects/Transform.h"
+#include "Engine/GameUI/UiElement.h"
 
 template<class T>
 SceneGraph<T>::SceneGraph()
@@ -68,6 +70,12 @@ TreeNode<T>* SceneGraph<T>::AddChild(TreeNode<T>* currentNode, T* gameObject)
 		return nullptr;
 	}
 
+	Transform* pparentTransform = currentNode->GameObject->GetTransform();
+	Transform* pcurrentTransform = gameObject->GetTransform();
+
+	pcurrentTransform->SetParentTransform(pparentTransform);
+	pparentTransform->AddChildTransform(pcurrentTransform);
+
 	if(currentNode->Child)
 	{
 		return AddSibling(currentNode->Child, gameObject);
@@ -78,6 +86,8 @@ TreeNode<T>* SceneGraph<T>::AddChild(TreeNode<T>* currentNode, T* gameObject)
 		currentNode->Child->PreviousParent = currentNode;
 		return currentNode->Child;
 	}
+
+	
 }
 
 template<class T>
@@ -214,7 +224,7 @@ unordered_map<string, T*>& SceneGraph<T>::GetAllGameObjects()
 template<class T>
 T* SceneGraph<T>::GetGameObjectUsingIdentifier(string& identifier)
 {
-	unordered_map<string, GameObject*>::iterator it = m_sceneGameObjectsMap.find(identifier);
+	unordered_map<string, T*>::iterator it = m_sceneGameObjectsMap.find(identifier);
 	if (!it->second)
 	{
 		return nullptr;
