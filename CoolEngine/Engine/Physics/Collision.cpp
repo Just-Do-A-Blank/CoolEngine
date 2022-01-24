@@ -53,69 +53,81 @@ bool Collision::BoxCollisionAndResponse(Box* player, Box* object)
 
 	if (middleP.x + halfSizeP.x > middleO.x - halfSizeO.x && middleP.x - halfSizeP.x < middleO.x + halfSizeO.x && middleP.y + halfSizeP.y > middleO.y - halfSizeO.y && middleP.y - halfSizeP.y < middleO.y + halfSizeO.y)
 	{
-		XMFLOAT2 vertexToPlayer = XMFLOAT2(middleP.x - middleO.x, middleP.y - middleO.y);
 		// Left to right - positive
 		// Bottom to top - positive
-		if (vertexToPlayer.y > 0 && vertexToPlayer.x < vertexToPlayer.y && vertexToPlayer.x > vertexToPlayer.y * -1)
+
+		// Based on stackoverflow.com/questions/46172953/aabb-collision-resolution-slipping-sides
+		XMFLOAT2 penetration = { 0, 0 };
+		XMFLOAT2 vertexToPlayerCentre = XMFLOAT2(middleP.x - middleO.x, middleP.y - middleO.y);
+		XMFLOAT2 minDistance = XMFLOAT2(halfSizeO.x + halfSizeP.x, halfSizeO.y + halfSizeP.y);
+		if (abs(vertexToPlayerCentre.x) < minDistance.x && abs(vertexToPlayerCentre.y) < minDistance.y)
 		{
-			// Up side
-			XMFLOAT3 pos = { middleP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_transform->GetPosition().z };
-			player->m_transform->SetPosition(pos);
+			penetration.x = ( vertexToPlayerCentre.x > 0 ? minDistance.x - vertexToPlayerCentre.x : -minDistance.x - vertexToPlayerCentre.x );
+			penetration.y = ( vertexToPlayerCentre.y > 0 ? minDistance.y - vertexToPlayerCentre.y : -minDistance.y - vertexToPlayerCentre.y );
 		}
-		else if (vertexToPlayer.y < 0 && vertexToPlayer.x > vertexToPlayer.y && vertexToPlayer.x < vertexToPlayer.y * -1)
+
+		if (abs(penetration.x) < abs(penetration.y))
 		{
-			// Down side
-			XMFLOAT3 pos = { middleP.x, middleO.y - halfSizeO.y - halfSizeP.y, player->m_transform->GetPosition().z };
-			player->m_transform->SetPosition(pos);
-		}
-		else if (vertexToPlayer.x > 0 && vertexToPlayer.y < vertexToPlayer.x && vertexToPlayer.y > vertexToPlayer.x * -1)
-		{
-			// Right side
-			XMFLOAT3 pos = { middleO.x + halfSizeO.x + halfSizeP.x, middleP.y, player->m_transform->GetPosition().z };
-			player->m_transform->SetPosition(pos);
-		}
-		else if (vertexToPlayer.x < 0 && vertexToPlayer.y > vertexToPlayer.x && vertexToPlayer.y < vertexToPlayer.x * -1)
-		{
-			// Left side
-			XMFLOAT3 pos = { middleO.x - halfSizeO.x - halfSizeP.x, middleP.y, player->m_transform->GetPosition().z };
-			player->m_transform->SetPosition(pos);
-		}
-		else if (vertexToPlayer.x == vertexToPlayer.y)
-		{
-			if (vertexToPlayer.x > 0)
+			if (penetration.x < 0)
 			{
-				// Top right corner
-				XMFLOAT3 pos = { middleO.x + halfSizeO.x + halfSizeP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_transform->GetPosition().z };
+				// Left side
+				XMFLOAT3 pos = { middleO.x - halfSizeO.x - halfSizeP.x, middleP.y, player->m_transform->GetPosition().z };
 				player->m_transform->SetPosition(pos);
 			}
-			else if(vertexToPlayer.x < 0)
+			else
 			{
-				// Bottom left corner
-				XMFLOAT3 pos = { middleO.x - halfSizeO.x - halfSizeP.x, middleO.y - halfSizeO.y - halfSizeP.y, player->m_transform->GetPosition().z };
+				// Right side
+				XMFLOAT3 pos = { middleO.x + halfSizeO.x + halfSizeP.x, middleP.y, player->m_transform->GetPosition().z };
 				player->m_transform->SetPosition(pos);
 			}
 		}
-		else if (vertexToPlayer.x == vertexToPlayer.y * -1)
+		else if (abs(penetration.x) > abs(penetration.y))
 		{
-			if (vertexToPlayer.x > 0)
+			if (penetration.y < 0)
 			{
-				// Bottom right corner
-				XMFLOAT3 pos = { middleO.x + halfSizeO.x + halfSizeP.x, middleO.y - halfSizeO.y - halfSizeP.y, player->m_transform->GetPosition().z };
+				// Bottom side
+				XMFLOAT3 pos = { middleP.x, middleO.y - halfSizeO.y - halfSizeP.y, player->m_transform->GetPosition().z };
 				player->m_transform->SetPosition(pos);
 			}
-			else if (vertexToPlayer.x < 0)
+			else
 			{
-				// Top left corner
-				XMFLOAT3 pos = { middleO.x - halfSizeO.x - halfSizeP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_transform->GetPosition().z };
+				// Top side
+				XMFLOAT3 pos = { middleP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_transform->GetPosition().z };
 				player->m_transform->SetPosition(pos);
 			}
 		}
 		else
 		{
-			// Default to top side
-			// Should only happen if player is somehow at exact position of object
-			XMFLOAT3 pos = { middleP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_transform->GetPosition().z };
-			player->m_transform->SetPosition(pos);
+			if (penetration.x > 0)
+			{
+				if (penetration.y > 0)
+				{
+					// Top right corner
+					XMFLOAT3 pos = { middleO.x + halfSizeO.x + halfSizeP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_transform->GetPosition().z };
+					player->m_transform->SetPosition(pos);
+				}
+				else
+				{
+					// Bottom right corner
+					XMFLOAT3 pos = { middleO.x + halfSizeO.x + halfSizeP.x, middleO.y - halfSizeO.y - halfSizeP.y, player->m_transform->GetPosition().z };
+					player->m_transform->SetPosition(pos);
+				}
+			}
+			else if(penetration.x < 0)
+			{
+				if (penetration.y > 0)
+				{
+					// Top left corner
+					XMFLOAT3 pos = { middleO.x - halfSizeO.x - halfSizeP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_transform->GetPosition().z };
+					player->m_transform->SetPosition(pos);
+				}
+				else
+				{
+					// Top right corner
+					XMFLOAT3 pos = { middleO.x + halfSizeO.x + halfSizeP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_transform->GetPosition().z };
+					player->m_transform->SetPosition(pos);
+				}
+			}
 		}
 
 		return true;
