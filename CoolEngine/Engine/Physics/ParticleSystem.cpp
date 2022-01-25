@@ -104,6 +104,7 @@ void ParticleSystem::AddParticle(Transform trans, XMFLOAT2 vel, XMFLOAT2 accel, 
 	}
 }
 
+#if EDITOR
 void ParticleSystem::CreateEngineUI()
 {
 	ImGui::Separator();
@@ -111,3 +112,4 @@ void ParticleSystem::CreateEngineUI()
 
 	m_transform->CreateEngineUI();
 }
+#endif

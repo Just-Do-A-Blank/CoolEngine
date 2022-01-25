@@ -23,6 +23,7 @@ string Shape::ShapeTypeToString(ShapeType type)
 	}
 }
 
+#if EDITOR
 void Shape::CreateEngineUI()
 {
 	EditorUI::Checkbox("Collidable", m_isCollidable);
@@ -31,6 +32,7 @@ void Shape::CreateEngineUI()
 
 	EditorUI::Checkbox("Trigger", m_isTrigger);
 }
+#endif
 
 void Shape::SetIsTrigger(bool value)
 {

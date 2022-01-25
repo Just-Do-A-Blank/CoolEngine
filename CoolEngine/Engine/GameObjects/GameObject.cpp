@@ -79,6 +79,7 @@ void GameObject::Update()
 	}
 }
 
+#if EDITOR
 void GameObject::ShowEngineUI()
 {
 	ImGui::Begin("Properties");
@@ -195,6 +196,7 @@ void GameObject::CreateEngineUI()
 		m_collider->CreateEngineUI();
 	}
 }
+#endif
 
 Mesh* GameObject::GetMesh() const
 {

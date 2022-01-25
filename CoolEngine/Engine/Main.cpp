@@ -65,7 +65,9 @@ TileMap* g_testMap1;
 
 TileMap* g_testMap2;
 
+#if EDITOR
 EditorUI* g_peditorUI;
+#endif
 
 Inputs* g_inputController;
 
@@ -101,8 +103,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		return 0;
 	}
 
+#if EDITOR
 	g_peditorUI = new EditorUI(g_pd3dDevice);
 	g_peditorUI->InitIMGUI(g_pImmediateContext, g_pd3dDevice, &g_hWnd);
+#endif
 
 	GameManager::GetInstance()->Init();
 
@@ -116,7 +120,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_inputController = new Inputs();
 
 	//Debug Manager
+#if _DEBUG
 	DebugDrawManager::GetInstance()->Init(g_pd3dDevice);
+#endif
 
 	//Create camera
 	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, -5);
@@ -279,25 +285,31 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		}
 	}
 
+#if EDITOR
 	g_peditorUI->ShutdownIMGUI();
+#endif
 
 	CleanupDevice();
 
 	return (int)msg.wParam;
 }
 
+#if EDITOR
 // Forward declare message handler from imgui_impl_win32.cpp
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+#endif
 
 //--------------------------------------------------------------------------------------
 // Called every time the application receives a message
 //--------------------------------------------------------------------------------------
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+#if EDITOR
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
 	{
 		return true;
 	}
+#endif
 
 	g_inputController->Update(&hWnd, &message, &wParam, &lParam);
 
@@ -600,7 +612,9 @@ void Render()
 #if TOOL
 	g_ptoolBase->Render();
 #else
+#if EDITOR
 	g_peditorUI->DrawEditorUI(g_pd3dDevice);
+#endif
 #endif
 
 	// Present our back buffer to our front buffer
@@ -622,7 +636,9 @@ void Update()
 
 	EventManager::Instance()->ProcessEvents();
 
+#if EDITOR
 	g_peditorUI->Update();
+#endif
 
 	g_inputController->Update();
 
