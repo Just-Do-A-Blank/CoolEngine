@@ -50,7 +50,9 @@ protected:
 	Transform* m_transform;
 	Shape* m_collider = nullptr;
 
+#if EDITOR
 	virtual void CreateEngineUI() override;
+#endif
 
 public:
 	GameObject();
@@ -63,7 +65,9 @@ public:
 	virtual void Render(RenderStruct& renderStruct);
 	virtual void Update();
 
+#if EDITOR
 	virtual void ShowEngineUI();
+#endif
 
 	//Getters
 	Mesh* GetMesh() const;

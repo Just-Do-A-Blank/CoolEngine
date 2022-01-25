@@ -30,13 +30,13 @@ bool GraphicsManager::CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPo
 	string shaderType = string(szShaderModel).substr(0, 2);
 	if (shaderType == "vs" && m_vertexShaders.count(szFileName) != 0)
 	{
-		std::cout << "A vertex shader with that name already exists!" << std::endl;
+		LOG("A vertex shader with that name already exists!");
 
 		return false;
 	}
 	else if (shaderType == "ps" && m_pixelShaders.count(szFileName) != 0)
 	{
-		std::cout << "A pixel shader with that name already exists!" << std::endl;
+		LOG("A pixel shader with that name already exists!");
 
 		return false;
 	}

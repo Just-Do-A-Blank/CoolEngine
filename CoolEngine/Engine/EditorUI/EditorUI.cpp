@@ -5,6 +5,7 @@
 #include "Engine/Includes/IMGUI/imgui_internal.h"
 #include <ShlObj_core.h>
 
+#if EDITOR
 HWND* EditorUI::m_phwnd = nullptr;
 
 void EditorUI::InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, HWND* phwnd)
@@ -686,3 +687,5 @@ bool EditorUI::DragFloat(const string& label, float& value, const float& columnW
 
 	return interacted;
 }
+
+#endif
