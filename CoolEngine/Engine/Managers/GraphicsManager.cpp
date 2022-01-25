@@ -1,5 +1,6 @@
 #include "GraphicsManager.h"
 
+#include "Engine/Managers/GameManager.h"
 #include "Engine/Graphics/Mesh.h"
 #include "Engine/ResourceDefines.h"
 
@@ -131,12 +132,15 @@ bool GraphicsManager::LoadTextureFromFile(wstring filename, size_t maxSize, DDS_
 
 	ID3D11ShaderResourceView* psRV;
 
-	if (FAILED(CreateDDSTextureFromFile(m_pdevice, filename.c_str(), nullptr, &psRV, maxSize, alphaMode)))
+	wstring fullPath = GameManager::GetInstance()->GetWideWorkingDirectory() + L"\\" + filename;
+
+	if (FAILED(CreateDDSTextureFromFile(m_pdevice, fullPath.c_str(), nullptr, &psRV, maxSize, alphaMode)))
 	{
 		std::cout << "Failed to load dds texture file!" << std::endl;
 
 		return false;
 	}
+
 
 	m_textureSRVs[filename] = psRV;
 
@@ -181,7 +185,7 @@ bool GraphicsManager::LoadAnimationFromFile(wstring animName, size_t maxSize, DD
 
 		if (LoadTextureFromFile(frameName, maxSize, alphaMode) == false)
 		{
-			LOG("Failed tp load animation from file as failed to load animation frame!");
+			LOG("Failed to load animation from file as failed to load animation frame!");
 
 			return false;
 		}
@@ -408,6 +412,7 @@ void GraphicsManager::CreateSamplers()
 void GraphicsManager::CompileDefaultShaders()
 {
 	CompileShaderFromFile(DEFAULT_VERTEX_SHADER_NAME, "main", "vs_4_0");
+	CompileShaderFromFile(PASSTHROUGH_VERTEX_SHADER_NAME, "main", "vs_4_0");
 	CompileShaderFromFile(DEFAULT_PIXEL_SHADER_NAME, "main", "ps_4_0");
 }
 

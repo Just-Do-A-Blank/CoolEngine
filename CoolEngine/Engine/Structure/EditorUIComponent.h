@@ -1,5 +1,5 @@
 #pragma once
-class UIComponent
+class EditorUIComponent
 {
 public:
 	virtual void CreateEngineUI() = 0;

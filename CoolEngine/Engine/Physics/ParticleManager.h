@@ -15,7 +15,7 @@ private:
 	Mesh* m_pMesh;
 
 public:
-	ParticleManager();
+	ParticleManager(wstring meshName, wstring vShaderName, wstring pShaderName);
 	~ParticleManager();
 
 	/// <summary>
@@ -29,7 +29,7 @@ public:
 	/// </summary>
 	/// <param name="pContext"></param>
 	/// <param name="pconstantBuffer"></param>
-	void Render(ID3D11DeviceContext* pContext, ConstantBuffer<PerInstanceCB>* pConstantBuffer);
+	void Render(ID3D11DeviceContext* pContext);
 
 	/// <summary>
 	/// Find slot for a new system, and initialise it
@@ -40,7 +40,12 @@ public:
 	/// <param name="tex"></param>
 	void AddSystem(Transform trans, float life, SYSTEM_TYPE type, wstring albedoName);
 
-	bool SetVertexShader(wstring shaderName);
-	bool SetPixelShader(wstring shaderName);
-	bool SetMesh(wstring meshName);
+	/// <summary>
+	/// Find slot for a new system, and initialise it
+	/// </summary>
+	/// <param name="system"></param>
+	void AddSystem(ParticleSystem* system);
+
+	// Getters
+	ParticleSystem* GetSystem(int index) { return m_pParticleSystems[index]; }
 };

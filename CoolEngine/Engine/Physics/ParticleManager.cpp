@@ -1,11 +1,37 @@
 #include "ParticleManager.h"
 
-ParticleManager::ParticleManager()
+#include "Engine/Managers/GameManager.h"
+
+ParticleManager::ParticleManager(wstring meshName, wstring vShaderName, wstring pShaderName)
 {
 	for (unsigned int i = 0; i < PARTICLE_MANAGER_SIZE; ++i)
 	{
-		m_pParticleSystems[i] = new ParticleSystem();
+		string systemName = "particleSystem" + to_string(i);
+
+		m_pParticleSystems[i] = GameManager::GetInstance()->CreateGameObject<ParticleSystem>(systemName);
 	}
+
+	Mesh* pmesh = GraphicsManager::GetInstance()->GetMesh(meshName);
+	if (pmesh == nullptr)
+	{
+		cout << "Failed to set the mesh as one with that name doesn't exist!" << endl;
+	}
+	m_pMesh = pmesh;
+
+	ID3D11VertexShader* pvertexShader = GraphicsManager::GetInstance()->GetVertexShader(vShaderName);
+	if (pvertexShader == nullptr)
+	{
+		std::cout << "Failed to find vertex shader with that name " << vShaderName.c_str() << "!" << std::endl;
+	}
+	m_pVertexShader = pvertexShader;
+
+	ID3D11PixelShader* ppixelShader = GraphicsManager::GetInstance()->GetPixelShader(pShaderName);
+	if (ppixelShader == nullptr)
+	{
+		std::cout << "Failed to find pixel shader with that name " << pShaderName.c_str() << "!" << std::endl;
+	}
+
+	m_pPixelShader = ppixelShader;
 }
 
 ParticleManager::~ParticleManager()
@@ -21,23 +47,23 @@ void ParticleManager::Update(const float dTime)
 {
 	for (unsigned int i = 0; i < PARTICLE_MANAGER_SIZE; ++i)
 	{
-		if (m_pParticleSystems[i]->IsActive())
+		if (m_pParticleSystems[i]->GetActive())
 		{
 			m_pParticleSystems[i]->Update(dTime);
 		}
 	}
 }
 
-void ParticleManager::Render(ID3D11DeviceContext* pContext, ConstantBuffer<PerInstanceCB>* pConstantBuffer)
+void ParticleManager::Render(ID3D11DeviceContext* pContext)
 {
 	pContext->VSSetShader(m_pVertexShader, nullptr, 0);
 	pContext->PSSetShader(m_pPixelShader, nullptr, 0);
 
 	for (unsigned int i = 0; i < PARTICLE_MANAGER_SIZE; ++i)
 	{
-		if (m_pParticleSystems[i]->IsActive())
+		if (m_pParticleSystems[i]->GetActive())
 		{
-			m_pParticleSystems[i]->Render(pContext, pConstantBuffer, m_pMesh);
+			m_pParticleSystems[i]->Render(pContext, m_pMesh);
 		}
 	}
 
@@ -50,7 +76,7 @@ void ParticleManager::AddSystem(Transform trans, float life, SYSTEM_TYPE type, w
 {
 	for (unsigned int i = 0; i < PARTICLE_MANAGER_SIZE; ++i)
 	{
-		if (!m_pParticleSystems[i]->IsActive())
+		if (!m_pParticleSystems[i]->GetActive())
 		{
 			// Initialise one, then break from loop so more are not made
 			ID3D11ShaderResourceView* psRV = GraphicsManager::GetInstance()->GetShaderResourceView(albedoName);
@@ -66,44 +92,14 @@ void ParticleManager::AddSystem(Transform trans, float life, SYSTEM_TYPE type, w
 	}
 }
 
-bool ParticleManager::SetVertexShader(wstring shaderName)
+void ParticleManager::AddSystem(ParticleSystem* system)
 {
-	ID3D11VertexShader* pvertexShader = GraphicsManager::GetInstance()->GetVertexShader(shaderName);
-
-	if (pvertexShader == nullptr)
+	for (unsigned int i = 0; i < PARTICLE_MANAGER_SIZE; ++i)
 	{
-		std::cout << "Failed to find vertex shader with that name " << shaderName.c_str() << "!" << std::endl;
-		return false;
+		if (!m_pParticleSystems[i]->GetActive())
+		{
+			m_pParticleSystems[i]->Initialise(*system->GetTrans(), system->GetLife(), system->GetType(), system->GetTexture());
+			break;
+		}
 	}
-
-	m_pVertexShader = pvertexShader;
-	return true;
-}
-
-bool ParticleManager::SetPixelShader(wstring shaderName)
-{
-	ID3D11PixelShader* ppixelShader = GraphicsManager::GetInstance()->GetPixelShader(shaderName);
-
-	if (ppixelShader == nullptr)
-	{
-		std::cout << "Failed to find pixel shader with that name " << shaderName.c_str() << "!" << std::endl;
-		return false;
-	}
-
-	m_pPixelShader = ppixelShader;
-	return true;
-}
-
-bool ParticleManager::SetMesh(wstring meshName)
-{
-	Mesh* pmesh = GraphicsManager::GetInstance()->GetMesh(meshName);
-
-	if (pmesh == nullptr)
-	{
-		cout << "Failed to set the mesh as one with that name doesn't exist!" << endl;
-		return false;
-	}
-
-	m_pMesh = pmesh;
-	return true;
 }

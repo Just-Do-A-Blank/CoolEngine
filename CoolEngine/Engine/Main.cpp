@@ -24,10 +24,13 @@
 #include "Engine/Managers/GameManager.h"
 #include <Engine/Physics/Box.h>
 
+#include "Physics/ParticleManager.h"
+
 #if TOOL
 #include "Engine/Tools/ToolBase.h"
 
 #include "Engine/Tools/TileMapTool.h"
+#include "Engine/Tools/AnimationTool.h"
 #endif
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -64,6 +67,8 @@ EditorUI* g_peditorUI;
 
 Inputs* g_inputController;
 
+ParticleManager* g_particleManager;
+
 #if TOOL
 ToolBase* g_ptoolBase = nullptr;
 #endif
@@ -94,10 +99,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		return 0;
 	}
 
-	GraphicsManager::GetInstance()->LoadAnimationFromFile(L"TestAnim");
-
 	g_peditorUI = new EditorUI(g_pd3dDevice);
 	g_peditorUI->InitIMGUI(g_pImmediateContext, g_pd3dDevice, &g_hWnd);
+
+	GameManager::GetInstance()->Init();
 
 	//Setup audio stuff
 	AudioManager::GetInstance()->Init();
@@ -134,11 +139,12 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 #if TILE_MAP_TOOL
 	g_ptoolBase = new TileMapTool();
+#elif ANIMATION_TOOL
+	g_ptoolBase = new AnimationTool();
 #endif
 
 	g_ptoolBase->Init(g_pd3dDevice);
 #else
-#endif
 
 	//Music
 	AudioManager::GetInstance()->LoadMusic(TEST_MUSIC);
@@ -154,7 +160,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	GraphicsManager::GetInstance()->LoadTextureFromFile(TEST2);
 
 	//Load animations
-	GraphicsManager::GetInstance()->LoadAnimationFromFile(TEST_ANIM);
 
 	// Create player
 	//g_pplayer = new PlayerGameObject("Player");
@@ -232,9 +237,23 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, &observer);
 	EventManager::Instance()->AddClient(EventType::MouseMoved, &observer);
 
+	g_particleManager = new ParticleManager(QUAD_MESH_NAME, DEFAULT_VERTEX_SHADER_NAME, DEFAULT_PIXEL_SHADER_NAME);
+	XMFLOAT3 pos = XMFLOAT3( 300, 300, 5 );
+	XMFLOAT3 rot = XMFLOAT3(0, 0, 0 );
+	XMFLOAT3 scale = XMFLOAT3(25, 25, 25);
+	Transform trans = Transform();
+	trans.SetPosition(pos);
+	trans.SetRotation(rot);
+	trans.SetScale(scale);
+	g_particleManager->AddSystem(trans, 10.0f, SYSTEM_TEST, DEFAULT_IMGUI_IMAGE);
+
+	GameManager::GetInstance()->GetTimer()->Tick();
+
 #if _DEBUG
 	DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect("DebugRect1", XMFLOAT3(-100.0f, -100.0f, 0.0f), objectScale, DebugDrawManager::DebugColour::BEIGE);
 #endif //_DEBUG
+
+#endif
 
 	//Create test Tile Map
 
@@ -570,6 +589,8 @@ void Render()
 	GameManager* pgamemanager = GameManager::GetInstance();
 	pgamemanager->Render(renderStruct);
 
+	g_particleManager->Render(renderStruct.m_pcontext);
+
 #if _DEBUG
 	DebugDrawManager::GetInstance()->Render(renderStruct);
 #endif
@@ -592,6 +613,8 @@ void Update()
 
 	pgamemanager->GetTimer()->Tick();
 	pgamemanager->Update();
+
+	g_particleManager->Update(GameManager::GetInstance()->GetTimer()->DeltaTime());
 
 	AudioManager::GetInstance()->Update();
 

@@ -5,7 +5,7 @@
 
 class GameObject;
 class Scene;
-class TreeNode;
+template<class T>class TreeNode;
 class PlayerGameObject;
 class RenderStruct;
 
@@ -25,7 +25,12 @@ private:
 
 	Timer m_timer;
 
+	string m_workingDirectory = "";
+	wstring m_wideWorkingDirectory = L"";
+
 public:
+	void Init();
+
 	Timer* GetTimer();
 
 	unordered_map<string, Scene*> m_sceneMap;
@@ -41,6 +46,9 @@ public:
 	void DeleteSceneUsingIdentifier(string sceneIdentifier);
 	void DeleteSelectedScene();
 
+	string GetWorkingDirectory();
+	wstring GetWideWorkingDirectory();
+
 	Scene* GetCurrentScene();
 
 	GameObject* GetSelectedGameObject();
@@ -55,7 +63,7 @@ public:
 
 	void SelectGameObjectUsingIdentifier(string& identifier);
 	void SelectGameObject(GameObject* pgameObject);
-	void SelectGameObjectUsingTreeNode(TreeNode* pnode);
+	void SelectGameObjectUsingTreeNode(TreeNode<GameObject>* pnode);
 
 	template<typename T>
 	T* CreateGameObject(string identifier)
@@ -66,8 +74,8 @@ public:
 	void DeleteSelectedGameObject();
 	void DeleteGameObjectUsingIdentifier(string identifier);
 
-	TreeNode* GetRootTreeNode();
-	TreeNode* GetTreeNode(GameObject* pgameObject);
+	TreeNode<GameObject>* GetRootTreeNode();
+	TreeNode<GameObject>* GetTreeNode(GameObject* pgameObject);
 	string& GetCurrentSceneName();
 
 

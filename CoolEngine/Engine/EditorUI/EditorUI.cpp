@@ -1,12 +1,9 @@
 #include "EditorUI.h"
 #include "Engine/Managers/GameManager.h"
-#include "Engine/GameObjects/GameObject.h"
-
-#include <ShlObj_core.h>
-#include "Engine/Managers/SceneGraph.h"
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/Scene/Scene.h"
 #include "Engine/Includes/IMGUI/imgui_internal.h"
+#include <ShlObj_core.h>
 
 HWND* EditorUI::m_phwnd = nullptr;
 
@@ -30,7 +27,6 @@ void EditorUI::InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, H
 
 EditorUI::EditorUI(ID3D11Device* pdevice)
 {
-	m_pdevice = pdevice;
 }
 
 void EditorUI::DrawEditorUI(ID3D11Device* pdevice)
@@ -53,7 +49,7 @@ void EditorUI::DrawEditorUI(ID3D11Device* pdevice)
 
 	if (GameManager::GetInstance()->GetSelectedGameObject() != nullptr)
 	{
-		GameManager::GetInstance()->GetSelectedGameObject()->ShowEngineUI(pdevice);
+		GameManager::GetInstance()->GetSelectedGameObject()->ShowEngineUI();
 	}
 
 	ImGui::Render();
@@ -92,7 +88,7 @@ void EditorUI::DrawSceneGraphWindow()
 	GameManager* pgameManager = GameManager::GetInstance();
 	static int selected = -1;
 	
-	TreeNode* prootNode = pgameManager->GetRootTreeNode();
+	TreeNode<GameObject>* prootNode = pgameManager->GetRootTreeNode();
 
 	m_base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
 	int nodeCount = -1;
@@ -241,7 +237,7 @@ void EditorUI::DrawSceneManagementWindow()
 	}
 }
 
-void EditorUI::TraverseTree(TreeNode* pcurrentNode, int& nodeCount)
+void EditorUI::TraverseTree(TreeNode<GameObject>* pcurrentNode, int& nodeCount)
 {
 	if (!pcurrentNode)
 	{
@@ -440,7 +436,65 @@ void EditorUI::Checkbox(const string& label, bool& value, const float& columnWid
 	ImGui::PopID();
 }
 
-void EditorUI::DragFloat(const string& label, float& value, const float& columnWidth)
+bool EditorUI::Texture(const string& label, wstring& filepath, ID3D11ShaderResourceView*& psrv, const float& columnWidth)
+{
+	bool interacted = false;
+
+	ImGui::PushID(label.c_str());
+
+	ImGui::Columns(2);
+
+	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::Text(label.c_str());
+	ImGui::NextColumn();
+
+	ImGui::PushItemWidth(ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+	if (ImGui::ImageButton((void*)(intptr_t)psrv, DEFAULT_IMGUI_IMAGE_SIZE))
+	{
+		WCHAR buffer[FILEPATH_BUFFER_SIZE];
+
+		EditorUI::OpenFileExplorer(L"DDS files\0*.dds\0", buffer, FILEPATH_BUFFER_SIZE);
+
+		filepath = wstring(buffer);
+
+		//Check if that path points to an asset in the resources folder
+		int index = filepath.find(L"Resources");
+
+		if (index == -1)
+		{
+			LOG("The resource specified isn't stored in a resource folder!");
+		}
+		else
+		{
+			//Get relative file path
+			filepath = filepath.substr(index);
+
+			//Load texture if not loaded
+			if (GraphicsManager::GetInstance()->IsTextureLoaded(filepath) == false)
+			{
+				GraphicsManager::GetInstance()->LoadTextureFromFile(filepath);
+			}
+
+			psrv = GraphicsManager::GetInstance()->GetShaderResourceView(filepath);
+
+			interacted = true;
+		}
+	}
+
+	ImGui::PopItemWidth();
+
+	ImGui::PopStyleVar();
+
+	ImGui::Columns(1);
+
+	ImGui::PopID();
+
+	return interacted;
+}
+
+void EditorUI::InputText(const string& label, string& text, const float& columnWidth)
 {
 	ImGui::PushID(label.c_str());
 
@@ -453,7 +507,14 @@ void EditorUI::DragFloat(const string& label, float& value, const float& columnW
 	ImGui::PushItemWidth(ImGui::CalcItemWidth());
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
 
-	ImGui::DragFloat("##Float", &value, 0.1f, 0.0f, 0.0f, "%.2f");
+
+	char buffer[FILEPATH_BUFFER_SIZE];
+
+	strcpy_s(buffer, text.c_str());
+
+	ImGui::InputText("##text", buffer, FILEPATH_BUFFER_SIZE);
+
+	text = string(buffer);
 
 	ImGui::PopItemWidth();
 
@@ -462,4 +523,166 @@ void EditorUI::DragFloat(const string& label, float& value, const float& columnW
 	ImGui::Columns(1);
 
 	ImGui::PopID();
+}
+
+void EditorUI::Animation(const string& label, wstring& filepath, SpriteAnimation& animation, const float& columnWidth)
+{
+	ImGui::PushID(label.c_str());
+
+	ImGui::Columns(2);
+
+	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::Text(label.c_str());
+	ImGui::NextColumn();
+
+	ImGui::PushItemWidth(ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+	if (ImGui::TreeNode(label.c_str()) == true)
+	{
+		//Animation images
+		if (ImGui::ImageButton((void*)(intptr_t)animation.GetCurrentFrame(), DEFAULT_IMGUI_IMAGE_SIZE) == true)
+		{
+			WCHAR buffer[FILEPATH_BUFFER_SIZE];
+
+			EditorUI::OpenFolderExplorer(buffer, FILEPATH_BUFFER_SIZE);
+
+			if (buffer[0] != '\0')
+			{
+				filepath = wstring(buffer);
+			}
+		}
+
+		ImGui::TreePop();
+	}
+
+	ImGui::PopItemWidth();
+
+	ImGui::PopStyleVar();
+
+	ImGui::Columns(1);
+
+	ImGui::PopID();
+}
+
+void EditorUI::Animations(const string& label, unordered_map<string, SpriteAnimation>& animations, const float& columnWidth)
+{
+	char animName[ANIM_NAME_SIZE];
+
+	wstring filepath = L"";
+
+	string animOldName = "";
+	string animNewName = "";
+
+	bool updateAnim = false;
+	bool updateAnimName = false;
+
+	for (unordered_map<string, SpriteAnimation>::iterator it = animations.begin(); it != animations.end(); ++it)
+	{
+		ImGui::PushID(label.c_str());
+
+		ImGui::Columns(2);
+
+		ImGui::SetColumnWidth(0, columnWidth);
+
+		strcpy_s(animName, it->first.c_str());
+
+		if (ImGui::InputText("##Name", animName, ANIM_NAME_SIZE) == true)
+		{
+			animOldName = it->first;
+			animNewName = string(animName);
+
+			updateAnimName = animNewName != "";
+		}
+
+		ImGui::NextColumn();
+
+		ImGui::PushItemWidth(ImGui::CalcItemWidth());
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+		if (ImGui::TreeNode(label.c_str()) == true)
+		{
+			//Animation images
+			if (ImGui::ImageButton((void*)(intptr_t)it->second.GetCurrentFrame(), DEFAULT_IMGUI_IMAGE_SIZE) == true)
+			{
+				WCHAR buffer[FILEPATH_BUFFER_SIZE];
+
+				EditorUI::OpenFolderExplorer(buffer, FILEPATH_BUFFER_SIZE);
+
+				filepath = wstring(buffer);
+
+				animOldName = it->first;
+
+				updateAnim = filepath != L"";
+			}
+
+			ImGui::TreePop();
+		}
+
+		ImGui::PopItemWidth();
+
+		ImGui::PopStyleVar();
+
+		ImGui::Columns(1);
+
+		ImGui::PopID();
+	}
+
+	if (updateAnimName == true)
+	{
+		SpriteAnimation tempAnim = animations[animOldName];
+
+		animations.erase(animOldName);
+
+		animations.insert(pair<string, SpriteAnimation>(animNewName, tempAnim));
+	}
+
+	if (updateAnim == true)
+	{
+		SpriteAnimation anim = GraphicsManager::GetInstance()->GetAnimation(filepath);
+
+		if (anim.GetFrames() == nullptr)
+		{
+			if (GraphicsManager::GetInstance()->LoadAnimationFromFile(filepath) == false)
+			{
+				animations[animName] = GraphicsManager::GetInstance()->GetAnimation(filepath);
+			}
+			else
+			{
+				LOG("Failed to load the animation!");
+			}
+		}
+		else
+		{
+			animations[animName] = anim;
+		}
+	}
+}
+
+bool EditorUI::DragFloat(const string& label, float& value, const float& columnWidth, const float& speed, const float& min, const float& max)
+{
+	bool interacted = false;
+
+	ImGui::PushID(label.c_str());
+
+	ImGui::Columns(2);
+
+	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::Text(label.c_str());
+	ImGui::NextColumn();
+
+	ImGui::PushItemWidth(ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+	interacted = ImGui::DragFloat("##Float", &value, speed, min, max, "%.2f");
+
+	ImGui::PopItemWidth();
+
+	ImGui::PopStyleVar();
+
+	ImGui::Columns(1);
+
+	ImGui::PopID();
+
+	return interacted;
 }

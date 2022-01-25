@@ -3,10 +3,13 @@
 
 class PlayerGameObject : public CharacterGameObject
 {
-private:
-
 public:
 
 	PlayerGameObject(string identifier);
 	~PlayerGameObject();
+
+protected:
+
+private:
+
 };

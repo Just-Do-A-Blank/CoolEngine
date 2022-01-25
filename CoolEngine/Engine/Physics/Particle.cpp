@@ -1,4 +1,4 @@
-#include "Particle.h"
+ #include "Particle.h"
 
 Particle::Particle()
 {
@@ -11,7 +11,7 @@ Particle::Particle()
 
 Particle::~Particle()
 {
-	
+
 }
 
 void Particle::Update(const float dTime)
@@ -20,7 +20,11 @@ void Particle::Update(const float dTime)
 	m_velocity.x += m_accel.x * dTime;
 	m_velocity.y += m_accel.y * dTime;
 
-	m_transform.SetPosition(XMFLOAT3(m_transform.GetPosition().x + m_velocity.x * dTime, m_transform.GetPosition().y + m_velocity.y * dTime, 0));
+	XMFLOAT3 pos = m_transform.GetPosition();
+	pos.x += m_velocity.x * dTime;
+	pos.y += m_velocity.y * dTime;
+	//pos.z = 5.0f;
+	m_transform.SetPosition(pos);
 
 	m_lifetime -= dTime;
 	if (m_lifetime <= 0.0f)
@@ -29,15 +33,17 @@ void Particle::Update(const float dTime)
 	}
 }
 
-void Particle::Render(ID3D11DeviceContext* pContext, ConstantBuffer<PerInstanceCB>* pConstantBuffer, Mesh* mesh)
+void Particle::Render(ID3D11DeviceContext* pContext, Mesh* mesh)
 {
 	// Update CB
 	PerInstanceCB cb;
 	XMStoreFloat4x4(&cb.world, XMMatrixTranspose(m_transform.GetWorldMatrix()));
 
-	pConstantBuffer->Update(cb, pContext);
+	//pConstantBuffer->Update(cb, pContext);
+	GraphicsManager::GetInstance()->m_pperInstanceCB->Update(cb, pContext);
+	ID3D11Buffer* pcbBuffer = GraphicsManager::GetInstance()->m_pperInstanceCB->GetBuffer();
 
-	ID3D11Buffer* pcbBuffer = pConstantBuffer->GetBuffer();
+	//ID3D11Buffer* pcbBuffer = pConstantBuffer->GetBuffer();
 
 	pContext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 1, &pcbBuffer);
 	pContext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 1, &pcbBuffer);
