@@ -258,10 +258,18 @@
     <ClInclude Include="Engine\Structure\UIComponent.h">
       <Filter>Engine\Structure</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Managers\UIManager.h" />
-    <ClInclude Include="Engine\GameUI\GameUIComponent.h" />
-    <ClInclude Include="Engine\GameUI\UICanvas.h" />
-    <ClInclude Include="Engine\GameUI\ImageComponent.h" />
+    <ClInclude Include="Engine\Managers\UIManager.h">
+      <Filter>Engine\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\UICanvas.h">
+      <Filter>Engine\Graphics\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\ImageComponent.h">
+      <Filter>Engine\Graphics\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameUIComponent.h">
+      <Filter>Engine\Graphics\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -375,10 +383,18 @@
     <ClCompile Include="Engine\Physics\Shape.cpp">
       <Filter>Engine\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Managers\UIManager.cpp" />
-    <ClCompile Include="Engine\GameUI\GameUIComponent.cpp" />
-    <ClCompile Include="Engine\GameUI\UICanvas.cpp" />
-    <ClCompile Include="Engine\GameUI\ImageComponent.cpp" />
+    <ClCompile Include="Engine\Managers\UIManager.cpp">
+      <Filter>Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\UICanvas.cpp">
+      <Filter>Engine\Graphics\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\ImageComponent.cpp">
+      <Filter>Engine\Graphics\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameUIComponent.cpp">
+      <Filter>Engine\Graphics\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">
@@ -390,6 +406,8 @@
     <FxCompile Include="Engine\Graphics\Shaders\DummyPosTex.hlsl">
       <Filter>Engine\Graphics\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Engine\Graphics\Shaders\ScreenSpaceVertex.hlsl" />
+    <FxCompile Include="Engine\Graphics\Shaders\ScreenSpaceVertex.hlsl">
+      <Filter>Engine\Graphics\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
