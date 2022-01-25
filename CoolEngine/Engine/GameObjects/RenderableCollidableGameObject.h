@@ -2,7 +2,7 @@
 #include "CollidableGameObject.h"
 #include "Engine/GameObjects/RenderableGameObject.h"
 
-class RenderableCollidableGameObject : public CollidableGameObject, public RenderableGameObject
+class RenderableCollidableGameObject : public RenderableGameObject, public CollidableGameObject
 {
 public:
 	RenderableCollidableGameObject();
