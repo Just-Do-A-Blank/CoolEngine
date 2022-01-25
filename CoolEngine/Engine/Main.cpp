@@ -292,18 +292,22 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	return (int)msg.wParam;
 }
 
+#if EDITOR
 // Forward declare message handler from imgui_impl_win32.cpp
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+#endif
 
 //--------------------------------------------------------------------------------------
 // Called every time the application receives a message
 //--------------------------------------------------------------------------------------
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+#if EDITOR
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
 	{
 		return true;
 	}
+#endif
 
 	g_inputController->Update(&hWnd, &message, &wParam, &lParam);
 
