@@ -30,7 +30,9 @@ public:
 
 	static string ShapeTypeToString(ShapeType type);
 
+#if EDITOR
 	virtual void CreateEngineUI() override;
+#endif
 
 	void SetIsTrigger(bool value);
 	void SetIsCollidable(bool value);

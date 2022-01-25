@@ -1,4 +1,7 @@
 #pragma once
+
+#if EDITOR
+
 #include "ToolBase.h"
 class TileMapTool : public ToolBase
 {
@@ -11,3 +14,4 @@ private:
 
 };
 
+#endif

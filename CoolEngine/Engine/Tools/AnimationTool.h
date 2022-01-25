@@ -1,4 +1,6 @@
 #pragma once
+
+#if EDITOR
 #include "ToolBase.h"
 
 #include "Engine/Graphics/SpriteAnimation.h"
@@ -40,3 +42,4 @@ private:
 	bool SaveAnim(string animName);
 };
 
+#endif

@@ -9,6 +9,8 @@
 #define IMGUI_LEFT_LABEL(func, label, ...) (ImGui::TextUnformatted(label), ImGui::SameLine(), func("##" label, __VA_ARGS__))
 #define DEFAULT_IMGUI_IMAGE_SIZE ImVec2(256, 256)
 
+#if EDITOR
+
 class GameManager;
 
 struct SelectableText
@@ -77,3 +79,5 @@ public:
 
 	static void Animations(const string& label, unordered_map<string, SpriteAnimation>& animations, const float& columnWidth = 100.0f);
 };
+
+#endif
