@@ -2,7 +2,7 @@
 #include "DebugRect.h"
 #include "Engine/ResourceDefines.h"
 
-DebugRect::DebugRect(wstring albedoName, string identifier, bool screenSpace) : GameObject(identifier)
+DebugRect::DebugRect(wstring albedoName, string identifier, bool screenSpace) : RenderableGameObject(identifier)
 {
 	SetAlbedo(albedoName);
 
@@ -25,7 +25,7 @@ void DebugRect::SetDebugColour(DebugDrawManager::DebugColour colour)
 
 void DebugRect::Render(RenderStruct& renderStruct)
 {
-	GameObject::Render(renderStruct);
+	RenderableGameObject::Render(renderStruct);
 }
 
 void DebugRect::Update()

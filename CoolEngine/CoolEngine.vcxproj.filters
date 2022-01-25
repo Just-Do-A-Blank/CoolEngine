@@ -132,9 +132,6 @@
     <ClInclude Include="Engine\Physics\Collision.h">
       <Filter>Engine\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Physics\Line.h">
-      <Filter>Engine\Physics</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Physics\Particle.h">
       <Filter>Engine\Physics</Filter>
     </ClInclude>
@@ -255,20 +252,23 @@
     <ClInclude Include="Engine\GameObjects\DebugRect.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Structure\UIComponent.h">
+    <ClInclude Include="Engine\Tools\AnimationTool.h">
+      <Filter>Engine\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\UiManager.h" />
+    <ClInclude Include="Engine\GameUI\UiElement.h" />
+    <ClInclude Include="Engine\GameUI\UiCanvas.h" />
+    <ClInclude Include="Engine\Structure\EditorUIComponent.h">
       <Filter>Engine\Structure</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Managers\UIManager.h">
-      <Filter>Engine\Managers</Filter>
+    <ClInclude Include="Engine\GameObjects\CollidableGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\GameUI\UICanvas.h">
-      <Filter>Engine\Graphics\UI</Filter>
+    <ClInclude Include="Engine\GameObjects\RenderableGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\GameUI\ImageComponent.h">
-      <Filter>Engine\Graphics\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameUI\GameUIComponent.h">
-      <Filter>Engine\Graphics\UI</Filter>
+    <ClInclude Include="Engine\GameObjects\RenderableCollidableGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -383,17 +383,20 @@
     <ClCompile Include="Engine\Physics\Shape.cpp">
       <Filter>Engine\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Managers\UIManager.cpp">
-      <Filter>Engine\Managers</Filter>
+    <ClCompile Include="Engine\Tools\AnimationTool.cpp">
+      <Filter>Engine\Tools</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GameUI\UICanvas.cpp">
-      <Filter>Engine\Graphics\UI</Filter>
+    <ClCompile Include="Engine\Managers\UiManager.cpp" />
+    <ClCompile Include="Engine\GameUI\UiElement.cpp" />
+    <ClCompile Include="Engine\GameUI\UiCanvas.cpp" />
+    <ClCompile Include="Engine\GameObjects\CollidableGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GameUI\ImageComponent.cpp">
-      <Filter>Engine\Graphics\UI</Filter>
+    <ClCompile Include="Engine\GameObjects\RenderableGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GameUI\GameUIComponent.cpp">
-      <Filter>Engine\Graphics\UI</Filter>
+    <ClCompile Include="Engine\GameObjects\RenderableCollidableGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -406,8 +409,6 @@
     <FxCompile Include="Engine\Graphics\Shaders\DummyPosTex.hlsl">
       <Filter>Engine\Graphics\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Engine\Graphics\Shaders\ScreenSpaceVertex.hlsl">
-      <Filter>Engine\Graphics\Shaders</Filter>
-    </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\PassthroughVertex.hlsl" />
   </ItemGroup>
 </Project>

@@ -30,7 +30,7 @@ private:
 	template<typename T>
 	T* GetGameObjectUsingIdentifier(string& identifier)
 	{
-		return  static_cast<T*>(m_psceneGraph->GetGameObjectUsingIdentifier(identifier));
+		return  dynamic_cast<T*>(m_psceneGraph->GetGameObjectUsingIdentifier(identifier));
 	}
 
 	void SelectGameObjectUsingIdentifier(string identifier);
@@ -41,7 +41,12 @@ private:
 	template<typename T>
 	T* CreateGameObject(string identifier)
 	{
+		assert(m_psceneGraph != nullptr);
+
 		T* gameObject = new T(identifier);
+
+		GameObject* pgameObject = dynamic_cast<GameObject*>(gameObject);
+		pgameObject->m_identifier = identifier;
 
 		m_prootTreeNode = m_psceneGraph->GetRootNode();
 		if (!m_prootTreeNode)

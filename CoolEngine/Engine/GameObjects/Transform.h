@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Engine/Structure/UIComponent.h"
+#include "Engine/Structure/EditorUIComponent.h"
 
-class Transform : UIComponent
+class Transform : EditorUIComponent
 {
 	XMFLOAT3 m_position;
 	XMFLOAT3 m_rotation;
@@ -56,7 +56,9 @@ public:
 
 	void Translate(XMFLOAT3 vector);
 
+#if EDITOR
 	void CreateEngineUI() override;
+#endif
 
 	void SetParentTransform(Transform* pparentTransform);
 	void AddChildTransform(Transform* pchildTransform);

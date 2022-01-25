@@ -1,6 +1,6 @@
 #pragma once
 #include "Engine/Physics/Collision.h"
-#include "Engine/Structure/UIComponent.h"
+#include "Engine/Structure/EditorUIComponent.h"
 
 class Transform;
 class Circle;
@@ -14,11 +14,10 @@ enum class ShapeType
 };
 
 // For double dispatch pattern
-class Shape : UIComponent
+class Shape : EditorUIComponent
 {
 public:
 
-	// To Do - Add line collision, if you want it
 	virtual bool Collide(Shape* shape) = 0;
 	virtual bool Collide(Circle* circle) = 0;
 	virtual bool Collide(Box* box) = 0;
@@ -31,7 +30,9 @@ public:
 
 	static string ShapeTypeToString(ShapeType type);
 
+#if EDITOR
 	virtual void CreateEngineUI() override;
+#endif
 
 	void SetIsTrigger(bool value);
 	void SetIsCollidable(bool value);

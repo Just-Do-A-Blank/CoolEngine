@@ -2,6 +2,7 @@
 
 CameraGameObject::CameraGameObject(string identifier) : GameObject(identifier)
 {
+
 }
 
 void CameraGameObject::Initialize(XMFLOAT3& position, XMFLOAT3& forwardVector, XMFLOAT3& upVector,

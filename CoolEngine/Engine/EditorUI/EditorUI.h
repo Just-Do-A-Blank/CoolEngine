@@ -9,6 +9,8 @@
 #define IMGUI_LEFT_LABEL(func, label, ...) (ImGui::TextUnformatted(label), ImGui::SameLine(), func("##" label, __VA_ARGS__))
 #define DEFAULT_IMGUI_IMAGE_SIZE ImVec2(256, 256)
 
+#if EDITOR
+
 class GameManager;
 
 struct SelectableText
@@ -63,15 +65,19 @@ public:
 	static void OpenFileExplorer(const WCHAR* fileFilters, WCHAR* buffer, int bufferSize);
 	static void OpenFolderExplorer(WCHAR* buffer, int bufferSize);
 
-	static void DragFloat(const string& label, float& value, const float& columnWidth = 100.0f);
+	static bool DragFloat(const string& label, float& value, const float& columnWidth = 100.0f, const float& speed = 0.1f, const float& min = 0, const float& max = 0);
 	static void DragFloat3(const string& label, XMFLOAT3& values, const float& columnWidth = 100.0f);
 
 	static void DragInt(const string& label, int& value, const float& columnWidth = 100.0f, const float& speed = 0.1f, const float& min = 0, const float& max = 0);
 
 	static void Checkbox(const string& label, bool& value, const float& columnWidth = 100.0f);
 
-	static void Texture(const string& label, wstring& filepath, ID3D11ShaderResourceView*& psrv, const float& columnWidth = 100.0f);
+	static void InputText(const string& label, string& text, const float& columnWidth = 100.0f);
+
+	static bool Texture(const string& label, wstring& filepath, ID3D11ShaderResourceView*& psrv, const float& columnWidth = 100.0f);
 	static void Animation(const string& label, wstring& filepath, SpriteAnimation& animation, const float& columnWidth = 100.0f);
 
 	static void Animations(const string& label, unordered_map<string, SpriteAnimation>& animations, const float& columnWidth = 100.0f);
 };
+
+#endif

@@ -27,10 +27,13 @@
 #include "Engine/GameUI/GameUIComponent.h"
 #include "Engine/GameUI/ImageComponent.h"
 
+#include "Physics/ParticleManager.h"
+
 #if TOOL
 #include "Engine/Tools/ToolBase.h"
 
 #include "Engine/Tools/TileMapTool.h"
+#include "Engine/Tools/AnimationTool.h"
 #endif
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -63,9 +66,13 @@ TileMap* g_testMap1;
 
 TileMap* g_testMap2;
 
+#if EDITOR
 EditorUI* g_peditorUI;
+#endif
 
 Inputs* g_inputController;
+
+ParticleManager* g_particleManager;
 
 #if TOOL
 ToolBase* g_ptoolBase = nullptr;
@@ -97,10 +104,12 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		return 0;
 	}
 
-	GraphicsManager::GetInstance()->LoadAnimationFromFile(L"TestAnim");
-
+#if EDITOR
 	g_peditorUI = new EditorUI(g_pd3dDevice);
 	g_peditorUI->InitIMGUI(g_pImmediateContext, g_pd3dDevice, &g_hWnd);
+#endif
+
+	GameManager::GetInstance()->Init();
 
 	//Setup audio stuff
 	AudioManager::GetInstance()->Init();
@@ -112,7 +121,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_inputController = new Inputs();
 
 	//Debug Manager
+#if _DEBUG
 	DebugDrawManager::GetInstance()->Init(g_pd3dDevice);
+#endif
 
 	//Create camera
 	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, -5);
@@ -133,15 +144,18 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameManager->CreateScene("TestScene");
 	pgameManager->SelectSceneUsingIdentifier("TestScene");
 
+	g_particleManager = new ParticleManager(QUAD_MESH_NAME, DEFAULT_VERTEX_SHADER_NAME, DEFAULT_PIXEL_SHADER_NAME);
+
 #if TOOL
 
 #if TILE_MAP_TOOL
 	g_ptoolBase = new TileMapTool();
+#elif ANIMATION_TOOL
+	g_ptoolBase = new AnimationTool();
 #endif
 
 	g_ptoolBase->Init(g_pd3dDevice);
 #else
-#endif
 
 	//Music
 	AudioManager::GetInstance()->LoadMusic(TEST_MUSIC);
@@ -157,7 +171,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	GraphicsManager::GetInstance()->LoadTextureFromFile(TEST2);
 
 	//Load animations
-	GraphicsManager::GetInstance()->LoadAnimationFromFile(TEST_ANIM);
 
 	// Create player
 	//g_pplayer = new PlayerGameObject("Player");
@@ -168,11 +181,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	string obj1Name = "TestObject1";
 	string playerName = "Player";
 
-	pgameManager->CreateGameObject<GameObject>(obj0Name);
-	pgameManager->CreateGameObject<GameObject>(obj1Name);
+	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj0Name);
+	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj1Name);
 	pgameManager->CreateGameObject<PlayerGameObject>(playerName);
 
-	GameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<GameObject>(obj0Name);
+	RenderableCollidableGameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj0Name);
 
 	XMFLOAT3 objectPos = XMFLOAT3(0, 0.0f, 0.0f);
 	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
@@ -191,7 +204,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetShape(pbox);
 
 	////Init second gameObject
-	pgameObject = pgameManager->GetGameObjectUsingIdentifier<GameObject>(obj1Name);
+	pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj1Name);
 
 	objectPos = XMFLOAT3(10.0f, 0.0f, 0.0f);
 	objectScale = XMFLOAT3(100, 100, 100);
@@ -225,7 +238,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
 	pgameObject->SetShape(pbox);
-	pgameObject->AddAnimation("Test", TEST_ANIM);
 
 	g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, 0, 0), XMFLOAT3(25, 25, 25), "TestMap");
 
@@ -239,10 +251,23 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	UIManager::GetInstance()->CreateCanvas("testCanvas", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
 	UIManager::GetInstance()->CreateUIComponent<ImageComponent>("TestUIImage", XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT3(0.2f, 0.2f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
+	
+	XMFLOAT3 pos = XMFLOAT3( 300, 300, 5 );
+	XMFLOAT3 rot = XMFLOAT3(0, 0, 0 );
+	XMFLOAT3 scale = XMFLOAT3(25, 25, 25);
+	Transform trans = Transform();
+	trans.SetPosition(pos);
+	trans.SetRotation(rot);
+	trans.SetScale(scale);
+	g_particleManager->AddSystem(trans, 10.0f, SYSTEM_TEST, DEFAULT_IMGUI_IMAGE);
+
+	GameManager::GetInstance()->GetTimer()->Tick();
 
 #if _DEBUG
 	DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect("DebugRect1", XMFLOAT3(-100.0f, -100.0f, 0.0f), objectScale, DebugDrawManager::DebugColour::BEIGE);
 #endif //_DEBUG
+
+#endif
 
 	//Create test Tile Map
 
@@ -266,25 +291,31 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		}
 	}
 
+#if EDITOR
 	g_peditorUI->ShutdownIMGUI();
+#endif
 
 	CleanupDevice();
 
 	return (int)msg.wParam;
 }
 
+#if EDITOR
 // Forward declare message handler from imgui_impl_win32.cpp
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+#endif
 
 //--------------------------------------------------------------------------------------
 // Called every time the application receives a message
 //--------------------------------------------------------------------------------------
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+#if EDITOR
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
 	{
 		return true;
 	}
+#endif
 
 	g_inputController->Update(&hWnd, &message, &wParam, &lParam);
 
@@ -579,6 +610,7 @@ void Render()
 	pgamemanager->Render(renderStruct);
 
 	UIManager::GetInstance()->Render(renderStruct);
+	g_particleManager->Render(renderStruct.m_pcontext);
 
 #if _DEBUG
 	DebugDrawManager::GetInstance()->Render(renderStruct);
@@ -587,7 +619,9 @@ void Render()
 #if TOOL
 	g_ptoolBase->Render();
 #else
+#if EDITOR
 	g_peditorUI->DrawEditorUI(g_pd3dDevice);
+#endif
 #endif
 
 	// Present our back buffer to our front buffer
@@ -603,11 +637,15 @@ void Update()
 	pgamemanager->GetTimer()->Tick();
 	pgamemanager->Update();
 
+	g_particleManager->Update(GameManager::GetInstance()->GetTimer()->DeltaTime());
+
 	AudioManager::GetInstance()->Update();
 
 	EventManager::Instance()->ProcessEvents();
 
+#if EDITOR
 	g_peditorUI->Update();
+#endif
 
 	g_inputController->Update();
 

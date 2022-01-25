@@ -1,6 +1,8 @@
 #include "ParticleSystem.h"
 
-ParticleSystem::ParticleSystem()
+#include "Engine/EditorUI/EditorUI.h"
+
+ParticleSystem::ParticleSystem(string identifier) : GameObject(identifier)
 {
 	for (unsigned int i = 0; i < PARTICLE_SYSTEM_SIZE; ++i)
 	{
@@ -17,15 +19,13 @@ ParticleSystem::ParticleSystem()
 ParticleSystem::~ParticleSystem()
 {
 	delete[] m_pParticles;
-	if (m_pTexture)
-	{
-		m_pTexture->Release();
-	}
 }
 
 void ParticleSystem::Initialise(Transform trans, float life, SYSTEM_TYPE type, ID3D11ShaderResourceView* tex)
 {
-	m_transform = trans;
+	*m_transform = trans;
+	m_transform->UpdateMatrix();
+
 	m_lifetime = life;
 	m_timer = 0.0f;
 	m_isActive = true;
@@ -37,7 +37,7 @@ void ParticleSystem::Update(const float dTime)
 {
 	for (unsigned int i = 0; i < PARTICLE_SYSTEM_SIZE; ++i)
 	{
-		if (m_pParticles[i]->IsActive())
+		if (m_pParticles[i]->GetActive())
 		{
 			m_pParticles[i]->Update(dTime);
 		}
@@ -54,7 +54,7 @@ void ParticleSystem::Update(const float dTime)
 		// Basic test particle effect
 		if (m_timer >= 1.0f)
 		{
-			AddParticle(m_transform, XMFLOAT2(0, 0), XMFLOAT2(0, 0), nullptr, 0.5f);
+			AddParticle(*m_transform, XMFLOAT2(0, 0), XMFLOAT2(0, 0), 0.5f);
 			m_timer = 0;
 		}
 		break;
@@ -74,24 +74,24 @@ void ParticleSystem::Update(const float dTime)
 	}
 }
 
-void ParticleSystem::Render(ID3D11DeviceContext* pContext, ConstantBuffer<PerInstanceCB>* pConstantBuffer, Mesh* mesh)
+void ParticleSystem::Render(ID3D11DeviceContext* pContext, Mesh* mesh)
 {
 	pContext->PSSetShaderResources(0, 1, &m_pTexture);
 
 	for (unsigned int i = 0; i < PARTICLE_SYSTEM_SIZE; ++i)
 	{
-		if (m_pParticles[i]->IsActive())
+		if (m_pParticles[i]->GetActive())
 		{
-			m_pParticles[i]->Render(pContext, pConstantBuffer, mesh);
+			m_pParticles[i]->Render(pContext, mesh);
 		}
 	}
 }
 
-void ParticleSystem::AddParticle(Transform trans, XMFLOAT2 vel, XMFLOAT2 accel, ID3D11ShaderResourceView* tex, float life)
+void ParticleSystem::AddParticle(Transform trans, XMFLOAT2 vel, XMFLOAT2 accel, float life)
 {
 	for (unsigned int i = 0; i < PARTICLE_SYSTEM_SIZE; ++i)
 	{
-		if (!m_pParticles[i]->IsActive())
+		if (!m_pParticles[i]->GetActive())
 		{
 			// Initialise one, then break from loop so more are not made
 			m_pParticles[i]->Initialise(trans, vel, accel, life);
@@ -99,3 +99,13 @@ void ParticleSystem::AddParticle(Transform trans, XMFLOAT2 vel, XMFLOAT2 accel, 
 		}
 	}
 }
+
+#if EDITOR
+void ParticleSystem::CreateEngineUI()
+{
+	ImGui::Separator();
+	ImGui::Spacing();
+
+	m_transform->CreateEngineUI();
+}
+#endif

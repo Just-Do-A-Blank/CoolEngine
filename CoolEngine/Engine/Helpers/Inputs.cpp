@@ -1,7 +1,9 @@
 #include "Inputs.h"
 #include "Engine/Managers/Events/EventManager.h"
-#include "Engine/Includes/IMGUI/imgui.h"
 
+#if EDITOR
+#include "Engine/Includes/IMGUI/imgui.h"
+#endif
 
 void Inputs::Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam)
 {
@@ -10,12 +12,14 @@ void Inputs::Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam)
 	case(WM_KEYDOWN):
 	case(WM_KEYUP):
 	{
+#if EDITOR
 		ImGuiIO io = ImGui::GetIO();
 
 		if (io.WantCaptureKeyboard == true)
 		{
 			return;
 		}
+#endif
 	}
 	break;
 
@@ -29,12 +33,14 @@ void Inputs::Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam)
 	case(WM_XBUTTONUP):
 	case(WM_MOUSEMOVE):
 	{
+#if EDITOR
 		ImGuiIO io = ImGui::GetIO();
 
 		if (io.WantCaptureMouse == true)
 		{
 			return;
 		}
+#endif
 	}
 	break;
 

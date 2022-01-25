@@ -1,8 +1,10 @@
 #pragma once
 #include "Engine/Managers/SceneGraph.h"
 #include "Engine/GameUI/GameUIComponent.h"
+#include "Engine/GameObjects/RenderableGameObject.h"
 
 class Transform;
+class Mesh;
 
 class UICanvas : public GameUIComponent
 {
