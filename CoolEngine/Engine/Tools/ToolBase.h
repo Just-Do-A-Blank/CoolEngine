@@ -1,5 +1,7 @@
 #pragma once
 
+#if EDITOR
+
 class ToolBase
 {
 public:
@@ -15,3 +17,4 @@ private:
 
 };
 
+#endif

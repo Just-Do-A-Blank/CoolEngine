@@ -1,3 +1,5 @@
+#if EDITOR
+
 #include "ToolBase.h"
 
 void ToolBase::Init(ID3D11Device* pdevice)
@@ -16,3 +18,5 @@ void ToolBase::Render()
 void ToolBase::Destroy()
 {
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if EDITOR
+
 #include "AnimationTool.h"
 #include "Engine/Managers/GameManager.h"
 #include "Engine/ResourceDefines.h"
@@ -190,3 +192,5 @@ bool AnimationTool::SaveAnim(string animName)
 
 	return true;
 }
+
+#endif

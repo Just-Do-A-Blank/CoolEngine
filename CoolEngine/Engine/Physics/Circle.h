@@ -71,6 +71,7 @@ public:
 		return Collision::CircleBoxCollisionAndResponse(this, box);
 	}
 
+#if EDITOR
 	void CreateEngineUI() override
 	{
 		EditorUI::DragFloat("Radius", m_radius, 100.0f, 0.1f, 0);
@@ -79,4 +80,5 @@ public:
 
 		Shape::CreateEngineUI();
 	}
+#endif
 };
