@@ -31,7 +31,7 @@ protected:
 	virtual void CreateEngineUI() override;
 #endif
 
-	GameObjectType m_gameObjectType;
+	GameObjectType m_gameObjectType = (GameObjectType)0;
 
 public:
 	GameObject();

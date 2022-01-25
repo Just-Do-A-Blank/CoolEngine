@@ -15,6 +15,7 @@ CollidableGameObject::CollidableGameObject(string identifier) : GameObject(ident
 	m_gameObjectType |= GameObjectType::COLLIDABLE;
 }
 
+#if EDITOR
 void CollidableGameObject::CreateEngineUI()
 {
 	GameObject::CreateEngineUI();
@@ -67,6 +68,7 @@ void CollidableGameObject::CreateEngineUI()
 		m_pcollider->CreateEngineUI();
 	}
 }
+#endif
 
 Shape* CollidableGameObject::GetShape()
 {

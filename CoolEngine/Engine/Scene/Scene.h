@@ -41,6 +41,8 @@ private:
 	template<typename T>
 	T* CreateGameObject(string identifier)
 	{
+		assert(m_psceneGraph != nullptr);
+
 		T* gameObject = new T(identifier);
 
 		GameObject* pgameObject = dynamic_cast<GameObject*>(gameObject);

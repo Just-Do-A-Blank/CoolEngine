@@ -10,7 +10,6 @@
 #include "Engine/Graphics/SpriteAnimation.h"
 #include "Engine/GameObjects/CameraGameObject.h"
 #include "Engine/GameObjects/PlayerGameObject.h"
-#include "Engine/GameObjects/RenderableCollidableGameObject.h"
 
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/Managers/Events/EventObserver.h"
@@ -142,6 +141,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameManager->CreateScene("TestScene");
 	pgameManager->SelectSceneUsingIdentifier("TestScene");
 
+	g_particleManager = new ParticleManager(QUAD_MESH_NAME, DEFAULT_VERTEX_SHADER_NAME, DEFAULT_PIXEL_SHADER_NAME);
+
 #if TOOL
 
 #if TILE_MAP_TOOL
@@ -244,7 +245,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, &observer);
 	EventManager::Instance()->AddClient(EventType::MouseMoved, &observer);
 
-	g_particleManager = new ParticleManager(QUAD_MESH_NAME, DEFAULT_VERTEX_SHADER_NAME, DEFAULT_PIXEL_SHADER_NAME);
 	XMFLOAT3 pos = XMFLOAT3( 300, 300, 5 );
 	XMFLOAT3 rot = XMFLOAT3(0, 0, 0 );
 	XMFLOAT3 scale = XMFLOAT3(25, 25, 25);
