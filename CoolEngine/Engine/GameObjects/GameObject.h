@@ -4,7 +4,7 @@
 #include "Engine/Graphics/ConstantBuffer.h"
 #include "Engine/Graphics/ConstantBuffers.h"
 #include "Engine/Graphics/SpriteAnimation.h"
-#include "Engine/EditorUI/EditorUI.h"
+#include "Engine/Structure/EditorUIComponent.h"
 #include "Engine/ResourceDefines.h"
 
 #include <string>
@@ -15,9 +15,10 @@ class Shape;
 
 struct RenderStruct;
 
+#define FILEPATH_BUFFER_SIZE 200
 #define ANIM_NAME_SIZE 50
 
-class GameObject
+class GameObject : public EditorUIComponent
 {
 	friend class GameManager;
 private:
@@ -32,16 +33,9 @@ private:
 	int m_layer = 0;
 
 	//ImGui variables
-	WCHAR m_texNameBuffer[FILEPATH_BUFFER_SIZE];
-	char m_animName[ANIM_NAME_SIZE];
-	string m_animNewName;
+	wstring m_texFilepath;
+
 	char m_createDeleteAnimName[ANIM_NAME_SIZE];
-	WCHAR m_animFilepath[FILEPATH_BUFFER_SIZE];
-
-	std::string m_animUpdateName = "";
-
-	bool m_updateAnim = false;
-	bool m_updateAnimName = false;
 
 	std::unordered_map<std::string, SpriteAnimation> m_animations;
 
@@ -54,10 +48,10 @@ private:
 	bool m_isRenderable = true;
 
 protected:
-	Transform m_transform;
+	Transform* m_transform;
 	Shape* m_collider = nullptr;
 
-	virtual void CreateEngineUI(ID3D11Device* pdevice);
+	virtual void CreateEngineUI() override;
 
 public:
 	GameObject();
@@ -70,7 +64,7 @@ public:
 	virtual void Render(RenderStruct& renderStruct);
 	virtual void Update();
 
-	virtual void ShowEngineUI(ID3D11Device* pdevice);
+	virtual void ShowEngineUI();
 
 	//Getters
 	Mesh* GetMesh() const;

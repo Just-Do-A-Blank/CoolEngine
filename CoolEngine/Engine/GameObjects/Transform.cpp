@@ -12,10 +12,22 @@ void Transform::Initialize(const XMFLOAT3& position, const XMFLOAT3& rotation, c
 
 void Transform::UpdateMatrix()
 {
+	m_rotationMatrix = XMMatrixRotationRollPitchYaw(m_rotation.x, m_rotation.y, m_rotation.z);
 	m_scaleMatrix = XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);
 	m_translationalMatrix = XMMatrixTranslation(m_position.x, m_position.y, m_position.z);
 
-    m_worldMatrix = m_scaleMatrix * m_rotationMatrix * m_translationalMatrix;
+	m_worldMatrix = m_scaleMatrix * m_rotationMatrix * m_translationalMatrix;
+
+	if (m_pparentTransform)
+	{
+		m_worldMatrix = m_worldMatrix * m_pparentTransform->GetWorldMatrix();
+	}
+
+
+	for (int i = 0; i < m_childrenTransformList.size(); ++i)
+	{
+		m_childrenTransformList[i]->UpdateMatrix();
+	}
 
     UpdateComponentVectors();
 }
@@ -57,6 +69,11 @@ const XMMATRIX& Transform::GetRotationMatrix() const
     return m_rotationMatrix;
 }
 
+const XMMATRIX& Transform::GetTranslationMatrix() const
+{
+	return m_translationalMatrix;
+}
+
 const XMMATRIX& Transform::GetWorldMatrix() const
 {
     return m_worldMatrix;
@@ -87,8 +104,6 @@ void Transform::SetPosition(XMFLOAT3& position)
 void Transform::SetRotation(XMFLOAT3& rotation)
 {
     m_rotation = rotation;
-
-    m_rotationMatrix = XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z);
 
 	UpdateMatrix();
 }
@@ -139,39 +154,19 @@ void Transform::Translate(XMFLOAT3 vector)
 
 void Transform::CreateEngineUI()
 {
-	float positionArray[3] =
-	{
-		m_position.x,
-		m_position.y,
-		m_position.z
-	};
+	EditorUI::DragFloat3("Position", m_position);
+	EditorUI::DragFloat3("Rotation", m_rotation);
+	EditorUI::DragFloat3("Scale", m_scale);
 
-	float rotationArray[3] =
-	{
-		m_rotation.x,
-		m_rotation.y,
-		m_rotation.z
-	};
+	UpdateMatrix();
+}
 
-	float scaleArray[3] =
-	{
-		m_scale.x,
-		m_scale.y,
-		m_scale.z
-	};
+void Transform::SetParentTransform(Transform* pparentTransform)
+{
+	m_pparentTransform = pparentTransform;
+}
 
-	if (IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Position", positionArray))
-	{
-		m_position = XMFLOAT3(positionArray[0], positionArray[1], positionArray[2]);
-	}
-
-	if (IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Rotation", rotationArray))
-	{
-		m_rotation = XMFLOAT3(rotationArray[0], rotationArray[1], rotationArray[2]);
-	}
-
-	if (IMGUI_LEFT_LABEL(ImGui::DragFloat3, "Scale", scaleArray))
-	{
-		m_scale = XMFLOAT3(scaleArray[0], scaleArray[1], scaleArray[2]);
-	}
+void Transform::AddChildTransform(Transform* pchildTransform)
+{
+	m_childrenTransformList.push_back(pchildTransform);
 }

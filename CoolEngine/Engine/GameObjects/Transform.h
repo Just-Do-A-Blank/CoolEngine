@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Engine/Structure/UIComponent.h"
+#include "Engine/Structure/EditorUIComponent.h"
 
-class Transform : UIComponent
+class Transform : EditorUIComponent
 {
 	XMFLOAT3 m_position;
 	XMFLOAT3 m_rotation;
@@ -10,7 +10,11 @@ class Transform : UIComponent
 
 	XMFLOAT3 m_forwardVector = XMFLOAT3(0.0f, -1.0f, 0.0f);
 	XMFLOAT3 m_upVector = XMFLOAT3(0.0f, 0.0f, 1.0f);;
-	XMFLOAT3 m_leftVector = XMFLOAT3(-1.0f, 0.0f, 0.0f);;
+	XMFLOAT3 m_leftVector = XMFLOAT3(-1.0f, 0.0f, 0.0f);
+
+	Transform* m_pparentTransform;
+	vector<Transform*> m_childrenTransformList;
+
 
 	//Matrices
 	XMMATRIX m_scaleMatrix;
@@ -33,6 +37,7 @@ public:
 
 	const XMMATRIX& GetScaleMatrix()const;
 	const XMMATRIX& GetRotationMatrix()const;
+	const XMMATRIX& GetTranslationMatrix()const;
 	const XMMATRIX& GetWorldMatrix()const;
 
 	const XMFLOAT3& GetForwardVector()const;
@@ -52,5 +57,8 @@ public:
 	void Translate(XMFLOAT3 vector);
 
 	void CreateEngineUI() override;
+
+	void SetParentTransform(Transform* pparentTransform);
+	void AddChildTransform(Transform* pchildTransform);
 };
 

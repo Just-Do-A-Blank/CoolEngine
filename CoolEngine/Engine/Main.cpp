@@ -26,10 +26,13 @@
 #include "Engine/Managers/GameManager.h"
 #include <Engine/Physics/Box.h>
 
+#include "Physics/ParticleManager.h"
+
 #if TOOL
 #include "Engine/Tools/ToolBase.h"
 
 #include "Engine/Tools/TileMapTool.h"
+#include "Engine/Tools/AnimationTool.h"
 #endif
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -58,12 +61,15 @@ ID3D11RasterizerState* g_prasterState = nullptr;
 CameraGameObject* g_pcamera = nullptr;
 PlayerGameObject* g_pplayer = nullptr;
 
+TileMap* g_testMap1;
+
+TileMap* g_testMap2;
+
 EditorUI* g_peditorUI;
 
 Inputs* g_inputController;
 
-int g_Width = 1920;
-int g_Height = 1080;
+ParticleManager* g_particleManager;
 
 #if TOOL
 ToolBase* g_ptoolBase = nullptr;
@@ -95,10 +101,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		return 0;
 	}
 
-	GraphicsManager::GetInstance()->LoadAnimationFromFile(L"TestAnim");
-
 	g_peditorUI = new EditorUI(g_pd3dDevice);
 	g_peditorUI->InitIMGUI(g_pImmediateContext, g_pd3dDevice, &g_hWnd);
+
+	GameManager::GetInstance()->Init();
 
 	//Setup audio stuff
 	AudioManager::GetInstance()->Init();
@@ -122,8 +128,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	XMFLOAT3 cameraForward = XMFLOAT3(0, 0, 1);
 	XMFLOAT3 cameraUp = XMFLOAT3(0, 1, 0);
 
-	float windowWidth = g_Width;
-	float windowHeight = g_Height;
+	float windowWidth = GraphicsManager::GetInstance()->GetWindowDimensions().x;
+	float windowHeight = GraphicsManager::GetInstance()->GetWindowDimensions().y;
 
 	float nearDepth = 0.01f;
 	float farDepth = 1000.0f;
@@ -140,6 +146,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 #if TILE_MAP_TOOL
 	g_ptoolBase = new TileMapTool();
+#elif ANIMATION_TOOL
+	g_ptoolBase = new AnimationTool();
 #endif
 
 	g_ptoolBase->Init(g_pd3dDevice);
@@ -159,7 +167,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	GraphicsManager::GetInstance()->LoadTextureFromFile(TEST2);
 
 	//Load animations
-	GraphicsManager::GetInstance()->LoadAnimationFromFile(TEST_ANIM);
 
 	// Create player
 	//g_pplayer = new PlayerGameObject("Player");
@@ -194,7 +201,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->GetTransform()->SetScale(objectScale);
 	pgameObject->SetShape(pbox);
 
-	//Init second gameObject
+	////Init second gameObject
 	pgameObject = pgameManager->GetGameObjectUsingIdentifier<GameObject>(obj1Name);
 
 	objectPos = XMFLOAT3(10.0f, 0.0f, 0.0f);
@@ -252,7 +259,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//vector<node*> path2 = Pathfinding::Instance()->FindPath(pgameObject->GetTransform()->GetPosition(), XMFLOAT3(15, 15, 0));
 
 
-
+	g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, 0, 0), XMFLOAT3(25, 25, 25), "TestMap");
 
 	ExampleObserver observer(new int(10), pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName));
 	EventManager::Instance()->AddClient(EventType::KeyPressed, &observer);
@@ -261,17 +268,25 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, &observer);
 	EventManager::Instance()->AddClient(EventType::MouseMoved, &observer);
 
+	g_particleManager = new ParticleManager(QUAD_MESH_NAME, DEFAULT_VERTEX_SHADER_NAME, DEFAULT_PIXEL_SHADER_NAME);
+	XMFLOAT3 pos = XMFLOAT3( 300, 300, 5 );
+	XMFLOAT3 rot = XMFLOAT3(0, 0, 0 );
+	XMFLOAT3 scale = XMFLOAT3(25, 25, 25);
+	Transform trans = Transform();
+	trans.SetPosition(pos);
+	trans.SetRotation(rot);
+	trans.SetScale(scale);
+	g_particleManager->AddSystem(trans, 10.0f, SYSTEM_TEST, DEFAULT_IMGUI_IMAGE);
+
+	GameManager::GetInstance()->GetTimer()->Tick();
+
 #if _DEBUG
 	DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect("DebugRect1", XMFLOAT3(-100.0f, -100.0f, 0.0f), objectScale, DebugDrawManager::DebugColour::BEIGE);
 #endif //_DEBUG
 
-	//Create test Tile Map
-	TileMap TestMap = TileMap(10, 10, "TestMap", XMFLOAT3(1,1,0));
-	TestMap.testFunc();
-
-	Pathfinding::Instance()->Initialize(TestMap);
-
 #endif
+
+	//Create test Tile Map
 
 	// Main message loop
 	MSG msg = { 0 };
@@ -364,7 +379,7 @@ inline HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow)
 
 	// Create window
 	g_hInstance = hInstance;
-	RECT rc = { 0, 0, g_Width, g_Height };
+	RECT rc = { 0, 0, GraphicsManager::GetInstance()->GetWindowDimensions().x, GraphicsManager::GetInstance()->GetWindowDimensions().y };
 
 	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 	g_hWnd = CreateWindow(L"TutorialWindowClass", L"Cool Engine",
@@ -602,6 +617,8 @@ void Render()
 	GameManager* pgamemanager = GameManager::GetInstance();
 	pgamemanager->Render(renderStruct);
 
+	g_particleManager->Render(renderStruct.m_pcontext);
+
 #if _DEBUG
 	DebugDrawManager::GetInstance()->Render(renderStruct);
 #endif
@@ -625,12 +642,16 @@ void Update()
 	pgamemanager->GetTimer()->Tick();
 	pgamemanager->Update();
 
+	g_particleManager->Update(GameManager::GetInstance()->GetTimer()->DeltaTime());
+
 	AudioManager::GetInstance()->Update();
 
 	EventManager::Instance()->ProcessEvents();
 
+	g_peditorUI->Update();
+
 	g_inputController->Update();
-	
+
 #if TOOL
 	g_ptoolBase->Update();
 #endif

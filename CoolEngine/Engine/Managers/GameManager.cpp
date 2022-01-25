@@ -6,6 +6,18 @@
 #include "Engine/GameObjects/PlayerGameObject.h"
 #include "GraphicsManager.h"
 
+#include <direct.h>
+
+void GameManager::Init()
+{
+    char buffer[FILEPATH_BUFFER_SIZE];
+    _getcwd(buffer, FILEPATH_BUFFER_SIZE);
+
+    m_workingDirectory = string(buffer);
+
+    m_wideWorkingDirectory = wstring(m_workingDirectory.begin(), m_workingDirectory.end());
+}
+
 Timer* GameManager::GetTimer()
 {
     return &m_timer;
@@ -42,6 +54,16 @@ void GameManager::DeleteSceneUsingIdentifier(string sceneIdentifier)
 void GameManager::DeleteSelectedScene()
 {
     m_sceneMap.erase(m_pcurrentScene->GetSceneIdentifier());
+}
+
+string GameManager::GetWorkingDirectory()
+{
+    return m_workingDirectory;
+}
+
+wstring GameManager::GetWideWorkingDirectory()
+{
+    return m_wideWorkingDirectory;
 }
 
 Scene* GameManager::GetCurrentScene()
@@ -84,7 +106,7 @@ void GameManager::SelectGameObject(GameObject* pgameObject)
     m_pcurrentScene->SelectGameObject(pgameObject);
 }
 
-void GameManager::SelectGameObjectUsingTreeNode(TreeNode* pnode)
+void GameManager::SelectGameObjectUsingTreeNode(TreeNode<GameObject>* pnode)
 {
     m_pcurrentScene->SelectGameObjectUsingTreeNode(pnode);
 }
@@ -99,12 +121,12 @@ void GameManager::DeleteGameObjectUsingIdentifier(string identifier)
     m_pcurrentScene->DeleteGameObjectUsingIdentifier(identifier);
 }
 
-TreeNode* GameManager::GetRootTreeNode()
+TreeNode<GameObject>* GameManager::GetRootTreeNode()
 {
     return m_pcurrentScene->GetRootTreeNode();
 }
 
-TreeNode* GameManager::GetTreeNode(GameObject* pgameObject)
+TreeNode<GameObject>* GameManager::GetTreeNode(GameObject* pgameObject)
 {
     return m_pcurrentScene->GetTreeNode(pgameObject);
 }

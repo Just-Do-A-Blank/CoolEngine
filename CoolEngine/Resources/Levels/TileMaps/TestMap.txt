@@ -1,0 +1,4 @@
+<DIMENSIONS> 5, 5*
+<SPRITES> Default_Tile.dds, brick.dds, fake.dds*
+<ANIMATIONS> TestAnim*
+<LAYOUT> 0,3,1,1,0,0,0,0,0,0,0,0,0,0*
