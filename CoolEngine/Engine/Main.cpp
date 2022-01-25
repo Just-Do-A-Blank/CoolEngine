@@ -111,6 +111,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	//Debug Manager
 	DebugDrawManager::GetInstance()->Init(g_pd3dDevice);
+	
+	//Setup Pathfinding
+
+	//Pathfinding::Instance()->Init(testmap)
+
 
 	//Create camera
 	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, -5);
@@ -227,8 +232,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 
 	//Init enemy object
-	
-	pgameObject = pgameManager->GetGameObjectUsingIdentifier<EnemyGameObject>(enemyName);
+	EnemyGameObject* egameObject = pgameManager->GetGameObjectUsingIdentifier<EnemyGameObject>(enemyName);
 	objectPos = XMFLOAT3(-200.0f, 200.0f, 0);
 	objectScale = XMFLOAT3(40, 40, 40);
 
@@ -236,13 +240,13 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pbox->SetIsCollidable(isCollision);
 	pbox->SetIsTrigger(isCollision);
 
-	pgameObject->SetMesh(QUAD_MESH_NAME);
-	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
-	pgameObject->GetTransform()->SetPosition(objectPos);
-	pgameObject->GetTransform()->SetScale(objectScale);
-	pgameObject->SetShape(pbox);
+	egameObject->SetMesh(QUAD_MESH_NAME);
+	egameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+	egameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+	egameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
+	egameObject->GetTransform()->SetPosition(objectPos);
+	egameObject->GetTransform()->SetScale(objectScale);
+	egameObject->SetShape(pbox);
 
 	
 	//vector<node*> path2 = Pathfinding::Instance()->FindPath(pgameObject->GetTransform()->GetPosition(), XMFLOAT3(15, 15, 0));
@@ -264,6 +268,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//Create test Tile Map
 	TileMap TestMap = TileMap(10, 10, "TestMap", XMFLOAT3(1,1,0));
 	TestMap.testFunc();
+
+	Pathfinding::Instance()->Initialize(TestMap);
+
 #endif
 
 	// Main message loop

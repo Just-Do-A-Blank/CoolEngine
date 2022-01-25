@@ -19,6 +19,9 @@ public:
 	//Tile					GetTileFromWorldPos(int posX, int posY);
 	Tile*					GetTileFromMapPos(int x, int y);
 
+	const int GetWidth() const{ return m_width; }
+	const int GetHeight() const { return m_height; }
+
 protected:
 	
 

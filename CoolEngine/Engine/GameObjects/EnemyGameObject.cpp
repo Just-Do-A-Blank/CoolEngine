@@ -12,6 +12,9 @@ void EnemyGameObject::Update()
 {
 	if (!m_curPath.empty())
 	{
+
+		//Uses directional movement for calculations, should be moved to charactergameobject then update called from here
+
 		XMFLOAT3 desiredDirection = MathHelper::Minus(m_curPath.back()->pos, m_transform.GetPosition());
 		desiredDirection = MathHelper::Normalize(desiredDirection);
 		m_direction = MathHelper::Plus(m_direction, desiredDirection);
@@ -23,9 +26,7 @@ void EnemyGameObject::Update()
 		}
 
 
-		float step = m_moveSpeed *GameManager::GetInstance()->GetTimer()->DeltaTime();
-
-
+		float step = m_moveSpeed * GameManager::GetInstance()->GetTimer()->DeltaTime();
 
 		m_direction = MathHelper::Normalize(m_direction);
 
@@ -34,13 +35,11 @@ void EnemyGameObject::Update()
 		m_transform.SetPosition(stepPos);
 		
 		//CharacterGameObject::Update();
-
-
 	}
 	else
 	{
 		LOG("NO PATH");
-		m_curPath = Pathfinding::Instance()->FindPath(m_transform.GetPosition(), XMFLOAT3(100, 500, 0));
+		m_curPath = Pathfinding::Instance()->FindPath(m_transform.GetPosition(), XMFLOAT3(100, 500, 0)); //test function
 	}
 
 

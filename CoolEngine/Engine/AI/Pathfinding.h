@@ -20,7 +20,7 @@ struct node
 
 
 
-
+class TileMap;
 
 class Pathfinding
 {
@@ -32,11 +32,13 @@ public:
 	static Pathfinding* Instance();
 	node* FindClosestNode(XMFLOAT3 pos);
 
+	void Initialize(TileMap map);
+
 private:
 
-	//test 16x16 grid 
-	unsigned int mapwidth = 16;
-	unsigned int mapheight = 16;
+
+	int m_mapWidth = 16;
+	int m_mapHeight = 16;
 	node* nodes = nullptr;
 
 	Pathfinding();

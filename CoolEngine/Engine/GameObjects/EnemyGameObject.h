@@ -18,8 +18,6 @@ struct EnemyStateMachine
 {
     float WANDER;
     float ATTACK;
-    float RUN;
-    float PATROL;
     float STAY;
 
     //FSM
@@ -56,6 +54,8 @@ private:
 
    
     EnemyStateMachine m_enemyState;
+
+    void DetermineAction();
 
 
 };
