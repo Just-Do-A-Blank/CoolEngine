@@ -23,6 +23,7 @@ void Scene::Update()
 		it->second->Update();
 	}
 
+	Collision::UpdateOBBs(gameObjectList);
 	Collision::Update(gameObjectList);
 }
 

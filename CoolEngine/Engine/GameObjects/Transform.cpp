@@ -152,6 +152,20 @@ void Transform::Translate(XMFLOAT3 vector)
     UpdateMatrix();
 }
 
+void Transform::Rotate(float angle)
+{
+    m_rotation.z += angle;
+
+    UpdateMatrix();
+}
+
+void Transform::SetAngle(float angle)
+{
+    m_rotation.z = angle;
+
+    UpdateMatrix();
+}
+
 #if EDITOR
 void Transform::CreateEngineUI()
 {

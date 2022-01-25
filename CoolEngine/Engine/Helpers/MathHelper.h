@@ -7,6 +7,12 @@ static class MathHelper
 {
 public:
 	//Adds var2 to var1 and return it
+	static XMFLOAT2& Plus(const XMFLOAT2& var1, const XMFLOAT2& var2)
+	{
+		return XMFLOAT2(var1.x + var2.x, var1.y + var2.y);
+	}
+
+	//Adds var2 to var1 and return it
 	static XMFLOAT3& Plus(const XMFLOAT3& var1, const XMFLOAT3& var2)
 	{
 		return XMFLOAT3(var1.x + var2.x, var1.y + var2.y, var1.z + var2.z);
@@ -31,6 +37,12 @@ public:
 	}
 
 	//Multiplies var1 with var2 and returns it
+	static XMFLOAT2& Multiply(XMFLOAT2 var1, const float& value)
+	{
+		return XMFLOAT2(var1.x * value, var1.y * value);
+	}
+
+	//Multiplies var1 with var2 and returns it
 	static XMFLOAT3& Multiply(XMFLOAT3 var1, const float& value)
 	{
 		return XMFLOAT3(var1.x * value, var1.y * value, var1.z * value);
@@ -43,15 +55,27 @@ public:
 	}
 
 	//Divides var1 by value and returns it.
+	static XMFLOAT2& Divide(XMFLOAT2 var1, const float& value)
+	{
+		return XMFLOAT2(var1.x / value, var1.y / value);
+	}
+
+	//Divides var1 by value and returns it.
 	static XMFLOAT3& Divide(XMFLOAT3 var1, const float& value)
 	{
-		return XMFLOAT3(var1.x * value, var1.y * value, var1.z * value);
+		return XMFLOAT3(var1.x / value, var1.y / value, var1.z / value);
 	}
 
 	//Divides var1 by value and stores in var1
 	static void DivideEquals(XMFLOAT3& var1, const float& value)
 	{
 		var1 = Divide(var1, value);
+	}
+
+	//Returns dot product of var1 with var2
+	static float DotProduct(const XMFLOAT2& var1, const XMFLOAT2& var2)
+	{
+		return (var1.x * var2.x) + (var1.y * var2.y);
 	}
 
 	//Returns dot product of var1 with var2
@@ -71,9 +95,21 @@ public:
 	}
 
 	//Return magnitude of var1
+	static float Magnitude(const XMFLOAT2& var1)
+	{
+		return sqrt((var1.x * var1.x) + (var1.y * var1.y));
+	}
+
+	//Return magnitude of var1
 	static float Magnitude(const XMFLOAT3& var1)
 	{
 		return sqrt((var1.x * var1.x) + (var1.y * var1.y) + (var1.z * var1.z));
+	}
+
+	//Returns square magnitude of var1
+	static float SquareMagnitude(const XMFLOAT2& var1)
+	{
+		return (var1.x * var1.x) + (var1.y * var1.y);
 	}
 
 	//Returns square magnitude of var1

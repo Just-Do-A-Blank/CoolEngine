@@ -23,6 +23,7 @@
 #include "Scene/Scene.h"
 #include "Engine/Managers/GameManager.h"
 #include <Engine/Physics/Box.h>
+#include <Engine/Physics/OBB.h>
 
 #include "Physics/ParticleManager.h"
 
@@ -176,6 +177,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	string obj1Name = "TestObject1";
 	string playerName = "Player";
 
+	OBB* pOBB;
+
 	pgameManager->CreateGameObject<GameObject>(obj0Name);
 	pgameManager->CreateGameObject<GameObject>(obj1Name);
 	pgameManager->CreateGameObject<PlayerGameObject>(playerName);
@@ -185,6 +188,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	XMFLOAT3 objectPos = XMFLOAT3(0, 0.0f, 0.0f);
 	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
 	bool isCollision = true;
+	bool isNotCollision = false;
 
 	Box* pbox = new Box(pgameObject->GetTransform());
 	pbox->SetIsCollidable(isCollision);
@@ -201,12 +205,16 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	////Init second gameObject
 	pgameObject = pgameManager->GetGameObjectUsingIdentifier<GameObject>(obj1Name);
 
-	objectPos = XMFLOAT3(10.0f, 0.0f, 0.0f);
+	objectPos = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	objectScale = XMFLOAT3(100, 100, 100);
 
-	pbox = new Box(pgameObject->GetTransform());
+	pOBB = new OBB(pgameObject->GetTransform());
+	pOBB->SetIsCollidable(isNotCollision);
+	pOBB->SetIsTrigger(isCollision);
+
+	/*pbox = new Box(pgameObject->GetTransform());
 	pbox->SetIsCollidable(isCollision);
-	pbox->SetIsTrigger(isCollision);
+	pbox->SetIsTrigger(isCollision);*/
 
 	pgameObject->SetMesh(QUAD_MESH_NAME);
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
@@ -214,7 +222,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetAlbedo(TEST2);
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
-	pgameObject->SetShape(pbox);
+	pgameObject->SetShape(pOBB);
 
 	// Init player object
 	pgameObject = pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName);
@@ -222,9 +230,13 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	objectPos = XMFLOAT3(200.0f, 0.0f, 5.0f);
 	objectScale = XMFLOAT3(50, 50, 50);
 
-	pbox = new Box(pgameObject->GetTransform());
+	/*pbox = new Box(pgameObject->GetTransform());
 	pbox->SetIsCollidable(isCollision);
-	pbox->SetIsTrigger(isCollision);
+	pbox->SetIsTrigger(isCollision);*/
+
+	pOBB = new OBB(pgameObject->GetTransform());
+	pOBB->SetIsCollidable(isNotCollision);
+	pOBB->SetIsTrigger(isCollision);
 
 	pgameObject->SetMesh(QUAD_MESH_NAME);
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
@@ -232,7 +244,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
-	pgameObject->SetShape(pbox);
+	pgameObject->SetShape(pOBB);
 
 	g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, 0, 0), XMFLOAT3(25, 25, 25), "TestMap");
 

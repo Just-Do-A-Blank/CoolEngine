@@ -69,6 +69,14 @@ public:
 			vector = MathHelper::Multiply(XMFLOAT3( (m_playerObject->GetMoveSpeed() * vector.x) / size, (m_playerObject->GetMoveSpeed() * vector.y) / size, 0 ),GameManager::GetInstance()->GetTimer()->DeltaTime());
 			m_playerObject->GetTransform()->Translate(vector);
 		}
+		if (e->GetKeyCode() == 'Q')
+		{
+			m_playerObject->GetTransform()->Rotate(GameManager::GetInstance()->GetTimer()->DeltaTime() * 3.0f);
+		}
+		if (e->GetKeyCode() == 'E')
+		{
+			m_playerObject->GetTransform()->Rotate(GameManager::GetInstance()->GetTimer()->DeltaTime() * -3.0f);
+		}
 	}
 
 	void KeyReleased(KeyReleasedEvent* e)

@@ -56,6 +56,12 @@ public:
 		return Collision::CircleBoxCollision(this, box);
 	}
 
+	bool Collide(OBB* obb)
+	{
+		// Incomplete - Circle and OBB
+		return false;
+	}
+
 	bool CollideResponse(Shape* shape)
 	{
 		return shape->CollideResponse(this);
@@ -69,6 +75,17 @@ public:
 	bool CollideResponse(Box* box)
 	{
 		return Collision::CircleBoxCollisionAndResponse(this, box);
+	}
+
+	bool CollideResponse(OBB* obb)
+	{
+		// Incomplete - Circle and OBB
+		return false;
+	}
+
+	void Update()
+	{
+
 	}
 
 #if EDITOR

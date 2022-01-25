@@ -55,6 +55,8 @@ public:
 	void SetLeftVector(XMFLOAT3& leftVector);
 
 	void Translate(XMFLOAT3 vector);
+	void Rotate(float angle);
+	void SetAngle(float angle);
 
 #if EDITOR
 	void CreateEngineUI() override;

@@ -95,6 +95,7 @@
     <ClInclude Include="Engine\Physics\Box.h" />
     <ClInclude Include="Engine\Physics\Circle.h" />
     <ClInclude Include="Engine\Physics\Collision.h" />
+    <ClInclude Include="Engine\Physics\OBB.h" />
     <ClInclude Include="Engine\Physics\Particle.h" />
     <ClInclude Include="Engine\Physics\ParticleManager.h" />
     <ClInclude Include="Engine\Physics\ParticleSystem.h" />

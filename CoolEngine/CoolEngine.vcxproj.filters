@@ -261,6 +261,9 @@
     <ClInclude Include="Engine\Structure\EditorUIComponent.h">
       <Filter>Engine\Structure</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Physics\OBB.h">
+      <Filter>Engine\Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">

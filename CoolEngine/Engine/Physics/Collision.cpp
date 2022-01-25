@@ -1,6 +1,7 @@
 #include "Collision.h"
 #include "Engine/Physics/Box.h"
 #include "Engine/Physics/Circle.h"
+#include "Engine/Physics/OBB.h"
 
 bool Collision::BoxCollision(Box* box1, Box* box2)
 {
@@ -42,6 +43,34 @@ bool Collision::CircleBoxCollision(Circle* circle, Box* box)
 	}
 
 	return false;
+}
+
+bool Collision::OBBCollision(OBB* obb1, OBB* obb2)
+{
+	// For each axis
+	for (unsigned int i = 0; i < 2; ++i)
+	{
+		// For each corner of the other box
+		float limit = MathHelper::DotProduct(obb2->m_corners[0], obb1->m_axes[i]);
+		float pMin = limit;
+		float pMax = -limit;
+		for (unsigned int j = 0; j < 3; ++j)
+		{
+			float projection = MathHelper::DotProduct(obb2->m_corners[j+1], obb1->m_axes[i]);
+			// Narrow down range of overlap
+			pMin = (projection < pMin ? projection : pMin);
+			pMax = (projection > pMax ? projection : pMax);
+		}
+
+		// Rule out this axis
+		if (pMin > 1 + obb1->m_origins[i] || pMax < obb1->m_origins[i])
+		{
+			return false;
+		}
+	}
+
+	cout << "Hit at " << obb1->m_transform->GetPosition().x << " " << obb1->m_transform->GetPosition().y << endl;
+	return true;
 }
 
 bool Collision::BoxCollisionAndResponse(Box* player, Box* object)
@@ -201,6 +230,20 @@ bool Collision::CircleCollisionAndResponse(Circle* circle1, Circle* circle2)
 	return false;
 }
 
+
+
+void Collision::UpdateOBBs(unordered_map<string, GameObject*> gameObjectMap)
+{
+	for (unordered_map<string, GameObject*>::iterator it1 = gameObjectMap.begin(); it1 != gameObjectMap.end(); ++it1)
+	{
+		if (it1->second->GetShape() == nullptr)
+		{
+			continue;
+		}
+		it1->second->GetShape()->Update();
+	}
+}
+
 void Collision::Update(unordered_map<string, GameObject*> gameObjectMap)
 {
 	for (unordered_map<string, GameObject*>::iterator it1 = gameObjectMap.begin(); it1 != gameObjectMap.end(); ++it1)
@@ -214,7 +257,7 @@ void Collision::Update(unordered_map<string, GameObject*> gameObjectMap)
 					continue;
 				}
 
-				// Whether to just collisde or collide with response
+				// Whether to just collide or collide with response
 				if (it1->second->GetShape()->IsCollidable() && it2->second->GetShape()->IsCollidable())
 				{
 					// To Do - Find a way to do something with hasCollided
