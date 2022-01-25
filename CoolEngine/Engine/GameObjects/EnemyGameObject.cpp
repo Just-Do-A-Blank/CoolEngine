@@ -15,11 +15,11 @@ void EnemyGameObject::Update()
 
 		//Uses directional movement for calculations, should be moved to charactergameobject then update called from here
 
-		XMFLOAT3 desiredDirection = MathHelper::Minus(m_curPath.back()->pos, m_transform.GetPosition());
+		XMFLOAT3 desiredDirection = MathHelper::Minus(m_curPath.back()->pos, m_transform->GetPosition());
 		desiredDirection = MathHelper::Normalize(desiredDirection);
 		m_direction = MathHelper::Plus(m_direction, desiredDirection);
 
-		if (m_curPath.back() == Pathfinding::Instance()->FindClosestNode(m_transform.GetPosition()))
+		if (m_curPath.back() == Pathfinding::Instance()->FindClosestNode(m_transform->GetPosition()))
 		{
 			m_curPath.pop_back();
 			LOG("New Node");
@@ -31,22 +31,16 @@ void EnemyGameObject::Update()
 		m_direction = MathHelper::Normalize(m_direction);
 
 		XMFLOAT3 stepPos = MathHelper::Multiply(m_direction, step);
-		stepPos = MathHelper::Plus(stepPos, m_transform.GetPosition());
-		m_transform.SetPosition(stepPos);
+		stepPos = MathHelper::Plus(stepPos, m_transform->GetPosition());
+		m_transform->SetPosition(stepPos);
 		
 		//CharacterGameObject::Update();
 	}
 	else
 	{
-		LOG("NO PATH");
-		m_curPath = Pathfinding::Instance()->FindPath(m_transform.GetPosition(), XMFLOAT3(100, 500, 0)); //test function
+		//LOG("NO PATH");
+		m_curPath = Pathfinding::Instance()->FindPath(m_transform->GetPosition(), XMFLOAT3(-700, -100, 0)); //test function
 	}
-
-
-
-
-
-
 
 }
 

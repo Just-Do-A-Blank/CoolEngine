@@ -12,63 +12,65 @@ void pop_front(vector<T>& vec)
 
 Pathfinding::Pathfinding()
 {
-	////setting up a tile grid for testing. This will be come from the premade tile grid
-	//nodes = new node[m_mapWidth * m_mapHeight];
-	//for (int x = 0; x < m_mapWidth; ++x)
-	//{
-	//	for (int y = 0; y < m_mapHeight; ++y)
-	//	{
-	//		nodes[y * m_mapWidth + x].pos.x = x * 16;
-	//		nodes[y * m_mapWidth + x].pos.y = y * 16;
-	//		nodes[y * m_mapWidth + x].m_obstacle = false;
-	//		nodes[y * m_mapWidth + x].m_parent = nullptr;
-	//		nodes[y * m_mapWidth + x].m_visited = false;
-	//	}
-	//}
+	/*
+	
+	//setting up a tile grid for testing. This will be come from the premade tile grid
+	nodes = new node[m_mapWidth * m_mapHeight];
+	for (int x = 0; x < m_mapWidth; ++x)
+	{
+		for (int y = 0; y < m_mapHeight; ++y)
+		{
+			nodes[y * m_mapWidth + x].pos.x = x * 16;
+			nodes[y * m_mapWidth + x].pos.y = y * 16;
+			nodes[y * m_mapWidth + x].m_obstacle = false;
+			nodes[y * m_mapWidth + x].m_parent = nullptr;
+			nodes[y * m_mapWidth + x].m_visited = false;
+		}
+	}
 
-	////hardcoded, start will be passed in by object and objective will be passed in aswell
-	////m_nodeStart = &nodes[(m_mapHeight/2) * m_mapWidth + 1];
-	////m_nodeEnd = &nodes[(m_mapHeight / 2) * m_mapWidth + m_mapWidth - 2];
-
-
-	////Connecting local nodes
-	//for (int x = 0; x < m_mapWidth; ++x)
-	//{
-	//	for (int y = 0; y < m_mapHeight; ++y)
-	//	{
-	//		
-	//		if (y > 0)
-	//			nodes[y * m_mapWidth + x].m_neighbours.push_back(&nodes[(y - 1) * m_mapWidth + (x)]);
-	//		if (y < m_mapHeight - 1)
-	//			nodes[y * m_mapWidth + x].m_neighbours.push_back(&nodes[(y + 1) * m_mapWidth + (x)]);
-	//		if (x > 0)
-	//			nodes[y * m_mapWidth + x].m_neighbours.push_back(&nodes[(y) * m_mapWidth + (x - 1)]);
-	//		if (x < m_mapWidth - 1)
-	//			nodes[y * m_mapWidth + x].m_neighbours.push_back(&nodes[(y) * m_mapWidth + (x + 1)]);
+	//hardcoded, start will be passed in by object and objective will be passed in aswell
+	//m_nodeStart = &nodes[(m_mapHeight/2) * m_mapWidth + 1];
+	//m_nodeEnd = &nodes[(m_mapHeight / 2) * m_mapWidth + m_mapWidth - 2];
 
 
-	//		//Diagonal nodes if wanted, more of a question but could slow down the system as it double the number of paths for each node (exponentially more searching)
-	//		//To enable diagonal nodes change DIAGONAL_ENABLED to true
-	//		if (DIAGONAL_ENABLED)
-	//		{
-	//			if (y > 0 && x > 0)
-	//				nodes[y * m_mapWidth + x].m_neighbours.push_back(&nodes[(y - 1) * m_mapWidth + (x - 1)]);
-	//			if (y < m_mapWidth - 1 && x>0)
-	//				nodes[y * m_mapWidth + x].m_neighbours.push_back(&nodes[(y + 1) * m_mapWidth + (x - 1)]);
-	//			if (y > 0 && x < m_mapWidth - 1)
-	//				nodes[y * m_mapWidth + x].m_neighbours.push_back(&nodes[(y - 1) * m_mapWidth + (x + 1)]);
-	//			if (y < m_mapWidth - 1 && x < m_mapWidth - 1)
-	//				nodes[y * m_mapWidth + x].m_neighbours.push_back(&nodes[(y + 1) * m_mapWidth + (x + 1)]);
+	//Connecting local nodes
+	for (int x = 0; x < m_mapWidth; ++x)
+	{
+		for (int y = 0; y < m_mapHeight; ++y)
+		{
+			
+			if (y > 0)
+				nodes[y * m_mapWidth + x].m_neighbours.push_back(&nodes[(y - 1) * m_mapWidth + (x)]);
+			if (y < m_mapHeight - 1)
+				nodes[y * m_mapWidth + x].m_neighbours.push_back(&nodes[(y + 1) * m_mapWidth + (x)]);
+			if (x > 0)
+				nodes[y * m_mapWidth + x].m_neighbours.push_back(&nodes[(y) * m_mapWidth + (x - 1)]);
+			if (x < m_mapWidth - 1)
+				nodes[y * m_mapWidth + x].m_neighbours.push_back(&nodes[(y) * m_mapWidth + (x + 1)]);
+
+
+			//Diagonal nodes if wanted, more of a question but could slow down the system as it double the number of paths for each node (exponentially more searching)
+			//To enable diagonal nodes change DIAGONAL_ENABLED to true
+			if (DIAGONAL_ENABLED)
+			{
+				if (y > 0 && x > 0)
+					nodes[y * m_mapWidth + x].m_neighbours.push_back(&nodes[(y - 1) * m_mapWidth + (x - 1)]);
+				if (y < m_mapWidth - 1 && x>0)
+					nodes[y * m_mapWidth + x].m_neighbours.push_back(&nodes[(y + 1) * m_mapWidth + (x - 1)]);
+				if (y > 0 && x < m_mapWidth - 1)
+					nodes[y * m_mapWidth + x].m_neighbours.push_back(&nodes[(y - 1) * m_mapWidth + (x + 1)]);
+				if (y < m_mapWidth - 1 && x < m_mapWidth - 1)
+					nodes[y * m_mapWidth + x].m_neighbours.push_back(&nodes[(y + 1) * m_mapWidth + (x + 1)]);
 
 
 
-	//		}
+			}
 
 
-	//	}
-	//}
+		}
+	}
 
-
+	*/
 
 }
 
@@ -337,13 +339,13 @@ node* Pathfinding::FindClosestNode(XMFLOAT3 pos)
 /// 
 /// </summary>
 /// <param name="map"></param>
-void Pathfinding::Initialize(TileMap map)
+void Pathfinding::Initialize(TileMap* map)
 {
 
 
 
-	m_mapWidth = map.GetWidth();
-	m_mapHeight = map.GetHeight();
+	m_mapWidth = map->GetWidth();
+	m_mapHeight = map->GetHeight();
 
 	//setting up a tile grid for testing. This will be come from the premade tile grid
 	nodes = new node[m_mapWidth * m_mapHeight];
@@ -351,12 +353,8 @@ void Pathfinding::Initialize(TileMap map)
 	{
 		for (int y = 0; y < m_mapHeight; ++y)
 		{
-			nodes[y * m_mapWidth + x].pos = map.GetTileFromMapPos(x,y)->GetTransform()->GetPosition();
-			map.GetTileFromMapPos(x, y);
-			//If check for obstacle tile here
-
-
-			nodes[y * m_mapWidth + x].m_obstacle = false; 
+			nodes[y * m_mapWidth + x].pos = map->GetTileFromMapPos(x,y)->GetTransform()->GetPosition();
+			nodes[y * m_mapWidth + x].m_obstacle = map->GetTileFromMapPos(x,y)->GetPassable(); 
 			nodes[y * m_mapWidth + x].m_parent = nullptr;
 			nodes[y * m_mapWidth + x].m_visited = false;
 		}

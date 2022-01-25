@@ -42,6 +42,8 @@ public:
 	void SetPassable(int x, int y, bool passable);
 	void SetPassable(Tile tile, bool passable);
 
+	const bool GetPassable(int x, int y)const;
+
 	void SetTileAtWorldPos(int posX, int posY, Tile newTile);
 	void SetTileAtMapPos(int mapPosX, int mapPosY, Tile* newTile);
 

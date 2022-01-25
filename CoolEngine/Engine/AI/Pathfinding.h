@@ -32,7 +32,7 @@ public:
 	static Pathfinding* Instance();
 	node* FindClosestNode(XMFLOAT3 pos);
 
-	void Initialize(TileMap map);
+	void Initialize(TileMap* map);
 
 private:
 
