@@ -1,7 +1,6 @@
 #pragma once
 #include "GameUIComponent.h"
-class ImageComponent :
-    public GameUIComponent
+class ImageComponent : public GameUIComponent
 {
 
 public:

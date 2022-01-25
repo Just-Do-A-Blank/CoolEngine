@@ -2,6 +2,8 @@
 #include "Engine/ResourceDefines.h"
 #include "Engine/GameObjects/Transform.h"
 #include "Engine/Graphics/Mesh.h"
+#include "Engine/GameObjects/RenderableGameObject.h"
+#include "Engine/Managers/GraphicsManager.h"
 
 GameUIComponent::GameUIComponent(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation)
 {

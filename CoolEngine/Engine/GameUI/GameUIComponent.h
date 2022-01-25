@@ -1,9 +1,7 @@
 #pragma once
-#include "Engine/Managers/GraphicsManager.h"
+#include "Engine/GameObjects/RenderableGameObject.h"
 
-class RenderStruct;
 class Transform;
-class Mesh;
 
 class GameUIComponent
 {

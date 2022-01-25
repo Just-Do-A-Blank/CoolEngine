@@ -1,6 +1,7 @@
 #include "ImageComponent.h"
 #include "Engine/ResourceDefines.h"
 #include "Engine/GameObjects/Transform.h"
+#include "Engine/Managers/GraphicsManager.h"
 
 ImageComponent::ImageComponent(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation) : GameUIComponent(identifier, position, scale, rotation)
 {
