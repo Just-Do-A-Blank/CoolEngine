@@ -132,9 +132,6 @@
     <ClInclude Include="Engine\Physics\Collision.h">
       <Filter>Engine\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Physics\Line.h">
-      <Filter>Engine\Physics</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Physics\Particle.h">
       <Filter>Engine\Physics</Filter>
     </ClInclude>
