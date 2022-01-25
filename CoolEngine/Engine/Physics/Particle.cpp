@@ -22,9 +22,6 @@ void Particle::Update(const float dTime)
 
 	m_transform.SetPosition(XMFLOAT3(m_transform.GetPosition().x + m_velocity.x * dTime, m_transform.GetPosition().y + m_velocity.y * dTime, 0));
 
-	/*m_box.m_x += m_velocity.x * dTime;
-	m_box.m_y += m_velocity.y * dTime;*/
-
 	m_lifetime -= dTime;
 	if (m_lifetime <= 0.0f)
 	{
