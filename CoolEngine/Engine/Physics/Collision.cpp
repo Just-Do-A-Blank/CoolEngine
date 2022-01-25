@@ -153,7 +153,6 @@ bool Collision::CircleBoxCollisionAndResponse(Circle* circle, Box* box)
 		else if (vertexToPlayer.x > 0 && vertexToPlayer.y < vertexToPlayer.x && vertexToPlayer.y > vertexToPlayer.x * -1 || vertexToPlayer.x < 0 && vertexToPlayer.y > vertexToPlayer.x && vertexToPlayer.y < vertexToPlayer.x * -1)
 		{
 			// Left/Right side
-			//XMFLOAT3 pos = { middle.x + halfSize.x + circle->m_radius, circle->m_transform->GetPosition().y, circle->m_transform->GetPosition().z };
 			XMFLOAT3 pos = { circle->m_transform->GetPosition().x - penetration.x, circle->m_transform->GetPosition().y, circle->m_transform->GetPosition().z };
 			circle->m_transform->SetPosition(pos);
 		}
