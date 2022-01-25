@@ -82,12 +82,8 @@
     <ClInclude Include="Engine\Structure\EditorUIComponent.h" />
     <ClInclude Include="Engine\TileMap\TileMap\Tile.h" />
     <ClInclude Include="Engine\TileMap\TileMap\TileMap.h" />
-    <ClInclude Include="Engine\Tools\AnimationTool.h" />
     <ClInclude Include="Engine\Tools\TileMapTool.h" />
     <ClInclude Include="Engine\Tools\ToolBase.h" />
-    <ClInclude Include="Engine\Managers\UiManager.h" />
-    <ClInclude Include="Engine\GameUI\UiElement.h" />
-    <ClInclude Include="Engine\GameUI\UiCanvas.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\EditorUI\EditorUI.cpp" />
@@ -125,12 +121,8 @@
     <ClCompile Include="Engine\Physics\ParticleSystem.cpp" />
     <ClCompile Include="Engine\TileMap\TileMap\Tile.cpp" />
     <ClCompile Include="Engine\TileMap\TileMap\TileMap.cpp" />
-    <ClCompile Include="Engine\Tools\AnimationTool.cpp" />
     <ClCompile Include="Engine\Tools\TileMapTool.cpp" />
     <ClCompile Include="Engine\Tools\ToolBase.cpp" />
-    <ClCompile Include="Engine\Managers\UiManager.cpp" />
-    <ClCompile Include="Engine\GameUI\UiElement.cpp" />
-    <ClCompile Include="Engine\GameUI\UiCanvas.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">
