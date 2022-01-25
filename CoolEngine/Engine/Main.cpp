@@ -10,6 +10,7 @@
 #include "Engine/Graphics/SpriteAnimation.h"
 #include "Engine/GameObjects/CameraGameObject.h"
 #include "Engine/GameObjects/PlayerGameObject.h"
+#include "Engine/GameObjects/RenderableCollidableGameObject.h"
 
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/Managers/Events/EventObserver.h"
@@ -176,11 +177,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	string obj1Name = "TestObject1";
 	string playerName = "Player";
 
-	pgameManager->CreateGameObject<GameObject>(obj0Name);
-	pgameManager->CreateGameObject<GameObject>(obj1Name);
+	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj0Name);
+	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj1Name);
 	pgameManager->CreateGameObject<PlayerGameObject>(playerName);
 
-	GameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<GameObject>(obj0Name);
+	RenderableCollidableGameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj0Name);
 
 	XMFLOAT3 objectPos = XMFLOAT3(0, 0.0f, 0.0f);
 	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
@@ -199,7 +200,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetShape(pbox);
 
 	////Init second gameObject
-	pgameObject = pgameManager->GetGameObjectUsingIdentifier<GameObject>(obj1Name);
+	pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj1Name);
 
 	objectPos = XMFLOAT3(10.0f, 0.0f, 0.0f);
 	objectScale = XMFLOAT3(100, 100, 100);

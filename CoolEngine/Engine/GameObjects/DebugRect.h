@@ -1,11 +1,10 @@
 #if _DEBUG
 
 #pragma once
-#include "GameObject.h"
+#include "Engine/GameObjects/RenderableGameObject.h"
 #include "Engine/Managers/DebugDrawManager.h"
 
-class DebugRect :
-    public GameObject
+class DebugRect : public RenderableGameObject
 {
 private:
     DebugDrawManager::DebugColour m_colour;
