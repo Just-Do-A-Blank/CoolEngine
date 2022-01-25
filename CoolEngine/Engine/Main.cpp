@@ -118,7 +118,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_inputController = new Inputs();
 
 	//Debug Manager
+#if _DEBUG
 	DebugDrawManager::GetInstance()->Init(g_pd3dDevice);
+#endif
 
 	//Create camera
 	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, -5);
