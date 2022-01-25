@@ -132,9 +132,6 @@
     <ClInclude Include="Engine\Physics\Collision.h">
       <Filter>Engine\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Physics\Line.h">
-      <Filter>Engine\Physics</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Physics\Particle.h">
       <Filter>Engine\Physics</Filter>
     </ClInclude>
@@ -268,6 +265,13 @@
       <Filter>Engine\AI</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\EnemyGameObject.h">
+    <ClInclude Include="Engine\GameObjects\CollidableGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\RenderableGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\RenderableCollidableGameObject.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
   </ItemGroup>
@@ -395,6 +399,15 @@
     <ClCompile Include="Engine\Managers\UiManager.cpp" />
     <ClCompile Include="Engine\GameUI\UiElement.cpp" />
     <ClCompile Include="Engine\GameUI\UiCanvas.cpp" />
+    <ClCompile Include="Engine\GameObjects\CollidableGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\RenderableGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\RenderableCollidableGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">

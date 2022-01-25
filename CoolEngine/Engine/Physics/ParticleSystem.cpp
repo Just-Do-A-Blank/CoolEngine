@@ -14,10 +14,6 @@ ParticleSystem::ParticleSystem(string identifier) : GameObject(identifier)
 	m_isActive = false;
 	m_systemType = SYSTEM_NONE;
 	m_pTexture = nullptr;
-
-
-	bool renderable = false;
-	SetIsRenderable(renderable);
 }
 
 ParticleSystem::~ParticleSystem()
@@ -104,6 +100,7 @@ void ParticleSystem::AddParticle(Transform trans, XMFLOAT2 vel, XMFLOAT2 accel, 
 	}
 }
 
+#if EDITOR
 void ParticleSystem::CreateEngineUI()
 {
 	ImGui::Separator();
@@ -111,3 +108,4 @@ void ParticleSystem::CreateEngineUI()
 
 	m_transform->CreateEngineUI();
 }
+#endif

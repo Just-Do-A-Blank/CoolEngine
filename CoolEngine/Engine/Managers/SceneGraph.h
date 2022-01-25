@@ -17,7 +17,7 @@ template<class T>
 class SceneGraph
 {
 private:
-	TreeNode<T>* m_rootNode;
+	TreeNode<T>* m_rootNode = nullptr;
 	unordered_map<string, TreeNode<T>*> m_sceneTreeNodeMap;
 	unordered_map<string, T*> m_sceneGameObjectsMap;
 

@@ -1,4 +1,6 @@
 #pragma once
+
+#if EDITOR
 #include "ToolBase.h"
 
 #include "Engine/Graphics/SpriteAnimation.h"
@@ -6,7 +8,7 @@
 
 #include <vector>
 
-class GameObject;
+class RenderableGameObject;
 
 struct FrameInfo
 {
@@ -26,7 +28,7 @@ protected:
 
 private:
 
-	GameObject* m_pgameObject = nullptr;
+	RenderableGameObject* m_pgameObject = nullptr;
 
 	vector<FrameInfo> m_frameInfos;
 	vector<Frame> m_frames;
@@ -40,3 +42,4 @@ private:
 	bool SaveAnim(string animName);
 };
 
+#endif

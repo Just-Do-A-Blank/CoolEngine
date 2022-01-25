@@ -1,6 +1,8 @@
 #include "UiCanvas.h"
 #include "Engine/GameUI/UiElement.h"
 #include "Engine/Managers/GraphicsManager.h"
+#include "Engine/Graphics/Mesh.h"
+#include "Engine/ResourceDefines.h"
 
 void UiCanvas::CreateEngineUI(ID3D11Device* pdevice)
 {

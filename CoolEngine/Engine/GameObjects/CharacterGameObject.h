@@ -1,7 +1,7 @@
 #pragma once
-#include "Engine/GameObjects/GameObject.h"
+#include "Engine/GameObjects/RenderableCollidableGameObject.h"
 
-class CharacterGameObject : public GameObject
+class CharacterGameObject : public RenderableCollidableGameObject
 {
 protected:
 

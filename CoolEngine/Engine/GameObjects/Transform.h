@@ -56,7 +56,9 @@ public:
 
 	void Translate(XMFLOAT3 vector);
 
+#if EDITOR
 	void CreateEngineUI() override;
+#endif
 
 	void SetParentTransform(Transform* pparentTransform);
 	void AddChildTransform(Transform* pchildTransform);

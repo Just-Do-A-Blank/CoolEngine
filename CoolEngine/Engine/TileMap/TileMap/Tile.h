@@ -1,10 +1,10 @@
 #pragma once
 #include <vector>
 
-#include "Engine/GameObjects/GameObject.h"
+#include "Engine/GameObjects/RenderableGameObject.h"
 #include "Engine/ResourceDefines.h"
 
-class Tile : public GameObject
+class Tile : public RenderableGameObject
 {
 public:
 	//Constructors

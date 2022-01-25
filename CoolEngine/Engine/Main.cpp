@@ -65,7 +65,9 @@ TileMap* g_testMap1;
 
 TileMap* g_testMap2;
 
+#if EDITOR
 EditorUI* g_peditorUI;
+#endif
 
 Inputs* g_inputController;
 
@@ -101,8 +103,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		return 0;
 	}
 
+#if EDITOR
 	g_peditorUI = new EditorUI(g_pd3dDevice);
 	g_peditorUI->InitIMGUI(g_pImmediateContext, g_pd3dDevice, &g_hWnd);
+#endif
 
 	GameManager::GetInstance()->Init();
 
@@ -116,12 +120,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_inputController = new Inputs();
 
 	//Debug Manager
+#if _DEBUG
 	DebugDrawManager::GetInstance()->Init(g_pd3dDevice);
 	
-	//Setup Pathfinding
 
-	//Pathfinding::Instance()->Init(testmap)
-
+#endif
 
 	//Create camera
 	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, -5);
@@ -141,6 +144,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	GameManager* pgameManager = GameManager::GetInstance();
 	pgameManager->CreateScene("TestScene");
 	pgameManager->SelectSceneUsingIdentifier("TestScene");
+
+	g_particleManager = new ParticleManager(QUAD_MESH_NAME, DEFAULT_VERTEX_SHADER_NAME, DEFAULT_PIXEL_SHADER_NAME);
 
 #if TOOL
 
@@ -178,12 +183,12 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	string playerName = "Player";
 	string enemyName = "Enemy";
 
-	pgameManager->CreateGameObject<GameObject>(obj0Name);
-	pgameManager->CreateGameObject<GameObject>(obj1Name);
+	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj0Name);
+	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj1Name);
 	pgameManager->CreateGameObject<PlayerGameObject>(playerName);
 	pgameManager->CreateGameObject<EnemyGameObject>(enemyName);
 
-	GameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<GameObject>(obj0Name);
+	RenderableCollidableGameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj0Name);
 
 	XMFLOAT3 objectPos = XMFLOAT3(0, 0.0f, 0.0f);
 	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
@@ -202,7 +207,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetShape(pbox);
 
 	////Init second gameObject
-	pgameObject = pgameManager->GetGameObjectUsingIdentifier<GameObject>(obj1Name);
+	pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj1Name);
 
 	objectPos = XMFLOAT3(10.0f, 0.0f, 0.0f);
 	objectScale = XMFLOAT3(100, 100, 100);
@@ -271,7 +276,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, &observer);
 	EventManager::Instance()->AddClient(EventType::MouseMoved, &observer);
 
-	g_particleManager = new ParticleManager(QUAD_MESH_NAME, DEFAULT_VERTEX_SHADER_NAME, DEFAULT_PIXEL_SHADER_NAME);
 	XMFLOAT3 pos = XMFLOAT3( 300, 300, 5 );
 	XMFLOAT3 rot = XMFLOAT3(0, 0, 0 );
 	XMFLOAT3 scale = XMFLOAT3(25, 25, 25);
@@ -308,25 +312,31 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		}
 	}
 
+#if EDITOR
 	g_peditorUI->ShutdownIMGUI();
+#endif
 
 	CleanupDevice();
 
 	return (int)msg.wParam;
 }
 
+#if EDITOR
 // Forward declare message handler from imgui_impl_win32.cpp
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+#endif
 
 //--------------------------------------------------------------------------------------
 // Called every time the application receives a message
 //--------------------------------------------------------------------------------------
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+#if EDITOR
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
 	{
 		return true;
 	}
+#endif
 
 	g_inputController->Update(&hWnd, &message, &wParam, &lParam);
 
@@ -629,7 +639,9 @@ void Render()
 #if TOOL
 	g_ptoolBase->Render();
 #else
+#if EDITOR
 	g_peditorUI->DrawEditorUI(g_pd3dDevice);
+#endif
 #endif
 
 	// Present our back buffer to our front buffer
@@ -651,7 +663,9 @@ void Update()
 
 	EventManager::Instance()->ProcessEvents();
 
+#if EDITOR
 	g_peditorUI->Update();
+#endif
 
 	g_inputController->Update();
 

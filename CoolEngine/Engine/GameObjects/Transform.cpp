@@ -152,6 +152,7 @@ void Transform::Translate(XMFLOAT3 vector)
     UpdateMatrix();
 }
 
+#if EDITOR
 void Transform::CreateEngineUI()
 {
 	EditorUI::DragFloat3("Position", m_position);
@@ -160,6 +161,7 @@ void Transform::CreateEngineUI()
 
 	UpdateMatrix();
 }
+#endif
 
 void Transform::SetParentTransform(Transform* pparentTransform)
 {

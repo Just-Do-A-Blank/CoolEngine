@@ -31,9 +31,6 @@ void GameManager::Update()
     }
 
     m_pcurrentScene->Update();
-
-    //Get unordered_map of GameObjects
-    unordered_map<string, GameObject*> gameObjects = m_pcurrentScene->GetAllGameObjects();
 }
 
 void GameManager::Render(RenderStruct& renderStruct)

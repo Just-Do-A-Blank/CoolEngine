@@ -14,21 +14,21 @@ ParticleManager::ParticleManager(wstring meshName, wstring vShaderName, wstring 
 	Mesh* pmesh = GraphicsManager::GetInstance()->GetMesh(meshName);
 	if (pmesh == nullptr)
 	{
-		cout << "Failed to set the mesh as one with that name doesn't exist!" << endl;
+		LOG("Failed to set the mesh as one with that name doesn't exist!");
 	}
 	m_pMesh = pmesh;
 
 	ID3D11VertexShader* pvertexShader = GraphicsManager::GetInstance()->GetVertexShader(vShaderName);
 	if (pvertexShader == nullptr)
 	{
-		std::cout << "Failed to find vertex shader with that name " << vShaderName.c_str() << "!" << std::endl;
+		LOG("Failed to find vertex shader with that name " << vShaderName.c_str() << "!");
 	}
 	m_pVertexShader = pvertexShader;
 
 	ID3D11PixelShader* ppixelShader = GraphicsManager::GetInstance()->GetPixelShader(pShaderName);
 	if (ppixelShader == nullptr)
 	{
-		std::cout << "Failed to find pixel shader with that name " << pShaderName.c_str() << "!" << std::endl;
+		LOG("Failed to find pixel shader with that name " << pShaderName.c_str() << "!");
 	}
 
 	m_pPixelShader = ppixelShader;
@@ -82,7 +82,7 @@ void ParticleManager::AddSystem(Transform trans, float life, SYSTEM_TYPE type, w
 			ID3D11ShaderResourceView* psRV = GraphicsManager::GetInstance()->GetShaderResourceView(albedoName);
 			if (psRV == nullptr)
 			{
-				cout << "Failed to set the albedo SRV as one with that name doesn't exist!" << endl;
+				LOG("Failed to set the albedo SRV as one with that name doesn't exist!");
 				return;
 			}
 

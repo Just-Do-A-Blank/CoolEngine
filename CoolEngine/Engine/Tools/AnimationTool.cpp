@@ -1,6 +1,9 @@
+#if EDITOR
+
 #include "AnimationTool.h"
 #include "Engine/Managers/GameManager.h"
 #include "Engine/ResourceDefines.h"
+#include "Engine/GameObjects/RenderableGameObject.h"
 
 #include <direct.h>
 #include <fstream>
@@ -12,7 +15,7 @@ void AnimationTool::Init(ID3D11Device* pdevice)
 	XMFLOAT3 pos = XMFLOAT3(0, 0, 0);
 	XMFLOAT3 scale = XMFLOAT3(100, 100, 1);
 
-	m_pgameObject = GameManager::GetInstance()->CreateGameObject<GameObject>("AnimModel");
+	m_pgameObject = GameManager::GetInstance()->CreateGameObject<RenderableGameObject>("AnimModel");
 	m_pgameObject->GetTransform()->SetPosition(pos);
 	m_pgameObject->GetTransform()->SetScale(scale);
 }
@@ -190,3 +193,5 @@ bool AnimationTool::SaveAnim(string animName)
 
 	return true;
 }
+
+#endif

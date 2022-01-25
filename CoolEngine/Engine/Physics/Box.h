@@ -53,8 +53,10 @@ public:
 		return Collision::BoxCollisionAndResponse(box, this);
 	}
 
+#if EDITOR
 	void CreateEngineUI() override
 	{
 		Shape::CreateEngineUI();
 	}
+#endif
 };

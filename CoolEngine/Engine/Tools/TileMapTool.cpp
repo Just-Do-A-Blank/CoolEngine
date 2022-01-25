@@ -1,3 +1,5 @@
+#if EDITOR
+
 #include "TileMapTool.h"
 
 #include "Engine/Includes/IMGUI/imgui.h"
@@ -19,3 +21,5 @@ void TileMapTool::Render()
 
 	ImGui::EndFrame();
 }
+
+#endif

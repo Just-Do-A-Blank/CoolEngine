@@ -30,13 +30,13 @@ bool GraphicsManager::CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPo
 	string shaderType = string(szShaderModel).substr(0, 2);
 	if (shaderType == "vs" && m_vertexShaders.count(szFileName) != 0)
 	{
-		std::cout << "A vertex shader with that name already exists!" << std::endl;
+		LOG("A vertex shader with that name already exists!");
 
 		return false;
 	}
 	else if (shaderType == "ps" && m_pixelShaders.count(szFileName) != 0)
 	{
-		std::cout << "A pixel shader with that name already exists!" << std::endl;
+		LOG("A pixel shader with that name already exists!");
 
 		return false;
 	}
@@ -82,7 +82,7 @@ bool GraphicsManager::CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPo
 
 		if (FAILED(hr))
 		{
-			std::cout << "Failed to create vertex shader!" << std::endl;
+			LOG("Failed to create vertex shader!");
 
 			pblob->Release();
 
@@ -98,7 +98,7 @@ bool GraphicsManager::CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPo
 
 		if (FAILED(hr))
 		{
-			std::cout << "Failed to create pixel shader!" << std::endl;
+			LOG("Failed to create pixel shader!");
 
 			pblob->Release();
 
@@ -109,7 +109,7 @@ bool GraphicsManager::CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPo
 	}
 	else
 	{
-		std::cout << "That shader type isn't supported!" << std::endl;
+		LOG("That shader type isn't supported!");
 
 		pblob->Release();
 
@@ -125,7 +125,7 @@ bool GraphicsManager::LoadTextureFromFile(wstring filename, size_t maxSize, DDS_
 {
 	if (m_textureSRVs.count(filename) != 0)
 	{
-		std::cout << "That texture has already been loaded!" << std::endl;
+		LOG("That texture has already been loaded!");
 
 		return false;
 	}
@@ -136,7 +136,7 @@ bool GraphicsManager::LoadTextureFromFile(wstring filename, size_t maxSize, DDS_
 
 	if (FAILED(CreateDDSTextureFromFile(m_pdevice, fullPath.c_str(), nullptr, &psRV, maxSize, alphaMode)))
 	{
-		std::cout << "Failed to load dds texture file!" << std::endl;
+		LOG("Failed to load dds texture file!");
 
 		return false;
 	}
@@ -314,7 +314,7 @@ void GraphicsManager::CreateInputLayouts()
 
 	if (FAILED(hr))
 	{
-		cout << "Failed to create input POS_TEX input layout!" << std::endl;
+		LOG("Failed to create input POS_TEX input layout!");
 	}
 }
 
@@ -384,7 +384,7 @@ void GraphicsManager::CreateSamplers()
 
 	if (FAILED(hr))
 	{
-		cout << "Failed to create linear clamp sampler!" << endl;
+		LOG("Failed to create linear clamp sampler!");
 
 		return;
 	}
@@ -403,7 +403,7 @@ void GraphicsManager::CreateSamplers()
 
 	if (FAILED(hr))
 	{
-		cout << "Failed to create linear clamp sampler!" << endl;
+		LOG("Failed to create linear clamp sampler!");
 
 		return;
 	}
@@ -422,13 +422,13 @@ bool GraphicsManager::CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPo
 	string shaderType = string(szShaderModel).substr(0, 2);
 	if (shaderType == "vs" && m_vertexShaders.count(szFileName) != 0)
 	{
-		std::cout << "A vertex shader with that name already exists!" << std::endl;
+		LOG("A vertex shader with that name already exists!");
 
 		return false;
 	}
 	else if (shaderType == "ps" && m_pixelShaders.count(szFileName) != 0)
 	{
-		std::cout << "A pixel shader with that name already exists!" << std::endl;
+		LOG("A pixel shader with that name already exists!");
 
 		return false;
 	}
@@ -472,7 +472,7 @@ bool GraphicsManager::CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPo
 
 		if (FAILED(hr))
 		{
-			std::cout << "Failed to create vertex shader!" << std::endl;
+			LOG("Failed to create vertex shader!");
 
 			pblob->Release();
 
@@ -488,7 +488,7 @@ bool GraphicsManager::CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPo
 
 		if (FAILED(hr))
 		{
-			std::cout << "Failed to create pixel shader!" << std::endl;
+			LOG("Failed to create pixel shader!");
 
 			pblob->Release();
 
@@ -499,7 +499,7 @@ bool GraphicsManager::CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPo
 	}
 	else
 	{
-		std::cout << "That shader type isn't supported!" << std::endl;
+		LOG("That shader type isn't supported!");
 
 		pblob->Release();
 

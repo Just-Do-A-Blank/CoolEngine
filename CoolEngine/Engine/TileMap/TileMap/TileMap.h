@@ -8,12 +8,12 @@
 
 
 #include "Tile.h"
-#include "Engine/GameObjects/GameObject.h"
+#include "Engine/GameObjects/RenderableGameObject.h"
 
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/Managers/GameManager.h"
 
-class TileMap  : public GameObject
+class TileMap  : public RenderableGameObject
 {
 
 public:
