@@ -35,6 +35,9 @@ enum COLLIDER_TYPE
 	COLLIDER_TYPE_NO_COLLIDER
 };
 
+/// <summary>
+/// A storage container for data related to the particle class type
+/// </summary>
 struct ParticleSystemData
 {
 	Transform m_Transform;
@@ -43,6 +46,9 @@ struct ParticleSystemData
 	float m_Life;
 };
 
+/// <summary>
+/// A storage container for data related to the particle class type
+/// </summary>
 struct ParticleData
 {
 	Transform m_Transform;
@@ -65,19 +71,6 @@ enum JSON_VARIABLE_TYPE
 	JSON_VARIABLE_TYPE_XMFLOAT2,
 	JSON_VARIABLE_TYPE_XMFLOAT3,
 	JSON_VARIABLE_TYPE_XMFLOAT4
-};
-
-enum ENGINE_TYPE
-{
-	ENGINE_TYPE_GAME_OBJECT
-};
-
-class LoadedObjectContainer
-{
-public:
-	ENGINE_TYPE m_ObjectType;
-private:
-	void* m_Data;
 };
 
 /// <summary>
@@ -138,6 +131,12 @@ public:
 	/// <returns></returns>
 	static GameObject LoadGameObject(const char* fileAddress, int objectCount);
 
+	/// <summary>
+	/// Loads multiple Game Object from a JSON file.
+	/// </summary>
+	/// <param name="fileAddress"></param>
+	/// <param name="manager"></param>
+	/// <returns></returns>
 	static std::vector<GameObject> FileIO::LoadMultipleGameObjects(const char* fileAddress);
 
 	/// <summary>
@@ -175,9 +174,12 @@ public:
 	template <typename t>
 	static t LoadTextFile(const char* fileAddress);
 
-	//static ParticleManager LoadParticle(const char* fileLocation, int particleNumber);
-
-
+	/// <summary>
+	/// loads a set of data related to a particle from a json file
+	/// </summary>
+	/// <param name="j"></param>
+	/// <param name="particleNumber"></param>
+	/// <returns></returns>
 	static ParticleData FileIO::LoadParticle(json j, int particleNumber);
 
 
@@ -191,12 +193,12 @@ public:
 	/// <returns></returns>
 	static bool SaveObjectInJson(const char* fileLocation, std::vector<std::string> varNames, std::vector<JSON_VARIABLE_TYPE> types, std::vector<void*> data);
 
+	/// <summary>
+	/// Saves the current active scene in a json file.
+	/// </summary>
+	/// <param name="fileLocation"></param>
+	/// <param name="scene"></param>
 	static void SaveScene(const char* fileLocation, GameManager* scene);
-
-	static wstring GrabVertexShaderName(ID3D11VertexShader* shader);
-	static wstring GrabPixelShaderName(ID3D11PixelShader* shader);
-	static wstring GrabTextureName(ID3D11ShaderResourceView* texture);
-	static wstring GrabAlbedoName(ID3D11ShaderResourceView* albedo);
 
 
 private:
@@ -215,36 +217,70 @@ private:
 /// <returns>GameObject<GameObject></returns>
 	static GameObject LoadGameObject(json file, int objectCount);
 
+	/// <summary>
+	/// Loads multiple game objects from a single json file
+	/// </summary>
+	/// <param name="j"></param>
+	/// <returns></returns>
 	static std::vector<GameObject> FileIO::LoadMultipleGameObjects(json j);
 
-
 	/// <summary>
 	/// Loads Multiple tiles from a JSON file
 	/// </summary>
 	/// <param name="file"></param>
 	/// <returns></returns>
-	static std::vector<GameObject> LoadMultipleTiles(json file);
+	static std::vector<ParticleSystem*> LoadMultipleParticles(json file);
 
 	/// <summary>
-	/// Loads Multiple tiles from a JSON file
-	/// </summary>
-	/// <param name="file"></param>
-	/// <returns></returns>
-	static std::vector<ParticleSystem> LoadMultipleParticles(json file);
-
-	/// <summary>
-	/// 
+	/// Converts a string to wstring
 	/// </summary>
 	/// <param name="wide_string"></param>
 	/// <returns></returns>
 	static std::wstring ToWstring(std::string& wide_string);
 
 	/// <summary>
-	/// 
+	/// Converts a wstring to string
 	/// </summary>
 	/// <param name="wide_string"></param>
 	/// <returns></returns>
 	static std::string FileIO::ToString(std::wstring& wide_string);
 
+	/// <summary>
+	/// Accesses the FileIO's cache to return the location of a vertex shader. Note this only functions if the vertex shader was loaded using the class.
+	/// </summary>
+	/// <param name="shader"></param>
+	/// <returns></returns>
+	static wstring GrabVertexShaderName(ID3D11VertexShader* shader);
+
+	/// <summary>
+	/// Accesses the FileIO's cache to return the location of a vertex shader. Note this only functions if the vertex shader was loaded using the class.
+	/// </summary>
+	/// <param name="shader"></param>
+	/// <returns></returns>
+	static wstring GrabPixelShaderName(ID3D11PixelShader* shader);
+
+	/// <summary>
+	/// Accesses the FileIO's cache to return the location of a pixel shader. Note this only functions if the pixel shader was loaded using the class.
+	/// </summary>
+	/// <param name="shader"></param>
+	/// <returns></returns>
+
+	/// <summary>
+	/// Accesses the FileIO's cache to return the location of a texture. Note this only functions if the texture was loaded using the class.
+	/// </summary>
+	/// <param name="shader"></param>
+	/// <returns></returns>
+	static wstring GrabTextureName(ID3D11ShaderResourceView* texture);
+
+	/// <summary>
+	/// Accesses the FileIO's cache to return the location of a albedo texture. Note this only functions if the albedo texture was loaded using the class.
+	/// </summary>
+	/// <param name="shader"></param>
+	/// <returns></returns>
+	static wstring GrabAlbedoName(ID3D11ShaderResourceView* albedo);
+
+	 /// <summary>
+	 /// Local cache that contains data on the location textures, shaders and more.
+	 /// </summary>
 	 static FileIOCache m_Cache;
 };

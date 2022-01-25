@@ -264,6 +264,12 @@
     <ClInclude Include="Engine\Structure\EditorUIComponent.h">
       <Filter>Engine\Structure</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\FileIO\FileIO.h">
+      <Filter>Engine\FileIO</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\FileIO\FileIOCache.h">
+      <Filter>Engine\FileIO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -383,6 +389,12 @@
     <ClCompile Include="Engine\Managers\UiManager.cpp" />
     <ClCompile Include="Engine\GameUI\UiElement.cpp" />
     <ClCompile Include="Engine\GameUI\UiCanvas.cpp" />
+    <ClCompile Include="Engine\FileIO\FileIO.cpp">
+      <Filter>Engine\FileIO</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\FileIO\FileIOCache.cpp">
+      <Filter>Engine\FileIO</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">
