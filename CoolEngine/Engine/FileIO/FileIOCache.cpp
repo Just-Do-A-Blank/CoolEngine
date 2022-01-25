@@ -8,6 +8,7 @@ FileIOCache::FileIOCache()
 	m_AlebdoCache = std::unordered_map<ID3D11ShaderResourceView*, wstring>();
 	m_AnimationCache = std::unordered_map<std::vector<Frame>*, string>();
 	m_Map = std::vector<TileMap*>();
+	m_MapData = std::vector<wstring>();
 }
 
 FileIOCache::~FileIOCache()

@@ -11,18 +11,15 @@
     {
       "Name": "Zone0",
       "ColliderType": "BoxCollider",
-      "Height": 300,
-      "Width": 300,
+      "Height": 10,
+      "Width": 10,
       "Position": [ 0, 0, 0 ],
+      "Scale": [ 100, 100, 100 ],
       "IsCollideable": false,
       "IsRenderable": false,
       "IsTrigger": false,
       "TileName": "TestTile",
-      "TextureLocation": "Resources\\Sprites\\Brick.dds",
-      "VertexShaderLocation":"Engine\\Graphics\\Shaders\\BasicVertex.hlsl",
-      "PixelShaderLocation": "Engine\\Graphics\\Shaders\\BasicPixel.hlsl",
-      "AlbedoLocation": "Resources\\Sprites\\Brick.dds",
-      "AnimationLocation": "Resources/Sprites/Brick.dds"
+      "TileData" :  "Location"
     }
   ],
   "ObjectData": [

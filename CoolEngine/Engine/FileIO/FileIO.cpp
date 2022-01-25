@@ -118,7 +118,7 @@ std::vector<ParticleSystem> FileIO::LoadMultipleParticles(json file)
 		t.SetScale(XMFLOAT3(data.at(i)["Scale"][0], data.at(i)["Scale"][1], data.at(i)["Scale"][2]));
 
 		objects[i].Initialise(t , data.at(i)["Life"], data.at(i)["SystemType"], nullptr);
-		objects[i].AddParticle(p.m_Transform, p.m_Velocity, p.m_Acceleration, nullptr,p.m_Life);
+		objects[i].AddParticle(p.m_Transform, p.m_Velocity, p.m_Acceleration,p.m_Life);
 	}
 	return objects;
 }
@@ -169,60 +169,20 @@ void FileIO::LoadScene(const char* fileAddress, GameManager* scene, ParticleMana
 
 void FileIO::LoadMap(json file, GameManager* scene)
 {
-	json j = file["TileMap"];
+	json tileFile = file["TileMap"];
 
 	for (size_t i = 0; i < file["MetaData"].at(0)["NumberOfTileZones"]; ++i)
 	{
-		XMFLOAT3 position(j.at(i)["Position"][0], j.at(i)["Position"][1], j.at(i)["Position"][2]);
-		TileMap* tileMap = new TileMap(j.at(i)["Width"], j.at(i)["Height"], j.at(i)["TileName"], position);
-
-		tileMap->SetMesh(QUAD_MESH_NAME);
-		if (j.at(i)["VertexShaderLocation"] == "NULL")
-		{
-			LOG("NO VERTEX SHADER WAS SPECIFIED");
-		}
-		else
-		{
-			wstring location = ToWstring((std::string)j.at(i)["VertexShaderLocation"]);
-			tileMap->SetVertexShader(location);
-		}
-		if (j.at(i)["PixelShaderLocation"] == "NULL")
-		{
-			LOG("NO PIXEL SHADER WAS SPECIFIED");
-		}
-		else
-		{
-			wstring location = ToWstring((std::string)j.at(i)["PixelShaderLocation"]);
-			tileMap->SetPixelShader(location);
-		}
-		if (j.at(i)["Albedo"] == "NULL")
-		{
-			LOG("NO ALBEDO SHADER WAS SPECIFIED");
-		}
-		else
-		{
-			wstring location = ToWstring((std::string)j.at(i)["AlbedoLocation"]);
-			tileMap->SetAlbedo(location);
-		}
-
-		bool renderable = false;
-		bool trigger = false;
-		bool collideable = false;
-
-		if (j.at(i)["IsRenderable"])
-		{
-			renderable = true;
-			tileMap->SetIsRenderable(renderable);
-		}
-		else
-		{
-			tileMap->SetIsRenderable(renderable);
-		}
+		XMFLOAT3 position(tileFile.at(i)["Position"][0], tileFile.at(i)["Position"][1], tileFile.at(i)["Position"][2]);
+		XMFLOAT3 scale(tileFile.at(i)["Scale"][0], tileFile.at(i)["Scale"][1], tileFile.at(i)["Scale"][2]);
+		wstring location = ToWstring((std::string)tileFile.at(i)["TileData"]);
+		TileMap* tileMap = new TileMap(location, position, scale, tileFile.at(i)["Name"]);
 		std::string name = tileMap->GetIdentifier();
 		scene->CreateGameObject<GameObject>(name);
 		GameObject* gameObject = scene->GetGameObjectUsingIdentifier<GameObject>(name);
 		gameObject = tileMap;
 		m_Cache.m_Map.push_back(tileMap);
+		m_Cache.m_MapData.push_back(location);
 	}
 
 }
@@ -367,15 +327,13 @@ GameObject FileIO::LoadGameObject(json file, int objectCount)
 			pbox->m_transform = gameObject.GetTransform();
 		}
 	}
-	else
-	{
-	}
 
 	std::vector<Frame> framesOfAnimation(data.at(objectCount)["NumberOfAnimations"]);
 
 	for (size_t i = 0; i < framesOfAnimation.size(); ++i)
 	{
-		GraphicsManager::GetInstance()->LoadAnimationFromFile(ToWstring((std::string)data.at(objectCount)["AnimationFile"][i]));
+		wstring animationFile = ToWstring((std::string)data.at(objectCount)["AnimationFile"][i]);
+		GraphicsManager::GetInstance()->LoadAnimationFromFile(animationFile);
 		std::string name = data.at(objectCount)["AnimationFile"][i] ;
 		SpriteAnimation* sAnimation = &GraphicsManager::GetInstance()->GetAnimation(ToWstring(name));
 		m_Cache.m_AnimationCache[sAnimation->GetFrames()] = name;
@@ -479,10 +437,11 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 	outFile.open(fileLocation);
 	json jsonOutput{};
 	jsonOutput["MetaData"] = {};
+	jsonOutput["MetaData"].push_back({});
 	jsonOutput["TileMap"] = {};
 	jsonOutput["ObjectData"] = {};
 	jsonOutput["ParticleData"] = {};
-	jsonOutput["MetaData"].push_back({ "NumberOfObject", gameObjects.size() });
+	jsonOutput["MetaData"].at(0).push_back({ "NumberOfObject", gameObjects.size() });
 
 	int count = 0;
 
@@ -528,7 +487,12 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 			Box* testBox = dynamic_cast<Box*>(gameObjectToStore->GetShape());
 			if (testBox == NULL)
 			{
-				jsonOutput["ObjectData"].at(count).push_back({ "ColliderType" , "CircleCollider" });
+				Circle* c = dynamic_cast<Circle*>(gameObjectToStore->GetShape());
+				if (c != NULL)
+				{
+					jsonOutput["ObjectData"].at(count).push_back({ "ColliderType" , "CircleCollider" });
+					jsonOutput["ObjectData"].at(count).push_back({ "CircleRadius" , c->m_radius });
+				}
 			}
 			else
 			{
@@ -551,7 +515,7 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 			jsonOutput["ObjectData"].at(count).push_back({ "VertexShaderLocation" , shaders[0] });
 			jsonOutput["ObjectData"].at(count).push_back({ "PixelShaderLocation" , shaders[1] });
 			jsonOutput["ObjectData"].at(count).push_back({ "AlbedoLocation" , shaders[2] });
-			jsonOutput["ObjectData"].at(count).push_back({ "AnimationCount", gameObjectToStore->GetAnimations()->size()});
+			jsonOutput["ObjectData"].at(count).push_back({ "NumberOfAnimations", gameObjectToStore->GetAnimations()->size()});
 
 			std::vector<std::string> spriteAnimation(gameObjectToStore->GetAnimations()->size());
 			int animationCount = 0;
@@ -576,7 +540,9 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 			shaders[2] = aSRV;
 
 			XMFLOAT3 pos = tileMap->GetTransform()->GetPosition();
+			XMFLOAT3 sca = tileMap->GetTransform()->GetScale();
 			float position[3]{ pos.x, pos.y, pos.z };
+			float scale[3]{ sca.x, sca.y, sca.z };
 
 			//Need height and width of tile map
 			jsonOutput["TileMap"].push_back({});
@@ -604,16 +570,18 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 				jsonOutput["ObjectData"].at(tileCount).push_back({ "IsTrigger" , false });
 			}
 			jsonOutput["TileMap"].at(tileCount).push_back({ "Position", position });
+			jsonOutput["TileMap"].at(tileCount).push_back({ "Scale", scale });
 			jsonOutput["TileMap"].at(tileCount).push_back({ "VertexShaderLocation" , shaders[0] });
 			jsonOutput["TileMap"].at(tileCount).push_back({ "PixelShaderLocation" , shaders[1] });
 			jsonOutput["TileMap"].at(tileCount).push_back({ "AlbedoLocation" , shaders[2] });
 			jsonOutput["TileMap"].at(tileCount).push_back({ "AnimationCount", 0 });
+			jsonOutput["TileMap"].at(tileCount).push_back({ "TileData", ToString(m_Cache.m_MapData[tileCount])});
 			tileCount++;
 		}
 	}
 
-	jsonOutput["MetaData"].push_back({ "NumberOfTileZones", tileCount });
-	jsonOutput["MetaData"].push_back({ "NumberOfParticlesSystems", particleCount });
+	jsonOutput["MetaData"].at(0).push_back({ "NumberOfTileZones", tileCount });
+	jsonOutput["MetaData"].at(0).push_back({ "NumberOfParticlesSystems", particleCount });
 
 	outFile << jsonOutput;
 	outFile.close();

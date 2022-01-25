@@ -131,7 +131,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameManager->CreateScene("TestScene");
 	pgameManager->SelectSceneUsingIdentifier("TestScene");
 
-	FileIO::LoadScene("C:\\Users\\Thoma\\Documents\\GitHub\\CoolEngine\\CoolEngine\\Engine\\FileIO\\Scene.json", pgameManager, nullptr);
+	FileIO::LoadScene("C:\\Users\\Thoma\\Documents\\GitHub\\CoolEngine\\CoolEngine\\Engine\\FileIO\\Scene2.json", pgameManager, nullptr);
 
 #if TOOL
 

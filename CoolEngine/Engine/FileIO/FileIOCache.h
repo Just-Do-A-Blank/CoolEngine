@@ -17,5 +17,6 @@ public:
 	std::unordered_map<ID3D11ShaderResourceView*, wstring> m_AlebdoCache;
 	std::unordered_map<std::vector<Frame>*, string> m_AnimationCache;
 	std::vector<TileMap*> m_Map;
+	std::vector<wstring> m_MapData;
 };
 
