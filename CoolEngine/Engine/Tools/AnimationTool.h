@@ -8,7 +8,7 @@
 
 #include <vector>
 
-class GameObject;
+class RenderableGameObject;
 
 struct FrameInfo
 {
@@ -28,7 +28,7 @@ protected:
 
 private:
 
-	GameObject* m_pgameObject = nullptr;
+	RenderableGameObject* m_pgameObject = nullptr;
 
 	vector<FrameInfo> m_frameInfos;
 	vector<Frame> m_frames;

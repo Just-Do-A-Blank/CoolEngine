@@ -1,6 +1,6 @@
 #include "Scene.h"
 
-#include "Engine/GameObjects/GameObject.h"
+#include "Engine/GameObjects/RenderableGameObject.h"
 #include "Engine/Managers/SceneGraph.h"
 
 #include "Engine/Physics/Collision.h"
@@ -28,17 +28,26 @@ void Scene::Update()
 
 void Scene::Render(RenderStruct& renderStruct)
 {
+	RenderableGameObject* prenderableGameObject = nullptr;
+
 	for (int i = 0; i < GraphicsManager::GetInstance()->GetNumLayers(); ++i)
 	{
 		unordered_map<string, GameObject*> gameObjectList = m_psceneGraph->GetAllGameObjects();
 		for (unordered_map<string, GameObject*>::iterator it = gameObjectList.begin(); it != gameObjectList.end(); ++it)
 		{
-			if (it->second->IsRenderable() == false || it->second->GetLayer() != i)
+			if (it->second->ContainsType(GameObjectType::RENDERABLE) == false)
 			{
 				continue;
 			}
 
-			it->second->Render(renderStruct);
+			prenderableGameObject = dynamic_cast<RenderableGameObject*>(it->second);
+
+			if (prenderableGameObject->IsRenderable() == false || prenderableGameObject->GetLayer() != i)
+			{
+				continue;
+			}
+
+			prenderableGameObject->Render(renderStruct);
 		}
 	}
 }

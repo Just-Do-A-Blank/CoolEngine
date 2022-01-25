@@ -2,6 +2,8 @@
 #include "Engine/Physics/Box.h"
 #include "Engine/Physics/Circle.h"
 
+#include "Engine/GameObjects/CollidableGameObject.h"
+
 bool Collision::BoxCollision(Box* box1, Box* box2)
 {
 	XMFLOAT2 halfSize1 = { box1->m_transform->GetScale().x, box1->m_transform->GetScale().y };
@@ -203,26 +205,37 @@ bool Collision::CircleCollisionAndResponse(Circle* circle1, Circle* circle2)
 
 void Collision::Update(unordered_map<string, GameObject*> gameObjectMap)
 {
+	CollidableGameObject* pcollidable1 = nullptr;
+	CollidableGameObject* pcollidable2 = nullptr;
+
 	for (unordered_map<string, GameObject*>::iterator it1 = gameObjectMap.begin(); it1 != gameObjectMap.end(); ++it1)
 	{
 		for (unordered_map<string, GameObject*>::iterator it2 = gameObjectMap.begin(); it2 != gameObjectMap.end(); ++it2)
 		{
 			if (it1 != it2)
 			{
-				if (it1->second->GetShape() == nullptr || it2->second->GetShape() == nullptr)
+				if (it1->second->ContainsType(GameObjectType::COLLIDABLE) == false || it2->second->ContainsType(GameObjectType::COLLIDABLE) == false)
+				{
+					continue;
+				}
+
+				pcollidable1 = dynamic_cast<CollidableGameObject*>(it1->second);
+				pcollidable2 = dynamic_cast<CollidableGameObject*>(it2->second);
+
+				if (pcollidable1->GetShape() == nullptr || pcollidable2->GetShape() == nullptr)
 				{
 					continue;
 				}
 
 				// Whether to just collisde or collide with response
-				if (it1->second->GetShape()->IsCollidable() && it2->second->GetShape()->IsCollidable())
+				if (pcollidable1->GetShape()->IsCollidable() && pcollidable2->GetShape()->IsCollidable())
 				{
 					// To Do - Find a way to do something with hasCollided
-					bool hasCollided = it1->second->GetShape()->CollideResponse(it2->second->GetShape());
+					bool hasCollided = pcollidable1->GetShape()->CollideResponse(pcollidable2->GetShape());
 				}
-				else if (it1->second->GetShape()->IsTrigger() && it2->second->GetShape()->IsTrigger() || it1->second->GetShape()->IsCollidable() && it2->second->GetShape()->IsTrigger() || it2->second->GetShape()->IsCollidable() && it1->second->GetShape()->IsTrigger())
+				else if (pcollidable1->GetShape()->IsTrigger() && pcollidable2->GetShape()->IsTrigger() || pcollidable1->GetShape()->IsCollidable() && pcollidable2->GetShape()->IsTrigger() || pcollidable2->GetShape()->IsCollidable() && pcollidable1->GetShape()->IsTrigger())
 				{
-					bool hasCollided = it1->second->GetShape()->Collide(it2->second->GetShape());
+					bool hasCollided = pcollidable2->GetShape()->Collide(pcollidable2->GetShape());
 				}
 			}
 		}

@@ -14,10 +14,6 @@ ParticleSystem::ParticleSystem(string identifier) : GameObject(identifier)
 	m_isActive = false;
 	m_systemType = SYSTEM_NONE;
 	m_pTexture = nullptr;
-
-
-	bool renderable = false;
-	SetIsRenderable(renderable);
 }
 
 ParticleSystem::~ParticleSystem()

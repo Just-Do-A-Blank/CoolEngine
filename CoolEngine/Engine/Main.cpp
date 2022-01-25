@@ -143,6 +143,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameManager->CreateScene("TestScene");
 	pgameManager->SelectSceneUsingIdentifier("TestScene");
 
+	g_particleManager = new ParticleManager(QUAD_MESH_NAME, DEFAULT_VERTEX_SHADER_NAME, DEFAULT_PIXEL_SHADER_NAME);
+
 #if TOOL
 
 #if TILE_MAP_TOOL
@@ -178,11 +180,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	string obj1Name = "TestObject1";
 	string playerName = "Player";
 
-	pgameManager->CreateGameObject<GameObject>(obj0Name);
-	pgameManager->CreateGameObject<GameObject>(obj1Name);
+	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj0Name);
+	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj1Name);
 	pgameManager->CreateGameObject<PlayerGameObject>(playerName);
 
-	GameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<GameObject>(obj0Name);
+	RenderableCollidableGameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj0Name);
 
 	XMFLOAT3 objectPos = XMFLOAT3(0, 0.0f, 0.0f);
 	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
@@ -201,7 +203,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetShape(pbox);
 
 	////Init second gameObject
-	pgameObject = pgameManager->GetGameObjectUsingIdentifier<GameObject>(obj1Name);
+	pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj1Name);
 
 	objectPos = XMFLOAT3(10.0f, 0.0f, 0.0f);
 	objectScale = XMFLOAT3(100, 100, 100);
@@ -245,7 +247,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, &observer);
 	EventManager::Instance()->AddClient(EventType::MouseMoved, &observer);
 
-	g_particleManager = new ParticleManager(QUAD_MESH_NAME, DEFAULT_VERTEX_SHADER_NAME, DEFAULT_PIXEL_SHADER_NAME);
 	XMFLOAT3 pos = XMFLOAT3( 300, 300, 5 );
 	XMFLOAT3 rot = XMFLOAT3(0, 0, 0 );
 	XMFLOAT3 scale = XMFLOAT3(25, 25, 25);

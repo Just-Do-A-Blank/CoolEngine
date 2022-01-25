@@ -1,21 +1,21 @@
 #include "Tile.h"
 
-Tile::Tile() : GameObject()
+Tile::Tile() : RenderableGameObject()
 {
 }
 
-Tile::Tile(string identifier) : GameObject(identifier)
+Tile::Tile(string identifier) : RenderableGameObject(identifier)
 {
 }
 
-Tile::Tile(wstring path, int ID, string identifier) : GameObject(identifier)
+Tile::Tile(wstring path, int ID, string identifier) : RenderableGameObject(identifier)
 {
 	InitAnimation(path);
 
 	m_ID = ID;
 }
 
-Tile::Tile(int ID, string identifier) : GameObject(identifier)
+Tile::Tile(int ID, string identifier) : RenderableGameObject(identifier)
 {
 	m_ID = ID;
 }
