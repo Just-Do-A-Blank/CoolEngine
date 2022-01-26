@@ -19,6 +19,12 @@ public:
 	}
 
 	//Subtracts var1 with var2 and return it
+	static XMFLOAT2& Minus(const XMFLOAT2& var1, const XMFLOAT2& var2)
+	{
+		return XMFLOAT2(var1.x - var2.x, var1.y - var2.y);
+	}
+
+	//Subtracts var1 with var2 and return it
 	static XMFLOAT3& Minus(const XMFLOAT3& var1, const XMFLOAT3& var2)
 	{
 		return XMFLOAT3(var1.x - var2.x, var1.y - var2.y, var1.z - var2.z);
@@ -124,6 +130,14 @@ public:
 		float mag = Magnitude(var1);
 		assert(mag != 0);
 		return XMFLOAT3(var1.x / mag, var1.y / mag, var1.z / mag);
+	}
+
+	//Retruns normalized var1
+	static XMFLOAT2& Normalize(const XMFLOAT2& var1)
+	{
+		float mag = Magnitude(var1);
+		assert(mag != 0);
+		return XMFLOAT2(var1.x / mag, var1.y / mag);
 	}
 
 	//Returns distance from var1 to var2

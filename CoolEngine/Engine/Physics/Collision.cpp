@@ -48,24 +48,46 @@ bool Collision::CircleBoxCollision(Circle* circle, Box* box)
 bool Collision::OBBCollision(OBB* obb1, OBB* obb2)
 {
 	// For each axis
-	for (unsigned int i = 0; i < 2; ++i)
-	{
-		// For each corner of the other box
-		float limit = MathHelper::DotProduct(obb2->m_corners[0], obb1->m_axes[i]);
-		float pMin = limit;
-		float pMax = -limit;
-		for (unsigned int j = 0; j < 3; ++j)
-		{
-			float projection = MathHelper::DotProduct(obb2->m_corners[j+1], obb1->m_axes[i]);
-			// Narrow down range of overlap
-			pMin = (projection < pMin ? projection : pMin);
-			pMax = (projection > pMax ? projection : pMax);
-		}
+	//for (unsigned int i = 0; i < 2; ++i)
+	//{
+	//	// For each corner of the other box
+	//	float limit = MathHelper::DotProduct(obb2->m_corners[0], obb1->m_axes[i]);
+	//	float pMin = limit;
+	//	float pMax = -limit;
+	//	for (unsigned int j = 0; j < 3; ++j)
+	//	{
+	//		float projection = MathHelper::DotProduct(obb2->m_corners[j+1], obb1->m_axes[i]);
+	//		// Narrow down range of overlap
+	//		pMin = (projection < pMin ? projection : pMin);
+	//		pMax = (projection > pMax ? projection : pMax);
+	//	}
 
-		// Rule out this axis
-		if (pMin > 1 + obb1->m_origins[i] || pMax < obb1->m_origins[i])
+	//	// Rule out this axis
+	//	if (pMin > 1 + obb1->m_origins[i] || pMax < obb1->m_origins[i])
+	//	{
+	//		return false;
+	//	}
+	//}
+
+	//cout << "Hit at " << obb1->m_transform->GetPosition().x << " " << obb1->m_transform->GetPosition().y << endl;
+	//return true;
+
+	// For each axis
+	XMFLOAT2 axes[4] = { obb1->m_axes[0], obb1->m_axes[1], obb2->m_axes[0], obb2->m_axes[1] };
+	float limit = 99999;
+	for (unsigned int i = 0; i < 4; ++i)
+	{
+		XMFLOAT2 p1 = obb1->ProjectOnAxis(axes[i]);
+		XMFLOAT2 p2 = obb2->ProjectOnAxis(axes[i]);
+
+		float overlap = obb1->GetOverlapLength(p1, p2);
+		if (overlap == 0.0f)
 		{
 			return false;
+		}
+		else if (overlap < limit)
+		{
+			limit = overlap;
 		}
 	}
 

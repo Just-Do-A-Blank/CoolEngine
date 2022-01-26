@@ -5,9 +5,11 @@
 class OBB : public Shape
 {
 public:
+	/*XMFLOAT2 m_corners[4];
+	XMFLOAT2 m_axes[2];
+	float m_origins[2];*/
 	XMFLOAT2 m_corners[4];
 	XMFLOAT2 m_axes[2];
-	float m_origins[2];
 
 	OBB()
 	{
@@ -30,6 +32,33 @@ public:
 		m_transform = nullptr;
 	}
 
+	float GetOverlapLength(XMFLOAT2 vec1, XMFLOAT2 vec2)
+	{
+		if (vec1.x <= vec2.y && vec1.y >= vec2.x)
+		{
+			float yMin = (vec1.y < vec2.y ? vec1.y : vec2.y);
+			float xMax = (vec1.x < vec2.x ? vec2.x : vec1.x);
+			return yMin - xMax;
+		}
+
+		return 0;
+	}
+
+	XMFLOAT2 ProjectOnAxis(XMFLOAT2 axis)
+	{
+		float limit = 99999;
+		float pMin = limit;
+		float pMax = -limit;
+		for (unsigned int i = 0; i < 4; ++i)
+		{
+			float p = MathHelper::DotProduct(m_corners[i], axis);
+			pMin = (p < pMin ? p : pMin);
+			pMax = (p > pMax ? p : pMax);
+		}
+
+		return XMFLOAT2(pMin, pMax);
+	}
+
 	void UpdateCorners(float rot)
 	{
 		XMFLOAT2 xAxis = XMFLOAT2(cos(rot), sin(rot));
@@ -50,17 +79,23 @@ public:
 
 	void UpdateAxes()
 	{
-		m_axes[0] = XMFLOAT2(m_corners[1].x - m_corners[0].x, m_corners[1].y - m_corners[0].y);
-		m_axes[1] = XMFLOAT2(m_corners[3].x - m_corners[0].x, m_corners[3].y - m_corners[0].y);
+		XMFLOAT2 normalised = MathHelper::Normalize(MathHelper::Minus(m_corners[1], m_corners[0]));
+		m_axes[0] = { -normalised.y, normalised.x };
 
-		// Normalise, then get dot product to get
-		float magSquared;
-		for (unsigned int i = 0; i < 2; ++i)
-		{
-			magSquared = MathHelper::SquareMagnitude(m_axes[i]);
-			m_axes[i] = MathHelper::Divide(m_axes[i], magSquared);
-			m_origins[i] = MathHelper::DotProduct(m_corners[0], m_axes[i]);
-		}
+		normalised = MathHelper::Normalize(MathHelper::Minus(m_corners[2], m_corners[1]));
+		m_axes[1] = { -normalised.y, normalised.x };
+
+		//m_axes[0] = XMFLOAT2(m_corners[1].x - m_corners[0].x, m_corners[1].y - m_corners[0].y);
+		//m_axes[1] = XMFLOAT2(m_corners[3].x - m_corners[0].x, m_corners[3].y - m_corners[0].y);
+
+		//// Normalise, then get dot product to get
+		//float magSquared;
+		//for (unsigned int i = 0; i < 2; ++i)
+		//{
+		//	magSquared = MathHelper::SquareMagnitude(m_axes[i]);
+		//	m_axes[i] = MathHelper::Divide(m_axes[i], magSquared);
+		//	m_origins[i] = MathHelper::DotProduct(m_corners[0], m_axes[i]);
+		//}
 	}
 
 	void Update()
