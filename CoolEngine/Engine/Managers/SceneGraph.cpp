@@ -2,6 +2,8 @@
 #include "Engine/GameObjects/Transform.h"
 #include "Engine/GameUI/UiElement.h"
 
+#include <algorithm>
+
 template<class T>
 SceneGraph<T>::SceneGraph()
 {
@@ -132,7 +134,7 @@ void SceneGraph<T>::DeleteNode(TreeNode<T>* currentNode)
 	string gameObjectName = currentNode->GameObject->GetIdentifier();
 	m_sceneTreeNodeMap.erase(gameObjectName);
 	m_sceneGameObjectsMap.erase(gameObjectName);
-	//m_sceneGameObjectList.erase(currentNode->GameObject);
+	m_sceneGameObjectList.erase(remove(m_sceneGameObjectList.begin(), m_sceneGameObjectList.end(), currentNode->GameObject));
 }
 
 template<class T>
@@ -192,7 +194,7 @@ void SceneGraph<T>::DeleteGameObjectUsingNode(TreeNode<T>* currentNode)
 	string gameObjectName = currentNode->GameObject->GetIdentifier();
 	m_sceneTreeNodeMap.erase(gameObjectName);
 	m_sceneGameObjectsMap.erase(gameObjectName);
-	//m_sceneGameObjectList.erase(currentNode->GameObject);
+	m_sceneGameObjectList.erase(remove(m_sceneGameObjectList.begin(), m_sceneGameObjectList.end(), currentNode->GameObject));
 
 	delete currentNode->GameObject;
 	currentNode->GameObject = nullptr;
