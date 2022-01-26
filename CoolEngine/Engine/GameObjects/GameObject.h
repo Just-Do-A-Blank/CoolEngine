@@ -20,6 +20,7 @@ class GameObject : public EditorUIComponent
 {
 	friend class GameManager;
 	friend class Scene;
+	friend class FileIO;
 private:
 	string m_identifier;
 

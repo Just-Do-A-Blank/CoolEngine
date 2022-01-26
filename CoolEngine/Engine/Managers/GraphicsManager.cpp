@@ -157,6 +157,8 @@ bool GraphicsManager::LoadAnimationFromFile(wstring animName, size_t maxSize, DD
 	}
 
 	//Get information txt file and parse in
+
+	wstring w = L"Resources\\Animations\\" + animName + L"\\" + animName + L".txt";
 	ifstream file(L"Resources\\Animations\\" + animName + L"\\" + animName + L".txt", std::ios::in);
 
 	if (file.is_open() == false)
