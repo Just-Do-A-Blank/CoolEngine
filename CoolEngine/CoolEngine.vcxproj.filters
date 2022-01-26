@@ -85,6 +85,21 @@
     <Filter Include="Engine\GameUI">
       <UniqueIdentifier>{1b440d84-9e46-46eb-9e47-c7fa7dff4d4a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Includes\DirectXTK">
+      <UniqueIdentifier>{fba8e46c-6435-4f76-9cfb-8fbb883b964f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Includes\DirectXTK\Src">
+      <UniqueIdentifier>{b665fb30-afdb-4faf-bc7e-a99aabc266a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Includes\DirectXTK\Inc">
+      <UniqueIdentifier>{21e57a52-d122-4c5d-998c-d13809b3e595}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Includes\DirectXTK\Src\Shaders">
+      <UniqueIdentifier>{f964e851-6fea-4eb8-aa94-15fa34ee37c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Includes\DirectXTK\Src\Shaders\Compiled">
+      <UniqueIdentifier>{58939bdb-8d5b-4cd3-9952-b14a4a31f951}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -282,6 +297,72 @@
     <ClInclude Include="Engine\Managers\UIManager.h">
       <Filter>Engine\Managers</Filter>
     </ClInclude>
+    <ClInclude Include="DirectXTK-main\Inc\Audio.h">
+      <Filter>Engine\Includes\DirectXTK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXTK-main\Inc\BufferHelpers.h">
+      <Filter>Engine\Includes\DirectXTK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXTK-main\Inc\CommonStates.h">
+      <Filter>Engine\Includes\DirectXTK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXTK-main\Inc\DDSTextureLoader.h">
+      <Filter>Engine\Includes\DirectXTK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXTK-main\Inc\DirectXHelpers.h">
+      <Filter>Engine\Includes\DirectXTK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXTK-main\Inc\Effects.h">
+      <Filter>Engine\Includes\DirectXTK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXTK-main\Inc\GamePad.h">
+      <Filter>Engine\Includes\DirectXTK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXTK-main\Inc\GeometricPrimitive.h">
+      <Filter>Engine\Includes\DirectXTK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXTK-main\Inc\GraphicsMemory.h">
+      <Filter>Engine\Includes\DirectXTK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXTK-main\Inc\Keyboard.h">
+      <Filter>Engine\Includes\DirectXTK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXTK-main\Inc\Model.h">
+      <Filter>Engine\Includes\DirectXTK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXTK-main\Inc\Mouse.h">
+      <Filter>Engine\Includes\DirectXTK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXTK-main\Inc\PostProcess.h">
+      <Filter>Engine\Includes\DirectXTK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXTK-main\Inc\PrimitiveBatch.h">
+      <Filter>Engine\Includes\DirectXTK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXTK-main\Inc\ScreenGrab.h">
+      <Filter>Engine\Includes\DirectXTK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXTK-main\Inc\SimpleMath.h">
+      <Filter>Engine\Includes\DirectXTK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXTK-main\Inc\SpriteBatch.h">
+      <Filter>Engine\Includes\DirectXTK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXTK-main\Inc\SpriteFont.h">
+      <Filter>Engine\Includes\DirectXTK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXTK-main\Inc\VertexTypes.h">
+      <Filter>Engine\Includes\DirectXTK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXTK-main\Inc\WICTextureLoader.h">
+      <Filter>Engine\Includes\DirectXTK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXTK-main\Inc\XboxDDSTextureLoader.h">
+      <Filter>Engine\Includes\DirectXTK\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\FontManager.h">
+      <Filter>Engine\Managers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -419,6 +500,15 @@
     <ClCompile Include="Engine\Managers\UIManager.cpp">
       <Filter>Engine\Managers</Filter>
     </ClCompile>
+    <ClCompile Include="DirectXTK-main\Src\SpriteBatch.cpp">
+      <Filter>Engine\Includes\DirectXTK\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectXTK-main\Src\SpriteFont.cpp">
+      <Filter>Engine\Includes\DirectXTK\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\FontManager.cpp">
+      <Filter>Engine\Managers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">
@@ -433,5 +523,1201 @@
     <FxCompile Include="Engine\Graphics\Shaders\ScreenSpaceVertex.hlsl">
       <Filter>Engine\Graphics\Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\AlphaTestEffect.fx">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\BasicEffect.fx">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\DebugEffect.fx">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\DGSLEffect.fx">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\DGSLLambert.hlsl">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\DGSLPhong.hlsl">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\DGSLUnlit.hlsl">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\DualTextureEffect.fx">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\EnvironmentMapEffect.fx">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\NormalMapEffect.fx">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\PBREffect.fx">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\PostProcess.fx">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\SkinnedEffect.fx">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\SpriteEffect.fx">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\ToneMap.fx">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DirectXTK-main\Inc\SimpleMath.inl">
+      <Filter>Engine\Includes\DirectXTK\Inc</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Common.fxh">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\CompileShaders.cmd">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Lighting.fxh">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\PBRCommon.fxh">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\PixelPacking_Velocity.hlsli">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Skinning.fxh">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Structures.fxh">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Utilities.fxh">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_PSAlphaTestEqNe.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_PSAlphaTestEqNe.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_PSAlphaTestEqNeNoFog.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_PSAlphaTestEqNeNoFog.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_PSAlphaTestLtGt.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_PSAlphaTestLtGt.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_PSAlphaTestLtGtNoFog.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_PSAlphaTestLtGtNoFog.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_VSAlphaTest.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_VSAlphaTest.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_VSAlphaTestNoFog.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_VSAlphaTestNoFog.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_VSAlphaTestVc.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_VSAlphaTestVc.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_VSAlphaTestVcNoFog.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_VSAlphaTestVcNoFog.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasic.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasic.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicNoFog.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicNoFog.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicPixelLighting.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicPixelLighting.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicPixelLightingTx.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicPixelLightingTx.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicTx.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicTx.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicTxNoFog.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicTxNoFog.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicVertexLighting.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicVertexLighting.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicVertexLightingNoFog.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicVertexLightingNoFog.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicVertexLightingTx.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicVertexLightingTx.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicVertexLightingTxNoFog.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicVertexLightingTxNoFog.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasic.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasic.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicNoFog.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicNoFog.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLight.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLight.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightTx.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightTx.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightTxBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightTxBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightTxVc.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightTxVc.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightTxVcBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightTxVcBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightVc.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightVc.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightVcBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightVcBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLighting.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLighting.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingTx.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingTx.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingTxBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingTxBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingTxVc.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingTxVc.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingTxVcBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingTxVcBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingVc.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingVc.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingVcBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingVcBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicTx.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicTx.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicTxNoFog.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicTxNoFog.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicTxVc.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicTxVc.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicTxVcNoFog.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicTxVcNoFog.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVc.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVc.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVcNoFog.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVcNoFog.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLighting.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLighting.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingTx.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingTx.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingTxBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingTxBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingTxVc.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingTxVc.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingTxVcBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingTxVcBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingVc.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingVc.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingVcBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingVcBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_PSHemiAmbient.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_PSHemiAmbient.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_PSRGBBiTangents.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_PSRGBBiTangents.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_PSRGBNormals.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_PSRGBNormals.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_PSRGBTangents.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_PSRGBTangents.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebug.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebug.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugBnInst.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugBnInst.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugInst.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugInst.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugVc.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugVc.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugVcBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugVcBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugVcBnInst.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugVcBnInst.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugVcInst.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugVcInst.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main1Bones.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main1Bones.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main1BonesVc.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main1BonesVc.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main2Bones.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main2Bones.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main2BonesVc.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main2BonesVc.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main4Bones.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main4Bones.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main4BonesVc.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main4BonesVc.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_mainVc.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_mainVc.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLLambert_main.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLLambert_main.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLLambert_mainTk.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLLambert_mainTk.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLLambert_mainTx.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLLambert_mainTx.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLLambert_mainTxTk.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLLambert_mainTxTk.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLPhong_main.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLPhong_main.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLPhong_mainTk.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLPhong_mainTk.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLPhong_mainTx.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLPhong_mainTx.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLPhong_mainTxTk.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLPhong_mainTxTk.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLUnlit_main.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLUnlit_main.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLUnlit_mainTk.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLUnlit_mainTk.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLUnlit_mainTx.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLUnlit_mainTx.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLUnlit_mainTxTk.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLUnlit_mainTxTk.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DualTextureEffect_PSDualTexture.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DualTextureEffect_PSDualTexture.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DualTextureEffect_PSDualTextureNoFog.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DualTextureEffect_PSDualTextureNoFog.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DualTextureEffect_VSDualTexture.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DualTextureEffect_VSDualTexture.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DualTextureEffect_VSDualTextureNoFog.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DualTextureEffect_VSDualTextureNoFog.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DualTextureEffect_VSDualTextureVc.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DualTextureEffect_VSDualTextureVc.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DualTextureEffect_VSDualTextureVcNoFog.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DualTextureEffect_VSDualTextureVcNoFog.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMap.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMap.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapDualParabolaPixelLighting.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapDualParabolaPixelLighting.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapDualParabolaPixelLightingFresnel.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapDualParabolaPixelLightingFresnel.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapDualParabolaPixelLightingFresnelNoFog.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapDualParabolaPixelLightingFresnelNoFog.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapDualParabolaPixelLightingNoFog.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapDualParabolaPixelLightingNoFog.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapNoFog.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapNoFog.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapPixelLighting.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapPixelLighting.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapPixelLightingFresnel.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapPixelLightingFresnel.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapPixelLightingFresnelNoFog.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapPixelLightingFresnelNoFog.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapPixelLightingNoFog.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapPixelLightingNoFog.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapSpecular.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapSpecular.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapSpecularNoFog.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapSpecularNoFog.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapSpherePixelLighting.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapSpherePixelLighting.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapSpherePixelLightingFresnel.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapSpherePixelLightingFresnel.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapSpherePixelLightingFresnelNoFog.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapSpherePixelLightingFresnelNoFog.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapSpherePixelLightingNoFog.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapSpherePixelLightingNoFog.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMap.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMap.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapFresnel.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapFresnel.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapFresnelBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapFresnelBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapOneLight.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapOneLight.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapOneLightBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapOneLightBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapOneLightFresnel.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapOneLightFresnel.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapOneLightFresnelBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapOneLightFresnelBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapPixelLighting.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapPixelLighting.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapPixelLightingBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapPixelLightingBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapPixelLightingBnSM4.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapPixelLightingBnSM4.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapPixelLightingSM4.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapPixelLightingSM4.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_PSNormalPixelLightingTx.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_PSNormalPixelLightingTx.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_PSNormalPixelLightingTxNoFog.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_PSNormalPixelLightingTxNoFog.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_PSNormalPixelLightingTxNoFogSpec.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_PSNormalPixelLightingTxNoFogSpec.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_PSNormalPixelLightingTxNoSpec.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_PSNormalPixelLightingTxNoSpec.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTx.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTx.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxBnInst.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxBnInst.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxInst.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxInst.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxVc.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxVc.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxVcBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxVcBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxVcBnInst.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxVcBnInst.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxVcInst.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxVcInst.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSSkinnedPixelLightingTx.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSSkinnedPixelLightingTx.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSSkinnedPixelLightingTxBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSSkinnedPixelLightingTxBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_PSConstant.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_PSConstant.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_PSTextured.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_PSTextured.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_PSTexturedEmissive.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_PSTexturedEmissive.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_PSTexturedEmissiveVelocity.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_PSTexturedEmissiveVelocity.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_PSTexturedVelocity.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_PSTexturedVelocity.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSConstant.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSConstant.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSConstantBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSConstantBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSConstantBnInst.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSConstantBnInst.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSConstantInst.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSConstantInst.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSConstantVelocity.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSConstantVelocity.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSConstantVelocityBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSConstantVelocityBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSSkinned.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSSkinned.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSSkinnedBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSSkinnedBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSBloomBlur.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSBloomBlur.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSBloomCombine.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSBloomCombine.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSBloomExtract.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSBloomExtract.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSCopy.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSCopy.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSDownScale2x2.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSDownScale2x2.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSDownScale4x4.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSDownScale4x4.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSGaussianBlur5x5.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSGaussianBlur5x5.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSMerge.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSMerge.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSMonochrome.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSMonochrome.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSSepia.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSSepia.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_VSQuad.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_VSQuad.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_PSSkinnedPixelLighting.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_PSSkinnedPixelLighting.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_PSSkinnedVertexLighting.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_PSSkinnedVertexLighting.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_PSSkinnedVertexLightingNoFog.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_PSSkinnedVertexLightingNoFog.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedOneLightFourBones.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedOneLightFourBones.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedOneLightFourBonesBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedOneLightFourBonesBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedOneLightOneBone.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedOneLightOneBone.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedOneLightOneBoneBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedOneLightOneBoneBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedOneLightTwoBones.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedOneLightTwoBones.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedOneLightTwoBonesBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedOneLightTwoBonesBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedPixelLightingFourBones.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedPixelLightingFourBones.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedPixelLightingFourBonesBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedPixelLightingFourBonesBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedPixelLightingOneBone.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedPixelLightingOneBone.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedPixelLightingOneBoneBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedPixelLightingOneBoneBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedPixelLightingTwoBones.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedPixelLightingTwoBones.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedPixelLightingTwoBonesBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedPixelLightingTwoBonesBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedVertexLightingFourBones.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedVertexLightingFourBones.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedVertexLightingFourBonesBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedVertexLightingFourBonesBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedVertexLightingOneBone.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedVertexLightingOneBone.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedVertexLightingOneBoneBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedVertexLightingOneBoneBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedVertexLightingTwoBones.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedVertexLightingTwoBones.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedVertexLightingTwoBonesBn.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedVertexLightingTwoBonesBn.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SpriteEffect_SpritePixelShader.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SpriteEffect_SpritePixelShader.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SpriteEffect_SpriteVertexShader.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PS_SRGB.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PS_SRGB.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSACESFilmic.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSACESFilmic.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSACESFilmic_SRGB.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSACESFilmic_SRGB.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSCopy.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSCopy.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSHDR10.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSHDR10.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSReinhard.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSReinhard.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSReinhard_SRGB.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSReinhard_SRGB.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSSaturate.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSSaturate.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSSaturate_SRGB.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSSaturate_SRGB.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_VSQuad.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_VSQuad.pdb">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SpriteEffect_SpriteVertexShader.inc">
+      <Filter>Engine\Includes\DirectXTK\Src\Shaders\Compiled</Filter>
+    </None>
   </ItemGroup>
 </Project>

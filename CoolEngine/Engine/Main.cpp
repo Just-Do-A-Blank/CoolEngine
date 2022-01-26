@@ -26,6 +26,7 @@
 #include "Engine/Managers/UIManager.h"
 #include "Engine/GameUI/GameUIComponent.h"
 #include "Engine/GameUI/ImageComponent.h"
+#include "Engine/Managers/FontManager.h"
 
 #include "Physics/ParticleManager.h"
 
@@ -262,6 +263,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_particleManager->AddSystem(trans, 10.0f, SYSTEM_TEST, DEFAULT_IMGUI_IMAGE);
 
 	GameManager::GetInstance()->GetTimer()->Tick();
+
+	FontManager::GetInstance()->Initialize(g_pd3dDevice, g_pImmediateContext);
 
 #if _DEBUG
 	DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect("DebugRect1", XMFLOAT3(-100.0f, -100.0f, 0.0f), objectScale, DebugDrawManager::DebugColour::BEIGE);

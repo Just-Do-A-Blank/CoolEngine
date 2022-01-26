@@ -27,6 +27,27 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DirectXTK-main\Inc\Audio.h" />
+    <ClInclude Include="DirectXTK-main\Inc\BufferHelpers.h" />
+    <ClInclude Include="DirectXTK-main\Inc\CommonStates.h" />
+    <ClInclude Include="DirectXTK-main\Inc\DDSTextureLoader.h" />
+    <ClInclude Include="DirectXTK-main\Inc\DirectXHelpers.h" />
+    <ClInclude Include="DirectXTK-main\Inc\Effects.h" />
+    <ClInclude Include="DirectXTK-main\Inc\GamePad.h" />
+    <ClInclude Include="DirectXTK-main\Inc\GeometricPrimitive.h" />
+    <ClInclude Include="DirectXTK-main\Inc\GraphicsMemory.h" />
+    <ClInclude Include="DirectXTK-main\Inc\Keyboard.h" />
+    <ClInclude Include="DirectXTK-main\Inc\Model.h" />
+    <ClInclude Include="DirectXTK-main\Inc\Mouse.h" />
+    <ClInclude Include="DirectXTK-main\Inc\PostProcess.h" />
+    <ClInclude Include="DirectXTK-main\Inc\PrimitiveBatch.h" />
+    <ClInclude Include="DirectXTK-main\Inc\ScreenGrab.h" />
+    <ClInclude Include="DirectXTK-main\Inc\SimpleMath.h" />
+    <ClInclude Include="DirectXTK-main\Inc\SpriteBatch.h" />
+    <ClInclude Include="DirectXTK-main\Inc\SpriteFont.h" />
+    <ClInclude Include="DirectXTK-main\Inc\VertexTypes.h" />
+    <ClInclude Include="DirectXTK-main\Inc\WICTextureLoader.h" />
+    <ClInclude Include="DirectXTK-main\Inc\XboxDDSTextureLoader.h" />
     <ClInclude Include="Engine\EditorUI\EditorUI.h" />
     <ClInclude Include="Engine\GameObjects\CameraGameObject.h" />
     <ClInclude Include="Engine\GameObjects\CharacterGameObject.h" />
@@ -92,6 +113,7 @@
     <ClInclude Include="Engine\Managers\Events\EventManager.h" />
     <ClInclude Include="Engine\Managers\Events\EventObserver.h" />
     <ClInclude Include="Engine\Managers\Events\Events.h" />
+    <ClInclude Include="Engine\Managers\FontManager.h" />
     <ClInclude Include="Engine\Managers\GameManager.h" />
     <ClInclude Include="Engine\Managers\GraphicsManager.h" />
     <ClInclude Include="Engine\Managers\SceneGraph.h" />
@@ -118,6 +140,8 @@
     <ClInclude Include="Engine\GameUI\ImageComponent.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DirectXTK-main\Src\SpriteBatch.cpp" />
+    <ClCompile Include="DirectXTK-main\Src\SpriteFont.cpp" />
     <ClCompile Include="Engine\EditorUI\EditorUI.cpp" />
     <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\CharacterGameObject.cpp" />
@@ -165,6 +189,7 @@
     <ClCompile Include="Engine\Managers\Events\EventManager.cpp" />
     <ClCompile Include="Engine\Managers\Events\EventObserver.cpp" />
     <ClCompile Include="Engine\Managers\Events\Events.cpp" />
+    <ClCompile Include="Engine\Managers\FontManager.cpp" />
     <ClCompile Include="Engine\Physics\Shape.cpp" />
     <ClCompile Include="Engine\Scene\Scene.cpp" />
     <ClCompile Include="Engine\Managers\AudioManager.cpp" />
@@ -186,6 +211,126 @@
     <ClCompile Include="Engine\GameUI\ImageComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\AlphaTestEffect.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\BasicEffect.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\DebugEffect.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\DGSLEffect.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\DGSLLambert.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\DGSLPhong.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\DGSLUnlit.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\DualTextureEffect.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\EnvironmentMapEffect.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\NormalMapEffect.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\PBREffect.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\PostProcess.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\SkinnedEffect.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\SpriteEffect.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="DirectXTK-main\Src\Shaders\ToneMap.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
@@ -218,6 +363,461 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DirectXTK-main\Inc\SimpleMath.inl" />
+    <None Include="DirectXTK-main\Src\Shaders\Common.fxh">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_PSAlphaTestEqNe.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_PSAlphaTestEqNe.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_PSAlphaTestEqNeNoFog.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_PSAlphaTestEqNeNoFog.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_PSAlphaTestLtGt.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_PSAlphaTestLtGt.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_PSAlphaTestLtGtNoFog.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_PSAlphaTestLtGtNoFog.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_VSAlphaTest.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_VSAlphaTest.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_VSAlphaTestNoFog.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_VSAlphaTestNoFog.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_VSAlphaTestVc.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_VSAlphaTestVc.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_VSAlphaTestVcNoFog.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\AlphaTestEffect_VSAlphaTestVcNoFog.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasic.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasic.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicNoFog.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicNoFog.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicPixelLighting.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicPixelLighting.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicPixelLightingTx.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicPixelLightingTx.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicTx.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicTx.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicTxNoFog.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicTxNoFog.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicVertexLighting.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicVertexLighting.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicVertexLightingNoFog.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicVertexLightingNoFog.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicVertexLightingTx.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicVertexLightingTx.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicVertexLightingTxNoFog.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_PSBasicVertexLightingTxNoFog.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasic.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasic.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicNoFog.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicNoFog.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLight.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLight.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightTx.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightTx.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightTxBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightTxBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightTxVc.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightTxVc.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightTxVcBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightTxVcBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightVc.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightVc.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightVcBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicOneLightVcBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLighting.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLighting.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingTx.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingTx.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingTxBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingTxBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingTxVc.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingTxVc.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingTxVcBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingTxVcBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingVc.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingVc.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingVcBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicPixelLightingVcBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicTx.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicTx.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicTxNoFog.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicTxNoFog.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicTxVc.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicTxVc.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicTxVcNoFog.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicTxVcNoFog.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVc.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVc.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVcNoFog.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVcNoFog.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLighting.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLighting.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingTx.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingTx.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingTxBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingTxBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingTxVc.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingTxVc.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingTxVcBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingTxVcBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingVc.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingVc.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingVcBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\BasicEffect_VSBasicVertexLightingVcBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_PSHemiAmbient.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_PSHemiAmbient.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_PSRGBBiTangents.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_PSRGBBiTangents.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_PSRGBNormals.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_PSRGBNormals.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_PSRGBTangents.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_PSRGBTangents.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebug.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebug.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugBnInst.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugBnInst.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugInst.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugInst.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugVc.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugVc.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugVcBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugVcBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugVcBnInst.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugVcBnInst.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugVcInst.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DebugEffect_VSDebugVcInst.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main1Bones.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main1Bones.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main1BonesVc.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main1BonesVc.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main2Bones.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main2Bones.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main2BonesVc.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main2BonesVc.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main4Bones.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main4Bones.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main4BonesVc.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_main4BonesVc.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_mainVc.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLEffect_mainVc.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLLambert_main.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLLambert_main.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLLambert_mainTk.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLLambert_mainTk.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLLambert_mainTx.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLLambert_mainTx.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLLambert_mainTxTk.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLLambert_mainTxTk.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLPhong_main.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLPhong_main.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLPhong_mainTk.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLPhong_mainTk.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLPhong_mainTx.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLPhong_mainTx.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLPhong_mainTxTk.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLPhong_mainTxTk.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLUnlit_main.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLUnlit_main.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLUnlit_mainTk.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLUnlit_mainTk.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLUnlit_mainTx.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLUnlit_mainTx.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLUnlit_mainTxTk.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DGSLUnlit_mainTxTk.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DualTextureEffect_PSDualTexture.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DualTextureEffect_PSDualTexture.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DualTextureEffect_PSDualTextureNoFog.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DualTextureEffect_PSDualTextureNoFog.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DualTextureEffect_VSDualTexture.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DualTextureEffect_VSDualTexture.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DualTextureEffect_VSDualTextureNoFog.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DualTextureEffect_VSDualTextureNoFog.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DualTextureEffect_VSDualTextureVc.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DualTextureEffect_VSDualTextureVc.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DualTextureEffect_VSDualTextureVcNoFog.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\DualTextureEffect_VSDualTextureVcNoFog.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMap.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMap.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapDualParabolaPixelLighting.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapDualParabolaPixelLighting.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapDualParabolaPixelLightingFresnel.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapDualParabolaPixelLightingFresnel.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapDualParabolaPixelLightingFresnelNoFog.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapDualParabolaPixelLightingFresnelNoFog.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapDualParabolaPixelLightingNoFog.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapDualParabolaPixelLightingNoFog.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapNoFog.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapNoFog.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapPixelLighting.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapPixelLighting.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapPixelLightingFresnel.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapPixelLightingFresnel.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapPixelLightingFresnelNoFog.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapPixelLightingFresnelNoFog.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapPixelLightingNoFog.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapPixelLightingNoFog.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapSpecular.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapSpecular.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapSpecularNoFog.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapSpecularNoFog.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapSpherePixelLighting.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapSpherePixelLighting.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapSpherePixelLightingFresnel.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapSpherePixelLightingFresnel.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapSpherePixelLightingFresnelNoFog.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapSpherePixelLightingFresnelNoFog.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapSpherePixelLightingNoFog.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_PSEnvMapSpherePixelLightingNoFog.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMap.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMap.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapFresnel.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapFresnel.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapFresnelBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapFresnelBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapOneLight.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapOneLight.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapOneLightBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapOneLightBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapOneLightFresnel.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapOneLightFresnel.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapOneLightFresnelBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapOneLightFresnelBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapPixelLighting.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapPixelLighting.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapPixelLightingBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapPixelLightingBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapPixelLightingBnSM4.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapPixelLightingBnSM4.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapPixelLightingSM4.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\EnvironmentMapEffect_VSEnvMapPixelLightingSM4.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_PSNormalPixelLightingTx.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_PSNormalPixelLightingTx.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_PSNormalPixelLightingTxNoFog.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_PSNormalPixelLightingTxNoFog.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_PSNormalPixelLightingTxNoFogSpec.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_PSNormalPixelLightingTxNoFogSpec.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_PSNormalPixelLightingTxNoSpec.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_PSNormalPixelLightingTxNoSpec.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTx.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTx.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxBnInst.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxBnInst.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxInst.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxInst.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxVc.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxVc.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxVcBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxVcBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxVcBnInst.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxVcBnInst.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxVcInst.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSNormalPixelLightingTxVcInst.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSSkinnedPixelLightingTx.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSSkinnedPixelLightingTx.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSSkinnedPixelLightingTxBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\NormalMapEffect_VSSkinnedPixelLightingTxBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_PSConstant.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_PSConstant.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_PSTextured.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_PSTextured.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_PSTexturedEmissive.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_PSTexturedEmissive.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_PSTexturedEmissiveVelocity.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_PSTexturedEmissiveVelocity.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_PSTexturedVelocity.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_PSTexturedVelocity.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSConstant.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSConstant.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSConstantBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSConstantBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSConstantBnInst.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSConstantBnInst.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSConstantInst.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSConstantInst.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSConstantVelocity.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSConstantVelocity.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSConstantVelocityBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSConstantVelocityBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSSkinned.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSSkinned.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSSkinnedBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PBREffect_VSSkinnedBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSBloomBlur.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSBloomBlur.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSBloomCombine.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSBloomCombine.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSBloomExtract.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSBloomExtract.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSCopy.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSCopy.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSDownScale2x2.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSDownScale2x2.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSDownScale4x4.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSDownScale4x4.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSGaussianBlur5x5.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSGaussianBlur5x5.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSMerge.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSMerge.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSMonochrome.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSMonochrome.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSSepia.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_PSSepia.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_VSQuad.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\PostProcess_VSQuad.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_PSSkinnedPixelLighting.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_PSSkinnedPixelLighting.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_PSSkinnedVertexLighting.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_PSSkinnedVertexLighting.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_PSSkinnedVertexLightingNoFog.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_PSSkinnedVertexLightingNoFog.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedOneLightFourBones.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedOneLightFourBones.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedOneLightFourBonesBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedOneLightFourBonesBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedOneLightOneBone.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedOneLightOneBone.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedOneLightOneBoneBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedOneLightOneBoneBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedOneLightTwoBones.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedOneLightTwoBones.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedOneLightTwoBonesBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedOneLightTwoBonesBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedPixelLightingFourBones.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedPixelLightingFourBones.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedPixelLightingFourBonesBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedPixelLightingFourBonesBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedPixelLightingOneBone.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedPixelLightingOneBone.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedPixelLightingOneBoneBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedPixelLightingOneBoneBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedPixelLightingTwoBones.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedPixelLightingTwoBones.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedPixelLightingTwoBonesBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedPixelLightingTwoBonesBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedVertexLightingFourBones.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedVertexLightingFourBones.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedVertexLightingFourBonesBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedVertexLightingFourBonesBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedVertexLightingOneBone.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedVertexLightingOneBone.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedVertexLightingOneBoneBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedVertexLightingOneBoneBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedVertexLightingTwoBones.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedVertexLightingTwoBones.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedVertexLightingTwoBonesBn.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SkinnedEffect_VSSkinnedVertexLightingTwoBonesBn.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SpriteEffect_SpritePixelShader.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SpriteEffect_SpritePixelShader.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SpriteEffect_SpriteVertexShader.inc">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">
+      </ExcludedFromBuild>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\SpriteEffect_SpriteVertexShader.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSACESFilmic.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSACESFilmic.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSACESFilmic_SRGB.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSACESFilmic_SRGB.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSCopy.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSCopy.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSHDR10.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSHDR10.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSReinhard.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSReinhard.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSReinhard_SRGB.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSReinhard_SRGB.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSSaturate.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSSaturate.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSSaturate_SRGB.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PSSaturate_SRGB.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PS_SRGB.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_PS_SRGB.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_VSQuad.inc" />
+    <None Include="DirectXTK-main\Src\Shaders\Compiled\ToneMap_VSQuad.pdb" />
+    <None Include="DirectXTK-main\Src\Shaders\CompileShaders.cmd">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Lighting.fxh">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\PBRCommon.fxh">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\PixelPacking_Velocity.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Skinning.fxh">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Structures.fxh">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="DirectXTK-main\Src\Shaders\Utilities.fxh">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
+    </None>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -314,7 +914,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <ForcedIncludeFiles>$(ProjectDir)Engine\stdafx.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)DirectXTK-main\Src;$(ProjectDir)DirectXTK-main\Src\Shaders\Compiled;$(ProjectDir)DirectXTK-main\Inc;$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -330,7 +930,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <ForcedIncludeFiles>$(ProjectDir)Engine\stdafx.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)DirectXTK-main\Src;$(ProjectDir)DirectXTK-main\Src\Shaders\Compiled;$(ProjectDir)DirectXTK-main\Inc;$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -346,7 +946,7 @@
       <PreprocessorDefinitions>TOOL;ANIMATION_TOOL;_DEBUG;_CONSOLE;EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <ForcedIncludeFiles>$(ProjectDir)Engine\stdafx.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)DirectXTK-main\Src;$(ProjectDir)DirectXTK-main\Src\Shaders\Compiled;$(ProjectDir)DirectXTK-main\Inc;$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -364,7 +964,7 @@
       <PreprocessorDefinitions>TOOL;TILE_MAP_TOOL;_DEBUG;_CONSOLE;EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <ForcedIncludeFiles>$(ProjectDir)Engine\stdafx.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)DirectXTK-main\Src;$(ProjectDir)DirectXTK-main\Src\Shaders\Compiled;$(ProjectDir)DirectXTK-main\Inc;$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -404,7 +1004,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <ForcedIncludeFiles>$(ProjectDir)Engine\stdafx.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)DirectXTK-main\Src;$(ProjectDir)DirectXTK-main\Src\Shaders\Compiled;$(ProjectDir)DirectXTK-main\Inc;$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -417,7 +1017,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)DirectXTK-main\Src;$(ProjectDir)DirectXTK-main\Src\Shaders\Compiled;$(ProjectDir)DirectXTK-main\Inc;$(ProjectDir)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(ProjectDir)Engine\stdafx.h</ForcedIncludeFiles>
       <PreprocessorDefinitions>TOOL;TILE_MAP_TOOL;_DEBUG;_CONSOLE;EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
