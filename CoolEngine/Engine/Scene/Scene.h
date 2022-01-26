@@ -25,7 +25,7 @@ public:
 
 private:
 
-	unordered_map<string, GameObject*>& GetAllGameObjects();
+	vector<GameObject*>& GetAllGameObjects();
 
 	template<typename T>
 	T* GetGameObjectUsingIdentifier(string& identifier)

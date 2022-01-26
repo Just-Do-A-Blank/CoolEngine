@@ -17,10 +17,10 @@ Scene::~Scene()
 
 void Scene::Update()
 {
-	unordered_map<string, GameObject*> gameObjectList = m_psceneGraph->GetAllGameObjects();
-	for (unordered_map<string, GameObject*>::iterator it = gameObjectList.begin(); it != gameObjectList.end(); ++it)
+	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllGameObjects();
+	for (int it = 0; it < gameObjectList.size(); ++it)
 	{
-		it->second->Update();
+		gameObjectList[it]->Update();
 	}
 
 	Collision::Update(gameObjectList);
@@ -30,19 +30,19 @@ void Scene::Render(RenderStruct& renderStruct)
 {
 	RenderableGameObject* prenderableGameObject = nullptr;
 
-	for (int i = 0; i < GraphicsManager::GetInstance()->GetNumLayers(); ++i)
+	for (int i = 0; i < 1; ++i)
 	{
-		unordered_map<string, GameObject*> gameObjectList = m_psceneGraph->GetAllGameObjects();
-		for (unordered_map<string, GameObject*>::iterator it = gameObjectList.begin(); it != gameObjectList.end(); ++it)
+		vector<GameObject*> gameObjectList = m_psceneGraph->GetAllGameObjects();
+		for (int it = 0; it < gameObjectList.size(); ++it)
 		{
-			if (it->second->ContainsType(GameObjectType::RENDERABLE) == false)
+			if (gameObjectList[it]->ContainsType(GameObjectType::RENDERABLE) == false)
 			{
 				continue;
 			}
 
-			prenderableGameObject = dynamic_cast<RenderableGameObject*>(it->second);
+			prenderableGameObject = dynamic_cast<RenderableGameObject*>(gameObjectList[it]);
 
-			if (prenderableGameObject->IsRenderable() == false || prenderableGameObject->GetLayer() != i)
+			if (prenderableGameObject->IsRenderable() == false)// || prenderableGameObject->GetLayer() != i)
 			{
 				continue;
 			}
@@ -52,7 +52,7 @@ void Scene::Render(RenderStruct& renderStruct)
 	}
 }
 
-unordered_map<string, GameObject*>& Scene::GetAllGameObjects()
+vector<GameObject*>& Scene::GetAllGameObjects()
 {
 	return m_psceneGraph->GetAllGameObjects();
 }
