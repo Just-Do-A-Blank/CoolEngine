@@ -64,13 +64,13 @@ t FileIO::LoadTextFile(const char* fileAddress)
 	}
 }
 
-std::vector<GameObject> FileIO::LoadMultipleGameObjects(const char* fileAddress)
+std::vector<GameObject*> FileIO::LoadMultipleGameObjects(const char* fileAddress)
 {
 	json jsonData = LoadJson(fileAddress);
 	json objData = jsonData["ObjectData"];
 	json metaData = jsonData["MetaData"];
 
-	std::vector<GameObject> objects((int)metaData.at(0)["NumberOfObject"]);
+	std::vector<GameObject*> objects((int)metaData.at(0)["NumberOfObject"]);
 
 	for (size_t i = 0; i < metaData.at(0)["NumberOfObject"]; i++)
 	{
@@ -79,12 +79,12 @@ std::vector<GameObject> FileIO::LoadMultipleGameObjects(const char* fileAddress)
 	return objects;
 }
 
-std::vector<GameObject> FileIO::LoadMultipleGameObjects(json m_json)
+std::vector<GameObject*> FileIO::LoadMultipleGameObjects(json m_json)
 {
 	json jsonData = m_json["ObjectData"];
 	json metaData = m_json["MetaData"];
 
-	std::vector<GameObject> objects((int)metaData.at(0)["NumberOfObject"]);
+	std::vector<GameObject*> objects((int)metaData.at(0)["NumberOfObject"]);
 
 	for (size_t i = 0; i < metaData.at(0)["NumberOfObject"]; i++)
 	{
@@ -137,20 +137,58 @@ void FileIO::LoadScene(const char* fileAddress, GameManager* scene, ParticleMana
 	json j = FileIO::LoadJson(fileAddress);
 
 	LoadMap(j, scene);
-	std::vector<GameObject> gameObj = LoadMultipleGameObjects(j);
+	std::vector<GameObject*> gameObj = LoadMultipleGameObjects(j);
 
 	std::string identifer;
-	GameObject* gO;
 
 	for (size_t i = 0; i < gameObj.size(); ++i)
 	{
-		identifer = gameObj[i].GetIdentifier();
-		scene->CreateGameObject<GameObject>(identifer);
-		gO = scene->GetGameObjectUsingIdentifier<GameObject>(identifer);
-		*gO = gameObj[i];
+		identifer = gameObj[i]->GetIdentifier();
+
+		if (gameObj[i]->ContainsType(GameObjectType::COLLIDABLE) && gameObj[i]->ContainsType(GameObjectType::RENDERABLE))
+		{
+			RenderableCollidableGameObject* rCGO;
+			scene->CreateGameObject<RenderableCollidableGameObject>(identifer);
+			rCGO = scene->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(identifer);
+			*rCGO = *dynamic_cast<RenderableCollidableGameObject*>(gameObj[i]);
+		}
+		else if (gameObj[i]->ContainsType(GameObjectType::COLLIDABLE))
+		{
+			CollidableGameObject* cGO;
+			scene->CreateGameObject<CollidableGameObject>(identifer);
+			cGO = scene->GetGameObjectUsingIdentifier<CollidableGameObject>(identifer);
+			*cGO = *dynamic_cast<CollidableGameObject*>(gameObj[i]);
+		}
+		else if (gameObj[i]->ContainsType(GameObjectType::RENDERABLE))
+		{
+			RenderableGameObject* rGO;
+			scene->CreateGameObject<RenderableGameObject>(identifer);
+			rGO = scene->GetGameObjectUsingIdentifier<RenderableGameObject>(identifer);
+			*rGO = *dynamic_cast<RenderableGameObject*>(gameObj[i]);
+		}
 	}
 
-	if (pManager == nullptr)
+	for (GameObject* g : gameObj)
+	{
+
+		if (g->ContainsType(GameObjectType::COLLIDABLE) && g->ContainsType(GameObjectType::RENDERABLE))
+		{
+			RenderableCollidableGameObject* gameObj = dynamic_cast<RenderableCollidableGameObject*>(g);
+			delete gameObj;
+		}
+		else if(g->ContainsType(GameObjectType::COLLIDABLE))
+		{
+			CollidableGameObject* gameObj = dynamic_cast<CollidableGameObject*>(g);
+			delete gameObj;
+		}
+		else if (g->ContainsType(GameObjectType::RENDERABLE))
+		{
+			RenderableGameObject* gameObj = dynamic_cast<RenderableGameObject*>(g);
+			delete gameObj;
+		}
+	}
+
+	if (pManager == nullptr) 
 	{
 		return;
 	}
@@ -235,14 +273,14 @@ std::string FileIO::AttachDefaultFileLocation(const char* fileAddress)
 	return finalOutput.c_str();
 }
 
-GameObject FileIO::LoadGameObject(const char* fileAddress, int objectCount)
+GameObject* FileIO::LoadGameObject(const char* fileAddress, int objectCount)
 {
 	json m_json = LoadJson(fileAddress);
 	json data = m_json["ObjectData"];
 	return LoadGameObject(data, objectCount);
 }
 
-GameObject FileIO::LoadGameObject(json file, int objectCount)
+GameObject* FileIO::LoadGameObject(json file, int objectCount)
 {
 	json data = file;
 
@@ -252,64 +290,155 @@ GameObject FileIO::LoadGameObject(json file, int objectCount)
 	gameObject.GetTransform()->SetRotation(XMFLOAT3(data.at(objectCount)["Rotation"][0], data.at(objectCount)["Rotation"][1], data.at(objectCount)["Rotation"][2]));
 	gameObject.GetTransform()->SetScale(XMFLOAT3(data.at(objectCount)["Scale"][0], data.at(objectCount)["Scale"][1], data.at(objectCount)["Scale"][2]));
 
+	if(data.at(objectCount)["IsRenderable"] && data.at(objectCount)["IsCollideable"])
+	{ 
+		RenderableCollidableGameObject* renderColliderObject = new RenderableCollidableGameObject();
 
-	gameObject.SetMesh(QUAD_MESH_NAME);
-	if (data.at(objectCount)["VertexShaderLocation"] == "NULL")
-	{
-		LOG("NO VERTEX SHADER WAS SPECIFIED")
-	}
-	else
-	{
-		wstring location = ToWstring((std::string)data.at(objectCount)["VertexShaderLocation"]);
-		gameObject.SetVertexShader(location);
-		m_Cache.m_VertexCache[gameObject.GetVertexShader()] = location;
-	}
-	if (data.at(objectCount)["PixelShaderLocation"] == "NULL")
-	{
-		LOG("NO PIXEL SHADER WAS SPECIFIED")
-	}
-	else
-	{
-		wstring location = ToWstring((std::string)data.at(objectCount)["PixelShaderLocation"]);
-		gameObject.SetPixelShader(location);
-		m_Cache.m_PixelCache[gameObject.GetPixelShader()] = location;
-	}
-	if (data.at(objectCount)["AlbedoLocation"] == "NULL")
-	{
-		gameObject.SetAlbedo(L"Resources/Sprites/Brick.dds");
-	}
-	else
-	{
-		wstring location = ToWstring((std::string)data.at(objectCount)["AlbedoLocation"]);
-		gameObject.SetAlbedo(location);
-		m_Cache.m_AlebdoCache[gameObject.GetAlbedoSRV()] = location;
-	}
+		*renderColliderObject->GetTransform() = *gameObject.GetTransform();
 
-	bool renderable = false;
-	bool trigger = false;
-	bool collideable = false;
-
-	if (data.at(objectCount)["IsRenderable"])
-	{
-		renderable = true;
-		gameObject.SetIsRenderable(renderable);
-	}
-	else
-	{
-		gameObject.SetIsRenderable(renderable);
-	}
-	if (data.at(objectCount)["IsCollideable"])
-	{
-		collideable = true;
-		if (data.at(objectCount)["IsTrigger"])
-		{
-			trigger = true;
-		}
+		renderColliderObject->m_identifier = (std::string)data.at(objectCount)["Name"];
 
 		if (data.at(objectCount)["ColliderType"] == "CircleCollider")
 		{
 			Circle* pCircle = new Circle();
-			gameObject.SetShape(pCircle);
+			renderColliderObject->SetShape(pCircle);
+			pCircle->SetIsCollidable(true);
+			pCircle->SetIsTrigger(data.at(objectCount)["IsTrigger"]);
+			pCircle->m_radius = data.at(objectCount)["CircleRadius"];
+			pCircle->m_transform = renderColliderObject->GetTransform();
+		}
+		else
+		{
+			Box* pbox = new Box(gameObject.GetTransform());
+			renderColliderObject->SetShape(pbox);
+			pbox->SetIsCollidable(true);
+			pbox->SetIsTrigger(data.at(objectCount)["IsTrigger"]);
+			pbox->m_transform = renderColliderObject->GetTransform();
+		}
+
+		renderColliderObject->SetMesh(QUAD_MESH_NAME);
+		bool isRenderable = data.at(objectCount)["IsRenderable"];
+		renderColliderObject->SetIsRenderable(isRenderable);
+		if (data.at(objectCount)["VertexShaderLocation"] == "NULL")
+		{
+			LOG("NO VERTEX SHADER WAS SPECIFIED")
+		}
+		else
+		{
+			wstring location = ToWstring((std::string)data.at(objectCount)["VertexShaderLocation"]);
+			renderColliderObject->SetVertexShader(location);
+			m_Cache.m_VertexCache[renderColliderObject->GetVertexShader()] = location;
+		}
+		if (data.at(objectCount)["PixelShaderLocation"] == "NULL")
+		{
+			LOG("NO PIXEL SHADER WAS SPECIFIED")
+		}
+		else
+		{
+			wstring location = ToWstring((std::string)data.at(objectCount)["PixelShaderLocation"]);
+			renderColliderObject->SetPixelShader(location);
+			m_Cache.m_PixelCache[renderColliderObject->GetPixelShader()] = location;
+		}
+		if (data.at(objectCount)["AlbedoLocation"] == "NULL")
+		{
+			renderColliderObject->SetAlbedo(L"Resources/Sprites/Brick.dds");
+		}
+		else
+		{
+			wstring location = ToWstring((std::string)data.at(objectCount)["AlbedoLocation"]);
+			renderColliderObject->SetAlbedo(location);
+			m_Cache.m_AlebdoCache[renderColliderObject->GetAlbedoSRV()] = location;
+		}
+
+		std::vector<Frame> framesOfAnimation(data.at(objectCount)["NumberOfAnimations"]);
+
+		if (framesOfAnimation.size() > 0)
+		{
+			for (size_t i = 0; i < framesOfAnimation.size(); ++i)
+			{
+				wstring animationFile = ToWstring((std::string)data.at(objectCount)["AnimationFile"][i]);
+				GraphicsManager::GetInstance()->LoadAnimationFromFile(animationFile);
+				std::string name = data.at(objectCount)["AnimationFile"][i];
+				SpriteAnimation* sAnimation = &GraphicsManager::GetInstance()->GetAnimation(ToWstring(name));
+				m_Cache.m_AnimationCache[sAnimation->GetFrames()] = name;
+				renderColliderObject->AddAnimation(name, *sAnimation);
+			}
+		}
+		return renderColliderObject;
+	}
+	if (data.at(objectCount)["IsRenderable"])
+	{
+
+		bool renderable = data.at(objectCount)["IsRenderable"];
+		gameObject.ContainsType(GameObjectType::RENDERABLE);
+		RenderableGameObject* renderObject = new RenderableGameObject((std::string)data.at(objectCount)["Name"]);
+		*renderObject->GetTransform() = *gameObject.GetTransform();
+		renderObject->SetMesh(QUAD_MESH_NAME);
+		renderObject->SetIsRenderable(renderable);
+		if (data.at(objectCount)["VertexShaderLocation"] == "NULL")
+		{
+			LOG("NO VERTEX SHADER WAS SPECIFIED")
+		}
+		else
+		{
+			wstring location = ToWstring((std::string)data.at(objectCount)["VertexShaderLocation"]);
+			renderObject->SetVertexShader(location);
+			m_Cache.m_VertexCache[renderObject->GetVertexShader()] = location;
+		}
+		if (data.at(objectCount)["PixelShaderLocation"] == "NULL")
+		{
+			LOG("NO PIXEL SHADER WAS SPECIFIED")
+		}
+		else
+		{
+			wstring location = ToWstring((std::string)data.at(objectCount)["PixelShaderLocation"]);
+			renderObject->SetPixelShader(location);
+			m_Cache.m_PixelCache[renderObject->GetPixelShader()] = location;
+		}
+		if (data.at(objectCount)["AlbedoLocation"] == "NULL")
+		{
+			renderObject->SetAlbedo(L"Resources/Sprites/Brick.dds");
+		}
+		else
+		{
+			wstring location = ToWstring((std::string)data.at(objectCount)["AlbedoLocation"]);
+			renderObject->SetAlbedo(location);
+			m_Cache.m_AlebdoCache[renderObject->GetAlbedoSRV()] = location;
+		}
+
+		std::vector<Frame> framesOfAnimation(data.at(objectCount)["NumberOfAnimations"]);
+
+		if (framesOfAnimation.size() > 0)
+		{
+			for (size_t i = 0; i < framesOfAnimation.size(); ++i)
+			{
+				wstring animationFile = ToWstring((std::string)data.at(objectCount)["AnimationFile"][i]);
+				GraphicsManager::GetInstance()->LoadAnimationFromFile(animationFile);
+				std::string name = data.at(objectCount)["AnimationFile"][i];
+				SpriteAnimation* sAnimation = &GraphicsManager::GetInstance()->GetAnimation(ToWstring(name));
+				m_Cache.m_AnimationCache[sAnimation->GetFrames()] = name;
+				renderObject->AddAnimation(name, *sAnimation);
+			}
+		}
+		return renderObject;
+	}
+
+	bool trigger = false;
+	bool collideable = false;
+
+	if (data.at(objectCount)["IsCollideable"])
+	{
+		CollidableGameObject* colliderObject = new CollidableGameObject((std::string)data.at(objectCount)["Name"]);
+		*colliderObject->GetTransform() = *gameObject.GetTransform();
+
+		if (data.at(objectCount)["IsTrigger"])
+		{
+			trigger = true;
+		}
+		if (data.at(objectCount)["ColliderType"] == "CircleCollider")
+		{
+			Circle* pCircle = new Circle();
+			colliderObject->SetShape(pCircle);
 			pCircle->SetIsCollidable(true);
 			pCircle->SetIsTrigger(trigger);
 			pCircle->m_radius = data.at(objectCount)["CircleRadius"];
@@ -318,30 +447,13 @@ GameObject FileIO::LoadGameObject(json file, int objectCount)
 		else
 		{
 			Box* pbox = new Box(gameObject.GetTransform());
-			gameObject.SetShape(pbox);
+			colliderObject->SetShape(pbox);
 			pbox->SetIsCollidable(true);
 			pbox->SetIsTrigger(trigger);
 			pbox->m_transform = gameObject.GetTransform();
 		}
+		return colliderObject;
 	}
-
-	std::vector<Frame> framesOfAnimation(data.at(objectCount)["NumberOfAnimations"]);
-
-	for (size_t i = 0; i < framesOfAnimation.size(); ++i)
-	{
-		wstring animationFile = ToWstring((std::string)data.at(objectCount)["AnimationFile"][i]);
-		GraphicsManager::GetInstance()->LoadAnimationFromFile(animationFile);
-		std::string name = data.at(objectCount)["AnimationFile"][i] ;
-		SpriteAnimation* sAnimation = &GraphicsManager::GetInstance()->GetAnimation(ToWstring(name));
-		m_Cache.m_AnimationCache[sAnimation->GetFrames()] = name;
-		gameObject.AddAnimation(name, *sAnimation);
-	}
-	return gameObject;
-}
-
-void FileIO::LoadSavefile(const char* fileAddress)
-{
-	///TODO
 }
 
 ParticleData FileIO::LoadParticle(json particleData, int particleNumber)
@@ -466,69 +578,167 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 		{
 			if (!tileMap && !particleSys && !particle)
 			{
-
-				std::string vSL = ToString(GrabVertexShaderName(gameObjectToStore->GetVertexShader()));
-				std::string pSL = ToString(GrabPixelShaderName(gameObjectToStore->GetPixelShader()));
-				std::string aSRV = ToString(GrabAlbedoName(gameObjectToStore->GetAlbedoSRV()));
-
-				std::vector<std::string> shaders(3);
-				shaders[0] = vSL;
-				shaders[1] = pSL;
-				shaders[2] = aSRV;
-
-				XMFLOAT3 pos = gameObjectToStore->GetTransform()->GetPosition();
-				float position[3]{ pos.x, pos.y, pos.z };
-				XMFLOAT3 rot = gameObjectToStore->GetTransform()->GetRotation();
-				float rotation[3]{ rot.x, rot.y, rot.z };
-				XMFLOAT3 scal = gameObjectToStore->GetTransform()->GetScale();
-				float scale[3]{ scal.x, scal.y, scal.z };
-
-				jsonOutput["ObjectData"].push_back({});
-
-				jsonOutput["ObjectData"].at(count).push_back({ "Name", gameObjectToStore->GetIdentifier() });
-
-				Box* testBox = dynamic_cast<Box*>(gameObjectToStore->GetShape());
-				if (testBox == NULL)
+				if (gameObjectToStore->ContainsType(GameObjectType::PLAYER))
 				{
-					Circle* c = dynamic_cast<Circle*>(gameObjectToStore->GetShape());
-					if (c != NULL)
+
+				}
+				if (gameObjectToStore->ContainsType(GameObjectType::RENDERABLE) && gameObjectToStore->ContainsType(GameObjectType::COLLIDABLE))
+				{
+					XMFLOAT3 pos = gameObjectToStore->GetTransform()->GetPosition();
+					float position[3]{ pos.x, pos.y, pos.z };
+					XMFLOAT3 rot = gameObjectToStore->GetTransform()->GetRotation();
+					float rotation[3]{ rot.x, rot.y, rot.z };
+					XMFLOAT3 scal = gameObjectToStore->GetTransform()->GetScale();
+					float scale[3]{ scal.x, scal.y, scal.z };
+
+					jsonOutput["ObjectData"].push_back({});
+
+					jsonOutput["ObjectData"].at(count).push_back({ "Name", gameObjectToStore->GetIdentifier() });
+
+					jsonOutput["ObjectData"].at(count).push_back({ "Position", position });
+					jsonOutput["ObjectData"].at(count).push_back({ "Rotation" , rotation });
+					jsonOutput["ObjectData"].at(count).push_back({ "Scale" , scale });
+
+					RenderableCollidableGameObject* renderCollideObject = dynamic_cast<RenderableCollidableGameObject*>(gameObjectToStore);
+					std::string vSL = ToString(GrabVertexShaderName(renderCollideObject->GetVertexShader()));
+					std::string pSL = ToString(GrabPixelShaderName(renderCollideObject->GetPixelShader()));
+					std::string aSRV = ToString(GrabAlbedoName(renderCollideObject->GetAlbedoSRV()));
+
+					std::vector<std::string> shaders(3);
+					shaders[0] = vSL;
+					shaders[1] = pSL;
+					shaders[2] = aSRV;
+
+					jsonOutput["ObjectData"].at(count).push_back({ "VertexShaderLocation" , shaders[0] });
+					jsonOutput["ObjectData"].at(count).push_back({ "PixelShaderLocation" , shaders[1] });
+					jsonOutput["ObjectData"].at(count).push_back({ "AlbedoLocation" , shaders[2] });
+
+					jsonOutput["ObjectData"].at(count).push_back({ "IsRenderable" , renderCollideObject->IsRenderable() });
+
+
+					jsonOutput["ObjectData"].at(count).push_back({ "NumberOfAnimations", renderCollideObject->GetAnimations()->size() });
+
+					std::vector<std::string> spriteAnimation(renderCollideObject->GetAnimations()->size());
+					int animationCount = 0;
+					for (unordered_map<string, SpriteAnimation>::iterator it2 = renderCollideObject->GetAnimations()->begin(); it2 != renderCollideObject->GetAnimations()->end(); ++it2)
 					{
-						jsonOutput["ObjectData"].at(count).push_back({ "ColliderType" , "CircleCollider" });
-						jsonOutput["ObjectData"].at(count).push_back({ "CircleRadius" , c->m_radius });
+						spriteAnimation[animationCount] = m_Cache.m_AnimationCache.at(it2->second.GetFrames());
+						++animationCount;
 					}
-				}
-				else
-				{
-					jsonOutput["ObjectData"].at(count).push_back({ "ColliderType" , "BoxCollider" });
-				}
-				jsonOutput["ObjectData"].at(count).push_back({ "IsRenderable" , gameObjectToStore->IsRenderable() });
-				if (gameObjectToStore->GetShape() != nullptr)
-				{
-					jsonOutput["ObjectData"].at(count).push_back({ "IsCollideable" , gameObjectToStore->GetShape()->IsCollidable() });
-					jsonOutput["ObjectData"].at(count).push_back({ "IsTrigger" , gameObjectToStore->GetShape()->IsTrigger() });
-				}
-				else
-				{
-					jsonOutput["ObjectData"].at(count).push_back({ "IsCollideable" , false });
-					jsonOutput["ObjectData"].at(count).push_back({ "IsTrigger" , false });
-				}
-				jsonOutput["ObjectData"].at(count).push_back({ "Position", position });
-				jsonOutput["ObjectData"].at(count).push_back({ "Rotation" , rotation });
-				jsonOutput["ObjectData"].at(count).push_back({ "Scale" , scale });
-				jsonOutput["ObjectData"].at(count).push_back({ "VertexShaderLocation" , shaders[0] });
-				jsonOutput["ObjectData"].at(count).push_back({ "PixelShaderLocation" , shaders[1] });
-				jsonOutput["ObjectData"].at(count).push_back({ "AlbedoLocation" , shaders[2] });
-				jsonOutput["ObjectData"].at(count).push_back({ "NumberOfAnimations", gameObjectToStore->GetAnimations()->size() });
+					jsonOutput["ObjectData"].at(count).push_back({ "AnimationFile",	spriteAnimation });
 
-				std::vector<std::string> spriteAnimation(gameObjectToStore->GetAnimations()->size());
-				int animationCount = 0;
-				for (unordered_map<string, SpriteAnimation>::iterator it2 = gameObjectToStore->GetAnimations()->begin(); it2 != gameObjectToStore->GetAnimations()->end(); ++it2)
-				{
-					spriteAnimation[animationCount] = m_Cache.m_AnimationCache.at(it2->second.GetFrames());
-					++animationCount;
+					Box* testBox = dynamic_cast<Box*>(renderCollideObject->GetShape());
+					if (testBox == NULL)
+					{
+						Circle* c = dynamic_cast<Circle*>(renderCollideObject->GetShape());
+						if (c != NULL)
+						{
+							jsonOutput["ObjectData"].at(count).push_back({ "ColliderType" , "CircleCollider" });
+							jsonOutput["ObjectData"].at(count).push_back({ "CircleRadius" , c->m_radius });
+						}
+					}
+					else
+					{
+						jsonOutput["ObjectData"].at(count).push_back({ "ColliderType" , "BoxCollider" });
+					}
+					if (renderCollideObject->GetShape() != nullptr)
+					{
+						jsonOutput["ObjectData"].at(count).push_back({ "IsCollideable" , renderCollideObject->GetShape()->IsCollidable() });
+						jsonOutput["ObjectData"].at(count).push_back({ "IsTrigger" , renderCollideObject->GetShape()->IsTrigger() });
+					}
+					else
+					{
+						jsonOutput["ObjectData"].at(count).push_back({ "IsCollideable" , false });
+						jsonOutput["ObjectData"].at(count).push_back({ "IsTrigger" , false });
+					}
+					++count;
 				}
-				jsonOutput["ObjectData"].at(count).push_back({ "AnimationFile",	spriteAnimation });
-				++count;
+				else if (gameObjectToStore->ContainsType(GameObjectType::RENDERABLE))
+				{
+					XMFLOAT3 pos = gameObjectToStore->GetTransform()->GetPosition();
+					float position[3]{ pos.x, pos.y, pos.z };
+					XMFLOAT3 rot = gameObjectToStore->GetTransform()->GetRotation();
+					float rotation[3]{ rot.x, rot.y, rot.z };
+					XMFLOAT3 scal = gameObjectToStore->GetTransform()->GetScale();
+					float scale[3]{ scal.x, scal.y, scal.z };
+
+					jsonOutput["ObjectData"].push_back({});
+
+					jsonOutput["ObjectData"].at(count).push_back({ "Name", gameObjectToStore->GetIdentifier() });
+
+					jsonOutput["ObjectData"].at(count).push_back({ "IsCollideable", false });
+
+					RenderableGameObject* renderObject = dynamic_cast<RenderableGameObject*>(gameObjectToStore);
+					std::string vSL = ToString(GrabVertexShaderName(renderObject->GetVertexShader()));
+					std::string pSL = ToString(GrabPixelShaderName(renderObject->GetPixelShader()));
+					std::string aSRV = ToString(GrabAlbedoName(renderObject->GetAlbedoSRV()));
+
+					std::vector<std::string> shaders(3);
+					shaders[0] = vSL;
+					shaders[1] = pSL;
+					shaders[2] = aSRV;
+
+					jsonOutput["ObjectData"].at(count).push_back({ "VertexShaderLocation" , shaders[0] });
+					jsonOutput["ObjectData"].at(count).push_back({ "PixelShaderLocation" , shaders[1] });
+					jsonOutput["ObjectData"].at(count).push_back({ "AlbedoLocation" , shaders[2] });
+
+					jsonOutput["ObjectData"].at(count).push_back({ "IsRenderable" , renderObject->IsRenderable() });
+
+
+					jsonOutput["ObjectData"].at(count).push_back({ "NumberOfAnimations", renderObject->GetAnimations()->size() });
+
+					std::vector<std::string> spriteAnimation(renderObject->GetAnimations()->size());
+					int animationCount = 0;
+					for (unordered_map<string, SpriteAnimation>::iterator it2 = renderObject->GetAnimations()->begin(); it2 != renderObject->GetAnimations()->end(); ++it2)
+					{
+						spriteAnimation[animationCount] = m_Cache.m_AnimationCache.at(it2->second.GetFrames());
+						++animationCount;
+					}
+					jsonOutput["ObjectData"].at(count).push_back({ "AnimationFile",	spriteAnimation });
+					++count;
+				}
+				else if (gameObjectToStore->ContainsType(GameObjectType::COLLIDABLE))
+				{
+
+					XMFLOAT3 pos = gameObjectToStore->GetTransform()->GetPosition();
+					float position[3]{ pos.x, pos.y, pos.z };
+					XMFLOAT3 rot = gameObjectToStore->GetTransform()->GetRotation();
+					float rotation[3]{ rot.x, rot.y, rot.z };
+					XMFLOAT3 scal = gameObjectToStore->GetTransform()->GetScale();
+					float scale[3]{ scal.x, scal.y, scal.z };
+
+					jsonOutput["ObjectData"].push_back({});
+					jsonOutput["ObjectData"].at(count).push_back({ "Name", gameObjectToStore->GetIdentifier() });
+
+					jsonOutput["ObjectData"].at(count).push_back({ "IsRenderable", false});
+
+					CollidableGameObject* collideObject = dynamic_cast<CollidableGameObject*>(gameObjectToStore);
+					Box* testBox = dynamic_cast<Box*>(collideObject->GetShape());
+					if (testBox == NULL)
+					{
+						Circle* c = dynamic_cast<Circle*>(collideObject->GetShape());
+						if (c != NULL)
+						{
+							jsonOutput["ObjectData"].at(count).push_back({ "ColliderType" , "CircleCollider" });
+							jsonOutput["ObjectData"].at(count).push_back({ "CircleRadius" , c->m_radius });
+						}
+					}
+					else
+					{
+						jsonOutput["ObjectData"].at(count).push_back({ "ColliderType" , "BoxCollider" });
+					}
+					if (collideObject->GetShape() != nullptr)
+					{
+						jsonOutput["ObjectData"].at(count).push_back({ "IsCollideable" , collideObject->GetShape()->IsCollidable() });
+						jsonOutput["ObjectData"].at(count).push_back({ "IsTrigger" , collideObject->GetShape()->IsTrigger() });
+					}
+					else
+					{
+						jsonOutput["ObjectData"].at(count).push_back({ "IsCollideable" , false });
+						jsonOutput["ObjectData"].at(count).push_back({ "IsTrigger" , false });
+					}
+					++count;
+				}
 			}
 			else if (particle)
 			{
@@ -565,14 +775,24 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 			}
 			else if (particleSys)
 			{
-				std::string vSL = ToString(GrabVertexShaderName(particleSys->GetVertexShader()));
-				std::string pSL = ToString(GrabPixelShaderName(particleSys->GetPixelShader()));
-				std::string aSRV = ToString(GrabAlbedoName(particleSys->GetAlbedoSRV()));
+				if (gameObjectToStore->ContainsType(GameObjectType::RENDERABLE))
+				{
+					RenderableGameObject* renderObject = dynamic_cast<RenderableGameObject*>(gameObjectToStore);
+					std::string vSL = ToString(GrabVertexShaderName(renderObject->GetVertexShader()));
+					std::string pSL = ToString(GrabPixelShaderName(renderObject->GetPixelShader()));
+					std::string aSRV = ToString(GrabAlbedoName(renderObject->GetAlbedoSRV()));
 
-				std::vector<std::string> shaders(3);
-				shaders[0] = vSL;
-				shaders[1] = pSL;
-				shaders[2] = aSRV;
+					std::vector<std::string> shaders(3);
+					shaders[0] = vSL;
+					shaders[1] = pSL;
+					shaders[2] = aSRV;
+
+					jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "VertexShaderLocation" , shaders[0] });
+					jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "PixelShaderLocation" , shaders[1] });
+					jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "AlbedoLocation" , shaders[2] });
+				}
+
+				
 
 				XMFLOAT3 pos = gameObjectToStore->GetTransform()->GetPosition();
 				float position[3]{ pos.x, pos.y, pos.z };
@@ -588,7 +808,6 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "Position", position });
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "Rotation", rotation });
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "Scale", scale });
-				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "AlbedoLocation" , shaders[2] });
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "SystemType" ,  particleSys->GetType()});
 
 				++particleSystemCount;
@@ -614,26 +833,34 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 				jsonOutput["TileMap"].push_back({});
 				jsonOutput["TileMap"].at(tileCount).push_back({ "Name", tileMap->GetIdentifier() });
 				//jsonOutput["TileMap"].at(count).push_back({ "Height",  });	
-				Box* testBox = dynamic_cast<Box*>(gameObjectToStore->GetShape());
-				if (testBox == NULL)
-				{
-					jsonOutput["TileMap"].at(tileCount).push_back({ "ColliderType" , "CircleCollider" });
-				}
-				else
-				{
-					jsonOutput["TileMap"].at(tileCount).push_back({ "ColliderType" , "BoxCollider" });
-				}
-				jsonOutput["TileMap"].at(tileCount).push_back({ "IsRenderable" , tileMap->IsRenderable() });
 
-				if (tileMap->GetShape() != nullptr)
+				if (gameObjectToStore->ContainsType(GameObjectType::COLLIDABLE))
 				{
-					jsonOutput["TileMap"].at(tileCount).push_back({ "IsCollideable" , tileMap->GetShape()->IsCollidable() });
-					jsonOutput["TileMap"].at(tileCount).push_back({ "IsTrigger" , tileMap->GetShape()->IsTrigger() });
-				}
-				else
-				{
-					jsonOutput["ObjectData"].at(tileCount).push_back({ "IsCollideable" , false });
-					jsonOutput["ObjectData"].at(tileCount).push_back({ "IsTrigger" , false });
+					CollidableGameObject* collideObject = dynamic_cast<CollidableGameObject*>(tileMap);
+					Box* testBox = dynamic_cast<Box*>(collideObject->GetShape());
+					if (testBox == NULL)
+					{
+						Circle* c = dynamic_cast<Circle*>(collideObject->GetShape());
+						if (c != NULL)
+						{
+							jsonOutput["TileMap"].at(count).push_back({ "ColliderType" , "CircleCollider" });
+							jsonOutput["TileMap"].at(count).push_back({ "CircleRadius" , c->m_radius });
+						}
+					}
+					else
+					{
+						jsonOutput["TileMap"].at(count).push_back({ "ColliderType" , "BoxCollider" });
+					}
+					if (collideObject->GetShape() != nullptr)
+					{
+						jsonOutput["TileMap"].at(count).push_back({ "IsCollideable" , collideObject->GetShape()->IsCollidable() });
+						jsonOutput["TileMap"].at(count).push_back({ "IsTrigger" , collideObject->GetShape()->IsTrigger() });
+					}
+					else
+					{
+						jsonOutput["TileMap"].at(count).push_back({ "IsCollideable" , false });
+						jsonOutput["TileMap"].at(count).push_back({ "IsTrigger" , false });
+					}
 				}
 				jsonOutput["TileMap"].at(tileCount).push_back({ "Position", position });
 				jsonOutput["TileMap"].at(tileCount).push_back({ "Scale", scale });

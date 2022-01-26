@@ -94,6 +94,8 @@ struct MapFileData
 /// </summary>
 class FileIO
 {
+
+	friend GameObject;
 public:
 
 	/// <summary>
@@ -129,7 +131,7 @@ public:
 	/// <param name="fileAddress"></param>
 	/// <param name="manager"></param>
 	/// <returns></returns>
-	static GameObject LoadGameObject(const char* fileAddress, int objectCount);
+	static GameObject* LoadGameObject(const char* fileAddress, int objectCount);
 
 	/// <summary>
 	/// Loads multiple Game Object from a JSON file.
@@ -137,7 +139,7 @@ public:
 	/// <param name="fileAddress"></param>
 	/// <param name="manager"></param>
 	/// <returns></returns>
-	static std::vector<GameObject> FileIO::LoadMultipleGameObjects(const char* fileAddress);
+	static std::vector<GameObject*> FileIO::LoadMultipleGameObjects(const char* fileAddress);
 
 	/// <summary>
 	/// Loads a map from a JSON file
@@ -215,14 +217,14 @@ private:
 /// </summary>
 /// <param name="fileAddress"></param>
 /// <returns>GameObject<GameObject></returns>
-	static GameObject LoadGameObject(json file, int objectCount);
+	static GameObject* LoadGameObject(json file, int objectCount);
 
 	/// <summary>
 	/// Loads multiple game objects from a single json file
 	/// </summary>
 	/// <param name="j"></param>
 	/// <returns></returns>
-	static std::vector<GameObject> FileIO::LoadMultipleGameObjects(json j);
+	static std::vector<GameObject*> FileIO::LoadMultipleGameObjects(json j);
 
 	/// <summary>
 	/// Loads Multiple tiles from a JSON file
