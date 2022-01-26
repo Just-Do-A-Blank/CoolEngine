@@ -1,14 +1,14 @@
 #include "TileMap.h"
 
-TileMap::TileMap() : RenderableGameObject()
+TileMap::TileMap() : GameObject()
 {
 }
 
-TileMap::TileMap(string identifier) : RenderableGameObject(identifier)
+TileMap::TileMap(string identifier) : GameObject(identifier)
 {
 }
 
-TileMap::TileMap(wstring mapPath, XMFLOAT3 position, XMFLOAT3 scale, string identifier) : RenderableGameObject(identifier)
+TileMap::TileMap(wstring mapPath, XMFLOAT3 position, XMFLOAT3 scale, string identifier) : GameObject(identifier)
 {
 	LoadMap(mapPath);
 
@@ -21,7 +21,7 @@ TileMap::TileMap(wstring mapPath, XMFLOAT3 position, XMFLOAT3 scale, string iden
 	AssignSprites();
 }
 
-TileMap::TileMap(int width, int height, string identifier, XMFLOAT3 position) : RenderableGameObject(identifier)
+TileMap::TileMap(int width, int height, string identifier, XMFLOAT3 position) : GameObject(identifier)
 {
 	m_width = width;
 	m_height = height;
