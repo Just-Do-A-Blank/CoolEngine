@@ -18,6 +18,8 @@ TileMap::TileMap(wstring mapPath, XMFLOAT3 position, XMFLOAT3 scale, string iden
 
 	InitMap();
 
+	GetTileFromWorldPos(XMFLOAT2(-50, -50));
+
 	AssignSprites();
 }
 
@@ -28,9 +30,12 @@ TileMap::TileMap(int width, int height, string identifier, XMFLOAT3 position) : 
 
 	m_totalTiles = m_width * m_height;
 
-	GetTransform()->SetPosition(position);
+	m_transform->SetScale(XMFLOAT3(25, 25, 1));
+	m_transform->SetPosition(position);
 
 	InitMap();
+
+	GetTileFromWorldPos(XMFLOAT2(-25, -25));
 }
 
 TileMap::~TileMap()
@@ -79,11 +84,7 @@ void TileMap::InitMap() // Create and store tiles in m_Tiles
 
 			string name = "Tile-" + to_string(ID);
 
-			m_tiles[i][j] = (pGameManager->CreateGameObject<Tile>(name));
-
-			m_tiles[i][j]->GetTransform()->SetScale(scale);
-			InitTilePosition(m_tiles[i][j], i, j);
-			++ID;
+			m_tiles[i][j] = nullptr;
 		}
 	}
 }
@@ -101,35 +102,15 @@ void TileMap::InitMapData(wstring mapPath, XMFLOAT3 position, XMFLOAT3 scale)
 
 void TileMap::InitTilePosition(Tile* tile, int row, int column) // Give tiles positions in the world relative to the TileMaps position
 {
-	XMFLOAT3 position = GetTransform()->GetPosition();
+	XMFLOAT2 tileScale = XMFLOAT2(m_transform->GetScale().x * 2.0f, m_transform->GetScale().y * 2.0f);
 
-	float xOffset = 0;
-	float yOffset = 0;
+	XMFLOAT2 pos = MathHelper::Minus(XMFLOAT2(m_transform->GetPosition().x, m_transform->GetPosition().y), XMFLOAT2(m_width * tileScale.x * 0.5f, m_height * tileScale.y * 0.5f));	//Offset to min tile can be
 
-	if (m_width % 2 == 0)
-	{
-		xOffset = ((m_width - 1) * 0.5);
-		position.x = (position.x + ((column - xOffset) * (m_tileScaleInt * 2)));
-	}
-	else
-	{
-		xOffset = m_width / 2;
-		position.x = (position.x + ((column - xOffset) * (m_tileScaleInt * 2)));
-	}
+	//Offsetting by half tile scale and then positioning based on row and column
+	pos = MathHelper::Plus(pos, XMFLOAT2(tileScale.x * 0.5f, tileScale.y * 0.5f));
+	pos = MathHelper::Plus(pos, XMFLOAT2(row * tileScale.x, column * tileScale.y));
 
-	if (m_height % 2 == 0)
-	{
-		yOffset = ((m_height - 1) * 0.5);
-		position.y = (position.y + ((row - yOffset) * (m_tileScaleInt * 2)));
-	}
-	else
-	{
-		yOffset = m_height / 2;
-		position.y = (position.y + ((row - yOffset) * (m_tileScaleInt * 2)));
-
-	}
-
-	tile->GetTransform()->SetPosition(position);
+	tile->GetTransform()->SetPosition(XMFLOAT3(pos.x, pos.y, 0));
 }
 
 void TileMap::LoadMap(wstring path) // Load data for the map from a given path
@@ -375,53 +356,38 @@ void TileMap::AssignSprites() // Sets each tiles sprite or animaton based off of
 	}
 }
 
-Tile TileMap::GetTileFromWorldPos(int posX, int posY) // Takes a set of coordinates and finds if a tile is there
+void TileMap::CreateTile(int row, int column)
 {
-	XMFLOAT3 worldPos = XMFLOAT3(GetTransform()->GetPosition().x - posX, GetTransform()->GetPosition().y - posY, 0);
+	m_tiles[row][column] = GameManager::GetInstance()->CreateGameObject<Tile>("Tile_" + to_string(row) + "_" + to_string(column));
 
-	int tileX = 0;
-	int tileY = 0;
+	XMFLOAT3 scale = GetTransform()->GetScale();
 
-	Tile* outputTile;
+	m_tiles[row][column]->GetTransform()->SetScale(scale);
 
-	if (worldPos.x > GetTransform()->GetPosition().x + (m_width/2) * m_tileScaleInt || worldPos.x < GetTransform()->GetPosition().x - (m_width / 2) * m_tileScaleInt)
+	InitTilePosition(m_tiles[row][column], row, column);
+}
+
+Tile* TileMap::GetTileFromWorldPos(XMFLOAT2 pos) // Takes a set of coordinates and finds if a tile is there
+{
+	XMFLOAT2 tileMapPos = XMFLOAT2(m_transform->GetPosition().x, m_transform->GetPosition().y);
+
+	XMFLOAT2 relativePos = MathHelper::Minus(pos, tileMapPos);
+
+	XMFLOAT2 tileScale = XMFLOAT2(m_transform->GetScale().x * 2.0f, m_transform->GetScale().y * 2.0f);
+
+	relativePos = MathHelper::Plus(relativePos, XMFLOAT2(m_width * tileScale.x * 0.5f, m_height * tileScale.y * 0.5f));
+
+	int row = (relativePos.x / (int)tileScale.x) - 1;
+	int column = ((int)relativePos.y % (int)tileScale.y) - 1;
+
+	if (row >= m_width || column >= m_height)
 	{
-		return Tile();
+		LOG("Tried to get tilemap using position that isn't in the tilemap");
+
+		return nullptr;
 	}
-	else
-	{
-		if (worldPos.y > GetTransform()->GetPosition().y + (m_height / 2) * m_tileScaleInt || worldPos.y < GetTransform()->GetPosition().y - (m_height / 2) * m_tileScaleInt)
-		{
-			return Tile();
-		}
-		else
-		{
-			XMFLOAT3 topLeftPos = XMFLOAT3(GetTransform()->GetPosition().x - (m_width / 2) * m_tileScaleInt, GetTransform()->GetPosition().y - (m_height / 2) * m_tileScaleInt, 0);
 
-			int xDiff = worldPos.x - topLeftPos.x;
-			int yDiff = worldPos.y - topLeftPos.y;
-
-			if (xDiff % m_tileScaleInt == 0)
-			{
-				tileX = xDiff / m_tileScaleInt;
-			}
-			else
-			{
-				tileX = std::div(xDiff, m_tileScaleInt).quot + 1;
-			}
-
-			if (yDiff % m_tileScaleInt == 0)
-			{
-				tileY = yDiff / m_tileScaleInt;
-			}
-			else
-			{
-				tileY = std::div(yDiff, m_tileScaleInt).quot + 1;
-			}
-		}
-
-		return *m_tiles[tileX][tileY];
-	}
+	return m_tiles[row][column];
 }
 
 Tile* TileMap::GetTileFromMapPos(int x, int y) // Returns the tile in the given TileMap coordinates
@@ -437,9 +403,10 @@ Tile* TileMap::GetTileFromMapPos(int x, int y) // Returns the tile in the given 
 	}
 }
 
-void TileMap::SetTileAtWorldPos(int posX, int posY, Tile newTile)
+void TileMap::SetTileAtWorldPos(XMFLOAT2 worldPos, Tile* newTile)
 {
-	GetTileFromWorldPos(posX, posY) = newTile;
+
+
 }
 
 void TileMap::SetTileAtMapPos(int posX, int posY, Tile* newTile)

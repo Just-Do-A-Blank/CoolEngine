@@ -34,7 +34,7 @@ public:
 
 	void Update(float d);
 
-	Tile GetTileFromWorldPos(int posX, int posY);
+	Tile* GetTileFromWorldPos(XMFLOAT2 pos);
 	Tile* GetTileFromMapPos(int x, int y);
 
 	vector<vector<Tile*>> GetTiles();
@@ -42,7 +42,7 @@ public:
 	void SetPassable(int x, int y, bool passable);
 	void SetPassable(Tile tile, bool passable);
 
-	void SetTileAtWorldPos(int posX, int posY, Tile newTile);
+	void SetTileAtWorldPos(XMFLOAT2 worldPos, Tile* newTile);
 	void SetTileAtMapPos(int mapPosX, int mapPosY, Tile* newTile);
 
 	XMFLOAT3 GetScale();
@@ -62,6 +62,7 @@ private:
 
 	void AssignSprites();	
 
+	void CreateTile(int row, int column);
 
 	int	m_width;
 	int	m_height;
