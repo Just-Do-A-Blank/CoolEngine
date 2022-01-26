@@ -1,19 +1,30 @@
 #include "TileMap.h"
 
+#include "Engine/EditorUI/EditorUI.h"
 #include  "Engine/Includes/json.hpp"
 
 using namespace nlohmann;
 
 TileMap::TileMap() : RenderableGameObject()
 {
+#if EDITOR
+	Tile::s_ptileMap = this;
+#endif
 }
 
 TileMap::TileMap(string identifier) : RenderableGameObject(identifier)
 {
+#if EDITOR
+	Tile::s_ptileMap = this;
+#endif
 }
 
 TileMap::TileMap(wstring mapPath, XMFLOAT3 position, float tileDimensions, string identifier) : RenderableGameObject(identifier)
 {
+#if EDITOR
+	Tile::s_ptileMap = this;
+#endif
+
 	m_transform->SetPosition(position);
 
 	XMFLOAT3 scale = XMFLOAT3(tileDimensions, tileDimensions, tileDimensions);
@@ -27,6 +38,10 @@ TileMap::TileMap(wstring mapPath, XMFLOAT3 position, float tileDimensions, strin
 
 TileMap::TileMap(int width, int height, string identifier, XMFLOAT3 position, float tileDimensions) : RenderableGameObject(identifier)
 {
+#if EDITOR
+	Tile::s_ptileMap = this;
+#endif
+
 	m_width = width;
 	m_height = height;
 
@@ -124,7 +139,7 @@ bool TileMap::Load(wstring path) // Load data for the map from a given path
 
 	for (int i = 0; i < jsonData["AnimPaths"].size(); ++i)
 	{
-		m_spritePaths.push_back(jsonData["AnimPaths"][i]);
+		m_animPaths.push_back(jsonData["AnimPaths"][i]);
 	}
 
 	m_tiles.resize(m_width);
@@ -140,8 +155,8 @@ bool TileMap::Load(wstring path) // Load data for the map from a given path
 
 		for (int j = 0; j < m_height; ++j)
 		{
-			spriteIndex = jsonData["TileIndexes"][i][j][0];
-			animIndex = jsonData["TileIndexes"][i][j][1];
+			spriteIndex = jsonData["TileSpriteIndexes"][(i * m_width) + j];
+			animIndex = jsonData["TileAnimIndexes"][(i * m_width) + j];
 
 			if (spriteIndex == -1 && animIndex == -1)
 			{
@@ -185,35 +200,30 @@ bool TileMap::Save(wstring path)
 
 	json jsonOutput = {};
 	jsonOutput["Dimensions"] = { m_width, m_height };
-	jsonOutput["SpritePaths"] = {};
 
 	for (int i = 0; i < m_spritePaths.size(); ++i)
 	{
 		jsonOutput["SpritePaths"].push_back(m_spritePaths[i]);
 	}
 
-	jsonOutput["AnimPaths"] = {};
-
 	for (int i = 0; i < m_animPaths.size(); ++i)
 	{
 		jsonOutput["AnimPaths"].push_back(m_animPaths[i]);
 	}
 
-	jsonOutput["TileIndexes"] = {};
-
 	for (int i = 0; i < m_width; ++i)
 	{
-		jsonOutput["TileIndexes"][i].push_back({});
-
 		for (int j = 0; j < m_height; ++j)
 		{
 			if (m_tiles[i][j] == nullptr)
 			{
-				jsonOutput["TileIndexes"][i][j].push_back({ -1, -1 });
+				jsonOutput["TileSpriteIndexes"].push_back({ -1 });
+				jsonOutput["TileAnimIndexes"].push_back({ -1 });
 			}
 			else
 			{
-				jsonOutput["TileIndexes"][i][j].push_back({ m_tiles[i][j]->GetSpriteIndex(), m_tiles[i][j]->GetAnimIndex() });
+				jsonOutput["TileSpriteIndexes"].push_back({ m_tiles[i][j]->GetSpriteIndex() });
+				jsonOutput["TileAnimIndexes"].push_back({ m_tiles[i][j]->GetAnimIndex() });
 			}
 
 		}
@@ -267,6 +277,105 @@ bool TileMap::CreateTile(int row, int column, Tile*& ptile)
 	ptile = m_tiles[row][column];
 
 	return true;
+}
+
+void TileMap::AddSpritePath(Tile* ptile, wstring& path)
+{
+	for (int i = 0; i < m_spritePaths.size(); ++i)
+	{
+		if (m_spritePaths[i] == path)
+		{
+			ptile->SetSpriteIndex(i);
+
+			return;
+		}
+	}
+
+	m_spritePaths.push_back(path);
+
+	ptile->SetSpriteIndex(m_spritePaths.size() - 1);
+}
+
+void TileMap::AddAnimPath(Tile* ptile, wstring& path)
+{
+	for (int i = 0; i < m_animPaths.size(); ++i)
+	{
+		if (m_animPaths[i] == path)
+		{
+			ptile->SetAnimIndex(i);
+
+			return;
+		}
+	}
+
+	m_animPaths.push_back(path);
+
+	ptile->SetAnimIndex(m_animPaths.size() - 1);
+}
+
+void TileMap::CreateEngineUI()
+{
+	ImGui::Separator();
+	ImGui::Spacing();
+
+	EditorUI::InputText("Tile Map Name", m_tileMapName);
+
+	ImGui::Spacing();
+
+	if (ImGui::Button("Save") == true)
+	{
+		if (m_tileMapName == "") 
+		{
+			LOG("Tried to save the tile map but didn't enter a name!");
+		}
+		else
+		{
+			wstring filepath = GameManager::GetInstance()->GetWideWorkingDirectory() + L"\\Resources\\Levels\\TileMaps\\" + wstring(m_tileMapName.begin(), m_tileMapName.end()) + L".txt";
+
+			if (Save(filepath) == true)
+			{
+				LOG("Tile map saved!");
+			}
+			else
+			{
+				LOG("Tile map failed to save!");
+			}
+		}
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Load") == true)
+	{
+		if (m_tileMapName == "")
+		{
+			LOG("Tried to load a tile map but didn't enter a name!");
+		}
+		else
+		{
+			wstring filepath = GameManager::GetInstance()->GetWideWorkingDirectory() + L"\\Resources\\Levels\\TileMaps\\" + wstring(m_tileMapName.begin(), m_tileMapName.end()) + L".txt";
+
+			for (int i = 0; i < m_width; ++i)
+			{
+				m_tiles[i].clear();
+			}
+
+			m_spritePaths.clear();
+			m_animPaths.clear();
+
+			if (Load(filepath) == true)
+			{
+				LOG("Tile map loaded!");
+			}
+			else
+			{
+				LOG("Tile map failed to load!");
+			}
+		}
+	}
+
+	ImGui::Spacing();
+	ImGui::Separator();
 }
 
 bool TileMap::GetTileFromWorldPos(XMFLOAT2 pos, Tile*& ptile, int* prow, int* pcolumn) // Takes a set of coordinates and finds if a tile is there

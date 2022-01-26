@@ -5,6 +5,7 @@
 #include "Engine/Graphics/SpriteAnimation.h"
 #include "Engine/ResourceDefines.h"
 
+class TileMap;
 
 class Tile : public RenderableGameObject
 {
@@ -28,8 +29,8 @@ public:
 	const bool& GetIsPassable() const;
 
 #if TILE_MAP_TOOL
-	const int& GetSpriteIndex() const;
-	const int& GetAnimIndex() const;
+	int GetSpriteIndex() const;
+	int GetAnimIndex() const;
 #endif
 
 	//Setters
@@ -38,6 +39,10 @@ public:
 #if TILE_MAP_TOOL
 	void SetSpriteIndex(int index);
 	void SetAnimIndex(int index);
+#endif
+
+#if EDITOR
+	void CreateEngineUI() override;
 #endif
 
 protected:
@@ -49,6 +54,15 @@ private:
 #if TILE_MAP_TOOL
 	int m_spriteIndex = -1;
 	int m_animIndex = -1;
+#endif
+
+#if EDITOR
+	wstring m_animPath;
+	wstring m_spritePath;
+
+	static TileMap* s_ptileMap;
+
+	friend class TileMap;
 #endif
 };
 

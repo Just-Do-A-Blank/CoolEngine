@@ -34,6 +34,17 @@ void TileMapTool::Render()
 
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
+		if (m_pselectedTile != nullptr)
+		{
+			m_pselectedTile->ShowEngineUI();
+		}
+
+		ImGui::End();
+
+		ImGui::Begin("Master");
+
+		m_ptileMap->CreateEngineUI();
+
 		ImGui::End();
 	}
 
@@ -54,6 +65,11 @@ void TileMapTool::Update()
 
 void TileMapTool::Handle(Event* e)
 {
+	if (m_selectingDimensions == true)
+	{
+		return;
+	}
+
 	if (((MouseButtonPressedEvent*)e)->GetButton() == VK_LBUTTON)
 	{
 		POINT point;
@@ -61,11 +77,8 @@ void TileMapTool::Handle(Event* e)
 		GetCursorPos(&point);
 		ScreenToClient(*GraphicsManager::GetInstance()->GetHWND(), &point);
 
-		float x = (point.x - (0.5f * GraphicsManager::GetInstance()->GetWindowDimensions().x)) / GraphicsManager::GetInstance()->GetWindowDimensions().x;
-		float y = (-point.y + (0.5f * GraphicsManager::GetInstance()->GetWindowDimensions().y)) / GraphicsManager::GetInstance()->GetWindowDimensions().y;
-
-		//float x = ((2.0f * point.x) / GraphicsManager::GetInstance()->GetWindowDimensions().x) - 1.0f;
-		//float y = 1.0f - ((2.0f * point.y) / GraphicsManager::GetInstance()->GetWindowDimensions().y);
+		float x = ((2.0f * point.x) / GraphicsManager::GetInstance()->GetWindowDimensions().x) - 1.0f;
+		float y = 1.0f - ((2.0f * point.y) / GraphicsManager::GetInstance()->GetWindowDimensions().y);
 
 		XMFLOAT2 clickPosWorld;
 

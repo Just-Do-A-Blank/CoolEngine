@@ -1,5 +1,13 @@
 #include "Tile.h"
 
+#include "Engine/EditorUI/EditorUI.h"
+#include "Engine/Managers/GraphicsManager.h"
+#include "Engine/TileMap/TileMap/TileMap.h"
+
+#if EDITOR
+TileMap* Tile::s_ptileMap = nullptr;
+#endif
+
 Tile::Tile() : RenderableGameObject()
 {
 }
@@ -25,12 +33,12 @@ const bool& Tile::GetIsPassable() const
 }
 
 #if TILE_MAP_TOOL
-const int& Tile::GetSpriteIndex() const
+int Tile::GetSpriteIndex() const
 {
 	return m_spriteIndex;
 }
 
-const int& Tile::GetAnimIndex() const
+int Tile::GetAnimIndex() const
 {
 	return m_animIndex;
 }
@@ -51,4 +59,47 @@ void Tile::SetAnimIndex(int index)
 {
 	m_animIndex = index;
 }
+
+#if EDITOR
+void Tile::CreateEngineUI()
+{
+	ImGui::Separator();
+	ImGui::Spacing();
+
+	if (EditorUI::Texture("Texture", m_spritePath, m_palbedoSRV) == true)
+	{
+		s_ptileMap->AddSpritePath(this, m_spritePath);
+	}
+
+	ImGui::Spacing();
+
+	if (m_pcurrentAnimation == nullptr)
+	{
+		if (EditorUI::Animation("Animation", m_animPath, nullptr) == true)
+		{
+			AddAnimation("default", m_animPath);
+			PlayAnimation("default");
+
+			s_ptileMap->AddAnimPath(this, m_animPath);
+		}
+	}
+	else
+	{
+		if (EditorUI::Animation("Animation", m_animPath, m_pcurrentAnimation->GetCurrentFrame()) == true)
+		{
+			AddAnimation("default", m_animPath);
+			PlayAnimation("default");
+
+			s_ptileMap->AddAnimPath(this, m_animPath);
+		}
+	}
+
+	ImGui::Spacing();
+
+	EditorUI::DragInt("Layer", m_layer, 100.0f, 0.1f, 0, GraphicsManager::GetInstance()->GetNumLayers() - 1);
+
+	ImGui::Spacing();
+	ImGui::Separator();
+}
+#endif
 #endif

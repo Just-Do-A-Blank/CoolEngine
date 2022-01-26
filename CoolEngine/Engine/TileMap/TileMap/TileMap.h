@@ -50,6 +50,13 @@ public:
 
 	bool CreateTile(int row, int column, Tile*& ptile);
 
+	void AddSpritePath(Tile* ptile, wstring& path);
+	void AddAnimPath(Tile* ptile, wstring& path);
+
+#if EDITOR
+	void CreateEngineUI() override;
+#endif
+
 protected:
 
 
@@ -74,4 +81,8 @@ private:
 
 	std::vector<wstring> m_spritePaths;
 	std::vector<wstring> m_animPaths;
+
+#if EDITOR
+	string m_tileMapName = "";
+#endif
 };
