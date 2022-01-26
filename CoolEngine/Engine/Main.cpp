@@ -32,6 +32,7 @@
 #include "Engine/GameUI/ImageComponent.h"
 
 #include "Physics/ParticleManager.h"
+#include "Engine/Managers/FontManager.h"
 
 #if TOOL
 #include "Engine/Tools/ToolBase.h"
@@ -302,6 +303,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 #endif
 
+	FontManager::GetInstance()->LoadFonts();
 	//Create test Tile Map
 
 	// Main message loop
