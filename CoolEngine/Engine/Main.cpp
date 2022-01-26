@@ -245,7 +245,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	//Init enemy object
 	EnemyGameObject* egameObject = pgameManager->GetGameObjectUsingIdentifier<EnemyGameObject>(enemyName);
-	objectPos = XMFLOAT3(-200.0f, 200.0f, 0);
+	objectPos = XMFLOAT3(-400.0f, 200.0f, 0);
 	objectScale = XMFLOAT3(40, 40, 40);
 
 	pbox = new Box(pgameObject->GetTransform());
@@ -266,7 +266,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, 0, 0), XMFLOAT3(25, 25, 25), "TestMap");
 
-	Pathfinding::Instance()->Initialize(g_testMap1);
+	Pathfinding::GetInstance()->Initialize(g_testMap1);
 
 
 	ExampleObserver observer(new int(10), pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName));

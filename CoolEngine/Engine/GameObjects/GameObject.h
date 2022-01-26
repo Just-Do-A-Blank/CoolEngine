@@ -1,20 +1,5 @@
 #pragma once
 #include "Transform.h"
-#include "Engine/Graphics/Mesh.h"
-#include "Engine/Graphics/ConstantBuffer.h"
-#include "Engine/Graphics/ConstantBuffers.h"
-#include "Engine/Graphics/SpriteAnimation.h"
-#include "Engine/Structure/EditorUIComponent.h"
-#include "Engine/ResourceDefines.h"
-
-#include <string>
-
-class SpriteAnimation;
-class Shape;
-
-
-struct RenderStruct;
-
 #define FILEPATH_BUFFER_SIZE 200
 #define ANIM_NAME_SIZE 50
 
@@ -65,8 +50,6 @@ public:
 
 	//Setters
 
-
-	void SetShape(Shape* collider);
 
 
 	bool ContainsType(GameObjectType type);

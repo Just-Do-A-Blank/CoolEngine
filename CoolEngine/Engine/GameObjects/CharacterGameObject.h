@@ -16,7 +16,7 @@ public:
 	CharacterGameObject(string identifier);
 	~CharacterGameObject();
 
-	void Update();
+	virtual void Update();
 
 	float GetMoveSpeed() { return m_moveSpeed; }
 	void SetSpeed(float speed) { m_moveSpeed = speed; }

@@ -270,9 +270,11 @@
     <ClInclude Include="Engine\GameObjects\RenderableCollidableGameObject.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\AI\Pathfinding.h" />
     <ClInclude Include="Engine\GameObjects\EnemyGameObject.h">
       <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\Pathfinding.h">
+      <Filter>Engine\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -402,9 +404,11 @@
     <ClCompile Include="Engine\GameObjects\RenderableCollidableGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\AI\Pathfinding.cpp" />
     <ClCompile Include="Engine\GameObjects\EnemyGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\Pathfinding.cpp">
+      <Filter>Engine\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

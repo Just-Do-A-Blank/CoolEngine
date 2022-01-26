@@ -1,7 +1,8 @@
 #pragma once
 #include <vector>
+#include <queue>
 
-#define DIAGONAL_ENABLED true
+#define DIAGONAL_ENABLED false
 
 //We need access to the floor map & any extra information such as up/down componants to create the neighbours list
 struct node
@@ -9,18 +10,27 @@ struct node
 	bool m_obstacle = false;
 	bool m_visited = false;
 
-	XMFLOAT3 pos = { 0,0,0 };
+	XMFLOAT3 m_pos = { 0,0,0 };
 
 	float m_gCost; //total distance travelled to get to node
 	float m_hCost; //heuristic cost (do we move towards the goal)
-	vector<node*> m_neighbours;
-	node* m_parent;
+	vector<node*> m_pNeighbours;
+	node* m_pParent = nullptr;
 
 };
 
-
-
 class TileMap;
+
+//Helper Function & class for comparing the priority_queue nodes so the closest node is always at the front of the queue
+class NodeCompare
+{
+public:
+	bool operator() (node* a, node* b)
+	{
+		return a->m_hCost > b->m_hCost;
+	}
+};
+
 
 class Pathfinding
 {
@@ -29,7 +39,7 @@ public:
 	vector<node*> FindPerfectPath(XMFLOAT3 curPos, XMFLOAT3 tarPos);
 
 
-	static Pathfinding* Instance();
+	static Pathfinding* GetInstance();
 	node* FindClosestNode(XMFLOAT3 pos);
 
 	void Initialize(TileMap* map);
@@ -37,36 +47,22 @@ public:
 private:
 
 
-	int m_mapWidth = 16;
-	int m_mapHeight = 16;
-	node* nodes = nullptr;
+	int m_mapWidth = 0;
+	int m_mapHeight = 0;
+	vector<vector<node*>> m_pNodes;
+
 
 	Pathfinding();
 	void SetupPath(XMFLOAT3 curPos,XMFLOAT3 tarPos);
+	void CalculatePath();
+	vector<node*> GeneratePath(XMFLOAT3 tarPos);
 
 
-	vector<node*> m_nodesToTest;
-
-	node* m_nodeStart = nullptr;
-	node* m_nodeEnd = nullptr;
+	//vector<node*> m_nodesToTest;
+	priority_queue<node*,vector<node*>,NodeCompare> m_nodesToTest;
 
 
 
-
+	node* m_pNodeStart = nullptr;
+	node* m_pNodeEnd = nullptr;
 };
-
-
-
-//Code for working out if you're at the destination node and to go to the next one in a very simple sense 
-
-/*
-if (m_path.size() != 0)
-{
-	//if the closest node to us is the target node change to next node in the sequence, if this creates weird interactions then change.
-	if (m_path.back() == FindClosestNode(&m_curPos))
-	{
-		m_path.pop_back();
-	}
-
-}
-*/
