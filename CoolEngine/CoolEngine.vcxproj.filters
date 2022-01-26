@@ -261,10 +261,6 @@
     <ClInclude Include="Engine\Structure\EditorUIComponent.h">
       <Filter>Engine\Structure</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\AI\Pathfinding.h">
-      <Filter>Engine\AI</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObjects\EnemyGameObject.h">
     <ClInclude Include="Engine\GameObjects\CollidableGameObject.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
@@ -272,6 +268,10 @@
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\RenderableCollidableGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\Pathfinding.h" />
+    <ClInclude Include="Engine\GameObjects\EnemyGameObject.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
   </ItemGroup>
@@ -387,12 +387,6 @@
     <ClCompile Include="Engine\Physics\Shape.cpp">
       <Filter>Engine\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\AI\Pathfinding.cpp">
-      <Filter>Engine\AI</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\EnemyGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Tools\AnimationTool.cpp">
       <Filter>Engine\Tools</Filter>
     </ClCompile>
@@ -406,6 +400,10 @@
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\RenderableCollidableGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\Pathfinding.cpp" />
+    <ClCompile Include="Engine\GameObjects\EnemyGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
   </ItemGroup>
