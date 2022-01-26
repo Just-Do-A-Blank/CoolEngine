@@ -8,16 +8,9 @@ Tile::Tile(string identifier) : RenderableGameObject(identifier)
 {
 }
 
-Tile::Tile(wstring path, int ID, string identifier) : RenderableGameObject(identifier)
+Tile::Tile(wstring path, string identifier) : RenderableGameObject(identifier)
 {
 	InitAnimation(path);
-
-	m_ID = ID;
-}
-
-Tile::Tile(int ID, string identifier) : RenderableGameObject(identifier)
-{
-	m_ID = ID;
 }
 
 void Tile::InitAnimation(wstring animPath)
@@ -26,7 +19,36 @@ void Tile::InitAnimation(wstring animPath)
 	return;
 }
 
-void Tile::SetPassable(bool passable)
+const bool& Tile::GetIsPassable() const
 {
-	m_Passable = passable;
+	return m_isPassable;
 }
+
+#if TILE_MAP_TOOL
+const int& Tile::GetSpriteIndex() const
+{
+	return m_spriteIndex;
+}
+
+const int& Tile::GetAnimIndex() const
+{
+	return m_animIndex;
+}
+#endif
+
+void Tile::SetIsPassable(bool passable)
+{
+	m_isPassable = passable;
+}
+
+#if TILE_MAP_TOOL
+void Tile::SetSpriteIndex(int index)
+{
+	m_spriteIndex = index;
+}
+
+void Tile::SetAnimIndex(int index)
+{
+	m_animIndex = index;
+}
+#endif

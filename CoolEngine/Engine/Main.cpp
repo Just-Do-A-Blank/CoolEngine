@@ -118,6 +118,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	AudioManager::GetInstance()->SetListenerPosition(XMFLOAT3(0, 0, 0));
 
 	GraphicsManager::GetInstance()->Init(g_pd3dDevice);
+	GraphicsManager::GetInstance()->SetHWND(&g_hWnd);
 
 	g_inputController = new Inputs();
 
@@ -141,6 +142,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	g_pcamera = new CameraGameObject("Camera");
 	g_pcamera->Initialize(cameraPos, cameraForward, cameraUp, windowWidth, windowHeight, nearDepth, farDepth);
+
+	GameManager::GetInstance()->SetCamera(g_pcamera);
 
 	//Create scene
 	GameManager* pgameManager = GameManager::GetInstance();

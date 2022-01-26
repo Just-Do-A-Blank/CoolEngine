@@ -2,7 +2,9 @@
 #include <vector>
 
 #include "Engine/GameObjects/RenderableGameObject.h"
+#include "Engine/Graphics/SpriteAnimation.h"
 #include "Engine/ResourceDefines.h"
+
 
 class Tile : public RenderableGameObject
 {
@@ -13,11 +15,9 @@ public:
 	Tile();
 
 	// Load from parameters
-	Tile(wstring path, int ID, string identifier);
+	Tile(wstring path, string identifier);
 
 	// Load empty
-	Tile(int a, string identifier);
-
 	Tile(string identifier);
 
 	//Setup
@@ -25,22 +25,30 @@ public:
 	void InitAnimation(wstring animPath);
 
 	//Getters
+	const bool& GetIsPassable() const;
 
-	int GetID() { return m_ID; }
-	bool SetPassable() { return m_Passable; }
+#if TILE_MAP_TOOL
+	const int& GetSpriteIndex() const;
+	const int& GetAnimIndex() const;
+#endif
 
 	//Setters
+	void SetIsPassable(bool passable);
 
-	void SetID(int id) { m_ID = id; }
-	void SetPassable(bool passable);
-
-	const bool GetPassable() const { return m_Passable; }
+#if TILE_MAP_TOOL
+	void SetSpriteIndex(int index);
+	void SetAnimIndex(int index);
+#endif
 
 protected:
 
 private:
-	int	 m_ID = -25;
 	// True = walkable, False = Blocked
-	bool m_Passable = false; 
+	bool m_isPassable = false; 
+
+#if TILE_MAP_TOOL
+	int m_spriteIndex = -1;
+	int m_animIndex = -1;
+#endif
 };
 

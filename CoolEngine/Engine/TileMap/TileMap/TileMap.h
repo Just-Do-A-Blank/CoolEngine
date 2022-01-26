@@ -24,30 +24,31 @@ public:
 	TileMap(string identifier);
 
 	// Load from file
-	TileMap(wstring mapPath, XMFLOAT3 position, XMFLOAT3 scale, string identifier);
+	TileMap(wstring mapPath, XMFLOAT3 position, float tileDimensions, string identifier);
 
 	// Load from parameters
-	TileMap(int width, int height, string identifier, XMFLOAT3 position);
+	TileMap(int width, int height, string identifier, XMFLOAT3 position, float tileDimensions);
 
 	//Destructor
 	~TileMap();
 
 	void Update(float d);
 
-	Tile* GetTileFromWorldPos(XMFLOAT2 pos);
-	Tile* GetTileFromMapPos(int x, int y);
+	bool GetTileFromWorldPos(XMFLOAT2 pos, Tile*& ptile, int* prow = nullptr, int* pcolumn = nullptr);
+	bool GetTileFromMapPos(int x, int y, Tile*& ptile);
 
 	void SetPassable(int x, int y, bool passable);
-	void SetPassable(Tile tile, bool passable);
 
 	void SetTileAtWorldPos(XMFLOAT2 worldPos, Tile* newTile);
 	void SetTileAtMapPos(int mapPosX, int mapPosY, Tile* newTile);
 
-	XMFLOAT3 GetScale();
-	void SetScale(XMFLOAT3 newScale);
+	XMFLOAT3 GetTileScale();
+	void SetTileScale(XMFLOAT3 newScale);
 
 	const int GetWidth() const{ return m_width; }
 	const int GetHeight() const { return m_height; }
+
+	bool CreateTile(int row, int column, Tile*& ptile);
 
 protected:
 
@@ -55,15 +56,12 @@ protected:
 private:
 	void InitMap();
 
-	void InitMapData(wstring mapPath, XMFLOAT3 position, XMFLOAT3 scale);
-
 	void InitTilePosition(Tile* tile, int row, int column);
 
-	void LoadMap(wstring path);
+	bool Load(wstring path);
+	bool Save(wstring path);
 
-	void AssignSprites();
-
-	void CreateTile(int row, int column);
+	bool GetCoordsFromWorldPos(int* prow, int* pcolumn, const XMFLOAT2& pos);
 
 	int	m_width;
 	int	m_height;
@@ -74,7 +72,6 @@ private:
 
 	std::vector<std::vector<Tile*>>	m_tiles;
 
-	std::vector<int> m_tileSpriteIndex;
-	std::vector<string>	m_spritePaths;
-	std::vector<string>	m_animPaths;
+	std::vector<wstring> m_spritePaths;
+	std::vector<wstring> m_animPaths;
 };

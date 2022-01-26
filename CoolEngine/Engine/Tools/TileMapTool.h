@@ -4,15 +4,20 @@
 
 #include "ToolBase.h"
 
-class TileMap;
+#include "Engine/Managers/Events/EventObserver.h"
 
-class TileMapTool : public ToolBase
+class TileMap;
+class Tile;
+
+class TileMapTool : public ToolBase, public Observer
 {
 public:
 
 	virtual void Init(ID3D11Device* pdevice);
 	void Render() override;
 	void Update() override;
+
+	void Handle(Event* e) override;
 
 protected:
 
@@ -24,8 +29,12 @@ private:
 
 	bool m_selectingDimensions = true;
 
-	int m_tileMapWidth = -1;
-	int m_tileMapHeight = -1;
+	int m_tileMapWidth = 0;
+	int m_tileMapHeight = 0;
+
+	float m_tileDimensions = 0;
+
+	Tile* m_pselectedTile = nullptr;
 };
 
 #endif

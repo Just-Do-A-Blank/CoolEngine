@@ -205,6 +205,11 @@ void GraphicsManager::SetWindowDimensions(XMFLOAT2 dimensions)
 	m_windowDimensions = dimensions;
 }
 
+void GraphicsManager::SetHWND(HWND* hwnd)
+{
+	m_pHWND = hwnd;
+}
+
 ID3D11VertexShader* GraphicsManager::GetVertexShader(wstring name) const
 {
 	if (m_vertexShaders.count(name) == 0)
@@ -280,6 +285,11 @@ bool GraphicsManager::IsTextureLoaded(wstring filename)
 const XMFLOAT2& GraphicsManager::GetWindowDimensions() const
 {
 	return m_windowDimensions;
+}
+
+HWND* GraphicsManager::GetHWND()
+{
+	return m_pHWND;
 }
 
 ID3D11InputLayout* GraphicsManager::GetInputLayout(InputLayouts inputLayout) const

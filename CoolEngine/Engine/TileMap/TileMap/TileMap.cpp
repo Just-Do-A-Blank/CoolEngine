@@ -1,5 +1,9 @@
 #include "TileMap.h"
 
+#include  "Engine/Includes/json.hpp"
+
+using namespace nlohmann;
+
 TileMap::TileMap() : RenderableGameObject()
 {
 }
@@ -8,49 +12,42 @@ TileMap::TileMap(string identifier) : RenderableGameObject(identifier)
 {
 }
 
-TileMap::TileMap(wstring mapPath, XMFLOAT3 position, XMFLOAT3 scale, string identifier) : RenderableGameObject(identifier)
+TileMap::TileMap(wstring mapPath, XMFLOAT3 position, float tileDimensions, string identifier) : RenderableGameObject(identifier)
 {
-	LoadMap(mapPath);
+	m_transform->SetPosition(position);
 
-	GetTransform()->SetPosition(position);
-	GetTransform()->SetScale(scale);
-	m_tileScaleInt = scale.x;
+	XMFLOAT3 scale = XMFLOAT3(tileDimensions, tileDimensions, tileDimensions);
+
+	m_transform->SetScale(scale);
+
+	Load(mapPath);
 
 	InitMap();
-
-	GetTileFromWorldPos(XMFLOAT2(-50, -50));
-
-	AssignSprites();
 }
 
-TileMap::TileMap(int width, int height, string identifier, XMFLOAT3 position) : RenderableGameObject(identifier)
+TileMap::TileMap(int width, int height, string identifier, XMFLOAT3 position, float tileDimensions) : RenderableGameObject(identifier)
 {
 	m_width = width;
 	m_height = height;
 
 	m_totalTiles = m_width * m_height;
 
-	m_transform->SetScale(XMFLOAT3(25, 25, 1));
+	XMFLOAT3 scale = XMFLOAT3(tileDimensions, tileDimensions, tileDimensions);
+
+	m_transform->SetScale(scale);
+
 	m_transform->SetPosition(position);
 
 	InitMap();
-
-	GetTileFromWorldPos(XMFLOAT2(-25, -25));
 }
 
 TileMap::~TileMap()
 {
 	m_tiles.clear(); // Run first to allow each tile to release its memory, but this does not release the memory for the vector
-	
-	// Memory reserved by vectors can be deleted by swapping a vector with an uninitialized vector, which means that all memory allocated to the initial vector is released. The temporary vector is then destroyed, since it is temporary
-	vector<vector<Tile*>> tileEmptyVector;
-	vector<int> intEmptyVector;
-	vector<string>	stringEmptyVector;
+	m_tiles.resize(0);
 
-	m_tiles.swap(tileEmptyVector);
-	m_tileSpriteIndex.swap(intEmptyVector);
-	m_spritePaths.swap(stringEmptyVector);
-	m_animPaths.swap(stringEmptyVector);
+	m_spritePaths.resize(0);
+	m_animPaths.resize(0);
 }
 
 void TileMap::Update(float d)
@@ -82,22 +79,9 @@ void TileMap::InitMap() // Create and store tiles in m_Tiles
 				m_tiles[i].resize(m_width);
 			}
 
-			string name = "Tile-" + to_string(ID);
-
 			m_tiles[i][j] = nullptr;
 		}
 	}
-}
-
-void TileMap::InitMapData(wstring mapPath, XMFLOAT3 position, XMFLOAT3 scale)
-{
-	LoadMap(mapPath);
-
-	GetTransform()->SetPosition(position);
-	GetTransform()->SetScale(scale);
-	m_tileScaleInt = scale.x;
-
-	InitMap();
 }
 
 void TileMap::InitTilePosition(Tile* tile, int row, int column) // Give tiles positions in the world relative to the TileMaps position
@@ -113,251 +97,165 @@ void TileMap::InitTilePosition(Tile* tile, int row, int column) // Give tiles po
 	tile->GetTransform()->SetPosition(XMFLOAT3(pos.x, pos.y, 0));
 }
 
-void TileMap::LoadMap(wstring path) // Load data for the map from a given path
+bool TileMap::Load(wstring path) // Load data for the map from a given path
 {
-	int count = 0;
-	string parameter;
-	string line;
+	ifstream inFile(path);
 
-	string data = "";
-	vector<string> dataVec = {};
-
-	ifstream mapFile(path);
-	if (mapFile.is_open()) // Loads data by reading each line
+	if (inFile.is_open() == false)
 	{
-		while (getline(mapFile, line))
-		{
-			count++;
+		LOG("Failed to load the tile map as couldn't open the file!");
 
-			switch (count)
-			{
-				case(1):
-				{
-					parameter = "<DIMENSIONS>";
-					break;
-				}
-				case(2):
-				{
-					parameter = "<SPRITES>";
-					break;
-				}
-				case(3):
-				{
-					parameter = "<ANIMATIONS>";
-					break;
-				}
-				case(4):
-				{
-					parameter = "<LAYOUT>";
-					break;
-				}
-			}
-
-			//Size
-			if (parameter == "<DIMENSIONS>")
-			{
-				if (line.find(parameter) != -1)
-				{
-					for (int i = parameter.size(); (i < line.size() + 1); i++)
-					{
-						if (line[i] == ',' || line[i] == '*')
-						{
-							dataVec.push_back(data);
-							data.clear();
-						}
-						else
-						{
-							if (line[i] != ' ')
-								data.push_back(line[i]);
-						}
-					}
-
-					if (dataVec.size() != 2)
-					{
-						LOG("ERROR WHEN LOADING TILE MAP DIMENSIONS - INVALID NUMBER OF PARAMETERS")
-					}
-					else
-					{
-						m_width  = stoi(dataVec[0]);
-						m_height = stoi(dataVec[1]);
-					}
-
-					data = "";
-					dataVec.clear();
-
-					m_tileSpriteIndex = vector<int>( m_width * m_height );
-				}
-				else
-				{
-					LOG("ERROR WHEN LOADING TILE MAP - PARAMETER 'DIMENSIONS' NOT FOUND");
-				}
-			}
-
-			//Sprites
-			if (parameter == "<SPRITES>")
-			{
-				//load vector the same as dimensions
-				if (line.find(parameter) != -1)
-				{
-					for (int i = parameter.size(); (i < line.size() + 1); i++)
-					{
-						if (line[i] == ',' || line[i] == '*')
-						{
-							dataVec.push_back(data);
-							data.clear();
-						}
-						else
-						{
-							if (line[i] != ' ')
-								data.push_back(line[i]);
-						}
-					}
-
-					for (int j = 0; j < dataVec.size(); j++)
-					{
-						m_spritePaths.push_back(dataVec[j]);
-					}
-
-					data = "";
-					dataVec.clear();
-				}
-				else
-				{
-					LOG("ERROR WHEN LOADING TILE MAP - PARAMETER 'SPRITES' NOT FOUND");
-				}
-			}
-			
-			//Animations
-			if (parameter == "<ANIMATIONS>")
-			{
-				if (line.find(parameter) != -1)
-				{
-					for (int i = parameter.size(); (i < line.size() + 1); i++)
-					{
-						if (line[i] == ',' || line[i] == '*')
-						{
-							dataVec.push_back(data);
-							data.clear();
-						}
-						else
-						{
-							if (line[i] != ' ')
-								data.push_back(line[i]);
-						}
-					}
-
-					for (int j = 0; j < dataVec.size(); j++)
-					{
-						m_animPaths.push_back(dataVec[j]);
-					}
-
-					data = "";
-					dataVec.clear();
-				}
-				else
-				{
-					LOG("ERROR WHEN LOADING TILE MAP - PARAMETER 'ANIMATIONS' NOT FOUND");
-				}
-			}
-
-			//Positions
-			if (parameter == "<LAYOUT>")
-			{
-				if (line.find(parameter) != -1)
-				{
-					for (int i = parameter.size(); (i < line.size() + 1); i++)
-					{
-						if (line[i] == ',' || line[i] == '*')
-						{
-							dataVec.push_back(data);
-							data.clear();
-						}
-						else
-						{
-							if (line[i] != ' ')
-								data.push_back(line[i]);
-						}
-					}
-
-					for (int j = 0; j < dataVec.size(); j++)
-					{
-						m_tileSpriteIndex[j] = stoi(dataVec[j]);
-					}
-
-					data = "";
-					dataVec.clear();
-				}
-				else
-				{
-					LOG("ERROR WHEN LOADING TILE MAP - PARAMETER 'LAYOUT' NOT FOUND");
-				}
-			}
-		}
-		mapFile.close();
+		return false;
 	}
-}
 
-void TileMap::AssignSprites() // Sets each tiles sprite or animaton based off of the layout data from a file
-{
-	int totalSprites = m_animPaths.size() + m_spritePaths.size();
-	int count = 0;
+	json jsonData;
 
-	for (int i = 0; i < m_height; ++i)
+	inFile >> jsonData;
+
+	inFile.close();
+
+	m_width = jsonData["Dimensions"][0];
+	m_height = jsonData["Dimensions"][1];
+
+	for (int i = 0; i < jsonData["SpritePaths"].size(); ++i)
 	{
-		for (int j = 0; j < m_width; ++j)
+		m_spritePaths.push_back(jsonData["SpritePaths"][i]);
+	}
+
+	for (int i = 0; i < jsonData["AnimPaths"].size(); ++i)
+	{
+		m_spritePaths.push_back(jsonData["AnimPaths"][i]);
+	}
+
+	m_tiles.resize(m_width);
+
+	int spriteIndex = -1;
+	int animIndex = -1;
+
+	Tile* ptile;
+
+	for (int i = 0; i < m_width; ++i)
+	{
+		m_tiles[i].reserve(m_width);
+
+		for (int j = 0; j < m_height; ++j)
 		{
-			if (m_tileSpriteIndex[count] < m_spritePaths.size())
+			spriteIndex = jsonData["TileIndexes"][i][j][0];
+			animIndex = jsonData["TileIndexes"][i][j][1];
+
+			if (spriteIndex == -1 && animIndex == -1)
 			{
-				if (m_tileSpriteIndex[count] > m_spritePaths.size() + m_animPaths.size())
-				{
-					LOG("ERROR WHEN LOADING ASSIGNING TILE SPRITE - INDEX OUT OF RANGE");
-				}
-				else
-				{
-					try
-					{
-						// String to wString conversion code from RipTutorial.com
-						std::string stringPath = m_spritePaths[m_tileSpriteIndex[count]];
-						std::wstring wStringPath;
-
-						// convert to wstring
-						wStringPath = L"Resources\\Sprites\\" + std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(stringPath);
-
-						m_tiles[i][j]->SetAlbedo(wStringPath);
-					}
-					catch(...)
-					{
-						m_tiles[i][j]->SetAlbedo(DEFAULT_TILE);
-					}
-
-					count++;
-				}
+				m_tiles[i][j] = nullptr;
 			}
 			else
 			{
-				if (m_tileSpriteIndex[count] > m_spritePaths.size() + m_animPaths.size())
+				CreateTile(i, j, ptile);
+
+				m_tiles[i][j]->SetSpriteIndex(spriteIndex);
+				m_tiles[i][j]->SetAnimIndex(animIndex);
+
+				if (spriteIndex != -1)
 				{
-					LOG("ERROR WHEN LOADING ASSIGNING TILE ANIMATION - INDEX OUT OF RANGE");
+					m_tiles[i][j]->SetAlbedo(m_spritePaths[spriteIndex]);
 				}
-				else
+
+				if (animIndex != -1)
 				{
-					// String to wString conversion code from RipTutorial.com
-					std::string stringPath = m_animPaths[m_tileSpriteIndex[count] - m_spritePaths.size()];
-					std::wstring wStringPath;
-
-					// convert to wstring
-					wStringPath = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(stringPath);
-
-					m_tiles[i][j]->AddAnimation("TestAnim", wStringPath);
-					count++;
+					m_tiles[i][j]->AddAnimation("default", m_animPaths[animIndex]);
+					m_tiles[i][j]->PlayAnimation("default");
 				}
 			}
 		}
 	}
+
+	return true;
 }
 
-void TileMap::CreateTile(int row, int column)
+bool TileMap::Save(wstring path)
 {
+	std::ofstream outFile;
+	outFile.open(path);
+
+	if (outFile.is_open() == false)
+	{
+		LOG("Failed to save the tile map as couldn't open the file!");
+
+		return false;
+	}
+
+	json jsonOutput = {};
+	jsonOutput["Dimensions"] = { m_width, m_height };
+	jsonOutput["SpritePaths"] = {};
+
+	for (int i = 0; i < m_spritePaths.size(); ++i)
+	{
+		jsonOutput["SpritePaths"].push_back(m_spritePaths[i]);
+	}
+
+	jsonOutput["AnimPaths"] = {};
+
+	for (int i = 0; i < m_animPaths.size(); ++i)
+	{
+		jsonOutput["AnimPaths"].push_back(m_animPaths[i]);
+	}
+
+	jsonOutput["TileIndexes"] = {};
+
+	for (int i = 0; i < m_width; ++i)
+	{
+		jsonOutput["TileIndexes"][i].push_back({});
+
+		for (int j = 0; j < m_height; ++j)
+		{
+			if (m_tiles[i][j] == nullptr)
+			{
+				jsonOutput["TileIndexes"][i][j].push_back({ -1, -1 });
+			}
+			else
+			{
+				jsonOutput["TileIndexes"][i][j].push_back({ m_tiles[i][j]->GetSpriteIndex(), m_tiles[i][j]->GetAnimIndex() });
+			}
+
+		}
+	}
+
+	outFile << jsonOutput;
+
+	outFile.close();
+
+	return true;
+}
+
+bool TileMap::GetCoordsFromWorldPos(int* prow, int* pcolumn, const XMFLOAT2& pos)
+{
+	XMFLOAT2 relativePos = MathHelper::Minus(pos, XMFLOAT2(m_transform->GetPosition().x, m_transform->GetPosition().y));
+
+	XMFLOAT2 tileScale = XMFLOAT2(m_transform->GetScale().x * 2.0f, m_transform->GetScale().y * 2.0f);
+
+	relativePos = MathHelper::Plus(relativePos, XMFLOAT2(m_width * tileScale.x * 0.5f, m_height * tileScale.y * 0.5f));
+
+	*prow = (relativePos.x / (int)tileScale.x);
+	*pcolumn = ((int)relativePos.y / (int)tileScale.y);
+
+	if (*prow >= m_width || *pcolumn >= m_height || *prow < 0 || *pcolumn < 0)
+	{
+		LOG("Tried to create tile but the indexes passed in are out of range!");
+
+		return false;
+	}
+
+	return true;
+}
+
+bool TileMap::CreateTile(int row, int column, Tile*& ptile)
+{
+	if (row >= m_width || column >= m_height || row < 0 || column < 0)
+	{
+		LOG("Tried to create tile but the indexes passed in are out of range!");
+
+		return false;
+	}
+
 	m_tiles[row][column] = GameManager::GetInstance()->CreateGameObject<Tile>("Tile_" + to_string(row) + "_" + to_string(column));
 
 	XMFLOAT3 scale = GetTransform()->GetScale();
@@ -365,48 +263,76 @@ void TileMap::CreateTile(int row, int column)
 	m_tiles[row][column]->GetTransform()->SetScale(scale);
 
 	InitTilePosition(m_tiles[row][column], row, column);
+
+	ptile = m_tiles[row][column];
+
+	return true;
 }
 
-Tile* TileMap::GetTileFromWorldPos(XMFLOAT2 pos) // Takes a set of coordinates and finds if a tile is there
+bool TileMap::GetTileFromWorldPos(XMFLOAT2 pos, Tile*& ptile, int* prow, int* pcolumn) // Takes a set of coordinates and finds if a tile is there
 {
-	XMFLOAT2 tileMapPos = XMFLOAT2(m_transform->GetPosition().x, m_transform->GetPosition().y);
+	int row;
+	int column;
 
-	XMFLOAT2 relativePos = MathHelper::Minus(pos, tileMapPos);
-
-	XMFLOAT2 tileScale = XMFLOAT2(m_transform->GetScale().x * 2.0f, m_transform->GetScale().y * 2.0f);
-
-	relativePos = MathHelper::Plus(relativePos, XMFLOAT2(m_width * tileScale.x * 0.5f, m_height * tileScale.y * 0.5f));
-
-	int row = (relativePos.x / (int)tileScale.x) - 1;
-	int column = ((int)relativePos.y % (int)tileScale.y) - 1;
-
-	if (row >= m_width || column >= m_height)
+	if (GetCoordsFromWorldPos(&row, &column, pos) == false)
 	{
-		LOG("Tried to get tilemap using position that isn't in the tilemap");
+		ptile = nullptr;
 
-		return nullptr;
+		return false;
 	}
 
-	return m_tiles[row][column];
+	if (prow != nullptr)
+	{
+		*prow = row;
+	}
+
+	if (pcolumn != nullptr)
+	{
+		*pcolumn = column;
+	}
+
+	ptile = m_tiles[row][column];
+
+	return true;
 }
 
-Tile* TileMap::GetTileFromMapPos(int x, int y) // Returns the tile in the given TileMap coordinates
+bool TileMap::GetTileFromMapPos(int x, int y, Tile*& ptile) // Returns the tile in the given TileMap coordinates
 {
 	if (x < m_width && x >= 0 && y < m_height && y >= 0)
 	{
-		return m_tiles[x][y];
+		ptile = m_tiles[x][y];
+
+		return true;
 	}
 	else
 	{
 		LOG("ERROR - INVALID TILEMAP COORDINATE");
-		return nullptr;
+
+		ptile = nullptr;
+
+		return false;
 	}
 }
 
 void TileMap::SetTileAtWorldPos(XMFLOAT2 worldPos, Tile* newTile)
 {
+	XMFLOAT2 relativePos = MathHelper::Minus(worldPos, XMFLOAT2(m_transform->GetPosition().x, m_transform->GetPosition().y));
 
+	XMFLOAT2 tileScale = XMFLOAT2(m_transform->GetScale().x * 2.0f, m_transform->GetScale().y * 2.0f);
 
+	relativePos = MathHelper::Plus(relativePos, XMFLOAT2(m_width * tileScale.x * 0.5f, m_height * tileScale.y * 0.5f));
+
+	int row = (relativePos.x / (int)tileScale.x);
+	int column = ((int)relativePos.y / (int)tileScale.y);
+
+	if (row >= m_width || column >= m_height || row < 0 || column < 0)
+	{
+		LOG("Tried to get tile using position that isn't covered by the tilemap");
+
+		return;
+	}
+
+	m_tiles[row][column] = newTile;
 }
 
 void TileMap::SetTileAtMapPos(int posX, int posY, Tile* newTile)
@@ -414,22 +340,24 @@ void TileMap::SetTileAtMapPos(int posX, int posY, Tile* newTile)
 	m_tiles[posY][posX] = newTile;
 }
 
-XMFLOAT3 TileMap::GetScale()
+XMFLOAT3 TileMap::GetTileScale()
 {
-	return XMFLOAT3();
+	return m_transform->GetScale();
 }
 
-void TileMap::SetScale(XMFLOAT3 newScale)
+void TileMap::SetTileScale(XMFLOAT3 newScale)
 {
-	GetTransform()->SetScale(newScale);
+	m_transform->SetScale(newScale);
 }
 
 void TileMap::SetPassable(int x, int y, bool passable)
 {
-	m_tiles[x][y]->SetPassable(passable);
-}
+	if (x >= m_width || y >= m_height || x < 0 || y < 0)
+	{
+		LOG("Couldn't set passable on that tile as it is out of range!");
 
-void TileMap::SetPassable(Tile tile, bool passable)
-{
-	tile.SetPassable(passable);
+		return;
+	}
+
+	m_tiles[x][y]->SetIsPassable(passable);
 }
