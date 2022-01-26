@@ -457,11 +457,6 @@ void TileMap::SetScale(XMFLOAT3 newScale)
 	GetTransform()->SetScale(newScale);
 }
 
-vector<vector<Tile*>> TileMap::GetTiles() // Return the vector containing all tiles
-{
-	return m_tiles;
-}
-
 void TileMap::SetPassable(int x, int y, bool passable)
 {
 	m_tiles[x][y]->SetPassable(passable);

@@ -1,6 +1,5 @@
 #pragma once
 #include "Transform.h"
-
 #define FILEPATH_BUFFER_SIZE 200
 #define ANIM_NAME_SIZE 50
 
@@ -51,6 +50,7 @@ public:
 	const string& GetIdentifier();
 
 	//Setters
+
 
 
 	bool ContainsType(GameObjectType type);
