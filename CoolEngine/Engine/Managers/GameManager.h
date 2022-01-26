@@ -56,7 +56,7 @@ public:
 
 	GameObject* GetSelectedGameObject();
 
-	unordered_map<string, GameObject*>& GetAllGameObjects();
+	vector<GameObject*>& GetAllGameObjects();
 
 	CameraGameObject* GetCamera();
 	void SetCamera(CameraGameObject* pcamera);
@@ -87,6 +87,6 @@ public:
 
 	//Getters
 	unordered_map<string, Scene*> GetSceneList();
-	unordered_map<string, GameObject*>& GetAllGameObjectsInCurrentScene();
+	vector<GameObject*>& GetAllGameObjectsInCurrentScene();
 };
 

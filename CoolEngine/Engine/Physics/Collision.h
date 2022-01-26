@@ -64,5 +64,5 @@ public:
 	/// Check for collisions between all objects in scene
 	/// </summary>
 	/// <param name="gameObjectMap"></param>
-	static void Update(unordered_map<string, GameObject*> gameObjectMap);
+	static void Update(vector<GameObject*> gameObjectMap);
 };

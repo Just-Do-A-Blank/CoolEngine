@@ -546,7 +546,7 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 	Tile* tile = nullptr;
 	Particle* particle = nullptr;
 
-	unordered_map<std::string, GameObject*> gameObjects = scene->GetAllGameObjects();
+	vector<GameObject*> gameObjects = scene->GetAllGameObjects();
 	std::ofstream outFile;
 	outFile.open(fileLocation);
 	json jsonOutput{};
@@ -559,10 +559,10 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 
 	int count = 0;
 
-	for (unordered_map<string, GameObject*>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
+	for (int it = 0; it < gameObjects.size(); ++it)
 	{
 		saveObject = true;
-		GameObject* gameObjectToStore = it->second;
+		GameObject* gameObjectToStore = gameObjects[it];
 	
 		particleSys = dynamic_cast<ParticleSystem*>(gameObjectToStore);
 		tileMap = dynamic_cast<TileMap*>(gameObjectToStore);
