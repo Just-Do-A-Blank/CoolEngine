@@ -17,6 +17,8 @@
 
 #include "Engine/EditorUI/EditorUI.h"
 
+#include "FileIO/FileIO.h"
+
 #include "Engine/TileMap/TileMap/TileMap.h"
 #include "Engine/ResourceDefines.h"
 #include "Managers/DebugDrawManager.h"
