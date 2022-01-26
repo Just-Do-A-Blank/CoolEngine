@@ -75,6 +75,7 @@ void EditorUI::DrawMasterWindow()
 	ImGui::Checkbox("Scene Graph Window", &g_ShowSceneEditor);
 	ImGui::Checkbox("Scene Management Window", &g_ShowSceneManagement);
 	ImGui::Checkbox("GameObject Properties Window", &g_ShowGameObject);
+	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	ImGui::End();
 }
 
