@@ -37,8 +37,6 @@ public:
 	Tile* GetTileFromWorldPos(XMFLOAT2 pos);
 	Tile* GetTileFromMapPos(int x, int y);
 
-	vector<vector<Tile*>> GetTiles();
-
 	void SetPassable(int x, int y, bool passable);
 	void SetPassable(Tile tile, bool passable);
 
@@ -48,8 +46,11 @@ public:
 	XMFLOAT3 GetScale();
 	void SetScale(XMFLOAT3 newScale);
 
+	const int GetWidth() const{ return m_width; }
+	const int GetHeight() const { return m_height; }
+
 protected:
-	
+
 
 private:
 	void InitMap();
@@ -60,7 +61,7 @@ private:
 
 	void LoadMap(wstring path);
 
-	void AssignSprites();	
+	void AssignSprites();
 
 	void CreateTile(int row, int column);
 
@@ -70,9 +71,9 @@ private:
 
 	int	m_tileScaleInt;
 	XMFLOAT3 m_tileScale;
-	
+
 	std::vector<std::vector<Tile*>>	m_tiles;
-	
+
 	std::vector<int> m_tileSpriteIndex;
 	std::vector<string>	m_spritePaths;
 	std::vector<string>	m_animPaths;

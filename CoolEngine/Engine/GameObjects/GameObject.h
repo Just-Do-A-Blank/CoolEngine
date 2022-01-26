@@ -1,6 +1,5 @@
 #pragma once
 #include "Transform.h"
-
 #define FILEPATH_BUFFER_SIZE 200
 #define ANIM_NAME_SIZE 50
 
@@ -21,6 +20,7 @@ class GameObject : public EditorUIComponent
 {
 	friend class GameManager;
 	friend class Scene;
+	friend class FileIO;
 private:
 	string m_identifier;
 
@@ -50,6 +50,7 @@ public:
 	const string& GetIdentifier();
 
 	//Setters
+
 
 
 	bool ContainsType(GameObjectType type);

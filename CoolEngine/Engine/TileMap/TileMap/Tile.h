@@ -34,6 +34,8 @@ public:
 	void SetID(int id) { m_ID = id; }
 	void SetPassable(bool passable);
 
+	const bool GetPassable() const { return m_Passable; }
+
 protected:
 
 private:
