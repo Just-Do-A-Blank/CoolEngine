@@ -10,6 +10,7 @@
 #include "Engine/Graphics/SpriteAnimation.h"
 #include "Engine/GameObjects/CameraGameObject.h"
 #include "Engine/GameObjects/PlayerGameObject.h"
+#include "Engine/GameObjects/EnemyGameObject.h"
 
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/Managers/Events/EventObserver.h"
@@ -17,7 +18,10 @@
 
 #include "Engine/EditorUI/EditorUI.h"
 
+#include "FileIO/FileIO.h"
+
 #include "Engine/TileMap/TileMap/TileMap.h"
+#include "Engine/AI/Pathfinding.h"
 #include "Engine/ResourceDefines.h"
 #include "Managers/DebugDrawManager.h"
 #include "Scene/Scene.h"
@@ -123,6 +127,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//Debug Manager
 #if _DEBUG
 	DebugDrawManager::GetInstance()->Init(g_pd3dDevice);
+	
+
 #endif
 
 	//Create camera
@@ -180,10 +186,12 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	string obj0Name = "TestObject0";
 	string obj1Name = "TestObject1";
 	string playerName = "Player";
+	string enemyName = "Enemy";
 
 	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj0Name);
 	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj1Name);
 	pgameManager->CreateGameObject<PlayerGameObject>(playerName);
+	pgameManager->CreateGameObject<EnemyGameObject>(enemyName);
 
 	RenderableCollidableGameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj0Name);
 
@@ -239,7 +247,32 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->GetTransform()->SetScale(objectScale);
 	pgameObject->SetShape(pbox);
 
+
+	//Init enemy object
+	EnemyGameObject* egameObject = pgameManager->GetGameObjectUsingIdentifier<EnemyGameObject>(enemyName);
+	objectPos = XMFLOAT3(-400.0f, 200.0f, 0);
+	objectScale = XMFLOAT3(40, 40, 40);
+
+	pbox = new Box(pgameObject->GetTransform());
+	pbox->SetIsCollidable(isCollision);
+	pbox->SetIsTrigger(isCollision);
+
+	egameObject->SetMesh(QUAD_MESH_NAME);
+	egameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+	egameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+	egameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
+	egameObject->GetTransform()->SetPosition(objectPos);
+	egameObject->GetTransform()->SetScale(objectScale);
+	egameObject->SetShape(pbox);
+
+	
+	//vector<node*> path2 = Pathfinding::Instance()->FindPath(pgameObject->GetTransform()->GetPosition(), XMFLOAT3(15, 15, 0));
+
+
 	g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, 0, 0), XMFLOAT3(25, 25, 25), "TestMap");
+
+	Pathfinding::GetInstance()->Initialize(g_testMap1);
+
 
 	ExampleObserver observer(new int(10), pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName));
 	EventManager::Instance()->AddClient(EventType::KeyPressed, &observer);
@@ -279,9 +312,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
-
-
-			EventManager::Instance()->ProcessEvents();
 
 		}
 		else

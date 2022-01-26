@@ -27,12 +27,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\AI\Pathfinding.h" />
     <ClInclude Include="Engine\EditorUI\EditorUI.h" />
+    <ClInclude Include="Engine\FileIO\FileIO.h" />
+    <ClInclude Include="Engine\FileIO\FileIOCache.h" />
     <ClInclude Include="Engine\GameObjects\CameraGameObject.h" />
     <ClInclude Include="Engine\GameObjects\CharacterGameObject.h" />
     <ClInclude Include="Engine\GameObjects\CollidableGameObject.h" />
     <ClInclude Include="Engine\GameObjects\RenderableCollidableGameObject.h" />
     <ClInclude Include="Engine\GameObjects\DebugRect.h" />
+    <ClInclude Include="Engine\GameObjects\EnemyGameObject.h" />
     <ClInclude Include="Engine\GameObjects\GameObject.h" />
     <ClInclude Include="Engine\GameObjects\PlayerGameObject.h" />
     <ClInclude Include="Engine\GameObjects\RenderableGameObject.h" />
@@ -118,12 +122,16 @@
     <ClInclude Include="Engine\GameUI\ImageComponent.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\AI\Pathfinding.cpp" />
     <ClCompile Include="Engine\EditorUI\EditorUI.cpp" />
+    <ClCompile Include="Engine\FileIO\FileIO.cpp" />
+    <ClCompile Include="Engine\FileIO\FileIOCache.cpp" />
     <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\CharacterGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\CollidableGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\RenderableCollidableGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\DebugRect.cpp" />
+    <ClCompile Include="Engine\GameObjects\EnemyGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\GameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\PlayerGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\RenderableGameObject.cpp" />
@@ -361,7 +369,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>TOOL;TILE_MAP_TOOL;_DEBUG;_CONSOLE;EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>TOOL;TILE_MAP_TOOL;_CONSOLE;EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <ForcedIncludeFiles>$(ProjectDir)Engine\stdafx.h</ForcedIncludeFiles>
       <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
@@ -372,7 +380,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)Engine\Bin\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)Engine\Bin\$(Configuration)\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">

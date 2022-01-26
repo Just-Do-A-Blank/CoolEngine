@@ -203,24 +203,24 @@ bool Collision::CircleCollisionAndResponse(Circle* circle1, Circle* circle2)
 	return false;
 }
 
-void Collision::Update(unordered_map<string, GameObject*> gameObjectMap)
+void Collision::Update(vector<GameObject*> gameObjectMap)
 {
 	CollidableGameObject* pcollidable1 = nullptr;
 	CollidableGameObject* pcollidable2 = nullptr;
 
-	for (unordered_map<string, GameObject*>::iterator it1 = gameObjectMap.begin(); it1 != gameObjectMap.end(); ++it1)
+	for (int it1 = 0; it1 < gameObjectMap.size(); ++it1)
 	{
-		for (unordered_map<string, GameObject*>::iterator it2 = gameObjectMap.begin(); it2 != gameObjectMap.end(); ++it2)
+		for (int it2 = 0; it2 < gameObjectMap.size(); ++it2)
 		{
 			if (it1 != it2)
 			{
-				if (it1->second->ContainsType(GameObjectType::COLLIDABLE) == false || it2->second->ContainsType(GameObjectType::COLLIDABLE) == false)
+				if (gameObjectMap[it1]->ContainsType(GameObjectType::COLLIDABLE) == false || gameObjectMap[it2]->ContainsType(GameObjectType::COLLIDABLE) == false)
 				{
 					continue;
 				}
 
-				pcollidable1 = dynamic_cast<CollidableGameObject*>(it1->second);
-				pcollidable2 = dynamic_cast<CollidableGameObject*>(it2->second);
+				pcollidable1 = dynamic_cast<CollidableGameObject*>(gameObjectMap[it1]);
+				pcollidable2 = dynamic_cast<CollidableGameObject*>(gameObjectMap[it2]);
 
 				if (pcollidable1->GetShape() == nullptr || pcollidable2->GetShape() == nullptr)
 				{

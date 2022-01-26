@@ -53,7 +53,7 @@ public:
 
 	GameObject* GetSelectedGameObject();
 
-	unordered_map<string, GameObject*>& GetAllGameObjects();
+	vector<GameObject*>& GetAllGameObjects();
 
 	template<typename T>
 	T* GetGameObjectUsingIdentifier(string& identifier)
@@ -81,6 +81,6 @@ public:
 
 	//Getters
 	unordered_map<string, Scene*> GetSceneList();
-	unordered_map<string, GameObject*>& GetAllGameObjectsInCurrentScene();
+	vector<GameObject*>& GetAllGameObjectsInCurrentScene();
 };
 

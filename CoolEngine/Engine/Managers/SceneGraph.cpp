@@ -2,6 +2,8 @@
 #include "Engine/GameObjects/Transform.h"
 #include "Engine/GameUI/GameUIComponent.h"
 
+#include <algorithm>
+
 template<class T>
 SceneGraph<T>::SceneGraph()
 {
@@ -27,6 +29,7 @@ TreeNode<T>* SceneGraph<T>::NewNode(T* gameObject)
 		m_rootNode->PreviousSibling = nullptr;
 		m_sceneTreeNodeMap.insert(pair<string, TreeNode<T>*>(gameObject->GetIdentifier(), m_rootNode));
 		m_sceneGameObjectsMap.insert(pair<string, T*>(gameObject->GetIdentifier(), gameObject));
+		m_sceneGameObjectList.push_back(gameObject);
 		return m_rootNode;		
 	}
 
@@ -40,6 +43,7 @@ TreeNode<T>* SceneGraph<T>::NewNode(T* gameObject)
 	string gameObjectName = gameObject->GetIdentifier();
 	m_sceneTreeNodeMap.insert(pair<string, TreeNode<T>*>(gameObjectName, newNode));
 	m_sceneGameObjectsMap.insert(pair<string, T*>(gameObjectName, gameObject));
+	m_sceneGameObjectList.push_back(gameObject);
 	return newNode;
 }
 
@@ -128,6 +132,7 @@ void SceneGraph<T>::DeleteNode(TreeNode<T>* currentNode)
 	string gameObjectName = currentNode->GameObject->GetIdentifier();
 	m_sceneTreeNodeMap.erase(gameObjectName);
 	m_sceneGameObjectsMap.erase(gameObjectName);
+	m_sceneGameObjectList.erase(remove(m_sceneGameObjectList.begin(), m_sceneGameObjectList.end(), currentNode->GameObject));
 }
 
 template<class T>
@@ -187,6 +192,7 @@ void SceneGraph<T>::DeleteGameObjectUsingNode(TreeNode<T>* currentNode)
 	string gameObjectName = currentNode->GameObject->GetIdentifier();
 	m_sceneTreeNodeMap.erase(gameObjectName);
 	m_sceneGameObjectsMap.erase(gameObjectName);
+	m_sceneGameObjectList.erase(remove(m_sceneGameObjectList.begin(), m_sceneGameObjectList.end(), currentNode->GameObject));
 
 	delete currentNode->GameObject;
 	currentNode->GameObject = nullptr;
@@ -214,9 +220,9 @@ TreeNode<T>* SceneGraph<T>::GetNodeUsingIdentifier(string identifier)
 }
 
 template<class T>
-unordered_map<string, T*>& SceneGraph<T>::GetAllGameObjects()
+vector<T*>& SceneGraph<T>::GetAllGameObjects()
 {
-	return m_sceneGameObjectsMap;
+	return m_sceneGameObjectList;
 }
 
 template<class T>

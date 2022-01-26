@@ -25,15 +25,15 @@ void UICanvas::Render(RenderStruct& renderStruct)
 {
 	for (int i = 0; i < GraphicsManager::GetInstance()->GetNumLayers(); ++i)
 	{
-		unordered_map<string, GameUIComponent*> uiElementList = m_pUISceneGraph->GetAllGameObjects();
-		for (unordered_map<string, GameUIComponent*>::iterator it = uiElementList.begin(); it != uiElementList.end(); ++it)
+		vector<UiElement*> uiElementList = m_pUiSceneGraph->GetAllGameObjects();
+		for (int it = 0; it < uiElementList.size(); ++it)
 		{
-			if (it->second == this || it->second->IsRenderable() == false || it->second->GetLayer() != i)
+			if (uiElementList[it]->IsRenderable() == false || uiElementList[it]->GetLayer() != i)
 			{
 				continue;
 			}
 
-			it->second->Render(renderStruct);
+			uiElementList[it]->Render(renderStruct);
 		}
 	}
 }
@@ -43,10 +43,10 @@ void UICanvas::Update()
 {
 	for (int i = 0; i < GraphicsManager::GetInstance()->GetNumLayers(); ++i)
 	{
-		unordered_map<string, GameUIComponent*> uiElementList = m_pUISceneGraph->GetAllGameObjects();
-		for (unordered_map<string, GameUIComponent*>::iterator it = uiElementList.begin(); it != uiElementList.end(); ++it)
+		vector<UiElement*> uiElementList = m_pUiSceneGraph->GetAllGameObjects();
+		for (int it = 0; it < uiElementList.size(); ++it)
 		{
-			it->second->Update();
+			uiElementList[it]->Update();
 		}
 	}
 }

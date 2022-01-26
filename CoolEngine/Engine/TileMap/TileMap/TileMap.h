@@ -42,11 +42,16 @@ public:
 	void SetPassable(int x, int y, bool passable);
 	void SetPassable(Tile tile, bool passable);
 
+	const bool GetPassable(int x, int y)const;
+
 	void SetTileAtWorldPos(int posX, int posY, Tile newTile);
 	void SetTileAtMapPos(int mapPosX, int mapPosY, Tile* newTile);
 
 	XMFLOAT3 GetScale();
 	void SetScale(XMFLOAT3 newScale);
+
+	const int GetWidth() const{ return m_width; }
+	const int GetHeight() const { return m_height; }
 
 protected:
 	

@@ -88,7 +88,7 @@ void GameManager::DeleteScene(Scene* pscene)
     m_sceneMap.erase(pscene->GetSceneIdentifier());
 }
 
-unordered_map<string, GameObject*>& GameManager::GetAllGameObjects()
+vector<GameObject*>& GameManager::GetAllGameObjects()
 {
     return m_pcurrentScene->GetAllGameObjects();
 }
@@ -133,7 +133,7 @@ string& GameManager::GetCurrentSceneName()
     return m_pcurrentScene->GetSceneIdentifier();
 }
 
-unordered_map<string, GameObject*>& GameManager::GetAllGameObjectsInCurrentScene()
+vector<GameObject*>& GameManager::GetAllGameObjectsInCurrentScene()
 {
     return m_pcurrentScene->GetAllGameObjects();
 }
