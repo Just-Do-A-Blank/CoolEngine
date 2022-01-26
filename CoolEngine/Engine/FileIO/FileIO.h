@@ -151,15 +151,11 @@ public:
 
 	/// <summary>
 	/// Loads game objects, tiles and a map from a JSON file. 
-	/// </summary>
-	static void LoadScene(const char* fileAddress, GameManager* scene, ParticleManager* pManager);
-
-	/// <summary>
-	/// Loads a Save File from a JSON file. Needs a file address to do so. Code in this function is temorary until the structure of the object that needs loading is made clear
-	/// </summary>
 	/// <param name="fileAddress"></param>
-	/// <returns></returns>
-	static void LoadSavefile(const char* fileAddress);
+	/// <param name="scene"></param>
+	/// <param name="pManager"></param>
+	/// </summary>
+	static void LoadScene(const char* fileAddress, GameManager* pScene, ParticleManager* pManager);
 
 	/// <summary>
 	/// Takes a file location and then returns a nlohmann::json. Throws an exception in the visual studios output channel if it has failed to open the file.
@@ -183,7 +179,6 @@ public:
 	/// <param name="particleNumber"></param>
 	/// <returns></returns>
 	static ParticleData FileIO::LoadParticle(json j, int particleNumber);
-
 
 	/// <summary>
 	/// This function allows for the saving of a custom json file.

@@ -132,11 +132,11 @@ std::wstring FileIO::ToWstring(std::string& string)
 	return wide;
 }
 
-void FileIO::LoadScene(const char* fileAddress, GameManager* scene, ParticleManager* pManager)
+void FileIO::LoadScene(const char* fileAddress, GameManager* pScene, ParticleManager* pManager)
 {
 	json j = FileIO::LoadJson(fileAddress);
 
-	LoadMap(j, scene);
+	LoadMap(j, pScene);
 	std::vector<GameObject*> gameObj = LoadMultipleGameObjects(j);
 
 	std::string identifer;
@@ -148,22 +148,22 @@ void FileIO::LoadScene(const char* fileAddress, GameManager* scene, ParticleMana
 		if (gameObj[i]->ContainsType(GameObjectType::COLLIDABLE) && gameObj[i]->ContainsType(GameObjectType::RENDERABLE))
 		{
 			RenderableCollidableGameObject* rCGO;
-			scene->CreateGameObject<RenderableCollidableGameObject>(identifer);
-			rCGO = scene->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(identifer);
+			pScene->CreateGameObject<RenderableCollidableGameObject>(identifer);
+			rCGO = pScene->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(identifer);
 			*rCGO = *dynamic_cast<RenderableCollidableGameObject*>(gameObj[i]);
 		}
 		else if (gameObj[i]->ContainsType(GameObjectType::COLLIDABLE))
 		{
 			CollidableGameObject* cGO;
-			scene->CreateGameObject<CollidableGameObject>(identifer);
-			cGO = scene->GetGameObjectUsingIdentifier<CollidableGameObject>(identifer);
+			pScene->CreateGameObject<CollidableGameObject>(identifer);
+			cGO = pScene->GetGameObjectUsingIdentifier<CollidableGameObject>(identifer);
 			*cGO = *dynamic_cast<CollidableGameObject*>(gameObj[i]);
 		}
 		else if (gameObj[i]->ContainsType(GameObjectType::RENDERABLE))
 		{
 			RenderableGameObject* rGO;
-			scene->CreateGameObject<RenderableGameObject>(identifer);
-			rGO = scene->GetGameObjectUsingIdentifier<RenderableGameObject>(identifer);
+			pScene->CreateGameObject<RenderableGameObject>(identifer);
+			rGO = pScene->GetGameObjectUsingIdentifier<RenderableGameObject>(identifer);
 			*rGO = *dynamic_cast<RenderableGameObject*>(gameObj[i]);
 		}
 	}
