@@ -49,7 +49,7 @@ unordered_map<string, UICanvas*> UIManager::GetCanvasList()
     return m_uiCanvasMap;
 }
 
-unordered_map<string, GameUIComponent*>& UIManager::GetAllUIComponentsInCurrentCanvas()
+vector<GameUIComponent*>& UIManager::GetAllUIComponentsInCurrentCanvas()
 {
     return m_pcurrentCanvas->GetAllGameUIComponents();
 }

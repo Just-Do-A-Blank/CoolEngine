@@ -56,7 +56,7 @@ public:
 		return  static_cast<T*>(m_pUISceneGraph->GetGameObjectUsingIdentifier(identifier));
 	}
 
-	unordered_map<string, GameUIComponent*>& GetAllGameUIComponents();
+	vector<GameUIComponent*>& GetAllGameUIComponents();
 
 	virtual void Render(RenderStruct& renderStruct);
 	virtual void Update();

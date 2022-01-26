@@ -16,7 +16,7 @@ UICanvas::UICanvas(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLO
 }
 
 
-unordered_map<string, GameUIComponent*>& UICanvas::GetAllGameUIComponents()
+vector<GameUIComponent*>& UICanvas::GetAllGameUIComponents()
 {
 	return m_pUISceneGraph->GetAllGameObjects();
 }
@@ -25,7 +25,7 @@ void UICanvas::Render(RenderStruct& renderStruct)
 {
 	for (int i = 0; i < GraphicsManager::GetInstance()->GetNumLayers(); ++i)
 	{
-		vector<UiElement*> uiElementList = m_pUiSceneGraph->GetAllGameObjects();
+		vector<GameUIComponent*> uiElementList = m_pUISceneGraph->GetAllGameObjects();
 		for (int it = 0; it < uiElementList.size(); ++it)
 		{
 			if (uiElementList[it]->IsRenderable() == false || uiElementList[it]->GetLayer() != i)
@@ -43,7 +43,7 @@ void UICanvas::Update()
 {
 	for (int i = 0; i < GraphicsManager::GetInstance()->GetNumLayers(); ++i)
 	{
-		vector<UiElement*> uiElementList = m_pUiSceneGraph->GetAllGameObjects();
+		vector<GameUIComponent*> uiElementList = m_pUISceneGraph->GetAllGameObjects();
 		for (int it = 0; it < uiElementList.size(); ++it)
 		{
 			uiElementList[it]->Update();

@@ -38,6 +38,6 @@ public:
 
     //Getters
     unordered_map<string, UICanvas*> GetCanvasList();
-    unordered_map<string, GameUIComponent*>& GetAllUIComponentsInCurrentCanvas();
+	vector<GameUIComponent*>& GetAllUIComponentsInCurrentCanvas();
 };
 
