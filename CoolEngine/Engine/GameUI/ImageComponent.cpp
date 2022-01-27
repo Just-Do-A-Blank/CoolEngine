@@ -5,7 +5,12 @@
 
 ImageComponent::ImageComponent(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation) : GameUIComponent(identifier, position, scale, rotation)
 {
-	ID3D11ShaderResourceView* psRV = GraphicsManager::GetInstance()->GetShaderResourceView(DEFAULT_IMGUI_IMAGE);
+	
+}
+
+void ImageComponent::Init(wstring textureFilePath)
+{
+	ID3D11ShaderResourceView* psRV = GraphicsManager::GetInstance()->GetShaderResourceView(textureFilePath);
 
 	if (psRV == nullptr)
 	{
@@ -13,7 +18,5 @@ ImageComponent::ImageComponent(string identifier, XMFLOAT3& position, XMFLOAT3& 
 
 		return;
 	}
-
 	m_ptexture = psRV;
-
 }
