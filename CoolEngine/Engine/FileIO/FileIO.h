@@ -70,7 +70,8 @@ enum JSON_VARIABLE_TYPE
 	JSON_VARIABLE_TYPE_WCHAR_T,
 	JSON_VARIABLE_TYPE_XMFLOAT2,
 	JSON_VARIABLE_TYPE_XMFLOAT3,
-	JSON_VARIABLE_TYPE_XMFLOAT4
+	JSON_VARIABLE_TYPE_XMFLOAT4,
+	JSON_VARIABLE_TYPE_GAME_OBJECTS
 };
 
 /// <summary>
@@ -191,6 +192,11 @@ public:
 	static bool SaveObjectInJson(const char* fileLocation, std::vector<std::string> varNames, std::vector<JSON_VARIABLE_TYPE> types, std::vector<void*> data);
 
 	/// <summary>
+	/// To DO
+	/// </summary>
+	static void SaveGameObject(const char* fileLocation ,GameObject* gameObject);
+
+	/// <summary>
 	/// Saves the current active scene in a json file.
 	/// </summary>
 	/// <param name="fileLocation"></param>
@@ -275,7 +281,8 @@ private:
 	/// <param name="shader"></param>
 	/// <returns></returns>
 	static wstring GrabAlbedoName(ID3D11ShaderResourceView* albedo);
-
+	
+	static json PackJson(GameObject* dataToPack, int count);
 	 /// <summary>
 	 /// Local cache that contains data on the location textures, shaders and more.
 	 /// </summary>
