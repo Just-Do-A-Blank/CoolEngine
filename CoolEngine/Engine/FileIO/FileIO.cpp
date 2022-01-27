@@ -211,7 +211,7 @@ void FileIO::LoadMap(json file, GameManager* scene)
 		XMFLOAT3 position(tileFile.at(i)["Position"][0], tileFile.at(i)["Position"][1], tileFile.at(i)["Position"][2]);
 		XMFLOAT3 scale(tileFile.at(i)["Scale"][0], tileFile.at(i)["Scale"][1], tileFile.at(i)["Scale"][2]);
 		wstring location = ToWstring((std::string)tileFile.at(i)["TileData"]);
-		TileMap* tileMap = new TileMap(location, position, scale, tileFile.at(i)["Name"]);
+		TileMap* tileMap = new TileMap(location, position, tileFile.at(i)["Name"]);
 		std::string name = tileMap->GetIdentifier();
 		scene->CreateGameObject<GameObject>(name);
 		GameObject* gameObject = scene->GetGameObjectUsingIdentifier<GameObject>(name);

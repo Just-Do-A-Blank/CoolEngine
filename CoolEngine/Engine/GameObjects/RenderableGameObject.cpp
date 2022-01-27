@@ -81,8 +81,6 @@ void RenderableGameObject::CreateEngineUI()
 	GameObject::CreateEngineUI();
 
 	ImGui::Spacing();
-	ImGui::Separator();
-	ImGui::Spacing();
 
 	EditorUI::Texture("Texture", m_texFilepath, m_palbedoSRV);
 
@@ -135,7 +133,7 @@ Mesh* RenderableGameObject::GetMesh() const
 	return m_pmesh;
 }
 
-SpriteAnimation& RenderableGameObject::GetAnimation(std::string name)
+SpriteAnimation RenderableGameObject::GetAnimation(std::string name)
 {
 	return m_animations[name];
 }

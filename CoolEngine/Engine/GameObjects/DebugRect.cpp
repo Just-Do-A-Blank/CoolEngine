@@ -8,13 +8,13 @@ DebugRect::DebugRect(wstring albedoName, string identifier, bool screenSpace) : 
 
 	if (screenSpace)
 	{
-		SetVertexShader(nullptr); //TODO
-		SetPixelShader(nullptr); //TODO
+		SetVertexShader(SCREENSPACE_VERTEX_SHADER_NAME);
+		SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
 	}
 	else
 	{
-		SetVertexShader(DEFAULT_VERTEX_SHADER_NAME); //TODO
-		SetPixelShader(DEFAULT_PIXEL_SHADER_NAME); //TODO
+		SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+		SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
 	}
 }
 

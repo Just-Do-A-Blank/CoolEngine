@@ -27,8 +27,13 @@
 #include "Scene/Scene.h"
 #include "Engine/Managers/GameManager.h"
 #include <Engine/Physics/Box.h>
+#include "Engine/Managers/UIManager.h"
+#include "Engine/GameUI/GameUIComponent.h"
+#include "Engine/GameUI/ImageComponent.h"
+#include "Engine/GameUI/TextComponent.h"
 
 #include "Physics/ParticleManager.h"
+#include "Engine/Managers/FontManager.h"
 
 #if TOOL
 #include "Engine/Tools/ToolBase.h"
@@ -116,6 +121,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	AudioManager::GetInstance()->SetListenerPosition(XMFLOAT3(0, 0, 0));
 
 	GraphicsManager::GetInstance()->Init(g_pd3dDevice);
+	GraphicsManager::GetInstance()->SetHWND(&g_hWnd);
 
 	g_inputController = new Inputs();
 
@@ -141,6 +147,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	g_pcamera = new CameraGameObject("Camera");
 	g_pcamera->Initialize(cameraPos, cameraForward, cameraUp, windowWidth, windowHeight, nearDepth, farDepth);
+
+	GameManager::GetInstance()->SetCamera(g_pcamera);
 
 	//Create scene
 	GameManager* pgameManager = GameManager::GetInstance();
@@ -186,7 +194,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj0Name);
 	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj1Name);
 	pgameManager->CreateGameObject<PlayerGameObject>(playerName);
-	pgameManager->CreateGameObject<EnemyGameObject>(enemyName);
+	//pgameManager->CreateGameObject<EnemyGameObject>(enemyName);
 
 	RenderableCollidableGameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj0Name);
 
@@ -244,29 +252,25 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 
 	//Init enemy object
-	EnemyGameObject* egameObject = pgameManager->GetGameObjectUsingIdentifier<EnemyGameObject>(enemyName);
-	objectPos = XMFLOAT3(-400.0f, 200.0f, 0);
-	objectScale = XMFLOAT3(40, 40, 40);
+	//EnemyGameObject* egameObject = pgameManager->GetGameObjectUsingIdentifier<EnemyGameObject>(enemyName);
+	//objectPos = XMFLOAT3(-400.0f, 200.0f, 0);
+	//objectScale = XMFLOAT3(40, 40, 40);
 
-	pbox = new Box(pgameObject->GetTransform());
-	pbox->SetIsCollidable(isCollision);
-	pbox->SetIsTrigger(isCollision);
+	//pbox = new Box(pgameObject->GetTransform());
+	//pbox->SetIsCollidable(isCollision);
+	//pbox->SetIsTrigger(isCollision);
 
-	egameObject->SetMesh(QUAD_MESH_NAME);
-	egameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-	egameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	egameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
-	egameObject->GetTransform()->SetPosition(objectPos);
-	egameObject->GetTransform()->SetScale(objectScale);
-	egameObject->SetShape(pbox);
+	//egameObject->SetMesh(QUAD_MESH_NAME);
+	//egameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+	//egameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+	//egameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
+	//egameObject->GetTransform()->SetPosition(objectPos);
+	//egameObject->GetTransform()->SetScale(objectScale);
+	//egameObject->SetShape(pbox);
 
-	
-	//vector<node*> path2 = Pathfinding::Instance()->FindPath(pgameObject->GetTransform()->GetPosition(), XMFLOAT3(15, 15, 0));
+	g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, 0, 0), "TestMap");
 
-
-	g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, 0, 0), XMFLOAT3(25, 25, 25), "TestMap");
-
-	Pathfinding::GetInstance()->Initialize(g_testMap1);
+	//Pathfinding::GetInstance()->Initialize(g_testMap1);
 
 
 	ExampleObserver observer(new int(10), pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName));
@@ -276,7 +280,15 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, &observer);
 	EventManager::Instance()->AddClient(EventType::MouseMoved, &observer);
 
-	// Init a particle system
+
+	FontManager::GetInstance()->LoadFont("Resources/Fonts/ComicSans.xml", L"Resources/Fonts/ComicSans.dds", "comicSans");
+	UIManager::GetInstance()->Init(g_pd3dDevice);
+	UIManager::GetInstance()->CreateCanvas("testCanvas", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
+	TextComponent* tc = UIManager::GetInstance()->CreateUIComponent<TextComponent>("TestText", XMFLOAT3(0.0, 20.0, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f));
+	tc->Init("Cool Engine!", "comicSans", 16, Colors::Yellow, g_pd3dDevice);
+	UIManager::GetInstance()->CreateUIComponent<ImageComponent>("TestUIImage", XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT3(0.9f, 0.9f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
+
+	
 	XMFLOAT3 pos = XMFLOAT3( 300, 300, 5 );
 	XMFLOAT3 rot = XMFLOAT3(0, 0, 0 );
 	XMFLOAT3 scale = XMFLOAT3(25, 25, 25);
@@ -632,6 +644,7 @@ void Render()
 	pgamemanager->Render(renderStruct);
 
 	ParticleManager::GetInstance()->Render(renderStruct.m_pcontext);
+	UIManager::GetInstance()->Render(renderStruct);
 
 #if _DEBUG
 	DebugDrawManager::GetInstance()->Render(renderStruct);

@@ -206,6 +206,7 @@ void Pathfinding::Initialize(TileMap* map)
 	vector<node*> tempVec;
 	node* tempNode;
 
+	Tile* ptile;
 
 	//Setting up tile grid
 	for (int x = 0; x < m_mapWidth; ++x)
@@ -213,9 +214,11 @@ void Pathfinding::Initialize(TileMap* map)
 		tempVec.clear();
 		for (int y = 0; y < m_mapHeight; ++y)
 		{
+			map->GetTileFromMapPos(x, y, ptile);
+
 			tempNode = new node();
-			tempNode->m_pos = map->GetTileFromMapPos(x, y)->GetTransform()->GetPosition();
-			tempNode->m_obstacle = map->GetTileFromMapPos(x, y)->GetPassable();
+			tempNode->m_pos = ptile->GetTransform()->GetPosition();
+			tempNode->m_obstacle = ptile->GetIsPassable();
 			tempVec.push_back(tempNode);
 		}
 		m_pNodes.push_back(tempVec);

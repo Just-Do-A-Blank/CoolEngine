@@ -20,14 +20,15 @@
 
 //Vertex shaders
 #define DEFAULT_VERTEX_SHADER_NAME L"Engine\\Graphics\\Shaders\\BasicVertex.hlsl"
-#define PASSTHROUGH_VERTEX_SHADER_NAME L"Engine\\Graphics\\Shaders\\PassthroughVertex.hlsl"
+#define SCREENSPACE_VERTEX_SHADER_NAME L"Engine\\Graphics\\Shaders\\ScreenSpaceVertex.hlsl"
 
 //Pixel shaders
 #define DEFAULT_PIXEL_SHADER_NAME L"Engine\\Graphics\\Shaders\\BasicPixel.hlsl"
+#define TEXT_PIXEL_SHADER_NAME L"Engine\\Graphics\\Shaders\\TextPixel.hlsl"
 
 //Misc
 #define POS_TEX_DUMMY_FILE_NAME L"Engine\\Graphics\\Shaders\\DummyPosTex.hlsl"
 
 //TileMaps
-#define TEST_MAP L"Resources\\Levels\\TileMaps\\TestMap.txt"
+#define TEST_MAP L"Resources\\Levels\\TileMaps\\test.json"
 
