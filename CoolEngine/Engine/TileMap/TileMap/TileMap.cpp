@@ -336,6 +336,7 @@ void TileMap::AddAnimPath(Tile* ptile, wstring& path)
 #endif
 }
 
+#if EDITOR
 void TileMap::CreateEngineUI()
 {
 	ImGui::Separator();
@@ -400,6 +401,7 @@ void TileMap::CreateEngineUI()
 	ImGui::Spacing();
 	ImGui::Separator();
 }
+#endif
 
 bool TileMap::GetTileFromWorldPos(XMFLOAT2 pos, Tile*& ptile, int* prow, int* pcolumn) // Takes a set of coordinates and finds if a tile is there
 {

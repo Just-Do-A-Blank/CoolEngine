@@ -425,7 +425,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;_UNICODE;UNICODE</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <ForcedIncludeFiles>$(ProjectDir)Engine\stdafx.h</ForcedIncludeFiles>
       <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
