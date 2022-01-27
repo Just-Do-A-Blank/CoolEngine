@@ -15,6 +15,7 @@ class Mesh;
 class GraphicsManager : public Singleton<GraphicsManager>
 {
 	std::unordered_map<wstring, ID3D11ShaderResourceView*> m_textureSRVs;
+	std::unordered_map<wstring, ID3D11Resource*> m_textureResources;
 
 	std::unordered_map<wstring, ID3D11VertexShader*> m_vertexShaders;
 	std::unordered_map<wstring, ID3D11PixelShader*> m_pixelShaders;
@@ -50,6 +51,7 @@ public:
 	ID3D11PixelShader* GetPixelShader(wstring name) const;
 
 	ID3D11ShaderResourceView* GetShaderResourceView(wstring name) const;
+	ID3D11Resource* GetResource(wstring name) const;
 
 	Mesh* GetMesh(wstring name) const;
 
