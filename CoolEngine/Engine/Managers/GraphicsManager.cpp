@@ -269,7 +269,7 @@ Mesh* GraphicsManager::GetMesh(wstring name) const
 	return m_meshes.at(name);
 }
 
-SpriteAnimation& GraphicsManager::GetAnimation(wstring name) const
+SpriteAnimation GraphicsManager::GetAnimation(wstring name) const
 {
 	if (m_animationFrames.count(name) == 0)
 	{

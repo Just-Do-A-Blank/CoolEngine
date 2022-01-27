@@ -58,7 +58,7 @@ public:
 
 	Mesh* GetMesh(wstring name) const;
 
-	SpriteAnimation& GetAnimation(wstring name) const;
+	SpriteAnimation GetAnimation(wstring name) const;
 
 	int GetNumLayers();
 
