@@ -526,6 +526,30 @@ bool EditorUI::InputText(const string& label, string& text, const float& columnW
 	return interacted;
 }
 
+void EditorUI::IdentifierText(const string& label, string& text, const float& columnWidth)
+{
+	ImGui::PushID(label.c_str());
+
+	ImGui::Columns(2);
+
+	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::Text(label.c_str());
+	ImGui::NextColumn();
+
+	ImGui::PushItemWidth(ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+	ImGui::TextUnformatted(text.c_str());
+
+	ImGui::PopItemWidth();
+
+	ImGui::PopStyleVar();
+
+	ImGui::Columns(1);
+
+	ImGui::PopID();
+}
+
 bool EditorUI::Animation(const string& label, wstring& filepath, ID3D11ShaderResourceView* psrv, const float& columnWidth)
 {
 	bool interacted = false;
