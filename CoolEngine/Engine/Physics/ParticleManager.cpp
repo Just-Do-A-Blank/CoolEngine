@@ -153,7 +153,10 @@ void ParticleManager::AddParticle(Transform trans, float life, ID3D11ShaderResou
 			{
 				float rand = MathHelper::RandomNumber(-abs(randLife), abs(randLife));
 				life += rand;
-				life = (life < 0.0f ? 0.0f : life);
+				if (life < 0.0f)
+				{
+					life = 0.0f;
+				}
 			}
 
 			m_pParticles[i]->Initialise(trans, vel, accel, life, tex);
