@@ -28,7 +28,7 @@ void UICanvas::Render(RenderStruct& renderStruct)
 		vector<GameUIComponent*> uiElementList = m_pUISceneGraph->GetAllGameObjects();
 		for (int it = 0; it < uiElementList.size(); ++it)
 		{
-			if (uiElementList[it]->IsRenderable() == false || uiElementList[it]->GetLayer() != i)
+			if (uiElementList[it] == this || uiElementList[it]->IsRenderable() == false || uiElementList[it]->GetLayer() != i)
 			{
 				continue;
 			}
