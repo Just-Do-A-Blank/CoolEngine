@@ -11,7 +11,7 @@ GameUIComponent::GameUIComponent(string identifier, XMFLOAT3& position, XMFLOAT3
 	m_transform = new Transform();
 	InitGraphics();
 
-	m_transform->SetScale(XMFLOAT3(0.50f, 0.50f, 1.0f));
+	m_transform->SetScale(scale);
 	m_transform->SetPosition(position);
 	m_transform->SetRotation(rotation);
 
@@ -19,7 +19,7 @@ GameUIComponent::GameUIComponent(string identifier, XMFLOAT3& position, XMFLOAT3
 
 void GameUIComponent::InitGraphics()
 {
-	m_pvertexShader = GraphicsManager::GetInstance()->GetVertexShader(SCREENSPACE_VERTEX_SHADER_NAME);
+	m_pvertexShader = GraphicsManager::GetInstance()->GetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
 	m_ppixelShader = GraphicsManager::GetInstance()->GetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
 
 	m_pmesh = GraphicsManager::GetInstance()->GetMesh(QUAD_MESH_NAME);
