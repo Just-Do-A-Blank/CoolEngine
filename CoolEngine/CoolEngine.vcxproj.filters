@@ -82,6 +82,12 @@
     <Filter Include="Resources\DebugColours">
       <UniqueIdentifier>{e1480dde-4628-43e7-af6d-078fd29de11b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\GameUI">
+      <UniqueIdentifier>{791533ad-fc86-4e9f-909a-caf767071b33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Includes\RapidXML">
+      <UniqueIdentifier>{7d9ce4e5-0879-48c1-b50e-4e48e6d1a00d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -255,9 +261,6 @@
     <ClInclude Include="Engine\Tools\AnimationTool.h">
       <Filter>Engine\Tools</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Managers\UiManager.h" />
-    <ClInclude Include="Engine\GameUI\UiElement.h" />
-    <ClInclude Include="Engine\GameUI\UiCanvas.h" />
     <ClInclude Include="Engine\Structure\EditorUIComponent.h">
       <Filter>Engine\Structure</Filter>
     </ClInclude>
@@ -269,6 +272,48 @@
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\RenderableCollidableGameObject.h">
       <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\EnemyGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\Pathfinding.h">
+      <Filter>Engine\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameUIComponent.h">
+      <Filter>Engine\GameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\ImageComponent.h">
+      <Filter>Engine\GameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\UICanvas.h">
+      <Filter>Engine\GameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\UIManager.h">
+      <Filter>Engine\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\FileIO\FileIOCache.h">
+      <Filter>Engine\FileIO</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\FileIO\FileIO.h">
+      <Filter>Engine\FileIO</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\FontManager.h">
+      <Filter>Engine\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\RapidXML\rapidxml.hpp">
+      <Filter>Engine\Includes\RapidXML</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\RapidXML\rapidxml_iterators.hpp">
+      <Filter>Engine\Includes\RapidXML</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\RapidXML\rapidxml_print.hpp">
+      <Filter>Engine\Includes\RapidXML</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\RapidXML\rapidxml_utils.hpp">
+      <Filter>Engine\Includes\RapidXML</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\TextComponent.h">
+      <Filter>Engine\GameUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -386,9 +431,6 @@
     <ClCompile Include="Engine\Tools\AnimationTool.cpp">
       <Filter>Engine\Tools</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Managers\UiManager.cpp" />
-    <ClCompile Include="Engine\GameUI\UiElement.cpp" />
-    <ClCompile Include="Engine\GameUI\UiCanvas.cpp" />
     <ClCompile Include="Engine\GameObjects\CollidableGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
@@ -397,6 +439,36 @@
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\RenderableCollidableGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\EnemyGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\Pathfinding.cpp">
+      <Filter>Engine\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameUIComponent.cpp">
+      <Filter>Engine\GameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\ImageComponent.cpp">
+      <Filter>Engine\GameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\UICanvas.cpp">
+      <Filter>Engine\GameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\UIManager.cpp">
+      <Filter>Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\FileIO\FileIOCache.cpp">
+      <Filter>Engine\FileIO</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\FileIO\FileIO.cpp">
+      <Filter>Engine\FileIO</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\FontManager.cpp">
+      <Filter>Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\TextComponent.cpp">
+      <Filter>Engine\GameUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -409,6 +481,11 @@
     <FxCompile Include="Engine\Graphics\Shaders\DummyPosTex.hlsl">
       <Filter>Engine\Graphics\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Engine\Graphics\Shaders\PassthroughVertex.hlsl" />
+    <FxCompile Include="Engine\Graphics\Shaders\ScreenSpaceVertex.hlsl">
+      <Filter>Engine\Graphics\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\TextPixel.hlsl">
+      <Filter>Engine\Graphics\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

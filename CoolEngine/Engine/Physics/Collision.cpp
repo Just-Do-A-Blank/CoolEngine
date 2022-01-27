@@ -6,8 +6,8 @@
 
 bool Collision::BoxCollision(Box* box1, Box* box2)
 {
-	XMFLOAT2 halfSize1 = { box1->m_transform->GetScale().x, box1->m_transform->GetScale().y };
-	XMFLOAT2 halfSize2 = { box2->m_transform->GetScale().x, box2->m_transform->GetScale().y };
+	XMFLOAT2 halfSize1 = { box1->m_halfSize.x, box1->m_halfSize.y };
+	XMFLOAT2 halfSize2 = { box2->m_halfSize.x, box2->m_halfSize.y };
 	XMFLOAT2 middle1 = { box1->m_transform->GetPosition().x, box1->m_transform->GetPosition().y };
 	XMFLOAT2 middle2 = { box2->m_transform->GetPosition().x, box2->m_transform->GetPosition().y };
 
@@ -29,7 +29,7 @@ bool Collision::CircleCollision(Circle* circle1, Circle* circle2)
 
 bool Collision::CircleBoxCollision(Circle* circle, Box* box)
 {
-	XMFLOAT2 halfSize = { box->m_transform->GetScale().x, box->m_transform->GetScale().y };
+	XMFLOAT2 halfSize = { box->m_halfSize.x, box->m_halfSize.y };
 	XMFLOAT2 middle = { box->m_transform->GetPosition().x, box->m_transform->GetPosition().y };
 
 	float x = max(middle.x - halfSize.x, min(circle->m_transform->GetPosition().x, middle.x + halfSize.x));
@@ -48,8 +48,8 @@ bool Collision::CircleBoxCollision(Circle* circle, Box* box)
 
 bool Collision::BoxCollisionAndResponse(Box* player, Box* object)
 {
-	XMFLOAT2 halfSizeP = { player->m_transform->GetScale().x, player->m_transform->GetScale().y };
-	XMFLOAT2 halfSizeO = { object->m_transform->GetScale().x, object->m_transform->GetScale().y };
+	XMFLOAT2 halfSizeP = { player->m_halfSize.x, player->m_halfSize.y };
+	XMFLOAT2 halfSizeO = { object->m_halfSize.x, object->m_halfSize.y };
 	XMFLOAT2 middleP = { player->m_transform->GetPosition().x, player->m_transform->GetPosition().y };
 	XMFLOAT2 middleO = { object->m_transform->GetPosition().x, object->m_transform->GetPosition().y };
 
@@ -140,7 +140,7 @@ bool Collision::BoxCollisionAndResponse(Box* player, Box* object)
 
 bool Collision::CircleBoxCollisionAndResponse(Circle* circle, Box* box)
 {
-	XMFLOAT2 halfSize = { box->m_transform->GetScale().x, box->m_transform->GetScale().y };
+	XMFLOAT2 halfSize = { box->m_halfSize.x, box->m_halfSize.y };
 	XMFLOAT2 middle = { box->m_transform->GetPosition().x, box->m_transform->GetPosition().y };
 
 	float x = max(middle.x - halfSize.x, min(circle->m_transform->GetPosition().x, middle.x + halfSize.x));
@@ -203,24 +203,24 @@ bool Collision::CircleCollisionAndResponse(Circle* circle1, Circle* circle2)
 	return false;
 }
 
-void Collision::Update(unordered_map<string, GameObject*> gameObjectMap)
+void Collision::Update(vector<GameObject*> gameObjectMap)
 {
 	CollidableGameObject* pcollidable1 = nullptr;
 	CollidableGameObject* pcollidable2 = nullptr;
 
-	for (unordered_map<string, GameObject*>::iterator it1 = gameObjectMap.begin(); it1 != gameObjectMap.end(); ++it1)
+	for (int it1 = 0; it1 < gameObjectMap.size(); ++it1)
 	{
-		for (unordered_map<string, GameObject*>::iterator it2 = gameObjectMap.begin(); it2 != gameObjectMap.end(); ++it2)
+		for (int it2 = 0; it2 < gameObjectMap.size(); ++it2)
 		{
 			if (it1 != it2)
 			{
-				if (it1->second->ContainsType(GameObjectType::COLLIDABLE) == false || it2->second->ContainsType(GameObjectType::COLLIDABLE) == false)
+				if (gameObjectMap[it1]->ContainsType(GameObjectType::COLLIDABLE) == false || gameObjectMap[it2]->ContainsType(GameObjectType::COLLIDABLE) == false)
 				{
 					continue;
 				}
 
-				pcollidable1 = dynamic_cast<CollidableGameObject*>(it1->second);
-				pcollidable2 = dynamic_cast<CollidableGameObject*>(it2->second);
+				pcollidable1 = dynamic_cast<CollidableGameObject*>(gameObjectMap[it1]);
+				pcollidable2 = dynamic_cast<CollidableGameObject*>(gameObjectMap[it2]);
 
 				if (pcollidable1->GetShape() == nullptr || pcollidable2->GetShape() == nullptr)
 				{

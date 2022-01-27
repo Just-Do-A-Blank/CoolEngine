@@ -10,6 +10,7 @@
 #include "Engine/Graphics/SpriteAnimation.h"
 #include "Engine/GameObjects/CameraGameObject.h"
 #include "Engine/GameObjects/PlayerGameObject.h"
+#include "Engine/GameObjects/EnemyGameObject.h"
 
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/Managers/Events/EventObserver.h"
@@ -20,13 +21,19 @@
 #include "FileIO/FileIO.h"
 
 #include "Engine/TileMap/TileMap/TileMap.h"
+#include "Engine/AI/Pathfinding.h"
 #include "Engine/ResourceDefines.h"
 #include "Managers/DebugDrawManager.h"
 #include "Scene/Scene.h"
 #include "Engine/Managers/GameManager.h"
 #include <Engine/Physics/Box.h>
+#include "Engine/Managers/UIManager.h"
+#include "Engine/GameUI/GameUIComponent.h"
+#include "Engine/GameUI/ImageComponent.h"
+#include "Engine/GameUI/TextComponent.h"
 
 #include "Physics/ParticleManager.h"
+#include "Engine/Managers/FontManager.h"
 
 #if TOOL
 #include "Engine/Tools/ToolBase.h"
@@ -71,8 +78,6 @@ EditorUI* g_peditorUI;
 
 Inputs* g_inputController;
 
-ParticleManager* g_particleManager;
-
 #if TOOL
 ToolBase* g_ptoolBase = nullptr;
 #endif
@@ -116,13 +121,18 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	AudioManager::GetInstance()->SetListenerPosition(XMFLOAT3(0, 0, 0));
 
 	GraphicsManager::GetInstance()->Init(g_pd3dDevice);
+	GraphicsManager::GetInstance()->SetHWND(&g_hWnd);
 
 	g_inputController = new Inputs();
 
 	//Debug Manager
 #if _DEBUG
 	DebugDrawManager::GetInstance()->Init(g_pd3dDevice);
+	
+
 #endif
+
+	srand(time(0));
 
 	//Create camera
 	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, -5);
@@ -138,12 +148,12 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_pcamera = new CameraGameObject("Camera");
 	g_pcamera->Initialize(cameraPos, cameraForward, cameraUp, windowWidth, windowHeight, nearDepth, farDepth);
 
+	GameManager::GetInstance()->SetCamera(g_pcamera);
+
 	//Create scene
 	GameManager* pgameManager = GameManager::GetInstance();
 	pgameManager->CreateScene("TestScene");
 	pgameManager->SelectSceneUsingIdentifier("TestScene");
-
-	g_particleManager = new ParticleManager(QUAD_MESH_NAME, DEFAULT_VERTEX_SHADER_NAME, DEFAULT_PIXEL_SHADER_NAME);
 
 #if TOOL
 
@@ -179,10 +189,12 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	string obj0Name = "TestObject0";
 	string obj1Name = "TestObject1";
 	string playerName = "Player";
+	string enemyName = "Enemy";
 
 	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj0Name);
 	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj1Name);
 	pgameManager->CreateGameObject<PlayerGameObject>(playerName);
+	//pgameManager->CreateGameObject<EnemyGameObject>(enemyName);
 
 	RenderableCollidableGameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj0Name);
 
@@ -190,16 +202,15 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
 	bool isCollision = true;
 
-	Box* pbox = new Box(pgameObject->GetTransform());
-	pbox->SetIsCollidable(isCollision);
-	pbox->SetIsTrigger(isCollision);
-
 	pgameObject->SetMesh(QUAD_MESH_NAME);
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
 	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
 	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
+	Box* pbox = new Box(pgameObject->GetTransform());
+	pbox->SetIsCollidable(isCollision);
+	pbox->SetIsTrigger(isCollision);
 	pgameObject->SetShape(pbox);
 
 	////Init second gameObject
@@ -208,16 +219,15 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	objectPos = XMFLOAT3(10.0f, 0.0f, 0.0f);
 	objectScale = XMFLOAT3(100, 100, 100);
 
-	pbox = new Box(pgameObject->GetTransform());
-	pbox->SetIsCollidable(isCollision);
-	pbox->SetIsTrigger(isCollision);
-
 	pgameObject->SetMesh(QUAD_MESH_NAME);
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
 	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
 	pgameObject->SetAlbedo(TEST2);
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
+	pbox = new Box(pgameObject->GetTransform());
+	pbox->SetIsCollidable(isCollision);
+	pbox->SetIsTrigger(isCollision);
 	pgameObject->SetShape(pbox);
 
 	// Init player object
@@ -226,42 +236,39 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	objectPos = XMFLOAT3(200.0f, 0.0f, 5.0f);
 	objectScale = XMFLOAT3(50, 50, 50);
 
-	pbox = new Box(pgameObject->GetTransform());
-	pbox->SetIsCollidable(isCollision);
-	pbox->SetIsTrigger(isCollision);
-
 	pgameObject->SetMesh(QUAD_MESH_NAME);
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
 	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
 	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
+	pbox = new Box(pgameObject->GetTransform());
+	pbox->SetIsCollidable(isCollision);
+	pbox->SetIsTrigger(isCollision);
 	pgameObject->SetShape(pbox);
 
-	std::vector<std::string> stringStuff;
-	std::vector<JSON_VARIABLE_TYPE> string2Stuff;
-	std::vector<void*> stringStuff2;
-	stringStuff.push_back(std::string("Nice"));
-	stringStuff.push_back(std::string("Nice2"));
-	string2Stuff.push_back(JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_STRING);
-	string2Stuff.push_back(JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_STRING);
-	stringStuff2.push_back(new std::string("Here is a test"));
-	stringStuff2.push_back(new std::string("Here is a test"));
 
+	//Init enemy object
+	//EnemyGameObject* egameObject = pgameManager->GetGameObjectUsingIdentifier<EnemyGameObject>(enemyName);
+	//objectPos = XMFLOAT3(-400.0f, 200.0f, 0);
+	//objectScale = XMFLOAT3(40, 40, 40);
 
-	FileIO::SaveObjectInJson("Cringe.json", stringStuff, string2Stuff, stringStuff2);
+	//pbox = new Box(pgameObject->GetTransform());
+	//pbox->SetIsCollidable(isCollision);
+	//pbox->SetIsTrigger(isCollision);
 
-	std::unordered_map<std::string, void*> test = FileIO::LoadCustomJsonData("Cringe.json", stringStuff, string2Stuff);
+	//egameObject->SetMesh(QUAD_MESH_NAME);
+	//egameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+	//egameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+	//egameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
+	//egameObject->GetTransform()->SetPosition(objectPos);
+	//egameObject->GetTransform()->SetScale(objectScale);
+	//egameObject->SetShape(pbox);
 
-	LOG(*(std::string*)test["Nice"]);
-	LOG(*(std::string*)test["Nice2"]);
-	
-	delete test["Nice"];
-	delete test["Nice2"];
+	g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, 0, 0), "TestMap");
 
-	FileIO::SaveGameObject( "Cirno.json", pgameObject);
+	//Pathfinding::GetInstance()->Initialize(g_testMap1);
 
-	g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, 0, 0), XMFLOAT3(25, 25, 25), "TestMap");
 
 	ExampleObserver observer(new int(10), pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName));
 	EventManager::Instance()->AddClient(EventType::KeyPressed, &observer);
@@ -270,6 +277,15 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, &observer);
 	EventManager::Instance()->AddClient(EventType::MouseMoved, &observer);
 
+
+	FontManager::GetInstance()->LoadFont("Resources/Fonts/ComicSans.xml", L"Resources/Fonts/ComicSans.dds", "comicSans");
+	UIManager::GetInstance()->Init(g_pd3dDevice);
+	UIManager::GetInstance()->CreateCanvas("testCanvas", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
+	TextComponent* tc = UIManager::GetInstance()->CreateUIComponent<TextComponent>("TestText", XMFLOAT3(0.0, 20.0, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f));
+	tc->Init("Cool Engine!", "comicSans", 16, Colors::Yellow, g_pd3dDevice);
+	UIManager::GetInstance()->CreateUIComponent<ImageComponent>("TestUIImage", XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT3(0.9f, 0.9f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
+
+	
 	XMFLOAT3 pos = XMFLOAT3( 300, 300, 5 );
 	XMFLOAT3 rot = XMFLOAT3(0, 0, 0 );
 	XMFLOAT3 scale = XMFLOAT3(25, 25, 25);
@@ -277,9 +293,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	trans.SetPosition(pos);
 	trans.SetRotation(rot);
 	trans.SetScale(scale);
-	g_particleManager->AddSystem(trans, 10.0f, SYSTEM_TEST, DEFAULT_IMGUI_IMAGE);
-
-	FileIO::SaveScene("Cirno2.json", pgameManager);
+	ParticleManager::GetInstance()->AddSystem(trans, 10.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 0.5f, 1.0f, 16, 100.0f, 0.0f, 0.0f, 0.2f);
 
 	GameManager::GetInstance()->GetTimer()->Tick();
 
@@ -299,9 +313,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
-
-
-			EventManager::Instance()->ProcessEvents();
 
 		}
 		else
@@ -629,7 +640,8 @@ void Render()
 	GameManager* pgamemanager = GameManager::GetInstance();
 	pgamemanager->Render(renderStruct);
 
-	g_particleManager->Render(renderStruct.m_pcontext);
+	ParticleManager::GetInstance()->Render(renderStruct.m_pcontext);
+	UIManager::GetInstance()->Render(renderStruct);
 
 #if _DEBUG
 	DebugDrawManager::GetInstance()->Render(renderStruct);
@@ -656,7 +668,7 @@ void Update()
 	pgamemanager->GetTimer()->Tick();
 	pgamemanager->Update();
 
-	g_particleManager->Update(GameManager::GetInstance()->GetTimer()->DeltaTime());
+	ParticleManager::GetInstance()->Update(GameManager::GetInstance()->GetTimer()->DeltaTime());
 
 	AudioManager::GetInstance()->Update();
 

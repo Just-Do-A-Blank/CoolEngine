@@ -113,8 +113,8 @@ std::vector<ParticleSystem*> FileIO::LoadMultipleParticles(json file)
 		t.SetRotation(XMFLOAT3(particleSystemData.at(i)["Rotation"][0], particleSystemData.at(i)["Rotation"][1], particleSystemData.at(i)["Rotation"][2]));
 		t.SetScale(XMFLOAT3(particleSystemData.at(i)["Scale"][0], particleSystemData.at(i)["Scale"][1], particleSystemData.at(i)["Scale"][2]));
 
-		objects[i]->Initialise(t , particleSystemData.at(i)["Life"], particleSystemData.at(i)["SystemType"], nullptr);
-		objects[i]->AddParticle(p.m_Transform, p.m_Velocity, p.m_Acceleration,p.m_Life);
+		objects[i]->Initialise(t , particleSystemData.at(i)["Life"], nullptr);
+		//objects[i]->AddParticle(p.m_Transform, p.m_Velocity, p.m_Acceleration,p.m_Life);
 	}
 	return objects;
 }
@@ -211,7 +211,7 @@ void FileIO::LoadMap(json file, GameManager* scene)
 		XMFLOAT3 position(tileFile.at(i)["Position"][0], tileFile.at(i)["Position"][1], tileFile.at(i)["Position"][2]);
 		XMFLOAT3 scale(tileFile.at(i)["Scale"][0], tileFile.at(i)["Scale"][1], tileFile.at(i)["Scale"][2]);
 		wstring location = ToWstring((std::string)tileFile.at(i)["TileData"]);
-		TileMap* tileMap = new TileMap(location, position, scale, tileFile.at(i)["Name"]);
+		TileMap* tileMap = new TileMap(location, position, tileFile.at(i)["Name"]);
 		std::string name = tileMap->GetIdentifier();
 		scene->CreateGameObject<GameObject>(name);
 		GameObject* gameObject = scene->GetGameObjectUsingIdentifier<GameObject>(name);
@@ -613,7 +613,7 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 	Tile* tile = nullptr;
 	Particle* particle = nullptr;
 
-	unordered_map<std::string, GameObject*> gameObjects = scene->GetAllGameObjects();
+	vector<GameObject*> gameObjects = scene->GetAllGameObjects();
 	std::ofstream outFile;
 	outFile.open(fileLocation);
 	json jsonOutput{};
@@ -626,10 +626,10 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 
 	int count = 0;
 
-	for (unordered_map<string, GameObject*>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
+	for (int it = 0; it < gameObjects.size(); ++it)
 	{
 		saveObject = true;
-		GameObject* gameObjectToStore = it->second;
+		GameObject* gameObjectToStore = gameObjects[it];
 	
 		particleSys = dynamic_cast<ParticleSystem*>(gameObjectToStore);
 		tileMap = dynamic_cast<TileMap*>(gameObjectToStore);
@@ -941,7 +941,7 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "Position", position });
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "Rotation", rotation });
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "Scale", scale });
-				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "SystemType" ,  particleSys->GetType()});
+				//jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "SystemType" ,  particleSys->GetType()});
 
 				++particleSystemCount;
 			}

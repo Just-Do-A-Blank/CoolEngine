@@ -75,6 +75,7 @@ void EditorUI::DrawMasterWindow()
 	ImGui::Checkbox("Scene Graph Window", &g_ShowSceneEditor);
 	ImGui::Checkbox("Scene Management Window", &g_ShowSceneManagement);
 	ImGui::Checkbox("GameObject Properties Window", &g_ShowGameObject);
+	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	ImGui::End();
 }
 
@@ -526,8 +527,10 @@ void EditorUI::InputText(const string& label, string& text, const float& columnW
 	ImGui::PopID();
 }
 
-void EditorUI::Animation(const string& label, wstring& filepath, SpriteAnimation& animation, const float& columnWidth)
+bool EditorUI::Animation(const string& label, wstring& filepath, ID3D11ShaderResourceView* psrv, const float& columnWidth)
 {
+	bool interacted = false;
+
 	ImGui::PushID(label.c_str());
 
 	ImGui::Columns(2);
@@ -542,7 +545,7 @@ void EditorUI::Animation(const string& label, wstring& filepath, SpriteAnimation
 	if (ImGui::TreeNode(label.c_str()) == true)
 	{
 		//Animation images
-		if (ImGui::ImageButton((void*)(intptr_t)animation.GetCurrentFrame(), DEFAULT_IMGUI_IMAGE_SIZE) == true)
+		if (ImGui::ImageButton((void*)(intptr_t)psrv, DEFAULT_IMGUI_IMAGE_SIZE) == true)
 		{
 			WCHAR buffer[FILEPATH_BUFFER_SIZE];
 
@@ -551,6 +554,8 @@ void EditorUI::Animation(const string& label, wstring& filepath, SpriteAnimation
 			if (buffer[0] != '\0')
 			{
 				filepath = wstring(buffer);
+
+				interacted = true;
 			}
 		}
 
@@ -564,6 +569,8 @@ void EditorUI::Animation(const string& label, wstring& filepath, SpriteAnimation
 	ImGui::Columns(1);
 
 	ImGui::PopID();
+
+	return interacted;
 }
 
 void EditorUI::Animations(const string& label, unordered_map<string, SpriteAnimation>& animations, const float& columnWidth)

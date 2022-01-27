@@ -16,3 +16,10 @@ struct DebugPerInstanceCB
 {
 	DirectX::XMFLOAT4X4 placeholder;
 };
+
+struct TextPerInstanceCB
+{
+	XMFLOAT4X4 world;
+	XMFLOAT3 colour;
+	float pad;
+};
