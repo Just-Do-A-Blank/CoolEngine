@@ -278,7 +278,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	EventManager::Instance()->AddClient(EventType::MouseMoved, &exampleObserver);
 
 	// Observer for collision detection
-	CollisionObserver collisionObserver(new int(10));
+	CollisionObserver collisionObserver;
 	EventManager::Instance()->AddClient(EventType::TriggerEnter, &collisionObserver);
 	EventManager::Instance()->AddClient(EventType::TriggerHold, &collisionObserver);
 	EventManager::Instance()->AddClient(EventType::TriggerExit, &collisionObserver);

@@ -82,10 +82,7 @@ public:
 		}
 	}
 
-	CollisionObserver(int* i) { this->m_i = i; }
-
-private:
-	int* m_i;
+	CollisionObserver() { }
 };
 
 class ExampleObserver : public Observer
