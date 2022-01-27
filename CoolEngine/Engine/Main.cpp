@@ -202,16 +202,15 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
 	bool isCollision = true;
 
-	Box* pbox = new Box(pgameObject->GetTransform());
-	pbox->SetIsCollidable(isCollision);
-	pbox->SetIsTrigger(isCollision);
-
 	pgameObject->SetMesh(QUAD_MESH_NAME);
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
 	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
 	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
+	Box* pbox = new Box(pgameObject->GetTransform());
+	pbox->SetIsCollidable(isCollision);
+	pbox->SetIsTrigger(isCollision);
 	pgameObject->SetShape(pbox);
 
 	////Init second gameObject
@@ -220,16 +219,15 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	objectPos = XMFLOAT3(10.0f, 0.0f, 0.0f);
 	objectScale = XMFLOAT3(100, 100, 100);
 
-	pbox = new Box(pgameObject->GetTransform());
-	pbox->SetIsCollidable(isCollision);
-	pbox->SetIsTrigger(isCollision);
-
 	pgameObject->SetMesh(QUAD_MESH_NAME);
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
 	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
 	pgameObject->SetAlbedo(TEST2);
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
+	pbox = new Box(pgameObject->GetTransform());
+	pbox->SetIsCollidable(isCollision);
+	pbox->SetIsTrigger(isCollision);
 	pgameObject->SetShape(pbox);
 
 	// Init player object
@@ -238,16 +236,15 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	objectPos = XMFLOAT3(200.0f, 0.0f, 5.0f);
 	objectScale = XMFLOAT3(50, 50, 50);
 
-	pbox = new Box(pgameObject->GetTransform());
-	pbox->SetIsCollidable(isCollision);
-	pbox->SetIsTrigger(isCollision);
-
 	pgameObject->SetMesh(QUAD_MESH_NAME);
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
 	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
 	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
+	pbox = new Box(pgameObject->GetTransform());
+	pbox->SetIsCollidable(isCollision);
+	pbox->SetIsTrigger(isCollision);
 	pgameObject->SetShape(pbox);
 
 
