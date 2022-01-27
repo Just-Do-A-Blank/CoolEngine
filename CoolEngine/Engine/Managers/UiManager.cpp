@@ -63,6 +63,11 @@ TreeNode<GameUIComponent>* UIManager::GetRootTreeNode()
 
 void UIManager::Render(RenderStruct& renderStruct)
 {
+	if (!m_pUISceneGraph)
+	{
+		return;
+	}
+
 	if (m_pselectedUINode)
 	{
 		m_pselectedUINode->GameObject->ShowEngineUI();
