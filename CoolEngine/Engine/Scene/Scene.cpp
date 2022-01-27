@@ -30,7 +30,7 @@ void Scene::Render(RenderStruct& renderStruct)
 {
 	RenderableGameObject* prenderableGameObject = nullptr;
 
-	for (int i = 0; i < 1; ++i)
+	for (int i = 0; i < GraphicsManager::GetInstance()->GetNumLayers(); ++i)
 	{
 		vector<GameObject*> gameObjectList = m_psceneGraph->GetAllGameObjects();
 		for (int it = 0; it < gameObjectList.size(); ++it)
@@ -42,7 +42,7 @@ void Scene::Render(RenderStruct& renderStruct)
 
 			prenderableGameObject = dynamic_cast<RenderableGameObject*>(gameObjectList[it]);
 
-			if (prenderableGameObject->IsRenderable() == false)// || prenderableGameObject->GetLayer() != i)
+			if (prenderableGameObject->IsRenderable() == false || prenderableGameObject->GetLayer() != i)// || prenderableGameObject->GetLayer() != i)
 			{
 				continue;
 			}
