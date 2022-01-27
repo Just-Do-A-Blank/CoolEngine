@@ -1,4 +1,0 @@
-<DIMENSIONS> 10, 2*
-<SPRITES> gold.dds, real.dds*
-<ANIMATIONS> PixarLevelAnim*
-<LAYOUT> 1,2,1,1,2*

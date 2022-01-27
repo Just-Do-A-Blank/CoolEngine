@@ -30,5 +30,5 @@
 #define POS_TEX_DUMMY_FILE_NAME L"Engine\\Graphics\\Shaders\\DummyPosTex.hlsl"
 
 //TileMaps
-#define TEST_MAP L"Resources\\Levels\\TileMaps\\TestMap.txt"
+#define TEST_MAP L"Resources\\Levels\\TileMaps\\test.json"
 

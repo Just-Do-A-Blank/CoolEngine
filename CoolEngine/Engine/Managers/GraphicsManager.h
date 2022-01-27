@@ -47,6 +47,8 @@ public:
 
 	void SetWindowDimensions(XMFLOAT2 dimensions);
 
+	void SetHWND(HWND* hwnd);
+
 	//Getters
 	ID3D11VertexShader* GetVertexShader(wstring name) const;
 	ID3D11PixelShader* GetPixelShader(wstring name) const;
@@ -56,13 +58,15 @@ public:
 
 	Mesh* GetMesh(wstring name) const;
 
-	SpriteAnimation& GetAnimation(wstring name) const;
+	SpriteAnimation GetAnimation(wstring name) const;
 
 	int GetNumLayers();
 
 	bool IsTextureLoaded(wstring filename);
 
 	const XMFLOAT2& GetWindowDimensions() const;
+
+	HWND* GetHWND();
 
 	enum class InputLayouts
 	{
@@ -102,5 +106,7 @@ private:
 	bool CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob*& pblob);
 
 	ID3D11Device* m_pdevice = nullptr;
+
+	HWND* m_pHWND = nullptr;
 };
 

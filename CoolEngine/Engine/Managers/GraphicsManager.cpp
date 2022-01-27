@@ -160,9 +160,7 @@ bool GraphicsManager::LoadAnimationFromFile(wstring animName, size_t maxSize, DD
 	}
 
 	//Get information txt file and parse in
-
-	wstring w = L"Resources\\Animations\\" + animName + L"\\" + animName + L".txt";
-	ifstream file(L"Resources\\Animations\\" + animName + L"\\" + animName + L".txt", std::ios::in);
+	ifstream file(GameManager::GetInstance()->GetWideWorkingDirectory() + L"\\Resources\\Animations\\" + animName + L"\\" + animName + L".txt", std::ios::in);
 
 	if (file.is_open() == false)
 	{
@@ -206,6 +204,11 @@ bool GraphicsManager::LoadAnimationFromFile(wstring animName, size_t maxSize, DD
 void GraphicsManager::SetWindowDimensions(XMFLOAT2 dimensions)
 {
 	m_windowDimensions = dimensions;
+}
+
+void GraphicsManager::SetHWND(HWND* hwnd)
+{
+	m_pHWND = hwnd;
 }
 
 ID3D11VertexShader* GraphicsManager::GetVertexShader(wstring name) const
@@ -266,7 +269,7 @@ Mesh* GraphicsManager::GetMesh(wstring name) const
 	return m_meshes.at(name);
 }
 
-SpriteAnimation& GraphicsManager::GetAnimation(wstring name) const
+SpriteAnimation GraphicsManager::GetAnimation(wstring name) const
 {
 	if (m_animationFrames.count(name) == 0)
 	{
@@ -292,6 +295,11 @@ bool GraphicsManager::IsTextureLoaded(wstring filename)
 const XMFLOAT2& GraphicsManager::GetWindowDimensions() const
 {
 	return m_windowDimensions;
+}
+
+HWND* GraphicsManager::GetHWND()
+{
+	return m_pHWND;
 }
 
 ID3D11InputLayout* GraphicsManager::GetInputLayout(InputLayouts inputLayout) const
