@@ -93,30 +93,24 @@ std::vector<GameObject*> FileIO::LoadMultipleGameObjects(json m_json)
 	return objects;
 }
 
-std::vector<ParticleSystem*> FileIO::LoadMultipleParticles(json file)
+void FileIO::LoadMultipleParticles(json file)
 {
 	json particleSystemData = file["ParticleSystemData"];
 	json metaData = file["MetaData"];
 	json particleData = file["ParticleData"];
 
-	std::vector<ParticleSystem*> objects((int)metaData.at(0)["NumberOfParticlesSystems"]);
-
 	for (size_t i = 0; i < metaData.at(0)["NumberOfParticlesSystems"]; i++)
 	{
 		
-		ParticleData p; // = LoadParticle(particleData, i);
-		objects[i] = new ParticleSystem(particleSystemData.at(i)["Name"]);
-
+		ParticleData p = LoadParticle(particleData, i);
 
 		Transform t;
 		t.SetPosition(XMFLOAT3(particleSystemData.at(i)["Position"][0], particleSystemData.at(i)["Position"][1], particleSystemData.at(i)["Position"][2]));
 		t.SetRotation(XMFLOAT3(particleSystemData.at(i)["Rotation"][0], particleSystemData.at(i)["Rotation"][1], particleSystemData.at(i)["Rotation"][2]));
 		t.SetScale(XMFLOAT3(particleSystemData.at(i)["Scale"][0], particleSystemData.at(i)["Scale"][1], particleSystemData.at(i)["Scale"][2]));
 
-		objects[i]->Initialise(t , particleSystemData.at(i)["Life"], nullptr);
-		//objects[i]->AddParticle(p.m_Transform, p.m_Velocity, p.m_Acceleration,p.m_Life);
+		ParticleManager::GetInstance()->AddSystem(t, particleSystemData.at(i)["Life"], particleSystemData.at(i)["AlbedoLocation"], p.m_Velocity, p.m_Acceleration, p.m_Life, particleSystemData.at(i)["Interval"], particleSystemData.at(i)["Count"], p.m_RandomPosition, p.m_RandomVelocity, p.m_RandomAcceleration, p.m_RandomLife);
 	}
-	return objects;
 }
 
 std::string FileIO::ToString(std::wstring& wideString)

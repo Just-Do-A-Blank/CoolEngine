@@ -54,7 +54,12 @@ struct ParticleData
 	Transform m_Transform;
 	XMFLOAT2 m_Velocity;
 	XMFLOAT2 m_Acceleration;
+	ID3D11ShaderResourceView* m_Texture;
 	float m_Life;
+	float m_RandomPosition;
+	float m_RandomVelocity;
+	float m_RandomAcceleration;
+	float m_RandomLife;
 };
 
 /// <summary>
@@ -234,7 +239,7 @@ private:
 	/// </summary>
 	/// <param name="file"></param>
 	/// <returns></returns>
-	static std::vector<ParticleSystem*> LoadMultipleParticles(json file);
+	static void LoadMultipleParticles(json file);
 
 	/// <summary>
 	/// Converts a string to wstring
