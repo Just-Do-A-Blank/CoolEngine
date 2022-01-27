@@ -72,7 +72,7 @@ void ParticleManager::Render(ID3D11DeviceContext* pContext)
 	pContext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 0, nullptr);
 }
 
-void ParticleManager::AddSystem(Transform trans, float life, SYSTEM_TYPE type, wstring albedoName)
+void ParticleManager::AddSystem(Transform trans, float life, wstring albedoName, XMFLOAT2 vel, XMFLOAT2 accel, float partLife, float interval, float number)
 {
 	for (unsigned int i = 0; i < PARTICLE_MANAGER_SIZE; ++i)
 	{
@@ -86,7 +86,7 @@ void ParticleManager::AddSystem(Transform trans, float life, SYSTEM_TYPE type, w
 				return;
 			}
 
-			m_pParticleSystems[i]->Initialise(trans, life, type, psRV);
+			m_pParticleSystems[i]->Initialise(trans, life, psRV, vel, accel, partLife, interval, number);
 			break;
 		}
 	}
@@ -98,7 +98,7 @@ void ParticleManager::AddSystem(ParticleSystem* system)
 	{
 		if (!m_pParticleSystems[i]->GetActive())
 		{
-			m_pParticleSystems[i]->Initialise(*system->GetTrans(), system->GetLife(), system->GetType(), system->GetTexture());
+			m_pParticleSystems[i]->Initialise(*system->GetTrans(), system->GetLife(), system->GetTexture());
 			break;
 		}
 	}

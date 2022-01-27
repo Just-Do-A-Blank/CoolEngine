@@ -39,11 +39,8 @@ void Particle::Render(ID3D11DeviceContext* pContext, Mesh* mesh)
 	PerInstanceCB cb;
 	XMStoreFloat4x4(&cb.world, XMMatrixTranspose(m_transform.GetWorldMatrix()));
 
-	//pConstantBuffer->Update(cb, pContext);
 	GraphicsManager::GetInstance()->m_pperInstanceCB->Update(cb, pContext);
 	ID3D11Buffer* pcbBuffer = GraphicsManager::GetInstance()->m_pperInstanceCB->GetBuffer();
-
-	//ID3D11Buffer* pcbBuffer = pConstantBuffer->GetBuffer();
 
 	pContext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 1, &pcbBuffer);
 	pContext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 1, &pcbBuffer);

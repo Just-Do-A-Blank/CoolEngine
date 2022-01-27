@@ -28,7 +28,6 @@ public:
 	/// Draw all the particle systems, set up buffers
 	/// </summary>
 	/// <param name="pContext"></param>
-	/// <param name="pconstantBuffer"></param>
 	void Render(ID3D11DeviceContext* pContext);
 
 	/// <summary>
@@ -36,9 +35,13 @@ public:
 	/// </summary>
 	/// <param name="trans"></param>
 	/// <param name="life"></param>
-	/// <param name="type"></param>
-	/// <param name="tex"></param>
-	void AddSystem(Transform trans, float life, SYSTEM_TYPE type, wstring albedoName);
+	/// <param name="albedoName"></param>
+	/// <param name="vel"></param>
+	/// <param name="accel"></param>
+	/// <param name="partLife"></param>
+	/// <param name="interval"></param>
+	/// <param name="number"></param>
+	void AddSystem(Transform trans, float life, wstring albedoName, XMFLOAT2 vel, XMFLOAT2 accel, float partLife, float interval, float number);
 
 	/// <summary>
 	/// Find slot for a new system, and initialise it
@@ -47,5 +50,8 @@ public:
 	void AddSystem(ParticleSystem* system);
 
 	// Getters
-	ParticleSystem* GetSystem(int index) { return m_pParticleSystems[index]; }
+	ParticleSystem* GetSystem(int index) 
+	{ 
+		return m_pParticleSystems[index]; 
+	}
 };

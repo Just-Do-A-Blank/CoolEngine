@@ -9,11 +9,17 @@ ParticleSystem::ParticleSystem(string identifier) : GameObject(identifier)
 		m_pParticles[i] = new Particle();
 	}
 
-	m_lifetime = 0.0f;
+	m_systemLife = 0.0f;
 	m_timer = 0.0f;
 	m_isActive = false;
-	m_systemType = SYSTEM_NONE;
 	m_pTexture = nullptr;
+
+	// Particle properties
+	m_velocity = { 0, 0 };
+	m_accel = { 0, 0 };
+	m_particleLife = 1.0f;
+	m_spawnInterval = 1.0f;
+	m_spawnNumber = 1;
 }
 
 ParticleSystem::~ParticleSystem()
@@ -21,16 +27,30 @@ ParticleSystem::~ParticleSystem()
 	delete[] m_pParticles;
 }
 
-void ParticleSystem::Initialise(Transform trans, float life, SYSTEM_TYPE type, ID3D11ShaderResourceView* tex)
+void ParticleSystem::Initialise(Transform trans, float life, ID3D11ShaderResourceView* tex)
 {
 	*m_transform = trans;
 	m_transform->UpdateMatrix();
 
-	m_lifetime = life;
+	m_systemLife = life;
 	m_timer = 0.0f;
 	m_isActive = true;
-	m_systemType = type;
 	m_pTexture = tex;
+}
+
+void ParticleSystem::Initialise(Transform trans, float life, ID3D11ShaderResourceView* tex, XMFLOAT2 vel, XMFLOAT2 accel, float partLife, float interval, int number)
+{
+	Initialise(trans, life, tex);
+	SetProperties(vel, accel, partLife, interval, number);
+}
+
+void ParticleSystem::SetProperties(XMFLOAT2 vel, XMFLOAT2 accel, float life, float interval, int number)
+{
+	m_velocity = vel;
+	m_accel = accel;
+	m_particleLife = life;
+	m_spawnInterval = interval;
+	m_spawnNumber = number;
 }
 
 void ParticleSystem::Update(const float dTime)
@@ -43,27 +63,19 @@ void ParticleSystem::Update(const float dTime)
 		}
 	}
 
-
 	// Particle generation process
-	switch (m_systemType)
+	if (m_timer >= m_spawnInterval)
 	{
-	case SYSTEM_NONE:
-		break;
-
-	case SYSTEM_TEST:
-		// Basic test particle effect
-		if (m_timer >= 1.0f)
+		for (unsigned int i = 0; i < m_spawnNumber; ++i)
 		{
-			AddParticle(*m_transform, XMFLOAT2(0, 0), XMFLOAT2(0, 0), 0.5f);
-			m_timer = 0;
+			AddParticle(*m_transform, m_velocity, m_accel, m_particleLife);
 		}
-		break;
+		m_timer = 0;
 	}
 	m_timer += dTime;
 
-
-	m_lifetime -= dTime;
-	if (m_lifetime <= 0.0f)
+	m_systemLife -= dTime;
+	if (m_systemLife <= 0.0f)
 	{
 		// System is dead, shut down all particles
 		m_isActive = false;

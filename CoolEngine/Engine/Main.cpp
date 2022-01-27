@@ -278,6 +278,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, &observer);
 	EventManager::Instance()->AddClient(EventType::MouseMoved, &observer);
 
+	// Init a particle system
 	XMFLOAT3 pos = XMFLOAT3( 300, 300, 5 );
 	XMFLOAT3 rot = XMFLOAT3(0, 0, 0 );
 	XMFLOAT3 scale = XMFLOAT3(25, 25, 25);
@@ -285,7 +286,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	trans.SetPosition(pos);
 	trans.SetRotation(rot);
 	trans.SetScale(scale);
-	g_particleManager->AddSystem(trans, 10.0f, SYSTEM_TEST, DEFAULT_IMGUI_IMAGE);
+	g_particleManager->AddSystem(trans, 10.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 0.5f, 1.0f, 1);
 
 	GameManager::GetInstance()->GetTimer()->Tick();
 
