@@ -30,6 +30,7 @@
 #include "Engine/Managers/UIManager.h"
 #include "Engine/GameUI/GameUIComponent.h"
 #include "Engine/GameUI/ImageComponent.h"
+#include "Engine/GameUI/TextComponent.h"
 
 #include "Physics/ParticleManager.h"
 #include "Engine/Managers/FontManager.h"
@@ -283,8 +284,13 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	EventManager::Instance()->AddClient(EventType::MouseMoved, &observer);
 
 
+	FontManager::GetInstance()->LoadFont("Resources/Fonts/ComicSans.xml", L"Resources/Fonts/ComicSans.dds", "comicSans");
+	UIManager::GetInstance()->Init(g_pd3dDevice);
 	UIManager::GetInstance()->CreateCanvas("testCanvas", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
-	UIManager::GetInstance()->CreateUIComponent<ImageComponent>("TestUIImage", XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT3(0.2f, 0.2f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
+	TextComponent* tc = UIManager::GetInstance()->CreateUIComponent<TextComponent>("TestText", XMFLOAT3(0.0, 20.0, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f));
+	tc->Init("Hello World!", "comicSans", 16, g_pd3dDevice);
+	UIManager::GetInstance()->CreateUIComponent<ImageComponent>("TestUIImage", XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT3(0.9f, 0.9f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
+
 	
 	XMFLOAT3 pos = XMFLOAT3( 300, 300, 5 );
 	XMFLOAT3 rot = XMFLOAT3(0, 0, 0 );
@@ -303,7 +309,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 #endif
 
-	FontManager::GetInstance()->LoadFonts();
 	//Create test Tile Map
 
 	// Main message loop
@@ -642,6 +647,7 @@ void Render()
 	pgamemanager->Render(renderStruct);
 
 	UIManager::GetInstance()->Render(renderStruct);
+	BindQuadBuffers();
 	g_particleManager->Render(renderStruct.m_pcontext);
 
 #if _DEBUG
