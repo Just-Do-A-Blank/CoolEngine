@@ -477,6 +477,58 @@ ParticleData FileIO::LoadParticle(json particleData, int particleNumber)
 	return p;
 }
 
+std::unordered_map<std::string, void*> FileIO::LoadCustomJsonData(const char* fileAddress, std::vector<std::string> variableNames, std::vector<JSON_VARIABLE_TYPE> variableTypes)
+{
+	json dataToLoad = LoadJson(fileAddress);
+	std::unordered_map<std::string, void*> results;
+	std::string s;
+ 	for (size_t i = 0; i < variableNames.size(); i++)
+	{
+		switch (variableTypes[i])
+		{
+		default:
+			LOG("No data type was specified : FileIO LoadCustomJsonData")
+				break;
+		case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_CHAR:
+			//results[variableNames[i]] = new char*(std::string(dataToLoad.at(0)[variableNames[i]]);
+			break;
+		case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_STRING:
+			results[variableNames[i]] = new std::string(dataToLoad.at(0)[variableNames[i]]);
+			break;
+		case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_DOUBLE:
+			results[variableNames[i]] = &dataToLoad.at(0)[variableNames[i]];
+			break;
+		case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_FLOAT:
+			memcpy(results[variableNames[i]], &dataToLoad.at(0)[variableNames[i]], sizeof(float));
+			break;
+		case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_INT:
+			memcpy(results[variableNames[i]], &dataToLoad.at(0)[variableNames[i]], sizeof(int));
+			break;
+		case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_WCHAR_T:
+			memcpy(results[variableNames[i]], &dataToLoad.at(0)[variableNames[i]], sizeof(wstring));
+			break;
+		case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_XMFLOAT2:
+			memcpy(results[variableNames[i]], &dataToLoad.at(0)[variableNames[i]], sizeof(XMFLOAT2));
+			break;
+		case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_XMFLOAT3:
+			memcpy(results[variableNames[i]], &dataToLoad.at(0)[variableNames[i]], sizeof(XMFLOAT3));
+			break;
+		case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_XMFLOAT4:
+			memcpy(results[variableNames[i]], &dataToLoad.at(0)[variableNames[i]], sizeof(XMFLOAT4));
+			break;
+		case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_GAME_OBJECTS:
+			GameObject* gO = LoadGameObject(dataToLoad.at(0)[variableNames[i]], 0);
+			memcpy(gO, & dataToLoad[variableNames[i]], sizeof(GameObject));
+			break;
+		}
+	}
+
+
+
+
+	return results;
+}
+
 //////////////////////////SAVE FUNCTIONS ////////////////////////////////////////
 
 bool FileIO::SaveObjectInJson(const char* fileLocation, std::vector<std::string> varNames, std::vector<JSON_VARIABLE_TYPE> types, std::vector<void*> data)
@@ -486,45 +538,47 @@ bool FileIO::SaveObjectInJson(const char* fileLocation, std::vector<std::string>
 		std::ofstream outFile;
 		outFile.open(fileLocation);
 		json jsonOutput;
+		jsonOutput.push_back({});
 		for (size_t i = 0; i < varNames.size(); i++)
 		{
 			switch (types[i])
 			{
 			default:
-				jsonOutput.push_back({ varNames[i], *(int*)data[i] });
+				jsonOutput.at(0).push_back({varNames[i], *(int*)data[i]});
 				break;
 			case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_CHAR:
-				jsonOutput.push_back({ varNames[i], *(char*)data[i] });
+				jsonOutput.at(0).push_back({ varNames[i], *(char*)data[i] });
 				break;
 			case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_STRING:
-				jsonOutput.push_back({ varNames[i], *(std::string*)data[i] });
+				jsonOutput.at(0).push_back({ varNames[i], *(std::string*)data[i] });
 				break;
 			case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_DOUBLE:
-				jsonOutput.push_back({ varNames[i], *(double*)data[i] });
+				jsonOutput.at(0).push_back({ varNames[i], *(double*)data[i] });
 				break;
 			case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_FLOAT:
-				jsonOutput.push_back({ varNames[i], *(float*)data[i] });
+				jsonOutput.at(0).push_back({ varNames[i], *(float*)data[i] });
 				break;
 			case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_INT:
-				jsonOutput.push_back({ varNames[i], *(int*)data[i] });
+				jsonOutput.at(0).push_back({ varNames[i], *(int*)data[i] });
 				break;
 			case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_WCHAR_T:
-				jsonOutput.push_back({ varNames[i], *(wchar_t*)data[i] });
+				jsonOutput.at(0).push_back({ varNames[i], *(wchar_t*)data[i] });
 				break;
 			case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_XMFLOAT2:
 				XMFLOAT2 vec2 = *(XMFLOAT2*)data[i];
-				jsonOutput.push_back({ varNames[i],  { vec2.x, vec2.y} });
+				jsonOutput.at(0).push_back({ varNames[i],  { vec2.x, vec2.y} });
 				break;
 			case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_XMFLOAT3:
 				XMFLOAT3 vec3 = *(XMFLOAT3*)data[i];
-				jsonOutput.push_back({ varNames[i],   { vec3.x, vec3.y, vec3.z } });
+				jsonOutput.at(0).push_back({ varNames[i],   { vec3.x, vec3.y, vec3.z } });
 				break;
 			case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_XMFLOAT4:
 				XMFLOAT4 vec4 = *(XMFLOAT4*)data[i];
-				jsonOutput.push_back({ varNames[i],  { vec4.x, vec4.y, vec4.z, vec4.w } });
+				jsonOutput.at(0).push_back({ varNames[i],  { vec4.x, vec4.y, vec4.z, vec4.w } });
 			case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_GAME_OBJECTS:
-				jsonOutput.push_back({ varNames[i], {}});
-				jsonOutput[varNames[i]] = PackJson((GameObject*)data[i], 0);
+				jsonOutput.at(0).push_back("ObjectData");
+				jsonOutput["ObjectData"].at(0).push_back({});
+				jsonOutput["ObjectData"].at(0).at(i) = PackJson((GameObject*)data[i], 0);
 				break;
 			}
 		}

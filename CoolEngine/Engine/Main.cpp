@@ -238,6 +238,29 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->GetTransform()->SetScale(objectScale);
 	pgameObject->SetShape(pbox);
 
+	std::vector<std::string> stringStuff;
+	std::vector<JSON_VARIABLE_TYPE> string2Stuff;
+	std::vector<void*> stringStuff2;
+	stringStuff.push_back(std::string("Nice"));
+	stringStuff.push_back(std::string("Nice2"));
+	string2Stuff.push_back(JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_STRING);
+	string2Stuff.push_back(JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_STRING);
+	stringStuff2.push_back(new std::string("Here is a test"));
+	stringStuff2.push_back(new std::string("Here is a test"));
+
+
+	FileIO::SaveObjectInJson("Cringe.json", stringStuff, string2Stuff, stringStuff2);
+
+	std::unordered_map<std::string, void*> test = FileIO::LoadCustomJsonData("Cringe.json", stringStuff, string2Stuff);
+
+	LOG(*(std::string*)test["Nice"]);
+	LOG(*(std::string*)test["Nice2"]);
+	
+	delete test["Nice"];
+	delete test["Nice2"];
+
+	FileIO::SaveGameObject( "Cirno.json", pgameObject);
+
 	g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, 0, 0), XMFLOAT3(25, 25, 25), "TestMap");
 
 	ExampleObserver observer(new int(10), pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName));
@@ -255,6 +278,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	trans.SetRotation(rot);
 	trans.SetScale(scale);
 	g_particleManager->AddSystem(trans, 10.0f, SYSTEM_TEST, DEFAULT_IMGUI_IMAGE);
+
+	FileIO::SaveScene("Cirno2.json", pgameManager);
 
 	GameManager::GetInstance()->GetTimer()->Tick();
 

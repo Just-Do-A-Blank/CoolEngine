@@ -181,6 +181,8 @@ public:
 	/// <returns></returns>
 	static ParticleData FileIO::LoadParticle(json j, int particleNumber);
 
+	static std::unordered_map<std::string, void*> LoadCustomJsonData(const char* fileAddress, std::vector<std::string> variableNames, std::vector<JSON_VARIABLE_TYPE> variableTypes);
+
 	/// <summary>
 	/// This function allows for the saving of a custom json file.
 	/// </summary>
