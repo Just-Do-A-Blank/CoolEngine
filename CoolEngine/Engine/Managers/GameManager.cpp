@@ -156,5 +156,10 @@ void GameManager::CreateScene(string sceneIdentifier)
 
 GameObject* GameManager::GetSelectedGameObject()
 {
+	if (m_pcurrentScene == nullptr)
+	{
+		return nullptr;
+	}
+
     return m_pcurrentScene->GetSelectedGameObject();
 }

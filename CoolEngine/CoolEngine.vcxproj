@@ -41,6 +41,7 @@
     <ClInclude Include="Engine\GameObjects\PlayerGameObject.h" />
     <ClInclude Include="Engine\GameObjects\RenderableGameObject.h" />
     <ClInclude Include="Engine\GameObjects\Transform.h" />
+    <ClInclude Include="Engine\GameUI\TextComponent.h" />
     <ClInclude Include="Engine\Graphics\ConstantBuffer.h" />
     <ClInclude Include="Engine\Graphics\ConstantBuffers.h" />
     <ClInclude Include="Engine\Graphics\DDSTextureLoader.h" />
@@ -91,11 +92,16 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="Engine\Includes\RapidXML\rapidxml.hpp" />
+    <ClInclude Include="Engine\Includes\RapidXML\rapidxml_iterators.hpp" />
+    <ClInclude Include="Engine\Includes\RapidXML\rapidxml_print.hpp" />
+    <ClInclude Include="Engine\Includes\RapidXML\rapidxml_utils.hpp" />
     <ClInclude Include="Engine\Managers\AudioManager.h" />
     <ClInclude Include="Engine\Managers\DebugDrawManager.h" />
     <ClInclude Include="Engine\Managers\Events\EventManager.h" />
     <ClInclude Include="Engine\Managers\Events\EventObserver.h" />
     <ClInclude Include="Engine\Managers\Events\Events.h" />
+    <ClInclude Include="Engine\Managers\FontManager.h" />
     <ClInclude Include="Engine\Managers\GameManager.h" />
     <ClInclude Include="Engine\Managers\GraphicsManager.h" />
     <ClInclude Include="Engine\Managers\SceneGraph.h" />
@@ -116,9 +122,10 @@
     <ClInclude Include="Engine\Tools\AnimationTool.h" />
     <ClInclude Include="Engine\Tools\TileMapTool.h" />
     <ClInclude Include="Engine\Tools\ToolBase.h" />
-    <ClInclude Include="Engine\Managers\UiManager.h" />
-    <ClInclude Include="Engine\GameUI\UiElement.h" />
-    <ClInclude Include="Engine\GameUI\UiCanvas.h" />
+    <ClInclude Include="Engine\Managers\UIManager.h" />
+    <ClInclude Include="Engine\GameUI\GameUIComponent.h" />
+    <ClInclude Include="Engine\GameUI\UICanvas.h" />
+    <ClInclude Include="Engine\GameUI\ImageComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\AI\Pathfinding.cpp" />
@@ -135,6 +142,7 @@
     <ClCompile Include="Engine\GameObjects\PlayerGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\RenderableGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\Transform.cpp" />
+    <ClCompile Include="Engine\GameUI\TextComponent.cpp" />
     <ClCompile Include="Engine\Graphics\DDSTextureLoader.cpp" />
     <ClCompile Include="Engine\Graphics\SpriteAnimation.cpp" />
     <ClCompile Include="Engine\Helpers\Inputs.cpp" />
@@ -172,6 +180,7 @@
     <ClCompile Include="Engine\Managers\Events\EventManager.cpp" />
     <ClCompile Include="Engine\Managers\Events\EventObserver.cpp" />
     <ClCompile Include="Engine\Managers\Events\Events.cpp" />
+    <ClCompile Include="Engine\Managers\FontManager.cpp" />
     <ClCompile Include="Engine\Physics\Shape.cpp" />
     <ClCompile Include="Engine\Scene\Scene.cpp" />
     <ClCompile Include="Engine\Managers\AudioManager.cpp" />
@@ -187,9 +196,10 @@
     <ClCompile Include="Engine\Tools\AnimationTool.cpp" />
     <ClCompile Include="Engine\Tools\TileMapTool.cpp" />
     <ClCompile Include="Engine\Tools\ToolBase.cpp" />
-    <ClCompile Include="Engine\Managers\UiManager.cpp" />
-    <ClCompile Include="Engine\GameUI\UiElement.cpp" />
-    <ClCompile Include="Engine\GameUI\UiCanvas.cpp" />
+    <ClCompile Include="Engine\Managers\UIManager.cpp" />
+    <ClCompile Include="Engine\GameUI\GameUIComponent.cpp" />
+    <ClCompile Include="Engine\GameUI\UICanvas.cpp" />
+    <ClCompile Include="Engine\GameUI\ImageComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">
@@ -216,13 +226,21 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="Engine\Graphics\Shaders\PassthroughVertex.hlsl">
+    <FxCompile Include="Engine\Graphics\Shaders\ScreenSpaceVertex.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\TextPixel.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">
