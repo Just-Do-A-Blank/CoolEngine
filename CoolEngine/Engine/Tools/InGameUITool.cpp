@@ -77,8 +77,6 @@ void InGameUITool::DrawUIWindow()
 
 	static int selected = -1;
 
-	TreeNode<GameUIComponent>* prootNode = puiManager->GetRootTreeNode();
-
 	m_base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
 	int nodeCount = -1;
 
@@ -89,7 +87,8 @@ void InGameUITool::DrawUIWindow()
 
 	if (ImGui::Button("New Canvas") == true)
 	{
-		UIManager::GetInstance()->CreateCanvas(m_canvasName, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(10.0f, 10.0f, 10.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
+		puiManager->CreateCanvas(m_canvasName, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
+		m_canvasName = "";
 	}
 
 	EditorUI::InputText("Image UI Name", m_imageName, 120);
@@ -98,8 +97,12 @@ void InGameUITool::DrawUIWindow()
 
 	if (ImGui::Button("New ImageUI") == true)
 	{
-		ImageComponent* imageUI = UIManager::GetInstance()->CreateUIComponent<ImageComponent>(m_imageName, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(10.0f, 10.0f, 10.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
-		imageUI->Init(L"");
+		ImageComponent* imageUI = puiManager->CreateUIComponent<ImageComponent>(m_imageName, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(10.0f, 10.0f, 10.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
+		if (imageUI)
+		{
+			imageUI->Init(L"");
+			m_imageName = "";
+		}
 	}
 
 	EditorUI::InputText("Text UI Name", m_textName, 120);
@@ -108,9 +111,25 @@ void InGameUITool::DrawUIWindow()
 
 	if (ImGui::Button("New TextUI") == true)
 	{
-		TextComponent* textUI = UIManager::GetInstance()->CreateUIComponent<TextComponent>(m_textName, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
-		textUI->Init("New Text", "comicSans", 20, Colors::White, m_pdevice);
+		TextComponent* textUI = puiManager->CreateUIComponent<TextComponent>(m_textName, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
+		if (textUI)
+		{
+			textUI->Init("New Text", "comicSans", 20, Colors::White, m_pdevice);
+			m_textName = "";
+		}
 	}
+
+	if (m_gameObjectNodeClicked != -1)
+	{
+		if (ImGui::Button("Delete") == true)
+		{
+			puiManager->DeleteSelectedUIComponent();
+			puiManager->SelectUIObject(nullptr);
+			m_gameObjectNodeClicked = -1;
+		}
+	}
+
+	TreeNode<GameUIComponent>* prootNode = puiManager->GetRootTreeNode();
 
 	ImGui::Begin("UI SceneGraph");
 	TraverseTree(prootNode, nodeCount);
@@ -144,8 +163,6 @@ void InGameUITool::TraverseTree(TreeNode<GameUIComponent>* pcurrentNode, int& no
 		{
 			m_gameObjectNodeClicked = -1;
 			puiManager->SelectUIObject(nullptr);
-
-
 		}
 		else
 		{

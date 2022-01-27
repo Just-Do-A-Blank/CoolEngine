@@ -76,7 +76,8 @@ void GameUIComponent::SetTexture(ID3D11ShaderResourceView* ptexture)
 #if EDITOR
 void GameUIComponent::ShowEngineUI()
 {
-	ImGui::Begin("Properties");
+	string text = "Properties | " + m_uiElementIdentifier;
+	ImGui::Begin(text.c_str());
 
 	CreateEngineUI();
 
@@ -86,6 +87,7 @@ void GameUIComponent::CreateEngineUI()
 {
 	ImGui::Separator();
 	ImGui::Spacing();
+
 	m_transform->CreateEngineUI();
 }
 #endif

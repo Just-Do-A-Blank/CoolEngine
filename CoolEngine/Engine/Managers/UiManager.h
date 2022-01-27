@@ -20,7 +20,6 @@ private:
     TreeNode<GameUIComponent>* m_pselectedUINode = nullptr;
     TreeNode<GameUIComponent>* m_prootTreeNode = nullptr;
 
-    //unordered_map<string, UICanvas*> m_uiCanvasMap;
     SceneGraph<GameUIComponent>* m_pUISceneGraph;
 
 public:
@@ -29,9 +28,6 @@ public:
     void SelectUIObjectUsingIdentifier(string identifier);
     void SelectUIObject(GameUIComponent* pgameObject);
     void SelectUIObjectUsingTreeNode(TreeNode<GameUIComponent>* pnode);
-    void DeleteCanvasUsingIdentifier(string canvasIdentifier);
-    void DeleteCanvas(UICanvas* pcanvas);
-    void DeleteSelectedCanvas();
     TreeNode<GameUIComponent>* GetRootTreeNode();
 
     void Render(RenderStruct& renderStruct);
@@ -58,9 +54,16 @@ public:
         return m_pcurrentCanvas->GetGameUIComponentUsingIdentifier<T>(identifier);
     }
 
+    template<typename T>
+    void DeleteUIElementUsingNode(TreeNode<T>* currentNode)
+    {
+        m_pUISceneGraph->DeleteGameObjectUsingNode(currentNode);
+    }
+
+    void DeleteSelectedUIComponent();
+
 
     //Getters
-    unordered_map<string, UICanvas*> GetCanvasList();
 	vector<GameUIComponent*>& GetAllUIComponents();
 };
 

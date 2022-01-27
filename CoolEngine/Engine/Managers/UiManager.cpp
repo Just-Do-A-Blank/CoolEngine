@@ -31,7 +31,6 @@ void UIManager::CreateCanvas(string identifier, XMFLOAT3& position, XMFLOAT3& sc
 void UIManager::SelectUIObjectUsingIdentifier(string identifier)
 {
 	m_pselectedUINode = m_pUISceneGraph->GetNodeUsingIdentifier(identifier);
-	//m_pselectedGameObject = m_pselectedNode->GameObject;
 }
 
 void UIManager::SelectUIObject(GameUIComponent* pgameObject)
@@ -43,7 +42,6 @@ void UIManager::SelectUIObject(GameUIComponent* pgameObject)
 	else
 	{
 		m_pselectedUINode = nullptr;
-		//m_pselectedGameObject = nullptr;
 	}
 }
 
@@ -52,27 +50,10 @@ void UIManager::SelectUIObjectUsingTreeNode(TreeNode<GameUIComponent>* pnode)
 	if (!pnode)
 	{
 		m_pselectedUINode = nullptr;
-		//m_pselectedGameObject = nullptr;
 		return;
 	}
 
 	m_pselectedUINode = pnode;
-	//m_pselectedGameObject = pnode->GameObject;
-}
-
-void UIManager::DeleteCanvasUsingIdentifier(string canvasIdentifier)
-{
-    //m_uiCanvasMap.erase(canvasIdentifier);
-}
-
-void UIManager::DeleteCanvas(UICanvas* pcanvas)
-{
-    DeleteCanvasUsingIdentifier(pcanvas->GetCanvasIdentifier());
-}
-
-void UIManager::DeleteSelectedCanvas()
-{
-    //DeleteCanvasUsingIdentifier(m_pcurrentCanvas->GetCanvasIdentifier());
 }
 
 TreeNode<GameUIComponent>* UIManager::GetRootTreeNode()
@@ -92,13 +73,13 @@ void UIManager::Render(RenderStruct& renderStruct)
 	{
 		uiComponentList[i]->Render(renderStruct);
 	}
-    //m_pcurrentCanvas->Render(renderStruct);
 }
 
-//unordered_map<string, UICanvas*> UIManager::GetCanvasList()
-//{
-//    return m_uiCanvasMap;
-//}
+void UIManager::DeleteSelectedUIComponent()
+{
+	m_pUISceneGraph->DeleteGameObjectUsingNode(m_pselectedUINode);
+	m_pselectedUINode = nullptr;
+}
 
 vector<GameUIComponent*>& UIManager::GetAllUIComponents()
 {

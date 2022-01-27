@@ -21,13 +21,14 @@ cbuffer textPerInstanceCB : register(b1)
     float pad;
 }
 
+float alphaClipThreshold = 0.1f;
 
 float4 main(PS_INPUT input) : SV_TARGET
 {
     float4 albedo = albedoTex.Sample(samLinear, input.texCoords);
 
-    //NOTE 0.4f = backgroundClipThreshold    
-    if (albedo.r < 0.4f)
+    //NOTE 0.1f = alphaclipping below 0.1f  
+    if (albedo.a < 0.1f)
     {
         discard;
     }
