@@ -2,7 +2,7 @@
 #include "Particle.h"
 #include "Engine/GameObjects/GameObject.h"
 
-#define PARTICLE_SYSTEM_SIZE 16
+#define PARTICLE_SYSTEM_SIZE 32
 
 // This class will manage the movement and life of particles in a single effect. It is initialised when the effect begins and deactivated when the effect is over, but never deleted from the memory pool.
 class ParticleSystem : public GameObject
@@ -22,6 +22,12 @@ private:
 	float m_spawnInterval;
 	int m_spawnNumber;
 	ID3D11ShaderResourceView* m_pTexture;
+
+	// Randomness factors
+	float m_positionRand;
+	float m_velocityRand;
+	float m_accelRand;
+	float m_lifeRand;
 
 public:
 	ParticleSystem(string identifier);
@@ -47,7 +53,11 @@ public:
 	/// <param name="partLife"></param>
 	/// <param name="interval"></param>
 	/// <param name="number"></param>
-	void Initialise(Transform trans, float life, ID3D11ShaderResourceView* tex, XMFLOAT2 vel, XMFLOAT2 accel, float partLife, float interval, int number);
+	/// <param name="randPos"></param>
+	/// <param name="randVel"></param>
+	/// <param name="randAccel"></param>
+	/// <param name="randLife"></param>
+	void Initialise(Transform trans, float life, ID3D11ShaderResourceView* tex, XMFLOAT2 vel, XMFLOAT2 accel, float partLife, float interval, int number, float randPos, float randVel, float randAccel, float randLife);
 
 	/// <summary>
 	/// Set the properties used to create particles
@@ -56,7 +66,10 @@ public:
 	/// <param name="accel"></param>
 	/// <param name="life"></param>
 	/// <param name="interval"></param>
+	/// <param name="number"></param>
 	void SetProperties(XMFLOAT2 vel, XMFLOAT2 accel, float life, float interval, int number);
+
+	void SetRandomness(float randPos, float randVel, float randAccel, float randLife);
 
 	/// <summary>
 	/// Update all stored particles, tick timer down to zero, and generate particles in pattern according to type
@@ -125,6 +138,26 @@ public:
 		return m_spawnNumber;
 	}
 
+	float GetRandomPos()
+	{
+		return m_positionRand;
+	}
+
+	float GetRandomVelocity()
+	{
+		return m_velocityRand;
+	}
+
+	float GetRandomAccel()
+	{
+		return m_accelRand;
+	}
+
+	float GetRandomLife()
+	{
+		return m_lifeRand;
+	}
+
 	// Setters
 	void SetActive(bool active) 
 	{ 
@@ -164,5 +197,25 @@ public:
 	void SetSpawnNumber(float num)
 	{
 		m_spawnNumber = num;
+	}
+
+	void SetRandomPos(float rand)
+	{
+		m_positionRand = rand;
+	}
+
+	void SetRandomVelocity(float rand)
+	{
+		m_velocityRand = rand;
+	}
+
+	void SetRandomAccel(float rand)
+	{
+		m_accelRand = rand;
+	}
+
+	void SetRandomLife(float rand)
+	{
+		m_lifeRand = rand;
 	}
 };

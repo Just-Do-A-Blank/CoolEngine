@@ -101,4 +101,19 @@ public:
 	{
 		return ((var1.x - var2.x) * (var1.x - var2.x)) + ((var1.y - var2.y) * (var1.y - var2.y)) + ((var1.z - var2.z) * (var1.z - var2.z));
 	}
+
+	static int RandomNumber(int rangeLow, int rangeHigh)
+	{
+		int range = rangeHigh - rangeLow;
+		int randomNumber = rand() % range;
+		return (randomNumber + rangeLow);
+	}
+
+	static float RandomNumber(float rangeLow, float rangeHigh)
+	{
+		float range = rangeHigh - rangeLow;
+		float randomNumber = (float)rand() / (float)RAND_MAX;
+		randomNumber *= range;
+		return (randomNumber + rangeLow);
+	}
 };

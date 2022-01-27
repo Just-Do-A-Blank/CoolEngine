@@ -72,7 +72,7 @@ void ParticleManager::Render(ID3D11DeviceContext* pContext)
 	pContext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 0, nullptr);
 }
 
-void ParticleManager::AddSystem(Transform trans, float life, wstring albedoName, XMFLOAT2 vel, XMFLOAT2 accel, float partLife, float interval, float number)
+void ParticleManager::AddSystem(Transform trans, float life, wstring albedoName, XMFLOAT2 vel, XMFLOAT2 accel, float partLife, float interval, float number, float randPos, float randVel, float randAccel, float randLife)
 {
 	for (unsigned int i = 0; i < PARTICLE_MANAGER_SIZE; ++i)
 	{
@@ -86,7 +86,7 @@ void ParticleManager::AddSystem(Transform trans, float life, wstring albedoName,
 				return;
 			}
 
-			m_pParticleSystems[i]->Initialise(trans, life, psRV, vel, accel, partLife, interval, number);
+			m_pParticleSystems[i]->Initialise(trans, life, psRV, vel, accel, partLife, interval, number, randPos, randVel, randAccel, randLife);
 			break;
 		}
 	}
@@ -98,7 +98,9 @@ void ParticleManager::AddSystem(ParticleSystem* system)
 	{
 		if (!m_pParticleSystems[i]->GetActive())
 		{
-			m_pParticleSystems[i]->Initialise(*system->GetTrans(), system->GetLife(), system->GetTexture());
+			m_pParticleSystems[i]->Initialise(	*system->GetTrans(), system->GetLife(), system->GetTexture(), 
+												system->GetVelocity(), system->GetAccel(), system->GetParticleLife(), system->GetSpawnInterval(), system->GetSpawnNumber(),
+												system->GetRandomPos(), system->GetRandomVelocity(), system->GetRandomAccel(), system->GetRandomLife()						);
 			break;
 		}
 	}

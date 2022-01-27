@@ -128,6 +128,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 #endif
 
+	srand(time(0));
+
 	//Create camera
 	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, -5);
 	XMFLOAT3 cameraForward = XMFLOAT3(0, 0, 1);
@@ -286,7 +288,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	trans.SetPosition(pos);
 	trans.SetRotation(rot);
 	trans.SetScale(scale);
-	g_particleManager->AddSystem(trans, 10.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 0.5f, 1.0f, 1);
+	g_particleManager->AddSystem(trans, 10.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 0.5f, 1.0f, 3, 50.0f, 0.0f, 0.0f, 0.2f);
 
 	GameManager::GetInstance()->GetTimer()->Tick();
 

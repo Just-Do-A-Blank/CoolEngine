@@ -41,7 +41,11 @@ public:
 	/// <param name="partLife"></param>
 	/// <param name="interval"></param>
 	/// <param name="number"></param>
-	void AddSystem(Transform trans, float life, wstring albedoName, XMFLOAT2 vel, XMFLOAT2 accel, float partLife, float interval, float number);
+	/// <param name="randPos"></param>
+	/// <param name="randVel"></param>
+	/// <param name="randAccel"></param>
+	/// <param name="randLife"></param>
+	void AddSystem(Transform trans, float life, wstring albedoName, XMFLOAT2 vel, XMFLOAT2 accel, float partLife, float interval, float number, float randPos, float randVel, float randAccel, float randLife);
 
 	/// <summary>
 	/// Find slot for a new system, and initialise it
