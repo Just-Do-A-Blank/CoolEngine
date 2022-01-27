@@ -2,6 +2,7 @@
 #include "Engine/ResourceDefines.h"
 #include "Engine/GameObjects/Transform.h"
 #include "Engine/Managers/GraphicsManager.h"
+#include "Engine/EditorUI/EditorUI.h"
 
 ImageComponent::ImageComponent(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation) : GameUIComponent(identifier, position, scale, rotation)
 {
@@ -19,4 +20,17 @@ void ImageComponent::Init(wstring textureFilePath)
 		return;
 	}
 	m_ptexture = psRV;
+}
+
+void ImageComponent::CreateEngineUI()
+{
+	GameUIComponent::CreateEngineUI();
+
+	ImGui::Spacing();
+	ImGui::Separator();
+	ImGui::Spacing();
+
+	EditorUI::Texture("Texture", m_texFilepath, m_ptexture);
+
+	ImGui::Spacing();
 }

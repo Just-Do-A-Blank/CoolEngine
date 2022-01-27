@@ -1,9 +1,10 @@
 #pragma once
 #include "Engine/GameObjects/RenderableGameObject.h"
+#include "Engine/Structure/EditorUIComponent.h"
 
 class Transform;
 
-class GameUIComponent
+class GameUIComponent : public EditorUIComponent
 {
 private:
 	//Graphics variables
@@ -22,6 +23,7 @@ protected:
 
 	Transform* m_transform;
 	ID3D11ShaderResourceView* m_ptexture = nullptr;
+	wstring m_texFilepath = L"";
 public:
 	GameUIComponent(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation);
 	void InitGraphics();
@@ -40,6 +42,11 @@ public:
 	void SetLayer(const int& layer);
 
 	void SetTexture(ID3D11ShaderResourceView* ptexture);
+
+#if EDITOR
+	virtual void ShowEngineUI();
+	virtual void CreateEngineUI() override;
+#endif
 
 };
 

@@ -32,9 +32,6 @@ EditorUI::EditorUI(ID3D11Device* pdevice)
 
 void EditorUI::DrawEditorUI(ID3D11Device* pdevice)
 {
-	ImGui_ImplDX11_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
 
 	DrawMasterWindow();
 
@@ -53,11 +50,6 @@ void EditorUI::DrawEditorUI(ID3D11Device* pdevice)
 		GameManager::GetInstance()->GetSelectedGameObject()->ShowEngineUI();
 	}
 
-	ImGui::Render();
-
-	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
-	ImGui::EndFrame();
 }
 
 void EditorUI::Update()
@@ -349,7 +341,7 @@ void EditorUI::OpenFolderExplorer(WCHAR* buffer, int bufferSize)
 	SHBrowseForFolder(&browserInfo);
 }
 
-void EditorUI::DragFloat3(const string& label, XMFLOAT3& values, const float& columnWidth)
+void EditorUI::DragFloat3(const string& label, XMFLOAT3& values, const float& columnWidth, const float& speed, const float& min, const float& max)
 {
 	ImGuiIO& io = ImGui::GetIO();
 
@@ -368,19 +360,19 @@ void EditorUI::DragFloat3(const string& label, XMFLOAT3& values, const float& co
 
 	ImGui::Button("X", buttonSize);
 	ImGui::SameLine();
-	ImGui::DragFloat("##X", &values.x, 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::DragFloat("##X", &values.x, speed, min, max, "%.2f");
 	ImGui::PopItemWidth();
 	ImGui::SameLine();
 
 	ImGui::Button("Y", buttonSize);
 	ImGui::SameLine();
-	ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::DragFloat("##Y", &values.y, speed, min, max, "%.2f");
 	ImGui::PopItemWidth();
 	ImGui::SameLine();
 
 	ImGui::Button("Z", buttonSize);
 	ImGui::SameLine();
-	ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::DragFloat("##Z", &values.z, speed, min, max, "%.2f");
 	ImGui::PopItemWidth();
 
 	ImGui::PopStyleVar();
@@ -496,8 +488,10 @@ bool EditorUI::Texture(const string& label, wstring& filepath, ID3D11ShaderResou
 	return interacted;
 }
 
-void EditorUI::InputText(const string& label, string& text, const float& columnWidth)
+bool EditorUI::InputText(const string& label, string& text, const float& columnWidth)
 {
+	bool interacted = false;
+
 	ImGui::PushID(label.c_str());
 
 	ImGui::Columns(2);
@@ -514,7 +508,10 @@ void EditorUI::InputText(const string& label, string& text, const float& columnW
 
 	strcpy_s(buffer, text.c_str());
 
-	ImGui::InputText("##text", buffer, FILEPATH_BUFFER_SIZE);
+	if (ImGui::InputText("##text", buffer, FILEPATH_BUFFER_SIZE))
+	{
+		interacted = true;
+	}
 
 	text = string(buffer);
 
@@ -525,6 +522,8 @@ void EditorUI::InputText(const string& label, string& text, const float& columnW
 	ImGui::Columns(1);
 
 	ImGui::PopID();
+
+	return interacted;
 }
 
 void EditorUI::Animation(const string& label, wstring& filepath, SpriteAnimation& animation, const float& columnWidth)

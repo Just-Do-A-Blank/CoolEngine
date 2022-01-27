@@ -315,6 +315,9 @@
     <ClInclude Include="Engine\GameUI\TextComponent.h">
       <Filter>Engine\GameUI</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Tools\InGameUITool.h">
+      <Filter>Engine\Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -469,6 +472,9 @@
     </ClCompile>
     <ClCompile Include="Engine\GameUI\TextComponent.cpp">
       <Filter>Engine\GameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Tools\InGameUITool.cpp">
+      <Filter>Engine\Tools</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

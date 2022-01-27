@@ -3,6 +3,10 @@
 #include "Engine/Helpers/DebugHelper.h"
 #include "Engine/GameUI/UICanvas.h"
 #include "Engine/Managers/GraphicsManager.h"
+#include "Engine/Managers/SceneGraph.h"
+#include "Engine/GameUI/GameUIComponent.h"
+#include "Engine/GameUI/TextComponent.h"
+
 
 class GameUIComponent;
 class TextComponent;
@@ -13,30 +17,39 @@ class UIManager :
 private:
 	ID3D11Device* m_pDevice;
 
-    unordered_map<string, UICanvas*> m_uiCanvasMap;
+    TreeNode<GameUIComponent>* m_pselectedUINode = nullptr;
+    TreeNode<GameUIComponent>* m_prootTreeNode = nullptr;
 
-    UICanvas* m_pcurrentCanvas = nullptr;
+    //unordered_map<string, UICanvas*> m_uiCanvasMap;
+    SceneGraph<GameUIComponent>* m_pUISceneGraph;
+
 public:
 	void Init(ID3D11Device* pDevice);
     void CreateCanvas(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation);
-    void SelectCanvasUsingIdentifier(string canvasIdentifier);
-    void SelectCanvas(UICanvas* pcanvas);
+    void SelectUIObjectUsingIdentifier(string identifier);
+    void SelectUIObject(GameUIComponent* pgameObject);
+    void SelectUIObjectUsingTreeNode(TreeNode<GameUIComponent>* pnode);
     void DeleteCanvasUsingIdentifier(string canvasIdentifier);
     void DeleteCanvas(UICanvas* pcanvas);
     void DeleteSelectedCanvas();
+    TreeNode<GameUIComponent>* GetRootTreeNode();
 
     void Render(RenderStruct& renderStruct);
 
 	template<typename T>
 	T* CreateUIComponent(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation)
 	{
-		if (m_pcurrentCanvas == nullptr)
-		{
-			LOG("UI Canvas is not Selected");
-			return nullptr;
-		}
+        if (!m_pselectedUINode)
+        {
+            LOG("No UIElement is selected to create the UIComponent in");
+            return nullptr;
+        }
 
-		return m_pcurrentCanvas->CreateUIComponent<T>(identifier, position, scale, rotation);
+        T* uiComponent = new T(identifier, position, scale, rotation);
+
+       m_pUISceneGraph->AddChild(m_pselectedUINode, uiComponent);
+
+        return uiComponent;
 	}
 
     template<typename T>
@@ -48,6 +61,6 @@ public:
 
     //Getters
     unordered_map<string, UICanvas*> GetCanvasList();
-	vector<GameUIComponent*>& GetAllUIComponentsInCurrentCanvas();
+	vector<GameUIComponent*>& GetAllUIComponents();
 };
 

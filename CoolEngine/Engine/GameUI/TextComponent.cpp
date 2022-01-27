@@ -3,6 +3,7 @@
 #include "Engine/Graphics/Mesh.h"
 #include "Engine/Managers/GraphicsManager.h"
 #include"Engine/ResourceDefines.h"
+#include "Engine/EditorUI/EditorUI.h"
 
 TextComponent::TextComponent(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation):GameUIComponent(identifier, position, scale, rotation)
 {	
@@ -14,6 +15,54 @@ void TextComponent::UpdateFont(string fontName, int fontSize)
 	m_fontAtlas = FontManager::GetInstance()->GetFontAtlas(fontName, fontSize);
 	m_ptexture = m_fontAtlas[0]->fontTexture;
 }
+
+#if EDITOR
+void TextComponent::CreateEngineUI()
+{
+	GameUIComponent::CreateEngineUI();
+
+	ImGui::Spacing();
+	ImGui::Separator();
+	ImGui::Spacing();
+
+	vector<string> fontList = FontManager::GetInstance()->GetFontNames();
+
+	if (IMGUI_LEFT_LABEL(ImGui::BeginCombo, "Font", m_fontName.c_str()) == true)
+	{
+		for (int i = 0; i < fontList.size(); ++i)
+		{
+			if (ImGui::Selectable(fontList[i].c_str(), m_fontName == fontList[i].c_str()))
+			{
+				m_fontName = fontList[i];
+				UpdateFont(fontList[i], m_fontSize);
+				CreateVertexBuffer(m_pdevice);
+			}
+		}
+
+		ImGui::EndCombo();
+	}
+
+	ImGui::Spacing();
+	
+	if (EditorUI::InputText("Text", m_text) == true)
+	{
+		CreateVertexBuffer(m_pdevice);
+	}
+
+	ImGui::Spacing();
+
+	XMFLOAT3 colour = XMFLOAT3(m_colour.f[0], m_colour.f[1], m_colour.f[2]);
+	EditorUI::DragFloat3("Colour", colour, 100.0f, 0.01f, 0.0f, 1.0f );
+
+	m_colour.f[0] = colour.x;
+	m_colour.f[1] = colour.y;
+	m_colour.f[2] = colour.z;
+
+	ImGui::Spacing();
+	ImGui::Separator();
+
+}
+#endif
 
 void TextComponent::Render(RenderStruct& renderStruct)
 {
@@ -66,12 +115,25 @@ void TextComponent::Init(string text, string fontName, int fontSize, XMVECTORF32
 	m_colour = colour;
 	m_text = text;
 	m_fontName = fontName;
+	m_fontSize = fontSize;
+#if EDITOR
+	m_pdevice = pdevice;
+#endif
 	UpdateFont(fontName, fontSize);
 	CreateVertexBuffer(pdevice);
 }
 
 void TextComponent::CreateVertexBuffer(ID3D11Device* pdevice)
 {
+	if (m_pvertexBuffer)
+	{
+		m_pvertexBuffer->Release();
+		m_pvertexBuffer = nullptr;
+
+		m_pindexBuffer->Release();
+		m_pindexBuffer = nullptr;
+	}
+
 	XMFLOAT2 windowDimension = GraphicsManager::GetInstance()->GetWindowDimensions();
 
 	XMFLOAT3 position = m_transform->GetPosition();

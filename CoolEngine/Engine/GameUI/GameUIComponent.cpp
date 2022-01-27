@@ -4,6 +4,7 @@
 #include "Engine/Graphics/Mesh.h"
 #include "Engine/GameObjects/RenderableGameObject.h"
 #include "Engine/Managers/GraphicsManager.h"
+#include "Engine/EditorUI/EditorUI.h"
 
 GameUIComponent::GameUIComponent(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation)
 {
@@ -71,6 +72,23 @@ void GameUIComponent::SetTexture(ID3D11ShaderResourceView* ptexture)
 {
 	m_ptexture = ptexture;
 }
+
+#if EDITOR
+void GameUIComponent::ShowEngineUI()
+{
+	ImGui::Begin("Properties");
+
+	CreateEngineUI();
+
+	ImGui::End();
+}
+void GameUIComponent::CreateEngineUI()
+{
+	ImGui::Separator();
+	ImGui::Spacing();
+	m_transform->CreateEngineUI();
+}
+#endif
 
 int& GameUIComponent::GetLayer()
 {

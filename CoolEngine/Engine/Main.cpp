@@ -40,6 +40,7 @@
 
 #include "Engine/Tools/TileMapTool.h"
 #include "Engine/Tools/AnimationTool.h"
+#include "Engine/Tools/InGameUITool.h"
 #endif
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -160,6 +161,15 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_ptoolBase = new TileMapTool();
 #elif ANIMATION_TOOL
 	g_ptoolBase = new AnimationTool();
+#elif IN_GAME_UI_TOOL
+	g_ptoolBase = new InGameUITool();
+
+	FontManager::GetInstance()->LoadFont("Resources/Fonts/ComicSans.xml", L"Resources/Fonts/ComicSans.dds", "comicSans");
+	UIManager::GetInstance()->Init(g_pd3dDevice);
+	UIManager::GetInstance()->CreateCanvas("testCanvas", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
+	//TextComponent* tc = UIManager::GetInstance()->CreateUIComponent<TextComponent>("TestText", XMFLOAT3(0.0, 20.0, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f));
+	//tc->Init("Cool Engine!", "comicSans", 16, Colors::Yellow, g_pd3dDevice);
+	UIManager::GetInstance()->CreateUIComponent<ImageComponent>("TestUIImage", XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT3(0.9f, 0.9f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
 #endif
 
 	g_ptoolBase->Init(g_pd3dDevice);
@@ -284,12 +294,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	EventManager::Instance()->AddClient(EventType::MouseMoved, &observer);
 
 
-	FontManager::GetInstance()->LoadFont("Resources/Fonts/ComicSans.xml", L"Resources/Fonts/ComicSans.dds", "comicSans");
-	UIManager::GetInstance()->Init(g_pd3dDevice);
-	UIManager::GetInstance()->CreateCanvas("testCanvas", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
-	TextComponent* tc = UIManager::GetInstance()->CreateUIComponent<TextComponent>("TestText", XMFLOAT3(0.0, 20.0, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f));
-	tc->Init("Cool Engine!", "comicSans", 16, Colors::Yellow, g_pd3dDevice);
-	UIManager::GetInstance()->CreateUIComponent<ImageComponent>("TestUIImage", XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT3(0.9f, 0.9f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
+	
 
 	
 	XMFLOAT3 pos = XMFLOAT3( 300, 300, 5 );
@@ -616,6 +621,12 @@ void CleanupDevice()
 
 void Render()
 {
+#if EDITOR
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+#endif
+
 	// Clear the back buffer
 	g_pImmediateContext->ClearRenderTargetView(g_pRenderTargetView, DirectX::Colors::MidnightBlue);
 
@@ -646,6 +657,7 @@ void Render()
 	GameManager* pgamemanager = GameManager::GetInstance();
 	pgamemanager->Render(renderStruct);
 
+
 	UIManager::GetInstance()->Render(renderStruct);
 	
 	g_particleManager->Render(renderStruct.m_pcontext);
@@ -660,6 +672,14 @@ void Render()
 #if EDITOR
 	g_peditorUI->DrawEditorUI(g_pd3dDevice);
 #endif
+#endif
+
+#if EDITOR
+	ImGui::Render();
+
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+	ImGui::EndFrame();
 #endif
 
 	// Present our back buffer to our front buffer

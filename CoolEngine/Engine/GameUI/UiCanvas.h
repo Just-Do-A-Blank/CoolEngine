@@ -1,5 +1,4 @@
 #pragma once
-#include "Engine/Managers/SceneGraph.h"
 #include "Engine/GameUI/GameUIComponent.h"
 
 
@@ -7,10 +6,9 @@ class UICanvas : public GameUIComponent
 {
 private:
 	string m_canvasIdentifier;
-	SceneGraph<GameUIComponent>* m_pUISceneGraph;
+	
 
-	TreeNode<GameUIComponent>* m_pselectedNode = nullptr;
-	TreeNode<GameUIComponent>* m_prootTreeNode = nullptr;
+	
 
 	UICanvas* m_pselectedGameUIComponent = nullptr;
 
@@ -77,8 +75,8 @@ public:
 	void DeleteGameUIComponentIdentifier(string identifier);
 
 	//Getters
-	TreeNode<GameUIComponent>* GetRootTreeNode();
-	TreeNode<GameUIComponent>* GetTreeNode(GameUIComponent* pgameObject);
-	GameObject* GetSelectedGameUIComponent();
+	//TreeNode<GameUIComponent>* GetRootTreeNode();
+	//TreeNode<GameUIComponent>* GetTreeNode(GameUIComponent* pgameObject);
+	//GameObject* GetSelectedGameUIComponent();
 };
 
