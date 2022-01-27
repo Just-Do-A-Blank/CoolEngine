@@ -85,6 +85,9 @@
     <Filter Include="Engine\GameUI">
       <UniqueIdentifier>{791533ad-fc86-4e9f-909a-caf767071b33}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Includes\RapidXML">
+      <UniqueIdentifier>{7d9ce4e5-0879-48c1-b50e-4e48e6d1a00d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -297,6 +300,21 @@
     <ClInclude Include="Engine\Managers\FontManager.h">
       <Filter>Engine\Managers</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Includes\RapidXML\rapidxml.hpp">
+      <Filter>Engine\Includes\RapidXML</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\RapidXML\rapidxml_iterators.hpp">
+      <Filter>Engine\Includes\RapidXML</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\RapidXML\rapidxml_print.hpp">
+      <Filter>Engine\Includes\RapidXML</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\RapidXML\rapidxml_utils.hpp">
+      <Filter>Engine\Includes\RapidXML</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\TextComponent.h">
+      <Filter>Engine\GameUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -449,6 +467,9 @@
     <ClCompile Include="Engine\Managers\FontManager.cpp">
       <Filter>Engine\Managers</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GameUI\TextComponent.cpp">
+      <Filter>Engine\GameUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">
@@ -461,6 +482,9 @@
       <Filter>Engine\Graphics\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Engine\Graphics\Shaders\ScreenSpaceVertex.hlsl">
+      <Filter>Engine\Graphics\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\TextPixel.hlsl">
       <Filter>Engine\Graphics\Shaders</Filter>
     </FxCompile>
   </ItemGroup>
