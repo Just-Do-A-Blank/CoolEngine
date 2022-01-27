@@ -276,6 +276,8 @@
     <ClInclude Include="Engine\AI\Pathfinding.h">
       <Filter>Engine\AI</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\FileIO\FileIO.h" />
+    <ClInclude Include="Engine\FileIO\FileIOCache.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -410,6 +412,8 @@
     <ClCompile Include="Engine\AI\Pathfinding.cpp">
       <Filter>Engine\AI</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\FileIO\FileIO.cpp" />
+    <ClCompile Include="Engine\FileIO\FileIOCache.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">

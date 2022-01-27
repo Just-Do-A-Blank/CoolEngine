@@ -1,12 +1,15 @@
 #pragma once
 #include "ParticleSystem.h"
+#include "Engine/Structure/Singleton.h"
 
 #define PARTICLE_MANAGER_SIZE 32
+#define PARTICLE_SIZE 1024
 
 // This class holds all the particle systems. It will be initialised at the start and removed at the end.
-class ParticleManager
+class ParticleManager : public Singleton<ParticleManager>
 {
 private:
+	Particle* m_pParticles[PARTICLE_SIZE];
 	ParticleSystem* m_pParticleSystems[PARTICLE_MANAGER_SIZE];
 
 	// These are used by every particle
@@ -15,7 +18,7 @@ private:
 	Mesh* m_pMesh;
 
 public:
-	ParticleManager(wstring meshName, wstring vShaderName, wstring pShaderName);
+	ParticleManager();
 	~ParticleManager();
 
 	/// <summary>
@@ -53,9 +56,27 @@ public:
 	/// <param name="system"></param>
 	void AddSystem(ParticleSystem* system);
 
+	/// <summary>
+	/// Find slot for a new particle, and initialise it
+	/// </summary>
+	/// <param name="trans"></param>
+	/// <param name="vel"></param>
+	/// <param name="accel"></param>
+	/// <param name="life"></param>
+	/// <param name="randPos"></param>
+	/// <param name="randVel"></param>
+	/// <param name="randAccel"></param>
+	/// <param name="randLife"></param>
+	void AddParticle(Transform trans, float life, ID3D11ShaderResourceView* tex, XMFLOAT2 vel, XMFLOAT2 accel, float randPos, float randVel, float randAccel, float randLife);
+
 	// Getters
 	ParticleSystem* GetSystem(int index) 
 	{ 
 		return m_pParticleSystems[index]; 
+	}
+
+	Particle* GetParticle(int index)
+	{
+		return m_pParticles[index];
 	}
 };

@@ -114,7 +114,7 @@ std::vector<ParticleSystem*> FileIO::LoadMultipleParticles(json file)
 		t.SetScale(XMFLOAT3(particleSystemData.at(i)["Scale"][0], particleSystemData.at(i)["Scale"][1], particleSystemData.at(i)["Scale"][2]));
 
 		objects[i]->Initialise(t , particleSystemData.at(i)["Life"], nullptr);
-		objects[i]->AddParticle(p.m_Transform, p.m_Velocity, p.m_Acceleration,p.m_Life);
+		//objects[i]->AddParticle(p.m_Transform, p.m_Velocity, p.m_Acceleration,p.m_Life);
 	}
 	return objects;
 }

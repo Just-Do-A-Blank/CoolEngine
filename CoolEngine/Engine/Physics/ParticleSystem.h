@@ -2,13 +2,14 @@
 #include "Particle.h"
 #include "Engine/GameObjects/GameObject.h"
 
-#define PARTICLE_SYSTEM_SIZE 32
+//#define PARTICLE_SYSTEM_SIZE 32
+class ParticleManager;
 
 // This class will manage the movement and life of particles in a single effect. It is initialised when the effect begins and deactivated when the effect is over, but never deleted from the memory pool.
 class ParticleSystem : public GameObject
 {
 private:
-	Particle* m_pParticles[PARTICLE_SYSTEM_SIZE];
+	//Particle* m_pParticles[PARTICLE_SYSTEM_SIZE];
 
 	// The transform of the particle system carries over to the particles, so right now particles generated will have the same size.
 	float m_systemLife;
@@ -38,7 +39,6 @@ public:
 	/// </summary>
 	/// <param name="trans"></param>
 	/// <param name="life"></param>
-	/// <param name="type"></param>
 	/// <param name="tex"></param>
 	void Initialise(Transform trans, float life, ID3D11ShaderResourceView* tex);
 
@@ -72,21 +72,10 @@ public:
 	void SetRandomness(float randPos, float randVel, float randAccel, float randLife);
 
 	/// <summary>
-	/// Update all stored particles, tick timer down to zero, and generate particles in pattern according to type
+	/// Tick timer down to zero, and generate particles in pattern according to type
 	/// </summary>
 	/// <param name="dTime"></param>
 	void Update(const float dTime);
-
-	void Render(ID3D11DeviceContext* pContext, Mesh* mesh);
-
-	/// <summary>
-	/// Find slot for a new particle, and initialise it
-	/// </summary>
-	/// <param name="trans"></param>
-	/// <param name="vel"></param>
-	/// <param name="accel"></param>
-	/// <param name="life"></param>
-	void AddParticle(Transform trans, XMFLOAT2 vel, XMFLOAT2 accel, float life);
 
 #if EDITOR
 	void CreateEngineUI() override;

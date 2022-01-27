@@ -73,8 +73,6 @@ EditorUI* g_peditorUI;
 
 Inputs* g_inputController;
 
-ParticleManager* g_particleManager;
-
 #if TOOL
 ToolBase* g_ptoolBase = nullptr;
 #endif
@@ -148,8 +146,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	GameManager* pgameManager = GameManager::GetInstance();
 	pgameManager->CreateScene("TestScene");
 	pgameManager->SelectSceneUsingIdentifier("TestScene");
-
-	g_particleManager = new ParticleManager(QUAD_MESH_NAME, DEFAULT_VERTEX_SHADER_NAME, DEFAULT_PIXEL_SHADER_NAME);
 
 #if TOOL
 
@@ -288,7 +284,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	trans.SetPosition(pos);
 	trans.SetRotation(rot);
 	trans.SetScale(scale);
-	g_particleManager->AddSystem(trans, 10.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 0.5f, 1.0f, 3, 50.0f, 0.0f, 0.0f, 0.2f);
+	ParticleManager::GetInstance()->AddSystem(trans, 10.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 0.5f, 1.0f, 16, 100.0f, 0.0f, 0.0f, 0.2f);
 
 	GameManager::GetInstance()->GetTimer()->Tick();
 
@@ -635,7 +631,7 @@ void Render()
 	GameManager* pgamemanager = GameManager::GetInstance();
 	pgamemanager->Render(renderStruct);
 
-	g_particleManager->Render(renderStruct.m_pcontext);
+	ParticleManager::GetInstance()->Render(renderStruct.m_pcontext);
 
 #if _DEBUG
 	DebugDrawManager::GetInstance()->Render(renderStruct);
@@ -662,7 +658,7 @@ void Update()
 	pgamemanager->GetTimer()->Tick();
 	pgamemanager->Update();
 
-	g_particleManager->Update(GameManager::GetInstance()->GetTimer()->DeltaTime());
+	ParticleManager::GetInstance()->Update(GameManager::GetInstance()->GetTimer()->DeltaTime());
 
 	AudioManager::GetInstance()->Update();
 
