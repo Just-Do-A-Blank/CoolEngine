@@ -42,7 +42,7 @@ void Scene::Render(RenderStruct& renderStruct)
 
 			prenderableGameObject = dynamic_cast<RenderableGameObject*>(gameObjectList[it]);
 
-			if (prenderableGameObject->IsRenderable() == false || prenderableGameObject->GetLayer() != i)// || prenderableGameObject->GetLayer() != i)
+			if (prenderableGameObject->IsRenderable() == false || prenderableGameObject->GetLayer() != i)
 			{
 				continue;
 			}
