@@ -81,8 +81,6 @@ void RenderableGameObject::CreateEngineUI()
 	GameObject::CreateEngineUI();
 
 	ImGui::Spacing();
-	ImGui::Separator();
-	ImGui::Spacing();
 
 	EditorUI::Texture("Texture", m_texFilepath, m_palbedoSRV);
 

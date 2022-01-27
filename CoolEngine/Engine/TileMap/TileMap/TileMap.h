@@ -24,49 +24,51 @@ public:
 	TileMap(string identifier);
 
 	// Load from file
-	TileMap(wstring mapPath, XMFLOAT3 position, XMFLOAT3 scale, string identifier);
+	TileMap(wstring mapPath, XMFLOAT3 position, string identifier);
 
 	// Load from parameters
-	TileMap(int width, int height, string identifier, XMFLOAT3 position);
+	TileMap(int width, int height, string identifier, XMFLOAT3 position, float tileDimensions);
 
 	//Destructor
 	~TileMap();
 
 	void Update(float d);
 
-	Tile GetTileFromWorldPos(int posX, int posY);
-	Tile* GetTileFromMapPos(int x, int y);
-
-	vector<vector<Tile*>> GetTiles();
+	bool GetTileFromWorldPos(XMFLOAT2 pos, Tile*& ptile, int* prow = nullptr, int* pcolumn = nullptr);
+	bool GetTileFromMapPos(int x, int y, Tile*& ptile);
 
 	void SetPassable(int x, int y, bool passable);
-	void SetPassable(Tile tile, bool passable);
 
-	const bool GetPassable(int x, int y)const;
-
-	void SetTileAtWorldPos(int posX, int posY, Tile newTile);
+	void SetTileAtWorldPos(XMFLOAT2 worldPos, Tile* newTile);
 	void SetTileAtMapPos(int mapPosX, int mapPosY, Tile* newTile);
 
-	XMFLOAT3 GetScale();
-	void SetScale(XMFLOAT3 newScale);
+	XMFLOAT3 GetTileScale();
+	void SetTileScale(XMFLOAT3 newScale);
 
 	const int GetWidth() const{ return m_width; }
 	const int GetHeight() const { return m_height; }
 
+	bool CreateTile(int row, int column, Tile*& ptile);
+
+	void AddSpritePath(Tile* ptile, wstring& path);
+	void AddAnimPath(Tile* ptile, wstring& path);
+
+#if EDITOR
+	void CreateEngineUI() override;
+#endif
+
 protected:
-	
+
 
 private:
 	void InitMap();
 
-	void InitMapData(wstring mapPath, XMFLOAT3 position, XMFLOAT3 scale);
-
 	void InitTilePosition(Tile* tile, int row, int column);
 
-	void LoadMap(wstring path);
+	bool Load(wstring path);
+	bool Save(wstring path);
 
-	void AssignSprites();	
-
+	bool GetCoordsFromWorldPos(int* prow, int* pcolumn, const XMFLOAT2& pos);
 
 	int	m_width;
 	int	m_height;
@@ -74,10 +76,13 @@ private:
 
 	int	m_tileScaleInt;
 	XMFLOAT3 m_tileScale;
-	
+
 	std::vector<std::vector<Tile*>>	m_tiles;
-	
-	std::vector<int> m_tileSpriteIndex;
-	std::vector<string>	m_spritePaths;
-	std::vector<string>	m_animPaths;
+
+	std::vector<wstring> m_spritePaths;
+	std::vector<wstring> m_animPaths;
+
+#if EDITOR
+	string m_tileMapName = "";
+#endif
 };
