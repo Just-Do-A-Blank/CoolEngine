@@ -18,12 +18,15 @@ void TextComponent::UpdateFont(string fontName, int fontSize)
 void TextComponent::Render(RenderStruct& renderStruct)
 {
 	//Update CB
-	PerInstanceCB cb;
+	TextPerInstanceCB cb;
+
+	cb.colour = XMFLOAT3(m_colour.f[0], m_colour.f[1], m_colour.f[2]);
+
 	XMStoreFloat4x4(&cb.world, XMMatrixTranspose(m_transform->GetWorldMatrix()));
 
-	GraphicsManager::GetInstance()->m_pperInstanceCB->Update(cb, renderStruct.m_pcontext);
+	GraphicsManager::GetInstance()->m_ptextPerInstanceCB->Update(cb, renderStruct.m_pcontext);
 
-	ID3D11Buffer* pcbBuffer = GraphicsManager::GetInstance()->m_pperInstanceCB->GetBuffer();
+	ID3D11Buffer* pcbBuffer = GraphicsManager::GetInstance()->m_ptextPerInstanceCB->GetBuffer();
 
 	//Bind CB and appropriate resources
 	renderStruct.m_pcontext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 1, &pcbBuffer);
@@ -44,10 +47,23 @@ void TextComponent::Render(RenderStruct& renderStruct)
 	//Unbind resources
 	renderStruct.m_pcontext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 0, nullptr);
 	renderStruct.m_pcontext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 0, nullptr);
+
+
+	m_pmesh = GraphicsManager::GetInstance()->GetMesh(QUAD_MESH_NAME);
+
+	ID3D11Buffer* pindexBuffer = m_pmesh->GetIndexBuffer();
+	ID3D11Buffer* pvertexBuffer = m_pmesh->GetVertexBuffer();
+
+	stride = m_pmesh->GetVBStride();
+	offset = m_pmesh->GetVBOffset();
+
+	renderStruct.m_pcontext->IASetVertexBuffers(0, 1, &pvertexBuffer, &stride, &offset);
+	renderStruct.m_pcontext->IASetIndexBuffer(m_pmesh->GetIndexBuffer(), DXGI_FORMAT_R16_UINT, 0);
 }
 
-void TextComponent::Init(string text, string fontName, int fontSize, ID3D11Device* pdevice)
+void TextComponent::Init(string text, string fontName, int fontSize, XMVECTORF32 colour, ID3D11Device* pdevice)
 {
+	m_colour = colour;
 	m_text = text;
 	m_fontName = fontName;
 	UpdateFont(fontName, fontSize);

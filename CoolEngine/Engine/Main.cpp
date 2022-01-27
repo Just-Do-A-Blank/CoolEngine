@@ -288,7 +288,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	UIManager::GetInstance()->Init(g_pd3dDevice);
 	UIManager::GetInstance()->CreateCanvas("testCanvas", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
 	TextComponent* tc = UIManager::GetInstance()->CreateUIComponent<TextComponent>("TestText", XMFLOAT3(0.0, 20.0, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f));
-	tc->Init("Hello World!", "comicSans", 16, g_pd3dDevice);
+	tc->Init("Cool Engine!", "comicSans", 16, Colors::Yellow, g_pd3dDevice);
 	UIManager::GetInstance()->CreateUIComponent<ImageComponent>("TestUIImage", XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT3(0.9f, 0.9f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
 
 	
@@ -647,7 +647,7 @@ void Render()
 	pgamemanager->Render(renderStruct);
 
 	UIManager::GetInstance()->Render(renderStruct);
-	BindQuadBuffers();
+	
 	g_particleManager->Render(renderStruct.m_pcontext);
 
 #if _DEBUG
