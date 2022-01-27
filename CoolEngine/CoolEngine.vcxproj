@@ -27,6 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\AI\EnemyState.h" />
     <ClInclude Include="Engine\AI\Pathfinding.h" />
     <ClInclude Include="Engine\EditorUI\EditorUI.h" />
     <ClInclude Include="Engine\FileIO\FileIO.h" />
@@ -121,6 +122,7 @@
     <ClInclude Include="Engine\GameUI\UiCanvas.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\AI\EnemyState.cpp" />
     <ClCompile Include="Engine\AI\Pathfinding.cpp" />
     <ClCompile Include="Engine\EditorUI\EditorUI.cpp" />
     <ClCompile Include="Engine\FileIO\FileIO.cpp" />

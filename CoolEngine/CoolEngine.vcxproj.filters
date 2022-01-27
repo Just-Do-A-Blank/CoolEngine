@@ -276,6 +276,11 @@
     <ClInclude Include="Engine\AI\Pathfinding.h">
       <Filter>Engine\AI</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\FileIO\FileIO.h" />
+    <ClInclude Include="Engine\FileIO\FileIOCache.h" />
+    <ClInclude Include="Engine\AI\EnemyState.h">
+      <Filter>Engine\AI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -408,6 +413,11 @@
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="Engine\AI\Pathfinding.cpp">
+      <Filter>Engine\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\FileIO\FileIO.cpp" />
+    <ClCompile Include="Engine\FileIO\FileIOCache.cpp" />
+    <ClCompile Include="Engine\AI\EnemyState.cpp">
       <Filter>Engine\AI</Filter>
     </ClCompile>
   </ItemGroup>
