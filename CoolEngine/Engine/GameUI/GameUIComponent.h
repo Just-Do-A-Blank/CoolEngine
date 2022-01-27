@@ -7,10 +7,7 @@ class GameUIComponent
 {
 private:
 	//Graphics variables
-	ID3D11VertexShader* m_pvertexShader = nullptr;
-	ID3D11PixelShader* m_ppixelShader = nullptr;	
 
-	Mesh* m_pmesh = nullptr;
 	
 	int m_layer = 0;
 
@@ -18,6 +15,9 @@ private:
 	bool m_isRenderable = true;
 
 protected:
+	ID3D11VertexShader* m_pvertexShader = nullptr;
+	ID3D11PixelShader* m_ppixelShader = nullptr;	
+	Mesh* m_pmesh = nullptr;
 	string m_uiElementIdentifier;
 
 	Transform* m_transform;
