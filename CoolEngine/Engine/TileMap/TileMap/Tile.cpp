@@ -59,6 +59,7 @@ void Tile::SetAnimIndex(int index)
 {
 	m_animIndex = index;
 }
+#endif
 
 #if EDITOR
 void Tile::CreateEngineUI()
@@ -99,7 +100,10 @@ void Tile::CreateEngineUI()
 	EditorUI::DragInt("Layer", m_layer, 100.0f, 0.1f, 0, GraphicsManager::GetInstance()->GetNumLayers() - 1);
 
 	ImGui::Spacing();
+
+	EditorUI::Checkbox("Passable", m_isPassable);
+
+	ImGui::Spacing();
 	ImGui::Separator();
 }
-#endif
 #endif

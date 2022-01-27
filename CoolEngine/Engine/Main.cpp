@@ -191,7 +191,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj0Name);
 	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj1Name);
 	pgameManager->CreateGameObject<PlayerGameObject>(playerName);
-	pgameManager->CreateGameObject<EnemyGameObject>(enemyName);
+	//pgameManager->CreateGameObject<EnemyGameObject>(enemyName);
 
 	RenderableCollidableGameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj0Name);
 
@@ -249,29 +249,25 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 
 	//Init enemy object
-	EnemyGameObject* egameObject = pgameManager->GetGameObjectUsingIdentifier<EnemyGameObject>(enemyName);
-	objectPos = XMFLOAT3(-400.0f, 200.0f, 0);
-	objectScale = XMFLOAT3(40, 40, 40);
+	//EnemyGameObject* egameObject = pgameManager->GetGameObjectUsingIdentifier<EnemyGameObject>(enemyName);
+	//objectPos = XMFLOAT3(-400.0f, 200.0f, 0);
+	//objectScale = XMFLOAT3(40, 40, 40);
 
-	pbox = new Box(pgameObject->GetTransform());
-	pbox->SetIsCollidable(isCollision);
-	pbox->SetIsTrigger(isCollision);
+	//pbox = new Box(pgameObject->GetTransform());
+	//pbox->SetIsCollidable(isCollision);
+	//pbox->SetIsTrigger(isCollision);
 
-	egameObject->SetMesh(QUAD_MESH_NAME);
-	egameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-	egameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	egameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
-	egameObject->GetTransform()->SetPosition(objectPos);
-	egameObject->GetTransform()->SetScale(objectScale);
-	egameObject->SetShape(pbox);
+	//egameObject->SetMesh(QUAD_MESH_NAME);
+	//egameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+	//egameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+	//egameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
+	//egameObject->GetTransform()->SetPosition(objectPos);
+	//egameObject->GetTransform()->SetScale(objectScale);
+	//egameObject->SetShape(pbox);
 
-	
-	//vector<node*> path2 = Pathfinding::Instance()->FindPath(pgameObject->GetTransform()->GetPosition(), XMFLOAT3(15, 15, 0));
+	g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, 0, 0), "TestMap");
 
-
-	g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, 0, 0), XMFLOAT3(25, 25, 25), "TestMap");
-
-	Pathfinding::GetInstance()->Initialize(g_testMap1);
+	//Pathfinding::GetInstance()->Initialize(g_testMap1);
 
 
 	ExampleObserver observer(new int(10), pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName));

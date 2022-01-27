@@ -24,7 +24,7 @@ public:
 	TileMap(string identifier);
 
 	// Load from file
-	TileMap(wstring mapPath, XMFLOAT3 position, float tileDimensions, string identifier);
+	TileMap(wstring mapPath, XMFLOAT3 position, string identifier);
 
 	// Load from parameters
 	TileMap(int width, int height, string identifier, XMFLOAT3 position, float tileDimensions);

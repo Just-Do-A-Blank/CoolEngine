@@ -19,7 +19,7 @@ TileMap::TileMap(string identifier) : RenderableGameObject(identifier)
 #endif
 }
 
-TileMap::TileMap(wstring mapPath, XMFLOAT3 position, float tileDimensions, string identifier) : RenderableGameObject(identifier)
+TileMap::TileMap(wstring mapPath, XMFLOAT3 position, string identifier) : RenderableGameObject(identifier)
 {
 #if EDITOR
 	Tile::s_ptileMap = this;
@@ -27,13 +27,7 @@ TileMap::TileMap(wstring mapPath, XMFLOAT3 position, float tileDimensions, strin
 
 	m_transform->SetPosition(position);
 
-	XMFLOAT3 scale = XMFLOAT3(tileDimensions, tileDimensions, tileDimensions);
-
-	m_transform->SetScale(scale);
-
 	Load(mapPath);
-
-	InitMap();
 }
 
 TileMap::TileMap(int width, int height, string identifier, XMFLOAT3 position, float tileDimensions) : RenderableGameObject(identifier)
@@ -129,6 +123,9 @@ bool TileMap::Load(wstring path) // Load data for the map from a given path
 
 	inFile.close();
 
+	XMFLOAT3 scale = XMFLOAT3(jsonData["TileMapScale"][0][0], jsonData["TileMapScale"][0][1], jsonData["TileMapScale"][0][2]);
+	m_transform->SetScale(scale);
+
 	m_width = jsonData["Dimensions"][0];
 	m_height = jsonData["Dimensions"][1];
 
@@ -146,17 +143,21 @@ bool TileMap::Load(wstring path) // Load data for the map from a given path
 
 	int spriteIndex = -1;
 	int animIndex = -1;
+	int tileLayer = -1;
+	bool tilePassable = false;
 
 	Tile* ptile;
 
 	for (int i = 0; i < m_width; ++i)
 	{
-		m_tiles[i].reserve(m_width);
+		m_tiles[i].resize(m_width);
 
 		for (int j = 0; j < m_height; ++j)
 		{
-			spriteIndex = jsonData["TileSpriteIndexes"][(i * m_width) + j];
-			animIndex = jsonData["TileAnimIndexes"][(i * m_width) + j];
+			spriteIndex = jsonData["TileSpriteIndexes"][(i * m_width) + j][0];
+			animIndex = jsonData["TileAnimIndexes"][(i * m_width) + j][0];
+			tileLayer = jsonData["TileLayer"][(i * m_width) + j][0];
+			tilePassable = jsonData["TilePassable"][(i * m_width) + j][0];
 
 			if (spriteIndex == -1 && animIndex == -1)
 			{
@@ -166,8 +167,13 @@ bool TileMap::Load(wstring path) // Load data for the map from a given path
 			{
 				CreateTile(i, j, ptile);
 
+#if TILE_MAP_TOOL
 				m_tiles[i][j]->SetSpriteIndex(spriteIndex);
 				m_tiles[i][j]->SetAnimIndex(animIndex);
+#endif
+
+				m_tiles[i][j]->SetLayer(tileLayer);
+				m_tiles[i][j]->SetIsPassable(tilePassable);
 
 				if (spriteIndex != -1)
 				{
@@ -219,15 +225,24 @@ bool TileMap::Save(wstring path)
 			{
 				jsonOutput["TileSpriteIndexes"].push_back({ -1 });
 				jsonOutput["TileAnimIndexes"].push_back({ -1 });
+				jsonOutput["TileLayer"].push_back({ -1 });
+				jsonOutput["TilePassable"].push_back({ false });
 			}
 			else
 			{
+#if TILE_MAP_TOOL
 				jsonOutput["TileSpriteIndexes"].push_back({ m_tiles[i][j]->GetSpriteIndex() });
 				jsonOutput["TileAnimIndexes"].push_back({ m_tiles[i][j]->GetAnimIndex() });
+#endif
+
+				jsonOutput["TileLayer"].push_back({ m_tiles[i][j]->GetLayer() });
+				jsonOutput["TilePassable"].push_back({ m_tiles[i][j]->GetIsPassable() });
 			}
 
 		}
 	}
+
+	jsonOutput["TileMapScale"].push_back({ m_transform->GetScale().x, m_transform->GetScale().y, m_transform->GetScale().z });
 
 	outFile << jsonOutput;
 
@@ -285,7 +300,9 @@ void TileMap::AddSpritePath(Tile* ptile, wstring& path)
 	{
 		if (m_spritePaths[i] == path)
 		{
+#if TILE_MAP_TOOL
 			ptile->SetSpriteIndex(i);
+#endif
 
 			return;
 		}
@@ -293,7 +310,9 @@ void TileMap::AddSpritePath(Tile* ptile, wstring& path)
 
 	m_spritePaths.push_back(path);
 
+#if TILE_MAP_TOOL
 	ptile->SetSpriteIndex(m_spritePaths.size() - 1);
+#endif
 }
 
 void TileMap::AddAnimPath(Tile* ptile, wstring& path)
@@ -302,7 +321,9 @@ void TileMap::AddAnimPath(Tile* ptile, wstring& path)
 	{
 		if (m_animPaths[i] == path)
 		{
+#if TILE_MAP_TOOL
 			ptile->SetAnimIndex(i);
+#endif
 
 			return;
 		}
@@ -310,7 +331,9 @@ void TileMap::AddAnimPath(Tile* ptile, wstring& path)
 
 	m_animPaths.push_back(path);
 
+#if TILE_MAP_TOOL
 	ptile->SetAnimIndex(m_animPaths.size() - 1);
+#endif
 }
 
 void TileMap::CreateEngineUI()
@@ -330,7 +353,7 @@ void TileMap::CreateEngineUI()
 		}
 		else
 		{
-			wstring filepath = GameManager::GetInstance()->GetWideWorkingDirectory() + L"\\Resources\\Levels\\TileMaps\\" + wstring(m_tileMapName.begin(), m_tileMapName.end()) + L".txt";
+			wstring filepath = GameManager::GetInstance()->GetWideWorkingDirectory() + L"\\Resources\\Levels\\TileMaps\\" + wstring(m_tileMapName.begin(), m_tileMapName.end()) + L".json";
 
 			if (Save(filepath) == true)
 			{
@@ -353,7 +376,7 @@ void TileMap::CreateEngineUI()
 		}
 		else
 		{
-			wstring filepath = GameManager::GetInstance()->GetWideWorkingDirectory() + L"\\Resources\\Levels\\TileMaps\\" + wstring(m_tileMapName.begin(), m_tileMapName.end()) + L".txt";
+			wstring filepath = GameManager::GetInstance()->GetWideWorkingDirectory() + L"\\Resources\\Levels\\TileMaps\\" + wstring(m_tileMapName.begin(), m_tileMapName.end()) + L".json";
 
 			for (int i = 0; i < m_width; ++i)
 			{

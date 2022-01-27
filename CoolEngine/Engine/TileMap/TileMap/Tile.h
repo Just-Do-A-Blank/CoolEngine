@@ -49,7 +49,7 @@ protected:
 
 private:
 	// True = walkable, False = Blocked
-	bool m_isPassable = false; 
+	bool m_isPassable = true; 
 
 #if TILE_MAP_TOOL
 	int m_spriteIndex = -1;
