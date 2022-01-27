@@ -14,51 +14,21 @@ void InGameUITool::Init(ID3D11Device* pdevice)
 
 	XMFLOAT3 pos = XMFLOAT3(0, 0, 0);
 	XMFLOAT3 scale = XMFLOAT3(100, 100, 1);
-
-	/*m_pgameObject = GameManager::GetInstance()->CreateGameObject<RenderableGameObject>("AnimModel");
-	m_pgameObject->GetTransform()->SetPosition(pos);
-	m_pgameObject->GetTransform()->SetScale(scale);*/
 }
 
 void InGameUITool::Update()
 {
-	//m_pgameObject->Update();
 }
 
 void InGameUITool::Render()
 {
 	bool updateAnim = false;
 
-	//UIManager::GetInstance()->Render()
-
 	ImGui::Begin("Game UI");
 
 	DrawUIWindow();
 
-
 	ImGui::End();
-
-	
-
-	//if (updateAnim)
-	//{
-	//	SpriteAnimation anim;
-
-	//	m_frames.clear();
-
-	//	/*for (int i = 0; i < m_frameInfos.size(); ++i)
-	//	{
-	//		m_frames.push_back(m_frameInfos[i].m_frame);
-	//	}*/
-
-	//	anim.SetFrames(&m_frames);
-
-	//	/*m_pgameObject->RemoveAnimation("Anim");
-
-	//	m_pgameObject->AddAnimation("Anim", anim);
-
-	//	m_pgameObject->PlayAnimation("Anim");*/
-	//}
 }
 
 void InGameUITool::Destroy()
@@ -67,13 +37,7 @@ void InGameUITool::Destroy()
 
 void InGameUITool::DrawUIWindow()
 {
-	/*if (puiManager->GetCanvasList().size() == 0)
-	{
-		return;
-	}*/
 	UIManager* puiManager = UIManager::GetInstance();
-
-	//ImGui::Begin("UI Graph", nullptr, ImGuiWindowFlags_MenuBar);
 
 	static int selected = -1;
 
@@ -203,51 +167,6 @@ void InGameUITool::TraverseTree(TreeNode<GameUIComponent>* pcurrentNode, int& no
 
 bool InGameUITool::SaveAnim(string animName)
 {
-	//string filepath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Animations\\" + m_animName;
-
-	//int result = _mkdir(filepath.c_str());
-
-	//if (result != 0)
-	//{
-	//	LOG("Failed to create the file to save the animation!");
-
-	//	return false;
-	//}
-
-	////Copy all the frames to the correct locations
-	//for (int i = 0; i < m_frameInfos.size(); ++i)
-	//{
-	//	string frameName = animName + to_string(i) + ".dds";
-
-	//	string tempPath = filepath + "\\" + frameName;
-	//	wstring destPath = wstring(tempPath.begin(), tempPath.end());
-	//	wstring sourcePath = GameManager::GetInstance()->GetWideWorkingDirectory() + L"\\" + m_frameInfos[i].m_filepath;
-
-	//	if (CopyFile(sourcePath.c_str(), destPath.c_str(), true) == false)
-	//	{
-	//		LOG("Failed to copy one of the files of the animation!");
-	//	}
-
-	//}
-
-	//ofstream textFile = ofstream(filepath + "\\" + animName + ".txt");
-	//
-	//if (textFile.is_open() == false)
-	//{
-	//	LOG("Failed to create the text file for the animation!");
-
-	//	return false;
-	//}
-
-	//textFile << m_frameInfos.size() << endl;
-	//
-	//for (int i = 0; i < m_frameInfos.size(); ++i)
-	//{
-	//	textFile << m_frameInfos[i].m_frame.m_frameTime << endl;
-	//}
-
-	//textFile.close();
-
 	return true;
 }
 
