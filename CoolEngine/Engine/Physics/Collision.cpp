@@ -3,6 +3,7 @@
 #include "Engine/Physics/Circle.h"
 
 #include "Engine/GameObjects/CollidableGameObject.h"
+#include "Engine/Managers/Events/EventManager.h"
 
 bool Collision::BoxCollision(Box* box1, Box* box2)
 {
@@ -230,12 +231,22 @@ void Collision::Update(vector<GameObject*> gameObjectMap)
 				// Whether to just collisde or collide with response
 				if (pcollidable1->GetShape()->IsCollidable() && pcollidable2->GetShape()->IsCollidable())
 				{
-					// To Do - Find a way to do something with hasCollided
 					bool hasCollided = pcollidable1->GetShape()->CollideResponse(pcollidable2->GetShape());
+					if (hasCollided)
+					{
+						EventManager::Instance()->AddEvent(new CollisionHoldEvent(pcollidable1, pcollidable2));
+					}
 				}
 				else if (pcollidable1->GetShape()->IsTrigger() && pcollidable2->GetShape()->IsTrigger() || pcollidable1->GetShape()->IsCollidable() && pcollidable2->GetShape()->IsTrigger() || pcollidable2->GetShape()->IsCollidable() && pcollidable1->GetShape()->IsTrigger())
 				{
-					bool hasCollided = pcollidable2->GetShape()->Collide(pcollidable2->GetShape());
+					if (it1 < it2)
+					{
+						bool hasCollided = pcollidable2->GetShape()->Collide(pcollidable2->GetShape());
+						if (hasCollided)
+						{
+							EventManager::Instance()->AddEvent(new TriggerHoldEvent(pcollidable1, pcollidable2));
+						}
+					}
 				}
 			}
 		}

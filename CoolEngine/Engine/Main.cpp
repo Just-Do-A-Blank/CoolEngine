@@ -279,13 +279,22 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	//Pathfinding::GetInstance()->Initialize(g_testMap1);
 
+	// Observer for button inputs
+	ExampleObserver exampleObserver(new int(10), pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName));
+	EventManager::Instance()->AddClient(EventType::KeyPressed, &exampleObserver);
+	EventManager::Instance()->AddClient(EventType::KeyReleased, &exampleObserver);
+	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, &exampleObserver);
+	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, &exampleObserver);
+	EventManager::Instance()->AddClient(EventType::MouseMoved, &exampleObserver);
 
-	ExampleObserver observer(new int(10), pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName));
-	EventManager::Instance()->AddClient(EventType::KeyPressed, &observer);
-	EventManager::Instance()->AddClient(EventType::KeyReleased, &observer);
-	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, &observer);
-	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, &observer);
-	EventManager::Instance()->AddClient(EventType::MouseMoved, &observer);
+	// Observer for collision detection
+	CollisionObserver collisionObserver;
+	EventManager::Instance()->AddClient(EventType::TriggerEnter, &collisionObserver);
+	EventManager::Instance()->AddClient(EventType::TriggerHold, &collisionObserver);
+	EventManager::Instance()->AddClient(EventType::TriggerExit, &collisionObserver);
+	EventManager::Instance()->AddClient(EventType::CollisionEnter, &collisionObserver);
+	EventManager::Instance()->AddClient(EventType::CollisionHold, &collisionObserver);
+	EventManager::Instance()->AddClient(EventType::CollisionExit, &collisionObserver);
 
 
 	
