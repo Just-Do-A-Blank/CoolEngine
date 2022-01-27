@@ -202,9 +202,6 @@ void TextComponent::CreateVertexBuffer(ID3D11Device* pdevice)
 		indices[indicesIndex] = vertexIndex - 1;	//Bottom right
 		indicesIndex++;
 
-		// Update the x location for drawing by the size of the letter and spacing before next letter.
-		//position.x = position.x + m_fontAtlas[letter]->charDimension.x + m_fontAtlas[letter]->spacing.y;
-
 		offsetPos.x += m_fontAtlas[letter]->charDimension.x + m_fontAtlas[letter]->spacing.y;
 		
 		if (biggestHeight < m_fontAtlas[letter]->charDimension.y)
@@ -231,8 +228,6 @@ void TextComponent::CreateVertexBuffer(ID3D11Device* pdevice)
 	InitData.pSysMem = vertexBuffer;
 
 	pdevice->CreateBuffer(&bd, &InitData, &m_pvertexBuffer);
-
-	//ID3D11Buffer* pindexBuffer;
 
 	ZeroMemory(&bd, sizeof(bd));
 	bd.Usage = D3D11_USAGE_DEFAULT;
