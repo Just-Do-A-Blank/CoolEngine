@@ -1,6 +1,13 @@
 #include "UiManager.h"
 #include "Engine/GameUI/GameUIComponent.h"
 #include "Engine/GameUI/UICanvas.h"
+#include "Engine/GameUI/TextComponent.h"
+#include "Engine/GameUI/ImageComponent.h"
+
+void UIManager::Init(ID3D11Device* pDevice)
+{
+	m_pDevice = pDevice;
+}
 
 void UIManager::CreateCanvas(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation)
 {

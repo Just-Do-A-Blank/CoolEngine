@@ -5,15 +5,19 @@
 #include "Engine/Managers/GraphicsManager.h"
 
 class GameUIComponent;
+class TextComponent;
 
 class UIManager :
     public Singleton<UIManager>
 {
 private:
+	ID3D11Device* m_pDevice;
+
     unordered_map<string, UICanvas*> m_uiCanvasMap;
 
     UICanvas* m_pcurrentCanvas = nullptr;
 public:
+	void Init(ID3D11Device* pDevice);
     void CreateCanvas(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation);
     void SelectCanvasUsingIdentifier(string canvasIdentifier);
     void SelectCanvas(UICanvas* pcanvas);
@@ -23,11 +27,17 @@ public:
 
     void Render(RenderStruct& renderStruct);
 
-    template<typename T>
-    T* CreateUIComponent(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation)
-    {
-        return m_pcurrentCanvas->CreateUIComponent<T>(identifier, position, scale, rotation);
-    }
+	template<typename T>
+	T* CreateUIComponent(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation)
+	{
+		if (m_pcurrentCanvas == nullptr)
+		{
+			LOG("UI Canvas is not Selected");
+			return nullptr;
+		}
+
+		return m_pcurrentCanvas->CreateUIComponent<T>(identifier, position, scale, rotation);
+	}
 
     template<typename T>
     T* GetUIComponentUsingIdentifier(string& identifier)
