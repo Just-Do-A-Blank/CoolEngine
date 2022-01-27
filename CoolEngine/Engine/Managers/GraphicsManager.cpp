@@ -22,6 +22,7 @@ void GraphicsManager::Init(ID3D11Device* pdevice)
 	m_pperFrameCB = new ConstantBuffer<PerFrameCB>(pdevice);
 	m_pdebugPerInstanceCB = new ConstantBuffer<DebugPerInstanceCB>(pdevice);
 	m_pperInstanceCB = new ConstantBuffer<PerInstanceCB>(pdevice);
+	m_ptextPerInstanceCB = new ConstantBuffer<TextPerInstanceCB>(pdevice);
 }
 
 bool GraphicsManager::CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel)

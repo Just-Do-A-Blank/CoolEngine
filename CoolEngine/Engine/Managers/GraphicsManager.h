@@ -35,6 +35,7 @@ public:
 	ConstantBuffer<PerFrameCB>* m_pperFrameCB = nullptr;
 	ConstantBuffer<PerInstanceCB>* m_pperInstanceCB = nullptr;
 	ConstantBuffer<DebugPerInstanceCB>* m_pdebugPerInstanceCB = nullptr;
+	ConstantBuffer<TextPerInstanceCB>* m_ptextPerInstanceCB = nullptr;
 
 	void Init(ID3D11Device* pdevice);
 
