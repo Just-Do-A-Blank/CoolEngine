@@ -1,36 +1,34 @@
 #include "UiCanvas.h"
-#include "Engine/GameUI/UiElement.h"
-#include "Engine/Managers/GraphicsManager.h"
+#include "Engine/GameUI/GameUIComponent.h"
 #include "Engine/Graphics/Mesh.h"
 #include "Engine/ResourceDefines.h"
+#include "Engine/Managers/GraphicsManager.h"
 
-void UiCanvas::CreateEngineUI(ID3D11Device* pdevice)
+void UICanvas::CreateEngineUI(ID3D11Device* pdevice)
 {
 }
 
-UiCanvas::UiCanvas(string canvasIdentifier)
+UICanvas::UICanvas(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation) : GameUIComponent(identifier, position, scale, rotation)
 {
-	m_casvasIdentifier = canvasIdentifier;
-
-	InitGraphics();
+	m_canvasIdentifier = identifier;
+	m_pUISceneGraph = new SceneGraph<GameUIComponent>();
+	m_prootTreeNode = m_pUISceneGraph->NewNode(this);
 }
 
-void UiCanvas::InitGraphics()
-{
-	m_pvertexShader = GraphicsManager::GetInstance()->GetVertexShader(PASSTHROUGH_VERTEX_SHADER_NAME);
-	m_ppixelShader = GraphicsManager::GetInstance()->GetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
 
-	m_pmesh = GraphicsManager::GetInstance()->GetMesh(QUAD_MESH_NAME);
+vector<GameUIComponent*>& UICanvas::GetAllGameUIComponents()
+{
+	return m_pUISceneGraph->GetAllGameObjects();
 }
 
-void UiCanvas::Render(RenderStruct& renderStruct)
+void UICanvas::Render(RenderStruct& renderStruct)
 {
 	for (int i = 0; i < GraphicsManager::GetInstance()->GetNumLayers(); ++i)
 	{
-		vector<UiElement*> uiElementList = m_pUiSceneGraph->GetAllGameObjects();
+		vector<GameUIComponent*> uiElementList = m_pUISceneGraph->GetAllGameObjects();
 		for (int it = 0; it < uiElementList.size(); ++it)
 		{
-			if (uiElementList[it]->IsRenderable() == false || uiElementList[it]->GetLayer() != i)
+			if (uiElementList[it] == this || uiElementList[it]->IsRenderable() == false || uiElementList[it]->GetLayer() != i)
 			{
 				continue;
 			}
@@ -41,11 +39,11 @@ void UiCanvas::Render(RenderStruct& renderStruct)
 }
 
 
-void UiCanvas::Update()
+void UICanvas::Update()
 {
 	for (int i = 0; i < GraphicsManager::GetInstance()->GetNumLayers(); ++i)
 	{
-		vector<UiElement*> uiElementList = m_pUiSceneGraph->GetAllGameObjects();
+		vector<GameUIComponent*> uiElementList = m_pUISceneGraph->GetAllGameObjects();
 		for (int it = 0; it < uiElementList.size(); ++it)
 		{
 			uiElementList[it]->Update();
@@ -53,21 +51,31 @@ void UiCanvas::Update()
 	}
 }
 
-void UiCanvas::ShowEngineUI(ID3D11Device* pdevice)
+void UICanvas::ShowEngineUI(ID3D11Device* pdevice)
 {
 }
 
-void UiCanvas::SetIsRenderable(bool& condition)
+void UICanvas::SetIsRenderable(bool& condition)
 {
 	m_isRenderable = condition;
 }
 
-const string& UiCanvas::GetIdentifier()
+const string& UICanvas::GetCanvasIdentifier()
 {
-	return m_casvasIdentifier;
+	return m_canvasIdentifier;
 }
 
-Transform* UiCanvas::GetTransform()
+Transform* UICanvas::GetTransform()
 {
 	return m_transform;
+}
+
+TreeNode<GameUIComponent>* UICanvas::GetRootTreeNode()
+{
+	return m_pUISceneGraph->GetRootNode();
+}
+
+TreeNode<GameUIComponent>* UICanvas::GetTreeNode(GameUIComponent* pgameUIComponent)
+{
+	return m_pUISceneGraph->GetNodeUsingIdentifier(pgameUIComponent->GetIdentifier());
 }
