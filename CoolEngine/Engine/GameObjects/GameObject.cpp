@@ -27,6 +27,11 @@ void GameObject::ShowEngineUI()
 {
 	ImGui::Begin("Properties");
 
+	EditorUI::IdentifierText("Identifier", m_identifier);
+
+	ImGui::Spacing();
+	ImGui::Separator();
+
 	CreateEngineUI();
 
 	ImGui::End();
@@ -34,7 +39,6 @@ void GameObject::ShowEngineUI()
 
 void GameObject::CreateEngineUI()
 {
-	ImGui::Separator();
 	ImGui::Spacing();
 
 	m_transform->CreateEngineUI();

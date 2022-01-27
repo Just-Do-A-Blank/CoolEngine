@@ -20,7 +20,7 @@ private:
     TreeNode<GameUIComponent>* m_pselectedUINode = nullptr;
     TreeNode<GameUIComponent>* m_prootTreeNode = nullptr;
 
-    SceneGraph<GameUIComponent>* m_pUISceneGraph;
+    SceneGraph<GameUIComponent>* m_pUISceneGraph = nullptr;
 
 public:
 	void Init(ID3D11Device* pDevice);
