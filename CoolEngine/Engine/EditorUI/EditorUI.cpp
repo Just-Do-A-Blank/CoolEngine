@@ -74,10 +74,37 @@ void EditorUI::DrawSceneGraphWindow()
 	{
 		if (ImGui::BeginMenu("Create"))
 		{
-			if (ImGui::MenuItem("GameObject"))
+			if (ImGui::BeginMenu("GameObjects"))
 			{
-				m_createGameObjectClicked = true;
+				if (ImGui::MenuItem("Base"))
+				{
+					m_createGameObjectClicked = true;
+
+					m_createObjectType = GameObjectType::BASE;
+				}
+				if (ImGui::MenuItem("Collidable"))
+				{
+					m_createGameObjectClicked = true;
+
+					m_createObjectType = GameObjectType::COLLIDABLE;
+				}
+				if (ImGui::MenuItem("Renderable"))
+				{
+					m_createGameObjectClicked = true;
+
+					m_createObjectType = GameObjectType::RENDERABLE;
+				}
+				if (ImGui::MenuItem("Renderable Collidable"))
+				{
+					m_createGameObjectClicked = true;
+
+					m_createObjectType = GameObjectType::RENDERABLE | GameObjectType::COLLIDABLE;
+				}
+
+				ImGui::EndMenu();
 			}
+
+
 
 			if (ImGui::MenuItem("ParticleSystem"))
 			{
@@ -106,9 +133,9 @@ void EditorUI::DrawSceneGraphWindow()
 
 	if (m_createGameObjectClicked)
 	{
-		ImGui::Begin("New GameObject");
+		ImGui::Begin("New Object");
 		static char gameObjectName[64] = "";
-		IMGUI_LEFT_LABEL(ImGui::InputText, "GameObject Name", gameObjectName, 64);
+		IMGUI_LEFT_LABEL(ImGui::InputText, "Object Name", gameObjectName, 64);
 
 		int clicked = 0;
 		if (ImGui::Button("Create"))
@@ -117,7 +144,28 @@ void EditorUI::DrawSceneGraphWindow()
 		}
 		if (clicked & 1)
 		{
-			pgameManager->CreateGameObject<GameObject>(gameObjectName);
+			switch (m_createObjectType)
+			{
+			case GameObjectType::RENDERABLE | GameObjectType::COLLIDABLE:
+				pgameManager->CreateGameObject<RenderableCollidableGameObject>(gameObjectName);
+				break;
+
+			case GameObjectType::RENDERABLE:
+				pgameManager->CreateGameObject<RenderableGameObject>(gameObjectName);
+				break;
+
+			case GameObjectType::COLLIDABLE:
+				pgameManager->CreateGameObject<CollidableGameObject>(gameObjectName);
+				break;
+
+			case GameObjectType::BASE:
+				pgameManager->CreateGameObject<GameObject>(gameObjectName);
+				break;
+			}
+
+
+			m_createObjectType =(GameObjectType) 0;
+
 			m_createGameObjectClicked = false;
 			gameObjectName[0] = {};
 		}
