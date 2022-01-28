@@ -38,7 +38,7 @@ void EnemyGameObject::Update()
 	else
 	{
 		//LOG("NO PATH");
-		m_curPath = Pathfinding::GetInstance()->FindPath(m_transform->GetPosition(), XMFLOAT3(-700, -100, 0)); //test function
+		//Pathfinding::GetInstance()->FindPath(m_transform->GetPosition(), XMFLOAT3(1000, 200, 0), m_curPath); //test function
 	}
 
 }

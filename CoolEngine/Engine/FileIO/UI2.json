@@ -1,0 +1,74 @@
+{
+  
+  "MetaData": [ { "NumberOfUIelements": 6 } ],
+  "UIData": [
+    {
+      "Canvas": true,
+      "Image": false,
+      "Name": "testCanvas",
+      "Position": [ 0.0, 0.0, 0.0 ],
+      "Rotation": [ 0.0, 0.0, 0.0 ],
+      "Scale": [ 1.0, 1.0, 1.0 ],
+      "Text": false
+    },
+    {
+      "Canvas": false,
+      "Image": true,
+      "ImageLocation": "Resources\\Animations\\TestAnim\\TestAnim0.dds",
+      "Name": "A name2",
+      "Position": [ 0.0, 0.0, 0.0 ],
+      "Rotation": [ 0.0, 0.0, 0.0 ],
+      "Scale": [ 100.0, 100.0, 100.0 ],
+      "Text": false
+    },
+    {
+      "Canvas": false,
+      "Colour": "No idea",
+      "FontDDS": "Resources/Fonts/ComicSans.dds",
+      "FontName": "comicSans",
+      "FontSize": 16,
+      "FontXML": "Resources/Fonts/ComicSans.xml",
+      "Image": false,
+      "Name": "A name3",
+      "Position": [ 0.0, 0.0, 0.0 ],
+      "Rotation": [ 0.0, 0.0, 0.0 ],
+      "Scale": [ 1.0, 1.0, 1.0 ],
+      "Text": true,
+      "TextData": "Cool Engine!"
+    },
+    {
+      "Canvas": true,
+      "Image": false,
+      "Name": "A name",
+      "Position": [ 0.0, 0.0, 0.0 ],
+      "Rotation": [ 0.0, 0.0, 0.0 ],
+      "Scale": [ 1.0, 1.0, 1.0 ],
+      "Text": false
+    },
+    {
+      "Canvas": false,
+      "Image": true,
+      "ImageLocation": "Resources\\Fumo.dds",
+      "Name": "A name2",
+      "Position": [ 0.0, 0.0, 0.0 ],
+      "Rotation": [ 0.0, 0.0, 0.0 ],
+      "Scale": [ 100.0, 100.0, 100.0 ],
+      "Text": false
+    },
+    {
+      "Canvas": false,
+      "Colour": "No idea",
+      "FontDDS": "Resources/Fonts/ComicSans.dds",
+      "FontName": "comicSans",
+      "FontSize": 16,
+      "FontXML": "Resources/Fonts/ComicSans.xml",
+      "Image": false,
+      "Name": "A name3",
+      "Position": [ 0.0, 0.0, 0.0 ],
+      "Rotation": [ 0.0, 0.0, 0.0 ],
+      "Scale": [ 1.0, 1.0, 1.0 ],
+      "Text": true,
+      "TextData": "Cool Engine!"
+    }
+  ]
+}

@@ -6,6 +6,7 @@ class Transform;
 
 class GameUIComponent : public EditorUIComponent
 {
+	friend FileIO;
 private:
 	//Graphics variables
 

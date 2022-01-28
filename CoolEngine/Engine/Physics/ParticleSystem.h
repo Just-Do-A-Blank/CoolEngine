@@ -7,6 +7,7 @@ class ParticleManager;
 // This class will manage the movement and life of particles in a single effect. It is initialised when the effect begins and deactivated when the effect is over, but never deleted from the memory pool.
 class ParticleSystem : public GameObject
 {
+	friend FileIO;
 private:
 	// The transform of the particle system carries over to the particles, so right now particles generated will have the same size.
 	float m_systemLife;

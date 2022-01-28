@@ -2,7 +2,7 @@
 #include <vector>
 #include <queue>
 
-#define DIAGONAL_ENABLED false
+#define DIAGONAL_ENABLED true
 
 //We need access to the floor map & any extra information such as up/down componants to create the neighbours list
 struct node
@@ -35,8 +35,8 @@ public:
 class Pathfinding
 {
 public:
-	vector<node*> FindPath(XMFLOAT3 curPos,XMFLOAT3 tarPos);
-	vector<node*> FindPerfectPath(XMFLOAT3 curPos, XMFLOAT3 tarPos);
+	bool FindPath(XMFLOAT3 curPos,XMFLOAT3 tarPos, vector<node*>& path);
+	bool FindPerfectPath(XMFLOAT3 curPos, XMFLOAT3 tarPos, vector<node*>& path);
 
 
 	static Pathfinding* GetInstance();
@@ -55,7 +55,7 @@ private:
 	Pathfinding();
 	void SetupPath(XMFLOAT3 curPos,XMFLOAT3 tarPos);
 	void CalculatePath();
-	vector<node*> GeneratePath(XMFLOAT3 tarPos);
+	bool GeneratePath(XMFLOAT3 tarPos, vector<node*>& path);
 
 
 	//vector<node*> m_nodesToTest;

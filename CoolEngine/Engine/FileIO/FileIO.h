@@ -4,14 +4,17 @@
 #include "Engine/Physics/ParticleManager.h"
 #include "Engine/Physics/Circle.h"
 #include "Engine/Physics/Box.h"
-#include "Engine/Physics/ParticleManager.h"
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/Managers/GameManager.h"
+#include "Engine/Managers/UIManager.h"
+#include "Engine/Managers/FontManager.h"
 #include "Engine/Scene/Scene.h"
 #include  "Engine/Includes/json.hpp"
 #include "Engine/TileMap/TileMap/TileMap.h"
 #include "Engine/FileIO/FileIOCache.h"
 #include "Engine/Graphics/SpriteAnimation.h"
+#include "Engine/GameUI/ImageComponent.h"
+#include "Engine/GameUI/TextComponent.h"
 
 #include <fstream>
 #include <iostream>
@@ -54,7 +57,12 @@ struct ParticleData
 	Transform m_Transform;
 	XMFLOAT2 m_Velocity;
 	XMFLOAT2 m_Acceleration;
+	ID3D11ShaderResourceView* m_Texture;
 	float m_Life;
+	float m_RandomPosition;
+	float m_RandomVelocity;
+	float m_RandomAcceleration;
+	float m_RandomLife;
 };
 
 /// <summary>
@@ -70,23 +78,8 @@ enum JSON_VARIABLE_TYPE
 	JSON_VARIABLE_TYPE_WCHAR_T,
 	JSON_VARIABLE_TYPE_XMFLOAT2,
 	JSON_VARIABLE_TYPE_XMFLOAT3,
-	JSON_VARIABLE_TYPE_XMFLOAT4
-};
-
-/// <summary>
-/// A struct that contains data related to save data
-/// </summary>
-struct SaveFileData
-{
-	SaveFileData() {};
-};
-
-/// <summary>
-/// A struct that contains data related to a map file
-/// </summary>
-struct MapFileData
-{
-	MapFileData() {};
+	JSON_VARIABLE_TYPE_XMFLOAT4,
+	JSON_VARIABLE_TYPE_GAME_OBJECTS
 };
 
 /// <summary>
@@ -94,7 +87,6 @@ struct MapFileData
 /// </summary>
 class FileIO
 {
-
 	friend GameObject;
 public:
 
@@ -180,6 +172,8 @@ public:
 	/// <returns></returns>
 	static ParticleData FileIO::LoadParticle(json j, int particleNumber);
 
+	static std::unordered_map<std::string, void*> LoadCustomJsonData(const char* fileAddress, std::vector<std::string> variableNames, std::vector<JSON_VARIABLE_TYPE> variableTypes);
+
 	/// <summary>
 	/// This function allows for the saving of a custom json file.
 	/// </summary>
@@ -189,6 +183,16 @@ public:
 	/// <param name="data"></param>
 	/// <returns></returns>
 	static bool SaveObjectInJson(const char* fileLocation, std::vector<std::string> varNames, std::vector<JSON_VARIABLE_TYPE> types, std::vector<void*> data);
+
+	static void LoadUI(const char* fileLocation, UIManager* pUManager, ID3D11Device* device);
+
+
+	static void SaveUI(const char* fileLocation, UIManager* pUManager);
+
+	/// <summary>
+	/// To DO
+	/// </summary>
+	static void SaveGameObject(const char* fileLocation ,GameObject* gameObject);
 
 	/// <summary>
 	/// Saves the current active scene in a json file.
@@ -226,7 +230,7 @@ private:
 	/// </summary>
 	/// <param name="file"></param>
 	/// <returns></returns>
-	static std::vector<ParticleSystem*> LoadMultipleParticles(json file);
+	static void LoadMultipleParticles(json file);
 
 	/// <summary>
 	/// Converts a string to wstring
@@ -275,7 +279,8 @@ private:
 	/// <param name="shader"></param>
 	/// <returns></returns>
 	static wstring GrabAlbedoName(ID3D11ShaderResourceView* albedo);
-
+	
+	static json PackJson(GameObject* dataToPack, int count);
 	 /// <summary>
 	 /// Local cache that contains data on the location textures, shaders and more.
 	 /// </summary>

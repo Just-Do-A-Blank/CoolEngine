@@ -4,6 +4,7 @@
 struct FontAtlasStruct;
 class TextComponent : public GameUIComponent
 {
+	friend FileIO;
 private:
 	ID3D11Buffer* m_pvertexBuffer = nullptr;
 	ID3D11Buffer* m_pindexBuffer = nullptr;
