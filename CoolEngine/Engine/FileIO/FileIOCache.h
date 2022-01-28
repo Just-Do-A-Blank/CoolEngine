@@ -50,6 +50,8 @@ public:
 	/// </summary>
 	std::vector<wstring> m_MapData;
 
+	std::unordered_map<ID3D11ShaderResourceView*, wstring> m_XMLCache;
+
 	/// <summary>
 	/// Temporary
 	/// </summary>
