@@ -29,10 +29,6 @@ void AnimationTool::Render()
 {
 	bool updateAnim = false;
 
-	ImGui_ImplDX11_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
-
 	ImGui::Begin("Animation");
 
 	for (int i = 0; i < m_frameInfos.size(); ++i)
@@ -112,12 +108,6 @@ void AnimationTool::Render()
 	}
 
 	ImGui::End();
-
-	ImGui::Render();
-
-	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
-	ImGui::EndFrame();
 
 	if (updateAnim)
 	{

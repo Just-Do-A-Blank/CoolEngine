@@ -40,6 +40,7 @@
 
 #include "Engine/Tools/TileMapTool.h"
 #include "Engine/Tools/AnimationTool.h"
+#include "Engine/Tools/InGameUITool.h"
 #endif
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -161,6 +162,15 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_ptoolBase = new TileMapTool();
 #elif ANIMATION_TOOL
 	g_ptoolBase = new AnimationTool();
+#elif IN_GAME_UI_TOOL
+	g_ptoolBase = new InGameUITool();
+
+	FontManager::GetInstance()->LoadFont("Resources/Fonts/ComicSans.xml", L"Resources/Fonts/ComicSans.dds", "comicSans");
+	UIManager::GetInstance()->Init(g_pd3dDevice);
+	UIManager::GetInstance()->CreateCanvas("testCanvas", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
+	//TextComponent* tc = UIManager::GetInstance()->CreateUIComponent<TextComponent>("TestText", XMFLOAT3(0.0, 20.0, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f));
+	//tc->Init("Cool Engine!", "comicSans", 16, Colors::Yellow, g_pd3dDevice);
+	UIManager::GetInstance()->CreateUIComponent<ImageComponent>("TestUIImage", XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT3(0.9f, 0.9f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
 #endif
 
 	g_ptoolBase->Init(g_pd3dDevice);
@@ -269,26 +279,25 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	//Pathfinding::GetInstance()->Initialize(g_testMap1);
 
-	//FileIO::LoadScene("C:\\Users\\Thoma\\Documents\\GitHub\\CoolEngine\\CoolEngine\\Engine\\FileIO\\Scene.json", pgameManager, ParticleManager::GetInstance());
-	//FileIO::SaveScene("C:\\Users\\Thoma\\Documents\\GitHub\\CoolEngine\\CoolEngine\\Engine\\FileIO\\Scene5.json", pgameManager);
+	// Observer for button inputs
+	ExampleObserver exampleObserver(new int(10), pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName));
+	EventManager::Instance()->AddClient(EventType::KeyPressed, &exampleObserver);
+	EventManager::Instance()->AddClient(EventType::KeyReleased, &exampleObserver);
+	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, &exampleObserver);
+	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, &exampleObserver);
+	EventManager::Instance()->AddClient(EventType::MouseMoved, &exampleObserver);
 
-	FileIO::LoadUI("C:\\Users\\Thoma\\Documents\\GitHub\\CoolEngine\\CoolEngine\\Engine\\FileIO\\Scene.json", UIManager::GetInstance(), g_pd3dDevice);
-	FileIO::SaveUI("C:\\Users\\Thoma\\Documents\\GitHub\\CoolEngine\\CoolEngine\\Engine\\FileIO\\UI2.json", UIManager::GetInstance());
+	// Observer for collision detection
+	CollisionObserver collisionObserver;
+	EventManager::Instance()->AddClient(EventType::TriggerEnter, &collisionObserver);
+	EventManager::Instance()->AddClient(EventType::TriggerHold, &collisionObserver);
+	EventManager::Instance()->AddClient(EventType::TriggerExit, &collisionObserver);
+	EventManager::Instance()->AddClient(EventType::CollisionEnter, &collisionObserver);
+	EventManager::Instance()->AddClient(EventType::CollisionHold, &collisionObserver);
+	EventManager::Instance()->AddClient(EventType::CollisionExit, &collisionObserver);
 
-	ExampleObserver observer(new int(10), pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName));
-	EventManager::Instance()->AddClient(EventType::KeyPressed, &observer);
-	EventManager::Instance()->AddClient(EventType::KeyReleased, &observer);
-	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, &observer);
-	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, &observer);
-	EventManager::Instance()->AddClient(EventType::MouseMoved, &observer);
 
-
-	/*FontManager::GetInstance()->LoadFont("Resources/Fonts/ComicSans.xml", L"Resources/Fonts/ComicSans.dds", "comicSans");
-	UIManager::GetInstance()->Init(g_pd3dDevice);
-	UIManager::GetInstance()->CreateCanvas("testCanvas", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
-	TextComponent* tc = UIManager::GetInstance()->CreateUIComponent<TextComponent>("TestText", XMFLOAT3(0.0, 20.0, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f));
-	tc->Init("Cool Engine!", "comicSans", 16, Colors::Yellow, g_pd3dDevice);
-	UIManager::GetInstance()->CreateUIComponent<ImageComponent>("TestUIImage", XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT3(0.9f, 0.9f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));*/
+	
 
 	
 	XMFLOAT3 pos = XMFLOAT3( 300, 300, 5 );
@@ -615,6 +624,12 @@ void CleanupDevice()
 
 void Render()
 {
+#if EDITOR
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+#endif
+
 	// Clear the back buffer
 	g_pImmediateContext->ClearRenderTargetView(g_pRenderTargetView, DirectX::Colors::MidnightBlue);
 
@@ -658,6 +673,14 @@ void Render()
 #if EDITOR
 	g_peditorUI->DrawEditorUI(g_pd3dDevice);
 #endif
+#endif
+
+#if EDITOR
+	ImGui::Render();
+
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+	ImGui::EndFrame();
 #endif
 
 	// Present our back buffer to our front buffer

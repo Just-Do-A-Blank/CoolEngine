@@ -12,51 +12,81 @@ void UIManager::Init(ID3D11Device* pDevice)
 void UIManager::CreateCanvas(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation)
 {
 	UICanvas* canvas = new UICanvas(identifier, position, scale, rotation);
-	m_uiCanvasMap.insert(pair<string, UICanvas*>(identifier, canvas));
-    m_pcurrentCanvas = canvas;
+	if (!m_pUISceneGraph)
+	{
+		m_pUISceneGraph = new SceneGraph<GameUIComponent>();
+	}
+
+	m_prootTreeNode = m_pUISceneGraph->GetRootNode();
+	if (!m_prootTreeNode)
+	{
+		m_prootTreeNode = m_pUISceneGraph->NewNode(canvas);
+	}
+	else
+	{
+        m_pUISceneGraph->AddSibling(m_prootTreeNode, canvas);
+	}
 }
 
-void UIManager::SelectCanvasUsingIdentifier(string canvasIdentifier)
+void UIManager::SelectUIObjectUsingIdentifier(string identifier)
 {
-    if (m_uiCanvasMap.count(canvasIdentifier) == 0)
-    {
-        LOG("Canvas : " << canvasIdentifier << "; was not found in Canvas Map ");
-        return;
-    }
-    m_pcurrentCanvas = m_uiCanvasMap.find(canvasIdentifier)->second;
+	m_pselectedUINode = m_pUISceneGraph->GetNodeUsingIdentifier(identifier);
 }
 
-void UIManager::SelectCanvas(UICanvas* pcanvas)
+void UIManager::SelectUIObject(GameUIComponent* pgameObject)
 {
-    m_pcurrentCanvas = pcanvas;
+	if (pgameObject)
+	{
+		SelectUIObjectUsingIdentifier(pgameObject->GetIdentifier());
+	}
+	else
+	{
+		m_pselectedUINode = nullptr;
+	}
 }
 
-void UIManager::DeleteCanvasUsingIdentifier(string canvasIdentifier)
+void UIManager::SelectUIObjectUsingTreeNode(TreeNode<GameUIComponent>* pnode)
 {
-    m_uiCanvasMap.erase(canvasIdentifier);
+	if (!pnode)
+	{
+		m_pselectedUINode = nullptr;
+		return;
+	}
+
+	m_pselectedUINode = pnode;
 }
 
-void UIManager::DeleteCanvas(UICanvas* pcanvas)
+TreeNode<GameUIComponent>* UIManager::GetRootTreeNode()
 {
-    DeleteCanvasUsingIdentifier(pcanvas->GetCanvasIdentifier());
-}
-
-void UIManager::DeleteSelectedCanvas()
-{
-    DeleteCanvasUsingIdentifier(m_pcurrentCanvas->GetCanvasIdentifier());
+	return m_pUISceneGraph->GetRootNode();
 }
 
 void UIManager::Render(RenderStruct& renderStruct)
 {
-    m_pcurrentCanvas->Render(renderStruct);
+	if (!m_pUISceneGraph)
+	{
+		return;
+	}
+
+	if (m_pselectedUINode)
+	{
+		m_pselectedUINode->GameObject->ShowEngineUI();
+	}
+
+	vector<GameUIComponent*> uiComponentList = m_pUISceneGraph->GetAllGameObjects();
+	for (int i = 0; i < uiComponentList.size(); ++i)
+	{
+		uiComponentList[i]->Render(renderStruct);
+	}
 }
 
-unordered_map<string, UICanvas*> UIManager::GetCanvasList()
+void UIManager::DeleteSelectedUIComponent()
 {
-    return m_uiCanvasMap;
+	m_pUISceneGraph->DeleteGameObjectUsingNode(m_pselectedUINode);
+	m_pselectedUINode = nullptr;
 }
 
-vector<GameUIComponent*>& UIManager::GetAllUIComponentsInCurrentCanvas()
+vector<GameUIComponent*>& UIManager::GetAllUIComponents()
 {
-    return m_pcurrentCanvas->GetAllGameUIComponents();
+    return m_pUISceneGraph->GetAllGameObjects();
 }
