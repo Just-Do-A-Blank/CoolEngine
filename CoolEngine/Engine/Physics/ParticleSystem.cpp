@@ -86,9 +86,31 @@ void ParticleSystem::Update(const float dTime)
 #if EDITOR
 void ParticleSystem::CreateEngineUI()
 {
-	ImGui::Separator();
+	GameObject::CreateEngineUI();
+
 	ImGui::Spacing();
 
-	m_transform->CreateEngineUI();
+	EditorUI::DragFloat2("Velocity", m_velocity);
+	EditorUI::DragFloat2("Acceleration", m_accel);
+
+	ImGui::Spacing();
+
+	EditorUI::DragFloat("Particle Lifetime", m_particleLife, 100.0f, 0.05f, 0, 10000.0f);
+	EditorUI::DragFloat("Particle Interval", m_spawnInterval, 100.0f, 0.05f, 0, 10000.0f);
+	EditorUI::DragInt("Particle Quantity", m_spawnNumber, 100.0f, 0.05f, 0, 128);
+
+	ImGui::Spacing();
+
+	EditorUI::DragFloat("Position Spread", m_positionRand, 100.0f, 0.1f, 0, 10000.0f);
+	EditorUI::DragFloat("Velocity Spread", m_velocityRand, 100.0f, 0.1f, 0, 10000.0f);
+	EditorUI::DragFloat("Acceleration Spread", m_accelRand, 100.0f, 0.1f, 0, 10000.0f);
+	EditorUI::DragFloat("Lifetime Spread", m_lifeRand, 100.0f, 0.005f, 0, 10000.0f);
+
+	ImGui::Spacing();
+
+	EditorUI::Texture("Texture", m_texFilepath, m_pTexture);
+
+	EditorUI::DragFloat("System Lifetime", m_systemLife, 100.0f, 0.1f, 0, 10000.0f);
+	EditorUI::Checkbox("System Active?", m_isActive);
 }
 #endif

@@ -341,6 +341,42 @@ void EditorUI::OpenFolderExplorer(WCHAR* buffer, int bufferSize)
 	SHBrowseForFolder(&browserInfo);
 }
 
+void EditorUI::DragFloat2(const string& label, XMFLOAT2& values, const float& columnWidth, const float& speed, const float& min, const float& max)
+{
+	ImGuiIO& io = ImGui::GetIO();
+
+	ImGui::PushID(label.c_str());
+
+	ImGui::Columns(2);
+	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::Text(label.c_str());
+	ImGui::NextColumn();
+
+	ImGui::PushMultiItemsWidths(2, ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+	float lineHeight = io.FontDefault->FontSize + ImGui::GetStyle().FramePadding.y * 2.0f;
+	ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
+
+	ImGui::Button("X", buttonSize);
+	ImGui::SameLine();
+	ImGui::DragFloat("##X", &values.x, speed, min, max, "%.2f");
+	ImGui::PopItemWidth();
+	ImGui::SameLine();
+
+	ImGui::Button("Y", buttonSize);
+	ImGui::SameLine();
+	ImGui::DragFloat("##Y", &values.y, speed, min, max, "%.2f");
+	ImGui::PopItemWidth();
+	ImGui::SameLine();
+
+	ImGui::PopStyleVar();
+
+	ImGui::Columns(1);
+
+	ImGui::PopID();
+}
+
 void EditorUI::DragFloat3(const string& label, XMFLOAT3& values, const float& columnWidth, const float& speed, const float& min, const float& max)
 {
 	ImGuiIO& io = ImGui::GetIO();
