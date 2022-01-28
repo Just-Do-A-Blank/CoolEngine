@@ -24,11 +24,7 @@ void InGameUITool::Render()
 {
 	bool updateAnim = false;
 
-	ImGui::Begin("Game UI");
-
 	DrawUIWindow();
-
-	ImGui::End();
 }
 
 void InGameUITool::Destroy()
@@ -42,63 +38,94 @@ void InGameUITool::DrawUIWindow()
 	static int selected = -1;
 
 	m_base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
-	int nodeCount = -1;
 
-
-	EditorUI::InputText("Canvas Name", m_canvasName, 120);
-
-	ImGui::SameLine();
-
-	if (ImGui::Button("New Canvas") == true)
+	if (m_showUICreation == true)
 	{
-		puiManager->CreateCanvas(m_canvasName, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
-		m_canvasName = "";
-	}
+		ImGui::Begin("Game UI");
 
-	EditorUI::InputText("Image UI Name", m_imageName, 120);
+		EditorUI::InputText("Canvas Name", m_canvasName, 120);
 
-	ImGui::SameLine();
+		ImGui::SameLine();
 
-	if (ImGui::Button("New ImageUI") == true)
-	{
-		ImageComponent* imageUI = puiManager->CreateUIComponent<ImageComponent>(m_imageName, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(10.0f, 10.0f, 10.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
-		if (imageUI)
+		if (ImGui::Button("New Canvas") == true)
 		{
-			imageUI->Init(L"");
-			m_imageName = "";
+			puiManager->CreateCanvas(m_canvasName, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
+			m_canvasName = "";
 		}
-	}
 
-	EditorUI::InputText("Text UI Name", m_textName, 120);
+		EditorUI::InputText("Image UI Name", m_imageName, 120);
 
-	ImGui::SameLine();
+		ImGui::SameLine();
 
-	if (ImGui::Button("New TextUI") == true)
-	{
-		TextComponent* textUI = puiManager->CreateUIComponent<TextComponent>(m_textName, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
-		if (textUI)
+		if (ImGui::Button("New ImageUI") == true)
 		{
-			textUI->Init("New Text", "comicSans", 20, Colors::White, m_pdevice);
-			m_textName = "";
-		}
-	}
+			ImageComponent* imageUI = puiManager->CreateUIComponent<ImageComponent>(m_imageName, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(10.0f, 10.0f, 10.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
+			if (imageUI)
+			{
+				imageUI->Init(L"");
+				m_imageName = "";
 
-	if (m_gameObjectNodeClicked != -1)
-	{
-		if (ImGui::Button("Delete") == true)
-		{
-			puiManager->DeleteSelectedUIComponent();
-			puiManager->SelectUIObject(nullptr);
-			m_gameObjectNodeClicked = -1;
+				m_showUICreation = false;
+			}
 		}
+
+		EditorUI::InputText("Text UI Name", m_textName, 120);
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("New TextUI") == true)
+		{
+			TextComponent* textUI = puiManager->CreateUIComponent<TextComponent>(m_textName, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
+			if (textUI)
+			{
+				textUI->Init("New Text", "comicSans", 20, Colors::White, m_pdevice);
+				m_textName = "";
+
+				m_showUICreation = false;
+			}
+		}
+
+		if (m_gameObjectNodeClicked != -1)
+		{
+			if (ImGui::Button("Delete") == true)
+			{
+				puiManager->DeleteSelectedUIComponent();
+				puiManager->SelectUIObject(nullptr);
+				m_gameObjectNodeClicked = -1;
+
+				m_showUICreation = false;
+			}
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Cancel") == true)
+		{
+			m_showUICreation = false;
+		}
+
+		ImGui::End();
 	}
 
 	TreeNode<GameUIComponent>* prootNode = puiManager->GetRootTreeNode();
 
-	ImGui::Begin("UI SceneGraph");
+	ImGui::Begin("UI SceneGraph", nullptr, ImGuiWindowFlags_MenuBar);
+
+	if (ImGui::BeginMenuBar())
+	{
+		if (ImGui::BeginMenu("Create UI"))
+		{
+			m_showUICreation = true;
+
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMenuBar();
+	}
+
+	int nodeCount = -1;
 	TraverseTree(prootNode, nodeCount);
 	ImGui::End();
-
 }
 
 void InGameUITool::TraverseTree(TreeNode<GameUIComponent>* pcurrentNode, int& nodeCount)

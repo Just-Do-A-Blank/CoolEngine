@@ -32,18 +32,9 @@ EditorUI::EditorUI(ID3D11Device* pdevice)
 
 void EditorUI::DrawEditorUI(ID3D11Device* pdevice)
 {
+	DrawSceneGraphWindow();
 
-	DrawMasterWindow();
-
-	if (g_ShowSceneEditor)
-	{
-		DrawSceneGraphWindow();
-	}
-
-	if (g_ShowSceneManagement)
-	{
-		DrawSceneManagementWindow();
-	}
+	DrawSceneManagementWindow();
 
 	if (GameManager::GetInstance()->GetSelectedGameObject() != nullptr)
 	{
@@ -59,16 +50,6 @@ void EditorUI::Update()
 	io.DisplaySize = ImVec2(GraphicsManager::GetInstance()->GetWindowDimensions().x, GraphicsManager::GetInstance()->GetWindowDimensions().y);
 
 	io.DeltaTime = GameManager::GetInstance()->GetTimer()->DeltaTime();
-}
-
-void EditorUI::DrawMasterWindow()
-{
-	ImGui::Begin("Master Window");
-	ImGui::Checkbox("Scene Graph Window", &g_ShowSceneEditor);
-	ImGui::Checkbox("Scene Management Window", &g_ShowSceneManagement);
-	ImGui::Checkbox("GameObject Properties Window", &g_ShowGameObject);
-	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-	ImGui::End();
 }
 
 void EditorUI::DrawSceneGraphWindow()
@@ -430,7 +411,7 @@ void EditorUI::Checkbox(const string& label, bool& value, const float& columnWid
 	ImGui::PopID();
 }
 
-bool EditorUI::Texture(const string& label, wstring& filepath, ID3D11ShaderResourceView*& psrv, const float& columnWidth)
+bool EditorUI::Texture(const string& label, wstring& filepath, ID3D11ShaderResourceView*& psrv, const float& columnWidth, ImVec2& imageDimensions)
 {
 	bool interacted = false;
 
@@ -445,7 +426,7 @@ bool EditorUI::Texture(const string& label, wstring& filepath, ID3D11ShaderResou
 	ImGui::PushItemWidth(ImGui::CalcItemWidth());
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
 
-	if (ImGui::ImageButton((void*)(intptr_t)psrv, DEFAULT_IMGUI_IMAGE_SIZE))
+	if (ImGui::ImageButton((void*)(intptr_t)psrv, imageDimensions))
 	{
 		WCHAR buffer[FILEPATH_BUFFER_SIZE];
 

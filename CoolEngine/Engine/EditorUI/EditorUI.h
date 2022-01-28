@@ -33,11 +33,6 @@ private:
 	bool m_createGameObjectClicked = false;
 	bool m_deleteGameObjectClicked = false;
 
-	//Master window
-	bool g_ShowSceneEditor;
-	bool g_ShowSceneManagement;
-	bool g_ShowGameObject;
-
 	int num = 1;
 
 	ImGuiTreeNodeFlags m_base_flags;
@@ -49,7 +44,6 @@ private:
 	int m_animNameUpdateIndex = -1;
 	string m_animUpdateName = "";
 
-	void DrawMasterWindow();
 	void DrawSceneGraphWindow();
 	void DrawSceneManagementWindow();
 	void TraverseTree(TreeNode<GameObject>* pcurrentNode, int& count);
@@ -75,7 +69,7 @@ public:
 	static bool InputText(const string& label, string& text, const float& columnWidth = 100.0f);
 	static void IdentifierText(const string& label, string& text, const float& columnWidth = 100.0f);
 
-	static bool Texture(const string& label, wstring& filepath, ID3D11ShaderResourceView*& psrv, const float& columnWidth = 100.0f);
+	static bool Texture(const string& label, wstring& filepath, ID3D11ShaderResourceView*& psrv, const float& columnWidth = 100.0f, ImVec2& imageDimensions = DEFAULT_IMGUI_IMAGE_SIZE);
 	static bool Animation(const string& label, wstring& filepath, ID3D11ShaderResourceView* psrv, const float& columnWidth = 100.0f);
 
 	static void Animations(const string& label, unordered_map<string, SpriteAnimation>& animations, const float& columnWidth = 100.0f);

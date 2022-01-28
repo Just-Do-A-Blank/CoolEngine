@@ -297,9 +297,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	EventManager::Instance()->AddClient(EventType::CollisionExit, &collisionObserver);
 
 
-	
-
-	
 	XMFLOAT3 pos = XMFLOAT3( 300, 300, 5 );
 	XMFLOAT3 rot = XMFLOAT3(0, 0, 0 );
 	XMFLOAT3 scale = XMFLOAT3(25, 25, 25);
