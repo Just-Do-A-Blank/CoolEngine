@@ -83,6 +83,8 @@ Inputs* g_inputController;
 ToolBase* g_ptoolBase = nullptr;
 #endif
 
+using namespace DirectX;
+
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
@@ -156,6 +158,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameManager->CreateScene("TestScene");
 	pgameManager->SelectSceneUsingIdentifier("TestScene");
 
+	//FileIO::LoadScene("C:\\Users\\Thoma\\Documents\\GitHub\\CoolEngine\\CoolEngine\\Engine\\FileIO\\Scene.json", pgameManager, ParticleManager::GetInstance());
+	//FileIO::SaveScene("C:\\Users\\Thoma\\Documents\\GitHub\\CoolEngine\\CoolEngine\\Engine\\FileIO\\Scene7.json", pgameManager);
+	FileIO::LoadScene("C:\\Users\\Thoma\\Documents\\GitHub\\CoolEngine\\CoolEngine\\Engine\\FileIO\\Scene7.json", pgameManager, ParticleManager::GetInstance());
+
 #if TOOL
 
 #if TILE_MAP_TOOL
@@ -164,13 +170,17 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_ptoolBase = new AnimationTool();
 #elif IN_GAME_UI_TOOL
 	g_ptoolBase = new InGameUITool();
-
 	FontManager::GetInstance()->LoadFont("Resources/Fonts/ComicSans.xml", L"Resources/Fonts/ComicSans.dds", "comicSans");
 	UIManager::GetInstance()->Init(g_pd3dDevice);
 	UIManager::GetInstance()->CreateCanvas("testCanvas", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
 	//TextComponent* tc = UIManager::GetInstance()->CreateUIComponent<TextComponent>("TestText", XMFLOAT3(0.0, 20.0, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f));
 	//tc->Init("Cool Engine!", "comicSans", 16, Colors::Yellow, g_pd3dDevice);
 	UIManager::GetInstance()->CreateUIComponent<ImageComponent>("TestUIImage", XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT3(0.9f, 0.9f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
+
+
+   FileIO::LoadUI("C:\\Users\\Thoma\\Documents\\GitHub\\CoolEngine\\CoolEngine\\Engine\\FileIO\\UI.json", UIManager::GetInstance()->GetInstance(), g_pd3dDevice);
+   FileIO::SaveUI("C:\\Users\\Thoma\\Documents\\GitHub\\CoolEngine\\CoolEngine\\Engine\\FileIO\\UI2.json", UIManager::GetInstance()->GetInstance());
+
 #endif
 
 	g_ptoolBase->Init(g_pd3dDevice);

@@ -4,7 +4,6 @@
 #include "Engine/Physics/ParticleManager.h"
 #include "Engine/Physics/Circle.h"
 #include "Engine/Physics/Box.h"
-#include "Engine/Physics/ParticleManager.h"
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/Managers/GameManager.h"
 #include "Engine/Managers/UIManager.h"
@@ -84,27 +83,10 @@ enum JSON_VARIABLE_TYPE
 };
 
 /// <summary>
-/// A struct that contains data related to save data
-/// </summary>
-struct SaveFileData
-{
-	SaveFileData() {};
-};
-
-/// <summary>
-/// A struct that contains data related to a map file
-/// </summary>
-struct MapFileData
-{
-	MapFileData() {};
-};
-
-/// <summary>
 /// This class can be used to load & save files in the engine
 /// </summary>
 class FileIO
 {
-
 	friend GameObject;
 public:
 

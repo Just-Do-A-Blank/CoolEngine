@@ -101,24 +101,25 @@ void FileIO::LoadMultipleParticles(json file)
 
 	for (size_t i = 0; i < metaData.at(0)["NumberOfParticlesSystems"]; i++)
 	{
-		
-		ParticleData p = LoadParticle(particleData, i);
-
 		Transform t;
 		t.SetPosition(XMFLOAT3(particleSystemData.at(i)["Position"][0], particleSystemData.at(i)["Position"][1], particleSystemData.at(i)["Position"][2]));
 		t.SetRotation(XMFLOAT3(particleSystemData.at(i)["Rotation"][0], particleSystemData.at(i)["Rotation"][1], particleSystemData.at(i)["Rotation"][2]));
 		t.SetScale(XMFLOAT3(particleSystemData.at(i)["Scale"][0], particleSystemData.at(i)["Scale"][1], particleSystemData.at(i)["Scale"][2]));
 
 		float life = particleSystemData.at(i)["Life"];
-		string st = particleSystemData.at(i)["AlbedoLocation"];
+		string st = (std::string)particleSystemData.at(i)["AlbedoLocation"];
 		float interval = particleSystemData.at(i)["Interval"];
 		int count = particleSystemData.at(i)["Count"];
+
+		XMFLOAT2 velocity(particleSystemData.at(i)["Velocity"][0], particleSystemData.at(i)["Velocity"][1]);
+		XMFLOAT2 acceleration(particleSystemData.at(i)["Acceleration"][0], particleSystemData.at(i)["Acceleration"][1]);
+		float particleLife  = particleSystemData.at(i)["ParticleLife"];
 		float randPos = particleSystemData.at(i)["RandPosition"];
 		float randVel = particleSystemData.at(i)["RandVelocity"];
 		float randAcc = particleSystemData.at(i)["RandAcceleration"];
 		float randLife = particleSystemData.at(i)["RandLife"];
 
-		ParticleManager::GetInstance()->AddSystem(t, particleSystemData.at(i)["Life"], ToWstring(st), p.m_Velocity, p.m_Acceleration, p.m_Life, interval, count, randPos, randVel, randAcc, randLife);
+		ParticleManager::GetInstance()->AddSystem(t, life, ToWstring(st), velocity, acceleration, particleLife, interval, count, randPos, randVel, randAcc, randLife);
 	}
 }
 
@@ -610,8 +611,8 @@ void FileIO::LoadUI(const char* fileLocation, UIManager* pUManager, ID3D11Device
 			XMFLOAT3 pos =  XMFLOAT3(uiData.at(i)["Position"][0], uiData.at(i)["Position"][1], uiData.at(i)["Position"][2]);
 			XMFLOAT3 rot = XMFLOAT3(uiData.at(i)["Rotation"][0], uiData.at(i)["Rotation"][1], uiData.at(i)["Rotation"][2]);
 			XMFLOAT3 sca = XMFLOAT3(uiData.at(i)["Scale"][0], uiData.at(i)["Scale"][1], uiData.at(i)["Scale"][2]);
-
 			pUManager->CreateCanvas(name, pos, sca, rot);
+			pUManager->SelectUIObjectUsingIdentifier(name);
 		}
 		else if (uiData.at(i)["Image"])
 		{
@@ -632,6 +633,7 @@ void FileIO::LoadUI(const char* fileLocation, UIManager* pUManager, ID3D11Device
 			XMFLOAT3 pos = XMFLOAT3(uiData.at(i)["Position"][0], uiData.at(i)["Position"][1], uiData.at(i)["Position"][2]);
 			XMFLOAT3 rot = XMFLOAT3(uiData.at(i)["Rotation"][0], uiData.at(i)["Rotation"][1], uiData.at(i)["Rotation"][2]);
 			XMFLOAT3 sca = XMFLOAT3(uiData.at(i)["Scale"][0], uiData.at(i)["Scale"][1], uiData.at(i)["Scale"][2]);
+
 
 			TextComponent* tC = pUManager->CreateUIComponent<TextComponent>(name, pos, sca, rot);
 			std::string text = uiData.at(i)["TextData"];
@@ -664,15 +666,21 @@ void FileIO::SaveUI(const char* fileLocation, UIManager* pUManager)
 	jsonOutput["MetaData"].at(0).push_back({ "NumberOfUIelements", 0});
 	jsonOutput["UIData"] = {};
 
-	std::unordered_map<std::string, UICanvas*> canvases = pUManager->GetCanvasList();
+	std::vector<GameUIComponent*> components = pUManager->GetAllUIComponents();
+	std::vector<UICanvas*> canvases;
+
+	for (size_t i = 0; i < components.size(); i++)
+	{
+		if (dynamic_cast<UICanvas*>(components[i]) != NULL)
+		{
+			canvases.push_back(dynamic_cast<UICanvas*>(components[i]));
+		}
+	}
 
 	int UICount = 0;
-	for (std::pair<std::string, UICanvas*> pair : canvases)
+	for (UICanvas* canvas : canvases)
 	{
-		UICanvas* canvas = pair.second;
 		jsonOutput["UIData"].push_back({});
-
-
 		XMFLOAT3 pos = canvas->GetTransform()->GetPosition();
 		float position[3]{ pos.x, pos.y, pos.z };
 		XMFLOAT3 rot = canvas->GetTransform()->GetRotation();
@@ -688,8 +696,6 @@ void FileIO::SaveUI(const char* fileLocation, UIManager* pUManager)
 		jsonOutput["UIData"].at(UICount).push_back({ "Image" , false });
 		jsonOutput["UIData"].at(UICount).push_back({ "Text" , false });
 		++UICount;
-
-		std::vector<GameUIComponent*> components = canvas->GetAllGameUIComponents();
 		for (size_t i = 0; i < components.size(); i++)
 		{
 			TextComponent* textCom = dynamic_cast<TextComponent*>(components[i]);
@@ -1031,39 +1037,6 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 					++count;
 				}
 			}
-			else if (particle)
-			{
-				XMFLOAT3 pos = gameObjectToStore->GetTransform()->GetPosition();
-				float position[3]{ pos.x, pos.y, pos.z };
-				position[0] = pos.x;
-				position[1] = pos.y;
-				position[2] = pos.z;
-				XMFLOAT3 rot = gameObjectToStore->GetTransform()->GetRotation();
-				float rotation[3]{ rot.x, rot.y, rot.z };
-				rotation[0] = rot.x;
-				rotation[1] = rot.y;
-				rotation[2] = rot.z;
-				XMFLOAT3 scal = gameObjectToStore->GetTransform()->GetScale();
-				float scale[3]{ scal.x, scal.y, scal.z };
-				scale[0] = scal.x;
-				scale[1] = scal.y;
-				scale[2] = scal.z;
-
-				XMFLOAT2 vel = particle->GetVelocity();
-				float velocity[2]{ vel.x, vel.y };
-
-				XMFLOAT2 accel = particle->GetAccel();
-				float acceleration[2]{ accel.x, accel.y };
-
-				jsonOutput["ParticleData"].push_back({});
-				jsonOutput["ParticleData"].at(particleCount).push_back({ "Life", particle->GetLife() });
-				jsonOutput["ParticleData"].at(particleCount).push_back({ "Position", position });
-				jsonOutput["ParticleData"].at(particleCount).push_back({ "Rotation", rotation });
-				jsonOutput["ParticleData"].at(particleCount).push_back({ "Scale", scale });
-				jsonOutput["ParticleData"].at(particleCount).push_back({ "Velocity" , velocity });
-				jsonOutput["ParticleData"].at(particleCount).push_back({ "Acceleration" , acceleration });
-				++particleCount;
-			}
 			else if (particleSys)
 			{
 				if (gameObjectToStore->ContainsType(GameObjectType::RENDERABLE))
@@ -1092,6 +1065,12 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 				XMFLOAT3 scal = gameObjectToStore->GetTransform()->GetScale();
 				float scale[3]{ scal.x, scal.y, scal.z };
 
+				XMFLOAT2 acceleration = particleSys->GetAccel();
+				XMFLOAT2 veclocity = particleSys->GetVelocity();
+
+				float particleAcceleration[2]{ acceleration.x, acceleration.y};
+				float particleVelocity[2]{ veclocity.x, veclocity.y};
+
 				//Need height and width of tile map
 				jsonOutput["ParticleSystemData"].push_back({});
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "Name", particleSys->GetIdentifier()});
@@ -1102,9 +1081,14 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "Count" ,  particleSys->GetSpawnNumber()});
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "Interval" ,  particleSys->GetSpawnInterval()});
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "RandVelocity" ,  particleSys->GetRandomAccel() });
+				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "Velocity" ,  particleVelocity});
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "RandAcceleration" ,  particleSys->GetRandomAccel() });
+				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "Acceleration" ,  particleAcceleration });
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "RandLife" ,  particleSys->GetRandomLife() });
+				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "ParticleLife" ,  particleSys->GetParticleLife()});
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "RandPosition" ,  particleSys->GetRandomPos() });
+				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "AlbedoLocation" ,  ToString(GrabAlbedoName(particleSys->m_pTexture)) });
+
 
 
 				++particleSystemCount;
