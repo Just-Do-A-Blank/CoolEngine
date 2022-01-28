@@ -98,9 +98,9 @@ void ParticleSystem::CreateEngineUI()
 	ImGui::Separator();
 	ImGui::Spacing();
 
-	EditorUI::DragFloat("Particle Lifetime", m_particleLife, 150.0f, 0.05f, 0, 10000.0f);
+	EditorUI::DragFloat("Particle Lifetime", m_particleLife, 150.0f, 0.02f, 0, 10000.0f);
 	ImGui::Spacing();
-	EditorUI::DragFloat("Particle Interval", m_spawnInterval, 150.0f, 0.05f, 0, 10000.0f);
+	EditorUI::DragFloat("Particle Interval", m_spawnInterval, 150.0f, 0.02f, 0, 10000.0f);
 	ImGui::Spacing();
 	EditorUI::DragInt("Particle Quantity", m_spawnNumber, 150.0f, 0.05f, 0, 128);
 
