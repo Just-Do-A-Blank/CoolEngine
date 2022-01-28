@@ -13,7 +13,7 @@
     {
       "Canvas": false,
       "Image": true,
-      "ImageLocation": "Resources\\Fumo.dds",
+      "ImageLocation": "Resources\\Animations\\TestAnim\\TestAnim0.dds",
       "Name": "A name2",
       "Position": [ 0.0, 0.0, 0.0 ],
       "Rotation": [ 0.0, 0.0, 0.0 ],
