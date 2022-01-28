@@ -28,6 +28,8 @@ private:
 	float m_accelRand;
 	float m_lifeRand;
 
+	wstring m_texFilepath;
+
 public:
 	ParticleSystem(string identifier);
 	~ParticleSystem();

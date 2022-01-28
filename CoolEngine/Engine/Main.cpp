@@ -193,10 +193,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	//Load animations
 
-	// Create player
-	//g_pplayer = new PlayerGameObject("Player");
-	//g_pplayer->Initialize(XMFLOAT3(200, 0, 5), XMFLOAT3(50, 50, 50));
-
 	//Create test gameobject
 	string obj0Name = "TestObject0";
 	string obj1Name = "TestObject1";
@@ -296,7 +292,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	EventManager::Instance()->AddClient(EventType::CollisionEnter, &collisionObserver);
 	EventManager::Instance()->AddClient(EventType::CollisionHold, &collisionObserver);
 	EventManager::Instance()->AddClient(EventType::CollisionExit, &collisionObserver);
-
+	
 
 	XMFLOAT3 pos = XMFLOAT3( 300, 300, 5 );
 	XMFLOAT3 rot = XMFLOAT3(0, 0, 0 );
@@ -305,7 +301,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	trans.SetPosition(pos);
 	trans.SetRotation(rot);
 	trans.SetScale(scale);
-	ParticleManager::GetInstance()->AddSystem(trans, 10.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 0.5f, 1.0f, 16, 100.0f, 0.0f, 0.0f, 0.2f);
+	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 0.5f, 1.0f, 16, 100.0f, 0.0f, 0.0f, 0.2f);
 
 	GameManager::GetInstance()->GetTimer()->Tick();
 
