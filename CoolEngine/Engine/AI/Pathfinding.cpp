@@ -17,11 +17,15 @@ void Pathfinding::SetupPath(XMFLOAT3 curPos, XMFLOAT3 tarPos)
 	{
 		for (int y = 0; y < m_mapHeight; ++y)
 		{
+			if (!m_pNodes[x][y])
+			{
+				continue;
+			}
 
-			m_pNodes[y][x]->m_gCost = INFINITY;
-			m_pNodes[y][x]->m_gCost = INFINITY;
-			m_pNodes[y][x]->m_pParent = nullptr;
-			m_pNodes[y][x]->m_visited = false;
+			m_pNodes[x][y]->m_gCost = INFINITY;
+			m_pNodes[x][y]->m_gCost = INFINITY;
+			m_pNodes[x][y]->m_pParent = nullptr;
+			m_pNodes[x][y]->m_visited = false;
 		}
 	}
 
@@ -39,7 +43,7 @@ void Pathfinding::SetupPath(XMFLOAT3 curPos, XMFLOAT3 tarPos)
 /// <param name="curPos"></param>
 /// <param name="tarPos"></param>
 /// <returns></returns>
-vector<node*> Pathfinding::FindPath(XMFLOAT3 curPos, XMFLOAT3 tarPos)
+bool Pathfinding::FindPath(XMFLOAT3 curPos, XMFLOAT3 tarPos, vector<node*> &path)
 {
 	SetupPath(curPos, tarPos);
 
@@ -52,13 +56,14 @@ vector<node*> Pathfinding::FindPath(XMFLOAT3 curPos, XMFLOAT3 tarPos)
 
 		if (m_nodesToTest.empty())
 		{
-			break;
+			LOG("No Path found");
+			return false;
 		}
 
 		CalculatePath();
 	}
 
-	return GeneratePath(tarPos);
+	return GeneratePath(tarPos,path);
 
 }
 
@@ -70,7 +75,7 @@ vector<node*> Pathfinding::FindPath(XMFLOAT3 curPos, XMFLOAT3 tarPos)
 /// <param name="curPos"></param>
 /// <param name="tarPos"></param>
 /// <returns></returns>
-vector<node*> Pathfinding::FindPerfectPath(XMFLOAT3 curPos, XMFLOAT3 tarPos)
+bool Pathfinding::FindPerfectPath(XMFLOAT3 curPos, XMFLOAT3 tarPos, vector<node*>& path)
 {
 	SetupPath(curPos, tarPos);
 
@@ -83,13 +88,14 @@ vector<node*> Pathfinding::FindPerfectPath(XMFLOAT3 curPos, XMFLOAT3 tarPos)
 
 		if (m_nodesToTest.empty())
 		{
-			break;
+			LOG("No Path found");
+			return false;
 		}
 
 		CalculatePath();
 	}
 
-	return GeneratePath(tarPos);
+	return GeneratePath(tarPos,path);
 }
 
 /// <summary>
@@ -123,7 +129,6 @@ void Pathfinding::CalculatePath()
 			m_nodesToTest.push(neighbour);
 		}
 	}
-	m_nodesToTest.top();
 }
 
 /// <summary>
@@ -133,10 +138,9 @@ void Pathfinding::CalculatePath()
 /// </summary>
 /// <param name="tarPos"></param>
 /// <returns></returns>
-vector<node*> Pathfinding::GeneratePath(XMFLOAT3 tarPos)
+bool Pathfinding::GeneratePath(XMFLOAT3 tarPos, vector<node*>& path)
 {
 	//Follow the parent of the end node to the start node
-	vector<node*>path;
 	node* nodeCurrentTemp;
 
 	if (m_pNodeEnd != nullptr)
@@ -149,7 +153,7 @@ vector<node*> Pathfinding::GeneratePath(XMFLOAT3 tarPos)
 		}
 	}
 
-	return path;
+	return true;
 }
 
 
@@ -175,12 +179,17 @@ node* Pathfinding::FindClosestNode(XMFLOAT3 pos)
 	{
 		for (int y = 0; y < m_mapHeight; y++)
 		{
-			currDist = MathHelper::Distance(pos, m_pNodes[y][x]->m_pos);
+			if (!m_pNodes[x][y] || m_pNodes[x][y]->m_obstacle)
+			{
+				continue;
+			}
+
+			currDist = MathHelper::Distance(pos, m_pNodes[x][y]->m_pos);
 
 			if (currDist < closestDist)
 			{
 				closestDist = currDist;
-				closestNode = m_pNodes[y][x];
+				closestNode = m_pNodes[x][y];
 			}
 		}
 	}
@@ -200,22 +209,28 @@ void Pathfinding::Initialize(TileMap* map)
 {
 	m_mapWidth = map->GetWidth();
 	m_mapHeight = map->GetHeight();
-
-
-
 	vector<node*> tempVec;
 	node* tempNode;
 
-
+	Tile* ptile;
+	
 	//Setting up tile grid
 	for (int x = 0; x < m_mapWidth; ++x)
 	{
 		tempVec.clear();
 		for (int y = 0; y < m_mapHeight; ++y)
 		{
-			tempNode = new node();
-			tempNode->m_pos = map->GetTileFromMapPos(x, y)->GetTransform()->GetPosition();
-			tempNode->m_obstacle = map->GetTileFromMapPos(x, y)->GetPassable();
+			map->GetTileFromMapPos(x, y, ptile);
+			tempNode = nullptr;
+
+
+			if (ptile)
+			{
+				tempNode = new node();
+				tempNode->m_pos = ptile->GetTransform()->GetPosition();
+				tempNode->m_obstacle = ptile->GetIsPassable();
+			}
+
 			tempVec.push_back(tempNode);
 		}
 		m_pNodes.push_back(tempVec);
@@ -226,43 +241,47 @@ void Pathfinding::Initialize(TileMap* map)
 	{
 		for (int y = 0; y < m_mapHeight; ++y)
 		{
+			if (!m_pNodes[x][y])
+			{
+				continue;
+			}
 
-			if (y > 0)
+			if (x > 0 && m_pNodes[x - 1][y])
 			{
-				m_pNodes[y][x]->m_pNeighbours.push_back(m_pNodes[y - 1][x]);
+				m_pNodes[x][y]->m_pNeighbours.push_back(m_pNodes[x - 1][y]);
 			}
-			if (y < m_mapHeight - 1)
+			if (x < m_mapWidth - 1 && m_pNodes[x + 1][y])
 			{
-				m_pNodes[y][x]->m_pNeighbours.push_back(m_pNodes[y + 1][x]);
+				m_pNodes[x][y]->m_pNeighbours.push_back(m_pNodes[x + 1][y]);
 			}
-			if (x > 0)
+			if (y > 0 && m_pNodes[x][y - 1])
 			{
-				m_pNodes[y][x]->m_pNeighbours.push_back(m_pNodes[y][x - 1]);
+				m_pNodes[x][y]->m_pNeighbours.push_back(m_pNodes[x][y - 1]);
 			}
-			if (x < m_mapWidth - 1)
+			if (y < m_mapHeight - 1 && m_pNodes[x][y + 1])
 			{
-				m_pNodes[y][x]->m_pNeighbours.push_back(m_pNodes[y][x + 1]);
+				m_pNodes[x][y]->m_pNeighbours.push_back(m_pNodes[x][y + 1]);
 			}
 
 			//Diagonal m_pNodes if wanted, more of a question but could slow down the system as it double the number of paths for each node (exponentially more searching)
 			//To enable diagonal m_pNodes change DIAGONAL_ENABLED to true
 			if (DIAGONAL_ENABLED)
 			{
-				if (y > 0 && x > 0)
+				if (x > 0 && y > 0 && m_pNodes[x - 1][y - 1])
 				{
-					m_pNodes[y][x]->m_pNeighbours.push_back(m_pNodes[y - 1][x - 1]);
+					m_pNodes[x][y]->m_pNeighbours.push_back(m_pNodes[x - 1][y - 1]);
 				}
-				if (y < m_mapWidth - 1 && x>0)
+				if (x < m_mapWidth - 1 && y > 0 && m_pNodes[x + 1][y - 1])
 				{
-					m_pNodes[y][x]->m_pNeighbours.push_back(m_pNodes[y + 1][x - 1]);
+					m_pNodes[x][y]->m_pNeighbours.push_back(m_pNodes[x + 1][y - 1]);
 				}
-				if (y > 0 && x < m_mapWidth - 1)
+				if (x > 0 && y < m_mapHeight - 1 && m_pNodes[x - 1][y + 1])
 				{
-					m_pNodes[y][x]->m_pNeighbours.push_back(m_pNodes[y - 1][x + 1]);
+					m_pNodes[x][y]->m_pNeighbours.push_back(m_pNodes[x - 1][y + 1]);
 				}
-				if (y < m_mapWidth - 1 && x < m_mapWidth - 1)
+				if (x < m_mapWidth - 1 && y < m_mapHeight - 1 && m_pNodes[x + 1][y + 1])
 				{
-					m_pNodes[y][x]->m_pNeighbours.push_back(m_pNodes[y + 1][x + 1]);
+					m_pNodes[x][y]->m_pNeighbours.push_back(m_pNodes[x + 1][y + 1]);
 				}
 
 

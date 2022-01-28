@@ -1,111 +1,135 @@
 #include "ParticleSystem.h"
+#include "Engine/Physics/ParticleManager.h"
 
 #include "Engine/EditorUI/EditorUI.h"
 
 ParticleSystem::ParticleSystem(string identifier) : GameObject(identifier)
 {
-	for (unsigned int i = 0; i < PARTICLE_SYSTEM_SIZE; ++i)
-	{
-		m_pParticles[i] = new Particle();
-	}
-
-	m_lifetime = 0.0f;
+	m_systemLife = 0.0f;
 	m_timer = 0.0f;
 	m_isActive = false;
-	m_systemType = SYSTEM_NONE;
-	m_pTexture = nullptr;
+
+	// Particle properties
+	m_velocity = { 0, 0 };
+	m_accel = { 0, 0 };
+	m_particleLife = 1.0f;
+	m_spawnInterval = 1.0f;
+	m_spawnNumber = 1;
+	
+	// Randomness
+	m_positionRand = 0;
+	m_velocityRand = 0;
+	m_accelRand = 0;
+	m_lifeRand = 0;
 }
 
 ParticleSystem::~ParticleSystem()
 {
-	delete[] m_pParticles;
+
 }
 
-void ParticleSystem::Initialise(Transform trans, float life, SYSTEM_TYPE type, ID3D11ShaderResourceView* tex)
+void ParticleSystem::Initialise(Transform trans, float life, ID3D11ShaderResourceView* tex)
 {
 	*m_transform = trans;
 	m_transform->UpdateMatrix();
 
-	m_lifetime = life;
+	m_systemLife = life;
 	m_timer = 0.0f;
 	m_isActive = true;
-	m_systemType = type;
 	m_pTexture = tex;
+}
+
+void ParticleSystem::Initialise(Transform trans, float life, ID3D11ShaderResourceView* tex, XMFLOAT2 vel, XMFLOAT2 accel, float partLife, float interval, int number, float randPos, float randVel, float randAccel, float randLife)
+{
+	Initialise(trans, life, tex);
+	SetProperties(vel, accel, partLife, interval, number);
+	SetRandomness(randPos, randVel, randAccel, randLife);
+}
+
+void ParticleSystem::SetProperties(XMFLOAT2 vel, XMFLOAT2 accel, float life, float interval, int number)
+{
+	m_velocity = vel;
+	m_accel = accel;
+	m_particleLife = life;
+	m_spawnInterval = interval;
+	m_spawnNumber = number;
+}
+
+void ParticleSystem::SetRandomness(float randPos, float randVel, float randAccel, float randLife)
+{
+	m_positionRand = randPos;
+	m_velocityRand = randVel;
+	m_accelRand = randAccel;
+	m_lifeRand = randLife;
 }
 
 void ParticleSystem::Update(const float dTime)
 {
-	for (unsigned int i = 0; i < PARTICLE_SYSTEM_SIZE; ++i)
-	{
-		if (m_pParticles[i]->GetActive())
-		{
-			m_pParticles[i]->Update(dTime);
-		}
-	}
-
-
 	// Particle generation process
-	switch (m_systemType)
+	if (m_timer >= m_spawnInterval)
 	{
-	case SYSTEM_NONE:
-		break;
-
-	case SYSTEM_TEST:
-		// Basic test particle effect
-		if (m_timer >= 1.0f)
+		for (unsigned int i = 0; i < m_spawnNumber; ++i)
 		{
-			AddParticle(*m_transform, XMFLOAT2(0, 0), XMFLOAT2(0, 0), 0.5f);
-			m_timer = 0;
+			ParticleManager::GetInstance()->AddParticle(*m_transform, m_particleLife, m_pTexture, m_velocity, m_accel, m_positionRand, m_velocityRand, m_accelRand, m_lifeRand);
 		}
-		break;
+		m_timer = 0;
 	}
 	m_timer += dTime;
 
-
-	m_lifetime -= dTime;
-	if (m_lifetime <= 0.0f)
+	m_systemLife -= dTime;
+	if (m_systemLife <= 0.0f)
 	{
-		// System is dead, shut down all particles
 		m_isActive = false;
-		for (unsigned int i = 0; i < PARTICLE_SYSTEM_SIZE; ++i)
-		{
-			m_pParticles[i]->Disable();
-		}
-	}
-}
-
-void ParticleSystem::Render(ID3D11DeviceContext* pContext, Mesh* mesh)
-{
-	pContext->PSSetShaderResources(0, 1, &m_pTexture);
-
-	for (unsigned int i = 0; i < PARTICLE_SYSTEM_SIZE; ++i)
-	{
-		if (m_pParticles[i]->GetActive())
-		{
-			m_pParticles[i]->Render(pContext, mesh);
-		}
-	}
-}
-
-void ParticleSystem::AddParticle(Transform trans, XMFLOAT2 vel, XMFLOAT2 accel, float life)
-{
-	for (unsigned int i = 0; i < PARTICLE_SYSTEM_SIZE; ++i)
-	{
-		if (!m_pParticles[i]->GetActive())
-		{
-			// Initialise one, then break from loop so more are not made
-			m_pParticles[i]->Initialise(trans, vel, accel, life);
-			break;
-		}
 	}
 }
 
 #if EDITOR
 void ParticleSystem::CreateEngineUI()
 {
+	GameObject::CreateEngineUI();
+
+	ImGui::Spacing();
+
+	EditorUI::DragFloat2("Velocity", m_velocity, 150.0f, 0.1f, 0, 0);
+	ImGui::Spacing();
+	EditorUI::DragFloat2("Acceleration", m_accel, 150.0f, 0.1f, 0, 0);
+
+	ImGui::Spacing();
 	ImGui::Separator();
 	ImGui::Spacing();
 
-	m_transform->CreateEngineUI();
+	EditorUI::DragFloat("Particle Lifetime", m_particleLife, 150.0f, 0.02f, 0, 10000.0f);
+	ImGui::Spacing();
+	EditorUI::DragFloat("Particle Interval", m_spawnInterval, 150.0f, 0.02f, 0, 10000.0f);
+	ImGui::Spacing();
+	EditorUI::DragInt("Particle Quantity", m_spawnNumber, 150.0f, 0.05f, 0, 128);
+
+	ImGui::Spacing();
+	ImGui::Separator();
+	ImGui::Spacing();
+
+	EditorUI::DragFloat("Position Spread", m_positionRand, 150.0f, 0.1f, 0, 10000.0f);
+	ImGui::Spacing();
+	EditorUI::DragFloat("Velocity Spread", m_velocityRand, 150.0f, 0.1f, 0, 10000.0f);
+	ImGui::Spacing();
+	EditorUI::DragFloat("Acceleration Spread", m_accelRand, 150.0f, 0.1f, 0, 10000.0f);
+	ImGui::Spacing();
+	EditorUI::DragFloat("Lifetime Spread", m_lifeRand, 150.0f, 0.005f, 0, 10000.0f);
+
+	ImGui::Spacing();
+	ImGui::Separator();
+	ImGui::Spacing();
+
+	EditorUI::Texture("Texture", m_texFilepath, m_pTexture, 150.0f);
+
+	ImGui::Spacing();
+	ImGui::Separator();
+	ImGui::Spacing();
+
+	EditorUI::DragFloat("System Lifetime", m_systemLife, 150.0f, 0.1f, 0, 10000.0f);
+	ImGui::Spacing();
+	EditorUI::Checkbox("System Active?", m_isActive, 150.0f);
+
+	ImGui::Spacing();
 }
 #endif

@@ -3,11 +3,12 @@
 #include "Engine/Physics/Circle.h"
 
 #include "Engine/GameObjects/CollidableGameObject.h"
+#include "Engine/Managers/Events/EventManager.h"
 
 bool Collision::BoxCollision(Box* box1, Box* box2)
 {
-	XMFLOAT2 halfSize1 = { box1->m_transform->GetScale().x, box1->m_transform->GetScale().y };
-	XMFLOAT2 halfSize2 = { box2->m_transform->GetScale().x, box2->m_transform->GetScale().y };
+	XMFLOAT2 halfSize1 = { box1->m_halfSize.x, box1->m_halfSize.y };
+	XMFLOAT2 halfSize2 = { box2->m_halfSize.x, box2->m_halfSize.y };
 	XMFLOAT2 middle1 = { box1->m_transform->GetPosition().x, box1->m_transform->GetPosition().y };
 	XMFLOAT2 middle2 = { box2->m_transform->GetPosition().x, box2->m_transform->GetPosition().y };
 
@@ -29,7 +30,7 @@ bool Collision::CircleCollision(Circle* circle1, Circle* circle2)
 
 bool Collision::CircleBoxCollision(Circle* circle, Box* box)
 {
-	XMFLOAT2 halfSize = { box->m_transform->GetScale().x, box->m_transform->GetScale().y };
+	XMFLOAT2 halfSize = { box->m_halfSize.x, box->m_halfSize.y };
 	XMFLOAT2 middle = { box->m_transform->GetPosition().x, box->m_transform->GetPosition().y };
 
 	float x = max(middle.x - halfSize.x, min(circle->m_transform->GetPosition().x, middle.x + halfSize.x));
@@ -48,8 +49,8 @@ bool Collision::CircleBoxCollision(Circle* circle, Box* box)
 
 bool Collision::BoxCollisionAndResponse(Box* player, Box* object)
 {
-	XMFLOAT2 halfSizeP = { player->m_transform->GetScale().x, player->m_transform->GetScale().y };
-	XMFLOAT2 halfSizeO = { object->m_transform->GetScale().x, object->m_transform->GetScale().y };
+	XMFLOAT2 halfSizeP = { player->m_halfSize.x, player->m_halfSize.y };
+	XMFLOAT2 halfSizeO = { object->m_halfSize.x, object->m_halfSize.y };
 	XMFLOAT2 middleP = { player->m_transform->GetPosition().x, player->m_transform->GetPosition().y };
 	XMFLOAT2 middleO = { object->m_transform->GetPosition().x, object->m_transform->GetPosition().y };
 
@@ -140,7 +141,7 @@ bool Collision::BoxCollisionAndResponse(Box* player, Box* object)
 
 bool Collision::CircleBoxCollisionAndResponse(Circle* circle, Box* box)
 {
-	XMFLOAT2 halfSize = { box->m_transform->GetScale().x, box->m_transform->GetScale().y };
+	XMFLOAT2 halfSize = { box->m_halfSize.x, box->m_halfSize.y };
 	XMFLOAT2 middle = { box->m_transform->GetPosition().x, box->m_transform->GetPosition().y };
 
 	float x = max(middle.x - halfSize.x, min(circle->m_transform->GetPosition().x, middle.x + halfSize.x));
@@ -230,12 +231,22 @@ void Collision::Update(vector<GameObject*> gameObjectMap)
 				// Whether to just collisde or collide with response
 				if (pcollidable1->GetShape()->IsCollidable() && pcollidable2->GetShape()->IsCollidable())
 				{
-					// To Do - Find a way to do something with hasCollided
 					bool hasCollided = pcollidable1->GetShape()->CollideResponse(pcollidable2->GetShape());
+					if (hasCollided)
+					{
+						EventManager::Instance()->AddEvent(new CollisionHoldEvent(pcollidable1, pcollidable2));
+					}
 				}
 				else if (pcollidable1->GetShape()->IsTrigger() && pcollidable2->GetShape()->IsTrigger() || pcollidable1->GetShape()->IsCollidable() && pcollidable2->GetShape()->IsTrigger() || pcollidable2->GetShape()->IsCollidable() && pcollidable1->GetShape()->IsTrigger())
 				{
-					bool hasCollided = pcollidable2->GetShape()->Collide(pcollidable2->GetShape());
+					if (it1 < it2)
+					{
+						bool hasCollided = pcollidable2->GetShape()->Collide(pcollidable2->GetShape());
+						if (hasCollided)
+						{
+							EventManager::Instance()->AddEvent(new TriggerHoldEvent(pcollidable1, pcollidable2));
+						}
+					}
 				}
 			}
 		}

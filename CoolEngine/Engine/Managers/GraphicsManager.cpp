@@ -22,6 +22,7 @@ void GraphicsManager::Init(ID3D11Device* pdevice)
 	m_pperFrameCB = new ConstantBuffer<PerFrameCB>(pdevice);
 	m_pdebugPerInstanceCB = new ConstantBuffer<DebugPerInstanceCB>(pdevice);
 	m_pperInstanceCB = new ConstantBuffer<PerInstanceCB>(pdevice);
+	m_ptextPerInstanceCB = new ConstantBuffer<TextPerInstanceCB>(pdevice);
 }
 
 bool GraphicsManager::CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel)
@@ -131,10 +132,11 @@ bool GraphicsManager::LoadTextureFromFile(wstring filename, size_t maxSize, DDS_
 	}
 
 	ID3D11ShaderResourceView* psRV;
+	ID3D11Resource* ptextureRes;
 
 	wstring fullPath = GameManager::GetInstance()->GetWideWorkingDirectory() + L"\\" + filename;
 
-	if (FAILED(CreateDDSTextureFromFile(m_pdevice, fullPath.c_str(), nullptr, &psRV, maxSize, alphaMode)))
+	if (FAILED(CreateDDSTextureFromFile(m_pdevice, fullPath.c_str(), &ptextureRes, &psRV, maxSize, alphaMode)))
 	{
 		LOG("Failed to load dds texture file!");
 
@@ -143,6 +145,7 @@ bool GraphicsManager::LoadTextureFromFile(wstring filename, size_t maxSize, DDS_
 
 
 	m_textureSRVs[filename] = psRV;
+	m_textureResources[filename] = ptextureRes;
 
 	return true;
 }
@@ -157,9 +160,7 @@ bool GraphicsManager::LoadAnimationFromFile(wstring animName, size_t maxSize, DD
 	}
 
 	//Get information txt file and parse in
-
-	wstring w = L"Resources\\Animations\\" + animName + L"\\" + animName + L".txt";
-	ifstream file(L"Resources\\Animations\\" + animName + L"\\" + animName + L".txt", std::ios::in);
+	ifstream file(GameManager::GetInstance()->GetWideWorkingDirectory() + L"\\Resources\\Animations\\" + animName + L"\\" + animName + L".txt", std::ios::in);
 
 	if (file.is_open() == false)
 	{
@@ -205,6 +206,11 @@ void GraphicsManager::SetWindowDimensions(XMFLOAT2 dimensions)
 	m_windowDimensions = dimensions;
 }
 
+void GraphicsManager::SetHWND(HWND* hwnd)
+{
+	m_pHWND = hwnd;
+}
+
 ID3D11VertexShader* GraphicsManager::GetVertexShader(wstring name) const
 {
 	if (m_vertexShaders.count(name) == 0)
@@ -242,6 +248,15 @@ ID3D11ShaderResourceView* GraphicsManager::GetShaderResourceView(wstring name) c
 	return m_textureSRVs.at(name);
 }
 
+ID3D11Resource* GraphicsManager::GetResource(wstring name) const
+{
+	if (m_textureResources.count(name) == 0)
+	{
+		return nullptr;
+	}
+	return m_textureResources.at(name);
+}
+
 Mesh* GraphicsManager::GetMesh(wstring name) const
 {
 	if (m_meshes.count(name) == 0)
@@ -254,7 +269,7 @@ Mesh* GraphicsManager::GetMesh(wstring name) const
 	return m_meshes.at(name);
 }
 
-SpriteAnimation& GraphicsManager::GetAnimation(wstring name) const
+SpriteAnimation GraphicsManager::GetAnimation(wstring name) const
 {
 	if (m_animationFrames.count(name) == 0)
 	{
@@ -280,6 +295,11 @@ bool GraphicsManager::IsTextureLoaded(wstring filename)
 const XMFLOAT2& GraphicsManager::GetWindowDimensions() const
 {
 	return m_windowDimensions;
+}
+
+HWND* GraphicsManager::GetHWND()
+{
+	return m_pHWND;
 }
 
 ID3D11InputLayout* GraphicsManager::GetInputLayout(InputLayouts inputLayout) const
@@ -446,8 +466,9 @@ void GraphicsManager::CreateSamplers()
 void GraphicsManager::CompileDefaultShaders()
 {
 	CompileShaderFromFile(DEFAULT_VERTEX_SHADER_NAME, "main", "vs_4_0");
-	CompileShaderFromFile(PASSTHROUGH_VERTEX_SHADER_NAME, "main", "vs_4_0");
+	CompileShaderFromFile(SCREENSPACE_VERTEX_SHADER_NAME, "main", "vs_4_0");
 	CompileShaderFromFile(DEFAULT_PIXEL_SHADER_NAME, "main", "ps_4_0");
+	CompileShaderFromFile(TEXT_PIXEL_SHADER_NAME, "main", "ps_4_0");
 }
 
 bool GraphicsManager::CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob*& pblob)

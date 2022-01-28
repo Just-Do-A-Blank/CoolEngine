@@ -1,6 +1,6 @@
 #include "SceneGraph.h"
 #include "Engine/GameObjects/Transform.h"
-#include "Engine/GameUI/UiElement.h"
+#include "Engine/GameUI/GameUIComponent.h"
 
 #include <algorithm>
 
@@ -90,8 +90,6 @@ TreeNode<T>* SceneGraph<T>::AddChild(TreeNode<T>* currentNode, T* gameObject)
 		currentNode->Child->PreviousParent = currentNode;
 		return currentNode->Child;
 	}
-
-	
 }
 
 template<class T>

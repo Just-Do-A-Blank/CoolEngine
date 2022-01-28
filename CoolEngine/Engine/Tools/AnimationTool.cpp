@@ -29,10 +29,6 @@ void AnimationTool::Render()
 {
 	bool updateAnim = false;
 
-	ImGui_ImplDX11_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
-
 	ImGui::Begin("Animation");
 
 	for (int i = 0; i < m_frameInfos.size(); ++i)
@@ -59,11 +55,11 @@ void AnimationTool::Render()
 
 			if (updateAnim == false)
 			{
-				updateAnim = EditorUI::Texture("Texture", m_frameInfos[i].m_filepath, m_frameInfos[i].m_frame.m_ptexture);
+				updateAnim = EditorUI::Texture("Texture", m_frameInfos[i].m_filepath, m_frameInfos[i].m_frame.m_ptexture, 100.0f, ImVec2(50, 50));
 			}
 			else
 			{
-				EditorUI::Texture("Texture", m_frameInfos[i].m_filepath, m_frameInfos[i].m_frame.m_ptexture);
+				EditorUI::Texture("Texture", m_frameInfos[i].m_filepath, m_frameInfos[i].m_frame.m_ptexture, 100.0f, ImVec2(50, 50));
 			}
 
 			ImGui::Spacing();
@@ -112,12 +108,6 @@ void AnimationTool::Render()
 	}
 
 	ImGui::End();
-
-	ImGui::Render();
-
-	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
-	ImGui::EndFrame();
 
 	if (updateAnim)
 	{

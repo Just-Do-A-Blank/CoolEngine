@@ -93,6 +93,16 @@ vector<GameObject*>& GameManager::GetAllGameObjects()
     return m_pcurrentScene->GetAllGameObjects();
 }
 
+CameraGameObject* GameManager::GetCamera()
+{
+	return m_pcamera;
+}
+
+void GameManager::SetCamera(CameraGameObject* pcamera)
+{
+	m_pcamera = pcamera;
+}
+
 void GameManager::SelectGameObjectUsingIdentifier(string& identifier)
 {
     m_pcurrentScene->SelectGameObjectUsingIdentifier(identifier);
@@ -156,5 +166,10 @@ void GameManager::CreateScene(string sceneIdentifier)
 
 GameObject* GameManager::GetSelectedGameObject()
 {
+	if (m_pcurrentScene == nullptr)
+	{
+		return nullptr;
+	}
+
     return m_pcurrentScene->GetSelectedGameObject();
 }

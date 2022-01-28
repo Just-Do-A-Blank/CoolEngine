@@ -15,6 +15,7 @@ class Mesh;
 class GraphicsManager : public Singleton<GraphicsManager>
 {
 	std::unordered_map<wstring, ID3D11ShaderResourceView*> m_textureSRVs;
+	std::unordered_map<wstring, ID3D11Resource*> m_textureResources;
 
 	std::unordered_map<wstring, ID3D11VertexShader*> m_vertexShaders;
 	std::unordered_map<wstring, ID3D11PixelShader*> m_pixelShaders;
@@ -34,6 +35,7 @@ public:
 	ConstantBuffer<PerFrameCB>* m_pperFrameCB = nullptr;
 	ConstantBuffer<PerInstanceCB>* m_pperInstanceCB = nullptr;
 	ConstantBuffer<DebugPerInstanceCB>* m_pdebugPerInstanceCB = nullptr;
+	ConstantBuffer<TextPerInstanceCB>* m_ptextPerInstanceCB = nullptr;
 
 	void Init(ID3D11Device* pdevice);
 
@@ -45,21 +47,26 @@ public:
 
 	void SetWindowDimensions(XMFLOAT2 dimensions);
 
+	void SetHWND(HWND* hwnd);
+
 	//Getters
 	ID3D11VertexShader* GetVertexShader(wstring name) const;
 	ID3D11PixelShader* GetPixelShader(wstring name) const;
 
 	ID3D11ShaderResourceView* GetShaderResourceView(wstring name) const;
+	ID3D11Resource* GetResource(wstring name) const;
 
 	Mesh* GetMesh(wstring name) const;
 
-	SpriteAnimation& GetAnimation(wstring name) const;
+	SpriteAnimation GetAnimation(wstring name) const;
 
 	int GetNumLayers();
 
 	bool IsTextureLoaded(wstring filename);
 
 	const XMFLOAT2& GetWindowDimensions() const;
+
+	HWND* GetHWND();
 
 	enum class InputLayouts
 	{
@@ -100,5 +107,7 @@ private:
 	bool CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob*& pblob);
 
 	ID3D11Device* m_pdevice = nullptr;
+
+	HWND* m_pHWND = nullptr;
 };
 

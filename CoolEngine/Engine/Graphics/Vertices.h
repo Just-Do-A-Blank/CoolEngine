@@ -8,6 +8,8 @@ struct Vertex_PosTex
 		m_texCoords = tex;
 	}
 
+	Vertex_PosTex() {}
+
 	XMFLOAT3 m_pos;
 	XMFLOAT2 m_texCoords;
 };

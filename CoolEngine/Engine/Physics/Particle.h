@@ -1,5 +1,4 @@
 #pragma once
-//#include "Box.h"
 #include "Engine/GameObjects/Transform.h"
 #include <Engine/Graphics/Mesh.h>
 #include <Engine/Graphics/ConstantBuffer.h>
@@ -13,6 +12,7 @@ private:
 	Transform m_transform;
 	XMFLOAT2 m_velocity;
 	XMFLOAT2 m_accel;
+	ID3D11ShaderResourceView* m_pTexture;
 
 	float m_lifetime;
 	bool m_isActive;
@@ -41,20 +41,72 @@ public:
 	/// <param name="vel"></param>
 	/// <param name="accel"></param>
 	/// <param name="life"></param>
-	void Initialise(Transform trans, XMFLOAT2 vel, XMFLOAT2 accel, float life);
+	void Initialise(Transform trans, XMFLOAT2 vel, XMFLOAT2 accel, float life, ID3D11ShaderResourceView* tex);
 
 	// Getters
-	bool		GetActive() { return m_isActive; }
-	XMFLOAT2	GetVelocity() { return m_velocity; }
-	XMFLOAT2	GetAccel() { return m_accel; }
-	float		GetLife() { return m_lifetime; }
-	Transform	GetTrans() { return m_transform; }
+	bool GetActive() 
+	{ 
+		return m_isActive; 
+	}
+
+	XMFLOAT2 GetVelocity() 
+	{ 
+		return m_velocity; 
+	}
+
+	XMFLOAT2 GetAccel() 
+	{ 
+		return m_accel; 
+	}
+
+	float GetLife() 
+	{ 
+		return m_lifetime; 
+	}
+
+	Transform GetTrans() 
+	{ 
+		return m_transform; 
+	}
+
+	ID3D11ShaderResourceView* GetTexture()
+	{
+		return m_pTexture;
+	}
 
 	// Setters
-	void SetActive(bool active) { m_isActive = active; }
-	void SetVelocity(XMFLOAT2 vel) { m_velocity = vel; }
-	void SetAccel(XMFLOAT2 acc) { m_accel = acc; }
-	void SetLife(float life) { m_lifetime = life; }
-	void SetPosition(XMFLOAT3 pos) { m_transform.SetPosition(pos); }
-	void SetScale(XMFLOAT3 scale) { m_transform.SetScale(scale); }
+	void SetActive(bool active) 
+	{ 
+		m_isActive = active; 
+	}
+
+	void SetVelocity(XMFLOAT2 vel) 
+	{ 
+		m_velocity = vel; 
+	}
+
+	void SetAccel(XMFLOAT2 acc) 
+	{ 
+		m_accel = acc; 
+	}
+
+	void SetLife(float life) 
+	{ 
+		m_lifetime = life; 
+	}
+
+	void SetPosition(XMFLOAT3 pos) 
+	{ 
+		m_transform.SetPosition(pos); 
+	}
+
+	void SetScale(XMFLOAT3 scale) 
+	{ 
+		m_transform.SetScale(scale); 
+	}
+
+	void SetTexture(ID3D11ShaderResourceView* tex)
+	{
+		m_pTexture = tex;
+	}
 };
