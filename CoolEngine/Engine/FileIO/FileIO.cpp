@@ -635,12 +635,17 @@ void FileIO::LoadUI(const char* fileLocation, UIManager* pUManager, ID3D11Device
 			XMFLOAT3 sca = XMFLOAT3(uiData.at(i)["Scale"][0], uiData.at(i)["Scale"][1], uiData.at(i)["Scale"][2]);
 
 
+			XMVECTORF32 colour;
+			colour.f[0] = uiData.at(i)["Colour"][0];
+			colour.f[1] = uiData.at(i)["Colour"][1];
+			colour.f[2] = uiData.at(i)["Colour"][2];
+
 			TextComponent* tC = pUManager->CreateUIComponent<TextComponent>(name, pos, sca, rot);
 			std::string text = uiData.at(i)["TextData"];
 			std::string fontName = uiData.at(i)["FontName"];
 			int fontSize = uiData.at(i)["FontSize"];
 			FontManager::GetInstance()->LoadFont(uiData.at(i)["FontXML"], ToWstring((std::string)uiData.at(i)["FontDDS"]), fontName);
-			tC->Init(text, fontName, fontSize, Colors::Yellow, device);
+			tC->Init(text, fontName, fontSize, colour, device);
 
 		}
 		else
@@ -721,7 +726,8 @@ void FileIO::SaveUI(const char* fileLocation, UIManager* pUManager)
 				jsonOutput["UIData"].at(UICount).push_back({ "FontSize" , 16});
 				jsonOutput["UIData"].at(UICount).push_back({ "FontDDS" ,  ToString(FontManager::GetInstance()->GetFontTextureFilePath(textCom->m_fontName)) });
 				jsonOutput["UIData"].at(UICount).push_back({ "FontXML" ,ToString(m_Cache.m_XMLCache[textCom->m_ptexture]) });
-				jsonOutput["UIData"].at(UICount).push_back({ "Colour" , 	"No idea" });
+				float colour[3]{ textCom->m_colour.f[0], textCom->m_colour.f[1] , textCom->m_colour.f[2] };
+				jsonOutput["UIData"].at(UICount).push_back({ "Colour" , 	colour });
 				++UICount;
 			}
 			else if (imageCom)

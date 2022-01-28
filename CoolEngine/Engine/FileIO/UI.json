@@ -22,7 +22,7 @@
     },
     {
       "Canvas": false,
-      "Colour": "No idea",
+      "Colour": [255,255,0],
       "FontDDS": "Resources/Fonts/ComicSans.dds",
       "FontName": "comicSans",
       "FontSize": 16,
