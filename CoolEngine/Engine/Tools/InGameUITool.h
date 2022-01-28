@@ -45,6 +45,7 @@ private:
 	wstring m_savePath;
 
 	bool m_createCanvasClicked = false;
+	bool m_showUICreation = false;
 
 	bool SaveAnim(string animName);
 };

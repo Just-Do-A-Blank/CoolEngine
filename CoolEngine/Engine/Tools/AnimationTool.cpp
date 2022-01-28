@@ -55,11 +55,11 @@ void AnimationTool::Render()
 
 			if (updateAnim == false)
 			{
-				updateAnim = EditorUI::Texture("Texture", m_frameInfos[i].m_filepath, m_frameInfos[i].m_frame.m_ptexture);
+				updateAnim = EditorUI::Texture("Texture", m_frameInfos[i].m_filepath, m_frameInfos[i].m_frame.m_ptexture, 100.0f, ImVec2(50, 50));
 			}
 			else
 			{
-				EditorUI::Texture("Texture", m_frameInfos[i].m_filepath, m_frameInfos[i].m_frame.m_ptexture);
+				EditorUI::Texture("Texture", m_frameInfos[i].m_filepath, m_frameInfos[i].m_frame.m_ptexture, 100.0f, ImVec2(50, 50));
 			}
 
 			ImGui::Spacing();

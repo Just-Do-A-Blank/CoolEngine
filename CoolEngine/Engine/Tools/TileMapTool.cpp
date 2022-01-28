@@ -20,10 +20,6 @@ void TileMapTool::Init(ID3D11Device* pdevice)
 
 void TileMapTool::Render()
 {
-	ImGui_ImplDX11_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
-
 	if (m_selectingDimensions == true)
 	{
 		CreateSelectDimensionsUI();
@@ -47,12 +43,6 @@ void TileMapTool::Render()
 
 		ImGui::End();
 	}
-
-	ImGui::Render();
-
-	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
-	ImGui::EndFrame();
 }
 
 void TileMapTool::Update()
