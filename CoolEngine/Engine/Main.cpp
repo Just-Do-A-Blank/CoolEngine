@@ -206,7 +206,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj0Name);
 	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj1Name);
 	pgameManager->CreateGameObject<PlayerGameObject>(playerName);
-	//pgameManager->CreateGameObject<EnemyGameObject>(enemyName);
+	pgameManager->CreateGameObject<EnemyGameObject>(enemyName);
 
 	RenderableCollidableGameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj0Name);
 
@@ -261,25 +261,24 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 
 	//Init enemy object
-	//EnemyGameObject* egameObject = pgameManager->GetGameObjectUsingIdentifier<EnemyGameObject>(enemyName);
-	//objectPos = XMFLOAT3(-400.0f, 200.0f, 0);
-	//objectScale = XMFLOAT3(40, 40, 40);
+	pgameObject = pgameManager->GetGameObjectUsingIdentifier<EnemyGameObject>(enemyName);
+	objectPos = XMFLOAT3(-570, 75.0f, 0);
+	objectScale = XMFLOAT3(40, 40, 40);
 
-	//pbox = new Box(pgameObject->GetTransform());
-	//pbox->SetIsCollidable(isCollision);
-	//pbox->SetIsTrigger(isCollision);
-
-	//egameObject->SetMesh(QUAD_MESH_NAME);
-	//egameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-	//egameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	//egameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
-	//egameObject->GetTransform()->SetPosition(objectPos);
-	//egameObject->GetTransform()->SetScale(objectScale);
-	//egameObject->SetShape(pbox);
+	pgameObject->SetMesh(QUAD_MESH_NAME);
+	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
+	pgameObject->GetTransform()->SetPosition(objectPos);
+	pgameObject->GetTransform()->SetScale(objectScale);
+	pbox = new Box(pgameObject->GetTransform());
+	pbox->SetIsCollidable(isCollision);
+	pbox->SetIsTrigger(isCollision);
+	pgameObject->SetShape(pbox);
 
 	g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, 0, 0), "TestMap");
 
-	//Pathfinding::GetInstance()->Initialize(g_testMap1);
+	Pathfinding::GetInstance()->Initialize(g_testMap1);
 
 	// Observer for button inputs
 	ExampleObserver exampleObserver(new int(10), pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName));
