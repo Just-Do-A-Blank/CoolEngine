@@ -131,7 +131,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//Debug Manager
 #if _DEBUG
 	DebugDrawManager::GetInstance()->Init(g_pd3dDevice);
-	
+
 
 #endif
 
@@ -206,7 +206,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	RenderableCollidableGameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj0Name);
 
-	XMFLOAT3 objectPos = XMFLOAT3(0, 0.0f, 0.0f);
+	XMFLOAT3 objectPos = XMFLOAT3(0, -200.0f, 0.0f);
 	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
 	bool isCollision = true;
 
@@ -224,7 +224,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	////Init second gameObject
 	pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj1Name);
 
-	objectPos = XMFLOAT3(10.0f, 0.0f, 0.0f);
+	objectPos = XMFLOAT3(10.0f, -200.0f, 0.0f);
 	objectScale = XMFLOAT3(100, 100, 100);
 
 	pgameObject->SetMesh(QUAD_MESH_NAME);
@@ -238,10 +238,26 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pbox->SetIsTrigger(isCollision);
 	pgameObject->SetShape(pbox);
 
+	//Init enemy object
+	pgameObject = pgameManager->GetGameObjectUsingIdentifier<EnemyGameObject>(enemyName);
+	objectPos = XMFLOAT3(-570, -25.0f, 0);
+	objectScale = XMFLOAT3(40, 40, 40);
+
+	pgameObject->SetMesh(QUAD_MESH_NAME);
+	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
+	pgameObject->GetTransform()->SetPosition(objectPos);
+	pgameObject->GetTransform()->SetScale(objectScale);
+	pbox = new Box(pgameObject->GetTransform());
+	pbox->SetIsCollidable(isCollision);
+	pbox->SetIsTrigger(isCollision);
+	pgameObject->SetShape(pbox);
+
 	// Init player object
 	pgameObject = pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName);
 
-	objectPos = XMFLOAT3(200.0f, 0.0f, 5.0f);
+	objectPos = XMFLOAT3(200.0f, -200.0f, 5.0f);
 	objectScale = XMFLOAT3(50, 50, 50);
 
 	pgameObject->SetMesh(QUAD_MESH_NAME);
@@ -256,23 +272,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetShape(pbox);
 
 
-	//Init enemy object
-	pgameObject = pgameManager->GetGameObjectUsingIdentifier<EnemyGameObject>(enemyName);
-	objectPos = XMFLOAT3(-570, 75.0f, 0);
-	objectScale = XMFLOAT3(40, 40, 40);
-
-	pgameObject->SetMesh(QUAD_MESH_NAME);
-	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
-	pgameObject->GetTransform()->SetPosition(objectPos);
-	pgameObject->GetTransform()->SetScale(objectScale);
-	pbox = new Box(pgameObject->GetTransform());
-	pbox->SetIsCollidable(isCollision);
-	pbox->SetIsTrigger(isCollision);
-	pgameObject->SetShape(pbox);
-
-	g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, 0, 0), "TestMap");
+	g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, -200, 0), "TestMap");
 
 	Pathfinding::GetInstance()->Initialize(g_testMap1);
 
@@ -292,21 +292,36 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	EventManager::Instance()->AddClient(EventType::CollisionEnter, &collisionObserver);
 	EventManager::Instance()->AddClient(EventType::CollisionHold, &collisionObserver);
 	EventManager::Instance()->AddClient(EventType::CollisionExit, &collisionObserver);
-	
 
-	XMFLOAT3 pos = XMFLOAT3( 300, 300, 5 );
-	XMFLOAT3 rot = XMFLOAT3(0, 0, 0 );
+	XMFLOAT3 pos = XMFLOAT3(-400, 250, 5);
+	XMFLOAT3 rot = XMFLOAT3(0, 0, 0);
 	XMFLOAT3 scale = XMFLOAT3(25, 25, 25);
 	Transform trans = Transform();
 	trans.SetPosition(pos);
 	trans.SetRotation(rot);
 	trans.SetScale(scale);
+	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 1.0f, 0.2f, 3, 20, 90.0f, 0.0f, 0.2f);
+
+	pos = XMFLOAT3(0, 250, 5);
+	rot = XMFLOAT3(0, 0, 0);
+	scale = XMFLOAT3(25, 25, 25);
+	trans.SetPosition(pos);
+	trans.SetRotation(rot);
+	trans.SetScale(scale);
 	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 0.5f, 1.0f, 16, 100.0f, 0.0f, 0.0f, 0.2f);
+
+	pos = XMFLOAT3(400, 250, 5);
+	rot = XMFLOAT3(0, 0, 0);
+	scale = XMFLOAT3(25, 25, 25);
+	trans.SetPosition(pos);
+	trans.SetRotation(rot);
+	trans.SetScale(scale);
+	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { -100,150 }, { 300,-75 }, 2.0f, 0.25f, 3, 100.0f, 25.0f, 25.0f, 0.1f);
 
 	GameManager::GetInstance()->GetTimer()->Tick();
 
 #if _DEBUG
-	DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect("DebugRect1", XMFLOAT3(-100.0f, -100.0f, 0.0f), objectScale, DebugDrawManager::DebugColour::BEIGE);
+	DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect("DebugRect1", XMFLOAT3(-100.0f, -300.0f, 0.0f), objectScale, DebugDrawManager::DebugColour::BEIGE);
 #endif //_DEBUG
 
 #endif

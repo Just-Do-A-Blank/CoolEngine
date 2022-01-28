@@ -29,32 +29,32 @@ class CollisionObserver : public Observer
 public:
 	void TriggerEnter(TriggerEnterEvent* e)
 	{
-		// To do
+		LOG("Trigger enter!");
 	}
 
 	void TriggerHold(TriggerHoldEvent* e)
 	{
-		LOG("Trigger occuring!");
+		LOG("Trigger hold!");
 	}
 
 	void TriggerExit(TriggerExitEvent* e)
 	{
-		// To do
+		LOG("Trigger exit!");
 	}
 
 	void CollisionEnter(CollisionEnterEvent* e)
 	{
-		// To do
+		LOG("Collision enter!");
 	}
 
 	void CollisionHold(CollisionHoldEvent* e)
 	{
-		LOG("Collision occuring!");
+		LOG("Collision hold!");
 	}
 
 	void CollisionExit(CollisionExitEvent* e)
 	{
-		// To do
+		LOG("Collision exit!");
 	}
 
 	void Handle(Event* e)
