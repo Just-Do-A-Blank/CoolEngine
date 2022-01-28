@@ -44,6 +44,8 @@ private:
 	int m_animNameUpdateIndex = -1;
 	string m_animUpdateName = "";
 
+	GameObjectType m_createObjectType;
+
 	void DrawSceneGraphWindow();
 	void DrawSceneManagementWindow();
 	void TraverseTree(TreeNode<GameObject>* pcurrentNode, int& count);
