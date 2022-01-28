@@ -640,8 +640,6 @@ void FileIO::LoadUI(const char* fileLocation, UIManager* pUManager, ID3D11Device
 			std::string fontName = uiData.at(i)["FontName"];
 			int fontSize = uiData.at(i)["FontSize"];
 			FontManager::GetInstance()->LoadFont(uiData.at(i)["FontXML"], ToWstring((std::string)uiData.at(i)["FontDDS"]), fontName);
-			m_Cache.m_TextureCache[GraphicsManager::GetInstance()->GetShaderResourceView(ToWstring((std::string)uiData.at(i)["FontDDS"]))] = ToWstring((std::string)uiData.at(i)["FontDDS"]);
-			m_Cache.m_XMLCache[GraphicsManager::GetInstance()->GetShaderResourceView(ToWstring((std::string)uiData.at(i)["FontDDS"]))] = ToWstring((std::string)uiData.at(i)["FontXML"]);
 			tC->Init(text, fontName, fontSize, Colors::Yellow, device);
 
 		}
