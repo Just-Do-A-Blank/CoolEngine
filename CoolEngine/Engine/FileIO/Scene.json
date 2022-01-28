@@ -218,7 +218,7 @@
       "Position": [ 0.0, 0.0, 0.0 ],
       "Rotation": [ 0.0, 0.0, 0.0 ],
       "Scale": [ 100.0, 100.0, 100.0 ],
-      "ImageLocation": "C:\\Users\\Thoma\\Documents\\GitHub\\CoolEngine\\CoolEngine\\Resources\\TeaMS BACKGROUND.dds"
+      "ImageLocation": "Resources\\Sprites\\Brick.dds"
     },
     {
       "Name": "A name3",
