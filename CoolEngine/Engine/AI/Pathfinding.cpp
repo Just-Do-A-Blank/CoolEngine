@@ -175,6 +175,11 @@ node* Pathfinding::FindClosestNode(XMFLOAT3 pos)
 	{
 		for (int y = 0; y < m_mapHeight; y++)
 		{
+			if (m_pNodes[y][x]->m_obstacle)
+			{
+				continue;
+			}
+
 			currDist = MathHelper::Distance(pos, m_pNodes[y][x]->m_pos);
 
 			if (currDist < closestDist)
