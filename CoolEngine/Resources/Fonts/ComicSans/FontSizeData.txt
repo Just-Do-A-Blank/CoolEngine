@@ -1,0 +1,4 @@
+Small = 15
+Medium = 30
+Large = 45
+
