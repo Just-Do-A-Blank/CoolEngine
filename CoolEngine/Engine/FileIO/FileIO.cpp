@@ -644,9 +644,7 @@ void FileIO::LoadUI(const char* fileLocation, UIManager* pUManager, ID3D11Device
 			std::string text = uiData.at(i)["TextData"];
 			std::string fontName = uiData.at(i)["FontName"];
 			int fontSize = uiData.at(i)["FontSize"];
-			FontManager::GetInstance()->LoadFont(uiData.at(i)["FontXML"], ToWstring((std::string)uiData.at(i)["FontDDS"]), fontName);
 			tC->Init(text, fontName, fontSize, colour, device);
-
 		}
 		else
 		{

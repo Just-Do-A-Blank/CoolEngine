@@ -4,6 +4,8 @@
 #include "Engine/GameUI/GameUIComponent.h"
 #include "Engine/Managers/UiManager.h"
 #include "Engine/GameUI/ImageComponent.h"
+#include "Engine/FileIO/FileIO.h"
+#include "Engine/ResourceDefines.h"
 
 #include <direct.h>
 #include <fstream>
@@ -85,6 +87,8 @@ void InGameUITool::DrawUIWindow()
 			}
 		}
 
+		
+
 		if (m_gameObjectNodeClicked != -1)
 		{
 			if (ImGui::Button("Delete") == true)
@@ -95,6 +99,19 @@ void InGameUITool::DrawUIWindow()
 
 				m_showUICreation = false;
 			}
+			ImGui::SameLine();
+		}
+
+		if (ImGui::Button("Save UI") == true)
+		{
+			SaveUI();
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Load UI") == true)
+		{
+			LoadUI();
 		}
 
 		ImGui::SameLine();
@@ -192,9 +209,18 @@ void InGameUITool::TraverseTree(TreeNode<GameUIComponent>* pcurrentNode, int& no
 
 }
 
-bool InGameUITool::SaveAnim(string animName)
+bool InGameUITool::SaveUI()
 {
+	FileIO::SaveUI(GAME_UI_PATH, UIManager::GetInstance());
 	return true;
 }
+
+bool InGameUITool::LoadUI()
+{
+	FileIO::LoadUI(GAME_UI_PATH, UIManager::GetInstance(), m_pdevice);
+	return true;
+}
+
+
 
 #endif

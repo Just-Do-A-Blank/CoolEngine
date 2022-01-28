@@ -32,3 +32,6 @@
 //TileMaps
 #define TEST_MAP L"Resources\\Levels\\TileMaps\\test.json"
 
+//In-GameUI File Location
+#define GAME_UI_PATH "Engine/FileIO/UI/UiData.json"
+
