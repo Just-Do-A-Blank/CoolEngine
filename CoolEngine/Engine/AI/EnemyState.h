@@ -1,4 +1,5 @@
 #pragma once
+#include "Engine/Managers/Events/EventObserver.h"
 
 enum class EnemyMovementStates
 {
@@ -18,13 +19,14 @@ public:
 
 
     //Getters
-    bool GetIsAlive();
-    EnemyMovementStates GetMovementState();
+    const bool GetIsAlive() const;
+    const bool GetIsAttacking() const;
+    const EnemyMovementStates GetMovementState() const;
 
     //Setters
-    void SetAllProperties(bool alive, EnemyMovementStates movementState) { m_isAlive = alive; m_movementState = movementState; }
-    void SetAlive(bool alive) { m_isAlive = alive; }
-    void SetMovementState(EnemyMovementStates movement) { m_movementState = movement; }
+    void SetAllProperties(bool alive, EnemyMovementStates movementState);
+    void SetAlive(bool alive);
+    void SetMovementState(EnemyMovementStates movement);
 
 
 private:
@@ -39,19 +41,39 @@ class EnemyState
 {
 
 public:
-    EnemyState() {};
+    EnemyState();
     ~EnemyState() {};
 
     State* GetCurrentState() { return m_pCurrentState; }
-
-
+    void Update(float health);
+    EnemyStateObserver m_observer;
 private:
 
-    State* m_pCurrentState;
+
+
+    State* m_pCurrentState = nullptr;
 
     State m_attackPlayer;
     State m_fleePlayer;
     State m_patrolArea;
     State m_WanderArea;
     State m_idle;
+};
+
+class EnemyStateObserver : Observer
+{
+public:
+
+    EnemyStateObserver();
+    ~EnemyStateObserver();
+
+    void Handle(Event* e);
+
+
+
+private:
+
+    
+
+
 };
