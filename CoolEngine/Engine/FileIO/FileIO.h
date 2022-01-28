@@ -7,11 +7,15 @@
 #include "Engine/Physics/ParticleManager.h"
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/Managers/GameManager.h"
+#include "Engine/Managers/UIManager.h"
+#include "Engine/Managers/FontManager.h"
 #include "Engine/Scene/Scene.h"
 #include  "Engine/Includes/json.hpp"
 #include "Engine/TileMap/TileMap/TileMap.h"
 #include "Engine/FileIO/FileIOCache.h"
 #include "Engine/Graphics/SpriteAnimation.h"
+#include "Engine/GameUI/ImageComponent.h"
+#include "Engine/GameUI/TextComponent.h"
 
 #include <fstream>
 #include <iostream>
@@ -197,6 +201,11 @@ public:
 	/// <param name="data"></param>
 	/// <returns></returns>
 	static bool SaveObjectInJson(const char* fileLocation, std::vector<std::string> varNames, std::vector<JSON_VARIABLE_TYPE> types, std::vector<void*> data);
+
+	static void LoadUI(const char* fileLocation, UIManager* pUManager, ID3D11Device* device);
+
+
+	static void SaveUI(const char* fileLocation, UIManager* pUManager);
 
 	/// <summary>
 	/// To DO

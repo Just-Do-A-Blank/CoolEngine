@@ -4,7 +4,8 @@
       "NumberOfObject": 7,
       "NumberOfTileZones": 1,
       "NumberOfParticlesSystems": 1,
-      "NumberOfParticles": 1
+      "NumberOfParticles": 1,
+      "NumberOfUIelements": 3
     }
   ],
   "TileMap": [
@@ -171,17 +172,21 @@
   ],
   "ParticleSystemData": [
     {
-      "Name" :  "TestParticle",
+      "Name": "TestParticle",
       "Position": [ 0.0, 0.0, 0.0 ],
       "Rotation": [ 0.0, 0.0, 0.0 ],
       "Scale": [ 100.0, 100.0, 100.0 ],
+      "RandPosition": 0.0,
+      "RandVelocity": 0.0,
+      "RandAcceleration": 0.0,
       "Life": 0.0,
-      "SystemType": 0,
+      "Count": 0,
+      "RandLife": 0.0,
+      "Interval": 0.0,
       "AlbedoLocation": "Resources\\Sprites\\Brick.dds"
     }
   ],
-  "ParticleData": 
-  [
+  "ParticleData": [
     {
       "Position": [ 0.0, 0.0, 0.0 ],
       "Rotation": [ 0.0, 0.0, 0.0 ],
@@ -189,6 +194,42 @@
       "Velocity": [ 0.0, 0.0 ],
       "Acceleration": [ 0.0, 0.0 ],
       "Life": 0.0
+    }
+  ],
+  "UIData": 
+  [
+    {
+      "Name" :  "A name",
+      "Canvas": true,
+      "Image": false,
+      "Text": false,
+      "Position": [ 0.0, 0.0, 0.0 ],
+      "Rotation": [ 0.0, 0.0, 0.0 ],
+      "Scale": [ 100.0, 100.0, 100.0 ]
+    },
+    {
+      "Name": "A name2",
+      "Canvas": false,
+      "Image": true,
+      "Text": false,
+      "Position": [ 0.0, 0.0, 0.0 ],
+      "Rotation": [ 0.0, 0.0, 0.0 ],
+      "Scale": [ 100.0, 100.0, 100.0 ],
+      "ImageLocation": "C:\\Users\\Thoma\\Documents\\GitHub\\CoolEngine\\CoolEngine\\Resources\\TeaMS BACKGROUND.dds"
+    },
+    {
+      "Name": "A name3",
+      "Canvas": false,
+      "Image": false,
+      "Text": true,
+      "Position": [  500.0, 0.0, 0.0 ],
+      "Rotation": [ 0.0, 0.0, 0.0 ],
+      "Scale": [ 100.0, 100.0, 100.0 ],
+      "TextData": "Sample Text",
+      "FontName": "comicSans",
+      "FontSize": 16,
+      "FontXML": "Resources/Fonts/ComicSans.xml",
+      "FontDDS": "Resources/Fonts/ComicSans.dds"
     }
   ]
 }

@@ -269,6 +269,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	//Pathfinding::GetInstance()->Initialize(g_testMap1);
 
+	//FileIO::LoadScene("C:\\Users\\Thoma\\Documents\\GitHub\\CoolEngine\\CoolEngine\\Engine\\FileIO\\Scene.json", pgameManager, ParticleManager::GetInstance());
+	//FileIO::SaveScene("C:\\Users\\Thoma\\Documents\\GitHub\\CoolEngine\\CoolEngine\\Engine\\FileIO\\Scene5.json", pgameManager);
+
+	FileIO::LoadUI("C:\\Users\\Thoma\\Documents\\GitHub\\CoolEngine\\CoolEngine\\Engine\\FileIO\\Scene.json", UIManager::GetInstance(), g_pd3dDevice);
+	FileIO::SaveUI("C:\\Users\\Thoma\\Documents\\GitHub\\CoolEngine\\CoolEngine\\Engine\\FileIO\\UI2.json", UIManager::GetInstance());
 
 	ExampleObserver observer(new int(10), pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName));
 	EventManager::Instance()->AddClient(EventType::KeyPressed, &observer);
@@ -278,12 +283,12 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	EventManager::Instance()->AddClient(EventType::MouseMoved, &observer);
 
 
-	FontManager::GetInstance()->LoadFont("Resources/Fonts/ComicSans.xml", L"Resources/Fonts/ComicSans.dds", "comicSans");
+	/*FontManager::GetInstance()->LoadFont("Resources/Fonts/ComicSans.xml", L"Resources/Fonts/ComicSans.dds", "comicSans");
 	UIManager::GetInstance()->Init(g_pd3dDevice);
 	UIManager::GetInstance()->CreateCanvas("testCanvas", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
 	TextComponent* tc = UIManager::GetInstance()->CreateUIComponent<TextComponent>("TestText", XMFLOAT3(0.0, 20.0, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f));
 	tc->Init("Cool Engine!", "comicSans", 16, Colors::Yellow, g_pd3dDevice);
-	UIManager::GetInstance()->CreateUIComponent<ImageComponent>("TestUIImage", XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT3(0.9f, 0.9f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
+	UIManager::GetInstance()->CreateUIComponent<ImageComponent>("TestUIImage", XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT3(0.9f, 0.9f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));*/
 
 	
 	XMFLOAT3 pos = XMFLOAT3( 300, 300, 5 );
