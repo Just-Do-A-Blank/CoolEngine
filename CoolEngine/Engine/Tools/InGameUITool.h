@@ -47,7 +47,8 @@ private:
 	bool m_createCanvasClicked = false;
 	bool m_showUICreation = false;
 
-	bool SaveAnim(string animName);
+	bool SaveUI();
+	bool LoadUI();
 };
 
 #endif
