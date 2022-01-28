@@ -368,7 +368,6 @@ void EditorUI::DragFloat2(const string& label, XMFLOAT2& values, const float& co
 	ImGui::SameLine();
 	ImGui::DragFloat("##Y", &values.y, speed, min, max, "%.2f");
 	ImGui::PopItemWidth();
-	ImGui::SameLine();
 
 	ImGui::PopStyleVar();
 
