@@ -7,6 +7,7 @@
 #include "Engine/Graphics/ConstantBuffers.h"
 
 #include <unordered_map>
+#include <SpriteBatch.h>
 
 #define QUAD_MESH_NAME L"quad"
 
@@ -37,7 +38,7 @@ public:
 	ConstantBuffer<DebugPerInstanceCB>* m_pdebugPerInstanceCB = nullptr;
 	ConstantBuffer<TextPerInstanceCB>* m_ptextPerInstanceCB = nullptr;
 
-	void Init(ID3D11Device* pdevice);
+	void Init(ID3D11Device* pdevice, ID3D11DeviceContext* pcontext);
 
 	bool CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel);
 
@@ -48,6 +49,10 @@ public:
 	void SetWindowDimensions(XMFLOAT2 dimensions);
 
 	void SetHWND(HWND* hwnd);
+
+	void RenderQuad(ID3D11ShaderResourceView* psrv, XMFLOAT3 position, XMFLOAT3 scale, float rotation, int layer);
+
+	std::unique_ptr<DirectX::SpriteBatch>& GetSpriteBatch();
 
 	//Getters
 	ID3D11VertexShader* GetVertexShader(wstring name) const;
@@ -108,5 +113,7 @@ private:
 	ID3D11Device* m_pdevice = nullptr;
 
 	HWND* m_pHWND = nullptr;
+
+	std::unique_ptr<DirectX::SpriteBatch> m_pBatch = nullptr;
 };
 

@@ -1,8 +1,6 @@
 #include "Scene.h"
-
 #include "Engine/GameObjects/RenderableGameObject.h"
 #include "Engine/Managers/SceneGraph.h"
-
 #include "Engine/Physics/Collision.h"
 
 Scene::Scene(string identifier)
@@ -13,6 +11,7 @@ Scene::Scene(string identifier)
 
 Scene::~Scene()
 {
+
 }
 
 void Scene::Update()
@@ -30,25 +29,17 @@ void Scene::Render(RenderStruct& renderStruct)
 {
 	RenderableGameObject* prenderableGameObject = nullptr;
 
-	for (int i = 0; i < GraphicsManager::GetInstance()->GetNumLayers(); ++i)
+	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllGameObjects();
+	for (int it = 0; it < gameObjectList.size(); ++it)
 	{
-		vector<GameObject*> gameObjectList = m_psceneGraph->GetAllGameObjects();
-		for (int it = 0; it < gameObjectList.size(); ++it)
+		if (gameObjectList[it]->ContainsType(GameObjectType::RENDERABLE) == false)
 		{
-			if (gameObjectList[it]->ContainsType(GameObjectType::RENDERABLE) == false)
-			{
-				continue;
-			}
-
-			prenderableGameObject = dynamic_cast<RenderableGameObject*>(gameObjectList[it]);
-
-			if (prenderableGameObject->IsRenderable() == false || prenderableGameObject->GetLayer() != i)
-			{
-				continue;
-			}
-
-			prenderableGameObject->Render(renderStruct);
+			continue;
 		}
+
+		prenderableGameObject = dynamic_cast<RenderableGameObject*>(gameObjectList[it]);
+
+		prenderableGameObject->Render(renderStruct);
 	}
 }
 

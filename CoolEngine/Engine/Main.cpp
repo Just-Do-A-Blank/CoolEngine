@@ -2,6 +2,7 @@
 
 #include <io.h>
 #include <fcntl.h>
+#include <SpriteBatch.h>
 
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/Managers/AudioManager.h"
@@ -123,7 +124,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	AudioManager::GetInstance()->SetListenerPosition(XMFLOAT3(0, 0, 0));
 
-	GraphicsManager::GetInstance()->Init(g_pd3dDevice);
+	GraphicsManager::GetInstance()->Init(g_pd3dDevice, g_pImmediateContext);
 	GraphicsManager::GetInstance()->SetHWND(&g_hWnd);
 
 	g_inputController = new Inputs();
@@ -156,6 +157,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//Create scene
 	GameManager* pgameManager = GameManager::GetInstance();
 	pgameManager->CreateScene("TestScene");
+	pgameManager->SelectSceneUsingIdentifier("TestScene");
 	pgameManager->SelectSceneUsingIdentifier("TestScene");
 
 #if TOOL
@@ -206,7 +208,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	RenderableCollidableGameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj0Name);
 
-	XMFLOAT3 objectPos = XMFLOAT3(0, -200.0f, 0.0f);
+	XMFLOAT3 objectPos = XMFLOAT3(0, 0, 0.0f);
 	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
 	bool isCollision = true;
 
@@ -293,30 +295,30 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	EventManager::Instance()->AddClient(EventType::CollisionHold, &collisionObserver);
 	EventManager::Instance()->AddClient(EventType::CollisionExit, &collisionObserver);
 
-	XMFLOAT3 pos = XMFLOAT3(-400, 250, 5);
+	XMFLOAT3 pos = XMFLOAT3(-200, 100, 5);
 	XMFLOAT3 rot = XMFLOAT3(0, 0, 0);
 	XMFLOAT3 scale = XMFLOAT3(25, 25, 25);
 	Transform trans = Transform();
 	trans.SetPosition(pos);
 	trans.SetRotation(rot);
 	trans.SetScale(scale);
-	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 1.0f, 0.2f, 3, 20, 90.0f, 0.0f, 0.2f);
+	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 1.0f, 0.2f, 3, 20, 90.0f, 0.0f, 0.2f, 0);
 
-	pos = XMFLOAT3(0, 250, 5);
+	pos = XMFLOAT3(0, 100, 5);
 	rot = XMFLOAT3(0, 0, 0);
 	scale = XMFLOAT3(25, 25, 25);
 	trans.SetPosition(pos);
 	trans.SetRotation(rot);
 	trans.SetScale(scale);
-	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 0.5f, 1.0f, 16, 100.0f, 0.0f, 0.0f, 0.2f);
+	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 0.5f, 1.0f, 16, 100.0f, 0.0f, 0.0f, 0.2f, 2);
 
-	pos = XMFLOAT3(400, 250, 5);
+	pos = XMFLOAT3(200, 100, 5);
 	rot = XMFLOAT3(0, 0, 0);
 	scale = XMFLOAT3(25, 25, 25);
 	trans.SetPosition(pos);
 	trans.SetRotation(rot);
 	trans.SetScale(scale);
-	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { -100,150 }, { 300,-75 }, 2.0f, 0.25f, 3, 100.0f, 25.0f, 25.0f, 0.1f);
+	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { -100,150 }, { 300,-75 }, 2.0f, 0.25f, 3, 100.0f, 25.0f, 25.0f, 0.1f, 1);
 
 	GameManager::GetInstance()->GetTimer()->Tick();
 
@@ -448,6 +450,8 @@ inline HRESULT InitDevice()
 	GetClientRect(g_hWnd, &rc);
 	UINT width = rc.right - rc.left;
 	UINT height = rc.bottom - rc.top;
+
+	GraphicsManager::GetInstance()->SetWindowDimensions(XMFLOAT2(width, height));
 
 	UINT createDeviceFlags = 0;
 #ifdef _DEBUG
@@ -642,39 +646,23 @@ void Render()
 	// Clear the back buffer
 	g_pImmediateContext->ClearRenderTargetView(g_pRenderTargetView, DirectX::Colors::MidnightBlue);
 
-	g_pImmediateContext->IASetInputLayout(GraphicsManager::GetInstance()->GetInputLayout(GraphicsManager::InputLayouts::POS_TEX));
-
-	BindQuadBuffers();
-
-	//Bind sampler
-	ID3D11SamplerState* psampler = GraphicsManager::GetInstance()->GetSampler(GraphicsManager::Samplers::LINEAR_WRAP);
-
-	g_pImmediateContext->PSSetSamplers(0, 1, &psampler);
-
-	//Update per frame CB
-	PerFrameCB perFrameCB;
-	XMStoreFloat4x4(&perFrameCB.viewProjection, XMMatrixTranspose(XMLoadFloat4x4(&g_pcamera->GetViewProjection())));
-
-	GraphicsManager::GetInstance()->m_pperFrameCB->Update(perFrameCB, g_pImmediateContext);
-
-	//Bind per frame CB
-	ID3D11Buffer* pbuffer = GraphicsManager::GetInstance()->m_pperFrameCB->GetBuffer();
-
-	g_pImmediateContext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pbuffer);
-	g_pImmediateContext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pbuffer);
-
 	RenderStruct renderStruct;
 	renderStruct.m_pcontext = g_pImmediateContext;
+
+	GraphicsManager::GetInstance()->GetSpriteBatch()->Begin();
 
 	GameManager* pgamemanager = GameManager::GetInstance();
 	pgamemanager->Render(renderStruct);
 
 	ParticleManager::GetInstance()->Render(renderStruct.m_pcontext);
-	UIManager::GetInstance()->Render(renderStruct);
 
 #if _DEBUG
 	DebugDrawManager::GetInstance()->Render(renderStruct);
 #endif
+
+	GraphicsManager::GetInstance()->GetSpriteBatch()->End();
+
+	UIManager::GetInstance()->Render(renderStruct);
 
 #if TOOL
 	g_ptoolBase->Render();

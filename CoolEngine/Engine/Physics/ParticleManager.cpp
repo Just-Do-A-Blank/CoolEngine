@@ -85,7 +85,7 @@ void ParticleManager::Render(ID3D11DeviceContext* pContext)
 	pContext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 0, nullptr);
 }
 
-void ParticleManager::AddSystem(Transform trans, float life, wstring albedoName, XMFLOAT2 vel, XMFLOAT2 accel, float partLife, float interval, float number, float randPos, float randVel, float randAccel, float randLife)
+void ParticleManager::AddSystem(Transform trans, float life, wstring albedoName, XMFLOAT2 vel, XMFLOAT2 accel, float partLife, float interval, float number, float randPos, float randVel, float randAccel, float randLife, int layer)
 {
 	for (unsigned int i = 0; i < PARTICLE_MANAGER_SIZE; ++i)
 	{
@@ -99,7 +99,7 @@ void ParticleManager::AddSystem(Transform trans, float life, wstring albedoName,
 				return;
 			}
 
-			m_pParticleSystems[i]->Initialise(trans, life, psRV, vel, accel, partLife, interval, number, randPos, randVel, randAccel, randLife);
+			m_pParticleSystems[i]->Initialise(trans, life, psRV, vel, accel, partLife, interval, number, randPos, randVel, randAccel, randLife, layer);
 			break;
 		}
 	}
@@ -113,13 +113,13 @@ void ParticleManager::AddSystem(ParticleSystem* system)
 		{
 			m_pParticleSystems[i]->Initialise(	*system->GetTrans(), system->GetLife(), system->GetTexture(), 
 												system->GetVelocity(), system->GetAccel(), system->GetParticleLife(), system->GetSpawnInterval(), system->GetSpawnNumber(),
-												system->GetRandomPos(), system->GetRandomVelocity(), system->GetRandomAccel(), system->GetRandomLife()						);
+												system->GetRandomPos(), system->GetRandomVelocity(), system->GetRandomAccel(), system->GetRandomLife(), system->GetLayer()						);
 			break;
 		}
 	}
 }
 
-void ParticleManager::AddParticle(Transform trans, float life, ID3D11ShaderResourceView* tex, XMFLOAT2 vel, XMFLOAT2 accel, float randPos, float randVel, float randAccel, float randLife)
+void ParticleManager::AddParticle(Transform trans, float life, ID3D11ShaderResourceView* tex, XMFLOAT2 vel, XMFLOAT2 accel, float randPos, float randVel, float randAccel, float randLife, int layer)
 {
 	for (unsigned int i = 0; i < PARTICLE_SIZE; ++i)
 	{
@@ -159,7 +159,7 @@ void ParticleManager::AddParticle(Transform trans, float life, ID3D11ShaderResou
 				}
 			}
 
-			m_pParticles[i]->Initialise(trans, vel, accel, life, tex);
+			m_pParticles[i]->Initialise(trans, vel, accel, life, tex, layer);
 
 			break;
 		}

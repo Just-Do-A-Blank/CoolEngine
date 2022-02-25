@@ -3,13 +3,17 @@
 #include "Engine/Managers/GameManager.h"
 #include "Engine/Graphics/Mesh.h"
 #include "Engine/ResourceDefines.h"
+#include "Engine/GameObjects/CameraGameObject.h"
 
 #include <iostream>
 #include <fstream>
+#include <SimpleMath.h>
 
-void GraphicsManager::Init(ID3D11Device* pdevice)
+void GraphicsManager::Init(ID3D11Device* pdevice, ID3D11DeviceContext* pcontext)
 {
 	m_pdevice = pdevice;
+
+	m_pBatch = unique_ptr<SpriteBatch>(new SpriteBatch(pcontext));
 
 	CreateQuadMesh();
 
@@ -209,6 +213,36 @@ void GraphicsManager::SetWindowDimensions(XMFLOAT2 dimensions)
 void GraphicsManager::SetHWND(HWND* hwnd)
 {
 	m_pHWND = hwnd;
+}
+
+void GraphicsManager::RenderQuad(ID3D11ShaderResourceView* psrv, XMFLOAT3 position, XMFLOAT3 scale, float rotation, int layer)
+{
+	XMFLOAT3 pixelCoords;
+	XMStoreFloat3(&pixelCoords, XMVector3Transform(XMLoadFloat3(&position), XMLoadFloat4x4(&GameManager::GetInstance()->GetCamera()->GetViewProjection())));
+
+	pixelCoords.x = (pixelCoords.x + 0.5f) * GraphicsManager::GetInstance()->GetWindowDimensions().x;
+	pixelCoords.y = (0.5f - pixelCoords.y) * GraphicsManager::GetInstance()->GetWindowDimensions().y;
+
+	ID3D11Resource* pResource = nullptr;
+	ID3D11Texture2D* pTexture2D = nullptr;
+	D3D11_TEXTURE2D_DESC desc;
+
+	psrv->GetResource(&pResource);
+	pResource->QueryInterface(&pTexture2D);
+	pTexture2D->GetDesc(&desc);
+
+	SimpleMath::Rectangle rect;
+	rect.x = pixelCoords.x;
+	rect.y = pixelCoords.y;
+	rect.width = scale.x;
+	rect.height = scale.y;
+
+	m_pBatch->Draw(psrv, rect, nullptr, Colors::White, XMConvertToRadians(rotation), XMFLOAT2(desc.Width * 0.5f, desc.Height * 0.5f), SpriteEffects_None, layer);
+}
+
+std::unique_ptr<DirectX::SpriteBatch>& GraphicsManager::GetSpriteBatch()
+{
+	return m_pBatch;
 }
 
 ID3D11VertexShader* GraphicsManager::GetVertexShader(wstring name) const

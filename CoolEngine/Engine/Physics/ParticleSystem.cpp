@@ -28,7 +28,7 @@ ParticleSystem::~ParticleSystem()
 
 }
 
-void ParticleSystem::Initialise(Transform trans, float life, ID3D11ShaderResourceView* tex)
+void ParticleSystem::Initialise(Transform trans, float life, ID3D11ShaderResourceView* tex, int layer)
 {
 	*m_transform = trans;
 	m_transform->UpdateMatrix();
@@ -37,11 +37,12 @@ void ParticleSystem::Initialise(Transform trans, float life, ID3D11ShaderResourc
 	m_timer = 0.0f;
 	m_isActive = true;
 	m_pTexture = tex;
+	m_layer = layer;
 }
 
-void ParticleSystem::Initialise(Transform trans, float life, ID3D11ShaderResourceView* tex, XMFLOAT2 vel, XMFLOAT2 accel, float partLife, float interval, int number, float randPos, float randVel, float randAccel, float randLife)
+void ParticleSystem::Initialise(Transform trans, float life, ID3D11ShaderResourceView* tex, XMFLOAT2 vel, XMFLOAT2 accel, float partLife, float interval, int number, float randPos, float randVel, float randAccel, float randLife, int layer)
 {
-	Initialise(trans, life, tex);
+	Initialise(trans, life, tex, layer);
 	SetProperties(vel, accel, partLife, interval, number);
 	SetRandomness(randPos, randVel, randAccel, randLife);
 }
@@ -70,7 +71,7 @@ void ParticleSystem::Update(const float dTime)
 	{
 		for (unsigned int i = 0; i < m_spawnNumber; ++i)
 		{
-			ParticleManager::GetInstance()->AddParticle(*m_transform, m_particleLife, m_pTexture, m_velocity, m_accel, m_positionRand, m_velocityRand, m_accelRand, m_lifeRand);
+			ParticleManager::GetInstance()->AddParticle(*m_transform, m_particleLife, m_pTexture, m_velocity, m_accel, m_positionRand, m_velocityRand, m_accelRand, m_lifeRand, m_layer);
 		}
 		m_timer = 0;
 	}

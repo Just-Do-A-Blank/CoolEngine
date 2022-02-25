@@ -32,38 +32,12 @@ const bool& RenderableGameObject::IsRenderable()
 
 void RenderableGameObject::Render(RenderStruct& renderStruct)
 {
-	//Update CB
-	PerInstanceCB cb;
-	XMStoreFloat4x4(&cb.world, XMMatrixTranspose(m_transform->GetWorldMatrix()));
-
-	GraphicsManager::GetInstance()->m_pperInstanceCB->Update(cb, renderStruct.m_pcontext);
-
-	ID3D11Buffer* pcbBuffer = GraphicsManager::GetInstance()->m_pperInstanceCB->GetBuffer();
-
-	//Bind CB and appropriate resources
-	renderStruct.m_pcontext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 1, &pcbBuffer);
-	renderStruct.m_pcontext->VSSetShader(m_pvertexShader, nullptr, 0);
-
-	renderStruct.m_pcontext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 1, &pcbBuffer);
-	renderStruct.m_pcontext->PSSetShader(m_ppixelShader, nullptr, 0);
-
-	if (m_pcurrentAnimation == nullptr || m_pcurrentAnimation->GetFrames() == nullptr)
+	if (m_palbedoSRV == nullptr)
 	{
-		renderStruct.m_pcontext->PSSetShaderResources(0, 1, &m_palbedoSRV);
-	}
-	else
-	{
-		ID3D11ShaderResourceView* psRV = m_pcurrentAnimation->GetCurrentFrame();
-
-		renderStruct.m_pcontext->PSSetShaderResources(0, 1, &psRV);
+		return;
 	}
 
-	//Draw object
-	renderStruct.m_pcontext->DrawIndexed(m_pmesh->GetIndexCount(), 0, 0);
-
-	//Unbind resources
-	renderStruct.m_pcontext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 0, nullptr);
-	renderStruct.m_pcontext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 0, nullptr);
+	GraphicsManager::GetInstance()->RenderQuad(m_palbedoSRV, m_transform->GetPosition(), m_transform->GetScale(), m_transform->GetRotation().z, m_layer);
 }
 
 void RenderableGameObject::Update()

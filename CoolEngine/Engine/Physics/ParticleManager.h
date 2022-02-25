@@ -48,7 +48,7 @@ public:
 	/// <param name="randVel"></param>
 	/// <param name="randAccel"></param>
 	/// <param name="randLife"></param>
-	void AddSystem(Transform trans, float life, wstring albedoName, XMFLOAT2 vel, XMFLOAT2 accel, float partLife, float interval, float number, float randPos, float randVel, float randAccel, float randLife);
+	void AddSystem(Transform trans, float life, wstring albedoName, XMFLOAT2 vel, XMFLOAT2 accel, float partLife, float interval, float number, float randPos, float randVel, float randAccel, float randLife, int layer);
 
 	/// <summary>
 	/// Find slot for a new system, and initialise it
@@ -67,7 +67,7 @@ public:
 	/// <param name="randVel"></param>
 	/// <param name="randAccel"></param>
 	/// <param name="randLife"></param>
-	void AddParticle(Transform trans, float life, ID3D11ShaderResourceView* tex, XMFLOAT2 vel, XMFLOAT2 accel, float randPos, float randVel, float randAccel, float randLife);
+	void AddParticle(Transform trans, float life, ID3D11ShaderResourceView* tex, XMFLOAT2 vel, XMFLOAT2 accel, float randPos, float randVel, float randAccel, float randLife, int layer);
 
 	// Getters
 	ParticleSystem* GetSystem(int index) 
