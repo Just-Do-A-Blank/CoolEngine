@@ -68,10 +68,12 @@ void UIManager::Render(RenderStruct& renderStruct)
 		return;
 	}
 
+#if EDITOR
 	if (m_pselectedUINode)
 	{
 		m_pselectedUINode->GameObject->ShowEngineUI();
 	}
+#endif
 
 	vector<GameUIComponent*> uiComponentList = m_pUISceneGraph->GetAllGameObjects();
 	for (int i = 0; i < uiComponentList.size(); ++i)

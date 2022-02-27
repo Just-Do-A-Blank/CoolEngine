@@ -5,9 +5,9 @@
 #include "Engine/Graphics/SpriteAnimation.h"
 #include "Engine/Graphics/ConstantBuffer.h"
 #include "Engine/Graphics/ConstantBuffers.h"
+#include "Engine/Includes/DirectXTK/SpriteBatch.h"
 
 #include <unordered_map>
-#include <SpriteBatch.h>
 
 #define QUAD_MESH_NAME L"quad"
 

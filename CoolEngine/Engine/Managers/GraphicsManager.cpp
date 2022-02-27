@@ -4,10 +4,10 @@
 #include "Engine/Graphics/Mesh.h"
 #include "Engine/ResourceDefines.h"
 #include "Engine/GameObjects/CameraGameObject.h"
+#include "Engine/Includes/DirectXTK/SimpleMath.h"
 
 #include <iostream>
 #include <fstream>
-#include <SimpleMath.h>
 
 void GraphicsManager::Init(ID3D11Device* pdevice, ID3D11DeviceContext* pcontext)
 {

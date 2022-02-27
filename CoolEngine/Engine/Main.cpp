@@ -2,7 +2,6 @@
 
 #include <io.h>
 #include <fcntl.h>
-#include <SpriteBatch.h>
 
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/Managers/AudioManager.h"
@@ -16,6 +15,7 @@
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/Managers/Events/EventObserver.h"
 #include "Engine/Helpers/Inputs.h"
+#include "Engine/Includes/DirectXTK/SpriteBatch.h"
 
 #include "Engine/EditorUI/EditorUI.h"
 
