@@ -208,7 +208,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	RenderableCollidableGameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj0Name);
 
-	XMFLOAT3 objectPos = XMFLOAT3(0, 0, 0.0f);
+	XMFLOAT3 objectPos = XMFLOAT3(0, -200.0f, 0.0f);
 	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
 	bool isCollision = true;
 
@@ -295,7 +295,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	EventManager::Instance()->AddClient(EventType::CollisionHold, &collisionObserver);
 	EventManager::Instance()->AddClient(EventType::CollisionExit, &collisionObserver);
 
-	XMFLOAT3 pos = XMFLOAT3(-200, 100, 5);
+	XMFLOAT3 pos = XMFLOAT3(-400, 250, 5);
 	XMFLOAT3 rot = XMFLOAT3(0, 0, 0);
 	XMFLOAT3 scale = XMFLOAT3(25, 25, 25);
 	Transform trans = Transform();
@@ -304,7 +304,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	trans.SetScale(scale);
 	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 1.0f, 0.2f, 3, 20, 90.0f, 0.0f, 0.2f, 0);
 
-	pos = XMFLOAT3(0, 100, 5);
+	pos = XMFLOAT3(0, 250, 5);
 	rot = XMFLOAT3(0, 0, 0);
 	scale = XMFLOAT3(25, 25, 25);
 	trans.SetPosition(pos);
@@ -312,7 +312,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	trans.SetScale(scale);
 	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 0.5f, 1.0f, 16, 100.0f, 0.0f, 0.0f, 0.2f, 2);
 
-	pos = XMFLOAT3(200, 100, 5);
+	pos = XMFLOAT3(400, 250, 5);
 	rot = XMFLOAT3(0, 0, 0);
 	scale = XMFLOAT3(25, 25, 25);
 	trans.SetPosition(pos);
