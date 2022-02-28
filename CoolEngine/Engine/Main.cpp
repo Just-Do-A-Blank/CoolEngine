@@ -649,7 +649,10 @@ void Render()
 	RenderStruct renderStruct;
 	renderStruct.m_pcontext = g_pImmediateContext;
 
-	GraphicsManager::GetInstance()->GetSpriteBatch()->Begin();
+	for (int i = 0; i < GraphicsManager::GetInstance()->GetNumLayers(); ++i)
+	{
+		GraphicsManager::GetInstance()->GetSpriteBatches()[i]->Begin();
+	}
 
 	GameManager* pgamemanager = GameManager::GetInstance();
 	pgamemanager->Render(renderStruct);
@@ -660,7 +663,10 @@ void Render()
 	DebugDrawManager::GetInstance()->Render(renderStruct);
 #endif
 
-	GraphicsManager::GetInstance()->GetSpriteBatch()->End();
+	for (int i = 0; i < GraphicsManager::GetInstance()->GetNumLayers(); ++i)
+	{
+		GraphicsManager::GetInstance()->GetSpriteBatches()[i]->End();
+	}
 
 	UIManager::GetInstance()->Render(renderStruct);
 

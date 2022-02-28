@@ -28,7 +28,7 @@ class GraphicsManager : public Singleton<GraphicsManager>
 	std::vector<ID3D11InputLayout*> m_inputLayouts;
 	std::vector<ID3D11SamplerState*> m_samplers;
 
-	int m_NumLayers = 5;
+	static const int s_kNumLayers = 5;
 
 	XMFLOAT2 m_windowDimensions = XMFLOAT2(1920, 1080);
 
@@ -52,7 +52,7 @@ public:
 
 	void RenderQuad(ID3D11ShaderResourceView* psrv, XMFLOAT3 position, XMFLOAT3 scale, float rotation, int layer);
 
-	std::unique_ptr<DirectX::SpriteBatch>& GetSpriteBatch();
+	std::unique_ptr<DirectX::SpriteBatch>* GetSpriteBatches();
 
 	//Getters
 	ID3D11VertexShader* GetVertexShader(wstring name) const;
@@ -114,6 +114,6 @@ private:
 
 	HWND* m_pHWND = nullptr;
 
-	std::unique_ptr<DirectX::SpriteBatch> m_pBatch = nullptr;
+	std::unique_ptr<DirectX::SpriteBatch> m_pBatches[GraphicsManager::s_kNumLayers] = { nullptr };
 };
 

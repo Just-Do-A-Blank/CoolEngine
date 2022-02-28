@@ -13,7 +13,10 @@ void GraphicsManager::Init(ID3D11Device* pdevice, ID3D11DeviceContext* pcontext)
 {
 	m_pdevice = pdevice;
 
-	m_pBatch = unique_ptr<SpriteBatch>(new SpriteBatch(pcontext));
+	for (int i = 0; i < s_kNumLayers; ++i)
+	{
+		m_pBatches[i] = unique_ptr<SpriteBatch>(new SpriteBatch(pcontext));
+	}
 
 	CreateQuadMesh();
 
@@ -237,15 +240,15 @@ void GraphicsManager::RenderQuad(ID3D11ShaderResourceView* psrv, XMFLOAT3 positi
 	rect.width = scale.x * 2.0f;
 	rect.height = scale.y * 2.0f;
 
-	m_pBatch->Draw(psrv, rect, nullptr, Colors::White, XMConvertToRadians(rotation), XMFLOAT2(desc.Width * 0.5f, desc.Height * 0.5f), SpriteEffects_None, layer);
+	m_pBatches[layer]->Draw(psrv, rect, nullptr, Colors::White, XMConvertToRadians(rotation), XMFLOAT2(desc.Width * 0.5f, desc.Height * 0.5f), SpriteEffects_None);
 
 	pResource->Release();
 	pTexture2D->Release();
 }
 
-std::unique_ptr<DirectX::SpriteBatch>& GraphicsManager::GetSpriteBatch()
+std::unique_ptr<DirectX::SpriteBatch>* GraphicsManager::GetSpriteBatches()
 {
-	return m_pBatch;
+	return m_pBatches;
 }
 
 ID3D11VertexShader* GraphicsManager::GetVertexShader(wstring name) const
@@ -321,7 +324,7 @@ SpriteAnimation GraphicsManager::GetAnimation(wstring name) const
 
 int GraphicsManager::GetNumLayers()
 {
-	return m_NumLayers;
+	return s_kNumLayers;
 }
 
 bool GraphicsManager::IsTextureLoaded(wstring filename)

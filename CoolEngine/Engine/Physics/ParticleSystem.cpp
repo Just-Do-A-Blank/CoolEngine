@@ -122,6 +122,8 @@ void ParticleSystem::CreateEngineUI()
 	ImGui::Spacing();
 
 	EditorUI::Texture("Texture", m_texFilepath, m_pTexture, 150.0f);
+	ImGui::Spacing();
+	EditorUI::DragInt("Layer", m_layer, 100.0f, 0.1f, 0, GraphicsManager::GetInstance()->GetNumLayers());
 
 	ImGui::Spacing();
 	ImGui::Separator();
