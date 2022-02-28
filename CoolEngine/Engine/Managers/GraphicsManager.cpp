@@ -217,11 +217,11 @@ void GraphicsManager::SetHWND(HWND* hwnd)
 
 void GraphicsManager::RenderQuad(ID3D11ShaderResourceView* psrv, XMFLOAT3 position, XMFLOAT3 scale, float rotation, int layer)
 {
-	XMFLOAT3 pixelCoords;
-	XMStoreFloat3(&pixelCoords, XMVector3Transform(XMLoadFloat3(&position), XMLoadFloat4x4(&GameManager::GetInstance()->GetCamera()->GetViewProjection())));
+	XMFLOAT4 pixelCoords;
+	XMStoreFloat4(&pixelCoords, XMVector2Transform(XMVectorSet(position.x, position.y, 0, 0), XMLoadFloat4x4(&GameManager::GetInstance()->GetCamera()->GetViewProjection())));
 
-	pixelCoords.x = (pixelCoords.x + 0.5f) * GraphicsManager::GetInstance()->GetWindowDimensions().x;
-	pixelCoords.y = (0.5f - pixelCoords.y) * GraphicsManager::GetInstance()->GetWindowDimensions().y;
+	pixelCoords.x = (pixelCoords.x + 1.0f) * m_windowDimensions.x * 0.5f;
+	pixelCoords.y = (1.0f - pixelCoords.y) * m_windowDimensions.y * 0.5f;
 
 	ID3D11Resource* pResource = nullptr;
 	ID3D11Texture2D* pTexture2D = nullptr;
@@ -238,6 +238,9 @@ void GraphicsManager::RenderQuad(ID3D11ShaderResourceView* psrv, XMFLOAT3 positi
 	rect.height = scale.y * 2.0f;
 
 	m_pBatch->Draw(psrv, rect, nullptr, Colors::White, XMConvertToRadians(rotation), XMFLOAT2(desc.Width * 0.5f, desc.Height * 0.5f), SpriteEffects_None, layer);
+
+	pResource->Release();
+	pTexture2D->Release();
 }
 
 std::unique_ptr<DirectX::SpriteBatch>& GraphicsManager::GetSpriteBatch()
