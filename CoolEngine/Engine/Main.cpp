@@ -65,7 +65,15 @@ ID3D11Device* g_pd3dDevice = nullptr;
 ID3D11DeviceContext* g_pImmediateContext = nullptr;
 IDXGISwapChain* g_pSwapChain = nullptr;
 ID3D11RenderTargetView* g_pRenderTargetView = nullptr;
+ID3D11ShaderResourceView* g_pRenderToTexture = nullptr;
 ID3D11RasterizerState* g_prasterState = nullptr;
+
+
+ID3D11Texture2D* g_pRTTRrenderTargetTexture;
+ID3D11RenderTargetView* g_pRTTRenderTargetView;
+ID3D11ShaderResourceView* g_pRTTShaderResourceView;
+
+
 
 CameraGameObject* g_pcamera = nullptr;
 PlayerGameObject* g_pplayer = nullptr;
@@ -552,6 +560,47 @@ inline HRESULT InitDevice()
 	if (FAILED(hr))
 		return hr;
 
+	D3D11_TEXTURE2D_DESC textureDesc;
+	ZeroMemory(&textureDesc, sizeof(textureDesc));
+	textureDesc.Width = width;
+	textureDesc.Height = height;
+	textureDesc.MipLevels = 1;
+	textureDesc.ArraySize = 1;
+	textureDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+	textureDesc.SampleDesc.Count = 1;
+	textureDesc.Usage = D3D11_USAGE_DEFAULT;
+	textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	textureDesc.CPUAccessFlags = 0;
+	textureDesc.MiscFlags = 0;
+	hr = g_pd3dDevice->CreateTexture2D(&textureDesc, NULL, &g_pRTTRrenderTargetTexture);
+
+	if (FAILED(hr))
+		return hr;
+
+	// Setup the description of the render target view.
+	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
+	renderTargetViewDesc.Format = textureDesc.Format;
+	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+	renderTargetViewDesc.Texture2D.MipSlice = 0;
+
+	hr = g_pd3dDevice->CreateRenderTargetView(g_pRTTRrenderTargetTexture, &renderTargetViewDesc, &g_pRTTRenderTargetView);
+	g_pRTTRrenderTargetTexture->Release();
+
+	if (FAILED(hr))
+		return hr;
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
+	shaderResourceViewDesc.Format = textureDesc.Format;
+	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
+	shaderResourceViewDesc.Texture2D.MipLevels = 1;
+
+	// Create the shader resource view.
+	hr = g_pd3dDevice->CreateShaderResourceView(g_pRTTRrenderTargetTexture, &shaderResourceViewDesc, &g_pRTTShaderResourceView);
+
+	if (FAILED(hr))
+		return hr;
+
 	g_pImmediateContext->OMSetRenderTargets(1, &g_pRenderTargetView, nullptr);
 
 	// Setup the viewport
@@ -641,10 +690,38 @@ void Render()
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+
+	//Create Dockspace
+	ImGui::DockSpaceOverViewport();
 #endif
 
 	// Clear the back buffer
 	g_pImmediateContext->ClearRenderTargetView(g_pRenderTargetView, DirectX::Colors::MidnightBlue);
+
+	//Set current render target to render to texture target.
+	g_pImmediateContext->OMSetRenderTargets(1, &g_pRTTRenderTargetView, nullptr);
+	g_pImmediateContext->ClearRenderTargetView(g_pRTTRenderTargetView, DirectX::Colors::MidnightBlue);
+
+	g_pImmediateContext->IASetInputLayout(GraphicsManager::GetInstance()->GetInputLayout(GraphicsManager::InputLayouts::POS_TEX));
+
+	BindQuadBuffers();
+
+	//Bind sampler
+	ID3D11SamplerState* psampler = GraphicsManager::GetInstance()->GetSampler(GraphicsManager::Samplers::LINEAR_WRAP);
+
+	g_pImmediateContext->PSSetSamplers(0, 1, &psampler);
+
+	//Update per frame CB
+	PerFrameCB perFrameCB;
+	XMStoreFloat4x4(&perFrameCB.viewProjection, XMMatrixTranspose(XMLoadFloat4x4(&g_pcamera->GetViewProjection())));
+
+	GraphicsManager::GetInstance()->m_pperFrameCB->Update(perFrameCB, g_pImmediateContext);
+
+	//Bind per frame CB
+	ID3D11Buffer* pbuffer = GraphicsManager::GetInstance()->m_pperFrameCB->GetBuffer();
+
+	g_pImmediateContext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pbuffer);
+	g_pImmediateContext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pbuffer);
 
 	RenderStruct renderStruct;
 	renderStruct.m_pcontext = g_pImmediateContext;
@@ -679,6 +756,18 @@ void Render()
 #endif
 
 #if EDITOR
+	ImGuiWindowFlags viewportWindowFlags = 0;
+	viewportWindowFlags |= ImGuiWindowFlags_HorizontalScrollbar;
+	ImGui::Begin("Viewport", nullptr, viewportWindowFlags);
+
+	//Pass everything rendered till this point into ImGuiImage
+	XMFLOAT2 dimension = GraphicsManager::GetInstance()->GetWindowDimensions();
+	ImGui::Image(g_pRTTShaderResourceView, ImVec2(dimension.x, dimension.y));
+	ImGui::End();
+
+	//Swap render target to back buffer
+	g_pImmediateContext->OMSetRenderTargets(1, &g_pRenderTargetView, nullptr);
+	g_pImmediateContext->ClearRenderTargetView(g_pRenderTargetView, DirectX::Colors::MidnightBlue);
 	ImGui::Render();
 
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());

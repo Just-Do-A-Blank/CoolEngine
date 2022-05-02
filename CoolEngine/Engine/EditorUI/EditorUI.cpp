@@ -15,7 +15,7 @@ void EditorUI::InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, H
 	ImGuiIO& io = ImGui::GetIO();
 	io.WantCaptureMouse = true;
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
-	//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
+	io.ConfigWindowsMoveFromTitleBarOnly = true;
 
 	float fontSize = 18.0f;
 	io.FontDefault = io.Fonts->AddFontFromFileTTF("Resources/UI/Fonts/OpenSans-Regular.ttf", fontSize);
@@ -72,7 +72,7 @@ void EditorUI::DrawSceneGraphWindow()
 
 	GameManager* pgameManager = GameManager::GetInstance();
 	static int selected = -1;
-	
+
 	TreeNode<GameObject>* prootNode = pgameManager->GetRootTreeNode();
 
 	m_base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
