@@ -118,8 +118,9 @@ void FileIO::LoadMultipleParticles(json file)
 		float randVel = particleSystemData.at(i)["RandVelocity"];
 		float randAcc = particleSystemData.at(i)["RandAcceleration"];
 		float randLife = particleSystemData.at(i)["RandLife"];
+		int layer = particleSystemData.at(i)["Layer"];
 
-		ParticleManager::GetInstance()->AddSystem(t, life, ToWstring(st), velocity, acceleration, particleLife, interval, count, randPos, randVel, randAcc, randLife);
+		ParticleManager::GetInstance()->AddSystem(t, life, ToWstring(st), velocity, acceleration, particleLife, interval, count, randPos, randVel, randAcc, randLife, layer);
 	}
 }
 
@@ -1090,6 +1091,7 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "ParticleLife" ,  particleSys->GetParticleLife()});
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "RandPosition" ,  particleSys->GetRandomPos() });
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "AlbedoLocation" ,  ToString(GrabAlbedoName(particleSys->m_pTexture)) });
+				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "Layer" ,  particleSys->GetLayer() });
 
 
 

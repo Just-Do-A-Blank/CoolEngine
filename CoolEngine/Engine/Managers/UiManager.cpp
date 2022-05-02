@@ -3,6 +3,7 @@
 #include "Engine/GameUI/UICanvas.h"
 #include "Engine/GameUI/TextComponent.h"
 #include "Engine/GameUI/ImageComponent.h"
+#include "Engine/Graphics/Mesh.h"
 
 void UIManager::Init(ID3D11Device* pDevice)
 {
@@ -68,10 +69,27 @@ void UIManager::Render(RenderStruct& renderStruct)
 		return;
 	}
 
+#if EDITOR
 	if (m_pselectedUINode)
 	{
 		m_pselectedUINode->GameObject->ShowEngineUI();
 	}
+#endif
+
+	Mesh* pMesh = GraphicsManager::GetInstance()->GetMesh(QUAD_MESH_NAME);
+
+	ID3D11Buffer* pVertexBuffer = pMesh->GetVertexBuffer();
+	UINT stride = pMesh->GetVBStride();
+	UINT offset = pMesh->GetVBOffset();
+
+	renderStruct.m_pcontext->IASetInputLayout(GraphicsManager::GetInstance()->GetInputLayout(GraphicsManager::InputLayouts::POS_TEX));
+
+	renderStruct.m_pcontext->IASetVertexBuffers(0, 1, &pVertexBuffer, &stride, &offset);
+	renderStruct.m_pcontext->IASetIndexBuffer(pMesh->GetIndexBuffer(), DXGI_FORMAT_R16_UINT, 0);
+
+	ID3D11Buffer* pperFrame = GraphicsManager::GetInstance()->m_pperFrameCB->GetBuffer();
+
+	renderStruct.m_pcontext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pperFrame);
 
 	vector<GameUIComponent*> uiComponentList = m_pUISceneGraph->GetAllGameObjects();
 	for (int i = 0; i < uiComponentList.size(); ++i)

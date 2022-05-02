@@ -22,6 +22,7 @@ void ImageComponent::Init(wstring textureFilePath)
 	m_ptexture = psRV;
 }
 
+#if EDITOR
 void ImageComponent::CreateEngineUI()
 {
 	GameUIComponent::CreateEngineUI();
@@ -34,3 +35,4 @@ void ImageComponent::CreateEngineUI()
 
 	ImGui::Spacing();
 }
+#endif

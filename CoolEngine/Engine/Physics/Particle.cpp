@@ -35,19 +35,7 @@ void Particle::Update(const float dTime)
 
 void Particle::Render(ID3D11DeviceContext* pContext, Mesh* mesh)
 {
-	// Update CB
-	PerInstanceCB cb;
-	XMStoreFloat4x4(&cb.world, XMMatrixTranspose(m_transform.GetWorldMatrix()));
-
-	GraphicsManager::GetInstance()->m_pperInstanceCB->Update(cb, pContext);
-	ID3D11Buffer* pcbBuffer = GraphicsManager::GetInstance()->m_pperInstanceCB->GetBuffer();
-
-	pContext->PSSetShaderResources(0, 1, &m_pTexture);
-	pContext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 1, &pcbBuffer);
-	pContext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 1, &pcbBuffer);
-
-	// Draw object
-	pContext->DrawIndexed(mesh->GetIndexCount(), 0, 0);
+	GraphicsManager::GetInstance()->RenderQuad(m_pTexture, m_transform.GetPosition(), m_transform.GetScale(), m_transform.GetRotation().z, m_layer);
 }
 
 void Particle::Disable()
@@ -55,13 +43,13 @@ void Particle::Disable()
 	m_isActive = false;
 }
 
-void Particle::Initialise(Transform trans, XMFLOAT2 vel, XMFLOAT2 accel, float life, ID3D11ShaderResourceView* tex)
+void Particle::Initialise(Transform trans, XMFLOAT2 vel, XMFLOAT2 accel, float life, ID3D11ShaderResourceView* tex, int layer)
 {
 	m_transform = trans;
 	m_velocity = vel;
 	m_accel = accel;
-
 	m_lifetime = life;
 	m_isActive = true;
 	m_pTexture = tex;
+	m_layer = layer;
 }

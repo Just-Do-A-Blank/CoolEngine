@@ -88,6 +88,9 @@
     <Filter Include="Engine\Includes\RapidXML">
       <UniqueIdentifier>{7d9ce4e5-0879-48c1-b50e-4e48e6d1a00d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Includes\DirectXTK">
+      <UniqueIdentifier>{6232a7dd-79ec-414a-a6a5-86f0a9a5aec9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -318,6 +321,66 @@
     <ClInclude Include="Engine\Tools\InGameUITool.h">
       <Filter>Engine\Tools</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Includes\DirectXTK\Audio.h">
+      <Filter>Engine\Includes\DirectXTK</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\DirectXTK\BufferHelpers.h">
+      <Filter>Engine\Includes\DirectXTK</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\DirectXTK\CommonStates.h">
+      <Filter>Engine\Includes\DirectXTK</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\DirectXTK\DDSTextureLoader.h">
+      <Filter>Engine\Includes\DirectXTK</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\DirectXTK\DirectXHelpers.h">
+      <Filter>Engine\Includes\DirectXTK</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\DirectXTK\Effects.h">
+      <Filter>Engine\Includes\DirectXTK</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\DirectXTK\GamePad.h">
+      <Filter>Engine\Includes\DirectXTK</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\DirectXTK\GeometricPrimitive.h">
+      <Filter>Engine\Includes\DirectXTK</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\DirectXTK\GraphicsMemory.h">
+      <Filter>Engine\Includes\DirectXTK</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\DirectXTK\Keyboard.h">
+      <Filter>Engine\Includes\DirectXTK</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\DirectXTK\Model.h">
+      <Filter>Engine\Includes\DirectXTK</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\DirectXTK\Mouse.h">
+      <Filter>Engine\Includes\DirectXTK</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\DirectXTK\PostProcess.h">
+      <Filter>Engine\Includes\DirectXTK</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\DirectXTK\PrimitiveBatch.h">
+      <Filter>Engine\Includes\DirectXTK</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\DirectXTK\ScreenGrab.h">
+      <Filter>Engine\Includes\DirectXTK</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\DirectXTK\SimpleMath.h">
+      <Filter>Engine\Includes\DirectXTK</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\DirectXTK\SpriteBatch.h">
+      <Filter>Engine\Includes\DirectXTK</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\DirectXTK\SpriteFont.h">
+      <Filter>Engine\Includes\DirectXTK</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\DirectXTK\VertexTypes.h">
+      <Filter>Engine\Includes\DirectXTK</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\DirectXTK\WICTextureLoader.h">
+      <Filter>Engine\Includes\DirectXTK</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -493,5 +556,11 @@
     <FxCompile Include="Engine\Graphics\Shaders\TextPixel.hlsl">
       <Filter>Engine\Graphics\Shaders</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="Engine\Includes\DirectXTK\SimpleMath.inl">
+      <Filter>Engine\Includes\DirectXTK</Filter>
+    </None>
   </ItemGroup>
 </Project>

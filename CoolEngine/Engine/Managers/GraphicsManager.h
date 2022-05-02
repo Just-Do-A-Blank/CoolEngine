@@ -5,6 +5,7 @@
 #include "Engine/Graphics/SpriteAnimation.h"
 #include "Engine/Graphics/ConstantBuffer.h"
 #include "Engine/Graphics/ConstantBuffers.h"
+#include "Engine/Includes/DirectXTK/SpriteBatch.h"
 
 #include <unordered_map>
 
@@ -27,7 +28,7 @@ class GraphicsManager : public Singleton<GraphicsManager>
 	std::vector<ID3D11InputLayout*> m_inputLayouts;
 	std::vector<ID3D11SamplerState*> m_samplers;
 
-	int m_NumLayers = 5;
+	static const int s_kNumLayers = 5;
 
 	XMFLOAT2 m_windowDimensions = XMFLOAT2(1920, 1080);
 
@@ -37,7 +38,7 @@ public:
 	ConstantBuffer<DebugPerInstanceCB>* m_pdebugPerInstanceCB = nullptr;
 	ConstantBuffer<TextPerInstanceCB>* m_ptextPerInstanceCB = nullptr;
 
-	void Init(ID3D11Device* pdevice);
+	void Init(ID3D11Device* pdevice, ID3D11DeviceContext* pcontext);
 
 	bool CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel);
 
@@ -48,6 +49,10 @@ public:
 	void SetWindowDimensions(XMFLOAT2 dimensions);
 
 	void SetHWND(HWND* hwnd);
+
+	void RenderQuad(ID3D11ShaderResourceView* psrv, XMFLOAT3 position, XMFLOAT3 scale, float rotation, int layer);
+
+	std::unique_ptr<DirectX::SpriteBatch>* GetSpriteBatches();
 
 	//Getters
 	ID3D11VertexShader* GetVertexShader(wstring name) const;
@@ -108,5 +113,7 @@ private:
 	ID3D11Device* m_pdevice = nullptr;
 
 	HWND* m_pHWND = nullptr;
+
+	std::unique_ptr<DirectX::SpriteBatch> m_pBatches[GraphicsManager::s_kNumLayers] = { nullptr };
 };
 

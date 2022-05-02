@@ -3,13 +3,20 @@
 #include "Engine/Managers/GameManager.h"
 #include "Engine/Graphics/Mesh.h"
 #include "Engine/ResourceDefines.h"
+#include "Engine/GameObjects/CameraGameObject.h"
+#include "Engine/Includes/DirectXTK/SimpleMath.h"
 
 #include <iostream>
 #include <fstream>
 
-void GraphicsManager::Init(ID3D11Device* pdevice)
+void GraphicsManager::Init(ID3D11Device* pdevice, ID3D11DeviceContext* pcontext)
 {
 	m_pdevice = pdevice;
+
+	for (int i = 0; i < s_kNumLayers; ++i)
+	{
+		m_pBatches[i] = unique_ptr<SpriteBatch>(new SpriteBatch(pcontext));
+	}
 
 	CreateQuadMesh();
 
@@ -211,6 +218,39 @@ void GraphicsManager::SetHWND(HWND* hwnd)
 	m_pHWND = hwnd;
 }
 
+void GraphicsManager::RenderQuad(ID3D11ShaderResourceView* psrv, XMFLOAT3 position, XMFLOAT3 scale, float rotation, int layer)
+{
+	XMFLOAT4 pixelCoords;
+	XMStoreFloat4(&pixelCoords, XMVector2Transform(XMVectorSet(position.x, position.y, 0, 0), XMLoadFloat4x4(&GameManager::GetInstance()->GetCamera()->GetViewProjection())));
+
+	pixelCoords.x = (pixelCoords.x + 1.0f) * m_windowDimensions.x * 0.5f;
+	pixelCoords.y = (1.0f - pixelCoords.y) * m_windowDimensions.y * 0.5f;
+
+	ID3D11Resource* pResource = nullptr;
+	ID3D11Texture2D* pTexture2D = nullptr;
+	D3D11_TEXTURE2D_DESC desc;
+
+	psrv->GetResource(&pResource);
+	pResource->QueryInterface(&pTexture2D);
+	pTexture2D->GetDesc(&desc);
+
+	SimpleMath::Rectangle rect;
+	rect.x = pixelCoords.x;
+	rect.y = pixelCoords.y;
+	rect.width = scale.x * 2.0f;
+	rect.height = scale.y * 2.0f;
+
+	m_pBatches[layer]->Draw(psrv, rect, nullptr, Colors::White, XMConvertToRadians(rotation), XMFLOAT2(desc.Width * 0.5f, desc.Height * 0.5f), SpriteEffects_None);
+
+	pResource->Release();
+	pTexture2D->Release();
+}
+
+std::unique_ptr<DirectX::SpriteBatch>* GraphicsManager::GetSpriteBatches()
+{
+	return m_pBatches;
+}
+
 ID3D11VertexShader* GraphicsManager::GetVertexShader(wstring name) const
 {
 	if (m_vertexShaders.count(name) == 0)
@@ -284,7 +324,7 @@ SpriteAnimation GraphicsManager::GetAnimation(wstring name) const
 
 int GraphicsManager::GetNumLayers()
 {
-	return m_NumLayers;
+	return s_kNumLayers;
 }
 
 bool GraphicsManager::IsTextureLoaded(wstring filename)

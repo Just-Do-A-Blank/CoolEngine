@@ -17,6 +17,8 @@ private:
 	float m_lifetime;
 	bool m_isActive;
 
+	int m_layer;
+
 public:
 	Particle();
 	~Particle();
@@ -41,7 +43,7 @@ public:
 	/// <param name="vel"></param>
 	/// <param name="accel"></param>
 	/// <param name="life"></param>
-	void Initialise(Transform trans, XMFLOAT2 vel, XMFLOAT2 accel, float life, ID3D11ShaderResourceView* tex);
+	void Initialise(Transform trans, XMFLOAT2 vel, XMFLOAT2 accel, float life, ID3D11ShaderResourceView* tex, int layer);
 
 	// Getters
 	bool GetActive() 
@@ -72,6 +74,11 @@ public:
 	ID3D11ShaderResourceView* GetTexture()
 	{
 		return m_pTexture;
+	}
+
+	int GetLayer()
+	{
+		return m_layer;
 	}
 
 	// Setters
@@ -108,5 +115,10 @@ public:
 	void SetTexture(ID3D11ShaderResourceView* tex)
 	{
 		m_pTexture = tex;
+	}
+
+	void SetLayer(int layer)
+	{
+		m_layer = layer;
 	}
 };

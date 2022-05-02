@@ -15,6 +15,7 @@
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/Managers/Events/EventObserver.h"
 #include "Engine/Helpers/Inputs.h"
+#include "Engine/Includes/DirectXTK/SpriteBatch.h"
 
 #include "Engine/EditorUI/EditorUI.h"
 
@@ -131,7 +132,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	AudioManager::GetInstance()->SetListenerPosition(XMFLOAT3(0, 0, 0));
 
-	GraphicsManager::GetInstance()->Init(g_pd3dDevice);
+	GraphicsManager::GetInstance()->Init(g_pd3dDevice, g_pImmediateContext);
 	GraphicsManager::GetInstance()->SetHWND(&g_hWnd);
 
 	g_inputController = new Inputs();
@@ -164,6 +165,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//Create scene
 	GameManager* pgameManager = GameManager::GetInstance();
 	pgameManager->CreateScene("TestScene");
+	pgameManager->SelectSceneUsingIdentifier("TestScene");
 	pgameManager->SelectSceneUsingIdentifier("TestScene");
 
 #if TOOL
@@ -308,7 +310,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	trans.SetPosition(pos);
 	trans.SetRotation(rot);
 	trans.SetScale(scale);
-	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 1.0f, 0.2f, 3, 20, 90.0f, 0.0f, 0.2f);
+	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 1.0f, 0.2f, 3, 20, 90.0f, 0.0f, 0.2f, 0);
 
 	pos = XMFLOAT3(0, 250, 5);
 	rot = XMFLOAT3(0, 0, 0);
@@ -316,7 +318,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	trans.SetPosition(pos);
 	trans.SetRotation(rot);
 	trans.SetScale(scale);
-	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 0.5f, 1.0f, 16, 100.0f, 0.0f, 0.0f, 0.2f);
+	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 0.5f, 1.0f, 16, 100.0f, 0.0f, 0.0f, 0.2f, 2);
 
 	pos = XMFLOAT3(400, 250, 5);
 	rot = XMFLOAT3(0, 0, 0);
@@ -324,7 +326,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	trans.SetPosition(pos);
 	trans.SetRotation(rot);
 	trans.SetScale(scale);
-	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { -100,150 }, { 300,-75 }, 2.0f, 0.25f, 3, 100.0f, 25.0f, 25.0f, 0.1f);
+	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { -100,150 }, { 300,-75 }, 2.0f, 0.25f, 3, 100.0f, 25.0f, 25.0f, 0.1f, 1);
 
 	GameManager::GetInstance()->GetTimer()->Tick();
 
@@ -457,6 +459,8 @@ inline HRESULT InitDevice()
 	UINT width = rc.right - rc.left;
 	UINT height = rc.bottom - rc.top;
 
+	GraphicsManager::GetInstance()->SetWindowDimensions(XMFLOAT2(width, height));
+
 	UINT createDeviceFlags = 0;
 #ifdef _DEBUG
 	createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
@@ -493,10 +497,15 @@ inline HRESULT InitDevice()
 		}
 
 		if (SUCCEEDED(hr))
+		{
 			break;
+		}
 	}
+
 	if (FAILED(hr))
+	{
 		return hr;
+	}
 
 	// Obtain DXGI factory from device (since we used nullptr for pAdapter above)
 	IDXGIFactory* dxgiFactory = nullptr;
@@ -722,15 +731,26 @@ void Render()
 	RenderStruct renderStruct;
 	renderStruct.m_pcontext = g_pImmediateContext;
 
+	for (int i = 0; i < GraphicsManager::GetInstance()->GetNumLayers(); ++i)
+	{
+		GraphicsManager::GetInstance()->GetSpriteBatches()[i]->Begin();
+	}
+
 	GameManager* pgamemanager = GameManager::GetInstance();
 	pgamemanager->Render(renderStruct);
 
 	ParticleManager::GetInstance()->Render(renderStruct.m_pcontext);
-	UIManager::GetInstance()->Render(renderStruct);
 
 #if _DEBUG
 	DebugDrawManager::GetInstance()->Render(renderStruct);
 #endif
+
+	for (int i = 0; i < GraphicsManager::GetInstance()->GetNumLayers(); ++i)
+	{
+		GraphicsManager::GetInstance()->GetSpriteBatches()[i]->End();
+	}
+
+	UIManager::GetInstance()->Render(renderStruct);
 
 #if TOOL
 	g_ptoolBase->Render();
@@ -740,8 +760,8 @@ void Render()
 #endif
 #endif
 
-#if EDITOR	
-	ImGuiWindowFlags viewportWindowFlags = 0; 
+#if EDITOR
+	ImGuiWindowFlags viewportWindowFlags = 0;
 	viewportWindowFlags |= ImGuiWindowFlags_HorizontalScrollbar;
 	ImGui::Begin("Viewport", nullptr, viewportWindowFlags);
 

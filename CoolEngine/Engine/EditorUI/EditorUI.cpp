@@ -72,7 +72,7 @@ void EditorUI::DrawSceneGraphWindow()
 
 	GameManager* pgameManager = GameManager::GetInstance();
 	static int selected = -1;
-	
+
 	TreeNode<GameObject>* prootNode = pgameManager->GetRootTreeNode();
 
 	m_base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
