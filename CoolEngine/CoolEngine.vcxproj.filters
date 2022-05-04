@@ -381,6 +381,9 @@
     <ClInclude Include="Engine\Includes\DirectXTK\WICTextureLoader.h">
       <Filter>Engine\Includes\DirectXTK</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\EditorUI\ContentBrowser.h">
+      <Filter>Engine\EditorUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -538,6 +541,9 @@
     </ClCompile>
     <ClCompile Include="Engine\Tools\InGameUITool.cpp">
       <Filter>Engine\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\EditorUI\ContentBrowser.cpp">
+      <Filter>Engine\EditorUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
