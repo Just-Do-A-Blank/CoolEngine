@@ -5,6 +5,7 @@
 #include "Engine/ResourceDefines.h"
 #include "Engine/Graphics/SpriteAnimation.h"
 #include "Engine/Managers/SceneGraph.h"
+#include "Engine/EditorUI/ContentBrowser.h"
 
 #define IMGUI_LEFT_LABEL(func, label, ...) (ImGui::TextUnformatted(label), ImGui::SameLine(), func("##" label, __VA_ARGS__))
 #define DEFAULT_IMGUI_IMAGE_SIZE ImVec2(256, 256)
@@ -45,6 +46,8 @@ private:
 	string m_animUpdateName = "";
 
 	GameObjectType m_createObjectType;
+	ContentBrowser m_contentBrowser;
+
 
 	void DrawSceneGraphWindow();
 	void DrawSceneManagementWindow();

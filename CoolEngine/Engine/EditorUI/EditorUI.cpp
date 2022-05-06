@@ -51,6 +51,8 @@ void EditorUI::DrawEditorUI(ID3D11Device* pdevice)
 		GameManager::GetInstance()->GetSelectedGameObject()->ShowEngineUI();
 	}
 
+	m_contentBrowser.Draw();
+
 }
 
 void EditorUI::Update()
@@ -453,7 +455,7 @@ void EditorUI::DragFloat3(const string& label, XMFLOAT3& values, const float& co
 
 	ImGui::Columns(1);
 
-	ImGui::PopID();
+ImGui::PopID();
 }
 
 void EditorUI::DragInt(const string& label, int& value, const float& columnWidth, const float& speed, const float& min, const float& max)
@@ -549,6 +551,47 @@ bool EditorUI::Texture(const string& label, wstring& filepath, ID3D11ShaderResou
 
 			interacted = true;
 		}
+	}
+
+	if(ImGui::BeginDragDropTarget())
+	{
+		const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowser", ImGuiDragDropFlags_SourceAllowNullID);
+
+		if (ppayload != nullptr)
+		{
+			std::string tempString = std::string((char*)ppayload->Data, ppayload->DataSize / sizeof(char));
+			std::wstring wsfilepath = std::wstring(tempString.begin(), tempString.end());
+
+			//Check if that path points to an asset in the resources folder
+			int index = wsfilepath.find(L"Resources");
+
+			if (index == -1)
+			{
+				LOG("The resource specified isn't stored in a resource folder!");
+			}
+			else
+			{
+				//Get relative file path
+				wsfilepath = wsfilepath.substr(index);
+
+				//Load texture if not loaded
+				bool bloaded = true;
+
+				if (GraphicsManager::GetInstance()->IsTextureLoaded(wsfilepath) == false)
+				{
+					bloaded = GraphicsManager::GetInstance()->LoadTextureFromFile(wsfilepath);
+				}
+
+				if (bloaded == true)
+				{
+					psrv = GraphicsManager::GetInstance()->GetShaderResourceView(wsfilepath);
+				}
+
+				interacted = true;
+			}
+		}
+
+		ImGui::EndDragDropTarget();
 	}
 
 	ImGui::PopItemWidth();

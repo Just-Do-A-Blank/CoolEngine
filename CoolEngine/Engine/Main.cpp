@@ -120,12 +120,12 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		return 0;
 	}
 
+	GameManager::GetInstance()->Init();
+
 #if EDITOR
 	g_peditorUI = new EditorUI(g_pd3dDevice);
 	g_peditorUI->InitIMGUI(g_pImmediateContext, g_pd3dDevice, &g_hWnd);
 #endif
-
-	GameManager::GetInstance()->Init();
 
 	//Setup audio stuff
 	AudioManager::GetInstance()->Init();
