@@ -27,7 +27,6 @@ void EventManager::AddClient(EventType eventid, Observer* client)
 	if (!IsRegistered(eventid, client))
 	{
 		m_listenerClients[eventid].push_back(client);
-		//m_listenerClients.insert(make_pair(eventid, client));
 	}
 	
 	else //Outputs that there is a duplicate and doesnt add it to the list of m_listenerClients since it has no value to have 2
