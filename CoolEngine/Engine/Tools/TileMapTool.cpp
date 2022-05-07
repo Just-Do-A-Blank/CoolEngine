@@ -64,6 +64,8 @@ void TileMapTool::Render()
 		m_ptileMap->CreateEngineUI();
 
 		ImGui::End();
+
+		m_contentBrowser.Draw();
 	}
 }
 

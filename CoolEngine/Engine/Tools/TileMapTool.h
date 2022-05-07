@@ -5,6 +5,7 @@
 #include "ToolBase.h"
 
 #include "Engine/Managers/Events/EventObserver.h"
+#include "Engine/EditorUI/ContentBrowser.h"
 
 class TileMap;
 class Tile;
@@ -38,6 +39,8 @@ private:
 
 	DirectX::XMINT2 m_selectedTile = DirectX::XMINT2(-1, -1);
 	DirectX::XMINT2 m_CopiedTile = DirectX::XMINT2(-1, -1);
+
+	ContentBrowser m_contentBrowser;
 };
 
 #endif
