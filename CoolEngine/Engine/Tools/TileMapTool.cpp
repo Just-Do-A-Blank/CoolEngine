@@ -63,12 +63,14 @@ void TileMapTool::Handle(Event* e)
 	if (((MouseButtonPressedEvent*)e)->GetButton() == VK_LBUTTON)
 	{
 		POINT point;
-
 		GetCursorPos(&point);
 		ScreenToClient(*GraphicsManager::GetInstance()->GetHWND(), &point);
 
-		float x = ((2.0f * point.x) / GraphicsManager::GetInstance()->GetWindowDimensions().x) - 1.0f;
-		float y = 1.0f - ((2.0f * point.y) / GraphicsManager::GetInstance()->GetWindowDimensions().y);
+		DirectX::XMFLOAT2 relativePos = EditorUI::GetViewportPosition();
+		relativePos = DirectX::XMFLOAT2(point.x - relativePos.x, point.y - relativePos.y);
+
+		float x = ((2.0f * relativePos.x) / GraphicsManager::GetInstance()->GetWindowDimensions().x) - 1.0f;
+		float y = 1.0f - ((2.0f * relativePos.y) / GraphicsManager::GetInstance()->GetWindowDimensions().y);
 
 		XMFLOAT2 clickPosWorld;
 
