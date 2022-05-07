@@ -16,7 +16,10 @@ SpriteAnimation::SpriteAnimation(std::vector<Frame>* frames)
 
 	m_currentFrameIndex = 0;
 
-	m_timeMilestone = GameManager::GetInstance()->GetTimer()->GameTime() + m_pframes->at(m_currentFrameIndex).m_frameTime;
+	if (frames != nullptr)
+	{
+		m_timeMilestone = GameManager::GetInstance()->GetTimer()->GameTime() + m_pframes->at(m_currentFrameIndex).m_frameTime;
+	}
 }
 
 void SpriteAnimation::SetFrames(std::vector<Frame>* pframes)

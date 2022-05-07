@@ -78,20 +78,22 @@ void Tile::CreateEngineUI()
 	{
 		if (EditorUI::Animation("Animation", m_animPath, nullptr) == true)
 		{
-			AddAnimation("default", m_animPath);
-			PlayAnimation("default");
-
-			s_ptileMap->AddAnimPath(this, m_animPath);
+			if (AddAnimation("default", m_animPath) == true)
+			{
+				PlayAnimation("default");
+				s_ptileMap->AddAnimPath(this, m_animPath);
+			}
 		}
 	}
 	else
 	{
 		if (EditorUI::Animation("Animation", m_animPath, m_pcurrentAnimation->GetCurrentFrame()) == true)
 		{
-			AddAnimation("default", m_animPath);
-			PlayAnimation("default");
-
-			s_ptileMap->AddAnimPath(this, m_animPath);
+			if (AddAnimation("default", m_animPath) == true)
+			{
+				PlayAnimation("default");
+				s_ptileMap->AddAnimPath(this, m_animPath);
+			}
 		}
 	}
 
