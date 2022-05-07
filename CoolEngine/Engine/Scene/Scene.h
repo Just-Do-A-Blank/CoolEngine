@@ -72,6 +72,12 @@ private:
 	void DeleteSelectedGameObject();
 	void DeleteGameObjectUsingIdentifier(string identifier);
 
+	template<typename T>
+	void DeleteGameObject(T* pgameObject, std::string identifier)
+	{
+		m_psceneGraph->DeleteGameObject(pgameObject, identifier);
+	}
+
 	//Getters
 	TreeNode<GameObject>* GetRootTreeNode();
 	TreeNode<GameObject>* GetTreeNode(GameObject* pgameObject);

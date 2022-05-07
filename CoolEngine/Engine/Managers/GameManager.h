@@ -80,6 +80,12 @@ public:
 	void DeleteSelectedGameObject();
 	void DeleteGameObjectUsingIdentifier(string identifier);
 
+	template<typename T>
+	void DeleteGameObject(T* pgameObject, std::string identifier)
+	{
+		m_pcurrentScene->DeleteGameObject(pgameObject, identifier);
+	}
+
 	TreeNode<GameObject>* GetRootTreeNode();
 	TreeNode<GameObject>* GetTreeNode(GameObject* pgameObject);
 	string& GetCurrentSceneName();

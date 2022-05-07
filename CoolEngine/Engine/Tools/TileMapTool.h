@@ -34,7 +34,7 @@ private:
 
 	float m_tileDimensions = 0;
 
-	Tile* m_pselectedTile = nullptr;
+	DirectX::XMINT2 m_selectedTile = DirectX::XMINT2(-1, -1);
 };
 
 #endif

@@ -30,9 +30,14 @@ void TileMapTool::Render()
 
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
-		if (m_pselectedTile != nullptr)
+		if (m_selectedTile.x != -1 && m_selectedTile.y != -1)
 		{
-			m_pselectedTile->ShowEngineUI();
+			Tile* ptile = nullptr;
+
+			if (m_ptileMap->GetTileFromMapPos(m_selectedTile.x, m_selectedTile.y, ptile) == true && ptile != nullptr)
+			{
+				ptile->ShowEngineUI();
+			}
 		}
 
 		ImGui::End();
@@ -91,7 +96,7 @@ void TileMapTool::Handle(Event* e)
 			m_ptileMap->CreateTile(row, column, ptile);
 		}
 
-		m_pselectedTile = ptile;
+		m_selectedTile = DirectX::XMINT2(row, column);
 	}
 }
 
