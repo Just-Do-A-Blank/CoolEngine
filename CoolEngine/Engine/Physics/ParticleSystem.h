@@ -33,7 +33,7 @@ private:
 	int m_layer = 0;
 
 public:
-	ParticleSystem(string identifier);
+	ParticleSystem(string identifier, CoolUUID uuid);
 	~ParticleSystem();
 
 	/// <summary>

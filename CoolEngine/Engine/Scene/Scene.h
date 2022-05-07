@@ -43,7 +43,8 @@ private:
 	{
 		assert(m_psceneGraph != nullptr);
 
-		T* gameObject = new T(identifier);
+		CoolUUID uuid;
+		T* gameObject = new T(identifier, uuid);
 
 		GameObject* pgameObject = dynamic_cast<GameObject*>(gameObject);
 		pgameObject->m_identifier = identifier;
@@ -68,6 +69,35 @@ private:
 		return gameObject;
 	}
 
+	template<typename T>
+	T* CreateGameObject(string identifier, CoolUUID uuid)
+	{
+		assert(m_psceneGraph != nullptr);
+
+		T* gameObject = new T(identifier, uuid);
+
+		GameObject* pgameObject = dynamic_cast<GameObject*>(gameObject);
+		pgameObject->m_identifier = identifier;
+
+		m_prootTreeNode = m_psceneGraph->GetRootNode();
+		if (!m_prootTreeNode)
+		{
+			m_prootTreeNode = m_psceneGraph->NewNode(gameObject);
+		}
+		else
+		{
+			if (!m_pselectedGameObject)
+			{
+				m_psceneGraph->AddSibling(m_prootTreeNode, gameObject);
+			}
+			else
+			{
+				m_psceneGraph->AddChild(m_psceneGraph->GetNodeUsingIdentifier(m_pselectedGameObject->GetIdentifier()), gameObject);
+			}
+		}
+
+		return gameObject;
+	}
 
 	void DeleteSelectedGameObject();
 	void DeleteGameObjectUsingIdentifier(string identifier);

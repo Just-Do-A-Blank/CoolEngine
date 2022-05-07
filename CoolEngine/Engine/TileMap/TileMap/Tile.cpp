@@ -12,11 +12,11 @@ Tile::Tile() : RenderableGameObject()
 {
 }
 
-Tile::Tile(string identifier) : RenderableGameObject(identifier)
+Tile::Tile(string identifier, CoolUUID uuid) : RenderableGameObject(identifier, uuid)
 {
 }
 
-Tile::Tile(wstring path, string identifier) : RenderableGameObject(identifier)
+Tile::Tile(wstring path, string identifier, CoolUUID uuid) : RenderableGameObject(identifier, uuid)
 {
 	InitAnimation(path);
 }

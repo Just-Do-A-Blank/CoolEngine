@@ -13,7 +13,7 @@ private:
     float m_farDepth;
 
 public:
-	CameraGameObject(string identifier);
+	CameraGameObject(string identifier, CoolUUID uuid);
 
     void Initialize(XMFLOAT3& position, XMFLOAT3& forwardVector, XMFLOAT3& upVector,
         float& windowWidth, float& windowHeight, float& nearDepth, float& farDepth);

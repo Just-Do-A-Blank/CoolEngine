@@ -10,7 +10,7 @@ RenderableGameObject::RenderableGameObject() : GameObject()
 	m_gameObjectType |= GameObjectType::RENDERABLE;
 }
 
-RenderableGameObject::RenderableGameObject(string identifier) : GameObject(identifier)
+RenderableGameObject::RenderableGameObject(string identifier, CoolUUID uuid) : GameObject(identifier, uuid)
 {
 	InitGraphics();
 

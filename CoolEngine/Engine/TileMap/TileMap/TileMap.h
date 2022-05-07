@@ -21,13 +21,13 @@ public:
 
 	TileMap();
 
-	TileMap(string identifier);
+	TileMap(string identifier, CoolUUID uuid);
 
 	// Load from file
-	TileMap(wstring mapPath, XMFLOAT3 position, string identifier);
+	TileMap(wstring mapPath, XMFLOAT3 position, string identifier, CoolUUID uuid);
 
 	// Load from parameters
-	TileMap(int width, int height, string identifier, XMFLOAT3 position, float tileDimensions);
+	TileMap(int width, int height, string identifier, CoolUUID uuid, XMFLOAT3 position, float tileDimensions);
 
 	//Destructor
 	~TileMap();

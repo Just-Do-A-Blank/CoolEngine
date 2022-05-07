@@ -103,7 +103,8 @@ void TileMapTool::CreateSelectDimensionsUI()
 
 	if (ImGui::Button("Create") == true)
 	{
-		m_ptileMap = new TileMap(m_tileMapWidth, m_tileMapHeight, "TileMap", XMFLOAT3(0, 0, 0), m_tileDimensions);
+		CoolUUID uuid;
+		m_ptileMap = new TileMap(m_tileMapWidth, m_tileMapHeight, "TileMap", uuid, XMFLOAT3(0, 0, 0), m_tileDimensions);
 
 		m_selectingDimensions = false;
 	}
