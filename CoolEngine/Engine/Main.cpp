@@ -86,8 +86,6 @@ TileMap* g_testMap2;
 EditorUI* g_peditorUI;
 #endif
 
-Inputs* g_inputController;
-
 #if TOOL
 ToolBase* g_ptoolBase = nullptr;
 #endif
@@ -135,7 +133,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	GraphicsManager::GetInstance()->Init(g_pd3dDevice, g_pImmediateContext);
 	GraphicsManager::GetInstance()->SetHWND(&g_hWnd);
 
-	g_inputController = new Inputs();
+	Inputs::GetInstance();
 
 	//Debug Manager
 #if _DEBUG
@@ -381,7 +379,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 #endif
 
-	g_inputController->Update(&hWnd, &message, &wParam, &lParam);
+	Inputs::GetInstance()->Update(&hWnd, &message, &wParam, &lParam);
 
 	PAINTSTRUCT ps;
 	HDC hdc;
@@ -805,22 +803,21 @@ float temp;
 
 void Update()
 {
+	ParticleManager::GetInstance()->Update(GameManager::GetInstance()->GetTimer()->DeltaTime());
+
+	AudioManager::GetInstance()->Update();
+
+	Inputs::GetInstance()->Update();
+	EventManager::Instance()->ProcessEvents();
+
 	GameManager* pgamemanager = GameManager::GetInstance();
 
 	pgamemanager->GetTimer()->Tick();
 	pgamemanager->Update();
 
-	ParticleManager::GetInstance()->Update(GameManager::GetInstance()->GetTimer()->DeltaTime());
-
-	AudioManager::GetInstance()->Update();
-
-	EventManager::Instance()->ProcessEvents();
-
 #if EDITOR
 	g_peditorUI->Update();
 #endif
-
-	g_inputController->Update();
 
 #if TOOL
 	g_ptoolBase->Update();

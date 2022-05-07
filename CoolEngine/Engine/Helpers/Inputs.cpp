@@ -6,6 +6,16 @@
 #include "Engine/EditorUI/EditorUI.h"
 #endif
 
+bool Inputs::IsKeyPressed(int ikeycode)
+{
+	if (ikeycode >= NUM_KEYCODES || ikeycode < 0)
+	{
+		return false;
+	}
+
+	return m_keyState[ikeycode];
+}
+
 void Inputs::Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam)
 {
 	switch (*message)
@@ -106,7 +116,7 @@ void Inputs::Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam)
 
 void Inputs::Update()
 {
-	for (int i = 0; i < 256; ++i)
+	for (int i = 0; i < NUM_KEYCODES; ++i)
 	{
 		if (m_keyState[i])
 		{
