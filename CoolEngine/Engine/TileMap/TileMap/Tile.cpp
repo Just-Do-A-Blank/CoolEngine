@@ -120,7 +120,7 @@ void Tile::CopyTile(Tile* ptile)
 
 	m_animations.clear();
 
-	for (std::unordered_map<std::string, SpriteAnimation>::iterator it = m_animations.begin(); it != m_animations.end(); ++it)
+	for (std::unordered_map<std::string, SpriteAnimation>::iterator it = ptile->m_animations.begin(); it != ptile->m_animations.end(); ++it)
 	{
 		AddAnimation(it->first, it->second);
 	}
