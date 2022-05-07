@@ -9,13 +9,30 @@
 #include "Engine/Tools/TileMapTool.h"
 #include "Engine/TileMap/TileMap/TileMap.h"
 #include "Engine/Managers/Events/EventManager.h"
-#include "Engine/GameObjects/CameraGameObject.h"
+#include "Engine/GameObjects/TileMapCameraGameObject.h"
+#include "Engine/Helpers/Inputs.h"
 
 void TileMapTool::Init(ID3D11Device* pdevice)
 {
 	ToolBase::Init(pdevice);
 
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
+
+	//Create camera
+	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, -5);
+	XMFLOAT3 cameraForward = XMFLOAT3(0, 0, 1);
+	XMFLOAT3 cameraUp = XMFLOAT3(0, 1, 0);
+
+	float windowWidth = GraphicsManager::GetInstance()->GetWindowDimensions().x;
+	float windowHeight = GraphicsManager::GetInstance()->GetWindowDimensions().y;
+
+	float nearDepth = 0.01f;
+	float farDepth = 1000.0f;
+
+	m_pcamera = new TileMapCameraGameObject("Camera");
+	m_pcamera->Initialize(cameraPos, cameraForward, cameraUp, windowWidth, windowHeight, nearDepth, farDepth);
+
+	GameManager::GetInstance()->SetCamera(m_pcamera);
 }
 
 void TileMapTool::Render()
@@ -55,6 +72,27 @@ void TileMapTool::Update()
 	if (m_selectingDimensions == true)
 	{
 		return;
+	}
+
+	m_pcamera->Update();
+
+	if (Inputs::GetInstance()->IsKeyPressed(VK_CONTROL) && Inputs::GetInstance()->IsKeyPressed('C'))
+	{
+		m_CopiedTile = m_selectedTile;
+	}
+	else if (Inputs::GetInstance()->IsKeyPressed(VK_CONTROL) && Inputs::GetInstance()->IsKeyPressed('V'))
+	{
+		Tile* pDestTile = nullptr;
+		Tile* pSourceTile = nullptr;
+
+		if (m_ptileMap->GetTileFromMapPos(m_selectedTile.x, m_selectedTile.y, pDestTile) &&
+			m_ptileMap->GetTileFromMapPos(m_CopiedTile.x, m_CopiedTile.y, pSourceTile))
+		{
+			if (pSourceTile != nullptr && pDestTile != nullptr)
+			{
+				pDestTile->CopyTile(pSourceTile);
+			}
+		}
 	}
 }
 

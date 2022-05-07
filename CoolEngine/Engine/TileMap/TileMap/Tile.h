@@ -45,6 +45,8 @@ public:
 	void CreateEngineUI() override;
 #endif
 
+	void CopyTile(Tile* ptile);
+
 protected:
 
 private:

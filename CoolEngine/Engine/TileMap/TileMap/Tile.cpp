@@ -106,4 +106,28 @@ void Tile::CreateEngineUI()
 	ImGui::Spacing();
 	ImGui::Separator();
 }
+void Tile::CopyTile(Tile* ptile)
+{
+#if TILE_MAP_TOOL
+	SetSpriteIndex(ptile->m_spriteIndex);
+	SetAnimIndex(ptile->m_animIndex);
+#endif
+
+	SetLayer(ptile->m_layer);
+	SetIsPassable(ptile->m_isPassable);
+
+	SetAlbedo(ptile->m_palbedoSRV);
+
+	m_animations.clear();
+
+	for (std::unordered_map<std::string, SpriteAnimation>::iterator it = m_animations.begin(); it != m_animations.end(); ++it)
+	{
+		AddAnimation(it->first, it->second);
+	}
+
+	if (ptile->m_currentAnimationName != "")
+	{
+		PlayAnimation(ptile->m_currentAnimationName);
+	}
+}
 #endif

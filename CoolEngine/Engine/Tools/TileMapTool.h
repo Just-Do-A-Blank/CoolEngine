@@ -8,6 +8,7 @@
 
 class TileMap;
 class Tile;
+class TileMapCameraGameObject;
 
 class TileMapTool : public ToolBase, public Observer
 {
@@ -26,6 +27,7 @@ private:
 	void CreateSelectDimensionsUI();
 
 	TileMap* m_ptileMap = nullptr;
+	TileMapCameraGameObject* m_pcamera = nullptr;
 
 	bool m_selectingDimensions = true;
 
@@ -35,6 +37,7 @@ private:
 	float m_tileDimensions = 0;
 
 	DirectX::XMINT2 m_selectedTile = DirectX::XMINT2(-1, -1);
+	DirectX::XMINT2 m_CopiedTile = DirectX::XMINT2(-1, -1);
 };
 
 #endif
