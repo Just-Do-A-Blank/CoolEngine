@@ -3,6 +3,7 @@
 
 #if EDITOR
 #include "Engine/Includes/IMGUI/imgui.h"
+#include "Engine/EditorUI/EditorUI.h"
 #endif
 
 void Inputs::Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam)
@@ -36,7 +37,7 @@ void Inputs::Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam)
 #if EDITOR
 		ImGuiIO io = ImGui::GetIO();
 
-		if (io.WantCaptureMouse == true)
+		if (io.WantCaptureMouse == true && EditorUI::GetIsViewportHovered() == false)
 		{
 			return;
 		}
