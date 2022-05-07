@@ -779,6 +779,21 @@ void EditorUI::Animations(const string& label, unordered_map<string, SpriteAnima
 				updateAnim = filepath != L"";
 			}
 
+			if (ImGui::BeginDragDropTarget())
+			{
+				const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowserDirectory", ImGuiDragDropFlags_SourceAllowNullID);
+
+				if (ppayload != nullptr)
+				{
+					std::string tempString = std::string((char*)ppayload->Data, ppayload->DataSize / sizeof(char));
+					filepath = wstring(tempString.begin(), tempString.end());
+
+					updateAnim = true;
+				}
+
+				ImGui::EndDragDropTarget();
+			}
+
 			ImGui::TreePop();
 		}
 
@@ -806,7 +821,7 @@ void EditorUI::Animations(const string& label, unordered_map<string, SpriteAnima
 
 		if (anim.GetFrames() == nullptr)
 		{
-			if (GraphicsManager::GetInstance()->LoadAnimationFromFile(filepath) == false)
+			if (GraphicsManager::GetInstance()->LoadAnimationFromFile(filepath) == true)
 			{
 				animations[animName] = GraphicsManager::GetInstance()->GetAnimation(filepath);
 			}
