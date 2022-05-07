@@ -7,6 +7,9 @@
 
 #if EDITOR
 HWND* EditorUI::m_phwnd = nullptr;
+bool EditorUI::s_bisViewportHovered = false;
+DirectX::XMFLOAT2 EditorUI::s_viewportSize = DirectX::XMFLOAT2(0, 0);
+DirectX::XMFLOAT2 EditorUI::s_viewportPosition = DirectX::XMFLOAT2(0, 0);
 
 void EditorUI::InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, HWND* phwnd)
 {
@@ -55,6 +58,16 @@ void EditorUI::DrawEditorUI(ID3D11Device* pdevice)
 
 }
 
+void EditorUI::SetIsViewportHovered(bool bHovered)
+{
+	s_bisViewportHovered = bHovered;
+}
+
+bool EditorUI::GetIsViewportHovered()
+{
+	return s_bisViewportHovered;
+}
+
 void EditorUI::Update()
 {
 	ImGuiIO& io = ImGui::GetIO();
@@ -62,6 +75,26 @@ void EditorUI::Update()
 	io.DisplaySize = ImVec2(GraphicsManager::GetInstance()->GetWindowDimensions().x, GraphicsManager::GetInstance()->GetWindowDimensions().y);
 
 	io.DeltaTime = GameManager::GetInstance()->GetTimer()->DeltaTime();
+}
+
+void EditorUI::SetViewportSize(DirectX::XMFLOAT2 size)
+{
+	s_viewportSize = size;
+}
+
+DirectX::XMFLOAT2 EditorUI::GetViewportSize()
+{
+	return s_viewportSize;
+}
+
+void EditorUI::SetViewportPosition(DirectX::XMFLOAT2 position)
+{
+	s_viewportPosition = position;
+}
+
+DirectX::XMFLOAT2 EditorUI::GetViewportPosition()
+{
+	return s_viewportPosition;
 }
 
 void EditorUI::DrawSceneGraphWindow()

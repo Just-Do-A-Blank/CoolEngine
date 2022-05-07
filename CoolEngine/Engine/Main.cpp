@@ -408,8 +408,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
 
-
-
 	return 0;
 }
 
@@ -766,9 +764,20 @@ void Render()
 	ImGui::Begin("Viewport", nullptr, viewportWindowFlags);
 
 	//Pass everything rendered till this point into ImGuiImage
+	ImVec2 viewportPos = ImGui::GetCursorScreenPos();
+	EditorUI::SetViewportPosition(DirectX::XMFLOAT2(viewportPos.x, viewportPos.y));
+
 	XMFLOAT2 dimension = GraphicsManager::GetInstance()->GetWindowDimensions();
 	ImGui::Image(g_pRTTShaderResourceView, ImVec2(dimension.x, dimension.y));
+
+	EditorUI::SetIsViewportHovered(ImGui::IsItemHovered());
+
+	ImVec2 viewportSize = ImGui::GetWindowSize();
+	EditorUI::SetViewportSize(DirectX::XMFLOAT2(viewportSize.x, viewportSize.y));
+
 	ImGui::End();
+
+
 
 	//Swap render target to back buffer
 	g_pImmediateContext->OMSetRenderTargets(1, &g_pRenderTargetView, nullptr);
