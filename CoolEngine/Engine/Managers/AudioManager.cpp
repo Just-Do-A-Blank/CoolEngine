@@ -177,6 +177,11 @@ bool AudioManager::Play(string relativePath, XMFLOAT3 position, float volume)
 	return true;
 }
 
+bool AudioManager::IsPlaying(std::string relativePath)
+{
+	return false;
+}
+
 void AudioManager::Update()
 {
 	m_psystem->update();

@@ -29,6 +29,8 @@ public:
 	bool Play(string relativePath, float volume);
 	bool Play(string relativePath, XMFLOAT3 position, float volume);
 
+	bool IsPlaying(std::string relativePath);
+
 	void Update();
 
 	bool Delete(string relativePath);
