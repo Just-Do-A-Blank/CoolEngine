@@ -36,6 +36,7 @@
     <ClInclude Include="Engine\EditorUI\EditorUI.h" />
     <ClInclude Include="Engine\FileIO\FileIO.h" />
     <ClInclude Include="Engine\FileIO\FileIOCache.h" />
+    <ClInclude Include="Engine\GameObjects\AudioSourceGameObject.h" />
     <ClInclude Include="Engine\GameObjects\CameraGameObject.h" />
     <ClInclude Include="Engine\GameObjects\CharacterGameObject.h" />
     <ClInclude Include="Engine\GameObjects\CollidableGameObject.h" />
@@ -159,6 +160,7 @@
     <ClCompile Include="Engine\EditorUI\EditorUI.cpp" />
     <ClCompile Include="Engine\FileIO\FileIO.cpp" />
     <ClCompile Include="Engine\FileIO\FileIOCache.cpp" />
+    <ClCompile Include="Engine\GameObjects\AudioSourceGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\CharacterGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\CollidableGameObject.cpp" />
