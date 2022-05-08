@@ -94,7 +94,7 @@ bool AudioManager::Load(string relativePath)
 	{
 		LOG("Tried to load a sound that has already been loaded!");
 
-		return false;
+		return true;
 	}
 
 	FMOD::Sound* sound;
