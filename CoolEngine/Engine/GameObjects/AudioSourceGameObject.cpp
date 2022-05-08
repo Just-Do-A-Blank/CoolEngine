@@ -1,5 +1,8 @@
 #include "AudioSourceGameObject.h"
 #include "Engine/EditorUI/EditorUI.h"
+#include "Engine/Managers/AudioManager.h"
+#include "Engine/Includes/FMOD/fmod.hpp"
+#include "Engine/Includes/FMOD/fmod_errors.h"
 
 AudioSourceGameObject::AudioSourceGameObject() : GameObject()
 {
@@ -59,7 +62,11 @@ void AudioSourceGameObject::CreateEngineUI()
 
 	ImGui::Spacing();
 
-	EditorUI::DragFloat("Volume", m_volume, 100, 0.1f, 0, 100);
+	EditorUI::RelativePath("Audio Path", m_relativePath);
+
+	ImGui::Spacing();
+
+	EditorUI::DragFloat("Volume", m_volume, 100, 0.01f, 0, 1);
 
 	ImGui::Spacing();
 
@@ -68,6 +75,50 @@ void AudioSourceGameObject::CreateEngineUI()
 	ImGui::Spacing();
 
 	EditorUI::Checkbox("Enabled", m_enabled);
+
+	ImGui::Spacing();
+
+	if (ImGui::Button("Play") == true)
+	{
+		Play();
+	}
+
+	ImGui::Spacing();
+}
+
+void AudioSourceGameObject::Update()
+{
+	if (m_enabled == false)
+	{
+		return;
+	}
+
+	if (m_loop)
+	{
+		bool isPlaying = false;
+
+		if (m_pchannel != nullptr)
+		{
+			m_pchannel->isPlaying(&isPlaying);
+		}
+
+		if (m_pchannel == nullptr || isPlaying == false)
+		{
+			Play();
+		}
+	}
+}
+
+void AudioSourceGameObject::Play()
+{
+	if (m_relativePath != "")
+	{
+		AudioManager::GetInstance()->Play(m_relativePath, m_transform->GetPosition(), m_volume, &m_pchannel);
+	}
+	else
+	{
+		LOG("Tried to play sound when the sound path hasn't been set");
+	}
 }
 
 #endif

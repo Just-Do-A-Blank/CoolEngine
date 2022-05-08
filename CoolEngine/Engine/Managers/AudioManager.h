@@ -27,7 +27,7 @@ public:
 	bool Load(string relativePath);
 
 	bool Play(string relativePath, float volume);
-	bool Play(string relativePath, XMFLOAT3 position, float volume);
+	bool Play(string relativePath, XMFLOAT3 position, float volume, FMOD::Channel** ppchannel = nullptr);
 
 	bool IsPlaying(std::string relativePath);
 

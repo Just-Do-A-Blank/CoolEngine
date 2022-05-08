@@ -1,5 +1,11 @@
 #pragma once
 #include "GameObject.h"
+
+namespace FMOD
+{
+	class Channel;
+}
+
 class AudioSourceGameObject : public GameObject
 {
 public:
@@ -24,6 +30,8 @@ public:
 
 	void Update() override;
 
+	void Play();
+
 protected:
 
 private:
@@ -33,5 +41,7 @@ private:
 
 	bool m_loop = false;
 	bool m_enabled = false;
+
+	FMOD::Channel* m_pchannel = nullptr;
 };
 

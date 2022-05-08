@@ -141,7 +141,7 @@ bool AudioManager::Play(string relativePath, float volume)
 	return true;
 }
 
-bool AudioManager::Play(string relativePath, XMFLOAT3 position, float volume)
+bool AudioManager::Play(string relativePath, XMFLOAT3 position, float volume, FMOD::Channel** ppchannel)
 {
 	if (volume < 0 || volume > 1.0f)
 	{
@@ -173,6 +173,11 @@ bool AudioManager::Play(string relativePath, XMFLOAT3 position, float volume)
 	pchannel->set3DAttributes(&pos, nullptr);
 
 	pchannel->setPaused(false);
+
+	if (ppchannel != nullptr)
+	{
+		*ppchannel = pchannel;
+	}
 
 	return true;
 }
