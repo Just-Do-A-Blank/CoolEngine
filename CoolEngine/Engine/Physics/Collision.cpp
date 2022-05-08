@@ -76,9 +76,9 @@ bool Collision::OBBCollision(OBB* obb1, OBB* obb2)
 	//return true;
 
 	// For each axis
-	XMFLOAT2 axes[4] = { obb1->m_axes[0], obb1->m_axes[1], obb2->m_axes[0], obb2->m_axes[1] };
-	float limit = 99999;
-	for (unsigned int i = 0; i < 4; ++i)
+	XMFLOAT2 axes[8] = { obb1->m_axes[0], obb1->m_axes[1], obb1->m_axes[2], obb1->m_axes[3], obb2->m_axes[0], obb2->m_axes[1], obb2->m_axes[2], obb2->m_axes[3] };
+	float limit = FLT_MAX;
+	for (unsigned int i = 0; i < 8; ++i)
 	{
 		XMFLOAT2 p1 = obb1->ProjectOnAxis(axes[i]);
 		XMFLOAT2 p2 = obb2->ProjectOnAxis(axes[i]);
@@ -314,7 +314,7 @@ void Collision::Update(vector<GameObject*> gameObjectMap)
 				{
 					if (it1 < it2)
 					{
-						bool hasCollided = pcollidable2->GetShape()->Collide(pcollidable2->GetShape());
+						bool hasCollided = pcollidable1->GetShape()->Collide(pcollidable2->GetShape());
 						if (hasCollided)
 						{
 							EventManager::Instance()->AddEvent(new TriggerHoldEvent(pcollidable1, pcollidable2));

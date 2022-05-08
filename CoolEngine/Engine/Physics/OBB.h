@@ -5,11 +5,8 @@
 class OBB : public Shape
 {
 public:
-	/*XMFLOAT2 m_corners[4];
-	XMFLOAT2 m_axes[2];
-	float m_origins[2];*/
 	XMFLOAT2 m_corners[4];
-	XMFLOAT2 m_axes[2];
+	XMFLOAT2 m_axes[4];
 
 	OBB()
 	{
@@ -81,9 +78,12 @@ public:
 	{
 		XMFLOAT2 normalised = MathHelper::Normalize(MathHelper::Minus(m_corners[1], m_corners[0]));
 		m_axes[0] = { -normalised.y, normalised.x };
+		m_axes[1] = { normalised.y, -normalised.x };
 
 		normalised = MathHelper::Normalize(MathHelper::Minus(m_corners[2], m_corners[1]));
-		m_axes[1] = { -normalised.y, normalised.x };
+		m_axes[2] = { -normalised.y, normalised.x };
+		m_axes[3] = { normalised.y, -normalised.x };
+
 
 		//m_axes[0] = XMFLOAT2(m_corners[1].x - m_corners[0].x, m_corners[1].y - m_corners[0].y);
 		//m_axes[1] = XMFLOAT2(m_corners[3].x - m_corners[0].x, m_corners[3].y - m_corners[0].y);

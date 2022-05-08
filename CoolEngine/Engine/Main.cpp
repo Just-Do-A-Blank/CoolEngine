@@ -270,24 +270,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->GetTransform()->SetScale(objectScale);
 	pgameObject->SetShape(pOBB);
 
-	// Init player object
-	pgameObject = pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName);
-
-	objectPos = XMFLOAT3(200.0f, -200.0f, 5.0f);
-	objectScale = XMFLOAT3(50, 50, 50);
-
-	pgameObject->SetMesh(QUAD_MESH_NAME);
-	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
-	pgameObject->GetTransform()->SetPosition(objectPos);
-	pgameObject->GetTransform()->SetScale(objectScale);
-	pbox = new Box(pgameObject->GetTransform());
-	pbox->SetIsCollidable(isCollision);
-	pbox->SetIsTrigger(isCollision);
-	pgameObject->SetShape(pbox);
-
-
 	g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, -200, 0), "TestMap");
 
 	Pathfinding::GetInstance()->Initialize(g_testMap1);
