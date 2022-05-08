@@ -72,6 +72,7 @@ public:
 
 	static void Checkbox(const string& label, bool& value, const float& columnWidth = 100.0f);
 
+	static bool RelativePath(const string& label, string& text, const float& columnWidth = 100.0f);
 	static bool InputText(const string& label, string& text, const float& columnWidth = 100.0f);
 	static void IdentifierText(const string& label, string& text, const float& columnWidth = 100.0f);
 

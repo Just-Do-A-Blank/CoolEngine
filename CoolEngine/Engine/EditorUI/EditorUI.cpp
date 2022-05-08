@@ -1,8 +1,11 @@
 #include "EditorUI.h"
+#include "Engine/GameObjects/AudioSourceGameObject.h"
 #include "Engine/Managers/GameManager.h"
 #include "Engine/Managers/GraphicsManager.h"
+#include "Engine/Managers/AudioManager.h"
 #include "Engine/Scene/Scene.h"
 #include "Engine/Includes/IMGUI/imgui_internal.h"
+
 #include <ShlObj_core.h>
 
 #if EDITOR
@@ -112,6 +115,12 @@ void EditorUI::DrawSceneGraphWindow()
 
 					m_createObjectType = GameObjectType::RENDERABLE | GameObjectType::COLLIDABLE;
 				}
+				if (ImGui::MenuItem("Sound"))
+				{
+					m_createGameObjectClicked = true;
+
+					m_createObjectType = GameObjectType::SOUND;
+				}
 
 				ImGui::EndMenu();
 			}
@@ -158,6 +167,10 @@ void EditorUI::DrawSceneGraphWindow()
 		{
 			switch (m_createObjectType)
 			{
+			case GameObjectType::SOUND:
+				pgameManager->CreateGameObject<AudioSourceGameObject>(gameObjectName);
+				break;
+
 			case GameObjectType::RENDERABLE | GameObjectType::COLLIDABLE:
 				pgameManager->CreateGameObject<RenderableCollidableGameObject>(gameObjectName);
 				break;
@@ -588,6 +601,80 @@ bool EditorUI::Texture(const string& label, wstring& filepath, ID3D11ShaderResou
 				}
 
 				interacted = true;
+			}
+		}
+
+		ImGui::EndDragDropTarget();
+	}
+
+	ImGui::PopItemWidth();
+
+	ImGui::PopStyleVar();
+
+	ImGui::Columns(1);
+
+	ImGui::PopID();
+
+	return interacted;
+}
+
+bool EditorUI::RelativePath(const string& label, string& text, const float& columnWidth)
+{
+	bool interacted = false;
+
+	ImGui::PushID(label.c_str());
+
+	ImGui::Columns(2);
+
+	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::Text(label.c_str());
+	ImGui::NextColumn();
+
+	ImGui::PushItemWidth(ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+
+	char buffer[FILEPATH_BUFFER_SIZE];
+
+	strcpy_s(buffer, text.c_str());
+
+	if (ImGui::InputText("##text", buffer, FILEPATH_BUFFER_SIZE))
+	{
+		interacted = true;
+
+		text = string(buffer);
+	}
+
+	if (ImGui::BeginDragDropTarget())
+	{
+		const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowser", ImGuiDragDropFlags_SourceAllowNullID);
+
+		if (ppayload != nullptr)
+		{
+			std::string tempString = std::string((char*)ppayload->Data, ppayload->DataSize / sizeof(char));
+
+			//Check if that path points to an asset in the resources folder
+			int index = tempString.find("Resources");
+
+			if (index == -1)
+			{
+				LOG("The resource specified isn't stored in a resource folder!");
+			}
+			else
+			{
+				//Get relative file path
+				tempString = tempString.substr(index);
+
+				if (AudioManager::GetInstance()->Load(tempString) == true)
+				{
+					interacted = true;
+
+					text = tempString;
+				}
+				else
+				{
+					LOG("Couldn't load audio file!");
+				}
 			}
 		}
 
