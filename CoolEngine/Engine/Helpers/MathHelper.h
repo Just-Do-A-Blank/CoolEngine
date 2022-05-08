@@ -18,12 +18,6 @@ public:
 		return XMFLOAT3(var1.x + var2.x, var1.y + var2.y, var1.z + var2.z);
 	}
 
-	//Adds var2 to var1 and return it
-	static XMFLOAT2& Plus(const XMFLOAT2& var1, const XMFLOAT2& var2)
-	{
-		return XMFLOAT2(var1.x + var2.x, var1.y + var2.y);
-	}
-
 	//Subtracts var1 with var2 and return it
 	static XMFLOAT2& Minus(const XMFLOAT2& var1, const XMFLOAT2& var2)
 	{
@@ -34,12 +28,6 @@ public:
 	static XMFLOAT3& Minus(const XMFLOAT3& var1, const XMFLOAT3& var2)
 	{
 		return XMFLOAT3(var1.x - var2.x, var1.y - var2.y, var1.z - var2.z);
-	}
-
-	//Subtracts var1 with var2 and return it
-	static XMFLOAT2& Minus(const XMFLOAT2& var1, const XMFLOAT2& var2)
-	{
-		return XMFLOAT2(var1.x - var2.x, var1.y - var2.y);
 	}
 
 	//Adds var2 to var1 and stores in var1

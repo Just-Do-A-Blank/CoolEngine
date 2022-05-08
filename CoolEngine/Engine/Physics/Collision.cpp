@@ -257,15 +257,23 @@ bool Collision::CircleCollisionAndResponse(Circle* circle1, Circle* circle2)
 
 
 
-void Collision::UpdateOBBs(unordered_map<string, GameObject*> gameObjectMap)
+void Collision::UpdateOBBs(vector<GameObject*> gameObjectList)
 {
-	for (unordered_map<string, GameObject*>::iterator it1 = gameObjectMap.begin(); it1 != gameObjectMap.end(); ++it1)
+	for (int i = 0; i < gameObjectList.size(); ++i)
 	{
-		if (it1->second->GetShape() == nullptr)
+		if (gameObjectList[i]->ContainsType(GameObjectType::COLLIDABLE) == false)
 		{
 			continue;
 		}
-		it1->second->GetShape()->Update();
+
+		CollidableGameObject* pgameObject = dynamic_cast<CollidableGameObject*>(gameObjectList[i]);
+
+		if (pgameObject->GetShape() == nullptr)
+		{
+			continue;
+		}
+
+		pgameObject->GetShape()->Update();
 	}
 }
 

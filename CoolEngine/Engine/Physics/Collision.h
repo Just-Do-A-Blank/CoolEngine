@@ -69,7 +69,7 @@ public:
 	/// <returns></returns>
 	static bool CircleCollisionAndResponse(Circle* circle1, Circle* circle2);
 
-	static void UpdateOBBs(unordered_map<string, GameObject*> gameObjectMap);
+	static void UpdateOBBs(std::vector<GameObject*> gameObjectList);
 
 	/// <summary>
 	/// Check for collisions between all objects in scene
