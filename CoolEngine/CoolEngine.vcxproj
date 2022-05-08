@@ -17,6 +17,10 @@
       <Configuration>GameRelease</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="InGameUIDebug|x64">
+      <Configuration>InGameUIDebug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
@@ -27,13 +31,22 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\AI\Pathfinding.h" />
+    <ClInclude Include="Engine\EditorUI\ContentBrowser.h" />
     <ClInclude Include="Engine\EditorUI\EditorUI.h" />
+    <ClInclude Include="Engine\FileIO\FileIO.h" />
+    <ClInclude Include="Engine\FileIO\FileIOCache.h" />
     <ClInclude Include="Engine\GameObjects\CameraGameObject.h" />
     <ClInclude Include="Engine\GameObjects\CharacterGameObject.h" />
+    <ClInclude Include="Engine\GameObjects\CollidableGameObject.h" />
+    <ClInclude Include="Engine\GameObjects\RenderableCollidableGameObject.h" />
     <ClInclude Include="Engine\GameObjects\DebugRect.h" />
+    <ClInclude Include="Engine\GameObjects\EnemyGameObject.h" />
     <ClInclude Include="Engine\GameObjects\GameObject.h" />
     <ClInclude Include="Engine\GameObjects\PlayerGameObject.h" />
+    <ClInclude Include="Engine\GameObjects\RenderableGameObject.h" />
     <ClInclude Include="Engine\GameObjects\Transform.h" />
+    <ClInclude Include="Engine\GameUI\TextComponent.h" />
     <ClInclude Include="Engine\Graphics\ConstantBuffer.h" />
     <ClInclude Include="Engine\Graphics\ConstantBuffers.h" />
     <ClInclude Include="Engine\Graphics\DDSTextureLoader.h" />
@@ -44,6 +57,26 @@
     <ClInclude Include="Engine\Helpers\Timer.h" />
     <ClInclude Include="Engine\Helpers\DebugHelper.h" />
     <ClInclude Include="Engine\Helpers\MathHelper.h" />
+    <ClInclude Include="Engine\Includes\DirectXTK\Audio.h" />
+    <ClInclude Include="Engine\Includes\DirectXTK\BufferHelpers.h" />
+    <ClInclude Include="Engine\Includes\DirectXTK\CommonStates.h" />
+    <ClInclude Include="Engine\Includes\DirectXTK\DDSTextureLoader.h" />
+    <ClInclude Include="Engine\Includes\DirectXTK\DirectXHelpers.h" />
+    <ClInclude Include="Engine\Includes\DirectXTK\Effects.h" />
+    <ClInclude Include="Engine\Includes\DirectXTK\GamePad.h" />
+    <ClInclude Include="Engine\Includes\DirectXTK\GeometricPrimitive.h" />
+    <ClInclude Include="Engine\Includes\DirectXTK\GraphicsMemory.h" />
+    <ClInclude Include="Engine\Includes\DirectXTK\Keyboard.h" />
+    <ClInclude Include="Engine\Includes\DirectXTK\Model.h" />
+    <ClInclude Include="Engine\Includes\DirectXTK\Mouse.h" />
+    <ClInclude Include="Engine\Includes\DirectXTK\PostProcess.h" />
+    <ClInclude Include="Engine\Includes\DirectXTK\PrimitiveBatch.h" />
+    <ClInclude Include="Engine\Includes\DirectXTK\ScreenGrab.h" />
+    <ClInclude Include="Engine\Includes\DirectXTK\SimpleMath.h" />
+    <ClInclude Include="Engine\Includes\DirectXTK\SpriteBatch.h" />
+    <ClInclude Include="Engine\Includes\DirectXTK\SpriteFont.h" />
+    <ClInclude Include="Engine\Includes\DirectXTK\VertexTypes.h" />
+    <ClInclude Include="Engine\Includes\DirectXTK\WICTextureLoader.h" />
     <ClInclude Include="Engine\Includes\FMOD\fmod.h" />
     <ClInclude Include="Engine\Includes\FMOD\fmod.hpp" />
     <ClInclude Include="Engine\Includes\FMOD\fmod_codec.h" />
@@ -84,11 +117,16 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="Engine\Includes\RapidXML\rapidxml.hpp" />
+    <ClInclude Include="Engine\Includes\RapidXML\rapidxml_iterators.hpp" />
+    <ClInclude Include="Engine\Includes\RapidXML\rapidxml_print.hpp" />
+    <ClInclude Include="Engine\Includes\RapidXML\rapidxml_utils.hpp" />
     <ClInclude Include="Engine\Managers\AudioManager.h" />
     <ClInclude Include="Engine\Managers\DebugDrawManager.h" />
     <ClInclude Include="Engine\Managers\Events\EventManager.h" />
     <ClInclude Include="Engine\Managers\Events\EventObserver.h" />
     <ClInclude Include="Engine\Managers\Events\Events.h" />
+    <ClInclude Include="Engine\Managers\FontManager.h" />
     <ClInclude Include="Engine\Managers\GameManager.h" />
     <ClInclude Include="Engine\Managers\GraphicsManager.h" />
     <ClInclude Include="Engine\Managers\SceneGraph.h" />
@@ -108,20 +146,31 @@
     <ClInclude Include="Engine\TileMap\TileMap\Tile.h" />
     <ClInclude Include="Engine\TileMap\TileMap\TileMap.h" />
     <ClInclude Include="Engine\Tools\AnimationTool.h" />
+    <ClInclude Include="Engine\Tools\InGameUITool.h" />
     <ClInclude Include="Engine\Tools\TileMapTool.h" />
     <ClInclude Include="Engine\Tools\ToolBase.h" />
-    <ClInclude Include="Engine\Managers\UiManager.h" />
-    <ClInclude Include="Engine\GameUI\UiElement.h" />
-    <ClInclude Include="Engine\GameUI\UiCanvas.h" />
+    <ClInclude Include="Engine\Managers\UIManager.h" />
+    <ClInclude Include="Engine\GameUI\GameUIComponent.h" />
+    <ClInclude Include="Engine\GameUI\UICanvas.h" />
+    <ClInclude Include="Engine\GameUI\ImageComponent.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\AI\Pathfinding.cpp" />
+    <ClCompile Include="Engine\EditorUI\ContentBrowser.cpp" />
     <ClCompile Include="Engine\EditorUI\EditorUI.cpp" />
+    <ClCompile Include="Engine\FileIO\FileIO.cpp" />
+    <ClCompile Include="Engine\FileIO\FileIOCache.cpp" />
     <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\CharacterGameObject.cpp" />
+    <ClCompile Include="Engine\GameObjects\CollidableGameObject.cpp" />
+    <ClCompile Include="Engine\GameObjects\RenderableCollidableGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\DebugRect.cpp" />
+    <ClCompile Include="Engine\GameObjects\EnemyGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\GameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\PlayerGameObject.cpp" />
+    <ClCompile Include="Engine\GameObjects\RenderableGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\Transform.cpp" />
+    <ClCompile Include="Engine\GameUI\TextComponent.cpp" />
     <ClCompile Include="Engine\Graphics\DDSTextureLoader.cpp" />
     <ClCompile Include="Engine\Graphics\SpriteAnimation.cpp" />
     <ClCompile Include="Engine\Helpers\Inputs.cpp" />
@@ -159,6 +208,7 @@
     <ClCompile Include="Engine\Managers\Events\EventManager.cpp" />
     <ClCompile Include="Engine\Managers\Events\EventObserver.cpp" />
     <ClCompile Include="Engine\Managers\Events\Events.cpp" />
+    <ClCompile Include="Engine\Managers\FontManager.cpp" />
     <ClCompile Include="Engine\Physics\Shape.cpp" />
     <ClCompile Include="Engine\Scene\Scene.cpp" />
     <ClCompile Include="Engine\Managers\AudioManager.cpp" />
@@ -172,17 +222,20 @@
     <ClCompile Include="Engine\TileMap\TileMap\Tile.cpp" />
     <ClCompile Include="Engine\TileMap\TileMap\TileMap.cpp" />
     <ClCompile Include="Engine\Tools\AnimationTool.cpp" />
+    <ClCompile Include="Engine\Tools\InGameUITool.cpp" />
     <ClCompile Include="Engine\Tools\TileMapTool.cpp" />
     <ClCompile Include="Engine\Tools\ToolBase.cpp" />
-    <ClCompile Include="Engine\Managers\UiManager.cpp" />
-    <ClCompile Include="Engine\GameUI\UiElement.cpp" />
-    <ClCompile Include="Engine\GameUI\UiCanvas.cpp" />
+    <ClCompile Include="Engine\Managers\UIManager.cpp" />
+    <ClCompile Include="Engine\GameUI\GameUIComponent.cpp" />
+    <ClCompile Include="Engine\GameUI\UICanvas.cpp" />
+    <ClCompile Include="Engine\GameUI\ImageComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='InGameUIDebug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
@@ -191,6 +244,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='InGameUIDebug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
@@ -199,17 +253,33 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='InGameUIDebug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="Engine\Graphics\Shaders\PassthroughVertex.hlsl">
+    <FxCompile Include="Engine\Graphics\Shaders\ScreenSpaceVertex.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='InGameUIDebug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
     </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\TextPixel.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='InGameUIDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Engine\Includes\DirectXTK\SimpleMath.inl" />
+    <None Include="packages.config" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -232,6 +302,12 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='InGameUIDebug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
@@ -271,6 +347,9 @@
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='InGameUIDebug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -288,6 +367,9 @@
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='InGameUIDebug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">
@@ -311,8 +393,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)Engine\Bin\$(Configuration)\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;DirectXTK.lib;fmodL_vc.lib;DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Engine\Bin\Debug\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">
@@ -327,8 +409,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)Engine\Bin\$(Configuration)\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;DirectXTK.lib;fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Engine\Bin\Debug\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">
@@ -343,8 +425,24 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)Engine\Bin\$(Configuration)\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;DirectXTK.lib;fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Engine\Bin\Debug\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='InGameUIDebug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>TOOL;IN_GAME_UI_TOOL;_DEBUG;_CONSOLE;EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>false</ConformanceMode>
+      <ForcedIncludeFiles>$(ProjectDir)Engine\stdafx.h</ForcedIncludeFiles>
+      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;DirectXTK.lib;fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Engine\Bin\Debug\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -353,7 +451,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>TOOL;TILE_MAP_TOOL;_DEBUG;_CONSOLE;EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CONSOLE;EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <ForcedIncludeFiles>$(ProjectDir)Engine\stdafx.h</ForcedIncludeFiles>
       <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
@@ -363,8 +461,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)Engine\Bin\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;DirectXTK.lib;fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Engine\Bin\Release\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">
@@ -393,7 +491,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;_UNICODE;UNICODE</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <ForcedIncludeFiles>$(ProjectDir)Engine\stdafx.h</ForcedIncludeFiles>
       <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
@@ -403,11 +501,33 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)Engine\Bin\$(Configuration)\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;DirectXTK.lib;fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Engine\Bin\Release\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(ProjectDir)Engine\stdafx.h</ForcedIncludeFiles>
+      <PreprocessorDefinitions>TOOL;TILE_MAP_TOOL;_DEBUG;_CONSOLE;EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;DirectXTK.lib;fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Engine\Bin\Debug\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\Microsoft.XAudio2.Redist.1.2.8\build\native\Microsoft.XAudio2.Redist.targets" Condition="Exists('..\packages\Microsoft.XAudio2.Redist.1.2.8\build\native\Microsoft.XAudio2.Redist.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.XAudio2.Redist.1.2.8\build\native\Microsoft.XAudio2.Redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.XAudio2.Redist.1.2.8\build\native\Microsoft.XAudio2.Redist.targets'))" />
+  </Target>
 </Project>

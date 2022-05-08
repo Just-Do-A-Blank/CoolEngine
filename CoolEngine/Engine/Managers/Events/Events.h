@@ -1,12 +1,17 @@
 #pragma once
+#include "Engine/GameObjects/GameObject.h"
 
 //Holds the list of possible events
-enum class EventType {
+enum class EventType 
+{
 	KeyPressed, KeyReleased,
 	MouseButtonPressed, MouseButtonReleased, MouseMoved,
+	TriggerEnter, TriggerHold, TriggerExit,
+	CollisionEnter, CollisionHold, CollisionExit,
 };
 
-class Event {
+class Event 
+{
 public:
 
 	////Constructor that sends event with data, manual deconstunction of the data required
@@ -29,14 +34,67 @@ protected:
 	void* m_data;
 };
 
+
+
+class CollisionEvent : public Event
+{
+public:
+	inline GameObject* GetGameObject(int i) { return m_objects[i]; }
+protected:
+	CollisionEvent(GameObject* obj1, GameObject* obj2, EventType eventID) : Event(eventID)
+	{
+		m_objects[0] = obj1;
+		m_objects[1] = obj2;
+	}
+	GameObject* m_objects[2];
+};
+
+class TriggerEnterEvent : public CollisionEvent
+{
+public:
+	TriggerEnterEvent(GameObject* obj1, GameObject* obj2) : CollisionEvent(obj1, obj2, EventType::TriggerEnter) {}
+};
+
+class TriggerHoldEvent : public CollisionEvent
+{
+public:
+	TriggerHoldEvent(GameObject* obj1, GameObject* obj2) : CollisionEvent(obj1, obj2, EventType::TriggerHold) {}
+};
+
+class TriggerExitEvent : public CollisionEvent
+{
+public:
+	TriggerExitEvent(GameObject* obj1, GameObject* obj2) : CollisionEvent(obj1, obj2, EventType::TriggerExit) {}
+};
+
+class CollisionEnterEvent : public CollisionEvent
+{
+public:
+	CollisionEnterEvent(GameObject* obj1, GameObject* obj2) : CollisionEvent(obj1, obj2, EventType::CollisionEnter) {}
+};
+
+class CollisionHoldEvent : public CollisionEvent
+{
+public:
+	CollisionHoldEvent(GameObject* obj1, GameObject* obj2) : CollisionEvent(obj1, obj2, EventType::CollisionHold) {}
+};
+
+class CollisionExitEvent : public CollisionEvent
+{
+public:
+	CollisionExitEvent(GameObject* obj1, GameObject* obj2) : CollisionEvent(obj1, obj2, EventType::CollisionExit) {}
+};
+
+
+
 class KeyEvent : public Event
 {
 public:
 	inline int GetKeyCode() const { return m_keyCode; }
+
 protected:
 	KeyEvent(int keycode, EventType eventID) : m_keyCode(keycode), Event(eventID) {}
 	int m_keyCode;
-
 };
 
 class KeyPressedEvent : public KeyEvent
@@ -51,6 +109,8 @@ class KeyReleasedEvent : public KeyEvent
 public:
 	KeyReleasedEvent(int keyCode) : KeyEvent(keyCode,EventType::KeyReleased) {}
 };
+
+
 
 class MouseMovedEvent : public Event
 {

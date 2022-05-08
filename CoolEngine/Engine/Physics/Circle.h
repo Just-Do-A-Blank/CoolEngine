@@ -9,6 +9,8 @@
 class Circle : public Shape
 {
 public:
+	float m_radius;
+
 	/// <summary>
 	/// Default constructor for circle.
 	/// </summary>
@@ -19,6 +21,14 @@ public:
 
 		m_shapeType = ShapeType::CIRCLE;
 	};
+
+	Circle(Transform* t)
+	{
+		m_transform = t;
+		m_radius = m_transform->GetScale().x;
+
+		m_shapeType = ShapeType::CIRCLE;
+	}
 
 	/// <summary>
 	/// Constructor for circle.
@@ -34,12 +44,20 @@ public:
 		m_shapeType = ShapeType::CIRCLE;
 	}
 
+	float GetRadius()
+	{
+		return m_radius;
+	}
+
+	void SetRadius(float radius)
+	{
+		m_radius = radius;
+	}
+
 	~Circle()
 	{
 		m_transform = nullptr;
 	}
-
-	float m_radius;
 
 	bool Collide(Shape* shape)
 	{

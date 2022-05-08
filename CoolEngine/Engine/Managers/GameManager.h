@@ -8,6 +8,7 @@ class Scene;
 template<class T>class TreeNode;
 class PlayerGameObject;
 class RenderStruct;
+class CameraGameObject;
 
 
 enum class SceneDesc
@@ -27,6 +28,8 @@ private:
 
 	string m_workingDirectory = "";
 	wstring m_wideWorkingDirectory = L"";
+
+	CameraGameObject* m_pcamera = nullptr;
 
 public:
 	void Init();
@@ -53,7 +56,10 @@ public:
 
 	GameObject* GetSelectedGameObject();
 
-	unordered_map<string, GameObject*>& GetAllGameObjects();
+	vector<GameObject*>& GetAllGameObjects();
+
+	CameraGameObject* GetCamera();
+	void SetCamera(CameraGameObject* pcamera);
 
 	template<typename T>
 	T* GetGameObjectUsingIdentifier(string& identifier)
@@ -81,6 +87,6 @@ public:
 
 	//Getters
 	unordered_map<string, Scene*> GetSceneList();
-	unordered_map<string, GameObject*>& GetAllGameObjectsInCurrentScene();
+	vector<GameObject*>& GetAllGameObjectsInCurrentScene();
 };
 

@@ -3,6 +3,7 @@
 #include "AnimationTool.h"
 #include "Engine/Managers/GameManager.h"
 #include "Engine/ResourceDefines.h"
+#include "Engine/GameObjects/RenderableGameObject.h"
 
 #include <direct.h>
 #include <fstream>
@@ -14,7 +15,7 @@ void AnimationTool::Init(ID3D11Device* pdevice)
 	XMFLOAT3 pos = XMFLOAT3(0, 0, 0);
 	XMFLOAT3 scale = XMFLOAT3(100, 100, 1);
 
-	m_pgameObject = GameManager::GetInstance()->CreateGameObject<GameObject>("AnimModel");
+	m_pgameObject = GameManager::GetInstance()->CreateGameObject<RenderableGameObject>("AnimModel");
 	m_pgameObject->GetTransform()->SetPosition(pos);
 	m_pgameObject->GetTransform()->SetScale(scale);
 }
@@ -27,10 +28,6 @@ void AnimationTool::Update()
 void AnimationTool::Render()
 {
 	bool updateAnim = false;
-
-	ImGui_ImplDX11_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
 
 	ImGui::Begin("Animation");
 
@@ -58,11 +55,11 @@ void AnimationTool::Render()
 
 			if (updateAnim == false)
 			{
-				updateAnim = EditorUI::Texture("Texture", m_frameInfos[i].m_filepath, m_frameInfos[i].m_frame.m_ptexture);
+				updateAnim = EditorUI::Texture("Texture", m_frameInfos[i].m_filepath, m_frameInfos[i].m_frame.m_ptexture, 100.0f, ImVec2(50, 50));
 			}
 			else
 			{
-				EditorUI::Texture("Texture", m_frameInfos[i].m_filepath, m_frameInfos[i].m_frame.m_ptexture);
+				EditorUI::Texture("Texture", m_frameInfos[i].m_filepath, m_frameInfos[i].m_frame.m_ptexture, 100.0f, ImVec2(50, 50));
 			}
 
 			ImGui::Spacing();
@@ -111,12 +108,6 @@ void AnimationTool::Render()
 	}
 
 	ImGui::End();
-
-	ImGui::Render();
-
-	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
-	ImGui::EndFrame();
 
 	if (updateAnim)
 	{

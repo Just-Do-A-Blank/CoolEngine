@@ -2,19 +2,19 @@
 #include "DebugRect.h"
 #include "Engine/ResourceDefines.h"
 
-DebugRect::DebugRect(wstring albedoName, string identifier, bool screenSpace) : GameObject(identifier)
+DebugRect::DebugRect(wstring albedoName, string identifier, bool screenSpace) : RenderableGameObject(identifier)
 {
 	SetAlbedo(albedoName);
 
 	if (screenSpace)
 	{
-		SetVertexShader(nullptr); //TODO
-		SetPixelShader(nullptr); //TODO
+		SetVertexShader(SCREENSPACE_VERTEX_SHADER_NAME);
+		SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
 	}
 	else
 	{
-		SetVertexShader(DEFAULT_VERTEX_SHADER_NAME); //TODO
-		SetPixelShader(DEFAULT_PIXEL_SHADER_NAME); //TODO
+		SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+		SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
 	}
 }
 
@@ -25,7 +25,7 @@ void DebugRect::SetDebugColour(DebugDrawManager::DebugColour colour)
 
 void DebugRect::Render(RenderStruct& renderStruct)
 {
-	GameObject::Render(renderStruct);
+	RenderableGameObject::Render(renderStruct);
 }
 
 void DebugRect::Update()

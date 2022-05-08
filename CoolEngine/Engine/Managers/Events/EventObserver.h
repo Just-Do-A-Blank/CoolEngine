@@ -24,6 +24,67 @@ public:
 
 };
 
+class CollisionObserver : public Observer
+{
+public:
+	void TriggerEnter(TriggerEnterEvent* e)
+	{
+		LOG("Trigger enter!");
+	}
+
+	void TriggerHold(TriggerHoldEvent* e)
+	{
+		LOG("Trigger hold!");
+	}
+
+	void TriggerExit(TriggerExitEvent* e)
+	{
+		LOG("Trigger exit!");
+	}
+
+	void CollisionEnter(CollisionEnterEvent* e)
+	{
+		LOG("Collision enter!");
+	}
+
+	void CollisionHold(CollisionHoldEvent* e)
+	{
+		LOG("Collision hold!");
+	}
+
+	void CollisionExit(CollisionExitEvent* e)
+	{
+		LOG("Collision exit!");
+	}
+
+	void Handle(Event* e)
+	{
+		switch (e->GetEventID())
+		{
+		case EventType::TriggerEnter:
+			TriggerEnter((TriggerEnterEvent*)e);
+			break;
+		case EventType::TriggerHold:
+			TriggerHold((TriggerHoldEvent*)e);
+			break;
+		case EventType::TriggerExit:
+			TriggerExit((TriggerExitEvent*)e);
+			break;
+		case EventType::CollisionEnter:
+			CollisionEnter((CollisionEnterEvent*)e);
+			break;
+		case EventType::CollisionHold:
+			CollisionHold((CollisionHoldEvent*)e);
+			break;
+		case EventType::CollisionExit:
+			CollisionExit((CollisionExitEvent*)e);
+			break;
+		}
+	}
+
+	CollisionObserver() { }
+};
+
 class ExampleObserver : public Observer
 {
 public:
@@ -135,7 +196,6 @@ public:
 			break;
 
 		}
-
 	}
 	
 	//pass in object / values you want the observer to have access to for editing e.g m_playerController* controller; this->m_playerController = playerController then the observer makes all changes basedo on the events. 
@@ -144,10 +204,7 @@ public:
 	
 	ExampleObserver(int* i, PlayerGameObject* player) { this->m_i = i; this->m_playerObject = player; }
 
-
 private:
 	int* m_i;
 	PlayerGameObject* m_playerObject;
-
-
 };

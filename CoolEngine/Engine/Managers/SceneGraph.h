@@ -1,7 +1,7 @@
 #pragma once
 #include "Engine/GameObjects/GameObject.h"
 
-class UiElement;
+class GameUIComponent;
 
 template<class T>
 struct TreeNode
@@ -17,9 +17,10 @@ template<class T>
 class SceneGraph
 {
 private:
-	TreeNode<T>* m_rootNode;
+	TreeNode<T>* m_rootNode = nullptr;
 	unordered_map<string, TreeNode<T>*> m_sceneTreeNodeMap;
 	unordered_map<string, T*> m_sceneGameObjectsMap;
+	vector<T*> m_sceneGameObjectList;
 
 public:
 	SceneGraph();
@@ -38,8 +39,8 @@ public:
 	TreeNode<T>* GetNodeUsingIdentifier(string identifier);
 
 	//Getters
-	unordered_map<string, T*>& GetAllGameObjects();
+	vector<T*>& GetAllGameObjects();
 	T* GetGameObjectUsingIdentifier(string& identifier);
 };
 template class SceneGraph<GameObject>;
-template class SceneGraph<UiElement>;
+template class SceneGraph<GameUIComponent>;

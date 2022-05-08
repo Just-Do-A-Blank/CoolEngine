@@ -1,20 +1,11 @@
 #pragma once
-#include "Engine/Managers/SceneGraph.h"
+#include "Engine/GameUI/GameUIComponent.h"
 
-class UiElement;
-class Transform;
 
-class UiCanvas
+class UICanvas : public GameUIComponent
 {
 private:
-	string m_casvasIdentifier;
-	SceneGraph<UiElement>* m_pUiSceneGraph;
-
-	//Graphics variables
-	ID3D11VertexShader* m_pvertexShader = nullptr;
-	ID3D11PixelShader* m_ppixelShader = nullptr;
-
-	Mesh* m_pmesh = nullptr;
+	string m_canvasIdentifier;
 
 	int m_layer = 0;
 
@@ -22,12 +13,10 @@ private:
 	bool m_isRenderable = true;
 
 protected:
-	Transform* m_transform;
 
 	virtual void CreateEngineUI(ID3D11Device* pdevice);
 public:
-	UiCanvas(string canvasIdentifier);
-	void InitGraphics();
+	UICanvas(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation);
 
 	virtual void Render(RenderStruct& renderStruct);
 	virtual void Update();
@@ -39,7 +28,7 @@ public:
 	void SetIsRenderable(bool& condition);
 
 	//Getters
-	const string& GetIdentifier();
+	const string& GetCanvasIdentifier();
 	Transform* GetTransform();
 };
 

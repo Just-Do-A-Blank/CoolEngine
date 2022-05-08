@@ -5,6 +5,7 @@
 #include "Engine/Graphics/SpriteAnimation.h"
 #include "Engine/Graphics/ConstantBuffer.h"
 #include "Engine/Graphics/ConstantBuffers.h"
+#include "Engine/Includes/DirectXTK/SpriteBatch.h"
 
 #include <unordered_map>
 
@@ -12,14 +13,10 @@
 
 class Mesh;
 
-struct RenderStruct
-{
-	ID3D11DeviceContext* m_pcontext;
-};
-
 class GraphicsManager : public Singleton<GraphicsManager>
 {
 	std::unordered_map<wstring, ID3D11ShaderResourceView*> m_textureSRVs;
+	std::unordered_map<wstring, ID3D11Resource*> m_textureResources;
 
 	std::unordered_map<wstring, ID3D11VertexShader*> m_vertexShaders;
 	std::unordered_map<wstring, ID3D11PixelShader*> m_pixelShaders;
@@ -31,7 +28,7 @@ class GraphicsManager : public Singleton<GraphicsManager>
 	std::vector<ID3D11InputLayout*> m_inputLayouts;
 	std::vector<ID3D11SamplerState*> m_samplers;
 
-	int m_NumLayers = 5;
+	static const int s_kNumLayers = 5;
 
 	XMFLOAT2 m_windowDimensions = XMFLOAT2(1920, 1080);
 
@@ -39,8 +36,9 @@ public:
 	ConstantBuffer<PerFrameCB>* m_pperFrameCB = nullptr;
 	ConstantBuffer<PerInstanceCB>* m_pperInstanceCB = nullptr;
 	ConstantBuffer<DebugPerInstanceCB>* m_pdebugPerInstanceCB = nullptr;
+	ConstantBuffer<TextPerInstanceCB>* m_ptextPerInstanceCB = nullptr;
 
-	void Init(ID3D11Device* pdevice);
+	void Init(ID3D11Device* pdevice, ID3D11DeviceContext* pcontext);
 
 	bool CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel);
 
@@ -50,21 +48,30 @@ public:
 
 	void SetWindowDimensions(XMFLOAT2 dimensions);
 
+	void SetHWND(HWND* hwnd);
+
+	void RenderQuad(ID3D11ShaderResourceView* psrv, XMFLOAT3 position, XMFLOAT3 scale, float rotation, int layer);
+
+	std::unique_ptr<DirectX::SpriteBatch>* GetSpriteBatches();
+
 	//Getters
 	ID3D11VertexShader* GetVertexShader(wstring name) const;
 	ID3D11PixelShader* GetPixelShader(wstring name) const;
 
 	ID3D11ShaderResourceView* GetShaderResourceView(wstring name) const;
+	ID3D11Resource* GetResource(wstring name) const;
 
 	Mesh* GetMesh(wstring name) const;
 
-	SpriteAnimation& GetAnimation(wstring name) const;
+	SpriteAnimation GetAnimation(wstring name) const;
 
 	int GetNumLayers();
 
 	bool IsTextureLoaded(wstring filename);
 
 	const XMFLOAT2& GetWindowDimensions() const;
+
+	HWND* GetHWND();
 
 	enum class InputLayouts
 	{
@@ -104,5 +111,9 @@ private:
 	bool CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob*& pblob);
 
 	ID3D11Device* m_pdevice = nullptr;
+
+	HWND* m_pHWND = nullptr;
+
+	std::unique_ptr<DirectX::SpriteBatch> m_pBatches[GraphicsManager::s_kNumLayers] = { nullptr };
 };
 

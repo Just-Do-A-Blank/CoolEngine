@@ -1,8 +1,6 @@
 #include "Scene.h"
-
-#include "Engine/GameObjects/GameObject.h"
+#include "Engine/GameObjects/RenderableGameObject.h"
 #include "Engine/Managers/SceneGraph.h"
-
 #include "Engine/Physics/Collision.h"
 
 Scene::Scene(string identifier)
@@ -13,14 +11,15 @@ Scene::Scene(string identifier)
 
 Scene::~Scene()
 {
+
 }
 
 void Scene::Update()
 {
-	unordered_map<string, GameObject*> gameObjectList = m_psceneGraph->GetAllGameObjects();
-	for (unordered_map<string, GameObject*>::iterator it = gameObjectList.begin(); it != gameObjectList.end(); ++it)
+	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllGameObjects();
+	for (int it = 0; it < gameObjectList.size(); ++it)
 	{
-		it->second->Update();
+		gameObjectList[it]->Update();
 	}
 
 	Collision::UpdateOBBs(gameObjectList);
@@ -29,22 +28,23 @@ void Scene::Update()
 
 void Scene::Render(RenderStruct& renderStruct)
 {
-	for (int i = 0; i < GraphicsManager::GetInstance()->GetNumLayers(); ++i)
-	{
-		unordered_map<string, GameObject*> gameObjectList = m_psceneGraph->GetAllGameObjects();
-		for (unordered_map<string, GameObject*>::iterator it = gameObjectList.begin(); it != gameObjectList.end(); ++it)
-		{
-			if (it->second->IsRenderable() == false || it->second->GetLayer() != i)
-			{
-				continue;
-			}
+	RenderableGameObject* prenderableGameObject = nullptr;
 
-			it->second->Render(renderStruct);
+	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllGameObjects();
+	for (int it = 0; it < gameObjectList.size(); ++it)
+	{
+		if (gameObjectList[it]->ContainsType(GameObjectType::RENDERABLE) == false)
+		{
+			continue;
 		}
+
+		prenderableGameObject = dynamic_cast<RenderableGameObject*>(gameObjectList[it]);
+
+		prenderableGameObject->Render(renderStruct);
 	}
 }
 
-unordered_map<string, GameObject*>& Scene::GetAllGameObjects()
+vector<GameObject*>& Scene::GetAllGameObjects()
 {
 	return m_psceneGraph->GetAllGameObjects();
 }

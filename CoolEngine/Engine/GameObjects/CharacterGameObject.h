@@ -1,18 +1,25 @@
 #pragma once
-#include "Engine/GameObjects/GameObject.h"
+#include "Engine/GameObjects/RenderableCollidableGameObject.h"
 
-class CharacterGameObject : public GameObject
+class CharacterGameObject : public RenderableCollidableGameObject
 {
-private:
+protected:
 
 	float m_moveSpeed = 100.0f;
 
 	float m_health = 42.0f;
+
+	XMFLOAT3 m_direction = XMFLOAT3{0, 0, 0};
 
 public:
 
 	CharacterGameObject(string identifier);
 	~CharacterGameObject();
 
+	virtual void Update();
+
 	float GetMoveSpeed() { return m_moveSpeed; }
+	void SetSpeed(float speed) { m_moveSpeed = speed; }
+
+
 };

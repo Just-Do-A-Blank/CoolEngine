@@ -1,71 +1,41 @@
 #include "UiCanvas.h"
-#include "Engine/GameUI/UiElement.h"
+#include "Engine/GameUI/GameUIComponent.h"
+#include "Engine/Graphics/Mesh.h"
+#include "Engine/ResourceDefines.h"
 #include "Engine/Managers/GraphicsManager.h"
 
-void UiCanvas::CreateEngineUI(ID3D11Device* pdevice)
+void UICanvas::CreateEngineUI(ID3D11Device* pdevice)
 {
 }
 
-UiCanvas::UiCanvas(string canvasIdentifier)
+UICanvas::UICanvas(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation) : GameUIComponent(identifier, position, scale, rotation)
 {
-	m_casvasIdentifier = canvasIdentifier;
-
-	InitGraphics();
+	m_canvasIdentifier = identifier;	
 }
 
-void UiCanvas::InitGraphics()
-{
-	m_pvertexShader = GraphicsManager::GetInstance()->GetVertexShader(PASSTHROUGH_VERTEX_SHADER_NAME);
-	m_ppixelShader = GraphicsManager::GetInstance()->GetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-
-	m_pmesh = GraphicsManager::GetInstance()->GetMesh(QUAD_MESH_NAME);
-}
-
-void UiCanvas::Render(RenderStruct& renderStruct)
-{
-	for (int i = 0; i < GraphicsManager::GetInstance()->GetNumLayers(); ++i)
-	{
-		unordered_map<string, UiElement*> uiElementList = m_pUiSceneGraph->GetAllGameObjects();
-		for (unordered_map<string, UiElement*>::iterator it = uiElementList.begin(); it != uiElementList.end(); ++it)
-		{
-			if (it->second->IsRenderable() == false || it->second->GetLayer() != i)
-			{
-				continue;
-			}
-
-			it->second->Render(renderStruct);
-		}
-	}
-}
-
-
-void UiCanvas::Update()
-{
-	for (int i = 0; i < GraphicsManager::GetInstance()->GetNumLayers(); ++i)
-	{
-		unordered_map<string, UiElement*> uiElementList = m_pUiSceneGraph->GetAllGameObjects();
-		for (unordered_map<string, UiElement*>::iterator it = uiElementList.begin(); it != uiElementList.end(); ++it)
-		{
-			it->second->Update();
-		}
-	}
-}
-
-void UiCanvas::ShowEngineUI(ID3D11Device* pdevice)
+void UICanvas::Render(RenderStruct& renderStruct)
 {
 }
 
-void UiCanvas::SetIsRenderable(bool& condition)
+void UICanvas::Update()
+{
+}
+
+void UICanvas::ShowEngineUI(ID3D11Device* pdevice)
+{
+}
+
+void UICanvas::SetIsRenderable(bool& condition)
 {
 	m_isRenderable = condition;
 }
 
-const string& UiCanvas::GetIdentifier()
+const string& UICanvas::GetCanvasIdentifier()
 {
-	return m_casvasIdentifier;
+	return m_canvasIdentifier;
 }
 
-Transform* UiCanvas::GetTransform()
+Transform* UICanvas::GetTransform()
 {
 	return m_transform;
 }
