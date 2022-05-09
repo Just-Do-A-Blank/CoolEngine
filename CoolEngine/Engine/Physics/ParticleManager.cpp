@@ -44,10 +44,6 @@ ParticleManager::~ParticleManager()
 
 void ParticleManager::Update(const float dTime)
 {
-	// Remove once delta time is fixed
-	if (dTime < 0 || dTime > 1000)
-		return;
-
 	for (unsigned int i = 0; i < PARTICLE_SIZE; ++i)
 	{
 		if (m_pParticles[i]->GetActive())

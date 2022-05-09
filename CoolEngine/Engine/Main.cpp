@@ -327,6 +327,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { -100,150 }, { 300,-75 }, 2.0f, 0.25f, 3, 100.0f, 25.0f, 25.0f, 0.1f, 1);
 
 	GameManager::GetInstance()->GetTimer()->Tick();
+	GameManager::GetInstance()->GetTimer()->Tick();
 
 #if _DEBUG
 	DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect("DebugRect1", XMFLOAT3(-100.0f, -300.0f, 0.0f), objectScale, DebugDrawManager::DebugColour::BEIGE);
