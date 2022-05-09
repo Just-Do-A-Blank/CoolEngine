@@ -215,7 +215,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	RenderableCollidableGameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj0Name);
 
 	XMFLOAT3 objectPos = XMFLOAT3(0, -200.0f, 0.0f);
-	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
+	XMFLOAT3 objectScale = XMFLOAT3(2, 2, 2);
 	bool isCollision = true;
 
 	pgameObject->SetMesh(QUAD_MESH_NAME);
@@ -233,7 +233,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj1Name);
 
 	objectPos = XMFLOAT3(10.0f, -200.0f, 0.0f);
-	objectScale = XMFLOAT3(100, 100, 100);
+	objectScale = XMFLOAT3(2, 2, 2);
 
 	pgameObject->SetMesh(QUAD_MESH_NAME);
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
@@ -249,7 +249,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//Init enemy object
 	pgameObject = pgameManager->GetGameObjectUsingIdentifier<EnemyGameObject>(enemyName);
 	objectPos = XMFLOAT3(-570, -25.0f, 0);
-	objectScale = XMFLOAT3(40, 40, 40);
+	objectScale = XMFLOAT3(0.8f, 0.8f, 0.8f);
 
 	pgameObject->SetMesh(QUAD_MESH_NAME);
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
@@ -266,7 +266,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject = pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName);
 
 	objectPos = XMFLOAT3(200.0f, -200.0f, 5.0f);
-	objectScale = XMFLOAT3(50, 50, 50);
+	objectScale = XMFLOAT3(1, 1, 1);
 
 	pgameObject->SetMesh(QUAD_MESH_NAME);
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
@@ -280,9 +280,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetShape(pbox);
 
 
-	g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, -200, 0), "TestMap");
+	//g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, -200, 0), "TestMap");
 
-	Pathfinding::GetInstance()->Initialize(g_testMap1);
+	//Pathfinding::GetInstance()->Initialize(g_testMap1);
 
 	// Observer for button inputs
 	ExampleObserver exampleObserver(new int(10), pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName));
@@ -303,7 +303,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	XMFLOAT3 pos = XMFLOAT3(-400, 250, 5);
 	XMFLOAT3 rot = XMFLOAT3(0, 0, 0);
-	XMFLOAT3 scale = XMFLOAT3(25, 25, 25);
+	XMFLOAT3 scale = XMFLOAT3(0.5f, 0.5f, 0.5f);
 	Transform trans = Transform();
 	trans.SetPosition(pos);
 	trans.SetRotation(rot);
@@ -312,7 +312,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	pos = XMFLOAT3(0, 250, 5);
 	rot = XMFLOAT3(0, 0, 0);
-	scale = XMFLOAT3(25, 25, 25);
+	scale = XMFLOAT3(0.5f, 0.5f, 0.5f);
 	trans.SetPosition(pos);
 	trans.SetRotation(rot);
 	trans.SetScale(scale);
@@ -320,7 +320,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	pos = XMFLOAT3(400, 250, 5);
 	rot = XMFLOAT3(0, 0, 0);
-	scale = XMFLOAT3(25, 25, 25);
+	scale = XMFLOAT3(0.5f, 0.5f, 0.5f);
 	trans.SetPosition(pos);
 	trans.SetRotation(rot);
 	trans.SetScale(scale);

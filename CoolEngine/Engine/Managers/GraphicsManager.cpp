@@ -237,8 +237,8 @@ void GraphicsManager::RenderQuad(ID3D11ShaderResourceView* psrv, XMFLOAT3 positi
 	SimpleMath::Rectangle rect;
 	rect.x = pixelCoords.x;
 	rect.y = pixelCoords.y;
-	rect.width = scale.x * 2.0f;
-	rect.height = scale.y * 2.0f;
+	rect.width = scale.x * 2.0f * 50.0f;
+	rect.height = scale.y * 2.0f * 50.0f;
 
 	m_pBatches[layer]->Draw(psrv, rect, nullptr, Colors::White, XMConvertToRadians(rotation), XMFLOAT2(desc.Width * 0.5f, desc.Height * 0.5f), SpriteEffects_None);
 
