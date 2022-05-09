@@ -1,5 +1,6 @@
 #pragma once
 #include "Transform.h"
+#include "Engine/GameObjects/UUID.h"
 #define FILEPATH_BUFFER_SIZE 200
 #define ANIM_NAME_SIZE 50
 
@@ -24,9 +25,12 @@ class GameObject : public EditorUIComponent
 	friend class FileIO;
 private:
 	string m_identifier;
+	CoolUUID m_UUID;
 
 protected:
 	Transform* m_transform;
+
+	GameObject* m_pTest = nullptr;
 
 #if EDITOR
 	virtual void CreateEngineUI() override;
@@ -36,7 +40,7 @@ protected:
 
 public:
 	GameObject();
-	GameObject(string identifier);
+	GameObject(string identifier, CoolUUID uuid);
 
 	virtual void Update();
 

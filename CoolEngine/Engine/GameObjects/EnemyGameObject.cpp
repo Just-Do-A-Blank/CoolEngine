@@ -2,7 +2,7 @@
 #include "Engine/Managers/GameManager.h"
 
 
-EnemyGameObject::EnemyGameObject(string identifier) : CharacterGameObject(identifier)
+EnemyGameObject::EnemyGameObject(string identifier, CoolUUID uuid) : CharacterGameObject(identifier, uuid)
 {
 
 }

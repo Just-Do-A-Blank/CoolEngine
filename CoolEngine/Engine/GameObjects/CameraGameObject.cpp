@@ -1,6 +1,6 @@
 #include "CameraGameObject.h"
 
-CameraGameObject::CameraGameObject(string identifier) : GameObject(identifier)
+CameraGameObject::CameraGameObject(string identifier, CoolUUID uuid) : GameObject(identifier, uuid)
 {
 
 }

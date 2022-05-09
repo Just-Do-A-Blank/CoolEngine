@@ -155,7 +155,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	float nearDepth = 0.01f;
 	float farDepth = 1000.0f;
 
-	g_pcamera = new CameraGameObject("Camera");
+	CoolUUID uuid;
+	g_pcamera = new CameraGameObject("Camera", uuid);
 	g_pcamera->Initialize(cameraPos, cameraForward, cameraUp, windowWidth, windowHeight, nearDepth, farDepth);
 
 	GameManager::GetInstance()->SetCamera(g_pcamera);
