@@ -588,7 +588,7 @@ bool EditorUI::Texture(const string& label, wstring& filepath, ID3D11ShaderResou
 
 	if(ImGui::BeginDragDropTarget())
 	{
-		const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowser", ImGuiDragDropFlags_SourceAllowNullID);
+		const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowserFile", ImGuiDragDropFlags_SourceAllowNullID);
 
 		if (ppayload != nullptr)
 		{
@@ -732,6 +732,21 @@ bool EditorUI::Animation(const string& label, wstring& filepath, ID3D11ShaderRes
 			}
 		}
 
+		if (ImGui::BeginDragDropTarget())
+		{
+			const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowserDirectory", ImGuiDragDropFlags_SourceAllowNullID);
+
+			if (ppayload != nullptr)
+			{
+				std::string tempString = std::string((char*)ppayload->Data, ppayload->DataSize / sizeof(char));
+				filepath = wstring(tempString.begin(), tempString.end());
+
+				interacted = true;
+			}
+
+			ImGui::EndDragDropTarget();
+		}
+
 		ImGui::TreePop();
 	}
 
@@ -797,6 +812,21 @@ void EditorUI::Animations(const string& label, unordered_map<string, SpriteAnima
 				updateAnim = filepath != L"";
 			}
 
+			if (ImGui::BeginDragDropTarget())
+			{
+				const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowserDirectory", ImGuiDragDropFlags_SourceAllowNullID);
+
+				if (ppayload != nullptr)
+				{
+					std::string tempString = std::string((char*)ppayload->Data, ppayload->DataSize / sizeof(char));
+					filepath = wstring(tempString.begin(), tempString.end());
+
+					updateAnim = true;
+				}
+
+				ImGui::EndDragDropTarget();
+			}
+
 			ImGui::TreePop();
 		}
 
@@ -824,7 +854,7 @@ void EditorUI::Animations(const string& label, unordered_map<string, SpriteAnima
 
 		if (anim.GetFrames() == nullptr)
 		{
-			if (GraphicsManager::GetInstance()->LoadAnimationFromFile(filepath) == false)
+			if (GraphicsManager::GetInstance()->LoadAnimationFromFile(filepath) == true)
 			{
 				animations[animName] = GraphicsManager::GetInstance()->GetAnimation(filepath);
 			}

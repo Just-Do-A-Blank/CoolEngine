@@ -96,6 +96,13 @@ void ContentBrowser::CreateDirectoryEntry(const WIN32_FIND_DATAA& kfileData)
 
 		m_sfilepath += "\\" + tempString;
 	}
+
+	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID) == true)
+	{
+		std::string fileName = std::string(kfileData.cFileName);
+		ImGui::SetDragDropPayload("ContentBrowserDirectory", fileName.c_str(), fileName.size() * sizeof(char), ImGuiCond_Once);
+		ImGui::EndDragDropSource();
+	}
 }
 
 void ContentBrowser::CreateFileEntry(const WIN32_FIND_DATAA& kfileData)
@@ -105,7 +112,7 @@ void ContentBrowser::CreateFileEntry(const WIN32_FIND_DATAA& kfileData)
 	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID) == true)
 	{
 		std::string filepath = m_sfilepath + "\\" + std::string(kfileData.cFileName);
-		ImGui::SetDragDropPayload("ContentBrowser", filepath.c_str(), filepath.size() * sizeof(char), ImGuiCond_Once);
+		ImGui::SetDragDropPayload("ContentBrowserFile", filepath.c_str(), filepath.size() * sizeof(char), ImGuiCond_Once);
 		ImGui::EndDragDropSource();
 	}
 }
