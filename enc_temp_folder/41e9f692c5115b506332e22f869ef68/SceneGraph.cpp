@@ -74,26 +74,7 @@ void SceneGraph<T>::MoveNode(TreeNode<T>* currentNode, TreeNode<T>* parentNode)
 		return;
 	}
 
-	if (currentNode->Sibling)
-	{
-		currentNode->Sibling->PreviousSibling = currentNode->PreviousSibling;
-
-	}
 	
-
-	if (currentNode->PreviousSibling)
-	{
-		currentNode->PreviousSibling->Sibling = currentNode->Sibling;
-	}
-	else
-	{
-		if (currentNode->PreviousParent)
-		{
-			currentNode->PreviousParent->Child = currentNode->Sibling;
-		}
-	}
-
-
 
 	if (parentNode->Child)
 	{

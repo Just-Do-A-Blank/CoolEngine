@@ -125,11 +125,11 @@ public:
 
 		if (ImGui::BeginDragDropTarget())
 		{
-			const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("SceneGraph");
+			const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("SceneGraphNode");
 
 			if (ppayload != nullptr)
 			{
-				objectPointer = (T*)*((GameObject**)ppayload->Data);
+				objectPointer = (*((TreeNode<T>**)ppayload->Data))->GameObject;
 			}
 
 			ImGui::EndDragDropTarget();

@@ -332,12 +332,33 @@ void EditorUI::TraverseTree(TreeNode<GameObject>* pcurrentNode, int& nodeCount)
 	}
 
 	bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)nodeCount, node_flags, pcurrentNode->GameObject->GetIdentifier().c_str(), nodeCount);
+
+	if (ImGui::BeginDragDropTarget())
+	{
+		const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("SceneGraphNode", ImGuiDragDropFlags_None);
+
+		if (ppayload != nullptr)
+		{
+			TreeNode<GameObject>* objectPointer = *(TreeNode<GameObject>**)ppayload->Data;
+
+			pgameManager->GetCurrentScene()->GetSceneGraph()->MoveNode(objectPointer, pcurrentNode);
+		}
+
+		ImGui::EndDragDropTarget();
+	}
 	
-	if (ImGui::BeginDragDropSource() == true)
+	/*if (ImGui::BeginDragDropSource() == true)
 	{
 		bool test = ImGui::SetDragDropPayload("SceneGraph", &pcurrentNode->GameObject, sizeof(pcurrentNode->GameObject), ImGuiCond_Once);
 		ImGui::EndDragDropSource();
+	}*/
+	if (ImGui::BeginDragDropSource() == true)
+	{
+		bool test = ImGui::SetDragDropPayload("SceneGraphNode", &pcurrentNode, sizeof(pcurrentNode), ImGuiCond_Once);
+		ImGui::EndDragDropSource();
 	}
+
+	
 	
 	if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
 	{

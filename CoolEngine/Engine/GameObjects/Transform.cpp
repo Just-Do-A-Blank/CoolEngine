@@ -176,5 +176,17 @@ void Transform::SetParentTransform(Transform* pparentTransform)
 
 void Transform::AddChildTransform(Transform* pchildTransform)
 {
-	m_childrenTransformList.push_back(pchildTransform);
+    m_childrenTransformList.push_back(pchildTransform);
+
+}
+
+void Transform::RemoveChildTransform(Transform* pchildTransform)
+{
+    for (vector<Transform*>::iterator it = m_childrenTransformList.begin(); it != m_childrenTransformList.end(); ++it)
+    {
+        if (*it._Ptr == pchildTransform)
+        {
+            m_childrenTransformList.erase(it);
+        }
+    }
 }

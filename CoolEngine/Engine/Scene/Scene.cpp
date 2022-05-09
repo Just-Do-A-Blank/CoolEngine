@@ -114,3 +114,8 @@ GameObject* Scene::GetSelectedGameObject()
 {
 	return m_pselectedGameObject;
 }
+
+SceneGraph<GameObject>* Scene::GetSceneGraph()
+{
+	return m_psceneGraph;
+}

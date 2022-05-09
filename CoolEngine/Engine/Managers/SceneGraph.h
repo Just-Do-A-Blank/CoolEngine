@@ -28,9 +28,10 @@ public:
 
 	TreeNode<T>* NewNode(T* gameObject);
 	TreeNode<T>* AddSibling(TreeNode<T>* currentNode, T* gameObject);
+	void MoveNode(TreeNode<T>* currentNode, TreeNode<T>* parentNode);
 	TreeNode<T>* AddChild(TreeNode<T>* currentNode, T* gameObject);
 	TreeNode<T>* TraverseTree(TreeNode<T>* currentNode);
-	void DeleteNode(TreeNode<T>* currenNode);
+	void DeleteNode(TreeNode<T>* currenNode, bool deleteData = true);
 
 	void DeleteGameObjectUsingIdentifier(string identifier);
 	void DeleteGameObjectUsingNode(TreeNode<T>* currenNode);

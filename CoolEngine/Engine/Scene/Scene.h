@@ -23,6 +23,8 @@ public:
 	virtual void Update();
 	virtual void Render(RenderStruct& renderStruct);
 
+	SceneGraph<GameObject>* GetSceneGraph();
+
 private:
 
 	vector<GameObject*>& GetAllGameObjects();
@@ -113,5 +115,6 @@ private:
 	TreeNode<GameObject>* GetTreeNode(GameObject* pgameObject);
 	string& GetSceneIdentifier();
 	GameObject* GetSelectedGameObject();
+	
 };
 
