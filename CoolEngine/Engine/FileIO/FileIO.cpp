@@ -1566,86 +1566,6 @@ void SimpleFileIO::SaveScene(std::string location)
 
 	json outData;
 
-
-	outData["CameraGameObject"] = {};
-	outData["CameraGameObject"]["GUID"] = {};
-	outData["CameraGameObject"]["Name"] = {};
-	outData["CameraGameObject"]["Position"] = {};
-	outData["CameraGameObject"]["Rotation"] = {};
-	outData["CameraGameObject"]["Scale"] = {};
-	outData["CameraGameObject"]["Window Height"] = {};
-	outData["CameraGameObject"]["Window Width"] = {};
-	outData["CameraGameObject"]["Near Depth"] = {};
-	outData["CameraGameObject"]["Far Depth"] = {};
-
-
-	outData["CharacterGameObject"] = {};
-	outData["CharacterGameObject"]["GUID"] = {};
-	outData["CharacterGameObject"]["Name"] = {};
-	outData["CharacterGameObject"]["Position"] = {};
-	outData["CharacterGameObject"]["Rotation"] = {};
-	outData["CharacterGameObject"]["Scale"] = {};
-	outData["CharacterGameObject"]["Layers"] = {};
-	outData["CharacterGameObject"]["Health"] = {};
-	outData["CharacterGameObject"]["Movement Speed"] = {};
-
-
-	outData["CollidableGameObject"] = {};
-	outData["CollidableGameObject"]["GUID"] = {};
-	outData["CollidableGameObject"]["Name"] = {};
-	outData["CollidableGameObject"]["Position"] = {};
-	outData["CollidableGameObject"]["Rotation"] = {};
-	outData["CollidableGameObject"]["Scale"] = {};
-	outData["CollidableGameObject"]["Shape"] = {};
-
-
-	outData["EnemyGameObject"] = {};
-	outData["EnemyGameObject"]["GUID"] = {};
-	outData["EnemyGameObject"]["Name"] = {};
-	outData["EnemyGameObject"]["Position"] = {};
-	outData["EnemyGameObject"]["Rotation"] = {};
-	outData["EnemyGameObject"]["Scale"] = {};
-	outData["EnemyGameObject"]["Layers"] = {};
-	outData["EnemyGameObject"]["Health"] = {};
-	outData["EnemyGameObject"]["Movement Speed"] = {};
-
-
-	outData["PlayerGameObject"] = {};
-	outData["PlayerGameObject"]["GUID"] = {};
-	outData["PlayerGameObject"]["Name"] = {};
-	outData["PlayerGameObject"]["Position"] = {};
-	outData["PlayerGameObject"]["Rotation"] = {};
-	outData["PlayerGameObject"]["Scale"] = {};
-	outData["PlayerGameObject"]["Layers"] = {};
-	outData["PlayerGameObject"]["Health"] = {};
-	outData["PlayerGameObject"]["Movement Speed"] = {};
-
-	outData["RenderableColliderableGameObject"] = {};
-	outData["RenderableColliderableGameObject"]["GUID"] = {};
-	outData["RenderableColliderableGameObject"]["Name"] = {};
-	outData["RenderableColliderableGameObject"]["Position"] = {};
-	outData["RenderableColliderableGameObject"]["Rotation"] = {};
-	outData["RenderableColliderableGameObject"]["Scale"] = {};
-	outData["RenderableColliderableGameObject"]["Layers"] = {};
-	outData["RenderableColliderableGameObject"]["Shape"] = {};
-
-	outData["RenderableGameObject"] = {};
-	outData["RenderableGameObject"]["GUID"] = {};
-	outData["RenderableGameObject"]["Name"] = {};
-	outData["RenderableGameObject"]["Position"] = {};
-	outData["RenderableGameObject"]["Rotation"] = {};
-	outData["RenderableGameObject"]["Scale"] = {};
-	outData["RenderableGameObject"]["Layers"] = {};
-
-	outData["TileMapCameraGameObject"] = {};
-	outData["TileMapCameraGameObject"]["GUID"] = {};
-	outData["TileMapCameraGameObject"]["Name"] = {};
-	outData["TileMapCameraGameObject"]["Position"] = {};
-	outData["TileMapCameraGameObject"]["Rotation"] = {};
-	outData["TileMapCameraGameObject"]["Scale"] = {};
-	outData["TileMapCameraGameObject"]["Speed Boost"] = {};
-	outData["TileMapCameraGameObject"]["Movement Speed"] = {};
-
 	GameManager* gameManager = GameManager::GetInstance();
 	Scene* scene = gameManager->GetCurrentScene();
 
@@ -1663,171 +1583,171 @@ void SimpleFileIO::SaveScene(std::string location)
 
 void SimpleFileIO::LoadGameObject(const char* fileAddress)
 {
-	json data = LoadJsonFile(fileAddress);
+	//json data = LoadJsonFile(fileAddress);
 
-	GameManager* gameManager = GameManager::GetInstance();
+	//GameManager* gameManager = GameManager::GetInstance();
 
-	GameObject gameObject((std::string)data.at(0)["Name"]);
-	gameObject.GetTransform()->SetPosition(XMFLOAT3(data.at(0)["Position"][0], data.at(0)["Position"][1], data.at(0)["Position"][2]));
-	gameObject.GetTransform()->SetRotation(XMFLOAT3(data.at(0)["Rotation"][0], data.at(0)["Rotation"][1], data.at(0)["Rotation"][2]));
-	gameObject.GetTransform()->SetScale(XMFLOAT3(data.at(0)["Scale"][0], data.at(0)["Scale"][1], data.at(0)["Scale"][2]));
+	////GameObject gameObject((std::string)data.at(0)["Name"]);
+	//gameObject.GetTransform()->SetPosition(XMFLOAT3(data.at(0)["Position"][0], data.at(0)["Position"][1], data.at(0)["Position"][2]));
+	//gameObject.GetTransform()->SetRotation(XMFLOAT3(data.at(0)["Rotation"][0], data.at(0)["Rotation"][1], data.at(0)["Rotation"][2]));
+	//gameObject.GetTransform()->SetScale(XMFLOAT3(data.at(0)["Scale"][0], data.at(0)["Scale"][1], data.at(0)["Scale"][2]));
 
-	if (data.at(0)["IsRenderable"] && data.at(0)["IsCollideable"])
-	{
-		RenderableCollidableGameObject* renderColliderObject = new RenderableCollidableGameObject();
+	//if (data.at(0)["IsRenderable"] && data.at(0)["IsCollideable"])
+	//{
+	//	RenderableCollidableGameObject* renderColliderObject = new RenderableCollidableGameObject();
 
-		*renderColliderObject->GetTransform() = *gameObject.GetTransform();
+	//	*renderColliderObject->GetTransform() = *gameObject.GetTransform();
 
-		//renderColliderObject->m_identifier = (std::string)data.at(0)["Name"];
+	//	//renderColliderObject->m_identifier = (std::string)data.at(0)["Name"];
 
-		if (data.at(0)["ColliderType"] == "CircleCollider")
-		{
-			Circle* pCircle = new Circle();
-			renderColliderObject->SetShape(pCircle);
-			pCircle->SetIsCollidable(true);
-			pCircle->SetIsTrigger(data.at(0)["IsTrigger"]);
-			pCircle->m_radius = data.at(0)["CircleRadius"];
-			pCircle->m_transform = renderColliderObject->GetTransform();
-		}
-		else
-		{
-			Box* pbox = new Box(gameObject.GetTransform());
-			renderColliderObject->SetShape(pbox);
-			pbox->SetIsCollidable(true);
-			pbox->SetIsTrigger(data.at(0)["IsTrigger"]);
-			pbox->m_transform = renderColliderObject->GetTransform();
-		}
+	//	if (data.at(0)["ColliderType"] == "CircleCollider")
+	//	{
+	//		Circle* pCircle = new Circle();
+	//		renderColliderObject->SetShape(pCircle);
+	//		pCircle->SetIsCollidable(true);
+	//		pCircle->SetIsTrigger(data.at(0)["IsTrigger"]);
+	//		pCircle->m_radius = data.at(0)["CircleRadius"];
+	//		pCircle->m_transform = renderColliderObject->GetTransform();
+	//	}
+	//	else
+	//	{
+	//		Box* pbox = new Box(gameObject.GetTransform());
+	//		renderColliderObject->SetShape(pbox);
+	//		pbox->SetIsCollidable(true);
+	//		pbox->SetIsTrigger(data.at(0)["IsTrigger"]);
+	//		pbox->m_transform = renderColliderObject->GetTransform();
+	//	}
 
-		renderColliderObject->SetMesh(QUAD_MESH_NAME);
-		bool isRenderable = data.at(0)["IsRenderable"];
-		renderColliderObject->SetIsRenderable(isRenderable);
-		if (data.at(0)["VertexShaderLocation"] == "NULL")
-		{
-			LOG("NO VERTEX SHADER WAS SPECIFIED")
-		}
-		else
-		{
-			wstring location = ToWstring((std::string)data.at(0)["VertexShaderLocation"]);
-			renderColliderObject->SetVertexShader(location);
-		}
-		if (data.at(0)["PixelShaderLocation"] == "NULL")
-		{
-			LOG("NO PIXEL SHADER WAS SPECIFIED")
-		}
-		else
-		{
-			wstring location = ToWstring((std::string)data.at(0)["PixelShaderLocation"]);
-			renderColliderObject->SetPixelShader(location);
-		}
-		if (data.at(0)["AlbedoLocation"] == "NULL")
-		{
-			renderColliderObject->SetAlbedo(L"Resources/Sprites/Brick.dds");
-		}
-		else
-		{
-			wstring location = ToWstring((std::string)data.at(0)["AlbedoLocation"]);
-			renderColliderObject->SetAlbedo(location);
-		}
+	//	renderColliderObject->SetMesh(QUAD_MESH_NAME);
+	//	bool isRenderable = data.at(0)["IsRenderable"];
+	//	renderColliderObject->SetIsRenderable(isRenderable);
+	//	if (data.at(0)["VertexShaderLocation"] == "NULL")
+	//	{
+	//		LOG("NO VERTEX SHADER WAS SPECIFIED")
+	//	}
+	//	else
+	//	{
+	//		wstring location = ToWstring((std::string)data.at(0)["VertexShaderLocation"]);
+	//		renderColliderObject->SetVertexShader(location);
+	//	}
+	//	if (data.at(0)["PixelShaderLocation"] == "NULL")
+	//	{
+	//		LOG("NO PIXEL SHADER WAS SPECIFIED")
+	//	}
+	//	else
+	//	{
+	//		wstring location = ToWstring((std::string)data.at(0)["PixelShaderLocation"]);
+	//		renderColliderObject->SetPixelShader(location);
+	//	}
+	//	if (data.at(0)["AlbedoLocation"] == "NULL")
+	//	{
+	//		renderColliderObject->SetAlbedo(L"Resources/Sprites/Brick.dds");
+	//	}
+	//	else
+	//	{
+	//		wstring location = ToWstring((std::string)data.at(0)["AlbedoLocation"]);
+	//		renderColliderObject->SetAlbedo(location);
+	//	}
 
-		std::vector<Frame> framesOfAnimation(data.at(0)["NumberOfAnimations"]);
+	//	std::vector<Frame> framesOfAnimation(data.at(0)["NumberOfAnimations"]);
 
-		if (framesOfAnimation.size() > 0)
-		{
-			for (size_t i = 0; i < framesOfAnimation.size(); ++i)
-			{
-				wstring animationFile = ToWstring((std::string)data.at(0)["AnimationFile"][i]);
-				GraphicsManager::GetInstance()->LoadAnimationFromFile(animationFile);
-				std::string name = data.at(0)["AnimationFile"][i];
-				SpriteAnimation* sAnimation = &GraphicsManager::GetInstance()->GetAnimation(ToWstring(name));
-				renderColliderObject->AddAnimation(name, *sAnimation);
-			}
-		}
-		//gameManager->CreateGameObject(renderColliderObject);
-	}
-	if (data.at(0)["IsRenderable"])
-	{
+	//	if (framesOfAnimation.size() > 0)
+	//	{
+	//		for (size_t i = 0; i < framesOfAnimation.size(); ++i)
+	//		{
+	//			wstring animationFile = ToWstring((std::string)data.at(0)["AnimationFile"][i]);
+	//			GraphicsManager::GetInstance()->LoadAnimationFromFile(animationFile);
+	//			std::string name = data.at(0)["AnimationFile"][i];
+	//			SpriteAnimation* sAnimation = &GraphicsManager::GetInstance()->GetAnimation(ToWstring(name));
+	//			renderColliderObject->AddAnimation(name, *sAnimation);
+	//		}
+	//	}
+	//	//gameManager->CreateGameObject(renderColliderObject);
+	//}
+	//if (data.at(0)["IsRenderable"])
+	//{
 
-		bool renderable = data.at(0)["IsRenderable"];
-		gameObject.ContainsType(GameObjectType::RENDERABLE);
-		RenderableGameObject* renderObject = new RenderableGameObject((std::string)data.at(0)["Name"]);
-		*renderObject->GetTransform() = *gameObject.GetTransform();
-		renderObject->SetMesh(QUAD_MESH_NAME);
-		renderObject->SetIsRenderable(renderable);
-		if (data.at(0)["VertexShaderLocation"] == "NULL")
-		{
-			LOG("NO VERTEX SHADER WAS SPECIFIED")
-		}
-		else
-		{
-			wstring location = ToWstring((std::string)data.at(0)["VertexShaderLocation"]);
-			renderObject->SetVertexShader(location);
-		}
-		if (data.at(0)["PixelShaderLocation"] == "NULL")
-		{
-			LOG("NO PIXEL SHADER WAS SPECIFIED")
-		}
-		else
-		{
-			wstring location = ToWstring((std::string)data.at(0)["PixelShaderLocation"]);
-			renderObject->SetPixelShader(location);
-		}
-		if (data.at(0)["AlbedoLocation"] == "NULL")
-		{
-			renderObject->SetAlbedo(L"Resources/Sprites/Brick.dds");
-		}
-		else
-		{
-			wstring location = ToWstring((std::string)data.at(0)["AlbedoLocation"]);
-			renderObject->SetAlbedo(location);
-		}
+	//	bool renderable = data.at(0)["IsRenderable"];
+	//	gameObject.ContainsType(GameObjectType::RENDERABLE);
+	//	RenderableGameObject* renderObject = new RenderableGameObject((std::string)data.at(0)["Name"]);
+	//	*renderObject->GetTransform() = *gameObject.GetTransform();
+	//	renderObject->SetMesh(QUAD_MESH_NAME);
+	//	renderObject->SetIsRenderable(renderable);
+	//	if (data.at(0)["VertexShaderLocation"] == "NULL")
+	//	{
+	//		LOG("NO VERTEX SHADER WAS SPECIFIED")
+	//	}
+	//	else
+	//	{
+	//		wstring location = ToWstring((std::string)data.at(0)["VertexShaderLocation"]);
+	//		renderObject->SetVertexShader(location);
+	//	}
+	//	if (data.at(0)["PixelShaderLocation"] == "NULL")
+	//	{
+	//		LOG("NO PIXEL SHADER WAS SPECIFIED")
+	//	}
+	//	else
+	//	{
+	//		wstring location = ToWstring((std::string)data.at(0)["PixelShaderLocation"]);
+	//		renderObject->SetPixelShader(location);
+	//	}
+	//	if (data.at(0)["AlbedoLocation"] == "NULL")
+	//	{
+	//		renderObject->SetAlbedo(L"Resources/Sprites/Brick.dds");
+	//	}
+	//	else
+	//	{
+	//		wstring location = ToWstring((std::string)data.at(0)["AlbedoLocation"]);
+	//		renderObject->SetAlbedo(location);
+	//	}
 
-		std::vector<Frame> framesOfAnimation(data.at(0)["NumberOfAnimations"]);
+	//	std::vector<Frame> framesOfAnimation(data.at(0)["NumberOfAnimations"]);
 
-		if (framesOfAnimation.size() > 0)
-		{
-			for (size_t i = 0; i < framesOfAnimation.size(); ++i)
-			{
-				wstring animationFile = ToWstring((std::string)data.at(0)["AnimationFile"][i]);
-				GraphicsManager::GetInstance()->LoadAnimationFromFile(animationFile);
-				std::string name = data.at(0)["AnimationFile"][i];
-				SpriteAnimation* sAnimation = &GraphicsManager::GetInstance()->GetAnimation(ToWstring(name));
-				renderObject->AddAnimation(name, *sAnimation);
-			}
-		}
-		//return renderObject;
-	}
+	//	if (framesOfAnimation.size() > 0)
+	//	{
+	//		for (size_t i = 0; i < framesOfAnimation.size(); ++i)
+	//		{
+	//			wstring animationFile = ToWstring((std::string)data.at(0)["AnimationFile"][i]);
+	//			GraphicsManager::GetInstance()->LoadAnimationFromFile(animationFile);
+	//			std::string name = data.at(0)["AnimationFile"][i];
+	//			SpriteAnimation* sAnimation = &GraphicsManager::GetInstance()->GetAnimation(ToWstring(name));
+	//			renderObject->AddAnimation(name, *sAnimation);
+	//		}
+	//	}
+	//	//return renderObject;
+	//}
 
-	bool trigger = false;
-	bool collideable = false;
+	//bool trigger = false;
+	//bool collideable = false;
 
-	if (data.at(0)["IsCollideable"])
-	{
-		CollidableGameObject* colliderObject = new CollidableGameObject((std::string)data.at(0)["Name"]);
-		*colliderObject->GetTransform() = *gameObject.GetTransform();
+	//if (data.at(0)["IsCollideable"])
+	//{
+	//	//CollidableGameObject* colliderObject = new CollidableGameObject((std::string)data.at(0)["Name"]);
+	//	*colliderObject->GetTransform() = *gameObject.GetTransform();
 
-		if (data.at(0)["IsTrigger"])
-		{
-			trigger = true;
-		}
-		if (data.at(0)["ColliderType"] == "CircleCollider")
-		{
-			Circle* pCircle = new Circle();
-			colliderObject->SetShape(pCircle);
-			pCircle->SetIsCollidable(true);
-			pCircle->SetIsTrigger(trigger);
-			pCircle->m_radius = data.at(0)["CircleRadius"];
-			pCircle->m_transform = gameObject.GetTransform();
-		}
-		else
-		{
-			Box* pbox = new Box(gameObject.GetTransform());
-			colliderObject->SetShape(pbox);
-			pbox->SetIsCollidable(true);
-			pbox->SetIsTrigger(trigger);
-			pbox->m_transform = gameObject.GetTransform();
-		}
-		//return colliderObject;
-	}
+	//	if (data.at(0)["IsTrigger"])
+	//	{
+	//		trigger = true;
+	//	}
+	//	if (data.at(0)["ColliderType"] == "CircleCollider")
+	//	{
+	//		Circle* pCircle = new Circle();
+	//		colliderObject->SetShape(pCircle);
+	//		pCircle->SetIsCollidable(true);
+	//		pCircle->SetIsTrigger(trigger);
+	//		pCircle->m_radius = data.at(0)["CircleRadius"];
+	//		pCircle->m_transform = gameObject.GetTransform();
+	//	}
+	//	else
+	//	{
+	//		Box* pbox = new Box(gameObject.GetTransform());
+	//		colliderObject->SetShape(pbox);
+	//		pbox->SetIsCollidable(true);
+	//		pbox->SetIsTrigger(trigger);
+	//		pbox->m_transform = gameObject.GetTransform();
+	//	}
+	//	//return colliderObject;
+	//}
 }
 
 json SimpleFileIO::LoadJsonFile(const char* fileAddress)

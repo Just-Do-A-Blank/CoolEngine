@@ -73,11 +73,7 @@ void TileMapCameraGameObject::KeyReleased(KeyReleasedEvent* e)
 void TileMapCameraGameObject::Serialize(json& jsonData)
 {
 
-	//int gUID = ;
-	std::string gUID = "GUID: ";
-
-	std::string name = "Name: ";
-	//name.append();
+	GameObject::Serialize(jsonData);
 
 
 	float position[3] = { m_transform->GetPosition().x ,m_transform->GetPosition().y ,m_transform->GetPosition().z };
@@ -85,13 +81,11 @@ void TileMapCameraGameObject::Serialize(json& jsonData)
 	float scale[3] = { m_transform->GetScale().x ,m_transform->GetScale().y ,m_transform->GetScale().z };
 
 
-	jsonData["TileMapCameraGameObject"]["GUID"].push_back(gUID);
-	jsonData["TileMapCameraGameObject"]["Name"].push_back(name);
-	jsonData["TileMapCameraGameObject"]["Position"].push_back(position);
-	jsonData["TileMapCameraGameObject"]["Rotation"].push_back(rotation);
-	jsonData["TileMapCameraGameObject"]["Scale"].push_back(scale);
-	jsonData["TileMapCameraGameObject"]["Speed Boost"].push_back(m_speedBoost);
-	jsonData["TileMapCameraGameObject"]["Movement Speed"].push_back(m_moveSpeed);
+	jsonData[std::to_string((int)m_gameObjectType)]["Position"].push_back(position);
+	jsonData[std::to_string((int)m_gameObjectType)]["Rotation"].push_back(rotation);
+	jsonData[std::to_string((int)m_gameObjectType)]["Scale"].push_back(scale);
+	jsonData[std::to_string((int)m_gameObjectType)]["Speed Boost"].push_back(m_speedBoost);
+	jsonData[std::to_string((int)m_gameObjectType)]["Movement Speed"].push_back(m_moveSpeed);
 
 }
 

@@ -67,14 +67,13 @@ void EnemyGameObject::Serialize(json& jsonData)
 	float scale[3] = { m_transform->GetScale().x ,m_transform->GetScale().y ,m_transform->GetScale().z };
 
 
-	jsonData["EnemyGameObject"]["GUID"].push_back(gUID);
-	jsonData["EnemyGameObject"]["Name"].push_back(name);
-	jsonData["EnemyGameObject"]["Position"].push_back(position);
-	jsonData["EnemyGameObject"]["Rotation"].push_back(rotation);
-	jsonData["EnemyGameObject"]["Scale"].push_back(scale);
-	jsonData["EnemyGameObject"]["Layers"].push_back(m_health);
-	jsonData["EnemyGameObject"]["Health"].push_back(m_layer);
-	jsonData["EnemyGameObject"]["Movement Speed"].push_back(m_moveSpeed);
+	GameObject::Serialize(jsonData);
+	jsonData[std::to_string((int)m_gameObjectType)]["Position"].push_back(position);
+	jsonData[std::to_string((int)m_gameObjectType)]["Rotation"].push_back(rotation);
+	jsonData[std::to_string((int)m_gameObjectType)]["Scale"].push_back(scale);
+	jsonData[std::to_string((int)m_gameObjectType)]["Layers"].push_back(m_health);
+	jsonData[std::to_string((int)m_gameObjectType)]["Health"].push_back(m_layer);
+	jsonData[std::to_string((int)m_gameObjectType)]["Movement Speed"].push_back(m_moveSpeed);
 }
 
 void EnemyGameObject::Deserialize(json& jsonData)

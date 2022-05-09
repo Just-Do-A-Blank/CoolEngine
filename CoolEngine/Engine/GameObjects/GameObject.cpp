@@ -29,6 +29,9 @@ void GameObject::Update()
 
 void GameObject::Serialize(json& jsonData)
 {
+	jsonData[std::to_string((int)m_gameObjectType)]["GUID"].push_back(*m_UUID);
+	jsonData[std::to_string((int)m_gameObjectType)]["Name"].push_back(m_identifier);
+
 }
 
 void GameObject::Deserialize(json& jsonData)

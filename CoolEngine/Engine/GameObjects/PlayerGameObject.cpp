@@ -24,14 +24,13 @@ void PlayerGameObject::Serialize(json& jsonData)
 	float scale[3] = { m_transform->GetScale().x ,m_transform->GetScale().y ,m_transform->GetScale().z };
 
 
-	jsonData["PlayerGameObject"]["GUID"].push_back(gUID);
-	jsonData["PlayerGameObject"]["Name"].push_back(name);
-	jsonData["PlayerGameObject"]["Position"].push_back(position);
-	jsonData["PlayerGameObject"]["Rotation"].push_back(rotation);
-	jsonData["PlayerGameObject"]["Scale"].push_back(scale);
-	jsonData["PlayerGameObject"]["Layers"].push_back(m_health);
-	jsonData["PlayerGameObject"]["Health"].push_back(m_layer);
-	jsonData["PlayerGameObject"]["Movement Speed"].push_back(m_moveSpeed);
+	GameObject::Serialize(jsonData);
+	jsonData[std::to_string((int)m_gameObjectType)]["Position"].push_back(position);
+	jsonData[std::to_string((int)m_gameObjectType)]["Rotation"].push_back(rotation);
+	jsonData[std::to_string((int)m_gameObjectType)]["Scale"].push_back(scale);
+	jsonData[std::to_string((int)m_gameObjectType)]["Layers"].push_back(m_health);
+	jsonData[std::to_string((int)m_gameObjectType)]["Health"].push_back(m_layer);
+	jsonData[std::to_string((int)m_gameObjectType)]["Movement Speed"].push_back(m_moveSpeed);
 
 }
 

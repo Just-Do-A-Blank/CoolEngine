@@ -33,6 +33,7 @@ private:
 	CoolUUID m_UUID;
 
 protected:
+
 	Transform* m_transform;
 
 	GameObject* m_pTest = nullptr;
