@@ -10,7 +10,6 @@ class ParticleManager : public Singleton<ParticleManager>
 {
 private:
 	Particle* m_pParticles[PARTICLE_SIZE];
-	//ParticleSystem* m_pParticleSystems[PARTICLE_MANAGER_SIZE];
 	std::vector<ParticleSystem*> m_pParticleSystems;
 
 	// These are used by every particle

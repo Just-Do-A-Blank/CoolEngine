@@ -35,7 +35,6 @@ ParticleManager::ParticleManager()
 ParticleManager::~ParticleManager()
 {
 	delete[] m_pParticles;
-	//delete[] m_pParticleSystems;
 	m_pParticleSystems.clear();
 	delete m_pMesh;
 
