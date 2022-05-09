@@ -1,8 +1,7 @@
 #pragma once
 #include "CameraGameObject.h"
 #include "Engine/Managers/Events/EventObserver.h"
-#include "Engine/Managers/Events/KeyPressedEvent.h"
-#include "Engine/Managers/Events/KeyReleasedEvent.h"
+#include "Engine/Managers/Events/KeyEvents.h"
 
 
 class TileMapCameraGameObject : public CameraGameObject, public Observer

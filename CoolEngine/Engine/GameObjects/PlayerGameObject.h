@@ -1,8 +1,7 @@
 #pragma once
 #include "Engine/GameObjects/CharacterGameObject.h"
 #include "Engine/Managers/Events/MouseEvents.h"
-#include "Engine/Managers/Events/KeyPressedEvent.h"
-#include "Engine/Managers/Events/KeyReleasedEvent.h"
+#include "Engine/Managers/Events/KeyEvents.h"
 
 class PlayerGameObject : public CharacterGameObject
 {

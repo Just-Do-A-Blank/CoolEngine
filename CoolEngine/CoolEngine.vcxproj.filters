@@ -393,15 +393,6 @@
     <ClInclude Include="Engine\Managers\Events\EventObserverExamples.h">
       <Filter>Engine\Managers\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Managers\Events\KeyEvent.h">
-      <Filter>Engine\Managers\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Managers\Events\KeyPressedEvent.h">
-      <Filter>Engine\Managers\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Managers\Events\KeyReleasedEvent.h">
-      <Filter>Engine\Managers\Events</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Managers\Events\MouseEvents.h">
       <Filter>Engine\Managers\Events</Filter>
     </ClInclude>
@@ -413,6 +404,9 @@
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\WeaponGameObject.h">
       <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\KeyEvents.h">
+      <Filter>Engine\Managers\Events</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

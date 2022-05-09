@@ -4,6 +4,13 @@
 
 PlayerGameObject::PlayerGameObject() : CharacterGameObject()
 {
+    EventManager::Instance()->AddClient(EventType::KeyPressed, this);
+    EventManager::Instance()->AddClient(EventType::KeyReleased, this);
+    EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
+    EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
+    EventManager::Instance()->AddClient(EventType::MouseMoved, this);
+
+    m_gameObjectType |= GameObjectType::PLAYER;
 }
 
 PlayerGameObject::PlayerGameObject(string identifier) : CharacterGameObject(identifier)

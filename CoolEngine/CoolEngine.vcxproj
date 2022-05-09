@@ -132,9 +132,7 @@
     <ClInclude Include="Engine\Managers\Events\EventObserver.h" />
     <ClInclude Include="Engine\Managers\Events\EventObserverExamples.h" />
     <ClInclude Include="Engine\Managers\Events\Events.h" />
-    <ClInclude Include="Engine\Managers\Events\KeyEvent.h" />
-    <ClInclude Include="Engine\Managers\Events\KeyPressedEvent.h" />
-    <ClInclude Include="Engine\Managers\Events\KeyReleasedEvent.h" />
+    <ClInclude Include="Engine\Managers\Events\KeyEvents.h" />
     <ClInclude Include="Engine\Managers\Events\MouseEvents.h" />
     <ClInclude Include="Engine\Managers\FontManager.h" />
     <ClInclude Include="Engine\Managers\GameManager.h" />

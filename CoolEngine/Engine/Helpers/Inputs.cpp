@@ -1,15 +1,12 @@
 #include "Inputs.h"
 #include "Engine/Managers/Events/EventManager.h"
 
-// Key events
-#include "Engine/Managers/Events/KeyPressedEvent.h"
-#include "Engine/Managers/Events/KeyReleasedEvent.h"
-
+#include "Engine/Managers/Events/KeyEvents.h"
 #include "Engine/Managers/Events/MouseEvents.h"
 
 #if EDITOR
-#include "Engine/Includes/IMGUI/imgui.h"
-#include "Engine/EditorUI/EditorUI.h"
+    #include "Engine/Includes/IMGUI/imgui.h"
+    #include "Engine/EditorUI/EditorUI.h"
 #endif
 
 bool Inputs::IsKeyPressed(int ikeycode)
@@ -29,6 +26,7 @@ void Inputs::Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam)
 	case(WM_KEYDOWN):
 	case(WM_KEYUP):
 	{
+
 #if EDITOR
 		ImGuiIO io = ImGui::GetIO();
 
@@ -37,6 +35,7 @@ void Inputs::Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam)
 			return;
 		}
 #endif
+
 	}
 	break;
 
@@ -50,6 +49,7 @@ void Inputs::Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam)
 	case(WM_XBUTTONUP):
 	case(WM_MOUSEMOVE):
 	{
+
 #if EDITOR
 		ImGuiIO io = ImGui::GetIO();
 
@@ -58,6 +58,7 @@ void Inputs::Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam)
 			return;
 		}
 #endif
+
 	}
 	break;
 
