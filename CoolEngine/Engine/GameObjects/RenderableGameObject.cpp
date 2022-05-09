@@ -37,7 +37,14 @@ void RenderableGameObject::Render(RenderStruct& renderStruct)
 		return;
 	}
 
-	GraphicsManager::GetInstance()->RenderQuad(m_palbedoSRV, m_transform->GetPosition(), m_transform->GetScale(), m_transform->GetRotation().z, m_layer);
+	if (m_pcurrentAnimation != nullptr)
+	{
+		GraphicsManager::GetInstance()->RenderQuad(m_pcurrentAnimation->GetCurrentFrame(), m_transform->GetPosition(), m_transform->GetScale(), m_transform->GetRotation().z, m_layer);
+	}
+	else
+	{
+		GraphicsManager::GetInstance()->RenderQuad(m_palbedoSRV, m_transform->GetPosition(), m_transform->GetScale(), m_transform->GetRotation().z, m_layer);
+	}
 }
 
 void RenderableGameObject::Update()
