@@ -7,7 +7,7 @@ class CollidableGameObject : virtual public GameObject
 {
 public:
 	CollidableGameObject();
-	CollidableGameObject(string identifier);
+	CollidableGameObject(string identifier, CoolUUID uuid);
 
 	//Getters
 	Shape* GetShape();

@@ -16,10 +16,10 @@ public:
 	Tile();
 
 	// Load from parameters
-	Tile(wstring path, string identifier);
+	Tile(wstring path, string identifier, CoolUUID uuid);
 
 	// Load empty
-	Tile(string identifier);
+	Tile(string identifier, CoolUUID uuid);
 
 	//Setup
 

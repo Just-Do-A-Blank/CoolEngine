@@ -10,7 +10,7 @@ RenderableGameObject::RenderableGameObject() : GameObject()
 	m_gameObjectType |= GameObjectType::RENDERABLE;
 }
 
-RenderableGameObject::RenderableGameObject(string identifier) : GameObject(identifier)
+RenderableGameObject::RenderableGameObject(string identifier, CoolUUID uuid) : GameObject(identifier, uuid)
 {
 	InitGraphics();
 
@@ -37,7 +37,25 @@ void RenderableGameObject::Render(RenderStruct& renderStruct)
 		return;
 	}
 
-	GraphicsManager::GetInstance()->RenderQuad(m_palbedoSRV, m_transform->GetPosition(), m_transform->GetScale(), m_transform->GetRotation().z, m_layer);
+	if (m_pcurrentAnimation != nullptr)
+	{
+		GraphicsManager::GetInstance()->RenderQuad(m_pcurrentAnimation->GetCurrentFrame(), m_transform->GetPosition(), m_transform->GetScale(), m_transform->GetRotation().z, m_layer);
+	}
+	else
+	{
+		XMMATRIX worldMatrix = m_transform->GetWorldMatrix();
+		XMVECTOR scaleVector;
+		XMVECTOR rotationVector;
+		XMVECTOR positionVector;
+		DirectX::XMMatrixDecompose(&scaleVector, &rotationVector, &positionVector, worldMatrix);
+
+		XMFLOAT3 scale;
+		XMFLOAT3 position;
+		XMStoreFloat3(&scale, scaleVector);
+		XMStoreFloat3(&position, positionVector);
+
+		GraphicsManager::GetInstance()->RenderQuad(m_palbedoSRV, position, scale, m_transform->GetAccumulatedRotation().z, m_layer);
+	}
 }
 
 void RenderableGameObject::Update()

@@ -213,12 +213,14 @@ void FileIO::LoadMap(json file, GameManager* scene)
 {
 	json tileFile = file["TileMap"];
 
+	CoolUUID uuid;
+
 	for (size_t i = 0; i < file["MetaData"].at(0)["NumberOfTileZones"]; ++i)
 	{
 		XMFLOAT3 position(tileFile.at(i)["Position"][0], tileFile.at(i)["Position"][1], tileFile.at(i)["Position"][2]);
 		XMFLOAT3 scale(tileFile.at(i)["Scale"][0], tileFile.at(i)["Scale"][1], tileFile.at(i)["Scale"][2]);
 		wstring location = ToWstring((std::string)tileFile.at(i)["TileData"]);
-		TileMap* tileMap = new TileMap(location, position, tileFile.at(i)["Name"]);
+		TileMap* tileMap = new TileMap(location, position, tileFile.at(i)["Name"], uuid);
 		std::string name = tileMap->GetIdentifier();
 		scene->CreateGameObject<GameObject>(name);
 		GameObject* gameObject = scene->GetGameObjectUsingIdentifier<GameObject>(name);
@@ -291,7 +293,8 @@ GameObject* FileIO::LoadGameObject(json file, int objectCount)
 {
 	json data = file;
 
-	GameObject gameObject((std::string)data.at(objectCount)["Name"]);
+	CoolUUID uuid;
+	GameObject gameObject((std::string)data.at(objectCount)["Name"], uuid);
 	gameObject.GetTransform()->SetPosition(XMFLOAT3(data.at(objectCount)["Position"][0], data.at(objectCount)["Position"][1], data.at(objectCount)["Position"][2]));
 	gameObject.GetTransform()->SetRotation(XMFLOAT3(data.at(objectCount)["Rotation"][0], data.at(objectCount)["Rotation"][1], data.at(objectCount)["Rotation"][2]));
 	gameObject.GetTransform()->SetScale(XMFLOAT3(data.at(objectCount)["Scale"][0], data.at(objectCount)["Scale"][1], data.at(objectCount)["Scale"][2]));
@@ -377,7 +380,7 @@ GameObject* FileIO::LoadGameObject(json file, int objectCount)
 
 		bool renderable = data.at(objectCount)["IsRenderable"];
 		gameObject.ContainsType(GameObjectType::RENDERABLE);
-		RenderableGameObject* renderObject = new RenderableGameObject((std::string)data.at(objectCount)["Name"]);
+		RenderableGameObject* renderObject = new RenderableGameObject((std::string)data.at(objectCount)["Name"], uuid);
 		*renderObject->GetTransform() = *gameObject.GetTransform();
 		renderObject->SetMesh(QUAD_MESH_NAME);
 		renderObject->SetIsRenderable(renderable);
@@ -434,7 +437,7 @@ GameObject* FileIO::LoadGameObject(json file, int objectCount)
 
 	if (data.at(objectCount)["IsCollideable"])
 	{
-		CollidableGameObject* colliderObject = new CollidableGameObject((std::string)data.at(objectCount)["Name"]);
+		CollidableGameObject* colliderObject = new CollidableGameObject((std::string)data.at(objectCount)["Name"], uuid);
 		*colliderObject->GetTransform() = *gameObject.GetTransform();
 
 		if (data.at(objectCount)["IsTrigger"])

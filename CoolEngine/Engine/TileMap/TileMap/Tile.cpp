@@ -12,11 +12,11 @@ Tile::Tile() : RenderableGameObject()
 {
 }
 
-Tile::Tile(string identifier) : RenderableGameObject(identifier)
+Tile::Tile(string identifier, CoolUUID uuid) : RenderableGameObject(identifier, uuid)
 {
 }
 
-Tile::Tile(wstring path, string identifier) : RenderableGameObject(identifier)
+Tile::Tile(wstring path, string identifier, CoolUUID uuid) : RenderableGameObject(identifier, uuid)
 {
 	InitAnimation(path);
 }
@@ -78,20 +78,22 @@ void Tile::CreateEngineUI()
 	{
 		if (EditorUI::Animation("Animation", m_animPath, nullptr) == true)
 		{
-			AddAnimation("default", m_animPath);
-			PlayAnimation("default");
-
-			s_ptileMap->AddAnimPath(this, m_animPath);
+			if (AddAnimation("default", m_animPath) == true)
+			{
+				PlayAnimation("default");
+				s_ptileMap->AddAnimPath(this, m_animPath);
+			}
 		}
 	}
 	else
 	{
 		if (EditorUI::Animation("Animation", m_animPath, m_pcurrentAnimation->GetCurrentFrame()) == true)
 		{
-			AddAnimation("default", m_animPath);
-			PlayAnimation("default");
-
-			s_ptileMap->AddAnimPath(this, m_animPath);
+			if (AddAnimation("default", m_animPath) == true)
+			{
+				PlayAnimation("default");
+				s_ptileMap->AddAnimPath(this, m_animPath);
+			}
 		}
 	}
 

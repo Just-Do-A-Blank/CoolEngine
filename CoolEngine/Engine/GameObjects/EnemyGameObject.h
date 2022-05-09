@@ -29,7 +29,7 @@ class EnemyGameObject :
 {
 
 public:
-    EnemyGameObject(string identifier); 
+    EnemyGameObject(string identifier, CoolUUID uuid);
     void Update();
 
 

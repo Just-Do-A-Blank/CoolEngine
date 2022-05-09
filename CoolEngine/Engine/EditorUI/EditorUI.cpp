@@ -4,6 +4,7 @@
 #include "Engine/Scene/Scene.h"
 #include "Engine/Includes/IMGUI/imgui_internal.h"
 #include <ShlObj_core.h>
+#include <Engine/Physics/ParticleSystem.h>
 
 #if EDITOR
 HWND* EditorUI::m_phwnd = nullptr;
@@ -153,7 +154,9 @@ void EditorUI::DrawSceneGraphWindow()
 
 			if (ImGui::MenuItem("ParticleSystem"))
 			{
+				m_createGameObjectClicked = true;
 
+				m_createObjectType = GameObjectType::PARTICLESYSTEM;
 			}
 
 			ImGui::EndMenu();
@@ -205,6 +208,10 @@ void EditorUI::DrawSceneGraphWindow()
 
 			case GameObjectType::BASE:
 				pgameManager->CreateGameObject<GameObject>(gameObjectName);
+				break;
+
+			case GameObjectType::PARTICLESYSTEM:
+				pgameManager->CreateGameObject<ParticleSystem>(gameObjectName);
 				break;
 			}
 
@@ -264,7 +271,7 @@ void EditorUI::DrawSceneManagementWindow()
 
 			if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
 			{
-				OpenFileExplorer(L"DDS files\0*.dds\0", m_texNameBuffer, _countof(m_texNameBuffer));
+				OpenFileExplorer(L"Scene files\0*.json\0", m_texNameBuffer, _countof(m_texNameBuffer));
 			}
 
 			if (ImGui::MenuItem("Delete Scene", "Ctrl+D"))
@@ -325,6 +332,13 @@ void EditorUI::TraverseTree(TreeNode<GameObject>* pcurrentNode, int& nodeCount)
 	}
 
 	bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)nodeCount, node_flags, pcurrentNode->GameObject->GetIdentifier().c_str(), nodeCount);
+	
+	if (ImGui::BeginDragDropSource() == true)
+	{
+		bool test = ImGui::SetDragDropPayload("SceneGraph", &pcurrentNode->GameObject, sizeof(pcurrentNode->GameObject), ImGuiCond_Once);
+		ImGui::EndDragDropSource();
+	}
+	
 	if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
 	{
 		if (nodeCount == m_gameObjectNodeClicked)
@@ -588,7 +602,7 @@ bool EditorUI::Texture(const string& label, wstring& filepath, ID3D11ShaderResou
 
 	if(ImGui::BeginDragDropTarget())
 	{
-		const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowser", ImGuiDragDropFlags_SourceAllowNullID);
+		const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowserFile", ImGuiDragDropFlags_SourceAllowNullID);
 
 		if (ppayload != nullptr)
 		{
@@ -732,6 +746,21 @@ bool EditorUI::Animation(const string& label, wstring& filepath, ID3D11ShaderRes
 			}
 		}
 
+		if (ImGui::BeginDragDropTarget())
+		{
+			const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowserDirectory", ImGuiDragDropFlags_SourceAllowNullID);
+
+			if (ppayload != nullptr)
+			{
+				std::string tempString = std::string((char*)ppayload->Data, ppayload->DataSize / sizeof(char));
+				filepath = wstring(tempString.begin(), tempString.end());
+
+				interacted = true;
+			}
+
+			ImGui::EndDragDropTarget();
+		}
+
 		ImGui::TreePop();
 	}
 
@@ -797,6 +826,21 @@ void EditorUI::Animations(const string& label, unordered_map<string, SpriteAnima
 				updateAnim = filepath != L"";
 			}
 
+			if (ImGui::BeginDragDropTarget())
+			{
+				const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowserDirectory", ImGuiDragDropFlags_SourceAllowNullID);
+
+				if (ppayload != nullptr)
+				{
+					std::string tempString = std::string((char*)ppayload->Data, ppayload->DataSize / sizeof(char));
+					filepath = wstring(tempString.begin(), tempString.end());
+
+					updateAnim = true;
+				}
+
+				ImGui::EndDragDropTarget();
+			}
+
 			ImGui::TreePop();
 		}
 
@@ -824,7 +868,7 @@ void EditorUI::Animations(const string& label, unordered_map<string, SpriteAnima
 
 		if (anim.GetFrames() == nullptr)
 		{
-			if (GraphicsManager::GetInstance()->LoadAnimationFromFile(filepath) == false)
+			if (GraphicsManager::GetInstance()->LoadAnimationFromFile(filepath) == true)
 			{
 				animations[animName] = GraphicsManager::GetInstance()->GetAnimation(filepath);
 			}

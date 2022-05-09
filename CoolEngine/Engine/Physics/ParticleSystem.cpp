@@ -1,9 +1,10 @@
 #include "ParticleSystem.h"
 #include "Engine/Physics/ParticleManager.h"
+#include "Engine/Managers/GameManager.h"
 
 #include "Engine/EditorUI/EditorUI.h"
 
-ParticleSystem::ParticleSystem(string identifier) : GameObject(identifier)
+ParticleSystem::ParticleSystem(string identifier, CoolUUID uuid) : GameObject(identifier, uuid)
 {
 	m_systemLife = 0.0f;
 	m_timer = 0.0f;
@@ -21,6 +22,14 @@ ParticleSystem::ParticleSystem(string identifier) : GameObject(identifier)
 	m_velocityRand = 0;
 	m_accelRand = 0;
 	m_lifeRand = 0;
+
+	ID3D11ShaderResourceView* psRV = GraphicsManager::GetInstance()->GetShaderResourceView(DEFAULT_TILE);
+	if (psRV == nullptr)
+	{
+		LOG("Failed to set the albedo SRV as one with that name doesn't exist!");
+		return;
+	}
+	m_pTexture = psRV;
 }
 
 ParticleSystem::~ParticleSystem()
@@ -64,23 +73,28 @@ void ParticleSystem::SetRandomness(float randPos, float randVel, float randAccel
 	m_lifeRand = randLife;
 }
 
-void ParticleSystem::Update(const float dTime)
+void ParticleSystem::Update()
 {
-	// Particle generation process
-	if (m_timer >= m_spawnInterval)
+	if (m_isActive)
 	{
-		for (unsigned int i = 0; i < m_spawnNumber; ++i)
-		{
-			ParticleManager::GetInstance()->AddParticle(*m_transform, m_particleLife, m_pTexture, m_velocity, m_accel, m_positionRand, m_velocityRand, m_accelRand, m_lifeRand, m_layer);
-		}
-		m_timer = 0;
-	}
-	m_timer += dTime;
+		const float dTime = GameManager::GetInstance()->GetTimer()->DeltaTime();
 
-	m_systemLife -= dTime;
-	if (m_systemLife <= 0.0f)
-	{
-		m_isActive = false;
+		// Particle generation process
+		if (m_timer >= m_spawnInterval)
+		{
+			for (unsigned int i = 0; i < m_spawnNumber; ++i)
+			{
+				ParticleManager::GetInstance()->AddParticle(*m_transform, m_particleLife, m_pTexture, m_velocity, m_accel, m_positionRand, m_velocityRand, m_accelRand, m_lifeRand, m_layer);
+			}
+			m_timer = 0;
+		}
+		m_timer += dTime;
+
+		m_systemLife -= dTime;
+		if (m_systemLife <= 0.0f)
+		{
+			m_isActive = false;
+		}
 	}
 }
 
