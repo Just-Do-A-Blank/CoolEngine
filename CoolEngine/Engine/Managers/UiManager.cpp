@@ -104,6 +104,14 @@ void UIManager::DeleteSelectedUIComponent()
 	m_pselectedUINode = nullptr;
 }
 
+void UIManager::Serialize(nlohmann::json& data)
+{
+}
+
+void UIManager::Deserialize(nlohmann::json& data)
+{
+}
+
 vector<GameUIComponent*>& UIManager::GetAllUIComponents()
 {
     return m_pUISceneGraph->GetAllGameObjects();

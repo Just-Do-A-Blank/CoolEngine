@@ -352,6 +352,23 @@ ID3D11SamplerState* GraphicsManager::GetSampler(Samplers sampler)
 	return m_samplers[(int)sampler];
 }
 
+void GraphicsManager::Serialize(nlohmann::json& data)
+{
+	for (std::unordered_map<wstring, ID3D11ShaderResourceView*>::iterator it = m_textureSRVs.begin(); it != m_textureSRVs.end(); ++it)
+	{
+		data["GraphicsManager"]["Textures"].push_back(it->first);
+	}
+
+	for (std::unordered_map<wstring, std::vector<Frame>*>::iterator it = m_animationFrames.begin(); it != m_animationFrames.end(); ++it)
+	{
+		data["GraphicsManager"]["Animations"].push_back(it->first);
+	}
+}
+
+void GraphicsManager::Deserialize(nlohmann::json& data)
+{
+}
+
 void GraphicsManager::CreateInputLayouts()
 {
 	m_inputLayouts.resize((int)InputLayouts::COUNT);

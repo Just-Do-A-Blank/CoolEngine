@@ -1,5 +1,5 @@
 #pragma once
-#include "Engine/Structure/Singleton.h"
+#include "Engine/Structure/Manager.h"
 #include "Engine/Helpers/DebugHelper.h"
 #include "Engine/GameUI/UICanvas.h"
 #include "Engine/Managers/GraphicsManager.h"
@@ -11,8 +11,7 @@
 class GameUIComponent;
 class TextComponent;
 
-class UIManager :
-    public Singleton<UIManager>
+class UIManager : public Manager<UIManager>
 {
 private:
 	ID3D11Device* m_pDevice;
@@ -62,6 +61,9 @@ public:
 
     void DeleteSelectedUIComponent();
 
+
+    void Serialize(nlohmann::json& data) override;
+    void Deserialize(nlohmann::json& data) override;
 
     //Getters
 	vector<GameUIComponent*>& GetAllUIComponents();

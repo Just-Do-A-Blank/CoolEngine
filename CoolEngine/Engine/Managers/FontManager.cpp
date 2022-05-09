@@ -6,7 +6,7 @@ using namespace rapidxml;
 
 void FontManager::LoadFont(string fontInfoFilePath, wstring fontTextureFilePath, string fontName)
 {
-	ID3D11ShaderResourceView* psRV = GraphicsManager::GetInstance()->GetShaderResourceView(fontTextureFilePath);
+	ID3D11ShaderResourceView* psRV = GraphicsManager::GetInstance()->GetShaderResourceView(fontTextureFilePath + L".dds");
 
 	if (psRV == nullptr)
 	{
@@ -19,7 +19,7 @@ void FontManager::LoadFont(string fontInfoFilePath, wstring fontTextureFilePath,
 	m_fontList.push_back(fontName);
 
 	FILE* readFile;
-	fopen_s(&readFile, fontInfoFilePath.c_str(), "rb");
+	fopen_s(&readFile, (fontInfoFilePath + ".xml").c_str(), "rb");
 
 	fseek(readFile, 0, SEEK_END);
 	int fileSize = ftell(readFile);
@@ -118,6 +118,23 @@ void FontManager::UpdateVertexBuffer()
 vector<string>& FontManager::GetFontNames()
 {
 	return m_fontList;
+}
+
+void FontManager::Serialize(nlohmann::json& data)
+{
+	for (std::unordered_map<string, std::wstring>::iterator it = m_fontTexturePathMap.begin(); it != m_fontTexturePathMap.end(); ++it)
+	{
+		data["FontManager"]["Paths"].push_back(it->first);
+	}
+
+	for (std::unordered_map<string, XMINT2>::iterator it = m_fontTextureDimension.begin(); it != m_fontTextureDimension.end(); ++it)
+	{
+		data["FontManager"]["Dimensions"].push_back(it->first);
+	}
+}
+
+void FontManager::Deserialize(nlohmann::json& data)
+{
 }
 
 wstring& FontManager::GetFontTextureFilePath(string fontName)

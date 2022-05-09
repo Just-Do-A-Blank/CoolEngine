@@ -91,6 +91,9 @@
     <Filter Include="Engine\Includes\DirectXTK">
       <UniqueIdentifier>{6232a7dd-79ec-414a-a6a5-86f0a9a5aec9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Includes\json">
+      <UniqueIdentifier>{6237882f-9709-4e52-95ee-e1af0c58904f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -109,9 +112,6 @@
       <Filter>Engine\Managers</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Managers\AudioManager.h">
-      <Filter>Engine\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Managers\SceneGraph.h">
       <Filter>Engine\Managers</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Graphics\ConstantBuffer.h">
@@ -387,6 +387,15 @@
     <ClInclude Include="Engine\GameObjects\TileMapCameraGameObject.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Includes\json.hpp">
+      <Filter>Engine\Includes\json</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Structure\Manager.h">
+      <Filter>Engine\Structure</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\SceneGraph.h">
+      <Filter>Engine\Structure</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -405,9 +414,6 @@
       <Filter>Engine\Managers</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Managers\AudioManager.cpp">
-      <Filter>Engine\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Managers\SceneGraph.cpp">
       <Filter>Engine\Managers</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Graphics\DDSTextureLoader.cpp">
@@ -550,6 +556,9 @@
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\TileMapCameraGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\SceneGraph.cpp">
+      <Filter>Engine\Structure</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

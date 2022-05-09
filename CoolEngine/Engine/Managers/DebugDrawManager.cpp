@@ -53,4 +53,12 @@ void DebugDrawManager::Update()
 	}
 }
 
+void DebugDrawManager::Serialize(nlohmann::json& data)
+{
+}
+
+void DebugDrawManager::Deserialize(nlohmann::json& data)
+{
+}
+
 #endif //_DEBUG
