@@ -1,6 +1,6 @@
 #pragma once
 #include "Engine/Physics/Shape.h"
-
+#include "Engine/Managers/DebugDrawManager.h"
 class Box : public Shape
 {
 public:
@@ -45,22 +45,13 @@ public:
 	{
 		m_halfSize = { m_transform->GetScale().x * 50.0f, m_transform->GetScale().y * 50.0f };
 
-		/*XMFLOAT3 upVector = m_transform->GetUpVector();
-		XMFLOAT3 leftVector = m_transform->GetLeftVector();
-		float xScale = m_halfSize.x;
-		float yScale = m_halfSize.y;*/
-		/*XMFLOAT2 topLeft = { m_transform->GetPosition().x + (leftVector.x + upVector.x) * xScale, m_transform->GetPosition().y + (leftVector.y + upVector.y) * yScale };
-		XMFLOAT2 topRight = { m_transform->GetPosition().x + (-leftVector.x + upVector.x) * xScale, m_transform->GetPosition().y + (-leftVector.y + upVector.y) * yScale };
-		XMFLOAT2 bottomLeft = { m_transform->GetPosition().x + (leftVector.x - upVector.x) * xScale, m_transform->GetPosition().y + (leftVector.y - upVector.y) * yScale };
-		XMFLOAT2 bottomRight = { m_transform->GetPosition().x + (-leftVector.x - upVector.x) * xScale, m_transform->GetPosition().y + (-leftVector.y - upVector.y) * yScale };*/
-
-		XMVECTOR topLeft = XMVectorSet( - m_halfSize.x, - m_halfSize.y, 0, 1 );
-		XMVECTOR topRight = XMVectorSet(m_halfSize.x, - m_halfSize.y, 0, 1 );
-		XMVECTOR bottomLeft = XMVectorSet(- m_halfSize.x,  m_halfSize.y, 0, 1 );
-		XMVECTOR bottomRight = XMVectorSet(m_halfSize.x, m_halfSize.y, 0, 1 );
+		XMVECTOR topLeft = XMVectorSet(-m_halfSize.x, m_halfSize.y, 0, 1);
+		XMVECTOR topRight = XMVectorSet(m_halfSize.x, m_halfSize.y, 0, 1);
+		XMVECTOR bottomLeft = XMVectorSet(-m_halfSize.x, -m_halfSize.y, 0, 1);
+		XMVECTOR bottomRight = XMVectorSet(m_halfSize.x, -m_halfSize.y, 0, 1);
 
 		XMMATRIX rot = m_transform->GetRotationMatrix();
-		//XMMATRIX rot = XMMatrixTranspose(m_transform->GetRotationMatrix());
+
 		topLeft = XMVector3Transform(topLeft, rot);
 		topRight = XMVector3Transform(topRight, rot);
 		bottomLeft = XMVector3Transform(bottomLeft, rot);
