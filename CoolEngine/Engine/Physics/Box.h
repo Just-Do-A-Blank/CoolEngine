@@ -43,7 +43,7 @@ public:
 	// Based on gamedev.stackexchange.com/questions/20703/bounding-box-of-a-rotated-rectangle-2d
 	void SetShapeDimensions(XMFLOAT3 scale)
 	{
-		m_halfSize = { m_transform->GetScale().x * 50.0f, m_transform->GetScale().y * 50.0f };
+		m_halfSize = { m_transform->GetScale().x, m_transform->GetScale().y };
 
 		XMVECTOR topLeft = XMVectorSet(-m_halfSize.x, m_halfSize.y, 0, 1);
 		XMVECTOR topRight = XMVectorSet(m_halfSize.x, m_halfSize.y, 0, 1);
