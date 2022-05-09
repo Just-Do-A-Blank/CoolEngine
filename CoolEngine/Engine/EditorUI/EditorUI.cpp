@@ -271,7 +271,7 @@ void EditorUI::DrawSceneManagementWindow()
 
 			if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
 			{
-				OpenFileExplorer(L"DDS files\0*.dds\0", m_texNameBuffer, _countof(m_texNameBuffer));
+				OpenFileExplorer(L"Scene files\0*.json\0", m_texNameBuffer, _countof(m_texNameBuffer));
 			}
 
 			if (ImGui::MenuItem("Delete Scene", "Ctrl+D"))
