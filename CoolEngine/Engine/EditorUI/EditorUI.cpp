@@ -4,6 +4,7 @@
 #include "Engine/Scene/Scene.h"
 #include "Engine/Includes/IMGUI/imgui_internal.h"
 #include <ShlObj_core.h>
+#include <Engine/Physics/ParticleSystem.h>
 
 #if EDITOR
 HWND* EditorUI::m_phwnd = nullptr;
@@ -153,7 +154,9 @@ void EditorUI::DrawSceneGraphWindow()
 
 			if (ImGui::MenuItem("ParticleSystem"))
 			{
+				m_createGameObjectClicked = true;
 
+				m_createObjectType = GameObjectType::PARTICLESYSTEM;
 			}
 
 			ImGui::EndMenu();
@@ -205,6 +208,10 @@ void EditorUI::DrawSceneGraphWindow()
 
 			case GameObjectType::BASE:
 				pgameManager->CreateGameObject<GameObject>(gameObjectName);
+				break;
+
+			case GameObjectType::PARTICLESYSTEM:
+				pgameManager->CreateGameObject<ParticleSystem>(gameObjectName);
 				break;
 			}
 

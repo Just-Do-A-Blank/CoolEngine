@@ -11,6 +11,7 @@ enum class GameObjectType
 	CHARACTER = 8,
 	ENEMY = 16,
 	PLAYER = 32,
+	PARTICLESYSTEM = 64,
 	COUNT
 };
 
