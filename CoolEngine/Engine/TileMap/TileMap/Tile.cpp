@@ -78,20 +78,22 @@ void Tile::CreateEngineUI()
 	{
 		if (EditorUI::Animation("Animation", m_animPath, nullptr) == true)
 		{
-			AddAnimation("default", m_animPath);
-			PlayAnimation("default");
-
-			s_ptileMap->AddAnimPath(this, m_animPath);
+			if (AddAnimation("default", m_animPath) == true)
+			{
+				PlayAnimation("default");
+				s_ptileMap->AddAnimPath(this, m_animPath);
+			}
 		}
 	}
 	else
 	{
 		if (EditorUI::Animation("Animation", m_animPath, m_pcurrentAnimation->GetCurrentFrame()) == true)
 		{
-			AddAnimation("default", m_animPath);
-			PlayAnimation("default");
-
-			s_ptileMap->AddAnimPath(this, m_animPath);
+			if (AddAnimation("default", m_animPath) == true)
+			{
+				PlayAnimation("default");
+				s_ptileMap->AddAnimPath(this, m_animPath);
+			}
 		}
 	}
 
@@ -105,5 +107,29 @@ void Tile::CreateEngineUI()
 
 	ImGui::Spacing();
 	ImGui::Separator();
+}
+void Tile::CopyTile(Tile* ptile)
+{
+#if TILE_MAP_TOOL
+	SetSpriteIndex(ptile->m_spriteIndex);
+	SetAnimIndex(ptile->m_animIndex);
+#endif
+
+	SetLayer(ptile->m_layer);
+	SetIsPassable(ptile->m_isPassable);
+
+	SetAlbedo(ptile->m_palbedoSRV);
+
+	m_animations.clear();
+
+	for (std::unordered_map<std::string, SpriteAnimation>::iterator it = ptile->m_animations.begin(); it != ptile->m_animations.end(); ++it)
+	{
+		AddAnimation(it->first, it->second);
+	}
+
+	if (ptile->m_currentAnimationName != "")
+	{
+		PlayAnimation(ptile->m_currentAnimationName);
+	}
 }
 #endif

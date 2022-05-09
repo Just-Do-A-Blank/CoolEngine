@@ -35,6 +35,71 @@ public:
 	void DeleteGameObjectUsingIdentifier(string identifier);
 	void DeleteGameObjectUsingNode(TreeNode<T>* currenNode);
 
+	template <typename K>
+	void DeleteGameObjectUsingNode(TreeNode<T>* currentNode, K* pgameObject)
+	{
+		if (currentNode->Child)
+		{
+			DeleteNode(currentNode->Child);
+		}
+
+		if (currentNode->PreviousParent)
+		{
+			if (currentNode->Sibling)
+			{
+				currentNode->PreviousParent->Child = currentNode->Sibling;
+				currentNode->Sibling->PreviousParent = currentNode->PreviousParent;
+				currentNode->Sibling->PreviousSibling = nullptr;
+			}
+			else
+			{
+				currentNode->PreviousParent->Child = nullptr;
+			}
+		}
+		else if (currentNode->PreviousSibling)
+		{
+			if (currentNode->Sibling)
+			{
+				currentNode->PreviousSibling->Sibling = currentNode->Sibling;
+				currentNode->Sibling->PreviousSibling = currentNode->PreviousSibling;
+				currentNode->Sibling->PreviousParent = nullptr;
+			}
+			else
+			{
+				currentNode->PreviousSibling->Sibling = nullptr;
+			}
+		}
+		else
+		{
+			m_rootNode = currentNode->Sibling;
+			if (currentNode->Sibling)
+			{
+				currentNode->Sibling->PreviousParent = nullptr;
+				currentNode->Sibling->PreviousSibling = nullptr;
+			}
+		}
+
+		string gameObjectName = currentNode->GameObject->GetIdentifier();
+		m_sceneTreeNodeMap.erase(gameObjectName);
+		m_sceneGameObjectsMap.erase(gameObjectName);
+		m_sceneGameObjectList.erase(remove(m_sceneGameObjectList.begin(), m_sceneGameObjectList.end(), currentNode->GameObject));
+
+		delete pgameObject;
+		currentNode->GameObject = nullptr;
+		delete currentNode;
+		currentNode = nullptr;
+	}
+
+	template<typename K>
+	void DeleteGameObject(K* pgameObject, std::string identifier)
+	{
+		unordered_map<string, TreeNode<T>*>::iterator it = m_sceneTreeNodeMap.find(identifier);
+		if (it->second)
+		{
+			DeleteGameObjectUsingNode(it->second, pgameObject);
+		}
+	}
+
 	TreeNode<T>* GetRootNode();
 	TreeNode<T>* GetNodeUsingIdentifier(string identifier);
 

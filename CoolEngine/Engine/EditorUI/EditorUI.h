@@ -33,6 +33,10 @@ private:
 	bool m_createSceneClicked = false;
 	bool m_createGameObjectClicked = false;
 	bool m_deleteGameObjectClicked = false;
+	static bool s_bisViewportHovered;
+
+	static DirectX::XMFLOAT2 s_viewportSize;
+	static DirectX::XMFLOAT2 s_viewportPosition;
 
 	int num = 1;
 
@@ -58,6 +62,15 @@ public:
 	void InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, HWND* hwnd);
 	void ShutdownIMGUI();
 	void DrawEditorUI(ID3D11Device* pdevice);
+
+	static void SetIsViewportHovered(bool bHovered);
+	static bool GetIsViewportHovered();
+
+	static void SetViewportSize(DirectX::XMFLOAT2 size);
+	static DirectX::XMFLOAT2 GetViewportSize();
+
+	static void SetViewportPosition(DirectX::XMFLOAT2 pos);
+	static DirectX::XMFLOAT2 GetViewportPosition();
 
 	void Update();
 

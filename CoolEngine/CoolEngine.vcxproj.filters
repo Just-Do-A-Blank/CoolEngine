@@ -385,6 +385,9 @@
       <Filter>Engine\EditorUI</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\UUID.h">
+          <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\TileMapCameraGameObject.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
   </ItemGroup>
@@ -549,6 +552,9 @@
       <Filter>Engine\EditorUI</Filter>
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\UUID.cpp">
+          <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\TileMapCameraGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
   </ItemGroup>

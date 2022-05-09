@@ -76,8 +76,7 @@ public:
 	/// <summary>
 	/// Tick timer down to zero, and generate particles in pattern according to type
 	/// </summary>
-	/// <param name="dTime"></param>
-	void Update(const float dTime);
+	void Update();
 
 #if EDITOR
 	void CreateEngineUI() override;

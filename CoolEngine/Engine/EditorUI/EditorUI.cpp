@@ -4,9 +4,13 @@
 #include "Engine/Scene/Scene.h"
 #include "Engine/Includes/IMGUI/imgui_internal.h"
 #include <ShlObj_core.h>
+#include <Engine/Physics/ParticleSystem.h>
 
 #if EDITOR
 HWND* EditorUI::m_phwnd = nullptr;
+bool EditorUI::s_bisViewportHovered = false;
+DirectX::XMFLOAT2 EditorUI::s_viewportSize = DirectX::XMFLOAT2(0, 0);
+DirectX::XMFLOAT2 EditorUI::s_viewportPosition = DirectX::XMFLOAT2(0, 0);
 
 void EditorUI::InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, HWND* phwnd)
 {
@@ -55,6 +59,16 @@ void EditorUI::DrawEditorUI(ID3D11Device* pdevice)
 
 }
 
+void EditorUI::SetIsViewportHovered(bool bHovered)
+{
+	s_bisViewportHovered = bHovered;
+}
+
+bool EditorUI::GetIsViewportHovered()
+{
+	return s_bisViewportHovered;
+}
+
 void EditorUI::Update()
 {
 	ImGuiIO& io = ImGui::GetIO();
@@ -62,6 +76,26 @@ void EditorUI::Update()
 	io.DisplaySize = ImVec2(GraphicsManager::GetInstance()->GetWindowDimensions().x, GraphicsManager::GetInstance()->GetWindowDimensions().y);
 
 	io.DeltaTime = GameManager::GetInstance()->GetTimer()->DeltaTime();
+}
+
+void EditorUI::SetViewportSize(DirectX::XMFLOAT2 size)
+{
+	s_viewportSize = size;
+}
+
+DirectX::XMFLOAT2 EditorUI::GetViewportSize()
+{
+	return s_viewportSize;
+}
+
+void EditorUI::SetViewportPosition(DirectX::XMFLOAT2 position)
+{
+	s_viewportPosition = position;
+}
+
+DirectX::XMFLOAT2 EditorUI::GetViewportPosition()
+{
+	return s_viewportPosition;
 }
 
 void EditorUI::DrawSceneGraphWindow()
@@ -120,7 +154,9 @@ void EditorUI::DrawSceneGraphWindow()
 
 			if (ImGui::MenuItem("ParticleSystem"))
 			{
+				m_createGameObjectClicked = true;
 
+				m_createObjectType = GameObjectType::PARTICLESYSTEM;
 			}
 
 			ImGui::EndMenu();
@@ -172,6 +208,10 @@ void EditorUI::DrawSceneGraphWindow()
 
 			case GameObjectType::BASE:
 				pgameManager->CreateGameObject<GameObject>(gameObjectName);
+				break;
+
+			case GameObjectType::PARTICLESYSTEM:
+				pgameManager->CreateGameObject<ParticleSystem>(gameObjectName);
 				break;
 			}
 
@@ -231,7 +271,7 @@ void EditorUI::DrawSceneManagementWindow()
 
 			if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
 			{
-				OpenFileExplorer(L"DDS files\0*.dds\0", m_texNameBuffer, _countof(m_texNameBuffer));
+				OpenFileExplorer(L"Scene files\0*.json\0", m_texNameBuffer, _countof(m_texNameBuffer));
 			}
 
 			if (ImGui::MenuItem("Delete Scene", "Ctrl+D"))
@@ -562,7 +602,7 @@ bool EditorUI::Texture(const string& label, wstring& filepath, ID3D11ShaderResou
 
 	if(ImGui::BeginDragDropTarget())
 	{
-		const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowser", ImGuiDragDropFlags_SourceAllowNullID);
+		const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowserFile", ImGuiDragDropFlags_SourceAllowNullID);
 
 		if (ppayload != nullptr)
 		{
@@ -706,6 +746,21 @@ bool EditorUI::Animation(const string& label, wstring& filepath, ID3D11ShaderRes
 			}
 		}
 
+		if (ImGui::BeginDragDropTarget())
+		{
+			const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowserDirectory", ImGuiDragDropFlags_SourceAllowNullID);
+
+			if (ppayload != nullptr)
+			{
+				std::string tempString = std::string((char*)ppayload->Data, ppayload->DataSize / sizeof(char));
+				filepath = wstring(tempString.begin(), tempString.end());
+
+				interacted = true;
+			}
+
+			ImGui::EndDragDropTarget();
+		}
+
 		ImGui::TreePop();
 	}
 
@@ -771,6 +826,21 @@ void EditorUI::Animations(const string& label, unordered_map<string, SpriteAnima
 				updateAnim = filepath != L"";
 			}
 
+			if (ImGui::BeginDragDropTarget())
+			{
+				const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowserDirectory", ImGuiDragDropFlags_SourceAllowNullID);
+
+				if (ppayload != nullptr)
+				{
+					std::string tempString = std::string((char*)ppayload->Data, ppayload->DataSize / sizeof(char));
+					filepath = wstring(tempString.begin(), tempString.end());
+
+					updateAnim = true;
+				}
+
+				ImGui::EndDragDropTarget();
+			}
+
 			ImGui::TreePop();
 		}
 
@@ -798,7 +868,7 @@ void EditorUI::Animations(const string& label, unordered_map<string, SpriteAnima
 
 		if (anim.GetFrames() == nullptr)
 		{
-			if (GraphicsManager::GetInstance()->LoadAnimationFromFile(filepath) == false)
+			if (GraphicsManager::GetInstance()->LoadAnimationFromFile(filepath) == true)
 			{
 				animations[animName] = GraphicsManager::GetInstance()->GetAnimation(filepath);
 			}
