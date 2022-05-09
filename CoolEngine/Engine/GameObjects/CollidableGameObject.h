@@ -19,6 +19,9 @@ public:
 	virtual void CreateEngineUI() override;
 #endif
 
+	void Serialize(json& jsonData);
+	void Deserialize(json& jsonData);
+
 protected:
 	Shape* m_pcollider = nullptr;
 

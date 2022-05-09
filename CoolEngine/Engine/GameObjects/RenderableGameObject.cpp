@@ -140,6 +140,32 @@ bool RenderableGameObject::PlayAnimation(std::string name)
 	return true;
 }
 
+void RenderableGameObject::Serialize(json& jsonData)
+{
+	//int gUID = ;
+	std::string gUID = "GUID: ";
+
+	std::string name = "Name: ";
+	//name.append();
+
+
+	float position[3] = { m_transform->GetPosition().x ,m_transform->GetPosition().y ,m_transform->GetPosition().z };
+	float rotation[3] = { m_transform->GetRotation().x ,m_transform->GetRotation().y ,m_transform->GetRotation().z };
+	float scale[3] = { m_transform->GetScale().x ,m_transform->GetScale().y ,m_transform->GetScale().z };
+
+
+	jsonData["RenderableGameObject"]["GUID"].push_back(gUID);
+	jsonData["RenderableGameObject"]["Name"].push_back(name);
+	jsonData["RenderableGameObject"]["Position"].push_back(position);
+	jsonData["RenderableGameObject"]["Rotation"].push_back(rotation);
+	jsonData["RenderableGameObject"]["Scale"].push_back(scale);
+	jsonData["RenderableGameObject"]["Layers"].push_back(m_layer);
+}
+
+void RenderableGameObject::Deserialize(json& jsonData)
+{
+}
+
 SpriteAnimation* RenderableGameObject::GetCurrentAnimation()
 {
 	return m_pcurrentAnimation;

@@ -8,6 +8,8 @@ public:
 	PlayerGameObject(string identifier);
 	~PlayerGameObject();
 
+	void Serialize(json& jsonData);
+	void Deserialize(json& jsonData);
 protected:
 
 private:

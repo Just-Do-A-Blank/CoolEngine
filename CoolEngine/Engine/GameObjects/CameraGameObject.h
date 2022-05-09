@@ -26,6 +26,9 @@ public:
 
     void Update();
 
+    void Serialize(json& jsonData);
+    void Deserialize(json& jsonData);
+
 	//Getters
 	XMFLOAT4X4 GetView() const;
 	XMFLOAT4X4 GetProjection() const;

@@ -22,6 +22,14 @@ void GameObject::Update()
 
 }
 
+void GameObject::Serialize(json& jsonData)
+{
+}
+
+void GameObject::Deserialize(json& jsonData)
+{
+}
+
 #if EDITOR
 void GameObject::ShowEngineUI()
 {

@@ -65,6 +65,9 @@ public:
 
 	bool PlayAnimation(std::string name);
 
+	void Serialize(json& jsonData);
+	void Deserialize(json& jsonData);
+
 #if EDITOR
 	virtual void CreateEngineUI() override;
 #endif

@@ -280,6 +280,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetShape(pbox);
 
 
+
+
 	g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, -200, 0), "TestMap");
 
 	Pathfinding::GetInstance()->Initialize(g_testMap1);
@@ -328,6 +330,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	GameManager::GetInstance()->GetTimer()->Tick();
 
+	SimpleFileIO::SaveScene("TheLongAwaitedCringe2");
+
 #if _DEBUG
 	DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect("DebugRect1", XMFLOAT3(-100.0f, -300.0f, 0.0f), objectScale, DebugDrawManager::DebugColour::BEIGE);
 #endif //_DEBUG
@@ -358,6 +362,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 #endif
 
 	CleanupDevice();
+
 
 	return (int)msg.wParam;
 }

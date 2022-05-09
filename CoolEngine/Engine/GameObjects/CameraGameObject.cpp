@@ -52,6 +52,35 @@ void CameraGameObject::Update()
 	CreateViewMatrix();
 }
 
+void CameraGameObject::Serialize(json& jsonData)
+{
+
+	//int gUID = ;
+	std::string gUID = "GUID: ";
+
+	std::string name = "Name: ";
+	//name.append();
+
+	float position[3] = { m_transform->GetPosition().x ,m_transform->GetPosition().y ,m_transform->GetPosition().z };
+	float rotation[3] = { m_transform->GetRotation().x ,m_transform->GetRotation().y ,m_transform->GetRotation().z };
+	float scale[3] = { m_transform->GetScale().x ,m_transform->GetScale().y ,m_transform->GetScale().z };
+
+	jsonData["CameraGameObject"]["GUID"].push_back(gUID);
+	jsonData["CameraGameObject"]["Name"].push_back(name);
+	jsonData["CameraGameObject"]["Position"].push_back(position);
+	jsonData["CameraGameObject"]["Rotation"].push_back(rotation);
+	jsonData["CameraGameObject"]["Scale"].push_back(scale);
+	jsonData["CameraGameObject"]["Window Height"].push_back(m_windowHeight);
+	jsonData["CameraGameObject"]["Window Width"].push_back(m_windowWidth);
+	jsonData["CameraGameObject"]["Near Depth"].push_back(m_nearDepth);
+	jsonData["CameraGameObject"]["Far Depth"].push_back(m_farDepth);
+
+}
+
+void CameraGameObject::Deserialize(json& jsonData)
+{
+}
+
 XMFLOAT4X4 CameraGameObject::GetView() const
 {
 	return m_viewMatrix;

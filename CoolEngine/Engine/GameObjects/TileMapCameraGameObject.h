@@ -15,6 +15,9 @@ public:
 	void KeyPressed(KeyPressedEvent* e);
 	void KeyReleased(KeyReleasedEvent* e);
 
+	void Serialize(json& jsonData);
+	void Deserialize(json& jsonData);
+
 protected:
 
 private:

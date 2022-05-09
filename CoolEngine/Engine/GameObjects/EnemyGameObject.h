@@ -47,6 +47,8 @@ public:
     const XMFLOAT3 GetDirection() const;
     const EnemyState GetEnemyState() const; //will be changed to FsSM states in the future 
 
+    void Serialize(json& jsonData);
+    void Deserialize(json& jsonData);
 
 private:
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/GameObjects/RenderableCollidableGameObject.h"
 
+
 class CharacterGameObject : public RenderableCollidableGameObject
 {
 protected:
@@ -21,5 +22,6 @@ public:
 	float GetMoveSpeed() { return m_moveSpeed; }
 	void SetSpeed(float speed) { m_moveSpeed = speed; }
 
-
+	void Serialize(json& jsonData);
+	void Deserialize(json& jsonData);
 };

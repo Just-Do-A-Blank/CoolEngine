@@ -12,7 +12,7 @@ COLLIDER_TYPE FileIO::ColliderType(std::string colliderType)
 	{
 		return COLLIDER_TYPE::COLLIDER_TYPE_CIRCLE;
 	}
-	else if(colliderType == "LineCollider")
+	else if (colliderType == "LineCollider")
 	{
 		return COLLIDER_TYPE::COLLIDER_TYPE_LINE;
 	}
@@ -113,7 +113,7 @@ void FileIO::LoadMultipleParticles(json file)
 
 		XMFLOAT2 velocity(particleSystemData.at(i)["Velocity"][0], particleSystemData.at(i)["Velocity"][1]);
 		XMFLOAT2 acceleration(particleSystemData.at(i)["Acceleration"][0], particleSystemData.at(i)["Acceleration"][1]);
-		float particleLife  = particleSystemData.at(i)["ParticleLife"];
+		float particleLife = particleSystemData.at(i)["ParticleLife"];
 		float randPos = particleSystemData.at(i)["RandPosition"];
 		float randVel = particleSystemData.at(i)["RandVelocity"];
 		float randAcc = particleSystemData.at(i)["RandAcceleration"];
@@ -181,7 +181,7 @@ void FileIO::LoadScene(const char* fileAddress, GameManager* pScene, ParticleMan
 			RenderableCollidableGameObject* gameObj = dynamic_cast<RenderableCollidableGameObject*>(g);
 			delete gameObj;
 		}
-		else if(g->ContainsType(GameObjectType::COLLIDABLE))
+		else if (g->ContainsType(GameObjectType::COLLIDABLE))
 		{
 			CollidableGameObject* gameObj = dynamic_cast<CollidableGameObject*>(g);
 			delete gameObj;
@@ -193,7 +193,7 @@ void FileIO::LoadScene(const char* fileAddress, GameManager* pScene, ParticleMan
 		}
 	}
 
-	if (pManager == nullptr) 
+	if (pManager == nullptr)
 	{
 		return;
 	}
@@ -274,7 +274,7 @@ std::string FileIO::AttachDefaultFileLocation(const char* fileAddress)
 	//based on fatih sennik's answer on https://stackoverflow.com/questions/1023306/finding-current-executables-path-without-proc-self-exe/1024937#1024937
 	DWORD result = GetModuleFileNameA(NULL, exePath, MAX_PATH);
 	std::string finalOutput(exePath);
-	int exeNameStart =finalOutput.find_last_of('\\');
+	int exeNameStart = finalOutput.find_last_of('\\');
 	finalOutput.erase(exeNameStart);
 	finalOutput.append(fileAdd);
 	return finalOutput.c_str();
@@ -296,8 +296,8 @@ GameObject* FileIO::LoadGameObject(json file, int objectCount)
 	gameObject.GetTransform()->SetRotation(XMFLOAT3(data.at(objectCount)["Rotation"][0], data.at(objectCount)["Rotation"][1], data.at(objectCount)["Rotation"][2]));
 	gameObject.GetTransform()->SetScale(XMFLOAT3(data.at(objectCount)["Scale"][0], data.at(objectCount)["Scale"][1], data.at(objectCount)["Scale"][2]));
 
-	if(data.at(objectCount)["IsRenderable"] && data.at(objectCount)["IsCollideable"])
-	{ 
+	if (data.at(objectCount)["IsRenderable"] && data.at(objectCount)["IsCollideable"])
+	{
 		RenderableCollidableGameObject* renderColliderObject = new RenderableCollidableGameObject();
 
 		*renderColliderObject->GetTransform() = *gameObject.GetTransform();
@@ -488,7 +488,7 @@ std::unordered_map<std::string, void*> FileIO::LoadCustomJsonData(const char* fi
 	json dataToLoad = LoadJson(fileAddress);
 	std::unordered_map<std::string, void*> results;
 	std::string s;
- 	for (size_t i = 0; i < variableNames.size(); i++)
+	for (size_t i = 0; i < variableNames.size(); i++)
 	{
 		switch (variableTypes[i])
 		{
@@ -524,7 +524,7 @@ std::unordered_map<std::string, void*> FileIO::LoadCustomJsonData(const char* fi
 			break;
 		case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_GAME_OBJECTS:
 			GameObject* gO = LoadGameObject(dataToLoad.at(0)[variableNames[i]], 0);
-			memcpy(gO, & dataToLoad[variableNames[i]], sizeof(GameObject));
+			memcpy(gO, &dataToLoad[variableNames[i]], sizeof(GameObject));
 			break;
 		}
 	}
@@ -550,7 +550,7 @@ bool FileIO::SaveObjectInJson(const char* fileLocation, std::vector<std::string>
 			switch (types[i])
 			{
 			default:
-				jsonOutput.at(0).push_back({varNames[i], *(int*)data[i]});
+				jsonOutput.at(0).push_back({ varNames[i], *(int*)data[i] });
 				break;
 			case JSON_VARIABLE_TYPE::JSON_VARIABLE_TYPE_CHAR:
 				jsonOutput.at(0).push_back({ varNames[i], *(char*)data[i] });
@@ -608,8 +608,8 @@ void FileIO::LoadUI(const char* fileLocation, UIManager* pUManager, ID3D11Device
 	{
 		if (uiData.at(i)["Canvas"])
 		{
-			std::string name = (std::string)uiData.at(i)["Name"]; 
-			XMFLOAT3 pos =  XMFLOAT3(uiData.at(i)["Position"][0], uiData.at(i)["Position"][1], uiData.at(i)["Position"][2]);
+			std::string name = (std::string)uiData.at(i)["Name"];
+			XMFLOAT3 pos = XMFLOAT3(uiData.at(i)["Position"][0], uiData.at(i)["Position"][1], uiData.at(i)["Position"][2]);
 			XMFLOAT3 rot = XMFLOAT3(uiData.at(i)["Rotation"][0], uiData.at(i)["Rotation"][1], uiData.at(i)["Rotation"][2]);
 			XMFLOAT3 sca = XMFLOAT3(uiData.at(i)["Scale"][0], uiData.at(i)["Scale"][1], uiData.at(i)["Scale"][2]);
 			pUManager->CreateCanvas(name, pos, sca, rot);
@@ -650,7 +650,7 @@ void FileIO::LoadUI(const char* fileLocation, UIManager* pUManager, ID3D11Device
 		else
 		{
 #ifdef DEBUG
-			LOG ("No UI Element type was specified")
+			LOG("No UI Element type was specified")
 #endif // DEBUG
 
 		}
@@ -665,7 +665,7 @@ void FileIO::SaveUI(const char* fileLocation, UIManager* pUManager)
 
 	jsonOutput["MetaData"] = {};
 	jsonOutput["MetaData"].push_back({});
-	jsonOutput["MetaData"].at(0).push_back({ "NumberOfUIelements", 0});
+	jsonOutput["MetaData"].at(0).push_back({ "NumberOfUIelements", 0 });
 	jsonOutput["UIData"] = {};
 
 	std::vector<GameUIComponent*> components = pUManager->GetAllUIComponents();
@@ -722,7 +722,7 @@ void FileIO::SaveUI(const char* fileLocation, UIManager* pUManager)
 				jsonOutput["UIData"].at(UICount).push_back({ "Text" , true });
 				jsonOutput["UIData"].at(UICount).push_back({ "TextData" , textCom->m_text });
 				jsonOutput["UIData"].at(UICount).push_back({ "FontName" , textCom->m_fontName });
-				jsonOutput["UIData"].at(UICount).push_back({ "FontSize" , 16});
+				jsonOutput["UIData"].at(UICount).push_back({ "FontSize" , 16 });
 				jsonOutput["UIData"].at(UICount).push_back({ "FontDDS" ,  ToString(FontManager::GetInstance()->GetFontTextureFilePath(textCom->m_fontName)) });
 				jsonOutput["UIData"].at(UICount).push_back({ "FontXML" ,ToString(m_Cache.m_XMLCache[textCom->m_ptexture]) });
 				float colour[3]{ textCom->m_colour.f[0], textCom->m_colour.f[1] , textCom->m_colour.f[2] };
@@ -759,7 +759,7 @@ void FileIO::SaveUI(const char* fileLocation, UIManager* pUManager)
 	outFile.close();
 }
 
-void FileIO::SaveGameObject(const char* fileLocation ,GameObject* gameObject)
+void FileIO::SaveGameObject(const char* fileLocation, GameObject* gameObject)
 {
 	std::ofstream outFile;
 	outFile.open(fileLocation);
@@ -797,7 +797,7 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 	{
 		saveObject = true;
 		GameObject* gameObjectToStore = gameObjects[it];
-	
+
 		particleSys = dynamic_cast<ParticleSystem*>(gameObjectToStore);
 		tileMap = dynamic_cast<TileMap*>(gameObjectToStore);
 		tile = dynamic_cast<Tile*>(gameObjectToStore);
@@ -1010,7 +1010,7 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 					jsonOutput["ObjectData"].push_back({});
 					jsonOutput["ObjectData"].at(count).push_back({ "Name", gameObjectToStore->GetIdentifier() });
 
-					jsonOutput["ObjectData"].at(count).push_back({ "IsRenderable", false});
+					jsonOutput["ObjectData"].at(count).push_back({ "IsRenderable", false });
 
 					CollidableGameObject* collideObject = dynamic_cast<CollidableGameObject*>(gameObjectToStore);
 					Box* testBox = dynamic_cast<Box*>(collideObject->GetShape());
@@ -1059,7 +1059,7 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 					jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "AlbedoLocation" , shaders[2] });
 				}
 
-				
+
 
 				XMFLOAT3 pos = gameObjectToStore->GetTransform()->GetPosition();
 				float position[3]{ pos.x, pos.y, pos.z };
@@ -1071,24 +1071,24 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 				XMFLOAT2 acceleration = particleSys->GetAccel();
 				XMFLOAT2 veclocity = particleSys->GetVelocity();
 
-				float particleAcceleration[2]{ acceleration.x, acceleration.y};
-				float particleVelocity[2]{ veclocity.x, veclocity.y};
+				float particleAcceleration[2]{ acceleration.x, acceleration.y };
+				float particleVelocity[2]{ veclocity.x, veclocity.y };
 
 				//Need height and width of tile map
 				jsonOutput["ParticleSystemData"].push_back({});
-				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "Name", particleSys->GetIdentifier()});
+				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "Name", particleSys->GetIdentifier() });
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "Life", particleSys->GetLife() });
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "Position", position });
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "Rotation", rotation });
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "Scale", scale });
-				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "Count" ,  particleSys->GetSpawnNumber()});
-				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "Interval" ,  particleSys->GetSpawnInterval()});
+				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "Count" ,  particleSys->GetSpawnNumber() });
+				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "Interval" ,  particleSys->GetSpawnInterval() });
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "RandVelocity" ,  particleSys->GetRandomAccel() });
-				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "Velocity" ,  particleVelocity});
+				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "Velocity" ,  particleVelocity });
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "RandAcceleration" ,  particleSys->GetRandomAccel() });
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "Acceleration" ,  particleAcceleration });
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "RandLife" ,  particleSys->GetRandomLife() });
-				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "ParticleLife" ,  particleSys->GetParticleLife()});
+				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "ParticleLife" ,  particleSys->GetParticleLife() });
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "RandPosition" ,  particleSys->GetRandomPos() });
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "AlbedoLocation" ,  ToString(GrabAlbedoName(particleSys->m_pTexture)) });
 				jsonOutput["ParticleSystemData"].at(particleSystemCount).push_back({ "Layer" ,  particleSys->GetLayer() });
@@ -1157,7 +1157,7 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 				++tileCount;
 			}
 		}
-		
+
 	}
 
 	jsonOutput["MetaData"].at(0).push_back({ "NumberOfObject", count });
@@ -1271,7 +1271,7 @@ json FileIO::PackJson(GameObject* dataToPack, int count)
 			dataDestination[identifier].at(count).push_back({ "IsCollideable" , false });
 			dataDestination[identifier].at(count).push_back({ "IsTrigger" , false });
 		}
-		dataDestination[identifier].at(count).push_back({"MovementSpeed", playerGameObj->GetMoveSpeed()});
+		dataDestination[identifier].at(count).push_back({ "MovementSpeed", playerGameObj->GetMoveSpeed() });
 	}
 	else if (dataToPack->ContainsType(GameObjectType::RENDERABLE) && dataToPack->ContainsType(GameObjectType::COLLIDABLE))
 	{
@@ -1477,21 +1477,21 @@ json FileIO::PackJson(GameObject* dataToPack, int count)
 			dataDestination[identifier].at(count).push_back({ "PixelShaderLocation" , shaders[1] });
 			dataDestination[identifier].at(count).push_back({ "AlbedoLocation" , shaders[2] });
 		}
-			XMFLOAT3 pos = dataToPack->GetTransform()->GetPosition();
-			float position[3]{ pos.x, pos.y, pos.z };
-			XMFLOAT3 rot = dataToPack->GetTransform()->GetRotation();
-			float rotation[3]{ rot.x, rot.y, rot.z };
-			XMFLOAT3 scal = dataToPack->GetTransform()->GetScale();
-			float scale[3]{ scal.x, scal.y, scal.z };
+		XMFLOAT3 pos = dataToPack->GetTransform()->GetPosition();
+		float position[3]{ pos.x, pos.y, pos.z };
+		XMFLOAT3 rot = dataToPack->GetTransform()->GetRotation();
+		float rotation[3]{ rot.x, rot.y, rot.z };
+		XMFLOAT3 scal = dataToPack->GetTransform()->GetScale();
+		float scale[3]{ scal.x, scal.y, scal.z };
 
-			//Need height and width of tile map
-			dataDestination[identifier].push_back({});
-			dataDestination[identifier].at(count).push_back({ "Name", particleSys->GetIdentifier() });
-			dataDestination[identifier].at(count).push_back({ "Life", particleSys->GetLife() });
-			dataDestination[identifier].at(count).push_back({ "Position", position });
-			dataDestination[identifier].at(count).push_back({ "Rotation", rotation });
-			dataDestination[identifier].at(count).push_back({ "Scale", scale });
-			dataDestination[identifier].at(count).push_back({ "Count" ,  particleSys->GetSpawnInterval()});
+		//Need height and width of tile map
+		dataDestination[identifier].push_back({});
+		dataDestination[identifier].at(count).push_back({ "Name", particleSys->GetIdentifier() });
+		dataDestination[identifier].at(count).push_back({ "Life", particleSys->GetLife() });
+		dataDestination[identifier].at(count).push_back({ "Position", position });
+		dataDestination[identifier].at(count).push_back({ "Rotation", rotation });
+		dataDestination[identifier].at(count).push_back({ "Scale", scale });
+		dataDestination[identifier].at(count).push_back({ "Count" ,  particleSys->GetSpawnInterval() });
 
 
 	}
@@ -1555,4 +1555,308 @@ json FileIO::PackJson(GameObject* dataToPack, int count)
 	}
 	return dataDestination;
 }
+
+void SimpleFileIO::SaveScene(std::string location)
+{
+	location.append(".json");
+	ofstream fileOut(location);
+
+	json outData;
+
+
+	outData["CameraGameObject"] = {};
+	outData["CameraGameObject"]["GUID"] = {};
+	outData["CameraGameObject"]["Name"] = {};
+	outData["CameraGameObject"]["Position"] = {};
+	outData["CameraGameObject"]["Rotation"] = {};
+	outData["CameraGameObject"]["Scale"] = {};
+	outData["CameraGameObject"]["Window Height"] = {};
+	outData["CameraGameObject"]["Window Width"] = {};
+	outData["CameraGameObject"]["Near Depth"] = {};
+	outData["CameraGameObject"]["Far Depth"] = {};
+
+
+	outData["CharacterGameObject"] = {};
+	outData["CharacterGameObject"]["GUID"] = {};
+	outData["CharacterGameObject"]["Name"] = {};
+	outData["CharacterGameObject"]["Position"] = {};
+	outData["CharacterGameObject"]["Rotation"] = {};
+	outData["CharacterGameObject"]["Scale"] = {};
+	outData["CharacterGameObject"]["Layers"] = {};
+	outData["CharacterGameObject"]["Health"] = {};
+	outData["CharacterGameObject"]["Movement Speed"] = {};
+
+
+	outData["CollidableGameObject"] = {};
+	outData["CollidableGameObject"]["GUID"] = {};
+	outData["CollidableGameObject"]["Name"] = {};
+	outData["CollidableGameObject"]["Position"] = {};
+	outData["CollidableGameObject"]["Rotation"] = {};
+	outData["CollidableGameObject"]["Scale"] = {};
+	outData["CollidableGameObject"]["Shape"] = {};
+
+
+	outData["EnemyGameObject"] = {};
+	outData["EnemyGameObject"]["GUID"] = {};
+	outData["EnemyGameObject"]["Name"] = {};
+	outData["EnemyGameObject"]["Position"] = {};
+	outData["EnemyGameObject"]["Rotation"] = {};
+	outData["EnemyGameObject"]["Scale"] = {};
+	outData["EnemyGameObject"]["Layers"] = {};
+	outData["EnemyGameObject"]["Health"] = {};
+	outData["EnemyGameObject"]["Movement Speed"] = {};
+
+
+	outData["PlayerGameObject"] = {};
+	outData["PlayerGameObject"]["GUID"] = {};
+	outData["PlayerGameObject"]["Name"] = {};
+	outData["PlayerGameObject"]["Position"] = {};
+	outData["PlayerGameObject"]["Rotation"] = {};
+	outData["PlayerGameObject"]["Scale"] = {};
+	outData["PlayerGameObject"]["Layers"] = {};
+	outData["PlayerGameObject"]["Health"] = {};
+	outData["PlayerGameObject"]["Movement Speed"] = {};
+
+	outData["RenderableColliderableGameObject"] = {};
+	outData["RenderableColliderableGameObject"]["GUID"] = {};
+	outData["RenderableColliderableGameObject"]["Name"] = {};
+	outData["RenderableColliderableGameObject"]["Position"] = {};
+	outData["RenderableColliderableGameObject"]["Rotation"] = {};
+	outData["RenderableColliderableGameObject"]["Scale"] = {};
+	outData["RenderableColliderableGameObject"]["Layers"] = {};
+	outData["RenderableColliderableGameObject"]["Shape"] = {};
+
+	outData["RenderableGameObject"] = {};
+	outData["RenderableGameObject"]["GUID"] = {};
+	outData["RenderableGameObject"]["Name"] = {};
+	outData["RenderableGameObject"]["Position"] = {};
+	outData["RenderableGameObject"]["Rotation"] = {};
+	outData["RenderableGameObject"]["Scale"] = {};
+	outData["RenderableGameObject"]["Layers"] = {};
+
+	outData["TileMapCameraGameObject"] = {};
+	outData["TileMapCameraGameObject"]["GUID"] = {};
+	outData["TileMapCameraGameObject"]["Name"] = {};
+	outData["TileMapCameraGameObject"]["Position"] = {};
+	outData["TileMapCameraGameObject"]["Rotation"] = {};
+	outData["TileMapCameraGameObject"]["Scale"] = {};
+	outData["TileMapCameraGameObject"]["Speed Boost"] = {};
+	outData["TileMapCameraGameObject"]["Movement Speed"] = {};
+
+	GameManager* gameManager = GameManager::GetInstance();
+	Scene* scene = gameManager->GetCurrentScene();
+
+
+	std::vector<GameObject*> gmVector = gameManager->GetAllGameObjects();
+		
+	for (size_t i = 0; i < gmVector.size(); i++)
+	{
+		gmVector[i]->Serialize(outData);
+	}
+
+
+	fileOut << outData;
+}
+
+void SimpleFileIO::LoadGameObject(const char* fileAddress)
+{
+	json data = LoadJsonFile(fileAddress);
+
+	GameManager* gameManager = GameManager::GetInstance();
+
+	GameObject gameObject((std::string)data.at(0)["Name"]);
+	gameObject.GetTransform()->SetPosition(XMFLOAT3(data.at(0)["Position"][0], data.at(0)["Position"][1], data.at(0)["Position"][2]));
+	gameObject.GetTransform()->SetRotation(XMFLOAT3(data.at(0)["Rotation"][0], data.at(0)["Rotation"][1], data.at(0)["Rotation"][2]));
+	gameObject.GetTransform()->SetScale(XMFLOAT3(data.at(0)["Scale"][0], data.at(0)["Scale"][1], data.at(0)["Scale"][2]));
+
+	if (data.at(0)["IsRenderable"] && data.at(0)["IsCollideable"])
+	{
+		RenderableCollidableGameObject* renderColliderObject = new RenderableCollidableGameObject();
+
+		*renderColliderObject->GetTransform() = *gameObject.GetTransform();
+
+		//renderColliderObject->m_identifier = (std::string)data.at(0)["Name"];
+
+		if (data.at(0)["ColliderType"] == "CircleCollider")
+		{
+			Circle* pCircle = new Circle();
+			renderColliderObject->SetShape(pCircle);
+			pCircle->SetIsCollidable(true);
+			pCircle->SetIsTrigger(data.at(0)["IsTrigger"]);
+			pCircle->m_radius = data.at(0)["CircleRadius"];
+			pCircle->m_transform = renderColliderObject->GetTransform();
+		}
+		else
+		{
+			Box* pbox = new Box(gameObject.GetTransform());
+			renderColliderObject->SetShape(pbox);
+			pbox->SetIsCollidable(true);
+			pbox->SetIsTrigger(data.at(0)["IsTrigger"]);
+			pbox->m_transform = renderColliderObject->GetTransform();
+		}
+
+		renderColliderObject->SetMesh(QUAD_MESH_NAME);
+		bool isRenderable = data.at(0)["IsRenderable"];
+		renderColliderObject->SetIsRenderable(isRenderable);
+		if (data.at(0)["VertexShaderLocation"] == "NULL")
+		{
+			LOG("NO VERTEX SHADER WAS SPECIFIED")
+		}
+		else
+		{
+			wstring location = ToWstring((std::string)data.at(0)["VertexShaderLocation"]);
+			renderColliderObject->SetVertexShader(location);
+		}
+		if (data.at(0)["PixelShaderLocation"] == "NULL")
+		{
+			LOG("NO PIXEL SHADER WAS SPECIFIED")
+		}
+		else
+		{
+			wstring location = ToWstring((std::string)data.at(0)["PixelShaderLocation"]);
+			renderColliderObject->SetPixelShader(location);
+		}
+		if (data.at(0)["AlbedoLocation"] == "NULL")
+		{
+			renderColliderObject->SetAlbedo(L"Resources/Sprites/Brick.dds");
+		}
+		else
+		{
+			wstring location = ToWstring((std::string)data.at(0)["AlbedoLocation"]);
+			renderColliderObject->SetAlbedo(location);
+		}
+
+		std::vector<Frame> framesOfAnimation(data.at(0)["NumberOfAnimations"]);
+
+		if (framesOfAnimation.size() > 0)
+		{
+			for (size_t i = 0; i < framesOfAnimation.size(); ++i)
+			{
+				wstring animationFile = ToWstring((std::string)data.at(0)["AnimationFile"][i]);
+				GraphicsManager::GetInstance()->LoadAnimationFromFile(animationFile);
+				std::string name = data.at(0)["AnimationFile"][i];
+				SpriteAnimation* sAnimation = &GraphicsManager::GetInstance()->GetAnimation(ToWstring(name));
+				renderColliderObject->AddAnimation(name, *sAnimation);
+			}
+		}
+		//gameManager->CreateGameObject(renderColliderObject);
+	}
+	if (data.at(0)["IsRenderable"])
+	{
+
+		bool renderable = data.at(0)["IsRenderable"];
+		gameObject.ContainsType(GameObjectType::RENDERABLE);
+		RenderableGameObject* renderObject = new RenderableGameObject((std::string)data.at(0)["Name"]);
+		*renderObject->GetTransform() = *gameObject.GetTransform();
+		renderObject->SetMesh(QUAD_MESH_NAME);
+		renderObject->SetIsRenderable(renderable);
+		if (data.at(0)["VertexShaderLocation"] == "NULL")
+		{
+			LOG("NO VERTEX SHADER WAS SPECIFIED")
+		}
+		else
+		{
+			wstring location = ToWstring((std::string)data.at(0)["VertexShaderLocation"]);
+			renderObject->SetVertexShader(location);
+		}
+		if (data.at(0)["PixelShaderLocation"] == "NULL")
+		{
+			LOG("NO PIXEL SHADER WAS SPECIFIED")
+		}
+		else
+		{
+			wstring location = ToWstring((std::string)data.at(0)["PixelShaderLocation"]);
+			renderObject->SetPixelShader(location);
+		}
+		if (data.at(0)["AlbedoLocation"] == "NULL")
+		{
+			renderObject->SetAlbedo(L"Resources/Sprites/Brick.dds");
+		}
+		else
+		{
+			wstring location = ToWstring((std::string)data.at(0)["AlbedoLocation"]);
+			renderObject->SetAlbedo(location);
+		}
+
+		std::vector<Frame> framesOfAnimation(data.at(0)["NumberOfAnimations"]);
+
+		if (framesOfAnimation.size() > 0)
+		{
+			for (size_t i = 0; i < framesOfAnimation.size(); ++i)
+			{
+				wstring animationFile = ToWstring((std::string)data.at(0)["AnimationFile"][i]);
+				GraphicsManager::GetInstance()->LoadAnimationFromFile(animationFile);
+				std::string name = data.at(0)["AnimationFile"][i];
+				SpriteAnimation* sAnimation = &GraphicsManager::GetInstance()->GetAnimation(ToWstring(name));
+				renderObject->AddAnimation(name, *sAnimation);
+			}
+		}
+		//return renderObject;
+	}
+
+	bool trigger = false;
+	bool collideable = false;
+
+	if (data.at(0)["IsCollideable"])
+	{
+		CollidableGameObject* colliderObject = new CollidableGameObject((std::string)data.at(0)["Name"]);
+		*colliderObject->GetTransform() = *gameObject.GetTransform();
+
+		if (data.at(0)["IsTrigger"])
+		{
+			trigger = true;
+		}
+		if (data.at(0)["ColliderType"] == "CircleCollider")
+		{
+			Circle* pCircle = new Circle();
+			colliderObject->SetShape(pCircle);
+			pCircle->SetIsCollidable(true);
+			pCircle->SetIsTrigger(trigger);
+			pCircle->m_radius = data.at(0)["CircleRadius"];
+			pCircle->m_transform = gameObject.GetTransform();
+		}
+		else
+		{
+			Box* pbox = new Box(gameObject.GetTransform());
+			colliderObject->SetShape(pbox);
+			pbox->SetIsCollidable(true);
+			pbox->SetIsTrigger(trigger);
+			pbox->m_transform = gameObject.GetTransform();
+		}
+		//return colliderObject;
+	}
+}
+
+json SimpleFileIO::LoadJsonFile(const char* fileAddress)
+{
+	json data;
+	std::ifstream file(fileAddress);
+	try
+	{
+		if (file)
+		{
+			file >> data;
+			return data;
+		}
+		throw std::exception("File was not opened");
+	}
+	catch (const std::exception& e)
+	{
+		OutputDebugStringA(e.what());
+	}
+}
+
+std::string SimpleFileIO::ToString(std::wstring& wideString)
+{
+	std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
+	return conv.to_bytes(wideString);
+}
+
+std::wstring SimpleFileIO::ToWstring(std::string& string)
+{
+	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+	std::wstring wide = converter.from_bytes(string);
+	return wide;
+}
+
 

@@ -52,3 +52,31 @@ const vector<node*> EnemyGameObject::GetPath() const
 {
 	return m_curPath;
 }
+
+void EnemyGameObject::Serialize(json& jsonData)
+{
+	//int gUID = ;
+	std::string gUID = "GUID: ";
+
+	std::string name = "Name: ";
+	//name.append();
+
+
+	float position[3] = { m_transform->GetPosition().x ,m_transform->GetPosition().y ,m_transform->GetPosition().z };
+	float rotation[3] = { m_transform->GetRotation().x ,m_transform->GetRotation().y ,m_transform->GetRotation().z };
+	float scale[3] = { m_transform->GetScale().x ,m_transform->GetScale().y ,m_transform->GetScale().z };
+
+
+	jsonData["EnemyGameObject"]["GUID"].push_back(gUID);
+	jsonData["EnemyGameObject"]["Name"].push_back(name);
+	jsonData["EnemyGameObject"]["Position"].push_back(position);
+	jsonData["EnemyGameObject"]["Rotation"].push_back(rotation);
+	jsonData["EnemyGameObject"]["Scale"].push_back(scale);
+	jsonData["EnemyGameObject"]["Layers"].push_back(m_health);
+	jsonData["EnemyGameObject"]["Health"].push_back(m_layer);
+	jsonData["EnemyGameObject"]["Movement Speed"].push_back(m_moveSpeed);
+}
+
+void EnemyGameObject::Deserialize(json& jsonData)
+{
+}

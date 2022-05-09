@@ -68,6 +68,28 @@ void CollidableGameObject::CreateEngineUI()
 		m_pcollider->CreateEngineUI();
 	}
 }
+void CollidableGameObject::Serialize(json& jsonData)
+{
+	//int gUID = ;
+	std::string gUID = "GUID: ";
+
+	std::string name = "Name: ";
+	//name.append();
+
+	float position[3] = { m_transform->GetPosition().x ,m_transform->GetPosition().y ,m_transform->GetPosition().z };
+	float rotation[3] = { m_transform->GetRotation().x ,m_transform->GetRotation().y ,m_transform->GetRotation().z };
+	float scale[3] = { m_transform->GetScale().x ,m_transform->GetScale().y ,m_transform->GetScale().z };
+
+	jsonData["CollidableGameObject"]["GUID"].push_back(gUID);
+	jsonData["CollidableGameObject"]["Name"].push_back(gUID);
+	jsonData["CollidableGameObject"]["Position"].push_back(position);
+	jsonData["CollidableGameObject"]["Rotation"].push_back(rotation);
+	jsonData["CollidableGameObject"]["Scale"].push_back(scale);
+	jsonData["CollidableGameObject"]["Shape"].push_back(m_pcollider->ShapeTypeToString(m_pcollider->GetShapeType()));
+}
+void CollidableGameObject::Deserialize(json& jsonData)
+{
+}
 #endif
 
 Shape* CollidableGameObject::GetShape()

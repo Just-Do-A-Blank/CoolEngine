@@ -1,7 +1,13 @@
 #pragma once
 #include "Transform.h"
+#include  "Engine/Includes/json.hpp"
+
 #define FILEPATH_BUFFER_SIZE 200
 #define ANIM_NAME_SIZE 50
+
+
+
+using namespace nlohmann;
 
 enum class GameObjectType
 {
@@ -38,6 +44,9 @@ public:
 	GameObject(string identifier);
 
 	virtual void Update();
+
+	virtual void Serialize(json& jsonData);
+	virtual void Deserialize(json& jsonData);
 
 #if EDITOR
 	virtual void ShowEngineUI();
