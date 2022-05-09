@@ -29,7 +29,8 @@ void TileMapTool::Init(ID3D11Device* pdevice)
 	float nearDepth = 0.01f;
 	float farDepth = 1000.0f;
 
-	m_pcamera = new TileMapCameraGameObject("Camera");
+	CoolUUID uuid;
+	m_pcamera = new TileMapCameraGameObject("Camera", uuid);
 	m_pcamera->Initialize(cameraPos, cameraForward, cameraUp, windowWidth, windowHeight, nearDepth, farDepth);
 
 	GameManager::GetInstance()->SetCamera(m_pcamera);
