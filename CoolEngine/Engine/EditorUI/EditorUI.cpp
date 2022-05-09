@@ -271,7 +271,7 @@ void EditorUI::DrawSceneManagementWindow()
 
 			if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
 			{
-				OpenFileExplorer(L"DDS files\0*.dds\0", m_texNameBuffer, _countof(m_texNameBuffer));
+				OpenFileExplorer(L"Scene files\0*.json\0", m_texNameBuffer, _countof(m_texNameBuffer));
 			}
 
 			if (ImGui::MenuItem("Delete Scene", "Ctrl+D"))
@@ -332,6 +332,13 @@ void EditorUI::TraverseTree(TreeNode<GameObject>* pcurrentNode, int& nodeCount)
 	}
 
 	bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)nodeCount, node_flags, pcurrentNode->GameObject->GetIdentifier().c_str(), nodeCount);
+	
+	if (ImGui::BeginDragDropSource() == true)
+	{
+		bool test = ImGui::SetDragDropPayload("SceneGraph", &pcurrentNode->GameObject, sizeof(pcurrentNode->GameObject), ImGuiCond_Once);
+		ImGui::EndDragDropSource();
+	}
+	
 	if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
 	{
 		if (nodeCount == m_gameObjectNodeClicked)

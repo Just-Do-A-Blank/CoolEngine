@@ -10,7 +10,7 @@ CollidableGameObject::CollidableGameObject() : GameObject()
 	m_gameObjectType |= GameObjectType::COLLIDABLE;
 }
 
-CollidableGameObject::CollidableGameObject(string identifier) : GameObject(identifier)
+CollidableGameObject::CollidableGameObject(string identifier, CoolUUID uuid) : GameObject(identifier, uuid)
 {
 	m_gameObjectType |= GameObjectType::COLLIDABLE;
 }

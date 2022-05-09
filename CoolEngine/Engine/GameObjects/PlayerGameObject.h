@@ -5,7 +5,7 @@ class PlayerGameObject : public CharacterGameObject
 {
 public:
 
-	PlayerGameObject(string identifier);
+	PlayerGameObject(string identifier, CoolUUID uuid);
 	~PlayerGameObject();
 
 protected:
