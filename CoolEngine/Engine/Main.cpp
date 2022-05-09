@@ -806,6 +806,10 @@ float temp;
 
 void Update()
 {
+#if _DEBUG
+	DebugDrawManager::GetInstance()->Update();
+#endif
+
 	ParticleManager::GetInstance()->Update(GameManager::GetInstance()->GetTimer()->DeltaTime());
 
 	AudioManager::GetInstance()->Update();
