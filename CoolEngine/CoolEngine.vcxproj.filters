@@ -91,6 +91,9 @@
     <Filter Include="Engine\Includes\DirectXTK">
       <UniqueIdentifier>{6232a7dd-79ec-414a-a6a5-86f0a9a5aec9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\GameObjects\Enemies">
+      <UniqueIdentifier>{7ebe24ad-9478-465f-800d-c2c72809d871}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -387,6 +390,9 @@
     <ClInclude Include="Engine\GameObjects\TileMapCameraGameObject.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Engine\GameObjects\Enemies</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -550,6 +556,9 @@
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\TileMapCameraGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Engine\GameObjects\Enemies</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

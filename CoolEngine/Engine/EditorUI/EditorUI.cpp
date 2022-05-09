@@ -4,6 +4,8 @@
 #include "Engine/Scene/Scene.h"
 #include "Engine/Includes/IMGUI/imgui_internal.h"
 #include <ShlObj_core.h>
+//#include "Engine/GameObjects/Enemies/Enemy.h"
+#include <Enemy.h>
 
 #if EDITOR
 HWND* EditorUI::m_phwnd = nullptr;
@@ -145,6 +147,12 @@ void EditorUI::DrawSceneGraphWindow()
 
 					m_createObjectType = GameObjectType::RENDERABLE | GameObjectType::COLLIDABLE;
 				}
+				if (ImGui::MenuItem("Enemy"))
+				{
+					m_createGameObjectClicked = true;
+
+					m_createObjectType = GameObjectType::ENEMY;
+				}
 
 				ImGui::EndMenu();
 			}
@@ -205,6 +213,9 @@ void EditorUI::DrawSceneGraphWindow()
 
 			case GameObjectType::BASE:
 				pgameManager->CreateGameObject<GameObject>(gameObjectName);
+				break;
+			case GameObjectType::ENEMY:
+				pgameManager->CreateGameObject<Enemy>(gameObjectName);
 				break;
 			}
 
