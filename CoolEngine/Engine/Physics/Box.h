@@ -17,7 +17,7 @@ public:
 	Box(Transform* trans)
 	{
 		m_transform = trans;
-		m_halfSize = { m_transform->GetScale().x, m_transform->GetScale().y };
+		m_halfSize = { m_transform->GetScale().x * 50, m_transform->GetScale().y * 50 };
 
 		m_shapeType = ShapeType::BOX;
 	}
@@ -40,9 +40,46 @@ public:
 		return m_halfSize;
 	}
 
-	void SetHalfSize(XMFLOAT2 size)
+	// Based on gamedev.stackexchange.com/questions/20703/bounding-box-of-a-rotated-rectangle-2d
+	void SetShapeDimensions(XMFLOAT3 scale)
 	{
-		m_halfSize = size;
+		m_halfSize = { m_transform->GetScale().x * 50.0f, m_transform->GetScale().y * 50.0f };
+
+		/*XMFLOAT3 upVector = m_transform->GetUpVector();
+		XMFLOAT3 leftVector = m_transform->GetLeftVector();
+		float xScale = m_halfSize.x;
+		float yScale = m_halfSize.y;*/
+		/*XMFLOAT2 topLeft = { m_transform->GetPosition().x + (leftVector.x + upVector.x) * xScale, m_transform->GetPosition().y + (leftVector.y + upVector.y) * yScale };
+		XMFLOAT2 topRight = { m_transform->GetPosition().x + (-leftVector.x + upVector.x) * xScale, m_transform->GetPosition().y + (-leftVector.y + upVector.y) * yScale };
+		XMFLOAT2 bottomLeft = { m_transform->GetPosition().x + (leftVector.x - upVector.x) * xScale, m_transform->GetPosition().y + (leftVector.y - upVector.y) * yScale };
+		XMFLOAT2 bottomRight = { m_transform->GetPosition().x + (-leftVector.x - upVector.x) * xScale, m_transform->GetPosition().y + (-leftVector.y - upVector.y) * yScale };*/
+
+		XMVECTOR topLeft = XMVectorSet( - m_halfSize.x, - m_halfSize.y, 0, 1 );
+		XMVECTOR topRight = XMVectorSet(m_halfSize.x, - m_halfSize.y, 0, 1 );
+		XMVECTOR bottomLeft = XMVectorSet(- m_halfSize.x,  m_halfSize.y, 0, 1 );
+		XMVECTOR bottomRight = XMVectorSet(m_halfSize.x, m_halfSize.y, 0, 1 );
+
+		XMMATRIX rot = m_transform->GetRotationMatrix();
+		//XMMATRIX rot = XMMatrixTranspose(m_transform->GetRotationMatrix());
+		topLeft = XMVector3Transform(topLeft, rot);
+		topRight = XMVector3Transform(topRight, rot);
+		bottomLeft = XMVector3Transform(bottomLeft, rot);
+		bottomRight = XMVector3Transform(bottomRight, rot);
+
+		XMFLOAT4 tL, tR, bL, bR;
+		XMStoreFloat4(&tL, topLeft);
+		XMStoreFloat4(&tR, topRight);
+		XMStoreFloat4(&bL, bottomLeft);
+		XMStoreFloat4(&bR, bottomRight);
+
+		float minX = min(tL.x, min(tR.x, min(bL.x, bR.x)));
+		float maxX = max(tL.x, max(tR.x, max(bL.x, bR.x)));
+		float minY = min(tL.y, min(tR.y, min(bL.y, bR.y)));
+		float maxY = max(tL.y, max(tR.y, max(bL.y, bR.y)));
+
+		m_halfSize = XMFLOAT2(maxX - minX, maxY - minY);
+		m_halfSize.x /= 2.0f;
+		m_halfSize.y /= 2.0f;
 	}
 
 	bool Collide(Shape* shape)

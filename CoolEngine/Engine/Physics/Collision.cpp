@@ -211,6 +211,16 @@ void Collision::Update(vector<GameObject*> gameObjectMap)
 
 	for (int it1 = 0; it1 < gameObjectMap.size(); ++it1)
 	{
+		if (gameObjectMap[it1]->ContainsType(GameObjectType::COLLIDABLE) == false)
+		{
+			continue;
+		}
+		pcollidable1 = dynamic_cast<CollidableGameObject*>(gameObjectMap[it1]);
+		pcollidable1->SetShapeDimensions(pcollidable1->GetTransform()->GetScale());
+	}
+
+	for (int it1 = 0; it1 < gameObjectMap.size(); ++it1)
+	{
 		for (int it2 = 0; it2 < gameObjectMap.size(); ++it2)
 		{
 			if (it1 != it2)

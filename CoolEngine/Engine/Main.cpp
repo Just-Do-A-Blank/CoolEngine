@@ -216,6 +216,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	XMFLOAT3 objectPos = XMFLOAT3(0, -200.0f, 0.0f);
 	XMFLOAT3 objectScale = XMFLOAT3(2, 2, 2);
+	XMFLOAT3 objectRot = XMFLOAT3(0, 0, 0);
 	bool isCollision = true;
 
 	pgameObject->SetMesh(QUAD_MESH_NAME);
@@ -241,6 +242,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetAlbedo(TEST2);
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
+	pgameObject->GetTransform()->SetRotation(objectRot);
 	pbox = new Box(pgameObject->GetTransform());
 	pbox->SetIsCollidable(isCollision);
 	pbox->SetIsTrigger(isCollision);
