@@ -31,6 +31,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CollisionEvents.h" />
     <ClInclude Include="Engine\AI\Pathfinding.h" />
     <ClInclude Include="Engine\EditorUI\ContentBrowser.h" />
     <ClInclude Include="Engine\EditorUI\EditorUI.h" />
@@ -153,6 +154,14 @@
     <ClInclude Include="Engine\GameUI\GameUIComponent.h" />
     <ClInclude Include="Engine\GameUI\UICanvas.h" />
     <ClInclude Include="Engine\GameUI\ImageComponent.h" />
+    <ClInclude Include="EventObserverExamples.h" />
+    <ClInclude Include="InteractableGameObject.h" />
+    <ClInclude Include="KeyEvent.h" />
+    <ClInclude Include="KeyPressedEvent.h" />
+    <ClInclude Include="KeyReleasedEvent.h" />
+    <ClInclude Include="MouseEvents.h" />
+    <ClInclude Include="TriggerableGameObject.h" />
+    <ClInclude Include="WeaponGameObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\AI\Pathfinding.cpp" />
@@ -230,6 +239,9 @@
     <ClCompile Include="Engine\GameUI\GameUIComponent.cpp" />
     <ClCompile Include="Engine\GameUI\UICanvas.cpp" />
     <ClCompile Include="Engine\GameUI\ImageComponent.cpp" />
+    <ClCompile Include="InteractableGameObject.cpp" />
+    <ClCompile Include="TriggerableGameObject.cpp" />
+    <ClCompile Include="WeaponGameObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">

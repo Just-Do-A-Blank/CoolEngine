@@ -387,6 +387,33 @@
     <ClInclude Include="Engine\GameObjects\TileMapCameraGameObject.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
+    <ClInclude Include="TriggerableGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="InteractableGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="EventObserverExamples.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionEvents.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyEvent.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseEvents.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyPressedEvent.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyReleasedEvent.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -549,6 +576,15 @@
       <Filter>Engine\EditorUI</Filter>
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\TileMapCameraGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="TriggerableGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="InteractableGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
   </ItemGroup>

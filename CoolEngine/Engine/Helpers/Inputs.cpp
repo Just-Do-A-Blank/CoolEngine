@@ -1,6 +1,12 @@
 #include "Inputs.h"
 #include "Engine/Managers/Events/EventManager.h"
 
+// Key events
+#include <KeyPressedEvent.h>
+#include <KeyReleasedEvent.h>
+
+#include <MouseEvents.h>
+
 #if EDITOR
 #include "Engine/Includes/IMGUI/imgui.h"
 #include "Engine/EditorUI/EditorUI.h"

@@ -5,6 +5,8 @@
 #include "Engine/Includes/IMGUI/imgui_internal.h"
 #include <ShlObj_core.h>
 #include <Engine/Physics/ParticleSystem.h>
+#include <InteractableGameObject.h>
+#include <WeaponGameObject.h>
 
 #if EDITOR
 HWND* EditorUI::m_phwnd = nullptr;
@@ -146,6 +148,30 @@ void EditorUI::DrawSceneGraphWindow()
 
 					m_createObjectType = GameObjectType::RENDERABLE | GameObjectType::COLLIDABLE;
 				}
+				if (ImGui::MenuItem("Player"))
+				{
+					m_createGameObjectClicked = true;
+
+					m_createObjectType = GameObjectType::PLAYER;
+				}
+				if (ImGui::MenuItem("Enemy"))
+				{
+					m_createGameObjectClicked = true;
+
+					m_createObjectType = GameObjectType::ENEMY;
+				}
+				if (ImGui::MenuItem("Interactable"))
+				{
+					m_createGameObjectClicked = true;
+
+					m_createObjectType = GameObjectType::INTERACTABLE;
+				}
+				if (ImGui::MenuItem("Weapon"))
+				{
+					m_createGameObjectClicked = true;
+
+					m_createObjectType = GameObjectType::WEAPON;
+				}
 
 				ImGui::EndMenu();
 			}
@@ -212,6 +238,18 @@ void EditorUI::DrawSceneGraphWindow()
 
 			case GameObjectType::PARTICLESYSTEM:
 				pgameManager->CreateGameObject<ParticleSystem>(gameObjectName);
+				break;
+
+			case GameObjectType::PLAYER:
+				pgameManager->CreateGameObject<PlayerGameObject>(gameObjectName);
+				break;
+
+			case GameObjectType::INTERACTABLE:
+				pgameManager->CreateGameObject<InteractableGameObject>(gameObjectName);
+				break;
+
+			case GameObjectType::WEAPON:
+				pgameManager->CreateGameObject<WeaponGameObject>(gameObjectName);
 				break;
 			}
 
