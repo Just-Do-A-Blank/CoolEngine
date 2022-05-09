@@ -1,5 +1,5 @@
 #pragma once
-#include "TriggerableGameObject.h"
+#include "Engine/GameObjects/TriggerableGameObject.h"
 
 class WeaponGameObject : public TriggerableGameObject
 {

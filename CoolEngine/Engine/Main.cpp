@@ -42,7 +42,8 @@
 #include "Engine/Tools/AnimationTool.h"
 #include "Engine/Tools/InGameUITool.h"
 #endif
-#include <EventObserverExamples.h>
+
+#include "Engine/Managers/Events/EventObserverExamples.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);

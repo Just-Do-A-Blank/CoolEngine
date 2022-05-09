@@ -5,8 +5,8 @@
 #include "Engine/Includes/IMGUI/imgui_internal.h"
 #include <ShlObj_core.h>
 #include <Engine/Physics/ParticleSystem.h>
-#include <InteractableGameObject.h>
-#include <WeaponGameObject.h>
+#include "Engine/GameObjects/InteractableGameObject.h"
+#include "Engine/GameObjects/WeaponGameObject.h"
 
 #if EDITOR
 HWND* EditorUI::m_phwnd = nullptr;

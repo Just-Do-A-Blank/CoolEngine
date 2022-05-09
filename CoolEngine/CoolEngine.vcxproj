@@ -31,7 +31,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CollisionEvents.h" />
     <ClInclude Include="Engine\AI\Pathfinding.h" />
     <ClInclude Include="Engine\EditorUI\ContentBrowser.h" />
     <ClInclude Include="Engine\EditorUI\EditorUI.h" />
@@ -40,6 +39,7 @@
     <ClInclude Include="Engine\GameObjects\CameraGameObject.h" />
     <ClInclude Include="Engine\GameObjects\CharacterGameObject.h" />
     <ClInclude Include="Engine\GameObjects\CollidableGameObject.h" />
+    <ClInclude Include="Engine\GameObjects\InteractableGameObject.h" />
     <ClInclude Include="Engine\GameObjects\RenderableCollidableGameObject.h" />
     <ClInclude Include="Engine\GameObjects\DebugRect.h" />
     <ClInclude Include="Engine\GameObjects\EnemyGameObject.h" />
@@ -48,6 +48,8 @@
     <ClInclude Include="Engine\GameObjects\RenderableGameObject.h" />
     <ClInclude Include="Engine\GameObjects\TileMapCameraGameObject.h" />
     <ClInclude Include="Engine\GameObjects\Transform.h" />
+    <ClInclude Include="Engine\GameObjects\TriggerableGameObject.h" />
+    <ClInclude Include="Engine\GameObjects\WeaponGameObject.h" />
     <ClInclude Include="Engine\GameUI\TextComponent.h" />
     <ClInclude Include="Engine\Graphics\ConstantBuffer.h" />
     <ClInclude Include="Engine\Graphics\ConstantBuffers.h" />
@@ -125,9 +127,15 @@
     <ClInclude Include="Engine\Includes\RapidXML\rapidxml_utils.hpp" />
     <ClInclude Include="Engine\Managers\AudioManager.h" />
     <ClInclude Include="Engine\Managers\DebugDrawManager.h" />
+    <ClInclude Include="Engine\Managers\Events\CollisionEvents.h" />
     <ClInclude Include="Engine\Managers\Events\EventManager.h" />
     <ClInclude Include="Engine\Managers\Events\EventObserver.h" />
+    <ClInclude Include="Engine\Managers\Events\EventObserverExamples.h" />
     <ClInclude Include="Engine\Managers\Events\Events.h" />
+    <ClInclude Include="Engine\Managers\Events\KeyEvent.h" />
+    <ClInclude Include="Engine\Managers\Events\KeyPressedEvent.h" />
+    <ClInclude Include="Engine\Managers\Events\KeyReleasedEvent.h" />
+    <ClInclude Include="Engine\Managers\Events\MouseEvents.h" />
     <ClInclude Include="Engine\Managers\FontManager.h" />
     <ClInclude Include="Engine\Managers\GameManager.h" />
     <ClInclude Include="Engine\Managers\GraphicsManager.h" />
@@ -154,14 +162,6 @@
     <ClInclude Include="Engine\GameUI\GameUIComponent.h" />
     <ClInclude Include="Engine\GameUI\UICanvas.h" />
     <ClInclude Include="Engine\GameUI\ImageComponent.h" />
-    <ClInclude Include="EventObserverExamples.h" />
-    <ClInclude Include="InteractableGameObject.h" />
-    <ClInclude Include="KeyEvent.h" />
-    <ClInclude Include="KeyPressedEvent.h" />
-    <ClInclude Include="KeyReleasedEvent.h" />
-    <ClInclude Include="MouseEvents.h" />
-    <ClInclude Include="TriggerableGameObject.h" />
-    <ClInclude Include="WeaponGameObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\AI\Pathfinding.cpp" />
@@ -172,6 +172,7 @@
     <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\CharacterGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\CollidableGameObject.cpp" />
+    <ClCompile Include="Engine\GameObjects\InteractableGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\RenderableCollidableGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\DebugRect.cpp" />
     <ClCompile Include="Engine\GameObjects\EnemyGameObject.cpp" />
@@ -180,6 +181,8 @@
     <ClCompile Include="Engine\GameObjects\RenderableGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\TileMapCameraGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\Transform.cpp" />
+    <ClCompile Include="Engine\GameObjects\TriggerableGameObject.cpp" />
+    <ClCompile Include="Engine\GameObjects\WeaponGameObject.cpp" />
     <ClCompile Include="Engine\GameUI\TextComponent.cpp" />
     <ClCompile Include="Engine\Graphics\DDSTextureLoader.cpp" />
     <ClCompile Include="Engine\Graphics\SpriteAnimation.cpp" />
@@ -239,9 +242,6 @@
     <ClCompile Include="Engine\GameUI\GameUIComponent.cpp" />
     <ClCompile Include="Engine\GameUI\UICanvas.cpp" />
     <ClCompile Include="Engine\GameUI\ImageComponent.cpp" />
-    <ClCompile Include="InteractableGameObject.cpp" />
-    <ClCompile Include="TriggerableGameObject.cpp" />
-    <ClCompile Include="WeaponGameObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">

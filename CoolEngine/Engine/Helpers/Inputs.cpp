@@ -2,10 +2,10 @@
 #include "Engine/Managers/Events/EventManager.h"
 
 // Key events
-#include <KeyPressedEvent.h>
-#include <KeyReleasedEvent.h>
+#include "Engine/Managers/Events/KeyPressedEvent.h"
+#include "Engine/Managers/Events/KeyReleasedEvent.h"
 
-#include <MouseEvents.h>
+#include "Engine/Managers/Events/MouseEvents.h"
 
 #if EDITOR
 #include "Engine/Includes/IMGUI/imgui.h"

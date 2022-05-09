@@ -387,32 +387,32 @@
     <ClInclude Include="Engine\GameObjects\TileMapCameraGameObject.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
-    <ClInclude Include="TriggerableGameObject.h">
+    <ClInclude Include="Engine\Managers\Events\CollisionEvents.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\EventObserverExamples.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\KeyEvent.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\KeyPressedEvent.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\KeyReleasedEvent.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\MouseEvents.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\InteractableGameObject.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
-    <ClInclude Include="WeaponGameObject.h">
+    <ClInclude Include="Engine\GameObjects\TriggerableGameObject.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
-    <ClInclude Include="InteractableGameObject.h">
+    <ClInclude Include="Engine\GameObjects\WeaponGameObject.h">
       <Filter>Engine\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="EventObserverExamples.h">
-      <Filter>Engine\Managers\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="CollisionEvents.h">
-      <Filter>Engine\Managers\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="KeyEvent.h">
-      <Filter>Engine\Managers\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="MouseEvents.h">
-      <Filter>Engine\Managers\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="KeyPressedEvent.h">
-      <Filter>Engine\Managers\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="KeyReleasedEvent.h">
-      <Filter>Engine\Managers\Events</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -578,13 +578,13 @@
     <ClCompile Include="Engine\GameObjects\TileMapCameraGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
-    <ClCompile Include="TriggerableGameObject.cpp">
+    <ClCompile Include="Engine\GameObjects\InteractableGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
-    <ClCompile Include="WeaponGameObject.cpp">
+    <ClCompile Include="Engine\GameObjects\TriggerableGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
-    <ClCompile Include="InteractableGameObject.cpp">
+    <ClCompile Include="Engine\GameObjects\WeaponGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
   </ItemGroup>
