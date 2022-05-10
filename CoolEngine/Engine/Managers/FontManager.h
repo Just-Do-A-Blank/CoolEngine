@@ -19,7 +19,7 @@ private:
 	vector<string> m_fontList;
 	unordered_map<string, wstring> m_fontTexturePathMap;
 public:
-	void LoadFont(string fontInfoFilePath, wstring fontTextureFilePath, string fontName);
+	void LoadFont(wstring fontFilePath, string fontName);
 
 	FontAtlasStruct* GetFontCharacterData(string fontName, char character);
 	vector<FontAtlasStruct*>& GetFontAtlas(string fontName, int fontSize);
