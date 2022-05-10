@@ -50,7 +50,7 @@ protected:
 	bool m_isCollidable = true;
 
 private:
-
+    string GetBoolAnswer(bool value);
 #if EDITOR
     // The value of the checkboxes if applicable
     bool m_isTriggerCheckboxValue;

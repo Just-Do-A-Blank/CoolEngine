@@ -6,7 +6,32 @@ Shape::Shape()
 #if EDITOR
     SetCheckboxTriggerValue(m_isTrigger);
     SetCheckboxCollidableValue(m_isCollidable);
+
+
+    string s = "m_isTrigger: " + GetBoolAnswer(m_isTrigger);
+    LOG(s);
+
+    s = "m_isTriggerCheckboxValue: " + GetBoolAnswer(m_isTriggerCheckboxValue);
+    LOG(s);
+
+    s = "m_isCollidableCheckboxValue: " + GetBoolAnswer(m_isCollidableCheckboxValue);
+    LOG(s);
+
+    s = "m_isCollidable: " + GetBoolAnswer(m_isCollidable);
+    LOG(s);
 #endif
+}
+
+string Shape::GetBoolAnswer(bool value)
+{
+    if (value)
+    {
+        return "true";
+    }
+    else
+    {
+        return "false";
+    }
 }
 
 ShapeType Shape::GetShapeType()
@@ -77,21 +102,21 @@ bool Shape::IsCollidable() const
 #if EDITOR
 void Shape::SetCheckboxTriggerValue(bool newValue)
 {
-    m_isTriggerCheckboxValue = !newValue;
+    m_isTriggerCheckboxValue = newValue;
 }
 
 void Shape::SetCheckboxCollidableValue(bool newValue)
 {
-    m_isCollidableCheckboxValue = !newValue;
+    m_isCollidableCheckboxValue = newValue;
 }
 
 bool Shape::GetCheckboxTriggerValue() const
 {
-    return !m_isTriggerCheckboxValue;
+    return m_isTriggerCheckboxValue;
 }
 
 bool Shape::GetCheckboxCollidableValue() const
 {
-    return !m_isCollidableCheckboxValue;
+    return m_isCollidableCheckboxValue;
 }
 #endif
