@@ -1,7 +1,7 @@
 #pragma once
-#include "Engine/GameObjects/RenderableCollidableGameObject.h"
+#include "TriggerableGameObject.h"
 
-class CharacterGameObject : public RenderableCollidableGameObject
+class CharacterGameObject : public TriggerableGameObject
 {
 protected:
 
@@ -13,6 +13,7 @@ protected:
 
 public:
 
+	CharacterGameObject();
 	CharacterGameObject(string identifier, CoolUUID uuid);
 	~CharacterGameObject();
 

@@ -3,7 +3,6 @@
 #include "Engine/GameObjects/GameObject.h"
 #include "Engine/Scene/Scene.h"
 #include "SceneGraph.h"
-#include "Engine/GameObjects/PlayerGameObject.h"
 #include "GraphicsManager.h"
 
 #include <direct.h>

@@ -6,7 +6,6 @@
 class GameObject;
 class Scene;
 template<class T>class TreeNode;
-class PlayerGameObject;
 class RenderStruct;
 class CameraGameObject;
 

@@ -1,6 +1,8 @@
 #pragma once
 #include "CameraGameObject.h"
 #include "Engine/Managers/Events/EventObserver.h"
+#include "Engine/Managers/Events/KeyEvents.h"
+
 
 class TileMapCameraGameObject : public CameraGameObject, public Observer
 {
@@ -12,13 +14,13 @@ public:
 
 	void Handle(Event* e) override;
 
-	void KeyPressed(KeyPressedEvent* e);
-	void KeyReleased(KeyReleasedEvent* e);
-
 protected:
 
 private:
 	float m_moveSpeed = 100.0f;
 	float m_speedBoost = 1;
+
+	void KeyPressed(KeyPressedEvent* e);
+	void KeyReleased(KeyReleasedEvent* e);
 };
 

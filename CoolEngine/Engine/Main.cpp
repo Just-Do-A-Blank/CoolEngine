@@ -9,7 +9,6 @@
 #include "Engine/Graphics/ConstantBuffer.h"
 #include "Engine/Graphics/SpriteAnimation.h"
 #include "Engine/GameObjects/CameraGameObject.h"
-#include "Engine/GameObjects/PlayerGameObject.h"
 #include "Engine/GameObjects/EnemyGameObject.h"
 
 #include "Engine/Managers/Events/EventManager.h"
@@ -43,6 +42,8 @@
 #include "Engine/Tools/AnimationTool.h"
 #include "Engine/Tools/InGameUITool.h"
 #endif
+
+#include "Engine/Managers/Events/EventObserverExamples.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
@@ -286,14 +287,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, -200, 0), "TestMap");
 
 	//Pathfinding::GetInstance()->Initialize(g_testMap1);
-
-	// Observer for button inputs
-	ExampleObserver exampleObserver(new int(10), pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName));
-	EventManager::Instance()->AddClient(EventType::KeyPressed, &exampleObserver);
-	EventManager::Instance()->AddClient(EventType::KeyReleased, &exampleObserver);
-	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, &exampleObserver);
-	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, &exampleObserver);
-	EventManager::Instance()->AddClient(EventType::MouseMoved, &exampleObserver);
 
 	// Observer for collision detection
 	CollisionObserver collisionObserver;
