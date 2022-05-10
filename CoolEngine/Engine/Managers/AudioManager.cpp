@@ -280,4 +280,13 @@ void AudioManager::Serialize(nlohmann::json& data)
 
 void AudioManager::Deserialize(nlohmann::json& data)
 {
+	for (int i = 0; i < data["AudioManager"]["Sounds"].size(); ++i)
+	{
+		Load(data["AudioManager"]["Sounds"][i]);
+	}
+
+	for (int i = 0; i < data["AudioManager"]["Music"].size(); ++i)
+	{
+		LoadMusic(data["AudioManager"]["Music"][i]);
+	}
 }
