@@ -9,17 +9,9 @@ ImageComponent::ImageComponent(string identifier, CoolUUID uuid, XMFLOAT3& posit
 	m_componentType |= UIComponentType::IMAGE;
 }
 
-void ImageComponent::Init(wstring textureFilePath)
+ImageComponent::ImageComponent(nlohmann::json& data, CoolUUID uuid) : GameUIComponent(data, uuid)
 {
-	ID3D11ShaderResourceView* psRV = GraphicsManager::GetInstance()->GetShaderResourceView(textureFilePath);
-
-	if (psRV == nullptr)
-	{
-		cout << "Failed to set the albedo SRV as one with that name doesn't exist!" << endl;
-
-		return;
-	}
-	m_ptexture = psRV;
+	m_componentType |= UIComponentType::IMAGE;
 }
 
 #if EDITOR

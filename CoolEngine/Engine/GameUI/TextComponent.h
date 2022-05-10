@@ -10,7 +10,6 @@ private:
 	ID3D11Buffer* m_pindexBuffer = nullptr;
 
 	string m_text = "";
-	wstring m_texturePath;
 	string m_fontName;
 	int m_fontSize;
 
@@ -25,8 +24,11 @@ public:
 
 	void Init(string text, string fontName, int fontSize, XMVECTORF32 colour, ID3D11Device* pdevice);
 	TextComponent(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation);
+	TextComponent(nlohmann::json& data, CoolUUID uuid, ID3D11Device* pdevice);
 	void CreateVertexBuffer(ID3D11Device* pdevice);
 	void UpdateFont(string fontName, int fontSize);
+
+	void Serialize(nlohmann::json& data) override;
 
 #if EDITOR
 	void CreateEngineUI() override;

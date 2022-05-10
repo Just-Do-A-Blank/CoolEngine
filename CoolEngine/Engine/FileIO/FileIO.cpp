@@ -629,7 +629,7 @@ void FileIO::LoadUI(const char* fileLocation, UIManager* pUManager, ID3D11Device
 			wstring location = ToWstring((std::string)uiData.at(i)["ImageLocation"]);
 			GraphicsManager::GetInstance()->LoadTextureFromFile(location);
 			m_Cache.m_TextureCache[GraphicsManager::GetInstance()->GetShaderResourceView(location)] = location;
-			iC->Init(location);
+			iC->SetTexture(location);
 		}
 		else if (uiData.at(i)["Text"])
 		{

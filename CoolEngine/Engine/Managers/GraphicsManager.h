@@ -73,6 +73,8 @@ public:
 
 	HWND* GetHWND();
 
+	ID3D11Device* GetDevice();
+
 	enum class InputLayouts
 	{
 		POS_TEX = 0,

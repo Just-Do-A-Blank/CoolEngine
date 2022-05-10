@@ -342,6 +342,11 @@ HWND* GraphicsManager::GetHWND()
 	return m_pHWND;
 }
 
+ID3D11Device* GraphicsManager::GetDevice()
+{
+	return m_pdevice;
+}
+
 ID3D11InputLayout* GraphicsManager::GetInputLayout(InputLayouts inputLayout) const
 {
 	return m_inputLayouts[(int)inputLayout];

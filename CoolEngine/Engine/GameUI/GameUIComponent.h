@@ -44,13 +44,14 @@ protected:
 
 public:
 	GameUIComponent(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation);
+	GameUIComponent(nlohmann::json& data, CoolUUID uuid);
+
 	void InitGraphics();
 
 	virtual void Render(RenderStruct& renderStruct);
 	virtual void Update();
 
-	void Serialize(nlohmann::json& data);
-	void Deserialize(nlohmann::json& data);
+	virtual void Serialize(nlohmann::json& data);
 
 	//Getters
 	int& GetLayer();
@@ -59,6 +60,8 @@ public:
 	const string& GetIdentifier();
 
 	const CoolUUID& GetUUID() const;
+
+	const UIComponentType& GetComponentType() const;
 
 	//Setters
 	void SetIsRenderable(bool& condition);

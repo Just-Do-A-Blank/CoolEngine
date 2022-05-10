@@ -5,6 +5,23 @@
 #include "Engine/GameUI/ImageComponent.h"
 #include "Engine/Graphics/Mesh.h"
 
+#include <stack>
+
+GameUIComponent* UIManager::GetAndRemoveObjectFromUUID(std::vector<GameUIComponent*>& components, const CoolUUID& uuid)
+{
+	for (int i = 0; i < components.size(); ++i)
+	{
+		if (*components[i]->GetUUID() == *uuid)
+		{
+			GameUIComponent* pcomponent = components[i];
+
+			components.erase(components.begin() + i);
+
+			return pcomponent;
+		}
+	}
+}
+
 void UIManager::Init(ID3D11Device* pDevice)
 {
 	m_pDevice = pDevice;
@@ -116,19 +133,156 @@ void UIManager::Serialize(nlohmann::json& data)
 
 	TreeNode<GameUIComponent>* pnode = nullptr;
 
+	if (m_prootTreeNode == nullptr)
+	{
+		data["GameUI"]["RootNode"].push_back("Null");
+	}
+	else
+	{
+		data["GameUI"]["RootNode"].push_back(*m_prootTreeNode->GameObject->GetUUID());
+	}
+
 	for (int i = 0; i < components.size(); ++i)
 	{
 		pnode = m_pUISceneGraph->GetNodeUsingIdentifier(components[i]->GetIdentifier());
 
 		if (pnode != nullptr)
 		{
+			pnode->GameObject->Serialize(data);
 
+			std::string uuidString = to_string(*pnode->GameObject->GetUUID());
+
+			if (pnode->Sibling == nullptr)
+			{
+				data["GameUI"][(int)pnode->GameObject->GetComponentType()][uuidString]["Sibling"].push_back("Null");
+			}
+			else
+			{
+				data["GameUI"][(int)pnode->GameObject->GetComponentType()][uuidString]["Sibling"].push_back(*pnode->Sibling->GameObject->GetUUID());
+			}
+
+			if (pnode->PreviousSibling == nullptr)
+			{
+				data["GameUI"][(int)pnode->GameObject->GetComponentType()][uuidString]["PreviousSibling"].push_back("Null");
+			}
+			else
+			{
+				data["GameUI"][(int)pnode->GameObject->GetComponentType()][uuidString]["PreviousSibling"].push_back(*pnode->PreviousSibling->GameObject->GetUUID());
+			}
+
+			if (pnode->PreviousParent == nullptr)
+			{
+				data["GameUI"][(int)pnode->GameObject->GetComponentType()][uuidString]["PreviousParent"].push_back("Null");
+			}
+			else
+			{
+				data["GameUI"][(int)pnode->GameObject->GetComponentType()][uuidString]["PreviousParent"].push_back(*pnode->PreviousParent->GameObject->GetUUID());
+			}
+
+			if (pnode->Child == nullptr)
+			{
+				data["GameUI"][(int)pnode->GameObject->GetComponentType()][uuidString]["Child"].push_back("Null");
+			}
+			else
+			{
+				data["GameUI"][(int)pnode->GameObject->GetComponentType()][uuidString]["Child"].push_back(*pnode->PreviousParent->GameObject->GetUUID());
+			}
 		}
 	}
 }
 
 void UIManager::Deserialize(nlohmann::json& data)
 {
+	m_pUISceneGraph->DeleteNode(m_prootTreeNode);
+
+	//First loop through and create all the objects
+	std::vector<GameUIComponent*> components;
+
+	for (nlohmann::json::iterator it = data["GameUI"].begin(); it != data["GameUI"].end(); ++it)
+	{
+		switch (std::stoi(it.key()))
+		{
+		case (int)(UIComponentType::CANVAS | UIComponentType::BASE):
+		{
+			for (nlohmann::json::iterator guidIt = data["GameUI"][(int)UIComponentType::CANVAS | (int)UIComponentType::BASE].begin(); guidIt != data["GameUI"][(int)UIComponentType::CANVAS | (int)UIComponentType::BASE].end(); ++guidIt)
+			{
+				components.push_back(new UICanvas(data, CoolUUID(stoi(it.key()))));
+			}
+		}
+			break;
+
+		case (int)UIComponentType::IMAGE | (int)UIComponentType::BASE:
+		{
+			for (nlohmann::json::iterator guidIt = data["GameUI"][(int)UIComponentType::IMAGE | (int)UIComponentType::BASE].begin(); guidIt != data["GameUI"][(int)UIComponentType::IMAGE | (int)UIComponentType::BASE].end(); ++guidIt)
+			{
+				components.push_back(new ImageComponent(data, CoolUUID(stoi(it.key()))));
+			}
+		}
+			break;
+
+		case (int)UIComponentType::TEXT | (int)UIComponentType::BASE:
+		{
+			for (nlohmann::json::iterator guidIt = data["GameUI"][(int)UIComponentType::TEXT | (int)UIComponentType::BASE].begin(); guidIt != data["GameUI"][(int)UIComponentType::TEXT | (int)UIComponentType::BASE].end(); ++guidIt)
+			{
+				components.push_back(new TextComponent(data, CoolUUID(stoi(it.key())), m_pDevice));
+			}
+		}
+			break;
+
+		case (int)UIComponentType::BASE:
+		{
+			for (nlohmann::json::iterator guidIt = data["GameUI"][(int)UIComponentType::BASE].begin(); guidIt != data["GameUI"][(int)UIComponentType::BASE].end(); ++guidIt)
+			{
+				components.push_back(new GameUIComponent(data, CoolUUID(stoi(it.key()))));
+			}
+		}
+			break;
+
+		default:
+			LOG("A UI component was saved that doesn't correspond to an existing type!");
+			break;
+		}
+	}
+
+	TreeNode<GameUIComponent>* pnode = nullptr;
+	GameUIComponent* pcomponent = nullptr;
+
+	//Next loop through and insert into scene graph
+	for (int i = 0; i < components.size(); ++i)
+	{
+		if (*components[i]->GetUUID() == data["GameUI"]["RootNode"])
+		{
+			pnode = m_pUISceneGraph->NewNode(components[i]);
+
+			break;
+		}
+	}
+
+	pcomponent = GetAndRemoveObjectFromUUID(components, CoolUUID(data["GameUI"]["RootNode"]));
+	pnode = m_pUISceneGraph->NewNode(pcomponent);
+
+	std::stack<TreeNode<GameUIComponent>*> toPush;
+	toPush.push(pnode);
+
+	while (toPush.size() != 0)
+	{
+		pnode = toPush.top();
+		toPush.pop();
+
+		if (data["GameUI"][(int)pnode->GameObject->GetComponentType()][*pnode->GameObject->GetUUID()]["Sibling"] != "Null")
+		{
+			pcomponent = GetAndRemoveObjectFromUUID(components, CoolUUID(data["GameUI"][(int)pnode->GameObject->GetComponentType()][*pnode->GameObject->GetUUID()]["Sibling"]));
+			
+			toPush.push(m_pUISceneGraph->AddSibling(pnode, pcomponent));
+		}
+
+		if (data["GameUI"][(int)pnode->GameObject->GetComponentType()][*pnode->GameObject->GetUUID()]["Child"] != "Null")
+		{
+			pcomponent = GetAndRemoveObjectFromUUID(components, CoolUUID(data["GameUI"][(int)pnode->GameObject->GetComponentType()][*pnode->GameObject->GetUUID()]["Child"]));
+
+			toPush.push(m_pUISceneGraph->AddSibling(pnode, pcomponent));
+		}
+	}
 }
 
 vector<GameUIComponent*>& UIManager::GetAllUIComponents()
