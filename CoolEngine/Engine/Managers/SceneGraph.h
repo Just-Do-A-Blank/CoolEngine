@@ -83,7 +83,7 @@ public:
 		string gameObjectName = currentNode->NodeObject->GetIdentifier();
 		m_sceneTreeNodeMap.erase(gameObjectName);
 		m_sceneGameObjectsMap.erase(gameObjectName);
-		m_sceneGameObjectList.erase(std::find(m_sceneGameObjectList.begin(), m_sceneGameObjectList.end(), currentNode->GameObject));
+		m_sceneGameObjectList.erase(std::find(m_sceneGameObjectList.begin(), m_sceneGameObjectList.end(), currentNode->NodeObject));
 
 		delete pgameObject;
 		currentNode->NodeObject = nullptr;
