@@ -51,7 +51,7 @@ vector<GameObject*>& Scene::GetAllGameObjects()
 void Scene::SelectGameObjectUsingIdentifier(string identifier)
 {
 	m_pselectedNode = m_psceneGraph->GetNodeUsingIdentifier(identifier);
-	m_pselectedGameObject = m_pselectedNode->GameObject;
+	m_pselectedGameObject = m_pselectedNode->NodeObject;
 }
 
 void Scene::SelectGameObject(GameObject* pgameObject)
@@ -77,7 +77,7 @@ void Scene::SelectGameObjectUsingTreeNode(TreeNode<GameObject>* pnode)
 	}
 
 	m_pselectedNode = pnode;
-	m_pselectedGameObject = pnode->GameObject;
+	m_pselectedGameObject = pnode->NodeObject;
 }
 
 

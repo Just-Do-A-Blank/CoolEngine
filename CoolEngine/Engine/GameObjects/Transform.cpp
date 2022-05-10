@@ -21,7 +21,7 @@ void Transform::UpdateMatrix()
 	if (m_pparentTransform)
 	{
 		m_worldMatrix = m_worldMatrix * m_pparentTransform->GetWorldMatrix();
-        m_accumulatedRotation = MathHelper::Plus(m_accumulatedRotation, m_pparentTransform->GetRotation());
+        m_accumulatedRotation = MathHelper::Plus(m_accumulatedRotation, m_pparentTransform->GetAccumulatedRotation());
 	}
 
 
@@ -187,6 +187,7 @@ void Transform::RemoveChildTransform(Transform* pchildTransform)
         if (*it._Ptr == pchildTransform)
         {
             m_childrenTransformList.erase(it);
+			break;
         }
     }
 }

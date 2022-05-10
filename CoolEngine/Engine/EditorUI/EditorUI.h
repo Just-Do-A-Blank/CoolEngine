@@ -129,7 +129,7 @@ public:
 
 			if (ppayload != nullptr)
 			{
-				objectPointer = (*((TreeNode<T>**)ppayload->Data))->GameObject;
+				objectPointer = (*((TreeNode<T>**)ppayload->Data))->NodeObject;
 			}
 
 			ImGui::EndDragDropTarget();

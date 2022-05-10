@@ -24,7 +24,7 @@ TreeNode<T>* SceneGraph<T>::NewNode(T* gameObject)
 		m_rootNode = new TreeNode<T>;
 		m_rootNode->Sibling = nullptr; 
 		m_rootNode->Child = nullptr;
-		m_rootNode->GameObject = gameObject;
+		m_rootNode->NodeObject = gameObject;
 		m_rootNode->PreviousParent = nullptr; 
 		m_rootNode->PreviousSibling = nullptr;
 		m_sceneTreeNodeMap.insert(pair<string, TreeNode<T>*>(gameObject->GetIdentifier(), m_rootNode));
@@ -36,7 +36,7 @@ TreeNode<T>* SceneGraph<T>::NewNode(T* gameObject)
 	TreeNode<T>* newNode = new TreeNode<T>();
 	newNode->Sibling = nullptr; 
 	newNode->Child = nullptr;
-	newNode->GameObject = gameObject;
+	newNode->NodeObject = gameObject;
 	newNode->PreviousParent = nullptr;
 	newNode->PreviousSibling = nullptr;
 
@@ -69,7 +69,7 @@ TreeNode<T>* SceneGraph<T>::AddSibling(TreeNode<T>* currentNode, T* gameObject)
 template<class T>
 void SceneGraph<T>::MoveNode(TreeNode<T>* currentNode, TreeNode<T>* parentNode)
 {
-	if (currentNode == nullptr || parentNode == nullptr)
+	if (currentNode == nullptr)
 	{
 		return;
 	}
@@ -77,9 +77,12 @@ void SceneGraph<T>::MoveNode(TreeNode<T>* currentNode, TreeNode<T>* parentNode)
 	if (currentNode->Sibling)
 	{
 		currentNode->Sibling->PreviousSibling = currentNode->PreviousSibling;
-
+		
 	}
-	
+	if (currentNode == m_rootNode)
+	{
+		m_rootNode = currentNode->Sibling;
+	}
 
 	if (currentNode->PreviousSibling)
 	{
@@ -93,26 +96,50 @@ void SceneGraph<T>::MoveNode(TreeNode<T>* currentNode, TreeNode<T>* parentNode)
 		}
 	}
 
-
-
-	if (parentNode->Child)
+	if (currentNode->PreviousParent)
 	{
-		AddSibling(currentNode->Child, currentNode->GameObject);
+		Transform* oldParentTransform = currentNode->PreviousParent->NodeObject->GetTransform();
+		oldParentTransform->RemoveChildTransform(currentNode->NodeObject->GetTransform());
+	}
+	
+	Transform* currentTransform = currentNode->NodeObject->GetTransform();	
+
+	currentNode->PreviousSibling = nullptr;
+	currentNode->Sibling = nullptr;
+
+	if (parentNode)
+	{
+		if (!parentNode->Child)
+		{
+			parentNode->Child = currentNode;
+			currentNode->PreviousParent = parentNode;
+		}
+		else
+		{
+			TreeNode<T>* siblingNode = parentNode->Sibling;
+			while (siblingNode->Sibling != nullptr)
+			{
+				siblingNode = siblingNode->Sibling;
+			}
+			siblingNode->Sibling = currentNode;
+			currentNode->PreviousSibling = siblingNode;
+		}
 	}
 	else
 	{
-		currentNode->Child = NewNode(currentNode->GameObject);
-		currentNode->Child->PreviousParent = currentNode;
-	}
-
-	for (unordered_map<string, TreeNode<T>*>::iterator it = m_sceneTreeNodeMap.begin(); it != m_sceneTreeNodeMap.end(); ++it)
-	{
-		if (it->second == currentNode)
+		TreeNode<T>* siblingNode = m_rootNode->Sibling;
+		while (siblingNode->Sibling != nullptr)
 		{
-			DeleteNode(currentNode, false);
+			siblingNode = siblingNode->Sibling;
 		}
+		siblingNode->Sibling = currentNode;
+		currentNode->PreviousSibling = siblingNode;
 	}
 
+	Transform* newParentTransform = m_rootNode->NodeObject->GetTransform();
+
+	newParentTransform->AddChildTransform(currentTransform);
+	currentTransform->SetParentTransform(newParentTransform);
 }
 
 template<class T>
@@ -123,7 +150,7 @@ TreeNode<T>* SceneGraph<T>::AddChild(TreeNode<T>* currentNode, T* gameObject)
 		return nullptr;
 	}
 
-	Transform* pparentTransform = currentNode->GameObject->GetTransform();
+	Transform* pparentTransform = currentNode->NodeObject->GetTransform();
 	Transform* pcurrentTransform = gameObject->GetTransform();
 
 	pcurrentTransform->SetParentTransform(pparentTransform);
@@ -151,7 +178,7 @@ TreeNode<T>* SceneGraph<T>::TraverseTree(TreeNode<T>* currentNode)
 
 	while (currentNode)
 	{
-		LOG(currentNode->GameObject->GetIdentifier());
+		LOG(currentNode->NodeObject->GetIdentifier());
 
 		if (currentNode->Child)
 		{
@@ -175,24 +202,24 @@ void SceneGraph<T>::DeleteNode(TreeNode<T>* currentNode, bool deleteData)
 
 	if (deleteData)
 	{
-		delete currentNode->GameObject;
-		currentNode->GameObject = nullptr;
+		delete currentNode->NodeObject;
+		currentNode->NodeObject = nullptr;
 	}
 	
-	currentNode->GameObject->GetTransform()->SetParentTransform(nullptr);
+	currentNode->NodeObject->GetTransform()->SetParentTransform(nullptr);
 	if (currentNode->PreviousParent)
 	{
-		currentNode->PreviousParent->GameObject->GetTransform()->RemoveChildTransform(currentNode->GameObject->GetTransform());
+		currentNode->PreviousParent->NodeObject->GetTransform()->RemoveChildTransform(currentNode->NodeObject->GetTransform());
 	}
 	
 	
 	delete currentNode;
 	currentNode = nullptr;
 
-	string gameObjectName = currentNode->GameObject->GetIdentifier();
+	string gameObjectName = currentNode->NodeObject->GetIdentifier();
 	m_sceneTreeNodeMap.erase(gameObjectName);
 	m_sceneGameObjectsMap.erase(gameObjectName);
-	m_sceneGameObjectList.erase(remove(m_sceneGameObjectList.begin(), m_sceneGameObjectList.end(), currentNode->GameObject));
+	m_sceneGameObjectList.erase(remove(m_sceneGameObjectList.begin(), m_sceneGameObjectList.end(), currentNode->NodeObject));
 }
 
 template<class T>
@@ -249,13 +276,13 @@ void SceneGraph<T>::DeleteGameObjectUsingNode(TreeNode<T>* currentNode)
 		}
 	}
 
-	string gameObjectName = currentNode->GameObject->GetIdentifier();
+	string gameObjectName = currentNode->NodeObject->GetIdentifier();
 	m_sceneTreeNodeMap.erase(gameObjectName);
 	m_sceneGameObjectsMap.erase(gameObjectName);
-	m_sceneGameObjectList.erase(remove(m_sceneGameObjectList.begin(), m_sceneGameObjectList.end(), currentNode->GameObject));
+	m_sceneGameObjectList.erase(remove(m_sceneGameObjectList.begin(), m_sceneGameObjectList.end(), currentNode->NodeObject));
 
-	delete currentNode->GameObject;
-	currentNode->GameObject = nullptr;
+	delete currentNode->NodeObject;
+	currentNode->NodeObject = nullptr;
 	delete currentNode;
 	currentNode = nullptr;	
 }

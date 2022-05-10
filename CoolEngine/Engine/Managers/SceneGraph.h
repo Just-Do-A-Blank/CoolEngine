@@ -10,7 +10,7 @@ struct TreeNode
 	TreeNode* Child = nullptr;
 	TreeNode* PreviousParent = nullptr;
 	TreeNode* PreviousSibling = nullptr;
-	T* GameObject = nullptr;
+	T* NodeObject = nullptr;
 };
 
 template<class T>
@@ -80,13 +80,13 @@ public:
 			}
 		}
 
-		string gameObjectName = currentNode->GameObject->GetIdentifier();
+		string gameObjectName = currentNode->NodeObject->GetIdentifier();
 		m_sceneTreeNodeMap.erase(gameObjectName);
 		m_sceneGameObjectsMap.erase(gameObjectName);
-		m_sceneGameObjectList.erase(remove(m_sceneGameObjectList.begin(), m_sceneGameObjectList.end(), currentNode->GameObject));
+		m_sceneGameObjectList.erase(remove(m_sceneGameObjectList.begin(), m_sceneGameObjectList.end(), currentNode->NodeObject));
 
 		delete pgameObject;
-		currentNode->GameObject = nullptr;
+		currentNode->NodeObject = nullptr;
 		delete currentNode;
 		currentNode = nullptr;
 	}

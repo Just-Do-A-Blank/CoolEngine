@@ -105,7 +105,7 @@ void EditorUI::DrawSceneGraphWindow()
 		return;
 	}
 	ImGui::Begin("Scene Graph", nullptr, ImGuiWindowFlags_MenuBar);
-
+	
 	GameManager* pgameManager = GameManager::GetInstance();
 	static int selected = -1;
 
@@ -177,6 +177,23 @@ void EditorUI::DrawSceneGraphWindow()
 
 		ImGui::EndMenuBar();
 	}
+
+	ImGui::BeginChild("Root Drag & Drop Region");
+	ImGui::EndChild();
+
+	if (ImGui::BeginDragDropTarget())
+	{
+		const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("SceneGraphNode", ImGuiDragDropFlags_None);
+
+		if (ppayload != nullptr)
+		{
+			TreeNode<GameObject>* objectPointer = *(TreeNode<GameObject>**)ppayload->Data;
+
+			pgameManager->GetCurrentScene()->GetSceneGraph()->MoveNode(objectPointer, nullptr);
+		}
+
+		ImGui::EndDragDropTarget();
+	}
 	ImGui::End();
 
 	if (m_createGameObjectClicked)
@@ -221,6 +238,7 @@ void EditorUI::DrawSceneGraphWindow()
 			m_createGameObjectClicked = false;
 			gameObjectName[0] = {};
 		}
+		
 		ImGui::End();
 	}
 }
@@ -331,7 +349,7 @@ void EditorUI::TraverseTree(TreeNode<GameObject>* pcurrentNode, int& nodeCount)
 		node_flags |= ImGuiTreeNodeFlags_Selected;
 	}
 
-	bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)nodeCount, node_flags, pcurrentNode->GameObject->GetIdentifier().c_str(), nodeCount);
+	bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)nodeCount, node_flags, pcurrentNode->NodeObject->GetIdentifier().c_str(), nodeCount);
 
 	if (ImGui::BeginDragDropTarget())
 	{
@@ -346,12 +364,7 @@ void EditorUI::TraverseTree(TreeNode<GameObject>* pcurrentNode, int& nodeCount)
 
 		ImGui::EndDragDropTarget();
 	}
-	
-	/*if (ImGui::BeginDragDropSource() == true)
-	{
-		bool test = ImGui::SetDragDropPayload("SceneGraph", &pcurrentNode->GameObject, sizeof(pcurrentNode->GameObject), ImGuiCond_Once);
-		ImGui::EndDragDropSource();
-	}*/
+
 	if (ImGui::BeginDragDropSource() == true)
 	{
 		bool test = ImGui::SetDragDropPayload("SceneGraphNode", &pcurrentNode, sizeof(pcurrentNode), ImGuiCond_Once);
