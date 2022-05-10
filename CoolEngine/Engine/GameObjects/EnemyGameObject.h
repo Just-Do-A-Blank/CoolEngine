@@ -30,7 +30,7 @@ class EnemyGameObject :
 
 public:
     EnemyGameObject(); 
-    EnemyGameObject(string identifier); 
+    EnemyGameObject(string identifier, CoolUUID uuid);
     void Update();
 
 
@@ -46,18 +46,17 @@ public:
     const XMFLOAT3 GetTarget() const;
 
     const XMFLOAT3 GetDirection() const;
-    const EnemyState GetEnemyState() const; //will be changed to FsSM states in the future 
+    const EnemyState GetEnemyState() const; //will be changed to FsSM states in the future
 
 
 private:
 
     vector<node*> m_curPath;
 
-   
+
     EnemyStateMachine m_enemyState;
 
     void DetermineAction();
 
 
 };
-

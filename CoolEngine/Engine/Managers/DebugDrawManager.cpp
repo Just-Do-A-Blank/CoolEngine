@@ -4,6 +4,7 @@
 #include "Engine/GameObjects/DebugRect.h"
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/ResourceDefines.h"
+#include "Engine/Managers/GameManager.h"
 
 void DebugDrawManager::Init(ID3D11Device* pd3dDevice)
 {
@@ -21,7 +22,8 @@ void DebugDrawManager::Init(ID3D11Device* pd3dDevice)
 
 void DebugDrawManager::CreateWorldSpaceDebugRect(string identifier, XMFLOAT3& position, XMFLOAT3& dimension, DebugColour colour)
 {
-	DebugRect* debugRect = new DebugRect(m_albedoMap.find(colour)->second, identifier, false);
+	CoolUUID uuid;
+	DebugRect* debugRect = new DebugRect(m_albedoMap.find(colour)->second, identifier, uuid, false);
 	debugRect->GetTransform()->SetPosition(position);
 	debugRect->GetTransform()->SetScale(dimension);
 
@@ -30,7 +32,8 @@ void DebugDrawManager::CreateWorldSpaceDebugRect(string identifier, XMFLOAT3& po
 
 void DebugDrawManager::CreateScreenSpaceDebugRect(string identifier, XMFLOAT3& position, XMFLOAT3& dimension, DebugColour colour)
 {
-	DebugRect* debugRect = new DebugRect(m_albedoMap.find(colour)->second, identifier, true);
+	CoolUUID uuid;
+	DebugRect* debugRect = new DebugRect(m_albedoMap.find(colour)->second, identifier, uuid, true);
 	debugRect->GetTransform()->SetPosition(position);
 	debugRect->GetTransform()->SetScale(dimension);
 
@@ -49,8 +52,10 @@ void DebugDrawManager::Update()
 {
 	for (unordered_map<string, DebugRect*>::iterator it = m_debugRectMap.begin(); it != m_debugRectMap.end(); ++it)
 	{
-		it->second->Update();
+		delete it->second;
 	}
+
+	m_debugRectMap.clear();
 }
 
 #endif //_DEBUG

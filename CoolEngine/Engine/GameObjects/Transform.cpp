@@ -12,15 +12,16 @@ void Transform::Initialize(const XMFLOAT3& position, const XMFLOAT3& rotation, c
 
 void Transform::UpdateMatrix()
 {
-	m_rotationMatrix = XMMatrixRotationRollPitchYaw(m_rotation.x, m_rotation.y, m_rotation.z);
+	m_rotationMatrix = XMMatrixRotationRollPitchYaw((-m_rotation.x/180.0f)*XM_PI, (-m_rotation.y / 180.0f) * XM_PI, (-m_rotation.z / 180.0f) * XM_PI);
 	m_scaleMatrix = XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);
 	m_translationalMatrix = XMMatrixTranslation(m_position.x, m_position.y, m_position.z);
 
 	m_worldMatrix = m_scaleMatrix * m_rotationMatrix * m_translationalMatrix;
-
+    m_accumulatedRotation = m_rotation;
 	if (m_pparentTransform)
 	{
 		m_worldMatrix = m_worldMatrix * m_pparentTransform->GetWorldMatrix();
+        m_accumulatedRotation = MathHelper::Plus(m_accumulatedRotation, m_pparentTransform->GetAccumulatedRotation());
 	}
 
 
@@ -52,6 +53,11 @@ const XMFLOAT3& Transform::GetPosition() const
 const XMFLOAT3& Transform::GetRotation() const
 {
     return m_rotation;
+}
+
+const XMFLOAT3& Transform::GetAccumulatedRotation() const
+{
+    return m_accumulatedRotation;
 }
 
 const XMFLOAT3& Transform::GetScale() const
@@ -170,5 +176,18 @@ void Transform::SetParentTransform(Transform* pparentTransform)
 
 void Transform::AddChildTransform(Transform* pchildTransform)
 {
-	m_childrenTransformList.push_back(pchildTransform);
+    m_childrenTransformList.push_back(pchildTransform);
+
+}
+
+void Transform::RemoveChildTransform(Transform* pchildTransform)
+{
+    for (vector<Transform*>::iterator it = m_childrenTransformList.begin(); it != m_childrenTransformList.end(); ++it)
+    {
+        if (*it._Ptr == pchildTransform)
+        {
+            m_childrenTransformList.erase(it);
+			break;
+        }
+    }
 }

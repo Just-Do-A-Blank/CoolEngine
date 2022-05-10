@@ -8,7 +8,7 @@ class PlayerGameObject : public CharacterGameObject
 public:
 
 	PlayerGameObject();
-	PlayerGameObject(string identifier);
+	PlayerGameObject(string identifier, CoolUUID uuid);
 	~PlayerGameObject();
 
 	void Handle(Event* e) override;

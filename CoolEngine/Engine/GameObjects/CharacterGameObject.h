@@ -14,7 +14,7 @@ protected:
 public:
 
 	CharacterGameObject();
-	CharacterGameObject(string identifier);
+	CharacterGameObject(string identifier, CoolUUID uuid);
 	~CharacterGameObject();
 
 	virtual void Update();

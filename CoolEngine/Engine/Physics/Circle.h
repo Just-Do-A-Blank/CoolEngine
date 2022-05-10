@@ -25,7 +25,7 @@ public:
 	Circle(Transform* t)
 	{
 		m_transform = t;
-		m_radius = m_transform->GetScale().x;
+		m_radius = m_transform->GetScale().x * 50;
 
 		m_shapeType = ShapeType::CIRCLE;
 	}
@@ -49,9 +49,9 @@ public:
 		return m_radius;
 	}
 
-	void SetRadius(float radius)
+	void SetShapeDimensions(XMFLOAT3 scale)
 	{
-		m_radius = radius;
+		m_radius = m_transform->GetScale().x * 50;
 	}
 
 	~Circle()

@@ -11,7 +11,7 @@ RenderableCollidableGameObject::RenderableCollidableGameObject() : RenderableGam
 
 }
 
-RenderableCollidableGameObject::RenderableCollidableGameObject(string identifier) : RenderableGameObject(identifier), CollidableGameObject(identifier)
+RenderableCollidableGameObject::RenderableCollidableGameObject(string identifier, CoolUUID uuid) : RenderableGameObject(identifier, uuid), CollidableGameObject(identifier, uuid)
 {
 
 }

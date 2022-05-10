@@ -7,13 +7,14 @@ class CollidableGameObject : virtual public GameObject
 {
 public:
 	CollidableGameObject();
-	CollidableGameObject(string identifier);
+	CollidableGameObject(string identifier, CoolUUID uuid);
 
 	//Getters
 	Shape* GetShape();
 
 	//Setters
 	void SetShape(Shape* collider);
+	void SetShapeDimensions(XMFLOAT3 scale);
 
 #if EDITOR
 	virtual void CreateEngineUI() override;

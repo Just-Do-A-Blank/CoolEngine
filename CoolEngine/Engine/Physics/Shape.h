@@ -26,7 +26,9 @@ public:
     virtual bool CollideResponse(Circle* circle) = 0;
     virtual bool CollideResponse(Box* box) = 0;
 
-    ShapeType GetShapeType();
+	virtual void SetShapeDimensions(XMFLOAT3 scale) = 0;
+
+	ShapeType GetShapeType();
 
     static string ShapeTypeToString(ShapeType type);
 

@@ -13,7 +13,7 @@ PlayerGameObject::PlayerGameObject() : CharacterGameObject()
     m_gameObjectType |= GameObjectType::PLAYER;
 }
 
-PlayerGameObject::PlayerGameObject(string identifier) : CharacterGameObject(identifier)
+PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : CharacterGameObject(identifier, uuid)
 {
 	EventManager::Instance()->AddClient(EventType::KeyPressed, this);
 	EventManager::Instance()->AddClient(EventType::KeyReleased, this);

@@ -5,7 +5,7 @@ CharacterGameObject::CharacterGameObject() : TriggerableGameObject()
 {
 }
 
-CharacterGameObject::CharacterGameObject(string identifier) : TriggerableGameObject(identifier)
+CharacterGameObject::CharacterGameObject(string identifier, CoolUUID uuid) : TriggerableGameObject(identifier, uuid)
 {
 	m_gameObjectType |= GameObjectType::CHARACTER;
 }

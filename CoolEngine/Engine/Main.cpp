@@ -156,7 +156,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	float nearDepth = 0.01f;
 	float farDepth = 1000.0f;
 
-	g_pcamera = new CameraGameObject("Camera");
+	CoolUUID uuid;
+	g_pcamera = new CameraGameObject("Camera", uuid);
 	g_pcamera->Initialize(cameraPos, cameraForward, cameraUp, windowWidth, windowHeight, nearDepth, farDepth);
 
 	GameManager::GetInstance()->SetCamera(g_pcamera);
@@ -217,6 +218,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	XMFLOAT3 objectPos = XMFLOAT3(0, -200.0f, 0.0f);
 	XMFLOAT3 objectScale = XMFLOAT3(2, 2, 2);
+	XMFLOAT3 objectRot = XMFLOAT3(0, 0, 0);
 	bool isCollision = true;
 
 	pgameObject->SetMesh(QUAD_MESH_NAME);
@@ -242,6 +244,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetAlbedo(TEST2);
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
+	pgameObject->GetTransform()->SetRotation(objectRot);
 	pbox = new Box(pgameObject->GetTransform());
 	pbox->SetIsCollidable(isCollision);
 	pbox->SetIsTrigger(isCollision);
@@ -797,6 +800,10 @@ float temp;
 
 void Update()
 {
+#if _DEBUG
+	DebugDrawManager::GetInstance()->Update();
+#endif
+
 	ParticleManager::GetInstance()->Update(GameManager::GetInstance()->GetTimer()->DeltaTime());
 
 	AudioManager::GetInstance()->Update();

@@ -92,6 +92,57 @@ public:
 	static bool Animation(const string& label, wstring& filepath, ID3D11ShaderResourceView* psrv, const float& columnWidth = 100.0f);
 
 	static void Animations(const string& label, unordered_map<string, SpriteAnimation>& animations, const float& columnWidth = 100.0f);
+
+	template<class T>
+	static void ReferenceField(const string& label, T*& objectPointer, const float& columnWidth = 100.0f)
+	{
+		ImGui::PushID(label.c_str());
+
+		ImGui::Columns(2);
+
+		ImGui::SetColumnWidth(0, columnWidth);
+		ImGui::Text(label.c_str());
+		ImGui::NextColumn();
+
+		ImGui::PushItemWidth(ImGui::CalcItemWidth());
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+
+		char buffer[FILEPATH_BUFFER_SIZE];
+
+		if (objectPointer == nullptr)
+		{
+			strcpy_s(buffer, "Null");
+		}
+		else
+		{
+			GameObject* pobject = (GameObject*)objectPointer;
+
+			strcpy_s(buffer, pobject->GetIdentifier().c_str());
+		}
+
+		ImGui::Text(buffer);
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("SceneGraphNode");
+
+			if (ppayload != nullptr)
+			{
+				objectPointer = (*((TreeNode<T>**)ppayload->Data))->NodeObject;
+			}
+
+			ImGui::EndDragDropTarget();
+		}
+
+		ImGui::PopItemWidth();
+
+		ImGui::PopStyleVar();
+
+		ImGui::Columns(1);
+
+		ImGui::PopID();
+	}
 };
 
 #endif

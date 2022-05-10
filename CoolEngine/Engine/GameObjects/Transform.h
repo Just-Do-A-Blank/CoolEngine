@@ -6,6 +6,7 @@ class Transform : EditorUIComponent
 {
 	XMFLOAT3 m_position;
 	XMFLOAT3 m_rotation;
+	XMFLOAT3 m_accumulatedRotation;
 	XMFLOAT3 m_scale = XMFLOAT3(1, 1, 1);
 
 	XMFLOAT3 m_forwardVector = XMFLOAT3(0.0f, -1.0f, 0.0f);
@@ -33,6 +34,7 @@ public:
 	//Getters
 	const XMFLOAT3& GetPosition()const;
 	const XMFLOAT3& GetRotation()const;
+	const XMFLOAT3& GetAccumulatedRotation()const;
 	const XMFLOAT3& GetScale()const;
 
 	const XMMATRIX& GetScaleMatrix()const;
@@ -62,5 +64,6 @@ public:
 
 	void SetParentTransform(Transform* pparentTransform);
 	void AddChildTransform(Transform* pchildTransform);
+	void RemoveChildTransform(Transform* pchildTransform);
 };
 

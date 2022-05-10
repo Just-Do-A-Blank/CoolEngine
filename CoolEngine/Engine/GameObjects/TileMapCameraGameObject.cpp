@@ -2,7 +2,7 @@
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/Managers/GameManager.h"
 
-TileMapCameraGameObject::TileMapCameraGameObject(string identifier) : CameraGameObject(identifier)
+TileMapCameraGameObject::TileMapCameraGameObject(string identifier, CoolUUID uuid) : CameraGameObject(identifier, uuid)
 {
 
 }
