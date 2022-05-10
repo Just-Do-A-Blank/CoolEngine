@@ -8,6 +8,8 @@
 
 GameUIComponent::GameUIComponent(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation)
 {
+	m_componentType |= UIComponentType::BASE;
+
 	m_uiElementIdentifier = identifier;
 	m_uuid = uuid;
 	m_transform = new Transform();
@@ -56,6 +58,14 @@ void GameUIComponent::Render(RenderStruct& renderStruct)
 }
 
 void GameUIComponent::Update()
+{
+}
+
+void GameUIComponent::Serialize(nlohmann::json& data)
+{
+}
+
+void GameUIComponent::Deserialize(nlohmann::json& data)
 {
 }
 
@@ -123,4 +133,9 @@ Transform* GameUIComponent::GetTransform()
 const string& GameUIComponent::GetIdentifier()
 {
 	return m_uiElementIdentifier;
+}
+
+const CoolUUID& GameUIComponent::GetUUID() const
+{
+	return m_uuid;
 }

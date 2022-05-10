@@ -6,7 +6,7 @@
 
 ImageComponent::ImageComponent(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation) : GameUIComponent(identifier, uuid, position, scale, rotation)
 {
-	
+	m_componentType |= UIComponentType::IMAGE;
 }
 
 void ImageComponent::Init(wstring textureFilePath)

@@ -10,6 +10,8 @@ void UICanvas::CreateEngineUI(ID3D11Device* pdevice)
 
 UICanvas::UICanvas(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation) : GameUIComponent(identifier, uuid, position, scale, rotation)
 {
+	m_componentType |= UIComponentType::CANVAS;
+
 	m_canvasIdentifier = identifier;	
 }
 
