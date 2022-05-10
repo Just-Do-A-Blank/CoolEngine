@@ -21,8 +21,6 @@ private:
 
     SceneGraph<GameUIComponent>* m_pUISceneGraph = nullptr;
 
-	GameUIComponent* GetAndRemoveObjectFromUUID(std::vector<GameUIComponent*>& components, const CoolUUID& uuid);
-
 public:
 	void Init(ID3D11Device* pDevice);
     void CreateCanvas(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation);

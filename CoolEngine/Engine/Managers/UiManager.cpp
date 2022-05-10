@@ -7,21 +7,6 @@
 
 #include <stack>
 
-GameUIComponent* UIManager::GetAndRemoveObjectFromUUID(std::vector<GameUIComponent*>& components, const CoolUUID& uuid)
-{
-	for (int i = 0; i < components.size(); ++i)
-	{
-		if (*components[i]->GetUUID() == *uuid)
-		{
-			GameUIComponent* pcomponent = components[i];
-
-			components.erase(components.begin() + i);
-
-			return pcomponent;
-		}
-	}
-}
-
 void UIManager::Init(ID3D11Device* pDevice)
 {
 	m_pDevice = pDevice;
@@ -196,7 +181,7 @@ void UIManager::Deserialize(nlohmann::json& data)
 	m_pUISceneGraph->DeleteNode(m_prootTreeNode);
 
 	//First loop through and create all the objects
-	std::vector<GameUIComponent*> components;
+	std::unordered_map<uint64_t, GameUIComponent*> components;
 
 	for (nlohmann::json::iterator it = data["GameUI"].begin(); it != data["GameUI"].end(); ++it)
 	{
@@ -206,7 +191,7 @@ void UIManager::Deserialize(nlohmann::json& data)
 		{
 			for (nlohmann::json::iterator guidIt = data["GameUI"][(int)UIComponentType::CANVAS | (int)UIComponentType::BASE].begin(); guidIt != data["GameUI"][(int)UIComponentType::CANVAS | (int)UIComponentType::BASE].end(); ++guidIt)
 			{
-				components.push_back(new UICanvas(data, CoolUUID(stoi(it.key()))));
+				components[stoi(it.key())] = new UICanvas(data, CoolUUID(stoi(it.key())));
 			}
 		}
 			break;
@@ -215,7 +200,7 @@ void UIManager::Deserialize(nlohmann::json& data)
 		{
 			for (nlohmann::json::iterator guidIt = data["GameUI"][(int)UIComponentType::IMAGE | (int)UIComponentType::BASE].begin(); guidIt != data["GameUI"][(int)UIComponentType::IMAGE | (int)UIComponentType::BASE].end(); ++guidIt)
 			{
-				components.push_back(new ImageComponent(data, CoolUUID(stoi(it.key()))));
+				components[stoi(it.key())] = new ImageComponent(data, CoolUUID(stoi(it.key())));
 			}
 		}
 			break;
@@ -224,7 +209,7 @@ void UIManager::Deserialize(nlohmann::json& data)
 		{
 			for (nlohmann::json::iterator guidIt = data["GameUI"][(int)UIComponentType::TEXT | (int)UIComponentType::BASE].begin(); guidIt != data["GameUI"][(int)UIComponentType::TEXT | (int)UIComponentType::BASE].end(); ++guidIt)
 			{
-				components.push_back(new TextComponent(data, CoolUUID(stoi(it.key())), m_pDevice));
+				components[stoi(it.key())] = new TextComponent(data, CoolUUID(stoi(it.key())), m_pDevice);
 			}
 		}
 			break;
@@ -233,7 +218,7 @@ void UIManager::Deserialize(nlohmann::json& data)
 		{
 			for (nlohmann::json::iterator guidIt = data["GameUI"][(int)UIComponentType::BASE].begin(); guidIt != data["GameUI"][(int)UIComponentType::BASE].end(); ++guidIt)
 			{
-				components.push_back(new GameUIComponent(data, CoolUUID(stoi(it.key()))));
+				components[stoi(it.key())] = new GameUIComponent(data, CoolUUID(stoi(it.key())));
 			}
 		}
 			break;
@@ -258,7 +243,7 @@ void UIManager::Deserialize(nlohmann::json& data)
 		}
 	}
 
-	pcomponent = GetAndRemoveObjectFromUUID(components, CoolUUID(data["GameUI"]["RootNode"]));
+	pcomponent = components[data["GameUI"]["RootNode"]];
 	pnode = m_pUISceneGraph->NewNode(pcomponent);
 
 	std::stack<TreeNode<GameUIComponent>*> toPush;
@@ -271,14 +256,14 @@ void UIManager::Deserialize(nlohmann::json& data)
 
 		if (data["GameUI"][(int)pnode->NodeObject->GetComponentType()][*pnode->NodeObject->GetUUID()]["Sibling"] != "Null")
 		{
-			pcomponent = GetAndRemoveObjectFromUUID(components, CoolUUID(data["GameUI"][(int)pnode->NodeObject->GetComponentType()][*pnode->NodeObject->GetUUID()]["Sibling"]));
+			pcomponent = components[data["GameUI"][(int)pnode->NodeObject->GetComponentType()][*pnode->NodeObject->GetUUID()]["Sibling"]];
 			
 			toPush.push(m_pUISceneGraph->AddSibling(pnode, pcomponent));
 		}
 
 		if (data["GameUI"][(int)pnode->NodeObject->GetComponentType()][*pnode->NodeObject->GetUUID()]["Child"] != "Null")
 		{
-			pcomponent = GetAndRemoveObjectFromUUID(components, CoolUUID(data["GameUI"][(int)pnode->NodeObject->GetComponentType()][*pnode->NodeObject->GetUUID()]["Child"]));
+			pcomponent = components[data["GameUI"][(int)pnode->NodeObject->GetComponentType()][*pnode->NodeObject->GetUUID()]["Child"]];
 
 			toPush.push(m_pUISceneGraph->AddSibling(pnode, pcomponent));
 		}
