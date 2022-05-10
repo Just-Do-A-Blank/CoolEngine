@@ -2,7 +2,7 @@
 #include "DebugRect.h"
 #include "Engine/ResourceDefines.h"
 
-DebugRect::DebugRect(wstring albedoName, string identifier, bool screenSpace) : RenderableGameObject(identifier)
+DebugRect::DebugRect(wstring albedoName, string identifier, CoolUUID uuid, bool screenSpace) : RenderableGameObject(identifier, uuid)
 {
 	SetAlbedo(albedoName);
 

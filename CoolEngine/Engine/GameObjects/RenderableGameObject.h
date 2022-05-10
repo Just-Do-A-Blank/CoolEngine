@@ -13,7 +13,7 @@ class RenderableGameObject : virtual public GameObject
 {
 public:
 	RenderableGameObject();
-	RenderableGameObject(string identifier);
+	RenderableGameObject(string identifier, CoolUUID uuid);
 
 
 	//Getters

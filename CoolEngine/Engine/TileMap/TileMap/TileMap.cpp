@@ -12,14 +12,14 @@ TileMap::TileMap() : RenderableGameObject()
 #endif
 }
 
-TileMap::TileMap(string identifier) : RenderableGameObject(identifier)
+TileMap::TileMap(string identifier, CoolUUID uuid) : RenderableGameObject(identifier, uuid)
 {
 #if EDITOR
 	Tile::s_ptileMap = this;
 #endif
 }
 
-TileMap::TileMap(wstring mapPath, XMFLOAT3 position, string identifier) : RenderableGameObject(identifier)
+TileMap::TileMap(wstring mapPath, XMFLOAT3 position, string identifier, CoolUUID uuid) : RenderableGameObject(identifier, uuid)
 {
 #if EDITOR
 	Tile::s_ptileMap = this;
@@ -30,7 +30,7 @@ TileMap::TileMap(wstring mapPath, XMFLOAT3 position, string identifier) : Render
 	Load(mapPath);
 }
 
-TileMap::TileMap(int width, int height, string identifier, XMFLOAT3 position, float tileDimensions) : RenderableGameObject(identifier)
+TileMap::TileMap(int width, int height, string identifier, CoolUUID uuid, XMFLOAT3 position, float tileDimensions) : RenderableGameObject(identifier, uuid)
 {
 #if EDITOR
 	Tile::s_ptileMap = this;

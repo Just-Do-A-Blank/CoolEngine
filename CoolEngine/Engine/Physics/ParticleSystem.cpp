@@ -4,7 +4,7 @@
 
 #include "Engine/EditorUI/EditorUI.h"
 
-ParticleSystem::ParticleSystem(string identifier) : GameObject(identifier)
+ParticleSystem::ParticleSystem(string identifier, CoolUUID uuid) : GameObject(identifier, uuid)
 {
 	m_systemLife = 0.0f;
 	m_timer = 0.0f;

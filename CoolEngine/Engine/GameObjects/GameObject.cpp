@@ -9,17 +9,22 @@ GameObject::GameObject()
 	m_gameObjectType |= GameObjectType::BASE;
 }
 
-GameObject::GameObject(string identifier)
+GameObject::GameObject(string identifier, CoolUUID uuid)
 {
 	m_identifier = identifier;
 	m_transform = new Transform();
+
+	m_UUID = uuid;
 
 	m_gameObjectType = GameObjectType::BASE;
 }
 
 void GameObject::Update()
 {
-
+	if (m_pTest != nullptr)
+	{
+		LOG(m_pTest->GetIdentifier());
+	}
 }
 
 #if EDITOR
@@ -47,7 +52,7 @@ void GameObject::CreateEngineUI()
 	ImGui::Separator();
 	ImGui::Spacing();
 
-
+	EditorUI::ReferenceField("Reference test", m_pTest);
 }
 #endif
 
