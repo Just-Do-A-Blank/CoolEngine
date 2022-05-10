@@ -79,3 +79,8 @@ void CollidableGameObject::SetShape(Shape* collider)
 {
 	m_pcollider = collider;
 }
+
+void CollidableGameObject::SetShapeDimensions(XMFLOAT3 scale)
+{
+	m_pcollider->SetShapeDimensions(scale);
+}
