@@ -367,6 +367,15 @@ void GraphicsManager::Serialize(nlohmann::json& data)
 
 void GraphicsManager::Deserialize(nlohmann::json& data)
 {
+	for (int i = 0; i < data["GraphicsManager"]["Textures"].size(); ++i)
+	{
+		LoadTextureFromFile(data["GraphicsManager"]["Textures"][i]);
+	}
+
+	for (int i = 0; i < data["GraphicsManager"]["Animations"].size(); ++i)
+	{
+		LoadAnimationFromFile(data["GraphicsManager"]["Animations"][i]);
+	}
 }
 
 void GraphicsManager::CreateInputLayouts()
