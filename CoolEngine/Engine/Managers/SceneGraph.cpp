@@ -107,6 +107,7 @@ void SceneGraph<T>::MoveNode(TreeNode<T>* currentNode, TreeNode<T>* parentNode)
 	currentNode->PreviousSibling = nullptr;
 	currentNode->Sibling = nullptr;
 
+	Transform* newParentTransform;
 	if (parentNode)
 	{
 		if (!parentNode->Child)
@@ -124,6 +125,8 @@ void SceneGraph<T>::MoveNode(TreeNode<T>* currentNode, TreeNode<T>* parentNode)
 			siblingNode->Sibling = currentNode;
 			currentNode->PreviousSibling = siblingNode;
 		}
+		newParentTransform = parentNode->NodeObject->GetTransform();
+		newParentTransform->AddChildTransform(currentTransform);
 	}
 	else
 	{
@@ -134,11 +137,10 @@ void SceneGraph<T>::MoveNode(TreeNode<T>* currentNode, TreeNode<T>* parentNode)
 		}
 		siblingNode->Sibling = currentNode;
 		currentNode->PreviousSibling = siblingNode;
+
+		newParentTransform = nullptr;
 	}
 
-	Transform* newParentTransform = m_rootNode->NodeObject->GetTransform();
-
-	newParentTransform->AddChildTransform(currentTransform);
 	currentTransform->SetParentTransform(newParentTransform);
 }
 

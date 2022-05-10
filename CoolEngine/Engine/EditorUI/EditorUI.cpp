@@ -188,12 +188,21 @@ void EditorUI::DrawSceneGraphWindow()
 		if (ppayload != nullptr)
 		{
 			TreeNode<GameObject>* objectPointer = *(TreeNode<GameObject>**)ppayload->Data;
-
-			pgameManager->GetCurrentScene()->GetSceneGraph()->MoveNode(objectPointer, nullptr);
+			if (objectPointer->PreviousParent != nullptr)
+			{
+				pgameManager->GetCurrentScene()->GetSceneGraph()->MoveNode(objectPointer, nullptr);
+			}
 		}
 
 		ImGui::EndDragDropTarget();
 	}
+
+	if (ImGui::IsItemClicked())
+	{
+		m_gameObjectNodeClicked = -1;
+		pgameManager->SelectGameObject(nullptr);
+	}
+	
 	ImGui::End();
 
 	if (m_createGameObjectClicked)
@@ -375,18 +384,8 @@ void EditorUI::TraverseTree(TreeNode<GameObject>* pcurrentNode, int& nodeCount)
 	
 	if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
 	{
-		if (nodeCount == m_gameObjectNodeClicked)
-		{
-			m_gameObjectNodeClicked = -1;
-			pgameManager->SelectGameObject(nullptr);
-
-
-		}
-		else
-		{
-			m_gameObjectNodeClicked = nodeCount;
-			pgameManager->SelectGameObjectUsingTreeNode(pcurrentNode);
-		}
+		m_gameObjectNodeClicked = nodeCount;
+		pgameManager->SelectGameObjectUsingTreeNode(pcurrentNode);
 	}
 
 
