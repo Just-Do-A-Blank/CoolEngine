@@ -16,7 +16,7 @@ protected:
 
 	virtual void CreateEngineUI(ID3D11Device* pdevice);
 public:
-	UICanvas(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation);
+	UICanvas(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation);
 
 	virtual void Render(RenderStruct& renderStruct);
 	virtual void Update();

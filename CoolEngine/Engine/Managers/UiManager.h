@@ -24,6 +24,7 @@ private:
 public:
 	void Init(ID3D11Device* pDevice);
     void CreateCanvas(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation);
+    void CreateCanvas(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation);
     void SelectUIObjectUsingIdentifier(string identifier);
     void SelectUIObject(GameUIComponent* pgameObject);
     void SelectUIObjectUsingTreeNode(TreeNode<GameUIComponent>* pnode);
@@ -32,19 +33,26 @@ public:
     void Render(RenderStruct& renderStruct);
 
 	template<typename T>
+	T* CreateUIComponent(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation)
+	{
+		if (!m_pselectedUINode)
+		{
+			LOG("No UIElement is selected to create the UIComponent in");
+			return nullptr;
+		}
+
+		T* uiComponent = new T(identifier, uuid, position, scale, rotation);
+
+		m_pUISceneGraph->AddChild(m_pselectedUINode, uiComponent);
+
+		return uiComponent;
+	}
+
+	template<typename T>
 	T* CreateUIComponent(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation)
 	{
-        if (!m_pselectedUINode)
-        {
-            LOG("No UIElement is selected to create the UIComponent in");
-            return nullptr;
-        }
-
-        T* uiComponent = new T(identifier, position, scale, rotation);
-
-       m_pUISceneGraph->AddChild(m_pselectedUINode, uiComponent);
-
-        return uiComponent;
+		CoolUUID uuid;
+        return CreateUIComponent<T>(identifier, uuid, position, scale, rotation);
 	}
 
     template<typename T>

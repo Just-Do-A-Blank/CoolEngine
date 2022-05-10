@@ -6,9 +6,10 @@
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/EditorUI/EditorUI.h"
 
-GameUIComponent::GameUIComponent(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation)
+GameUIComponent::GameUIComponent(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation)
 {
 	m_uiElementIdentifier = identifier;
+	m_uuid = uuid;
 	m_transform = new Transform();
 	InitGraphics();
 
@@ -68,9 +69,18 @@ void GameUIComponent::SetLayer(const int& layer)
 	m_layer = layer;
 }
 
-void GameUIComponent::SetTexture(ID3D11ShaderResourceView* ptexture)
+void GameUIComponent::SetTexture(std::wstring wsfilepath)
 {
-	m_ptexture = ptexture;
+	m_ptexture = GraphicsManager::GetInstance()->GetShaderResourceView(wsfilepath);
+
+	if (m_ptexture == nullptr)
+	{
+		LOG("Tried to get a texture that doesn't exist!");
+	}
+	else
+	{
+		m_texFilepath = wsfilepath;
+	}
 }
 
 #if EDITOR

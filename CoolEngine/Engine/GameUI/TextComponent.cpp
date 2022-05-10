@@ -5,7 +5,7 @@
 #include"Engine/ResourceDefines.h"
 #include "Engine/EditorUI/EditorUI.h"
 
-TextComponent::TextComponent(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation):GameUIComponent(identifier, position, scale, rotation)
+TextComponent::TextComponent(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation):GameUIComponent(identifier, uuid, position, scale, rotation)
 {	
 	m_ppixelShader = GraphicsManager::GetInstance()->GetPixelShader(TEXT_PIXEL_SHADER_NAME);
 }

@@ -24,7 +24,7 @@ public:
 	virtual void Render(RenderStruct& renderStruct)override;
 
 	void Init(string text, string fontName, int fontSize, XMVECTORF32 colour, ID3D11Device* pdevice);
-	TextComponent(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation);
+	TextComponent(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation);
 	void CreateVertexBuffer(ID3D11Device* pdevice);
 	void UpdateFont(string fontName, int fontSize);
 

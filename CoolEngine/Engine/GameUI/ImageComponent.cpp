@@ -4,7 +4,7 @@
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/EditorUI/EditorUI.h"
 
-ImageComponent::ImageComponent(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation) : GameUIComponent(identifier, position, scale, rotation)
+ImageComponent::ImageComponent(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation) : GameUIComponent(identifier, uuid, position, scale, rotation)
 {
 	
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/GameObjects/RenderableGameObject.h"
 #include "Engine/Structure/EditorUIComponent.h"
+#include "Engine/GameObjects/UUID.h"
 
 class Transform;
 
@@ -16,6 +17,8 @@ private:
 	//Flags
 	bool m_isRenderable = true;
 
+	CoolUUID m_uuid;
+
 protected:
 	ID3D11VertexShader* m_pvertexShader = nullptr;
 	ID3D11PixelShader* m_ppixelShader = nullptr;	
@@ -26,7 +29,7 @@ protected:
 	ID3D11ShaderResourceView* m_ptexture = nullptr;
 	wstring m_texFilepath = L"";
 public:
-	GameUIComponent(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation);
+	GameUIComponent(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation);
 	void InitGraphics();
 
 	virtual void Render(RenderStruct& renderStruct);
@@ -42,7 +45,7 @@ public:
 	void SetIsRenderable(bool& condition);
 	void SetLayer(const int& layer);
 
-	void SetTexture(ID3D11ShaderResourceView* ptexture);
+	void SetTexture(std::wstring wsfilepath);
 
 #if EDITOR
 	virtual void ShowEngineUI();

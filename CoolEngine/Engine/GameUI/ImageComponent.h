@@ -4,7 +4,7 @@ class ImageComponent : public GameUIComponent
 {
 	friend FileIO;
 public:
-    ImageComponent(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation);
+    ImageComponent(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation);
 	void Init(wstring textureFilePath);
 
 #if EDITOR

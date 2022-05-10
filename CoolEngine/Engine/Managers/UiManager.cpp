@@ -12,7 +12,13 @@ void UIManager::Init(ID3D11Device* pDevice)
 
 void UIManager::CreateCanvas(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation)
 {
-	UICanvas* canvas = new UICanvas(identifier, position, scale, rotation);
+	CoolUUID uuid;
+	CreateCanvas(identifier, uuid, position, scale, rotation);
+}
+
+void UIManager::CreateCanvas(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation)
+{
+	UICanvas* canvas = new UICanvas(identifier, uuid, position, scale, rotation);
 	if (!m_pUISceneGraph)
 	{
 		m_pUISceneGraph = new SceneGraph<GameUIComponent>();
@@ -25,7 +31,7 @@ void UIManager::CreateCanvas(string identifier, XMFLOAT3& position, XMFLOAT3& sc
 	}
 	else
 	{
-        m_pUISceneGraph->AddSibling(m_prootTreeNode, canvas);
+		m_pUISceneGraph->AddSibling(m_prootTreeNode, canvas);
 	}
 }
 
@@ -106,6 +112,19 @@ void UIManager::DeleteSelectedUIComponent()
 
 void UIManager::Serialize(nlohmann::json& data)
 {
+	vector<GameUIComponent*>& components = m_pUISceneGraph->GetAllGameObjects();
+
+	TreeNode<GameUIComponent>* pnode = nullptr;
+
+	for (int i = 0; i < components.size(); ++i)
+	{
+		pnode = m_pUISceneGraph->GetNodeUsingIdentifier(components[i]->GetIdentifier());
+
+		if (pnode != nullptr)
+		{
+
+		}
+	}
 }
 
 void UIManager::Deserialize(nlohmann::json& data)
