@@ -36,19 +36,19 @@ PlayerGameObject::~PlayerGameObject()
 // Occurs when two objects collide with collision on. Fired on enter.
 void PlayerGameObject::OnCollisionEnter(GameObject* obj1, GameObject* obj2)
 {
-    LOG("Player has collided Enter");
+    //LOG("Player has collided Enter");
 }
 
 // Occurs when two objects collide with collision on. Fired the frame the two stop colliding.
 void PlayerGameObject::OnCollisionExit(GameObject* obj1, GameObject* obj2)
 {
-    LOG("Player has collided Exit");
+    //LOG("Player has collided Exit");
 }
 
 // Occurs when two objects collide with collision on. Fired every frame.
 void PlayerGameObject::OnCollisionHold(GameObject* obj1, GameObject* obj2)
 {
-    LOG("Player has collided Hold");
+    //LOG("Player has collided Hold");
 }
 
 void PlayerGameObject::Handle(Event* e)

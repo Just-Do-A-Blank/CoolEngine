@@ -65,17 +65,6 @@ bool TriggerableGameObject::IsEventCollision(Event* e)
 // Triggers the events which would be inherited based on collision events
 void TriggerableGameObject::TriggerCollisionEvents(CollisionEvent* collisionEvent)
 {
-    // Ensures only a single event is fired
-    /*if (collisionEvent->GetGameObject(0) == this)
-    {
-        return;
-    }
-
-    if (collisionEvent->GetGameObject(0) == collisionEvent->GetGameObject(1))
-    {
-        return;
-    }*/
-
     switch (collisionEvent->GetEventID())
     {
     case EventType::TriggerEnter:

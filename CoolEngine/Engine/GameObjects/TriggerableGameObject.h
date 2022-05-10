@@ -31,12 +31,12 @@ protected:
     virtual void OnTriggerExit(GameObject* obj1, GameObject* obj2) {  }
 
     // Occurs when two objects collide with collision on. Fired on enter.
-    virtual void OnCollisionEnter(GameObject* obj1, GameObject* obj2) { LOG("TriggerableGameObject: OnCollisionEnter"); }
+    virtual void OnCollisionEnter(GameObject* obj1, GameObject* obj2) { }
 
     // Occurs when two objects collide with collision on. Fired every frame.
-    virtual void OnCollisionHold(GameObject* obj1, GameObject* obj2) { LOG("TriggerableGameObjectOnCollisionHold"); }
+    virtual void OnCollisionHold(GameObject* obj1, GameObject* obj2) { }
 
     // Occurs when two objects collide with collision on. Fired the frame the two stop colliding.
-    virtual void OnCollisionExit(GameObject* obj1, GameObject* obj2){ LOG("TriggerableGameObject: OnCollisionExit"); }
+    virtual void OnCollisionExit(GameObject* obj1, GameObject* obj2){ }
 };
 

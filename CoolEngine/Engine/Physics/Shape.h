@@ -61,6 +61,5 @@ private:
 
     bool GetCheckboxTriggerValue() const;
     bool GetCheckboxCollidableValue() const;
-
 #endif
 };

@@ -3,8 +3,10 @@
 
 Shape::Shape()
 {
+#if EDITOR
     SetCheckboxTriggerValue(m_isTrigger);
     SetCheckboxCollidableValue(m_isCollidable);
+#endif
 }
 
 ShapeType Shape::GetShapeType()
