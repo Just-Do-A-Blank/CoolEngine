@@ -139,7 +139,7 @@ void UIManager::Serialize(nlohmann::json& data)
 	}
 	else
 	{
-		data["GameUI"]["RootNode"].push_back(*m_prootTreeNode->GameObject->GetUUID());
+		data["GameUI"]["RootNode"].push_back(*m_prootTreeNode->NodeObject->GetUUID());
 	}
 
 	for (int i = 0; i < components.size(); ++i)
@@ -148,44 +148,44 @@ void UIManager::Serialize(nlohmann::json& data)
 
 		if (pnode != nullptr)
 		{
-			pnode->GameObject->Serialize(data);
+			pnode->NodeObject->Serialize(data);
 
-			std::string uuidString = to_string(*pnode->GameObject->GetUUID());
+			std::string uuidString = to_string(*pnode->NodeObject->GetUUID());
 
 			if (pnode->Sibling == nullptr)
 			{
-				data["GameUI"][(int)pnode->GameObject->GetComponentType()][uuidString]["Sibling"].push_back("Null");
+				data["GameUI"][(int)pnode->NodeObject->GetComponentType()][uuidString]["Sibling"].push_back("Null");
 			}
 			else
 			{
-				data["GameUI"][(int)pnode->GameObject->GetComponentType()][uuidString]["Sibling"].push_back(*pnode->Sibling->GameObject->GetUUID());
+				data["GameUI"][(int)pnode->NodeObject->GetComponentType()][uuidString]["Sibling"].push_back(*pnode->Sibling->NodeObject->GetUUID());
 			}
 
 			if (pnode->PreviousSibling == nullptr)
 			{
-				data["GameUI"][(int)pnode->GameObject->GetComponentType()][uuidString]["PreviousSibling"].push_back("Null");
+				data["GameUI"][(int)pnode->NodeObject->GetComponentType()][uuidString]["PreviousSibling"].push_back("Null");
 			}
 			else
 			{
-				data["GameUI"][(int)pnode->GameObject->GetComponentType()][uuidString]["PreviousSibling"].push_back(*pnode->PreviousSibling->GameObject->GetUUID());
+				data["GameUI"][(int)pnode->NodeObject->GetComponentType()][uuidString]["PreviousSibling"].push_back(*pnode->PreviousSibling->NodeObject->GetUUID());
 			}
 
 			if (pnode->PreviousParent == nullptr)
 			{
-				data["GameUI"][(int)pnode->GameObject->GetComponentType()][uuidString]["PreviousParent"].push_back("Null");
+				data["GameUI"][(int)pnode->NodeObject->GetComponentType()][uuidString]["PreviousParent"].push_back("Null");
 			}
 			else
 			{
-				data["GameUI"][(int)pnode->GameObject->GetComponentType()][uuidString]["PreviousParent"].push_back(*pnode->PreviousParent->GameObject->GetUUID());
+				data["GameUI"][(int)pnode->NodeObject->GetComponentType()][uuidString]["PreviousParent"].push_back(*pnode->PreviousParent->NodeObject->GetUUID());
 			}
 
 			if (pnode->Child == nullptr)
 			{
-				data["GameUI"][(int)pnode->GameObject->GetComponentType()][uuidString]["Child"].push_back("Null");
+				data["GameUI"][(int)pnode->NodeObject->GetComponentType()][uuidString]["Child"].push_back("Null");
 			}
 			else
 			{
-				data["GameUI"][(int)pnode->GameObject->GetComponentType()][uuidString]["Child"].push_back(*pnode->PreviousParent->GameObject->GetUUID());
+				data["GameUI"][(int)pnode->NodeObject->GetComponentType()][uuidString]["Child"].push_back(*pnode->PreviousParent->NodeObject->GetUUID());
 			}
 		}
 	}
@@ -269,16 +269,16 @@ void UIManager::Deserialize(nlohmann::json& data)
 		pnode = toPush.top();
 		toPush.pop();
 
-		if (data["GameUI"][(int)pnode->GameObject->GetComponentType()][*pnode->GameObject->GetUUID()]["Sibling"] != "Null")
+		if (data["GameUI"][(int)pnode->NodeObject->GetComponentType()][*pnode->NodeObject->GetUUID()]["Sibling"] != "Null")
 		{
-			pcomponent = GetAndRemoveObjectFromUUID(components, CoolUUID(data["GameUI"][(int)pnode->GameObject->GetComponentType()][*pnode->GameObject->GetUUID()]["Sibling"]));
+			pcomponent = GetAndRemoveObjectFromUUID(components, CoolUUID(data["GameUI"][(int)pnode->NodeObject->GetComponentType()][*pnode->NodeObject->GetUUID()]["Sibling"]));
 			
 			toPush.push(m_pUISceneGraph->AddSibling(pnode, pcomponent));
 		}
 
-		if (data["GameUI"][(int)pnode->GameObject->GetComponentType()][*pnode->GameObject->GetUUID()]["Child"] != "Null")
+		if (data["GameUI"][(int)pnode->NodeObject->GetComponentType()][*pnode->NodeObject->GetUUID()]["Child"] != "Null")
 		{
-			pcomponent = GetAndRemoveObjectFromUUID(components, CoolUUID(data["GameUI"][(int)pnode->GameObject->GetComponentType()][*pnode->GameObject->GetUUID()]["Child"]));
+			pcomponent = GetAndRemoveObjectFromUUID(components, CoolUUID(data["GameUI"][(int)pnode->NodeObject->GetComponentType()][*pnode->NodeObject->GetUUID()]["Child"]));
 
 			toPush.push(m_pUISceneGraph->AddSibling(pnode, pcomponent));
 		}
