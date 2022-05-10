@@ -8,58 +8,43 @@ class Box;
 
 enum class ShapeType
 {
-	BOX = 0,
-	CIRCLE,
-	COUNT
+    BOX = 0,
+    CIRCLE,
+    COUNT
 };
 
 // For double dispatch pattern
 class Shape : EditorUIComponent
 {
 public:
-    Shape();
 
-	virtual bool Collide(Shape* shape) = 0;
-	virtual bool Collide(Circle* circle) = 0;
-	virtual bool Collide(Box* box) = 0;
+    virtual bool Collide(Shape* shape) = 0;
+    virtual bool Collide(Circle* circle) = 0;
+    virtual bool Collide(Box* box) = 0;
 
-	virtual bool CollideResponse(Shape* shape) = 0;
-	virtual bool CollideResponse(Circle* circle) = 0;
-	virtual bool CollideResponse(Box* box) = 0;
+    virtual bool CollideResponse(Shape* shape) = 0;
+    virtual bool CollideResponse(Circle* circle) = 0;
+    virtual bool CollideResponse(Box* box) = 0;
 
-	ShapeType GetShapeType();
+    ShapeType GetShapeType();
 
-	static string ShapeTypeToString(ShapeType type);
+    static string ShapeTypeToString(ShapeType type);
 
 #if EDITOR
-	virtual void CreateEngineUI() override;
+    virtual void CreateEngineUI() override;
 #endif
 
-	void SetIsTrigger(bool value);
-	void SetIsCollidable(bool value);
+    void SetIsTrigger(bool value);
+    void SetIsCollidable(bool value);
 
-	bool IsTrigger() const;
-	bool IsCollidable() const;
+    bool IsTrigger() const;
+    bool IsCollidable() const;
 
-	Transform* m_transform;
+    Transform* m_transform;
 
 protected:
-	ShapeType m_shapeType;
+    ShapeType m_shapeType;
 
-	bool m_isTrigger = false;
-	bool m_isCollidable = true;
-
-private:
-    string GetBoolAnswer(bool value);
-#if EDITOR
-    // The value of the checkboxes if applicable
-    bool m_isTriggerCheckboxValue;
-    bool m_isCollidableCheckboxValue;
-
-    void SetCheckboxTriggerValue(bool newValue);
-    void SetCheckboxCollidableValue(bool newValue);
-
-    bool GetCheckboxTriggerValue() const;
-    bool GetCheckboxCollidableValue() const;
-#endif
+    bool m_isTrigger = false;
+    bool m_isCollidable = true;
 };
