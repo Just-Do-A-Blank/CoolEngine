@@ -576,7 +576,7 @@ void EditorUI::DragFloat3(const string& label, XMFLOAT3& values, const float& co
 ImGui::PopID();
 }
 
-void EditorUI::DragInt(const string& label, int& value, const float& columnWidth, const float& speed, const float& min, const float& max)
+void EditorUI::DragInt(const string& label, int& value, const float& columnWidth, const float& speed, const int& min, const int& max)
 {
 	ImGui::PushID(label.c_str());
 
