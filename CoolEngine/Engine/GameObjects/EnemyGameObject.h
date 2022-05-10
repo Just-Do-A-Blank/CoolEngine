@@ -29,7 +29,6 @@ class EnemyGameObject :
 {
 
 public:
-    EnemyGameObject(); 
     EnemyGameObject(string identifier, CoolUUID uuid);
     void Update();
 

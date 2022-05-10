@@ -2,11 +2,6 @@
 #include "Engine/Managers/GameManager.h"
 
 
-EnemyGameObject::EnemyGameObject() : CharacterGameObject()
-{
-    m_gameObjectType |= GameObjectType::ENEMY;
-}
-
 EnemyGameObject::EnemyGameObject(string identifier, CoolUUID uuid) : CharacterGameObject(identifier, uuid)
 {
     m_gameObjectType |= GameObjectType::ENEMY;
