@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine\Structure\Singleton.h"
+#include "Engine\Structure\Manager.h"
 
 namespace FMOD
 {
@@ -12,7 +12,7 @@ namespace FMOD
 
 #define NUM_FMOD_CHANNELS 512
 
-class AudioManager : public Singleton<AudioManager>
+class AudioManager : public Manager<AudioManager>
 {
 public:
 
@@ -39,6 +39,9 @@ public:
 
 	bool SetMasterVolume(float volume);
 	float GetMasterVolume();
+
+	void Serialize(nlohmann::json& data) override;
+	void Deserialize(nlohmann::json& data) override;
 
 protected:
 

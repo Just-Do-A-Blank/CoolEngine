@@ -1,6 +1,6 @@
 #pragma once
 #include "Engine/Helpers/Timer.h"
-#include "Engine/Structure/Singleton.h"
+#include "Engine/Structure/Manager.h"
 #include "Engine/Scene/Scene.h"
 
 class GameObject;
@@ -18,7 +18,7 @@ enum class SceneDesc
 	SIZE
 };
 
-class GameManager : public Singleton<GameManager>
+class GameManager : public Manager<GameManager>
 {
 	
 private:
@@ -93,5 +93,8 @@ public:
 	//Getters
 	unordered_map<string, Scene*> GetSceneList();
 	vector<GameObject*>& GetAllGameObjectsInCurrentScene();
+
+	void Serialize(nlohmann::json& data) override;
+	void Deserialize(nlohmann::json& data) override;
 };
 

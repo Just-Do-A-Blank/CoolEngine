@@ -1,5 +1,5 @@
 #pragma once
-#include "Engine/Structure/Singleton.h"
+#include "Engine/Structure/Manager.h"
 #include "Engine/Helpers/DebugHelper.h"
 #include "Engine/GameUI/UICanvas.h"
 #include "Engine/Managers/GraphicsManager.h"
@@ -11,8 +11,7 @@
 class GameUIComponent;
 class TextComponent;
 
-class UIManager :
-    public Singleton<UIManager>
+class UIManager : public Manager<UIManager>
 {
 private:
 	ID3D11Device* m_pDevice;
@@ -22,9 +21,12 @@ private:
 
     SceneGraph<GameUIComponent>* m_pUISceneGraph = nullptr;
 
+	GameUIComponent* GetAndRemoveObjectFromUUID(std::vector<GameUIComponent*>& components, const CoolUUID& uuid);
+
 public:
 	void Init(ID3D11Device* pDevice);
     void CreateCanvas(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation);
+    void CreateCanvas(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation);
     void SelectUIObjectUsingIdentifier(string identifier);
     void SelectUIObject(GameUIComponent* pgameObject);
     void SelectUIObjectUsingTreeNode(TreeNode<GameUIComponent>* pnode);
@@ -33,19 +35,26 @@ public:
     void Render(RenderStruct& renderStruct);
 
 	template<typename T>
+	T* CreateUIComponent(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation)
+	{
+		if (!m_pselectedUINode)
+		{
+			LOG("No UIElement is selected to create the UIComponent in");
+			return nullptr;
+		}
+
+		T* uiComponent = new T(identifier, uuid, position, scale, rotation);
+
+		m_pUISceneGraph->AddChild(m_pselectedUINode, uiComponent);
+
+		return uiComponent;
+	}
+
+	template<typename T>
 	T* CreateUIComponent(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation)
 	{
-        if (!m_pselectedUINode)
-        {
-            LOG("No UIElement is selected to create the UIComponent in");
-            return nullptr;
-        }
-
-        T* uiComponent = new T(identifier, position, scale, rotation);
-
-       m_pUISceneGraph->AddChild(m_pselectedUINode, uiComponent);
-
-        return uiComponent;
+		CoolUUID uuid;
+        return CreateUIComponent<T>(identifier, uuid, position, scale, rotation);
 	}
 
     template<typename T>
@@ -62,6 +71,9 @@ public:
 
     void DeleteSelectedUIComponent();
 
+
+    void Serialize(nlohmann::json& data) override;
+    void Deserialize(nlohmann::json& data) override;
 
     //Getters
 	vector<GameUIComponent*>& GetAllUIComponents();

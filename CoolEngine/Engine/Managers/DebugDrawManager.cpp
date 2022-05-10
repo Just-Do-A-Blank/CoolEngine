@@ -58,4 +58,12 @@ void DebugDrawManager::Update()
 	m_debugRectMap.clear();
 }
 
+void DebugDrawManager::Serialize(nlohmann::json& data)
+{
+}
+
+void DebugDrawManager::Deserialize(nlohmann::json& data)
+{
+}
+
 #endif //_DEBUG

@@ -342,6 +342,11 @@ HWND* GraphicsManager::GetHWND()
 	return m_pHWND;
 }
 
+ID3D11Device* GraphicsManager::GetDevice()
+{
+	return m_pdevice;
+}
+
 ID3D11InputLayout* GraphicsManager::GetInputLayout(InputLayouts inputLayout) const
 {
 	return m_inputLayouts[(int)inputLayout];
@@ -350,6 +355,32 @@ ID3D11InputLayout* GraphicsManager::GetInputLayout(InputLayouts inputLayout) con
 ID3D11SamplerState* GraphicsManager::GetSampler(Samplers sampler)
 {
 	return m_samplers[(int)sampler];
+}
+
+void GraphicsManager::Serialize(nlohmann::json& data)
+{
+	for (std::unordered_map<wstring, ID3D11ShaderResourceView*>::iterator it = m_textureSRVs.begin(); it != m_textureSRVs.end(); ++it)
+	{
+		data["GraphicsManager"]["Textures"].push_back(it->first);
+	}
+
+	for (std::unordered_map<wstring, std::vector<Frame>*>::iterator it = m_animationFrames.begin(); it != m_animationFrames.end(); ++it)
+	{
+		data["GraphicsManager"]["Animations"].push_back(it->first);
+	}
+}
+
+void GraphicsManager::Deserialize(nlohmann::json& data)
+{
+	for (int i = 0; i < data["GraphicsManager"]["Textures"].size(); ++i)
+	{
+		LoadTextureFromFile(data["GraphicsManager"]["Textures"][i]);
+	}
+
+	for (int i = 0; i < data["GraphicsManager"]["Animations"].size(); ++i)
+	{
+		LoadAnimationFromFile(data["GraphicsManager"]["Animations"][i]);
+	}
 }
 
 void GraphicsManager::CreateInputLayouts()

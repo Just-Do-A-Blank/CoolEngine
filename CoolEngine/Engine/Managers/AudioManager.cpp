@@ -264,3 +264,29 @@ float AudioManager::GetMasterVolume()
 {
 	return m_masterVolume;
 }
+
+void AudioManager::Serialize(nlohmann::json& data)
+{
+	for (std::unordered_map<string, FMOD::Sound*>::iterator it = m_sounds.begin(); it != m_sounds.end(); ++it)
+	{
+		data["AudioManager"]["Sounds"].push_back(it->first);
+	}
+
+	for (std::unordered_map<string, FMOD::Sound*>::iterator it = m_music.begin(); it != m_music.end(); ++it)
+	{
+		data["AudioManager"]["Music"].push_back(it->first);
+	}
+}
+
+void AudioManager::Deserialize(nlohmann::json& data)
+{
+	for (int i = 0; i < data["AudioManager"]["Sounds"].size(); ++i)
+	{
+		Load(data["AudioManager"]["Sounds"][i]);
+	}
+
+	for (int i = 0; i < data["AudioManager"]["Music"].size(); ++i)
+	{
+		LoadMusic(data["AudioManager"]["Music"][i]);
+	}
+}

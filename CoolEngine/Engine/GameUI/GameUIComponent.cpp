@@ -6,9 +6,12 @@
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/EditorUI/EditorUI.h"
 
-GameUIComponent::GameUIComponent(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation)
+GameUIComponent::GameUIComponent(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation)
 {
+	m_componentType |= UIComponentType::BASE;
+
 	m_uiElementIdentifier = identifier;
+	m_uuid = uuid;
 	m_transform = new Transform();
 	InitGraphics();
 
@@ -16,6 +19,27 @@ GameUIComponent::GameUIComponent(string identifier, XMFLOAT3& position, XMFLOAT3
 	m_transform->SetPosition(position);
 	m_transform->SetRotation(rotation);
 
+}
+
+GameUIComponent::GameUIComponent(nlohmann::json& data, CoolUUID uuid)
+{
+	m_componentType |= UIComponentType::BASE;
+
+	m_uuid = CoolUUID(*uuid);
+	std::string uuidString = to_string(*m_uuid);
+
+	m_uiElementIdentifier = data["GameUI"][(int)m_componentType][uuidString]["Identifier"];
+	m_transform = new Transform();
+	InitGraphics();
+
+	m_transform->SetPosition(XMFLOAT3(data["GameUI"][(int)m_componentType][uuidString]["Position"][0], data["GameUI"][(int)m_componentType][uuidString]["Position"][1], data["GameUI"][(int)m_componentType][uuidString]["Position"][2]));
+	m_transform->SetRotation(XMFLOAT3(data["GameUI"][(int)m_componentType][uuidString]["rotation"][0], data["GameUI"][(int)m_componentType][uuidString]["rotation"][1], data["GameUI"][(int)m_componentType][uuidString]["rotation"][2]));
+	m_transform->SetScale(XMFLOAT3(data["GameUI"][(int)m_componentType][uuidString]["scale"][0], data["GameUI"][(int)m_componentType][uuidString]["scale"][1], data["GameUI"][(int)m_componentType][uuidString]["scale"][2]));
+
+	m_isRenderable = data["GameUI"][(int)m_componentType][uuidString]["IsRendering"];
+	m_layer = data["GameUI"][(int)m_componentType][uuidString]["Layer"];
+
+	SetTexture(data["GameUI"][(int)m_componentType][uuidString]["TexturePath"]);
 }
 
 void GameUIComponent::InitGraphics()
@@ -58,6 +82,19 @@ void GameUIComponent::Update()
 {
 }
 
+void GameUIComponent::Serialize(nlohmann::json& data)
+{
+	std::string uuidString = to_string(*m_uuid);
+
+	data["GameUI"][(int)m_componentType][uuidString]["Identifier"].push_back(m_uiElementIdentifier);
+	data["GameUI"][(int)m_componentType][uuidString]["Position"].push_back({ m_transform->GetPosition().x, m_transform->GetPosition().y, m_transform->GetPosition().z });
+	data["GameUI"][(int)m_componentType][uuidString]["Rotation"].push_back({ m_transform->GetRotation().x, m_transform->GetRotation().y, m_transform->GetRotation().z });
+	data["GameUI"][(int)m_componentType][uuidString]["Scale"].push_back({ m_transform->GetScale().x, m_transform->GetScale().y, m_transform->GetScale().z });
+	data["GameUI"][(int)m_componentType][uuidString]["TexturePath"].push_back(m_texFilepath);
+	data["GameUI"][(int)m_componentType][uuidString]["Layer"].push_back(m_layer);
+	data["GameUI"][(int)m_componentType][uuidString]["IsRendering"].push_back(m_isRenderable);
+}
+
 void GameUIComponent::SetIsRenderable(bool& condition)
 {
 	m_isRenderable = condition;
@@ -68,9 +105,18 @@ void GameUIComponent::SetLayer(const int& layer)
 	m_layer = layer;
 }
 
-void GameUIComponent::SetTexture(ID3D11ShaderResourceView* ptexture)
+void GameUIComponent::SetTexture(std::wstring wsfilepath)
 {
-	m_ptexture = ptexture;
+	m_ptexture = GraphicsManager::GetInstance()->GetShaderResourceView(wsfilepath);
+
+	if (m_ptexture == nullptr)
+	{
+		LOG("Tried to get a texture that doesn't exist!");
+	}
+	else
+	{
+		m_texFilepath = wsfilepath;
+	}
 }
 
 #if EDITOR
@@ -113,4 +159,14 @@ Transform* GameUIComponent::GetTransform()
 const string& GameUIComponent::GetIdentifier()
 {
 	return m_uiElementIdentifier;
+}
+
+const CoolUUID& GameUIComponent::GetUUID() const
+{
+	return m_uuid;
+}
+
+const UIComponentType& GameUIComponent::GetComponentType() const
+{
+	return m_componentType;
 }

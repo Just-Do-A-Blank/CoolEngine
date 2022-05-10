@@ -1,5 +1,5 @@
 #pragma once
-#include "Engine/Structure/Singleton.h"
+#include "Engine/Structure/Manager.h"
 #include "Engine/Graphics/Vertices.h"
 #include "Engine/Graphics/DDSTextureLoader.h"
 #include "Engine/Graphics/SpriteAnimation.h"
@@ -13,7 +13,7 @@
 
 class Mesh;
 
-class GraphicsManager : public Singleton<GraphicsManager>
+class GraphicsManager : public Manager<GraphicsManager>
 {
 	std::unordered_map<wstring, ID3D11ShaderResourceView*> m_textureSRVs;
 	std::unordered_map<wstring, ID3D11Resource*> m_textureResources;
@@ -73,6 +73,8 @@ public:
 
 	HWND* GetHWND();
 
+	ID3D11Device* GetDevice();
+
 	enum class InputLayouts
 	{
 		POS_TEX = 0,
@@ -96,6 +98,9 @@ public:
 	};
 
 	ID3D11SamplerState* GetSampler(Samplers sampler);
+
+	void Serialize(nlohmann::json& data) override;
+	void Deserialize(nlohmann::json& data) override;
 
 private:
 
