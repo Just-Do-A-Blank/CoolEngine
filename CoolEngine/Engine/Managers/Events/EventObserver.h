@@ -1,5 +1,5 @@
 #pragma once
-class Event;
+#include <Engine/Managers/Events/Events.h>
 
 /// <summary>
 /// 

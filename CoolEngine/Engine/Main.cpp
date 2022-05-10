@@ -285,14 +285,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	//Pathfinding::GetInstance()->Initialize(g_testMap1);
 
-	// Observer for button inputs
-	/*ExampleObserver exampleObserver(new int(10), pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName));
-	EventManager::Instance()->AddClient(EventType::KeyPressed, &exampleObserver);
-	EventManager::Instance()->AddClient(EventType::KeyReleased, &exampleObserver);
-	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, &exampleObserver);
-	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, &exampleObserver);
-	EventManager::Instance()->AddClient(EventType::MouseMoved, &exampleObserver);*/
-
 	// Observer for collision detection
 	CollisionObserver collisionObserver;
 	EventManager::Instance()->AddClient(EventType::TriggerEnter, &collisionObserver);

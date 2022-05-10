@@ -29,7 +29,7 @@ void Inputs::Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam)
 
 #if EDITOR
 		ImGuiIO io = ImGui::GetIO();
-
+        
 		if (io.WantCaptureKeyboard == true)
 		{
 			return;

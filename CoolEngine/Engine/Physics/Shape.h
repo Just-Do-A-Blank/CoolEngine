@@ -17,6 +17,7 @@ enum class ShapeType
 class Shape : EditorUIComponent
 {
 public:
+    Shape();
 
 	virtual bool Collide(Shape* shape) = 0;
 	virtual bool Collide(Circle* circle) = 0;
@@ -47,4 +48,19 @@ protected:
 
 	bool m_isTrigger = false;
 	bool m_isCollidable = true;
+
+private:
+
+#if EDITOR
+    // The value of the checkboxes if applicable
+    bool m_isTriggerCheckboxValue;
+    bool m_isCollidableCheckboxValue;
+
+    void SetCheckboxTriggerValue(bool newValue);
+    void SetCheckboxCollidableValue(bool newValue);
+
+    bool GetCheckboxTriggerValue() const;
+    bool GetCheckboxCollidableValue() const;
+
+#endif
 };
