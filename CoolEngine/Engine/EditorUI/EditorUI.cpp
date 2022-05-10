@@ -7,6 +7,7 @@
 #include <Engine/Physics/ParticleSystem.h>
 #include "Engine/GameObjects/InteractableGameObject.h"
 #include "Engine/GameObjects/WeaponGameObject.h"
+#include <Engine\GameObjects\EnemyGameObject.h>
 
 #if EDITOR
 HWND* EditorUI::m_phwnd = nullptr;
@@ -243,6 +244,10 @@ void EditorUI::DrawSceneGraphWindow()
 			case GameObjectType::PLAYER:
 				pgameManager->CreateGameObject<PlayerGameObject>(gameObjectName);
 				break;
+
+            case GameObjectType::ENEMY:
+                pgameManager->CreateGameObject<EnemyGameObject>(gameObjectName);
+                break;
 
 			case GameObjectType::INTERACTABLE:
 				pgameManager->CreateGameObject<InteractableGameObject>(gameObjectName);

@@ -2,9 +2,14 @@
 #include "Engine/Managers/GameManager.h"
 
 
+EnemyGameObject::EnemyGameObject()
+{
+    m_gameObjectType |= GameObjectType::ENEMY;
+}
+
 EnemyGameObject::EnemyGameObject(string identifier) : CharacterGameObject(identifier)
 {
-
+    m_gameObjectType |= GameObjectType::ENEMY;
 }
 
 

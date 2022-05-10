@@ -29,6 +29,7 @@ class EnemyGameObject :
 {
 
 public:
+    EnemyGameObject(); 
     EnemyGameObject(string identifier); 
     void Update();
 
