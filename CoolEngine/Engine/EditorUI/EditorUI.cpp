@@ -380,14 +380,11 @@ void EditorUI::TraverseTree(TreeNode<GameObject>* pcurrentNode, int& nodeCount)
 		ImGui::EndDragDropSource();
 	}
 
-	
-	
-	if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+	if (ImGui::IsMouseReleased(0) && ImGui::IsItemHovered())
 	{
 		m_gameObjectNodeClicked = nodeCount;
 		pgameManager->SelectGameObjectUsingTreeNode(pcurrentNode);
 	}
-
 
 	if (node_open)
 	{
@@ -395,8 +392,6 @@ void EditorUI::TraverseTree(TreeNode<GameObject>* pcurrentNode, int& nodeCount)
 		{
 			TraverseTree(pcurrentNode->Child, nodeCount);
 		}
-
-
 		ImGui::TreePop();
 	}
 
