@@ -8,35 +8,55 @@ class TriggerableGameObject : public RenderableCollidableGameObject, public Obse
 {
 public:
 	TriggerableGameObject();
-	TriggerableGameObject(string identifier);
+	TriggerableGameObject(string identifier, CoolUUID uuid);
     ~TriggerableGameObject();
 
+    /// <summary>
+    /// Handles events from the Observations
+    /// </summary>
     virtual void Handle(Event* e) override;
 
 private:
-    // Determines if an event is a collsion event type
+    /// <summary>
+    /// Determines if an event is a collsion event type
+    /// </summary>
     bool IsEventCollision(Event* e);
 
-    // Triggers the events which would be inherited based on collision events
+    /// <summary>
+    /// Triggers the events which would be inherited based on collision events
+    /// </summary>
     void TriggerCollisionEvents(CollisionEvent*);
 
 protected:
-    // Occurs when two objects collide without collision on. Fired on enter.
+
+    /// <summary>
+    /// Occurs when two objects collide without collision on. Fired on enter.
+    /// </summary>
     virtual void OnTriggerEnter(GameObject* obj1, GameObject* obj2) {  }
 
-    // Occurs when two objects collide without collision on. Fired every frame.
+    /// <summary>
+    /// Occurs when two objects collide without collision on. Fired every frame.
+    /// </summary>
     virtual void OnTriggerHold(GameObject* obj1, GameObject* obj2) {  }
 
-    // Occurs when two objects collide without collision on. Fired the frame the two stop colliding.
+    /// <summary>
+    /// Occurs when two objects collide without collision on. Fired the frame the two stop colliding.
+    /// </summary>
     virtual void OnTriggerExit(GameObject* obj1, GameObject* obj2) {  }
 
-    // Occurs when two objects collide with collision on. Fired on enter.
+    /// <summary>
+    /// Occurs when two objects collide with collision on. Fired on enter.
+    /// </summary>
     virtual void OnCollisionEnter(GameObject* obj1, GameObject* obj2) { }
 
-    // Occurs when two objects collide with collision on. Fired every frame.
+    /// <summary>
+    /// Occurs when two objects collide with collision on. Fired every frame.
+    /// </summary>
     virtual void OnCollisionHold(GameObject* obj1, GameObject* obj2) { }
 
-    // Occurs when two objects collide with collision on. Fired the frame the two stop colliding.
+    /// <summary>
+    /// Occurs when two objects collide with collision on. Fired the frame the two stop colliding.
+    /// </summary>
     virtual void OnCollisionExit(GameObject* obj1, GameObject* obj2){ }
 };
 

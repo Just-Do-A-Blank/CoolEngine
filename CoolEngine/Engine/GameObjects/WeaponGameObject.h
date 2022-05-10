@@ -4,6 +4,5 @@
 class WeaponGameObject : public TriggerableGameObject
 {
 public:
-	WeaponGameObject();
-	WeaponGameObject(string identifier);
+	WeaponGameObject(string identifier, CoolUUID uuid);
 };

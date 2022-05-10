@@ -22,24 +22,9 @@ PlayerGameObject::~PlayerGameObject()
 	EventManager::Instance()->RemoveClientEvent(EventType::MouseMoved, this);
 }
 
-// Occurs when two objects collide with collision on. Fired on enter.
-void PlayerGameObject::OnCollisionEnter(GameObject* obj1, GameObject* obj2)
-{
-    //LOG("Player has collided Enter");
-}
-
-// Occurs when two objects collide with collision on. Fired the frame the two stop colliding.
-void PlayerGameObject::OnCollisionExit(GameObject* obj1, GameObject* obj2)
-{
-    //LOG("Player has collided Exit");
-}
-
-// Occurs when two objects collide with collision on. Fired every frame.
-void PlayerGameObject::OnCollisionHold(GameObject* obj1, GameObject* obj2)
-{
-    //LOG("Player has collided Hold");
-}
-
+/// <summary>
+/// Handles events from the Observations
+/// </summary>
 void PlayerGameObject::Handle(Event* e)
 {
     CharacterGameObject::Handle(e);
@@ -65,6 +50,9 @@ void PlayerGameObject::Handle(Event* e)
 	}
 }
 
+/// <summary>
+/// Handles any keypresses when they are pressed (frame whilst pressed)
+/// </summary>
 void PlayerGameObject::KeyPressed(KeyPressedEvent* e)
 {
 	//Can use 'Letter' or the raw keycode for keyboard inputs.
@@ -109,11 +97,17 @@ void PlayerGameObject::KeyPressed(KeyPressedEvent* e)
 	}
 }
 
+/// <summary>
+/// Handles any keypresses when they are released (first frame).
+/// </summary>
 void PlayerGameObject::KeyReleased(KeyReleasedEvent* e)
 {
 
 }
 
+/// <summary>
+/// Handles any mouse button presses when pressed (frame whilst pressed)
+/// </summary>
 void PlayerGameObject::MouseButtonPressed(MouseButtonPressedEvent* e)
 {
 	if (e->GetButton() == VK_LBUTTON)
@@ -133,11 +127,17 @@ void PlayerGameObject::MouseButtonPressed(MouseButtonPressedEvent* e)
 
 }
 
+/// <summary>
+/// Handles any mouse button when they are released (first frame).
+/// </summary>
 void PlayerGameObject::MouseButtonReleased(MouseButtonReleasedEvent* e)
 {
 
 }
 
+/// <summary>
+/// Handles the mouse moving across the window
+/// </summary>
 void PlayerGameObject::MouseMoved(MouseMovedEvent* e)
 {
 	//LOG(e->GetX()); 

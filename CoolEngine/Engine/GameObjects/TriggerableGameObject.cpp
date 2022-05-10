@@ -11,7 +11,7 @@ TriggerableGameObject::TriggerableGameObject() : RenderableCollidableGameObject(
     EventManager::Instance()->AddClient(EventType::TriggerHold, this);
 }
 
-TriggerableGameObject::TriggerableGameObject(string identifier) : RenderableCollidableGameObject(identifier)
+TriggerableGameObject::TriggerableGameObject(string identifier, CoolUUID uuid) : RenderableCollidableGameObject(identifier, uuid)
 {
     EventManager::Instance()->AddClient(EventType::CollisionEnter, this);
     EventManager::Instance()->AddClient(EventType::CollisionExit, this);
@@ -31,6 +31,9 @@ TriggerableGameObject::~TriggerableGameObject()
     EventManager::Instance()->RemoveClientEvent(EventType::TriggerHold, this);
 }
 
+/// <summary>
+/// Handles events from the Observations
+/// </summary>
 void TriggerableGameObject::Handle(Event* e)
 {
     if (!IsEventCollision(e))
@@ -42,7 +45,9 @@ void TriggerableGameObject::Handle(Event* e)
     TriggerCollisionEvents(collisionEvent);
 }
 
-// Detirmines if an event is a collsion event type
+/// <summary>
+/// Determines if an event is a collsion event type
+/// </summary>
 bool TriggerableGameObject::IsEventCollision(Event* e)
 {
     bool isCollision = false;
@@ -62,7 +67,9 @@ bool TriggerableGameObject::IsEventCollision(Event* e)
     return isCollision;
 }
 
-// Triggers the events which would be inherited based on collision events
+/// <summary>
+/// Triggers the events which would be inherited based on collision events
+/// </summary>
 void TriggerableGameObject::TriggerCollisionEvents(CollisionEvent* collisionEvent)
 {
     switch (collisionEvent->GetEventID())

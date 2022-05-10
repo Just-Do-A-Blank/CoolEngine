@@ -4,6 +4,5 @@
 class InteractableGameObject : public TriggerableGameObject
 {
 public:
-	InteractableGameObject();
-	InteractableGameObject(string identifier);
+	InteractableGameObject(string identifier, CoolUUID uuid);
 };

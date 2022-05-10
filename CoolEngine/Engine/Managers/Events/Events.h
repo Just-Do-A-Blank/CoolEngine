@@ -1,6 +1,8 @@
 #pragma once
 
-//Holds the list of possible events
+/// <summary>
+/// Tthe list of possible event types
+/// </summary>
 enum class EventType 
 {
 	KeyPressed, KeyReleased,
@@ -9,29 +11,44 @@ enum class EventType
 	CollisionEnter, CollisionHold, CollisionExit,
 };
 
-// Base event for obeservers.
-// Particular event types maybe found in the folder such as Collision and KeyPress events
-// include them if required.
+/// <summary>
+/// Base event for obeservers.
+/// Particular event types maybe found in the folder such as Collision and KeyPress events
+/// include them if required.
+/// </summary>
 class Event 
 {
 public:
 
-	////Constructor that sends event with data, manual deconstunction of the data required
+    /// <summary>
+    /// Constructor that sends event with data, manual deconstruction of the data required
+    /// </summary>
 	Event(EventType eventID, void* data);
 
-	////Alternate constructor to just call an event proc instead of with data
+    /// <summary>
+    /// Alternate constructor to just call an event proc instead of with data
+    /// </summary>
 	Event(EventType eventID);
 
-	//Destructor
 	virtual ~Event();
 
-	//Getters
-
+    /// <summary>
+    /// The event ID which in this context is the broad type of the event for casting
+    /// </summary>
 	const EventType GetEventID();
-	void* GetData(); //unused but available
+
+    /// <summary>
+    /// Get the data passed in when creating the event.
+    /// Generally not required, casting is prefered.
+    /// </summary>
+	void* GetData();
 
 protected:
 
+    /// <summary>
+    /// The event ID which in this context is the broad type of the event for casting
+    /// </summary>
 	EventType m_eventID;
+
 	void* m_data;
 };
