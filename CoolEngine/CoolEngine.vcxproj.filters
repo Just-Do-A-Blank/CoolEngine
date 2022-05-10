@@ -399,6 +399,27 @@
     <ClInclude Include="Engine\Managers\SceneGraph.h">
       <Filter>Engine\Structure</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\CollisionEvents.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\EventObserverExamples.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\MouseEvents.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\InteractableGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\TriggerableGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\WeaponGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\KeyEvents.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -565,6 +586,15 @@
     </ClCompile>
     <ClCompile Include="Engine\Managers\SceneGraph.cpp">
       <Filter>Engine\Structure</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\InteractableGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\TriggerableGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\WeaponGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

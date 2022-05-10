@@ -10,7 +10,7 @@ struct TreeNode
 	TreeNode* Child = nullptr;
 	TreeNode* PreviousParent = nullptr;
 	TreeNode* PreviousSibling = nullptr;
-	T* GameObject = nullptr;
+	T* NodeObject = nullptr;
 };
 
 template<class T>
@@ -28,9 +28,10 @@ public:
 
 	TreeNode<T>* NewNode(T* gameObject);
 	TreeNode<T>* AddSibling(TreeNode<T>* currentNode, T* gameObject);
+	void MoveNode(TreeNode<T>* currentNode, TreeNode<T>* parentNode);
 	TreeNode<T>* AddChild(TreeNode<T>* currentNode, T* gameObject);
 	TreeNode<T>* TraverseTree(TreeNode<T>* currentNode);
-	void DeleteNode(TreeNode<T>* currenNode);
+	void DeleteNode(TreeNode<T>* currenNode, bool deleteData = true);
 
 	void DeleteGameObjectUsingIdentifier(string identifier);
 	void DeleteGameObjectUsingNode(TreeNode<T>* currenNode);
@@ -79,13 +80,13 @@ public:
 			}
 		}
 
-		string gameObjectName = currentNode->GameObject->GetIdentifier();
+		string gameObjectName = currentNode->NodeObject->GetIdentifier();
 		m_sceneTreeNodeMap.erase(gameObjectName);
 		m_sceneGameObjectsMap.erase(gameObjectName);
-		m_sceneGameObjectList.erase(std::find(m_sceneGameObjectList.begin(), m_sceneGameObjectList.end(), currentNode->GameObject));
+		m_sceneGameObjectList.erase(std::find(m_sceneGameObjectList.begin(), m_sceneGameObjectList.end(), currentNode->NodeObject));
 
 		delete pgameObject;
-		currentNode->GameObject = nullptr;
+		currentNode->NodeObject = nullptr;
 		delete currentNode;
 		currentNode = nullptr;
 	}

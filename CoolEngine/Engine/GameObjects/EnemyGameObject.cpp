@@ -4,7 +4,7 @@
 
 EnemyGameObject::EnemyGameObject(string identifier, CoolUUID uuid) : CharacterGameObject(identifier, uuid)
 {
-
+    m_gameObjectType |= GameObjectType::ENEMY;
 }
 
 
@@ -33,7 +33,7 @@ void EnemyGameObject::Update()
 		XMFLOAT3 stepPos = MathHelper::Multiply(m_direction, step);
 		stepPos = MathHelper::Plus(stepPos, m_transform->GetPosition());
 		m_transform->SetPosition(stepPos);
-		
+
 	}
 	else
 	{

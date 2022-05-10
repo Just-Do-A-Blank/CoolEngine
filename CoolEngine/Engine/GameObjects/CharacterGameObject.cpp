@@ -1,7 +1,11 @@
 #include "CharacterGameObject.h"
 #include "Engine/Managers/GameManager.h"
 
-CharacterGameObject::CharacterGameObject(string identifier, CoolUUID uuid) : RenderableCollidableGameObject(identifier, uuid)
+CharacterGameObject::CharacterGameObject() : TriggerableGameObject()
+{
+}
+
+CharacterGameObject::CharacterGameObject(string identifier, CoolUUID uuid) : TriggerableGameObject(identifier, uuid)
 {
 	m_gameObjectType |= GameObjectType::CHARACTER;
 }

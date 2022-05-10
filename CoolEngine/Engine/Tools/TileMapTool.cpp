@@ -12,6 +12,8 @@
 #include "Engine/GameObjects/TileMapCameraGameObject.h"
 #include "Engine/Helpers/Inputs.h"
 
+#include "Engine/Managers/Events/MouseEvents.h"
+
 void TileMapTool::Init(ID3D11Device* pdevice)
 {
 	ToolBase::Init(pdevice);

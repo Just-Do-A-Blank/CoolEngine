@@ -17,12 +17,19 @@ Event::~Event()
 	m_data = nullptr;
 }
 
+/// <summary>
+/// The event ID which in this context is the broad type of the event for casting
+/// </summary>
 const EventType Event::GetEventID()
 {
 	return m_eventID;
 
 }
 
+/// <summary>
+/// Get the data passed in when creating the event.
+/// Generally not required, casting is prefered.
+/// </summary>
 void* Event::GetData()
 {
 	return m_data;

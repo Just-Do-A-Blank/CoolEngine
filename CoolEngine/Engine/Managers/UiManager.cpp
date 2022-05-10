@@ -95,7 +95,7 @@ void UIManager::Render(RenderStruct& renderStruct)
 #if EDITOR
 	if (m_pselectedUINode)
 	{
-		m_pselectedUINode->GameObject->ShowEngineUI();
+		m_pselectedUINode->NodeObject->ShowEngineUI();
 	}
 #endif
 

@@ -164,7 +164,7 @@ void InGameUITool::TraverseTree(TreeNode<GameUIComponent>* pcurrentNode, int& no
 		node_flags |= ImGuiTreeNodeFlags_Selected;
 	}
 
-	bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)nodeCount, node_flags, pcurrentNode->GameObject->GetIdentifier().c_str(), nodeCount);
+	bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)nodeCount, node_flags, pcurrentNode->NodeObject->GetIdentifier().c_str(), nodeCount);
 	if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
 	{
 		if (nodeCount == m_gameObjectNodeClicked)

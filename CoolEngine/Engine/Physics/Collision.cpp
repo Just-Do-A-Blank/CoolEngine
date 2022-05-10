@@ -4,6 +4,7 @@
 
 #include "Engine/GameObjects/CollidableGameObject.h"
 #include "Engine/Managers/Events/EventManager.h"
+#include "Engine/Managers/Events/CollisionEvents.h"
 
 bool Collision::BoxCollision(Box* box1, Box* box2)
 {
