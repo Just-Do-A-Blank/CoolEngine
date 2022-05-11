@@ -44,6 +44,7 @@ private:
 	ImGuiTreeNodeFlags m_base_flags;
 	int m_selectionMask;
 	int m_gameObjectNodeClicked = -1;
+	TreeNode<GameObject>* m_selecedGameObjectNode;
 
 	WCHAR m_texNameBuffer[FILEPATH_BUFFER_SIZE];
 

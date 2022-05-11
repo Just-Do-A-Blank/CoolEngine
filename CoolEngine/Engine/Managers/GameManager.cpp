@@ -102,21 +102,6 @@ void GameManager::SetCamera(CameraGameObject* pcamera)
 	m_pcamera = pcamera;
 }
 
-void GameManager::SelectGameObjectUsingIdentifier(string& identifier)
-{
-    m_pcurrentScene->SelectGameObjectUsingIdentifier(identifier);
-}
-
-void GameManager::SelectGameObject(GameObject* pgameObject)
-{
-    m_pcurrentScene->SelectGameObject(pgameObject);
-}
-
-void GameManager::SelectGameObjectUsingTreeNode(TreeNode<GameObject>* pnode)
-{
-    m_pcurrentScene->SelectGameObjectUsingTreeNode(pnode);
-}
-
 void GameManager::DeleteSelectedGameObject()
 {
     m_pcurrentScene->DeleteSelectedGameObject();
