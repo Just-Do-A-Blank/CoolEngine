@@ -1,12 +1,15 @@
 #pragma once
 
-#pragma once
-
 /// <summary>
 /// Gameplay buttons which are buttons in terms of gameplay uses
 /// </summary>
 enum class EGAMEPLAYBUTTONCLASS : int
 {
+    /// <summary>
+    /// Empty button, used to signal no button
+    /// </summary>
+    Nothing,
+
     /// <summary>
     /// Button(s) which signify moving up
     /// </summary>

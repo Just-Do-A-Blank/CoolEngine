@@ -16,6 +16,11 @@ public:
     /// </summary>
 	void Handle(Event* e) override;
 
+    /// <summary>
+    /// Update loop for the gameobject
+    /// </summary>
+    virtual void Update() override;
+
 protected:
 
     /// <summary>

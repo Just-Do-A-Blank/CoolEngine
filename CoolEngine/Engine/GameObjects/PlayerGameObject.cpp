@@ -9,23 +9,34 @@ PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : Character
     GameplayButton up = 
     {
         EGAMEPLAYBUTTONCLASS::MoveUp,
-        list<int>(57),
+        list<int>(),
+        list<int>(),
     };
+    up.m_keyCodes.push_back('W');
     GameplayButton down =
     {
         EGAMEPLAYBUTTONCLASS::MoveDown,
-        list<int>(53),
+        list<int>(),
+        list<int>(),
     };
+    down.m_keyCodes.push_back('S');
+
     GameplayButton left =
     {
         EGAMEPLAYBUTTONCLASS::MoveLeft,
-        list<int>(41),
+        list<int>(),
+        list<int>(),
     };
+    left.m_keyCodes.push_back('A');
+
     GameplayButton right =
     {
         EGAMEPLAYBUTTONCLASS::MoveRight,
-        list<int>(44),
+        list<int>(),
+        list<int>(),
     };
+    right.m_keyCodes.push_back('D');
+
     list< GameplayButton> gameplayButtons;
     gameplayButtons.push_back(up);
     gameplayButtons.push_back(down);
@@ -40,13 +51,6 @@ PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : Character
     EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
     EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
     EventManager::Instance()->AddClient(EventType::MouseMoved, this);
-
-    EventManager::Instance()->AddClient(EventType::CollisionEnter, this);
-    EventManager::Instance()->AddClient(EventType::CollisionExit, this);
-    EventManager::Instance()->AddClient(EventType::CollisionHold, this);
-    EventManager::Instance()->AddClient(EventType::TriggerEnter, this);
-    EventManager::Instance()->AddClient(EventType::TriggerExit, this);
-    EventManager::Instance()->AddClient(EventType::TriggerHold, this);
 }
 
 PlayerGameObject::~PlayerGameObject()
@@ -56,13 +60,6 @@ PlayerGameObject::~PlayerGameObject()
 	EventManager::Instance()->RemoveClientEvent(EventType::MouseButtonPressed, this);
 	EventManager::Instance()->RemoveClientEvent(EventType::MouseButtonReleased, this);
 	EventManager::Instance()->RemoveClientEvent(EventType::MouseMoved, this);
-
-    EventManager::Instance()->RemoveClientEvent(EventType::CollisionEnter, this);
-    EventManager::Instance()->RemoveClientEvent(EventType::CollisionExit, this);
-    EventManager::Instance()->RemoveClientEvent(EventType::CollisionHold, this);
-    EventManager::Instance()->RemoveClientEvent(EventType::TriggerEnter, this);
-    EventManager::Instance()->RemoveClientEvent(EventType::TriggerExit, this);
-    EventManager::Instance()->RemoveClientEvent(EventType::TriggerHold, this);
 
     delete m_playerController;
 }
@@ -112,5 +109,13 @@ void PlayerGameObject::Handle(Event* e)
 		break;
 
 	}
+}
+
+/// <summary>
+/// Update loop for the gameobject
+/// </summary>
+void PlayerGameObject::Update()
+{
+    m_playerController->Update();
 }
 

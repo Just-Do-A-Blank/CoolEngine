@@ -1,4 +1,5 @@
 #include "InputsAsGameplayButtons.h"
+#include <algorithm>
 
 /// <summary>
 /// Constructs inputs with gameplay buttons from the start
@@ -40,14 +41,21 @@ EGAMEPLAYBUTTONCLASS InputsAsGameplayButtons::GetGameplayButtonFromKeyInput(int 
 {
     for (const auto& button : m_currentButtons)
     {
-        for (const auto& buttonKeycode : button.second.m_keyCodes)
+        for (
+            std::list<int>::const_iterator iterator = button.second.m_keyCodes.begin(), 
+            end = button.second.m_keyCodes.end();
+            iterator != end;
+            ++iterator
+            )
         {
-            if (buttonKeycode == keycode)
+            if (*iterator == keycode)
             {
                 return button.first;
             }
-        }
+        };
     }
+
+    return EGAMEPLAYBUTTONCLASS::Nothing;
 }
 
 /// <summary>
@@ -59,12 +67,19 @@ EGAMEPLAYBUTTONCLASS InputsAsGameplayButtons::GetGameplayButtonFromMouseInput(in
 {
     for (const auto& button : m_currentButtons)
     {
-        for (const auto& mouseKeycode : button.second.m_mouseCode)
+        for (
+            std::list<int>::const_iterator iterator = button.second.m_mouseCode.begin(),
+            end = button.second.m_mouseCode.end();
+            iterator != end;
+            ++iterator
+            )
         {
-            if (mouseKeycode == mouseCode)
+            if (*iterator == mouseCode)
             {
                 return button.first;
             }
-        }
+        };
     }
+
+    return EGAMEPLAYBUTTONCLASS::Nothing;
 }
