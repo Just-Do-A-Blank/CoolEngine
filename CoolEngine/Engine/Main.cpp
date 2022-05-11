@@ -793,7 +793,7 @@ void Render()
 	ImVec2 newViewportSize = ImGui::GetContentRegionAvail();
 	XMFLOAT2 oldViewportSize = EditorUI::GetViewportSize();
 
-	if (oldViewportSize.x != newViewportSize.x || oldViewportSize.y != newViewportSize.y)
+	if ((oldViewportSize.x != newViewportSize.x || oldViewportSize.y != newViewportSize.y) && (newViewportSize.x > 0 && newViewportSize.y > 0))
 	{
 		XMFLOAT2 viewportSize = XMFLOAT2(newViewportSize.x, newViewportSize.y);
 
