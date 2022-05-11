@@ -24,7 +24,7 @@ public:
     /// <summary>
     /// The smallest size a tile may be when creating tilesets in the system
     /// </summary>
-    const int m_miniumScale = 4;
+    const int m_minimumScale = 4;
 
 protected:
 

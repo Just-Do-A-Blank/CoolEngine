@@ -179,9 +179,9 @@ void TileMapTool::EnsureTileSizesAreValid()
         m_tileMapHeight = 1;
     }
 
-    if (m_tileDimensions < m_miniumScale)
+    if (m_tileDimensions < m_minimumScale)
     {
-        m_tileDimensions = m_miniumScale;
+        m_tileDimensions = m_minimumScale;
     }
 }
 #endif
