@@ -62,7 +62,9 @@ void TileMapTool::Render()
 
 		ImGui::End();
 
-		ImGui::Begin("Master");
+		ImGui::Begin("Master", nullptr, ImGuiWindowFlags_MenuBar);
+
+		CreateMenuBar();
 
 		m_ptileMap->CreateEngineUI();
 
@@ -99,6 +101,13 @@ void TileMapTool::Update()
 			}
 		}
 	}
+}
+
+void TileMapTool::Destroy()
+{
+	ToolBase::Destroy();
+
+	EventManager::Instance()->RemoveClientEvent(EventType::MouseButtonPressed, this);
 }
 
 void TileMapTool::Handle(Event* e)

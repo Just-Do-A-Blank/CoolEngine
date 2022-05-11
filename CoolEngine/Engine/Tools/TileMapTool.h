@@ -18,6 +18,7 @@ public:
 	virtual void Init(ID3D11Device* pdevice);
 	void Render() override;
 	void Update() override;
+	void Destroy() override;
 
 	void Handle(Event* e) override;
 

@@ -3,11 +3,16 @@
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/Scene/Scene.h"
 #include "Engine/Includes/IMGUI/imgui_internal.h"
-#include <ShlObj_core.h>
-#include <Engine/Physics/ParticleSystem.h>
+#include "Engine/Physics/ParticleSystem.h"
 #include "Engine/GameObjects/InteractableGameObject.h"
 #include "Engine/GameObjects/WeaponGameObject.h"
-#include <Engine\GameObjects\EnemyGameObject.h>
+#include "Engine\GameObjects\EnemyGameObject.h"
+#include "Engine/Tools/ToolBase.h"
+#include "Engine/Tools/AnimationTool.h"
+#include "Engine/Tools/InGameUITool.h"
+#include "Engine//Tools/TileMapTool.h"
+
+#include <ShlObj_core.h>
 
 #if EDITOR
 HWND* EditorUI::m_phwnd = nullptr;
@@ -47,9 +52,9 @@ EditorUI::EditorUI(ID3D11Device* pdevice)
 {
 }
 
-void EditorUI::DrawEditorUI(ID3D11Device* pdevice)
+void EditorUI::DrawEditorUI(ID3D11Device* pdevice, ToolBase*& ptoolBase)
 {
-	DrawSceneGraphWindow();
+	DrawSceneGraphWindow(ptoolBase, pdevice);
 
 	DrawSceneManagementWindow();
 
@@ -101,7 +106,7 @@ DirectX::XMFLOAT2 EditorUI::GetViewportPosition()
 	return s_viewportPosition;
 }
 
-void EditorUI::DrawSceneGraphWindow()
+void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 {
 	if (!GameManager::GetInstance()->GetCurrentScene())
 	{
@@ -197,6 +202,44 @@ void EditorUI::DrawSceneGraphWindow()
 
 				m_gameObjectNodeClicked = -1;
 				pgameManager->SelectGameObject(nullptr);
+			}
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Tools"))
+		{
+			if (ImGui::MenuItem("Animation"))
+			{
+				if (ptoolBase != nullptr)
+				{
+					delete ptoolBase;
+				}
+
+				ptoolBase = new AnimationTool();
+				ptoolBase->Init(pdevice);
+			}
+
+			if (ImGui::MenuItem("In Game UI"))
+			{
+				if (ptoolBase != nullptr)
+				{
+					delete ptoolBase;
+				}
+
+				ptoolBase = new InGameUITool();
+				ptoolBase->Init(pdevice);
+			}
+
+			if (ImGui::MenuItem("Tile Map"))
+			{
+				if (ptoolBase != nullptr)
+				{
+					delete ptoolBase;
+				}
+
+				ptoolBase = new TileMapTool();
+				ptoolBase->Init(pdevice);
 			}
 
 			ImGui::EndMenu();
