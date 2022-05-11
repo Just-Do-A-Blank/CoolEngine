@@ -5,5 +5,5 @@ class InteractableGameObject : public TriggerableGameObject
 {
 public:
 	InteractableGameObject(string identifier, CoolUUID uuid);
-	virtual ~InteractableGameObject();
+	virtual ~InteractableGameObject()override;
 };

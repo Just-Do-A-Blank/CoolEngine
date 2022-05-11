@@ -11,7 +11,7 @@ private:
 
 public:
     DebugRect(wstring albedoName, string identifier, CoolUUID uuid, bool screenSpace);
-	virtual ~DebugRect();
+	virtual ~DebugRect()override;
 
     void SetDebugColour(DebugDrawManager::DebugColour colour);
     void Render(RenderStruct& renderStruct);

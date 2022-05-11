@@ -28,7 +28,7 @@ class EnemyGameObject : public CharacterGameObject
 {
 public:
     EnemyGameObject(string identifier, CoolUUID uuid);
-	virtual ~EnemyGameObject();
+	virtual ~EnemyGameObject()override;
 
     void Update();
 

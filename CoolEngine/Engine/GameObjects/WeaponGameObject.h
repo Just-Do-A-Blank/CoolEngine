@@ -5,5 +5,5 @@ class WeaponGameObject : public TriggerableGameObject
 {
 public:
 	WeaponGameObject(string identifier, CoolUUID uuid);
-	virtual ~WeaponGameObject();
+	virtual ~WeaponGameObject()override;
 };

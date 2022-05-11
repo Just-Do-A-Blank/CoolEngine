@@ -43,7 +43,7 @@ protected:
 public:
 	GameObject();
 	GameObject(string identifier, CoolUUID uuid);
-	virtual ~GameObject();
+	virtual ~GameObject()override;
 
 	virtual void Update();
 

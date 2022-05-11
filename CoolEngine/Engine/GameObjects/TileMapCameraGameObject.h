@@ -8,7 +8,7 @@ class TileMapCameraGameObject : public CameraGameObject, public Observer
 {
 public:
 	TileMapCameraGameObject(string identifier, CoolUUID uuid);
-	virtual ~TileMapCameraGameObject();
+	virtual ~TileMapCameraGameObject()override;
 
 	void Initialize(XMFLOAT3& position, XMFLOAT3& forwardVector, XMFLOAT3& upVector,
 		float& windowWidth, float& windowHeight, float& nearDepth, float& farDepth) override;
