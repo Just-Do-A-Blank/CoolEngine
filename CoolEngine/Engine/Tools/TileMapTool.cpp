@@ -154,6 +154,8 @@ void TileMapTool::CreateSelectDimensionsUI()
 	if (ImGui::Button("Create") == true)
 	{
 		CoolUUID uuid;
+
+        EnsureTileSizesAreValid();
 		m_ptileMap = new TileMap(m_tileMapWidth, m_tileMapHeight, "TileMap", uuid, XMFLOAT3(0, 0, 0), m_tileDimensions);
 
 		m_selectingDimensions = false;
@@ -162,4 +164,24 @@ void TileMapTool::CreateSelectDimensionsUI()
 	ImGui::End();
 }
 
+/// <summary>
+/// Ensures the user does not select a tilesize so small the application crashes
+/// </summary>
+void TileMapTool::EnsureTileSizesAreValid()
+{
+    if (m_tileMapWidth < 1)
+    {
+        m_tileMapWidth = 1;
+    }
+
+    if (m_tileMapHeight < 1)
+    {
+        m_tileMapHeight = 1;
+    }
+
+    if (m_tileDimensions < m_miniumScale)
+    {
+        m_tileDimensions = m_miniumScale;
+    }
+}
 #endif

@@ -21,6 +21,11 @@ public:
 
 	void Handle(Event* e) override;
 
+    /// <summary>
+    /// The smallest size a tile may be when creating tilesets in the system
+    /// </summary>
+    const int m_miniumScale = 4;
+
 protected:
 
 
@@ -41,6 +46,11 @@ private:
 	DirectX::XMINT2 m_CopiedTile = DirectX::XMINT2(-1, -1);
 
 	ContentBrowser m_contentBrowser;
+
+    /// <summary>
+    /// Ensures the user does not select a tilesize so small the application crashes
+    /// </summary>
+    void EnsureTileSizesAreValid();
 };
 
 #endif
