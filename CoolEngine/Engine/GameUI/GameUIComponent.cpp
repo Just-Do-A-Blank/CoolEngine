@@ -87,9 +87,9 @@ void GameUIComponent::Serialize(nlohmann::json& data)
 	std::string uuidString = to_string(*m_uuid);
 
 	data["GameUI"][(int)m_componentType][uuidString]["Identifier"].push_back(m_uiElementIdentifier);
-	data["GameUI"][(int)m_componentType][uuidString]["Position"].push_back({ m_transform->GetPosition().x, m_transform->GetPosition().y, m_transform->GetPosition().z });
-	data["GameUI"][(int)m_componentType][uuidString]["Rotation"].push_back({ m_transform->GetRotation().x, m_transform->GetRotation().y, m_transform->GetRotation().z });
-	data["GameUI"][(int)m_componentType][uuidString]["Scale"].push_back({ m_transform->GetScale().x, m_transform->GetScale().y, m_transform->GetScale().z });
+	data["GameUI"][(int)m_componentType][uuidString]["Position"].push_back({ m_transform->GetLocalPosition().x, m_transform->GetLocalPosition().y, m_transform->GetLocalPosition().z });
+	data["GameUI"][(int)m_componentType][uuidString]["Rotation"].push_back({ m_transform->GetLocalRotation().x, m_transform->GetLocalRotation().y, m_transform->GetLocalRotation().z });
+	data["GameUI"][(int)m_componentType][uuidString]["Scale"].push_back({ m_transform->GetLocalScale().x, m_transform->GetLocalScale().y, m_transform->GetLocalScale().z });
 	data["GameUI"][(int)m_componentType][uuidString]["TexturePath"].push_back(m_texFilepath);
 	data["GameUI"][(int)m_componentType][uuidString]["Layer"].push_back(m_layer);
 	data["GameUI"][(int)m_componentType][uuidString]["IsRendering"].push_back(m_isRenderable);

@@ -22,7 +22,7 @@ public:
 	{
 		m_scale = XMFLOAT2(1, 1);
 		m_transform = trans;
-		m_halfSize = XMFLOAT2(m_scale.x * m_transform->GetScale().x, m_scale.y * m_transform->GetScale().y);
+		m_halfSize = XMFLOAT2(m_scale.x * m_transform->GetWorldScale().x, m_scale.y * m_transform->GetWorldScale().y);
 
 		m_shapeType = ShapeType::BOX;
 	}
@@ -51,7 +51,7 @@ public:
 	// Based on gamedev.stackexchange.com/questions/20703/bounding-box-of-a-rotated-rectangle-2d
 	void SetShapeDimensions(XMFLOAT3 scale)
 	{
-		m_halfSize = XMFLOAT2(m_transform->GetScale().x * m_scale.x, m_transform->GetScale().y * m_scale.y);
+		m_halfSize = XMFLOAT2(m_transform->GetWorldScale().x * m_scale.x, m_transform->GetWorldScale().y * m_scale.y);
 
 		XMVECTOR topLeft = XMVectorSet(-m_halfSize.x, m_halfSize.y, 0, 1);
 		XMVECTOR topRight = XMVectorSet(m_halfSize.x, m_halfSize.y, 0, 1);

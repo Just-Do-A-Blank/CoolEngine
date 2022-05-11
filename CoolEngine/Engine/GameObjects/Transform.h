@@ -4,10 +4,13 @@
 
 class Transform : EditorUIComponent
 {
-	XMFLOAT3 m_position;
-	XMFLOAT3 m_rotation;
-	XMFLOAT3 m_accumulatedRotation;
-	XMFLOAT3 m_scale = XMFLOAT3(1, 1, 1);
+	XMFLOAT3 m_localPosition;
+	XMFLOAT3 m_localRotation;
+	XMFLOAT3 m_localScale = XMFLOAT3(1, 1, 1);
+
+	XMFLOAT3 m_worldPosition;
+	XMFLOAT3 m_worldRotation;
+	XMFLOAT3 m_worldScale;
 
 	XMFLOAT3 m_forwardVector = XMFLOAT3(0.0f, -1.0f, 0.0f);
 	XMFLOAT3 m_upVector = XMFLOAT3(0.0f, 0.0f, 1.0f);;
@@ -32,10 +35,13 @@ public:
 	void UpdateComponentVectors();
 
 	//Getters
-	const XMFLOAT3& GetPosition()const;
-	const XMFLOAT3& GetRotation()const;
-	const XMFLOAT3& GetAccumulatedRotation()const;
-	const XMFLOAT3& GetScale()const;
+	const XMFLOAT3& GetWorldPosition()const;
+	const XMFLOAT3& GetWorldRotation()const;
+	const XMFLOAT3& GetWorldScale()const;
+
+	const XMFLOAT3& GetLocalPosition()const;
+	const XMFLOAT3& GetLocalRotation()const;
+	const XMFLOAT3& GetLocalScale()const;
 
 	const XMMATRIX& GetScaleMatrix()const;
 	const XMMATRIX& GetRotationMatrix()const;
