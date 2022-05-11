@@ -94,6 +94,15 @@
     <Filter Include="Engine\Includes\json">
       <UniqueIdentifier>{6237882f-9709-4e52-95ee-e1af0c58904f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\GameObjects\Gameplay">
+      <UniqueIdentifier>{7f0093ab-0e4a-433c-a3df-3b23eedb5444}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GameObjects\Gameplay\Player">
+      <UniqueIdentifier>{acef46ab-d2c1-485a-b486-b10fc405c578}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GameObjects\Gameplay\GameplayButtons">
+      <UniqueIdentifier>{4937c6de-2fae-4081-9978-4adbfb464981}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -385,7 +394,7 @@
       <Filter>Engine\EditorUI</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\UUID.h">
-          <Filter>Engine\GameObjects</Filter>
+      <Filter>Engine\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\TileMapCameraGameObject.h">
       <Filter>Engine\GameObjects</Filter>
@@ -419,6 +428,18 @@
     </ClInclude>
     <ClInclude Include="Engine\Managers\Events\KeyEvents.h">
       <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\EGameplayButtonClass.h">
+      <Filter>Engine\GameObjects\Gameplay\GameplayButtons</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\GameplayButton.h">
+      <Filter>Engine\GameObjects\Gameplay\GameplayButtons</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.h">
+      <Filter>Engine\GameObjects\Gameplay\GameplayButtons</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerController.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -579,7 +600,7 @@
       <Filter>Engine\EditorUI</Filter>
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\UUID.cpp">
-          <Filter>Engine\GameObjects</Filter>
+      <Filter>Engine\GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\TileMapCameraGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
@@ -595,6 +616,12 @@
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\WeaponGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.cpp">
+      <Filter>Engine\GameObjects\Gameplay\GameplayButtons</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerController.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
