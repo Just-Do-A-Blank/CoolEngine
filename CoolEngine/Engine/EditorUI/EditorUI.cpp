@@ -201,7 +201,7 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 				pgameManager->DeleteSelectedGameObject();
 
 				m_gameObjectNodeClicked = -1;
-				pgameManager->SelectGameObject(nullptr);
+				m_selecedGameObjectNode = nullptr;
 			}
 
 			ImGui::EndMenu();
@@ -270,7 +270,7 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 	if (ImGui::IsItemClicked())
 	{
 		m_gameObjectNodeClicked = -1;
-		pgameManager->SelectGameObject(nullptr);
+		m_selecedGameObjectNode = nullptr;
 	}
 	
 	ImGui::End();
@@ -291,39 +291,39 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 			switch (m_createObjectType)
 			{
 			case GameObjectType::RENDERABLE | GameObjectType::COLLIDABLE:
-				pgameManager->CreateGameObject<RenderableCollidableGameObject>(gameObjectName);
+				pgameManager->CreateGameObject<RenderableCollidableGameObject>(gameObjectName, m_selecedGameObjectNode);
 				break;
 
 			case GameObjectType::RENDERABLE:
-				pgameManager->CreateGameObject<RenderableGameObject>(gameObjectName);
+				pgameManager->CreateGameObject<RenderableGameObject>(gameObjectName, m_selecedGameObjectNode);
 				break;
 
 			case GameObjectType::COLLIDABLE:
-				pgameManager->CreateGameObject<CollidableGameObject>(gameObjectName);
+				pgameManager->CreateGameObject<CollidableGameObject>(gameObjectName, m_selecedGameObjectNode);
 				break;
 
 			case GameObjectType::BASE:
-				pgameManager->CreateGameObject<GameObject>(gameObjectName);
+				pgameManager->CreateGameObject<GameObject>(gameObjectName, m_selecedGameObjectNode);
 				break;
 
 			case GameObjectType::PARTICLESYSTEM:
-				pgameManager->CreateGameObject<ParticleSystem>(gameObjectName);
+				pgameManager->CreateGameObject<ParticleSystem>(gameObjectName, m_selecedGameObjectNode);
 				break;
 
 			case GameObjectType::PLAYER:
-				pgameManager->CreateGameObject<PlayerGameObject>(gameObjectName);
+				pgameManager->CreateGameObject<PlayerGameObject>(gameObjectName, m_selecedGameObjectNode);
 				break;
 
             case GameObjectType::ENEMY:
-                pgameManager->CreateGameObject<EnemyGameObject>(gameObjectName);
+                pgameManager->CreateGameObject<EnemyGameObject>(gameObjectName, m_selecedGameObjectNode);
                 break;
 
 			case GameObjectType::INTERACTABLE:
-				pgameManager->CreateGameObject<InteractableGameObject>(gameObjectName);
+				pgameManager->CreateGameObject<InteractableGameObject>(gameObjectName, m_selecedGameObjectNode);
 				break;
 
 			case GameObjectType::WEAPON:
-				pgameManager->CreateGameObject<WeaponGameObject>(gameObjectName);
+				pgameManager->CreateGameObject<WeaponGameObject>(gameObjectName, m_selecedGameObjectNode);
 				break;
 			}
 
@@ -469,7 +469,7 @@ void EditorUI::TraverseTree(TreeNode<GameObject>* pcurrentNode, int& nodeCount)
 	if (ImGui::IsMouseReleased(0) && ImGui::IsItemHovered())
 	{
 		m_gameObjectNodeClicked = nodeCount;
-		pgameManager->SelectGameObjectUsingTreeNode(pcurrentNode);
+		m_selecedGameObjectNode = pcurrentNode;
 	}
 
 	if (node_open)
