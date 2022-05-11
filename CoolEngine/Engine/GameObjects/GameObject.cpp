@@ -19,6 +19,10 @@ GameObject::GameObject(string identifier, CoolUUID uuid)
 	m_gameObjectType = GameObjectType::BASE;
 }
 
+GameObject::~GameObject()
+{
+}
+
 void GameObject::Update()
 {
 	if (m_pTest != nullptr)

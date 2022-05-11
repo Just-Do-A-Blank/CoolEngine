@@ -24,14 +24,13 @@ struct EnemyStateMachine
     EnemyState state;
 };
 
-class EnemyGameObject :
-    public CharacterGameObject
+class EnemyGameObject : public CharacterGameObject
 {
-
 public:
     EnemyGameObject(string identifier, CoolUUID uuid);
-    void Update();
+	virtual ~EnemyGameObject()override;
 
+    void Update();
 
     //Setters
     void SetPath(vector<node*> path);

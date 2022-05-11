@@ -16,6 +16,10 @@ RenderableCollidableGameObject::RenderableCollidableGameObject(string identifier
 
 }
 
+RenderableCollidableGameObject::~RenderableCollidableGameObject()
+{
+}
+
 #if EDITOR
 void RenderableCollidableGameObject::CreateEngineUI()
 {

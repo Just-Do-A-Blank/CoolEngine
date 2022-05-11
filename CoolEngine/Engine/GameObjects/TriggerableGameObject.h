@@ -9,7 +9,7 @@ class TriggerableGameObject : public RenderableCollidableGameObject, public Obse
 public:
 	TriggerableGameObject();
 	TriggerableGameObject(string identifier, CoolUUID uuid);
-    ~TriggerableGameObject();
+    virtual ~TriggerableGameObject()override;
 
     /// <summary>
     /// Handles events from the Observations

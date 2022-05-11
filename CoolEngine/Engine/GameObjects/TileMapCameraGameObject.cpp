@@ -7,6 +7,10 @@ TileMapCameraGameObject::TileMapCameraGameObject(string identifier, CoolUUID uui
 
 }
 
+TileMapCameraGameObject::~TileMapCameraGameObject()
+{
+}
+
 void TileMapCameraGameObject::Initialize(XMFLOAT3& position, XMFLOAT3& forwardVector, XMFLOAT3& upVector, float& windowWidth, float& windowHeight, float& nearDepth, float& farDepth)
 {
 	CameraGameObject::Initialize(position, forwardVector, upVector, windowWidth, windowHeight, nearDepth, farDepth);

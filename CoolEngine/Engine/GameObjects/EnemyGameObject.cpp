@@ -7,6 +7,10 @@ EnemyGameObject::EnemyGameObject(string identifier, CoolUUID uuid) : CharacterGa
     m_gameObjectType |= GameObjectType::ENEMY;
 }
 
+EnemyGameObject::~EnemyGameObject()
+{
+}
+
 
 void EnemyGameObject::Update()
 {

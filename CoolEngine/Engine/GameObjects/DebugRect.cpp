@@ -18,6 +18,10 @@ DebugRect::DebugRect(wstring albedoName, string identifier, CoolUUID uuid, bool 
 	}
 }
 
+DebugRect::~DebugRect()
+{
+}
+
 void DebugRect::SetDebugColour(DebugDrawManager::DebugColour colour)
 {
 	m_colour = colour;
