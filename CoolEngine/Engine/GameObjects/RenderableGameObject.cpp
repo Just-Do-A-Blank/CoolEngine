@@ -17,6 +17,10 @@ RenderableGameObject::RenderableGameObject(string identifier, CoolUUID uuid) : G
 	m_gameObjectType |= GameObjectType::RENDERABLE;
 }
 
+RenderableGameObject::~RenderableGameObject()
+{
+}
+
 void RenderableGameObject::InitGraphics()
 {
 	m_pvertexShader = GraphicsManager::GetInstance()->GetVertexShader(DEFAULT_VERTEX_SHADER_NAME);

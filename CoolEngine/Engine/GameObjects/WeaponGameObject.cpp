@@ -4,3 +4,7 @@ WeaponGameObject::WeaponGameObject(string identifier, CoolUUID uuid) : Triggerab
 {
     m_gameObjectType |= GameObjectType::WEAPON;
 }
+
+WeaponGameObject::~WeaponGameObject()
+{
+}
