@@ -5,6 +5,9 @@
 #include "Engine/Includes/IMGUI/imgui_internal.h"
 #include <ShlObj_core.h>
 #include <Engine/Physics/ParticleSystem.h>
+#include "Engine/GameObjects/InteractableGameObject.h"
+#include "Engine/GameObjects/WeaponGameObject.h"
+#include <Engine\GameObjects\EnemyGameObject.h>
 
 #if EDITOR
 HWND* EditorUI::m_phwnd = nullptr;
@@ -105,7 +108,7 @@ void EditorUI::DrawSceneGraphWindow()
 		return;
 	}
 	ImGui::Begin("Scene Graph", nullptr, ImGuiWindowFlags_MenuBar);
-
+	
 	GameManager* pgameManager = GameManager::GetInstance();
 	static int selected = -1;
 
@@ -146,6 +149,30 @@ void EditorUI::DrawSceneGraphWindow()
 
 					m_createObjectType = GameObjectType::RENDERABLE | GameObjectType::COLLIDABLE;
 				}
+				if (ImGui::MenuItem("Player"))
+				{
+					m_createGameObjectClicked = true;
+
+					m_createObjectType = GameObjectType::PLAYER;
+				}
+				if (ImGui::MenuItem("Enemy"))
+				{
+					m_createGameObjectClicked = true;
+
+					m_createObjectType = GameObjectType::ENEMY;
+				}
+				if (ImGui::MenuItem("Interactable"))
+				{
+					m_createGameObjectClicked = true;
+
+					m_createObjectType = GameObjectType::INTERACTABLE;
+				}
+				if (ImGui::MenuItem("Weapon"))
+				{
+					m_createGameObjectClicked = true;
+
+					m_createObjectType = GameObjectType::WEAPON;
+				}
 
 				ImGui::EndMenu();
 			}
@@ -177,6 +204,32 @@ void EditorUI::DrawSceneGraphWindow()
 
 		ImGui::EndMenuBar();
 	}
+
+	ImGui::BeginChild("Root Drag & Drop Region");
+	ImGui::EndChild();
+
+	if (ImGui::BeginDragDropTarget())
+	{
+		const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("SceneGraphNode", ImGuiDragDropFlags_None);
+
+		if (ppayload != nullptr)
+		{
+			TreeNode<GameObject>* objectPointer = *(TreeNode<GameObject>**)ppayload->Data;
+			if (objectPointer->PreviousParent != nullptr)
+			{
+				pgameManager->GetCurrentScene()->GetSceneGraph()->MoveNode(objectPointer, nullptr);
+			}
+		}
+
+		ImGui::EndDragDropTarget();
+	}
+
+	if (ImGui::IsItemClicked())
+	{
+		m_gameObjectNodeClicked = -1;
+		pgameManager->SelectGameObject(nullptr);
+	}
+	
 	ImGui::End();
 
 	if (m_createGameObjectClicked)
@@ -213,6 +266,22 @@ void EditorUI::DrawSceneGraphWindow()
 			case GameObjectType::PARTICLESYSTEM:
 				pgameManager->CreateGameObject<ParticleSystem>(gameObjectName);
 				break;
+
+			case GameObjectType::PLAYER:
+				pgameManager->CreateGameObject<PlayerGameObject>(gameObjectName);
+				break;
+
+            case GameObjectType::ENEMY:
+                pgameManager->CreateGameObject<EnemyGameObject>(gameObjectName);
+                break;
+
+			case GameObjectType::INTERACTABLE:
+				pgameManager->CreateGameObject<InteractableGameObject>(gameObjectName);
+				break;
+
+			case GameObjectType::WEAPON:
+				pgameManager->CreateGameObject<WeaponGameObject>(gameObjectName);
+				break;
 			}
 
 
@@ -221,6 +290,7 @@ void EditorUI::DrawSceneGraphWindow()
 			m_createGameObjectClicked = false;
 			gameObjectName[0] = {};
 		}
+		
 		ImGui::End();
 	}
 }
@@ -331,30 +401,33 @@ void EditorUI::TraverseTree(TreeNode<GameObject>* pcurrentNode, int& nodeCount)
 		node_flags |= ImGuiTreeNodeFlags_Selected;
 	}
 
-	bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)nodeCount, node_flags, pcurrentNode->GameObject->GetIdentifier().c_str(), nodeCount);
-	
+	bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)nodeCount, node_flags, pcurrentNode->NodeObject->GetIdentifier().c_str(), nodeCount);
+
+	if (ImGui::BeginDragDropTarget())
+	{
+		const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("SceneGraphNode", ImGuiDragDropFlags_None);
+
+		if (ppayload != nullptr)
+		{
+			TreeNode<GameObject>* objectPointer = *(TreeNode<GameObject>**)ppayload->Data;
+
+			pgameManager->GetCurrentScene()->GetSceneGraph()->MoveNode(objectPointer, pcurrentNode);
+		}
+
+		ImGui::EndDragDropTarget();
+	}
+
 	if (ImGui::BeginDragDropSource() == true)
 	{
-		bool test = ImGui::SetDragDropPayload("SceneGraph", &pcurrentNode->GameObject, sizeof(pcurrentNode->GameObject), ImGuiCond_Once);
+		bool test = ImGui::SetDragDropPayload("SceneGraphNode", &pcurrentNode, sizeof(pcurrentNode), ImGuiCond_Once);
 		ImGui::EndDragDropSource();
 	}
-	
-	if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+
+	if (ImGui::IsMouseReleased(0) && ImGui::IsItemHovered())
 	{
-		if (nodeCount == m_gameObjectNodeClicked)
-		{
-			m_gameObjectNodeClicked = -1;
-			pgameManager->SelectGameObject(nullptr);
-
-
-		}
-		else
-		{
-			m_gameObjectNodeClicked = nodeCount;
-			pgameManager->SelectGameObjectUsingTreeNode(pcurrentNode);
-		}
+		m_gameObjectNodeClicked = nodeCount;
+		pgameManager->SelectGameObjectUsingTreeNode(pcurrentNode);
 	}
-
 
 	if (node_open)
 	{
@@ -362,8 +435,6 @@ void EditorUI::TraverseTree(TreeNode<GameObject>* pcurrentNode, int& nodeCount)
 		{
 			TraverseTree(pcurrentNode->Child, nodeCount);
 		}
-
-
 		ImGui::TreePop();
 	}
 
@@ -505,7 +576,7 @@ void EditorUI::DragFloat3(const string& label, XMFLOAT3& values, const float& co
 ImGui::PopID();
 }
 
-void EditorUI::DragInt(const string& label, int& value, const float& columnWidth, const float& speed, const float& min, const float& max)
+void EditorUI::DragInt(const string& label, int& value, const float& columnWidth, const float& speed, const int& min, const int& max)
 {
 	ImGui::PushID(label.c_str());
 

@@ -4,6 +4,7 @@
 #include "Engine/GameObjects/DebugRect.h"
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/ResourceDefines.h"
+#include "Engine/Managers/GameManager.h"
 
 void DebugDrawManager::Init(ID3D11Device* pd3dDevice)
 {
@@ -51,8 +52,18 @@ void DebugDrawManager::Update()
 {
 	for (unordered_map<string, DebugRect*>::iterator it = m_debugRectMap.begin(); it != m_debugRectMap.end(); ++it)
 	{
-		it->second->Update();
+		delete it->second;
 	}
+
+	m_debugRectMap.clear();
+}
+
+void DebugDrawManager::Serialize(nlohmann::json& data)
+{
+}
+
+void DebugDrawManager::Deserialize(nlohmann::json& data)
+{
 }
 
 #endif //_DEBUG

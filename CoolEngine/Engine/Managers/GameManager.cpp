@@ -3,7 +3,6 @@
 #include "Engine/GameObjects/GameObject.h"
 #include "Engine/Scene/Scene.h"
 #include "SceneGraph.h"
-#include "Engine/GameObjects/PlayerGameObject.h"
 #include "GraphicsManager.h"
 
 #include <direct.h>
@@ -146,6 +145,15 @@ string& GameManager::GetCurrentSceneName()
 vector<GameObject*>& GameManager::GetAllGameObjectsInCurrentScene()
 {
     return m_pcurrentScene->GetAllGameObjects();
+}
+
+void GameManager::Serialize(nlohmann::json& data)
+{
+
+}
+
+void GameManager::Deserialize(nlohmann::json& data)
+{
 }
 
 unordered_map<string, Scene*> GameManager::GetSceneList()

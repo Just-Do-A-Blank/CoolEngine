@@ -15,6 +15,7 @@ public:
 
 	//Setters
 	void SetShape(Shape* collider);
+	void SetShapeDimensions(XMFLOAT3 scale);
 
 #if EDITOR
 	virtual void CreateEngineUI() override;

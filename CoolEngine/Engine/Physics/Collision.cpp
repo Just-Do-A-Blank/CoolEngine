@@ -4,6 +4,7 @@
 
 #include "Engine/GameObjects/CollidableGameObject.h"
 #include "Engine/Managers/Events/EventManager.h"
+#include "Engine/Managers/Events/CollisionEvents.h"
 
 bool Collision::BoxCollision(Box* box1, Box* box2)
 {
@@ -208,6 +209,16 @@ void Collision::Update(vector<GameObject*> gameObjectMap)
 {
 	CollidableGameObject* pcollidable1 = nullptr;
 	CollidableGameObject* pcollidable2 = nullptr;
+
+	for (int it1 = 0; it1 < gameObjectMap.size(); ++it1)
+	{
+		if (gameObjectMap[it1]->ContainsType(GameObjectType::COLLIDABLE) == false)
+		{
+			continue;
+		}
+		pcollidable1 = dynamic_cast<CollidableGameObject*>(gameObjectMap[it1]);
+		pcollidable1->SetShapeDimensions(pcollidable1->GetTransform()->GetScale());
+	}
 
 	for (int it1 = 0; it1 < gameObjectMap.size(); ++it1)
 	{

@@ -5,15 +5,43 @@
 #include"Engine/ResourceDefines.h"
 #include "Engine/EditorUI/EditorUI.h"
 
-TextComponent::TextComponent(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation):GameUIComponent(identifier, position, scale, rotation)
+TextComponent::TextComponent(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation):GameUIComponent(identifier, uuid, position, scale, rotation)
 {	
+	m_componentType |= UIComponentType::TEXT;
+
 	m_ppixelShader = GraphicsManager::GetInstance()->GetPixelShader(TEXT_PIXEL_SHADER_NAME);
+}
+
+TextComponent::TextComponent(nlohmann::json& data, CoolUUID uuid, ID3D11Device* pdevice) : GameUIComponent(data, uuid)
+{
+	m_componentType |= UIComponentType::TEXT;
+
+	std::string uuidString = to_string(*GetUUID());
+
+	m_ppixelShader = GraphicsManager::GetInstance()->GetPixelShader(TEXT_PIXEL_SHADER_NAME);
+
+	XMVECTORF32 colour;
+	colour.v = XMVectorSet(data["GameUI"][(int)m_componentType][uuidString]["Colour"][0], data["GameUI"][(int)m_componentType][uuidString]["Colour"][1], data["GameUI"][(int)m_componentType][uuidString]["Colour"][2], data["GameUI"][(int)m_componentType][uuidString]["Colour"][3]);
+
+	Init(data["GameUI"][(int)m_componentType][uuidString]["Text"], data["GameUI"][(int)m_componentType][uuidString]["FontName"], data["GameUI"][(int)m_componentType][uuidString]["FontSize"], colour, pdevice);
 }
 
 void TextComponent::UpdateFont(string fontName, int fontSize)
 {
 	m_fontAtlas = FontManager::GetInstance()->GetFontAtlas(fontName, fontSize);
 	m_ptexture = m_fontAtlas[0]->fontTexture;
+}
+
+void TextComponent::Serialize(nlohmann::json& data)
+{
+	GameUIComponent::Serialize(data);
+
+	std::string uuidString = to_string(*GetUUID());
+
+	data["GameUI"][(int)m_componentType][uuidString]["Text"].push_back(m_text);
+	data["GameUI"][(int)m_componentType][uuidString]["FontName"].push_back(m_fontName);
+	data["GameUI"][(int)m_componentType][uuidString]["FontSize"].push_back(m_fontSize);
+	data["GameUI"][(int)m_componentType][uuidString]["Colour"].push_back({m_colour[0], m_colour[1], m_colour[2], m_colour[3]});
 }
 
 #if EDITOR

@@ -9,7 +9,6 @@
 #include "Engine/Graphics/ConstantBuffer.h"
 #include "Engine/Graphics/SpriteAnimation.h"
 #include "Engine/GameObjects/CameraGameObject.h"
-#include "Engine/GameObjects/PlayerGameObject.h"
 #include "Engine/GameObjects/EnemyGameObject.h"
 
 #include "Engine/Managers/Events/EventManager.h"
@@ -43,6 +42,8 @@
 #include "Engine/Tools/AnimationTool.h"
 #include "Engine/Tools/InGameUITool.h"
 #endif
+
+#include "Engine/Managers/Events/EventObserverExamples.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
@@ -221,6 +222,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	XMFLOAT3 objectPos = XMFLOAT3(0, -200.0f, 0.0f);
 	XMFLOAT3 objectScale = XMFLOAT3(2, 2, 2);
+	XMFLOAT3 objectRot = XMFLOAT3(0, 0, 0);
 	bool isCollision = true;
 
 	pgameObject->SetMesh(QUAD_MESH_NAME);
@@ -246,6 +248,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetAlbedo(TEST2);
 	pgameObject->GetTransform()->SetPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
+	pgameObject->GetTransform()->SetRotation(objectRot);
 	pbox = new Box(pgameObject->GetTransform());
 	pbox->SetIsCollidable(isCollision);
 	pbox->SetIsTrigger(isCollision);
@@ -288,14 +291,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, -200, 0), "TestMap");
 
 	//Pathfinding::GetInstance()->Initialize(g_testMap1);
-
-	// Observer for button inputs
-	ExampleObserver exampleObserver(new int(10), pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName));
-	EventManager::Instance()->AddClient(EventType::KeyPressed, &exampleObserver);
-	EventManager::Instance()->AddClient(EventType::KeyReleased, &exampleObserver);
-	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, &exampleObserver);
-	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, &exampleObserver);
-	EventManager::Instance()->AddClient(EventType::MouseMoved, &exampleObserver);
 
 	// Observer for collision detection
 	CollisionObserver collisionObserver;
@@ -595,7 +590,6 @@ inline HRESULT InitDevice()
 	renderTargetViewDesc.Texture2D.MipSlice = 0;
 
 	hr = g_pd3dDevice->CreateRenderTargetView(g_pRTTRrenderTargetTexture, &renderTargetViewDesc, &g_pRTTRenderTargetView);
-	g_pRTTRrenderTargetTexture->Release();
 
 	if (FAILED(hr))
 		return hr;
@@ -645,6 +639,65 @@ inline HRESULT InitDevice()
 	g_pImmediateContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	return S_OK;
+}
+
+void RecreateFrameResources(XMFLOAT2 dimensions)
+{
+	g_pRTTRrenderTargetTexture->Release();
+	g_pRTTRenderTargetView->Release();
+	g_pRTTShaderResourceView->Release();
+
+	D3D11_TEXTURE2D_DESC textureDesc;
+	ZeroMemory(&textureDesc, sizeof(textureDesc));
+	textureDesc.Width = dimensions.x;
+	textureDesc.Height = dimensions.y;
+	textureDesc.MipLevels = 1;
+	textureDesc.ArraySize = 1;
+	textureDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+	textureDesc.SampleDesc.Count = 1;
+	textureDesc.Usage = D3D11_USAGE_DEFAULT;
+	textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	textureDesc.CPUAccessFlags = 0;
+	textureDesc.MiscFlags = 0;
+	HRESULT hr = g_pd3dDevice->CreateTexture2D(&textureDesc, NULL, &g_pRTTRrenderTargetTexture);
+
+	if (FAILED(hr))
+	{
+		LOG("Failed to create viewport texture!");
+
+		return;
+	}
+
+	// Setup the description of the render target view.
+	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
+	renderTargetViewDesc.Format = textureDesc.Format;
+	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+	renderTargetViewDesc.Texture2D.MipSlice = 0;
+
+	hr = g_pd3dDevice->CreateRenderTargetView(g_pRTTRrenderTargetTexture, &renderTargetViewDesc, &g_pRTTRenderTargetView);
+
+	if (FAILED(hr))
+	{
+		LOG("Failed to create view to viewport texture!");
+
+		return;
+	}
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
+	shaderResourceViewDesc.Format = textureDesc.Format;
+	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
+	shaderResourceViewDesc.Texture2D.MipLevels = 1;
+
+	// Create the shader resource view.
+	hr = g_pd3dDevice->CreateShaderResourceView(g_pRTTRrenderTargetTexture, &shaderResourceViewDesc, &g_pRTTShaderResourceView);
+
+	if (FAILED(hr))
+	{
+		LOG("Failed to create shader resource view to viewport texture!");
+
+		return;
+	}
 }
 
 void CleanupDevice()
@@ -771,17 +824,30 @@ void Render()
 	viewportWindowFlags |= ImGuiWindowFlags_HorizontalScrollbar;
 	ImGui::Begin("Viewport", nullptr, viewportWindowFlags);
 
-	//Pass everything rendered till this point into ImGuiImage
 	ImVec2 viewportPos = ImGui::GetCursorScreenPos();
 	EditorUI::SetViewportPosition(DirectX::XMFLOAT2(viewportPos.x, viewportPos.y));
 
+	ImVec2 newViewportSize = ImGui::GetContentRegionAvail();
+	XMFLOAT2 oldViewportSize = EditorUI::GetViewportSize();
+
+	if (oldViewportSize.x != newViewportSize.x || oldViewportSize.y != newViewportSize.y)
+	{
+		XMFLOAT2 viewportSize = XMFLOAT2(newViewportSize.x, newViewportSize.y);
+
+		RecreateFrameResources(viewportSize);
+
+		EditorUI::SetViewportSize(viewportSize);
+
+		CameraGameObject* pcamera = GameManager::GetInstance()->GetCamera();
+		pcamera->ReshapeCamera(viewportSize.x, viewportSize.y, 0.01f, 1000.0f);
+	}
+
+	//Pass everything rendered till this point into ImGuiImage
+
 	XMFLOAT2 dimension = GraphicsManager::GetInstance()->GetWindowDimensions();
-	ImGui::Image(g_pRTTShaderResourceView, ImVec2(dimension.x, dimension.y));
+	ImGui::Image(g_pRTTShaderResourceView, newViewportSize);
 
 	EditorUI::SetIsViewportHovered(ImGui::IsItemHovered());
-
-	ImVec2 viewportSize = ImGui::GetWindowSize();
-	EditorUI::SetViewportSize(DirectX::XMFLOAT2(viewportSize.x, viewportSize.y));
 
 	ImGui::End();
 
@@ -813,6 +879,10 @@ float temp;
 
 void Update()
 {
+#if _DEBUG
+	DebugDrawManager::GetInstance()->Update();
+#endif
+
 	ParticleManager::GetInstance()->Update(GameManager::GetInstance()->GetTimer()->DeltaTime());
 
 	AudioManager::GetInstance()->Update();
