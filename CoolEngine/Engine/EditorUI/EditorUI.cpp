@@ -58,9 +58,9 @@ void EditorUI::DrawEditorUI(ID3D11Device* pdevice, ToolBase*& ptoolBase)
 
 	DrawSceneManagementWindow();
 
-	if (GameManager::GetInstance()->GetSelectedGameObject() != nullptr)
+	if (m_selecedGameObjectNode != nullptr)
 	{
-		GameManager::GetInstance()->GetSelectedGameObject()->ShowEngineUI();
+		m_selecedGameObjectNode->NodeObject->ShowEngineUI();
 	}
 
 	m_contentBrowser.Draw();
