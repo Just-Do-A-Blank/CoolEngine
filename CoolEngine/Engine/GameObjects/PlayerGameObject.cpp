@@ -5,6 +5,11 @@ PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : Character
 	m_gameObjectType |= GameObjectType::PLAYER;
 }
 
+PlayerGameObject::PlayerGameObject(json data, int index) : CharacterGameObject(json, index)
+{
+	m_gameObjectType |= GameObjectType::PLAYER;
+}
+
 PlayerGameObject::~PlayerGameObject()
 {
 

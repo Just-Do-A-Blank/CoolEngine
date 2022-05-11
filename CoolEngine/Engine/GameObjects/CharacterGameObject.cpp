@@ -6,6 +6,18 @@ CharacterGameObject::CharacterGameObject(string identifier, CoolUUID uuid) : Ren
 	m_gameObjectType |= GameObjectType::CHARACTER;
 }
 
+CharacterGameObject::CharacterGameObject(json data, int index) : RenderableCollidableGameObject(data, index)
+{
+	m_gameObjectType |= GameObjectType::CHARACTER;
+	m_transform->SetPosition(XMFLOAT3(data[index]["Position"][0], data[index]["Position"][1], data[index]["Position"][2]));
+	m_transform->SetRotation(XMFLOAT3(data[index]["Rotation"][0], data[index]["Rotation"][1], data[index]["Rotation"][2]));
+	m_transform->SetScale(XMFLOAT3(data[index]["Scale"][0], data[index]["Scale"][1], data[index]["Scale"][2]));
+	m_layer = data[index]["Layers"];
+	m_health = data[index]["Health"];
+	m_moveSpeed = data[index]["Movement Speed"];
+	
+}
+
 CharacterGameObject::~CharacterGameObject()
 {
 

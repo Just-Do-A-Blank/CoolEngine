@@ -7,6 +7,11 @@ EnemyGameObject::EnemyGameObject(string identifier, CoolUUID uuid) : CharacterGa
 
 }
 
+EnemyGameObject::EnemyGameObject(json data, int index) : CharacterGameObject(data, index)
+{
+
+}
+
 
 void EnemyGameObject::Update()
 {
@@ -55,13 +60,6 @@ const vector<node*> EnemyGameObject::GetPath() const
 
 void EnemyGameObject::Serialize(json& jsonData)
 {
-	//int gUID = ;
-	std::string gUID = "GUID: ";
-
-	std::string name = "Name: ";
-	//name.append();
-
-
 	float position[3] = { m_transform->GetPosition().x ,m_transform->GetPosition().y ,m_transform->GetPosition().z };
 	float rotation[3] = { m_transform->GetRotation().x ,m_transform->GetRotation().y ,m_transform->GetRotation().z };
 	float scale[3] = { m_transform->GetScale().x ,m_transform->GetScale().y ,m_transform->GetScale().z };

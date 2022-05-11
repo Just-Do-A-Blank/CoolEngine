@@ -1559,6 +1559,17 @@ json FileIO::PackJson(GameObject* dataToPack, int count)
 	return dataDestination;
 }
 
+void SimpleFileIO::LoadScene(std::string location)
+{
+	location.append(".json");
+	ifstream fileIn(location);
+	json dataIn;
+	fileIn >> dataIn;
+
+
+
+}
+
 void SimpleFileIO::SaveScene(std::string location)
 {
 	location.append(".json");

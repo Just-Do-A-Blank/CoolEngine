@@ -17,6 +17,23 @@ RenderableGameObject::RenderableGameObject(string identifier, CoolUUID uuid) : G
 	m_gameObjectType |= GameObjectType::RENDERABLE;
 }
 
+RenderableGameObject::RenderableGameObject(json data, int index) : GameObject(data[index]["Name"], CoolUUID(data[index]["GUID"]))
+{
+	if (m_gameObjectType == GameObjectType::BASE)
+	{
+		m_gameObjectType |= GameObjectType::RENDERABLE;
+		m_transform->SetPosition(XMFLOAT3(data[index]["Position"][0], data[index]["Position"][1], data[index]["Position"][2]));
+		m_transform->SetRotation(XMFLOAT3(data[index]["Rotation"][0], data[index]["Rotation"][1], data[index]["Rotation"][2]));
+		m_transform->SetScale(XMFLOAT3(data[index]["Scale"][0], data[index]["Scale"][1], data[index]["Scale"][2]));
+		m_layer = data[index]["Layers"];
+		InitGraphics();
+	}
+	else
+	{
+		InitGraphics();
+	}
+}
+
 void RenderableGameObject::InitGraphics()
 {
 	m_pvertexShader = GraphicsManager::GetInstance()->GetVertexShader(DEFAULT_VERTEX_SHADER_NAME);

@@ -16,6 +16,11 @@ RenderableCollidableGameObject::RenderableCollidableGameObject(string identifier
 
 }
 
+RenderableCollidableGameObject::RenderableCollidableGameObject(json data, int index) : CollidableGameObject(data, index), RenderableGameObject(data, index)
+{
+
+}
+
 #if EDITOR
 void RenderableCollidableGameObject::CreateEngineUI()
 {

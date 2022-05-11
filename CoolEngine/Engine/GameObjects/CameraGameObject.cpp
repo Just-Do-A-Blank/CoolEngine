@@ -5,6 +5,24 @@ CameraGameObject::CameraGameObject(string identifier, CoolUUID uuid) : GameObjec
 
 }
 
+CameraGameObject::CameraGameObject(json& data, int index) : GameObject(data[index]["Name"], CoolUUID(data["GUID"]))
+{
+	m_transform->SetPosition(XMFLOAT3(data[index]["Position"][0], data[index]["Position"][1], data[index]["Position"][2]));	
+	m_transform->SetRotation(XMFLOAT3(data[index]["Rotation"][0], data[index]["Rotation"][1], data[index]["Rotation"][2]));
+	m_transform->SetScale(XMFLOAT3(data[index]["Scale"][0], data[index]["Scale"][1], data[index]["Scale"][2]));
+
+	m_windowHeight = data[index]["Window Height"];
+	m_windowWidth = data[index]["Window Width"];
+
+	m_nearDepth = data[index]["Near Depth"];
+	m_farDepth = data[index]["Far Depth"];
+
+
+	CreateViewMatrix();
+	CreateProjectionMatrix();
+
+}
+
 void CameraGameObject::Initialize(XMFLOAT3& position, XMFLOAT3& forwardVector, XMFLOAT3& upVector,
 	float& windowWidth, float& windowHeight, float& nearDepth, float& farDepth)
 {
