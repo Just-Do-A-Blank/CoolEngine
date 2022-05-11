@@ -164,7 +164,7 @@ void TextComponent::CreateVertexBuffer(ID3D11Device* pdevice)
 
 	XMFLOAT2 windowDimension = GraphicsManager::GetInstance()->GetWindowDimensions();
 
-	XMFLOAT3 position = m_transform->GetPosition();
+	XMFLOAT3 position = m_transform->GetWorldPosition();
 
 	int numLetters = m_text.length();
 

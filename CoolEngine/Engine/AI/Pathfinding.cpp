@@ -227,7 +227,7 @@ void Pathfinding::Initialize(TileMap* map)
 			if (ptile)
 			{
 				tempNode = new node();
-				tempNode->m_pos = ptile->GetTransform()->GetPosition();
+				tempNode->m_pos = ptile->GetTransform()->GetWorldPosition();
 				tempNode->m_obstacle = ptile->GetIsPassable();
 			}
 
