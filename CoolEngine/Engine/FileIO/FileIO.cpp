@@ -686,11 +686,11 @@ void FileIO::SaveUI(const char* fileLocation, UIManager* pUManager)
 	for (UICanvas* canvas : canvases)
 	{
 		jsonOutput["UIData"].push_back({});
-		XMFLOAT3 pos = canvas->GetTransform()->GetPosition();
+		XMFLOAT3 pos = canvas->GetTransform()->GetLocalPosition();
 		float position[3]{ pos.x, pos.y, pos.z };
-		XMFLOAT3 rot = canvas->GetTransform()->GetRotation();
+		XMFLOAT3 rot = canvas->GetTransform()->GetLocalRotation();
 		float rotation[3]{ rot.x, rot.y, rot.z };
-		XMFLOAT3 scal = canvas->GetTransform()->GetScale();
+		XMFLOAT3 scal = canvas->GetTransform()->GetLocalScale();
 		float scale[3]{ scal.x, scal.y, scal.z };
 
 		jsonOutput["UIData"].at(UICount).push_back({ "Name", canvas->GetIdentifier() });
@@ -710,11 +710,11 @@ void FileIO::SaveUI(const char* fileLocation, UIManager* pUManager)
 				jsonOutput["UIData"].push_back({});
 				jsonOutput["UIData"].at(UICount).push_back({ "Name", textCom->GetIdentifier() });
 
-				pos = textCom->GetTransform()->GetPosition();
+				pos = textCom->GetTransform()->GetLocalPosition();
 				float tPosition[3]{ pos.x, pos.y, pos.z };
-				XMFLOAT3 rot = textCom->GetTransform()->GetRotation();
+				XMFLOAT3 rot = textCom->GetTransform()->GetLocalRotation();
 				float tRotation[3]{ rot.x, rot.y, rot.z };
-				XMFLOAT3 scal = textCom->GetTransform()->GetScale();
+				XMFLOAT3 scal = textCom->GetTransform()->GetLocalScale();
 				float tScale[3]{ scal.x, scal.y, scal.z };
 
 				jsonOutput["UIData"].at(UICount).push_back({ "Position", tPosition });
@@ -737,11 +737,11 @@ void FileIO::SaveUI(const char* fileLocation, UIManager* pUManager)
 				jsonOutput["UIData"].push_back({});
 				jsonOutput["UIData"].at(UICount).push_back({ "Name", imageCom->GetIdentifier() });
 
-				pos = imageCom->GetTransform()->GetPosition();
+				pos = imageCom->GetTransform()->GetLocalPosition();
 				float iPosition[3]{ pos.x, pos.y, pos.z };
-				XMFLOAT3 rot = imageCom->GetTransform()->GetRotation();
+				XMFLOAT3 rot = imageCom->GetTransform()->GetLocalRotation();
 				float iRotation[3]{ rot.x, rot.y, rot.z };
-				XMFLOAT3 scal = imageCom->GetTransform()->GetScale();
+				XMFLOAT3 scal = imageCom->GetTransform()->GetLocalScale();
 				float iScale[3]{ scal.x, scal.y, scal.z };
 
 				jsonOutput["UIData"].at(UICount).push_back({ "Position", iPosition });
@@ -817,11 +817,11 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 			{
 				if (gameObjectToStore->ContainsType(GameObjectType::PLAYER))
 				{
-					XMFLOAT3 pos = gameObjectToStore->GetTransform()->GetPosition();
+					XMFLOAT3 pos = gameObjectToStore->GetTransform()->GetLocalPosition();
 					float position[3]{ pos.x, pos.y, pos.z };
-					XMFLOAT3 rot = gameObjectToStore->GetTransform()->GetRotation();
+					XMFLOAT3 rot = gameObjectToStore->GetTransform()->GetLocalRotation();
 					float rotation[3]{ rot.x, rot.y, rot.z };
-					XMFLOAT3 scal = gameObjectToStore->GetTransform()->GetScale();
+					XMFLOAT3 scal = gameObjectToStore->GetTransform()->GetLocalScale();
 					float scale[3]{ scal.x, scal.y, scal.z };
 					jsonOutput["ObjectData"].push_back({});
 					jsonOutput["ObjectData"].at(count).push_back({ "Name", gameObjectToStore->GetIdentifier() });
@@ -887,11 +887,11 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 				}
 				else if (gameObjectToStore->ContainsType(GameObjectType::RENDERABLE) && gameObjectToStore->ContainsType(GameObjectType::COLLIDABLE))
 				{
-					XMFLOAT3 pos = gameObjectToStore->GetTransform()->GetPosition();
+					XMFLOAT3 pos = gameObjectToStore->GetTransform()->GetLocalPosition();
 					float position[3]{ pos.x, pos.y, pos.z };
-					XMFLOAT3 rot = gameObjectToStore->GetTransform()->GetRotation();
+					XMFLOAT3 rot = gameObjectToStore->GetTransform()->GetLocalRotation();
 					float rotation[3]{ rot.x, rot.y, rot.z };
-					XMFLOAT3 scal = gameObjectToStore->GetTransform()->GetScale();
+					XMFLOAT3 scal = gameObjectToStore->GetTransform()->GetLocalScale();
 					float scale[3]{ scal.x, scal.y, scal.z };
 
 					jsonOutput["ObjectData"].push_back({});
@@ -958,11 +958,11 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 				}
 				else if (gameObjectToStore->ContainsType(GameObjectType::RENDERABLE))
 				{
-					XMFLOAT3 pos = gameObjectToStore->GetTransform()->GetPosition();
+					XMFLOAT3 pos = gameObjectToStore->GetTransform()->GetLocalPosition();
 					float position[3]{ pos.x, pos.y, pos.z };
-					XMFLOAT3 rot = gameObjectToStore->GetTransform()->GetRotation();
+					XMFLOAT3 rot = gameObjectToStore->GetTransform()->GetLocalRotation();
 					float rotation[3]{ rot.x, rot.y, rot.z };
-					XMFLOAT3 scal = gameObjectToStore->GetTransform()->GetScale();
+					XMFLOAT3 scal = gameObjectToStore->GetTransform()->GetLocalScale();
 					float scale[3]{ scal.x, scal.y, scal.z };
 
 					jsonOutput["ObjectData"].push_back({});
@@ -1003,11 +1003,11 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 				else if (gameObjectToStore->ContainsType(GameObjectType::COLLIDABLE))
 				{
 
-					XMFLOAT3 pos = gameObjectToStore->GetTransform()->GetPosition();
+					XMFLOAT3 pos = gameObjectToStore->GetTransform()->GetLocalPosition();
 					float position[3]{ pos.x, pos.y, pos.z };
-					XMFLOAT3 rot = gameObjectToStore->GetTransform()->GetRotation();
+					XMFLOAT3 rot = gameObjectToStore->GetTransform()->GetLocalRotation();
 					float rotation[3]{ rot.x, rot.y, rot.z };
-					XMFLOAT3 scal = gameObjectToStore->GetTransform()->GetScale();
+					XMFLOAT3 scal = gameObjectToStore->GetTransform()->GetLocalScale();
 					float scale[3]{ scal.x, scal.y, scal.z };
 
 					jsonOutput["ObjectData"].push_back({});
@@ -1064,11 +1064,11 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 
 				
 
-				XMFLOAT3 pos = gameObjectToStore->GetTransform()->GetPosition();
+				XMFLOAT3 pos = gameObjectToStore->GetTransform()->GetLocalPosition();
 				float position[3]{ pos.x, pos.y, pos.z };
-				XMFLOAT3 rot = gameObjectToStore->GetTransform()->GetRotation();
+				XMFLOAT3 rot = gameObjectToStore->GetTransform()->GetLocalRotation();
 				float rotation[3]{ rot.x, rot.y, rot.z };
-				XMFLOAT3 scal = gameObjectToStore->GetTransform()->GetScale();
+				XMFLOAT3 scal = gameObjectToStore->GetTransform()->GetLocalScale();
 				float scale[3]{ scal.x, scal.y, scal.z };
 
 				XMFLOAT2 acceleration = particleSys->GetAccel();
@@ -1112,8 +1112,8 @@ void FileIO::SaveScene(const char* fileLocation, GameManager* scene)
 				shaders[1] = pSL;
 				shaders[2] = aSRV;
 
-				XMFLOAT3 pos = tileMap->GetTransform()->GetPosition();
-				XMFLOAT3 sca = tileMap->GetTransform()->GetScale();
+				XMFLOAT3 pos = tileMap->GetTransform()->GetLocalPosition();
+				XMFLOAT3 sca = tileMap->GetTransform()->GetLocalScale();
 				float position[3]{ pos.x, pos.y, pos.z };
 				float scale[3]{ sca.x, sca.y, sca.z };
 
@@ -1208,11 +1208,11 @@ json FileIO::PackJson(GameObject* dataToPack, int count)
 
 	if (dataToPack->ContainsType(GameObjectType::PLAYER))
 	{
-		XMFLOAT3 pos = dataToPack->GetTransform()->GetPosition();
+		XMFLOAT3 pos = dataToPack->GetTransform()->GetLocalPosition();
 		float position[3]{ pos.x, pos.y, pos.z };
-		XMFLOAT3 rot = dataToPack->GetTransform()->GetRotation();
+		XMFLOAT3 rot = dataToPack->GetTransform()->GetLocalRotation();
 		float rotation[3]{ rot.x, rot.y, rot.z };
-		XMFLOAT3 scal = dataToPack->GetTransform()->GetScale();
+		XMFLOAT3 scal = dataToPack->GetTransform()->GetLocalScale();
 		float scale[3]{ scal.x, scal.y, scal.z };
 		dataDestination[identifier] = {};
 		dataDestination[identifier].push_back({});
@@ -1278,11 +1278,11 @@ json FileIO::PackJson(GameObject* dataToPack, int count)
 	}
 	else if (dataToPack->ContainsType(GameObjectType::RENDERABLE) && dataToPack->ContainsType(GameObjectType::COLLIDABLE))
 	{
-		XMFLOAT3 pos = dataToPack->GetTransform()->GetPosition();
+		XMFLOAT3 pos = dataToPack->GetTransform()->GetLocalPosition();
 		float position[3]{ pos.x, pos.y, pos.z };
-		XMFLOAT3 rot = dataToPack->GetTransform()->GetRotation();
+		XMFLOAT3 rot = dataToPack->GetTransform()->GetLocalRotation();
 		float rotation[3]{ rot.x, rot.y, rot.z };
-		XMFLOAT3 scal = dataToPack->GetTransform()->GetScale();
+		XMFLOAT3 scal = dataToPack->GetTransform()->GetLocalScale();
 		float scale[3]{ scal.x, scal.y, scal.z };
 
 		dataDestination[identifier] = {};
@@ -1348,11 +1348,11 @@ json FileIO::PackJson(GameObject* dataToPack, int count)
 	}
 	else if (dataToPack->ContainsType(GameObjectType::RENDERABLE))
 	{
-		XMFLOAT3 pos = dataToPack->GetTransform()->GetPosition();
+		XMFLOAT3 pos = dataToPack->GetTransform()->GetLocalPosition();
 		float position[3]{ pos.x, pos.y, pos.z };
-		XMFLOAT3 rot = dataToPack->GetTransform()->GetRotation();
+		XMFLOAT3 rot = dataToPack->GetTransform()->GetLocalRotation();
 		float rotation[3]{ rot.x, rot.y, rot.z };
-		XMFLOAT3 scal = dataToPack->GetTransform()->GetScale();
+		XMFLOAT3 scal = dataToPack->GetTransform()->GetLocalScale();
 		float scale[3]{ scal.x, scal.y, scal.z };
 
 		dataDestination[identifier].push_back({});
@@ -1392,11 +1392,11 @@ json FileIO::PackJson(GameObject* dataToPack, int count)
 	else if (dataToPack->ContainsType(GameObjectType::COLLIDABLE))
 	{
 
-		XMFLOAT3 pos = dataToPack->GetTransform()->GetPosition();
+		XMFLOAT3 pos = dataToPack->GetTransform()->GetLocalPosition();
 		float position[3]{ pos.x, pos.y, pos.z };
-		XMFLOAT3 rot = dataToPack->GetTransform()->GetRotation();
+		XMFLOAT3 rot = dataToPack->GetTransform()->GetLocalRotation();
 		float rotation[3]{ rot.x, rot.y, rot.z };
-		XMFLOAT3 scal = dataToPack->GetTransform()->GetScale();
+		XMFLOAT3 scal = dataToPack->GetTransform()->GetLocalScale();
 		float scale[3]{ scal.x, scal.y, scal.z };
 
 		dataDestination[identifier].push_back({});
@@ -1432,17 +1432,17 @@ json FileIO::PackJson(GameObject* dataToPack, int count)
 	}
 	else if (particle)
 	{
-		XMFLOAT3 pos = dataToPack->GetTransform()->GetPosition();
+		XMFLOAT3 pos = dataToPack->GetTransform()->GetLocalPosition();
 		float position[3]{ pos.x, pos.y, pos.z };
 		position[0] = pos.x;
 		position[1] = pos.y;
 		position[2] = pos.z;
-		XMFLOAT3 rot = dataToPack->GetTransform()->GetRotation();
+		XMFLOAT3 rot = dataToPack->GetTransform()->GetLocalRotation();
 		float rotation[3]{ rot.x, rot.y, rot.z };
 		rotation[0] = rot.x;
 		rotation[1] = rot.y;
 		rotation[2] = rot.z;
-		XMFLOAT3 scal = dataToPack->GetTransform()->GetScale();
+		XMFLOAT3 scal = dataToPack->GetTransform()->GetLocalScale();
 		float scale[3]{ scal.x, scal.y, scal.z };
 		scale[0] = scal.x;
 		scale[1] = scal.y;
@@ -1480,11 +1480,11 @@ json FileIO::PackJson(GameObject* dataToPack, int count)
 			dataDestination[identifier].at(count).push_back({ "PixelShaderLocation" , shaders[1] });
 			dataDestination[identifier].at(count).push_back({ "AlbedoLocation" , shaders[2] });
 		}
-			XMFLOAT3 pos = dataToPack->GetTransform()->GetPosition();
+			XMFLOAT3 pos = dataToPack->GetTransform()->GetLocalPosition();
 			float position[3]{ pos.x, pos.y, pos.z };
-			XMFLOAT3 rot = dataToPack->GetTransform()->GetRotation();
+			XMFLOAT3 rot = dataToPack->GetTransform()->GetLocalRotation();
 			float rotation[3]{ rot.x, rot.y, rot.z };
-			XMFLOAT3 scal = dataToPack->GetTransform()->GetScale();
+			XMFLOAT3 scal = dataToPack->GetTransform()->GetLocalScale();
 			float scale[3]{ scal.x, scal.y, scal.z };
 
 			//Need height and width of tile map
@@ -1510,8 +1510,8 @@ json FileIO::PackJson(GameObject* dataToPack, int count)
 		shaders[1] = pSL;
 		shaders[2] = aSRV;
 
-		XMFLOAT3 pos = tileMap->GetTransform()->GetPosition();
-		XMFLOAT3 sca = tileMap->GetTransform()->GetScale();
+		XMFLOAT3 pos = tileMap->GetTransform()->GetLocalPosition();
+		XMFLOAT3 sca = tileMap->GetTransform()->GetLocalScale();
 		float position[3]{ pos.x, pos.y, pos.z };
 		float scale[3]{ sca.x, sca.y, sca.z };
 

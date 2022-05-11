@@ -74,7 +74,7 @@ void TileMap::InitMap() // Create and store tiles in m_Tiles
 {
 	GameManager* pGameManager = GameManager::GetInstance();
 
-	XMFLOAT3 scale = GetTransform()->GetScale();
+	XMFLOAT3 scale = GetTransform()->GetWorldScale();
 
 	m_tiles.resize(m_height);
 
@@ -95,9 +95,9 @@ void TileMap::InitMap() // Create and store tiles in m_Tiles
 
 void TileMap::InitTilePosition(Tile* tile, int row, int column) // Give tiles positions in the world relative to the TileMaps position
 {
-	XMFLOAT2 tileScale = XMFLOAT2(m_transform->GetScale().x * 2.0f, m_transform->GetScale().y * 2.0f);
+	XMFLOAT2 tileScale = XMFLOAT2(m_transform->GetWorldScale().x * 2.0f, m_transform->GetWorldScale().y * 2.0f);
 
-	XMFLOAT2 pos = MathHelper::Minus(XMFLOAT2(m_transform->GetPosition().x, m_transform->GetPosition().y), XMFLOAT2(m_width * tileScale.x * 0.5f, m_height * tileScale.y * 0.5f));	//Offset to min tile can be
+	XMFLOAT2 pos = MathHelper::Minus(XMFLOAT2(m_transform->GetWorldPosition().x, m_transform->GetWorldPosition().y), XMFLOAT2(m_width * tileScale.x * 0.5f, m_height * tileScale.y * 0.5f));	//Offset to min tile can be
 
 	//Offsetting by half tile scale and then positioning based on row and column
 	pos = MathHelper::Plus(pos, XMFLOAT2(tileScale.x * 0.5f, tileScale.y * 0.5f));
@@ -242,7 +242,7 @@ bool TileMap::Save(wstring path)
 		}
 	}
 
-	jsonOutput["TileMapScale"].push_back({ m_transform->GetScale().x, m_transform->GetScale().y, m_transform->GetScale().z });
+	jsonOutput["TileMapScale"].push_back({ m_transform->GetWorldScale().x, m_transform->GetWorldScale().y, m_transform->GetWorldScale().z });
 
 	outFile << jsonOutput;
 
@@ -253,9 +253,9 @@ bool TileMap::Save(wstring path)
 
 bool TileMap::GetCoordsFromWorldPos(int* prow, int* pcolumn, const XMFLOAT2& pos)
 {
-	XMFLOAT2 relativePos = MathHelper::Minus(pos, XMFLOAT2(m_transform->GetPosition().x, m_transform->GetPosition().y));
+	XMFLOAT2 relativePos = MathHelper::Minus(pos, XMFLOAT2(m_transform->GetWorldPosition().x, m_transform->GetWorldPosition().y));
 
-	XMFLOAT2 tileScale = XMFLOAT2(m_transform->GetScale().x * 2.0f, m_transform->GetScale().y * 2.0f);
+	XMFLOAT2 tileScale = XMFLOAT2(m_transform->GetWorldScale().x * 2.0f, m_transform->GetWorldScale().y * 2.0f);
 
 	relativePos = MathHelper::Plus(relativePos, XMFLOAT2(m_width * tileScale.x * 0.5f, m_height * tileScale.y * 0.5f));
 
@@ -283,7 +283,7 @@ bool TileMap::CreateTile(int row, int column, Tile*& ptile)
 
 	m_tiles[row][column] = GameManager::GetInstance()->CreateGameObject<Tile>("Tile_" + to_string(row) + "_" + to_string(column));
 
-	XMFLOAT3 scale = GetTransform()->GetScale();
+	XMFLOAT3 scale = GetTransform()->GetWorldScale();
 
 	m_tiles[row][column]->GetTransform()->SetScale(scale);
 
@@ -458,9 +458,9 @@ bool TileMap::GetTileFromMapPos(int x, int y, Tile*& ptile) // Returns the tile 
 
 void TileMap::SetTileAtWorldPos(XMFLOAT2 worldPos, Tile* newTile)
 {
-	XMFLOAT2 relativePos = MathHelper::Minus(worldPos, XMFLOAT2(m_transform->GetPosition().x, m_transform->GetPosition().y));
+	XMFLOAT2 relativePos = MathHelper::Minus(worldPos, XMFLOAT2(m_transform->GetWorldPosition().x, m_transform->GetWorldPosition().y));
 
-	XMFLOAT2 tileScale = XMFLOAT2(m_transform->GetScale().x * 2.0f, m_transform->GetScale().y * 2.0f);
+	XMFLOAT2 tileScale = XMFLOAT2(m_transform->GetWorldScale().x * 2.0f, m_transform->GetWorldScale().y * 2.0f);
 
 	relativePos = MathHelper::Plus(relativePos, XMFLOAT2(m_width * tileScale.x * 0.5f, m_height * tileScale.y * 0.5f));
 
@@ -484,7 +484,7 @@ void TileMap::SetTileAtMapPos(int posX, int posY, Tile* newTile)
 
 XMFLOAT3 TileMap::GetTileScale()
 {
-	return m_transform->GetScale();
+	return m_transform->GetWorldScale();
 }
 
 void TileMap::SetTileScale(XMFLOAT3 newScale)

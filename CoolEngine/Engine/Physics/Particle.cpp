@@ -21,7 +21,7 @@ void Particle::Update(const float dTime)
 	m_velocity.x += m_accel.x * dTime;
 	m_velocity.y += m_accel.y * dTime;
 
-	XMFLOAT3 pos = m_transform.GetPosition();
+	XMFLOAT3 pos = m_transform.GetWorldPosition();
 	pos.x += m_velocity.x * dTime;
 	pos.y += m_velocity.y * dTime;
 	m_transform.SetPosition(pos);
@@ -35,7 +35,7 @@ void Particle::Update(const float dTime)
 
 void Particle::Render(ID3D11DeviceContext* pContext, Mesh* mesh)
 {
-	GraphicsManager::GetInstance()->RenderQuad(m_pTexture, m_transform.GetPosition(), m_transform.GetScale(), m_transform.GetRotation().z, m_layer);
+	GraphicsManager::GetInstance()->RenderQuad(m_pTexture, m_transform.GetWorldPosition(), m_transform.GetWorldScale(), m_transform.GetWorldRotation().z, m_layer);
 }
 
 void Particle::Disable()

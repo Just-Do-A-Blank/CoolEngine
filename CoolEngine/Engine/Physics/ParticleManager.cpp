@@ -104,7 +104,7 @@ void ParticleManager::AddParticle(Transform trans, float life, ID3D11ShaderResou
 			// Initialise one, then break from loop so more are not made
 			if (randPos != 0.0f)
 			{
-				XMFLOAT3 pos = trans.GetPosition();
+				XMFLOAT3 pos = trans.GetWorldPosition();
 				float rand = MathHelper::RandomNumber(-abs(randPos), abs(randPos));
 				pos.x += rand;
 				rand = MathHelper::RandomNumber(-abs(randPos), abs(randPos));
