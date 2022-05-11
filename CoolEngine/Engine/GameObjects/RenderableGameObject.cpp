@@ -32,17 +32,17 @@ const bool& RenderableGameObject::IsRenderable()
 
 void RenderableGameObject::Render(RenderStruct& renderStruct)
 {
-	if (m_palbedoSRV == nullptr)
-	{
-		return;
-	}
-
 	if (m_pcurrentAnimation != nullptr)
 	{
 		GraphicsManager::GetInstance()->RenderQuad(m_pcurrentAnimation->GetCurrentFrame(), m_transform->GetPosition(), m_transform->GetScale(), m_transform->GetRotation().z, m_layer);
 	}
 	else
 	{
+		if (m_palbedoSRV == nullptr)
+		{
+			return;
+		}
+
 		XMMATRIX worldMatrix = m_transform->GetWorldMatrix();
 		XMVECTOR scaleVector;
 		XMVECTOR rotationVector;

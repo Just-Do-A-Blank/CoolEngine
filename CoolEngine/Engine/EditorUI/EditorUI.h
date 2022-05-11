@@ -12,6 +12,7 @@
 
 #if EDITOR
 
+class ToolBase;
 class GameManager;
 
 struct SelectableText
@@ -53,7 +54,7 @@ private:
 	ContentBrowser m_contentBrowser;
 
 
-	void DrawSceneGraphWindow();
+	void DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice);
 	void DrawSceneManagementWindow();
 	void TraverseTree(TreeNode<GameObject>* pcurrentNode, int& count);
 public:
@@ -61,7 +62,7 @@ public:
 
 	void InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, HWND* hwnd);
 	void ShutdownIMGUI();
-	void DrawEditorUI(ID3D11Device* pdevice);
+	void DrawEditorUI(ID3D11Device* pdevice, ToolBase*& ptoolBase);
 
 	static void SetIsViewportHovered(bool bHovered);
 	static bool GetIsViewportHovered();

@@ -35,13 +35,10 @@
 #include "Physics/ParticleManager.h"
 #include "Engine/Managers/FontManager.h"
 
-#if TOOL
 #include "Engine/Tools/ToolBase.h"
-
 #include "Engine/Tools/TileMapTool.h"
 #include "Engine/Tools/AnimationTool.h"
 #include "Engine/Tools/InGameUITool.h"
-#endif
 
 #include "Engine/Managers/Events/EventObserverExamples.h"
 
@@ -85,11 +82,10 @@ TileMap* g_testMap2;
 
 #if EDITOR
 EditorUI* g_peditorUI;
-#endif
-
-#if TOOL
 ToolBase* g_ptoolBase = nullptr;
 #endif
+
+
 
 using namespace DirectX;
 
@@ -167,26 +163,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameManager->CreateScene("TestScene");
 	pgameManager->SelectSceneUsingIdentifier("TestScene");
 	pgameManager->SelectSceneUsingIdentifier("TestScene");
-
-#if TOOL
-
-#if TILE_MAP_TOOL
-	g_ptoolBase = new TileMapTool();
-#elif ANIMATION_TOOL
-	g_ptoolBase = new AnimationTool();
-#elif IN_GAME_UI_TOOL
-	g_ptoolBase = new InGameUITool();
-	FontManager::GetInstance()->LoadFont("Resources/Fonts/ComicSans.xml", L"Resources/Fonts/ComicSans.dds", "comicSans");
-	UIManager::GetInstance()->Init(g_pd3dDevice);
-	UIManager::GetInstance()->CreateCanvas("testCanvas", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
-	//TextComponent* tc = UIManager::GetInstance()->CreateUIComponent<TextComponent>("TestText", XMFLOAT3(0.0, 20.0, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f));
-	//tc->Init("Cool Engine!", "comicSans", 16, Colors::Yellow, g_pd3dDevice);
-	UIManager::GetInstance()->CreateUIComponent<ImageComponent>("TestUIImage", XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT3(0.9f, 0.9f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
-
-#endif
-
-	g_ptoolBase->Init(g_pd3dDevice);
-#else
 
 	//Music
 	AudioManager::GetInstance()->LoadMusic(TEST_MUSIC);
@@ -324,14 +300,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	GameManager::GetInstance()->GetTimer()->Tick();
 	GameManager::GetInstance()->GetTimer()->Tick();
-
-#if _DEBUG
-	DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect("DebugRect1", XMFLOAT3(-100.0f, -300.0f, 0.0f), objectScale, DebugDrawManager::DebugColour::BEIGE);
-#endif //_DEBUG
-
-#endif
-
-	//Create test Tile Map
 
 	// Main message loop
 	MSG msg = { 0 };
@@ -803,13 +771,16 @@ void Render()
 
 	UIManager::GetInstance()->Render(renderStruct);
 
-#if TOOL
-	g_ptoolBase->Render();
-#else
+	if (g_ptoolBase != nullptr)
+	{
+		g_ptoolBase->Render();
+	}
+	else
+	{
 #if EDITOR
-	g_peditorUI->DrawEditorUI(g_pd3dDevice);
+		g_peditorUI->DrawEditorUI(g_pd3dDevice, g_ptoolBase);
 #endif
-#endif
+	}
 
 #if EDITOR
 	ImGuiWindowFlags viewportWindowFlags = 0;
@@ -891,9 +862,18 @@ void Update()
 	g_peditorUI->Update();
 #endif
 
-#if TOOL
-	g_ptoolBase->Update();
-#endif
+	if (g_ptoolBase != nullptr)
+	{
+		if (g_ptoolBase->HasToolExited() == true)
+		{
+			delete g_ptoolBase;
+			g_ptoolBase = nullptr;
+		}
+		else
+		{
+			g_ptoolBase->Update();
+		}
+	}
 }
 
 void BindQuadBuffers()

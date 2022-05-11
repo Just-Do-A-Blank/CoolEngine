@@ -16,6 +16,10 @@ void InGameUITool::Init(ID3D11Device* pdevice)
 
 	XMFLOAT3 pos = XMFLOAT3(0, 0, 0);
 	XMFLOAT3 scale = XMFLOAT3(100, 100, 1);
+
+	FontManager::GetInstance()->LoadFont(L"Resources/Fonts/ComicSans", "comicSans");
+	UIManager::GetInstance()->Init(pdevice);
+	UIManager::GetInstance()->CreateCanvas("testCanvas", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
 }
 
 void InGameUITool::Update()
@@ -31,6 +35,10 @@ void InGameUITool::Render()
 
 void InGameUITool::Destroy()
 {
+	ToolBase::Destroy();
+
+	UIManager::GetInstance()->SelectUIObjectUsingIdentifier("testCanvas");
+	UIManager::GetInstance()->DeleteSelectedUIComponent();
 }
 
 void InGameUITool::DrawUIWindow()
@@ -43,7 +51,7 @@ void InGameUITool::DrawUIWindow()
 
 	if (m_showUICreation == true)
 	{
-		ImGui::Begin("Game UI");
+		ImGui::Begin("Game UI", nullptr, ImGuiWindowFlags_MenuBar);
 
 		EditorUI::InputText("Canvas Name", m_canvasName, 120);
 
@@ -130,6 +138,17 @@ void InGameUITool::DrawUIWindow()
 
 	if (ImGui::BeginMenuBar())
 	{
+		if (ImGui::BeginMenu("Back"))
+		{
+			Destroy();
+
+			ImGui::EndMenu();
+			ImGui::EndMenuBar();
+			ImGui::End();
+
+			return;
+		}
+
 		if (ImGui::BeginMenu("Create UI"))
 		{
 			m_showUICreation = true;
