@@ -8,7 +8,7 @@ class PlayerGameObject : public CharacterGameObject
 public:
 
 	PlayerGameObject(string identifier, CoolUUID uuid);
-	~PlayerGameObject();
+	virtual ~PlayerGameObject();
 
     /// <summary>
     /// Handles events from the Observations

@@ -14,7 +14,7 @@ class RenderableGameObject : virtual public GameObject
 public:
 	RenderableGameObject();
 	RenderableGameObject(string identifier, CoolUUID uuid);
-
+	virtual ~RenderableGameObject();
 
 	//Getters
 	const bool& IsRenderable();

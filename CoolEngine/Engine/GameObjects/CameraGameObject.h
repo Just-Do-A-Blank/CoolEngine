@@ -14,6 +14,7 @@ private:
 
 public:
 	CameraGameObject(string identifier, CoolUUID uuid);
+	virtual ~CameraGameObject();
 
     virtual void Initialize(XMFLOAT3& position, XMFLOAT3& forwardVector, XMFLOAT3& upVector,
         float& windowWidth, float& windowHeight, float& nearDepth, float& farDepth);

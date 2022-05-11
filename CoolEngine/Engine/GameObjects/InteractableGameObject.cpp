@@ -4,3 +4,7 @@ InteractableGameObject::InteractableGameObject(string identifier, CoolUUID uuid)
 {
     m_gameObjectType |= GameObjectType::INTERACTABLE;
 }
+
+InteractableGameObject::~InteractableGameObject()
+{
+}

@@ -286,7 +286,7 @@ void SceneGraph<T>::DeleteGameObjectUsingNode(TreeNode<T>* currentNode)
 	delete currentNode->NodeObject;
 	currentNode->NodeObject = nullptr;
 	delete currentNode;
-	currentNode = nullptr;	
+	currentNode = nullptr;
 }
 
 template<class T>

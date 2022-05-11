@@ -15,6 +15,10 @@ CollidableGameObject::CollidableGameObject(string identifier, CoolUUID uuid) : G
 	m_gameObjectType |= GameObjectType::COLLIDABLE;
 }
 
+CollidableGameObject::~CollidableGameObject()
+{
+}
+
 #if EDITOR
 void CollidableGameObject::CreateEngineUI()
 {
