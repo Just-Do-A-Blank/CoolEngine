@@ -41,7 +41,7 @@ private:
 
 
 	template<typename T>
-	T* CreateGameObject(string identifier)
+	T* CreateGameObject(string identifier, TreeNode<GameObject>* nodeParent = nullptr)
 	{
 		assert(m_psceneGraph != nullptr);
 
@@ -58,13 +58,13 @@ private:
 		}
 		else
 		{
-			if (!m_pselectedGameObject)
+			if (nodeParent == nullptr)
 			{
 				m_psceneGraph->AddSibling(m_prootTreeNode, gameObject);
 			}
 			else
 			{
-				m_psceneGraph->AddChild(m_psceneGraph->GetNodeUsingIdentifier(m_pselectedGameObject->GetIdentifier()), gameObject);
+				m_psceneGraph->AddChild(nodeParent, gameObject);
 			}
 		}
 
@@ -72,7 +72,7 @@ private:
 	}
 
 	template<typename T>
-	T* CreateGameObject(string identifier, CoolUUID uuid)
+	T* CreateGameObject(string identifier, CoolUUID uuid, TreeNode<GameObject>* nodeParent = nullptr)
 	{
 		assert(m_psceneGraph != nullptr);
 
@@ -88,13 +88,13 @@ private:
 		}
 		else
 		{
-			if (!m_pselectedGameObject)
+			if (nodeParent == nullptr)
 			{
 				m_psceneGraph->AddSibling(m_prootTreeNode, gameObject);
 			}
 			else
 			{
-				m_psceneGraph->AddChild(m_psceneGraph->GetNodeUsingIdentifier(m_pselectedGameObject->GetIdentifier()), gameObject);
+				m_psceneGraph->AddChild(nodeParent, gameObject);
 			}
 		}
 
