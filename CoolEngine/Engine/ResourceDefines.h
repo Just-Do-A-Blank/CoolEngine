@@ -28,6 +28,7 @@
 
 //Misc
 #define POS_TEX_DUMMY_FILE_NAME L"Engine\\Graphics\\Shaders\\DummyPosTex.hlsl"
+#define POS_TEX_COLOR_DUMMY_FILE_NAME L"Engine\\Graphics\\Shaders\\DummyPosTexColor.hlsl"
 
 //TileMaps
 #define TEST_MAP L"Resources\\Levels\\TileMaps\\test.json"

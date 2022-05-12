@@ -388,12 +388,12 @@ void GraphicsManager::CreateInputLayouts()
 	m_inputLayouts.resize((int)InputLayouts::COUNT);
 
 	// Define the input layout
-	D3D11_INPUT_ELEMENT_DESC layout[] =
+	D3D11_INPUT_ELEMENT_DESC layoutPosTex[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT , D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
-	UINT numElements = ARRAYSIZE(layout);
+	UINT numElements = ARRAYSIZE(layoutPosTex);
 
 	//Compile dummy shader and use blob to verify the input layout
 	ID3DBlob* pblob = nullptr;
@@ -401,13 +401,35 @@ void GraphicsManager::CreateInputLayouts()
 	CompileShaderFromFile(POS_TEX_DUMMY_FILE_NAME, "main", "vs_4_0", pblob);
 
 	// Create the input layout
-	HRESULT hr = m_pdevice->CreateInputLayout(layout, numElements, pblob->GetBufferPointer(), pblob->GetBufferSize(), &m_inputLayouts[(int)InputLayouts::POS_TEX]);
+	HRESULT hr = m_pdevice->CreateInputLayout(layoutPosTex, numElements, pblob->GetBufferPointer(), pblob->GetBufferSize(), &m_inputLayouts[(int)InputLayouts::POS_TEX]);
 
 	pblob->Release();
 
 	if (FAILED(hr))
 	{
 		LOG("Failed to create input POS_TEX input layout!");
+	}
+
+	pblob = nullptr;
+
+	// Define the input layout
+	D3D11_INPUT_ELEMENT_DESC layoutPosTexColour[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT , D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	};
+	numElements = ARRAYSIZE(layoutPosTexColour);
+
+	CompileShaderFromFile(POS_TEX_COLOR_DUMMY_FILE_NAME, "main", "vs_4_0", pblob);
+
+	hr = m_pdevice->CreateInputLayout(layoutPosTexColour, numElements, pblob->GetBufferPointer(), pblob->GetBufferSize(), &m_inputLayouts[(int)InputLayouts::POS_TEX_COLOR]);
+
+	pblob->Release();
+
+	if (FAILED(hr))
+	{
+		LOG("Failed to create input POS_TEX_COLOR input layout!");
 	}
 }
 
