@@ -89,6 +89,11 @@ public:
 		return Collision::CircleBoxCollisionAndResponse(this, box);
 	}
 
+	XMFLOAT2 GetShapeDimensions()
+	{
+		return XMFLOAT2(m_radius, m_radius);
+	}
+
 #if EDITOR
 	void CreateEngineUI() override
 	{

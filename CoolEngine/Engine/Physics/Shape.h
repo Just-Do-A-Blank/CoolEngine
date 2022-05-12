@@ -38,9 +38,13 @@ public:
 
     void SetIsTrigger(bool value);
     void SetIsCollidable(bool value);
+    void SetIsRendered(bool value);
 
     bool IsTrigger() const;
     bool IsCollidable() const;
+    bool IsRendered() const;
+
+    virtual XMFLOAT2 GetShapeDimensions() = 0;
 
     Transform* m_transform;
 
@@ -49,4 +53,5 @@ protected:
 
     bool m_isTrigger = false;
     bool m_isCollidable = true;
+    bool m_isRendered = false;
 };
