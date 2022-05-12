@@ -126,8 +126,8 @@ void TileMapTool::Handle(Event* e)
 		DirectX::XMFLOAT2 relativePos = EditorUI::GetViewportPosition();
 		relativePos = DirectX::XMFLOAT2(point.x - relativePos.x, point.y - relativePos.y);
 
-		float x = ((2.0f * relativePos.x) / GraphicsManager::GetInstance()->GetWindowDimensions().x) - 1.0f;
-		float y = 1.0f - ((2.0f * relativePos.y) / GraphicsManager::GetInstance()->GetWindowDimensions().y);
+		float x = ((2.0f * relativePos.x) / EditorUI::GetViewportSize().x) - 1.0f;
+		float y = 1.0f - ((2.0f * relativePos.y) / EditorUI::GetViewportSize().y);
 
 		XMFLOAT2 clickPosWorld;
 
