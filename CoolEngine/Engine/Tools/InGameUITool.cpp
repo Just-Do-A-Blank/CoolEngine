@@ -4,6 +4,7 @@
 #include "Engine/GameUI/GameUIComponent.h"
 #include "Engine/Managers/UiManager.h"
 #include "Engine/GameUI/ImageComponent.h"
+#include "Engine/GameUI/ButtonComponent.h"
 #include "Engine/FileIO/FileIO.h"
 #include "Engine/ResourceDefines.h"
 
@@ -90,6 +91,24 @@ void InGameUITool::DrawUIWindow()
 			{
 				textUI->Init("New Text", "comicSans", 20, {1, 1, 1, 1}, m_pdevice);
 				m_textName = "";
+
+				m_showUICreation = false;
+			}
+		}
+
+		EditorUI::InputText("Button UI Name", m_buttonName, 120);
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("New ButtonUI") == true)
+		{
+			ButtonComponent* buttonUI = puiManager->CreateUIComponent<ButtonComponent>(m_buttonName, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(10.0f, 10.0f, 10.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
+			if (buttonUI)
+			{
+				buttonUI->SetTexture(L"", ButtonTexture::PRESSED);
+				buttonUI->SetTexture(L"", ButtonTexture::RELEASED);
+				buttonUI->SetTexture(L"", ButtonTexture::HOVERED);
+				m_buttonName = "";
 
 				m_showUICreation = false;
 			}

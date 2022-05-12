@@ -508,6 +508,7 @@ void GraphicsManager::CompileDefaultShaders()
 	CompileShaderFromFile(SCREENSPACE_VERTEX_SHADER_NAME, "main", "vs_4_0");
 	CompileShaderFromFile(DEFAULT_PIXEL_SHADER_NAME, "main", "ps_4_0");
 	CompileShaderFromFile(TEXT_PIXEL_SHADER_NAME, "main", "ps_4_0");
+	CompileShaderFromFile(BUTTON_PIXEL_SHADER_NAME, "main", "ps_4_0");
 }
 
 bool GraphicsManager::CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob*& pblob)

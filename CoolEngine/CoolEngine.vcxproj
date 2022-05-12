@@ -51,6 +51,7 @@
     <ClInclude Include="Engine\GameObjects\TriggerableGameObject.h" />
     <ClInclude Include="Engine\GameObjects\WeaponGameObject.h" />
     <ClInclude Include="Engine\GameObjects\UUID.h" />
+    <ClInclude Include="Engine\GameUI\ButtonComponent.h" />
     <ClInclude Include="Engine\GameUI\TextComponent.h" />
     <ClInclude Include="Engine\Graphics\ConstantBuffer.h" />
     <ClInclude Include="Engine\Graphics\ConstantBuffers.h" />
@@ -185,6 +186,7 @@
     <ClCompile Include="Engine\GameObjects\TriggerableGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\WeaponGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\UUID.cpp" />
+    <ClCompile Include="Engine\GameUI\ButtonComponent.cpp" />
     <ClCompile Include="Engine\GameUI\TextComponent.cpp" />
     <ClCompile Include="Engine\Graphics\DDSTextureLoader.cpp" />
     <ClCompile Include="Engine\Graphics\SpriteAnimation.cpp" />
@@ -263,6 +265,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\ButtonPixel.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Engine\Graphics\Shaders\DummyPosTex.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
