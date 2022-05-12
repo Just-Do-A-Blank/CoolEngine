@@ -47,29 +47,16 @@ void PlayerController::Update()
 {
     if (m_currentState == nullptr)
     {
-        m_currentState = SwitchMovementState(EPLAYERMOVEMENTSTATE::Walking);
+        m_currentState = new PlayerWalkingState(m_transform, m_gameplayButtons);
     }
 
     float delta = GameManager::GetInstance()->GetTimer()->DeltaTime();
     if (!m_currentState->Update(delta))
     {
-        EPLAYERMOVEMENTSTATE nextState = m_currentState->NextState();
+        PlayerMovementState* nextState = m_currentState->NextState();
         delete m_currentState;
-        m_currentState = SwitchMovementState(nextState);
+        m_currentState = nextState;
     }
-
-    //MovePlayer();
-}
-
-PlayerMovementState* PlayerController::SwitchMovementState(EPLAYERMOVEMENTSTATE newState)
-{
-    switch (newState)
-    {
-    case EPLAYERMOVEMENTSTATE::Walking:
-        return new PlayerWalkingState(m_transform, m_gameplayButtons);
-    }
-
-    return nullptr;
 }
 
 ECHARACTERDIRECTIONCLASS PlayerController::GetCharacterDirection(float x, float y)

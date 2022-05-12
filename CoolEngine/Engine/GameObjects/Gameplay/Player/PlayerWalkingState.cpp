@@ -51,6 +51,15 @@ bool PlayerWalkingState::Update(float timeDelta)
 }
 
 /// <summary>
+/// The next state use if this state no longer needed
+/// </summary>
+/// <returns>The next state to use</returns>
+PlayerMovementState* PlayerWalkingState::NextState()
+{
+    return this;
+}
+
+/// <summary>
 /// Handles any keypresses when they are pressed (frame whilst pressed)
 /// </summary>
 void PlayerWalkingState::KeyPressed(KeyPressedEvent* e)
@@ -202,29 +211,30 @@ void PlayerWalkingState::UpdateButtonOrderOnButtonReleased(EGAMEPLAYBUTTONCLASS 
 /// <summary>
 /// Handles moving the player
 /// </summary>
+/// <param name="timeDelta">Delta time between frames</param>
 void PlayerWalkingState::MovePlayer(float timeDelta)
 {
     XMFLOAT3 vector = XMFLOAT3(0, 0, 0);
-    if (m_firstMovementButton != EGAMEPLAYBUTTONCLASS::Nothing)
-    {
-        XMFLOAT3 buttonVector = GetVectorChangeForGameplayButton(m_firstMovementButton);
-        vector.x += buttonVector.x;
-        vector.y += buttonVector.y;
-    }
-
-    if (m_secondMovementButton != EGAMEPLAYBUTTONCLASS::Nothing)
-    {
-        XMFLOAT3 buttonVector = GetVectorChangeForGameplayButton(m_secondMovementButton);
-        vector.x += buttonVector.x;
-        vector.y += buttonVector.y;
-    }
-
-    if (vector.x != 0.0f || vector.y != 0.0f)
-    {
-        ApplyForce(timeDelta, vector);
-    }
+    MoveVectorByButton(&vector, m_firstMovementButton);
+    MoveVectorByButton(&vector, m_secondMovementButton);
+    ApplyForce(timeDelta, vector);
 
     MoveByForce(timeDelta);
+}
+
+/// <summary>
+/// Move the given vector based on the button pressed
+/// </summary>
+/// <param name="vector">Vector to move</param>
+/// <param name="button">Button pressed</param>
+void PlayerWalkingState::MoveVectorByButton(XMFLOAT3* vector, EGAMEPLAYBUTTONCLASS button)
+{
+    if (button != EGAMEPLAYBUTTONCLASS::Nothing)
+    {
+        XMFLOAT3 buttonVector = GetVectorChangeForGameplayButton(button);
+        vector->x += buttonVector.x;
+        vector->y += buttonVector.y;
+    }
 }
 
 /// <summary>
@@ -257,90 +267,103 @@ XMFLOAT3 PlayerWalkingState::GetVectorChangeForGameplayButton(EGAMEPLAYBUTTONCLA
 /// <summary>
 /// Applies force in the given direction
 /// </summary>
-/// <param name="name">Direction to apply force</param>
+/// <param name="timeDelta">Delta time between frames</param>
+/// <param name="direction">Direction to apply force</param>
 void PlayerWalkingState::ApplyForce(float timeDelta, XMFLOAT3 direction)
 {
+    if (direction.x == 0.0f && direction.y == 0.0f)
+    {
+        return;
+    }
+
     float originalX = m_forceApplied.x;
     float originalY = m_forceApplied.y;
+    XMFLOAT3 original = XMFLOAT3(m_forceApplied.x, m_forceApplied.y, 0);
 
-    if (direction.x != 0)
-    {
-        m_forceApplied.x += direction.x;
-    }
-
-    if (m_forceApplied.x > 1)
-    {
-        m_forceApplied.x = 1;
-    }
-
-    if (m_forceApplied.x < -1)
-    {
-        m_forceApplied.x = -1;
-    }
-
-    if (direction.y != 0)
-    {
-        m_forceApplied.y += direction.y;
-    }
-
-
-    if (m_forceApplied.y > 1)
-    {
-        m_forceApplied.y = 1;
-    }
-
-    if (m_forceApplied.y < -1)
-    {
-        m_forceApplied.y = -1;
-    }
+    ApplyForceToSingleAxis(&m_forceApplied.x, direction.x);
+    ApplyForceToSingleAxis(&m_forceApplied.y, direction.y);
 
     m_moveSpeed += m_moveSpeedPerFrame * timeDelta;
 
-    if ((originalX > 0 && m_forceApplied.x < 0) || (originalX < 0 && m_forceApplied.x > 0))
+    float drag = ((m_moveSpeedMax * 100) / 2) * timeDelta;
+    SlowSpeedIfDirectionChanged(original, m_forceApplied, drag,  &m_moveSpeed);
+    RestrictSpeedAndForceToResonableBounds(&m_moveSpeed, m_moveSpeedMax, &m_forceApplied);
+}
+
+/// <summary>
+/// Applies force to a single axis
+/// </summary>
+/// <param name="axisValue">The value to update</param>
+/// <param name="direction">The intensity to apply</param>
+void PlayerWalkingState::ApplyForceToSingleAxis(float* axisValue, float direction)
+{
+    if (direction != 0)
     {
-        LOG(m_moveSpeed);
-        m_moveSpeed -= (m_moveSpeedMax / 2);
-    }
-    else if ((originalY > 0 && m_forceApplied.y < 0) || (originalY < 0 && m_forceApplied.y > 0))
-    {
-        LOG(m_moveSpeed);
-        m_moveSpeed -= (m_moveSpeedMax / 2);
+        *axisValue += direction;
     }
 
-
-    if (m_moveSpeed > m_moveSpeedMax)
+    if (*axisValue > 1)
     {
-        m_moveSpeed = m_moveSpeedMax;
-    }
-    else if (m_moveSpeed <= 0)
-    {
-        m_moveSpeed = 0;
-        m_forceApplied.x = 0;
-        m_forceApplied.y = 0;
+        *axisValue = 1;
     }
 
+    if (*axisValue < -1)
+    {
+        *axisValue = -1;
+    }
+}
+
+/// <summary>
+/// Slow the speed value based on the drag amount
+/// </summary>
+/// <param name="originalDirection">The direction the vector was aiming before moving</param>
+/// <param name="newDirection">The direction the vector is moving now</param>
+/// <param name="drag">The drag amount if direction moves</param>
+/// <param name="movementSpeed">The movement speed to adjust</param>
+void PlayerWalkingState::SlowSpeedIfDirectionChanged(XMFLOAT3 originalDirection, XMFLOAT3 newDirection, float drag, float* movementSpeed)
+{
+    if ((originalDirection.x > 0 && newDirection.x < 0) || (originalDirection.x < 0 && newDirection.x > 0))
+    {
+        *movementSpeed -= drag;
+    }
+    else if ((originalDirection.y > 0 && newDirection.y < 0) || (originalDirection.y < 0 && newDirection.y > 0))
+    {
+        *movementSpeed -= drag;
+    }
+}
+
+/// <summary>
+/// Restrict speed based on max speed and force
+/// </summary>
+/// <param name="speed">Current speed to restrict</param>
+/// <param name="maxSpeed">The max speed for the instance</param>
+/// <param name="force">Force which is also restricted if speed is 0</param>
+void PlayerWalkingState::RestrictSpeedAndForceToResonableBounds(float* speed, float maxSpeed, XMFLOAT3* force)
+{
+    if (*speed > maxSpeed)
+    {
+        *speed = maxSpeed;
+    }
+    else if (*speed <= 0)
+    {
+        *speed = 0;
+        force->x = 0;
+        force->y = 0;
+    }
 }
 
 /// <summary>
 /// Moves the player based on forces applied
 /// </summary>
+/// <param name="timeDelta">Delta time between frames</param>
 void PlayerWalkingState::MoveByForce(float timeDelta)
 {
     if (m_moveSpeed > 0 && (m_forceApplied.x != 0 || m_forceApplied.y != 0))
     {
 
         XMFLOAT3 movement = m_forceApplied;
-        float size = sqrt(movement.x * movement.x + movement.y * movement.y);
-
-        movement = MathHelper::Multiply
-        (XMFLOAT3((movement.x * m_moveSpeed) / size, (movement.y * m_moveSpeed) / size, 0), timeDelta * m_dragSpeed);
-        m_transform->Translate(movement);
-
-        m_moveSpeed -= m_dragSpeedPerFrame * timeDelta;
-        if (m_moveSpeed < 0)
-        {
-            m_moveSpeed = 0;
-        }
+        MoveTransformInDirectionByDistance(m_transform, m_forceApplied, m_moveSpeed, timeDelta * m_speedMultiplier);
+        SlowPlayerBasedOnDrag(&m_moveSpeed, m_dragSpeedPerFrame, timeDelta);
 
         if (m_moveSpeed == 0)
         {
@@ -349,46 +372,68 @@ void PlayerWalkingState::MoveByForce(float timeDelta)
         }
         else
         {
-            if (m_forceApplied.x != 0)
-            {
-                if (m_forceApplied.x > 0)
-                {
-                    m_forceApplied.x -= timeDelta;
-                    if (m_forceApplied.x < 0)
-                    {
-                        m_forceApplied.x = 0;
-                    }
-                }
-                else
-                {
-                    m_forceApplied.x += timeDelta;
-                    if (m_forceApplied.x > 0)
-                    {
-                        m_forceApplied.x = 0;
-                    }
-                }
-            }
-
-            if (m_forceApplied.y != 0)
-            {
-                if (m_forceApplied.y > 0)
-                {
-                    m_forceApplied.y -= timeDelta;
-                    if (m_forceApplied.y < 0)
-                    {
-                        m_forceApplied.y = 0;
-                    }
-                }
-                else
-                {
-                    m_forceApplied.y += timeDelta;
-                    if (m_forceApplied.y > 0)
-                    {
-                        m_forceApplied.y = 0;
-                    }
-                }
-            }
+            MoveFloatTowardZero(&m_forceApplied.x, timeDelta);
+            MoveFloatTowardZero(&m_forceApplied.y, timeDelta);
         }
 
+    }
+}
+
+/// <summary>
+/// Slow the player based on drag value given
+/// </summary>
+/// <param name="speed">Speed to move the player</param>
+/// <param name="drag">Drag value to apply</param>
+/// <param name="delta">Time delta to use when slowing the player</param>
+void PlayerWalkingState::SlowPlayerBasedOnDrag(float* speed, float drag, float delta)
+{
+    *speed -= drag * delta;
+    if (*speed < 0)
+    {
+        *speed = 0;
+    }
+}
+
+/// <summary>
+/// Move the given transform in a direction based on speed and direction
+/// </summary>
+/// <param name="transform">Transform to move</param>
+/// <param name="force">Force to apply</param>
+/// <param name="speed">Speed to use</param>
+/// <param name="distance">Distance to move the player</param>
+void PlayerWalkingState::MoveTransformInDirectionByDistance(Transform* transform, XMFLOAT3 force, float speed, float distance)
+{
+    float size = sqrt(force.x * force.x + force.y * force.y);
+
+    force = MathHelper::Multiply
+    (XMFLOAT3((force.x * speed) / size, (force.y * speed) / size, 0), distance);
+    transform->Translate(force);
+}
+
+/// <summary>
+/// Move the given float toward zero by the given amount
+/// </summary>
+/// <param name="value">Value to adjust</param>
+/// <param name="intensity">Intensity to adjust the value by</param>
+void PlayerWalkingState::MoveFloatTowardZero(float* value, float intensity)
+{
+    if (*value != 0)
+    {
+        if (*value > 0)
+        {
+            *value -= intensity;
+            if (*value < 0)
+            {
+                *value = 0;
+            }
+        }
+        else
+        {
+            *value += intensity;
+            if (*value > 0)
+            {
+                *value = 0;
+            }
+        }
     }
 }

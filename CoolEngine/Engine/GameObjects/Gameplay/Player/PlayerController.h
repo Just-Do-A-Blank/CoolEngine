@@ -75,8 +75,6 @@ private:
     /// </summary>
     PlayerMovementState* m_currentState;
 
-    PlayerMovementState* SwitchMovementState(EPLAYERMOVEMENTSTATE newState);
-
     ECHARACTERDIRECTIONCLASS GetCharacterDirection(float x, float y);
 };
 
