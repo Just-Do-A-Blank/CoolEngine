@@ -58,26 +58,3 @@ void PlayerController::Update()
         m_currentState = nextState;
     }
 }
-
-ECHARACTERDIRECTIONCLASS PlayerController::GetCharacterDirection(float x, float y)
-{
-    ECHARACTERDIRECTIONCLASS returnDirection = ECHARACTERDIRECTIONCLASS::Down;
-    if (x < 0)
-    {
-        returnDirection = ECHARACTERDIRECTIONCLASS::Left;
-    }
-    else if (x > 0)
-    {
-        returnDirection = ECHARACTERDIRECTIONCLASS::Right;
-    }
-    else if (y > 0)
-    {
-        returnDirection = ECHARACTERDIRECTIONCLASS::Down;
-    }
-    else if (y < 0)
-    {
-        returnDirection = ECHARACTERDIRECTIONCLASS::Up;
-    }
-
-    return returnDirection;
-}

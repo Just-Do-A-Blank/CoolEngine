@@ -74,7 +74,5 @@ private:
     /// The state to move the player
     /// </summary>
     PlayerMovementState* m_currentState;
-
-    ECHARACTERDIRECTIONCLASS GetCharacterDirection(float x, float y);
 };
 
