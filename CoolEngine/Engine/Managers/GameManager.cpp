@@ -301,16 +301,16 @@ void GameManager::Deserialize(nlohmann::json& data)
 		pnode = toPush.top();
 		toPush.pop();
 
-		if (data[m_pcurrentScene->m_sceneIdentifier][(int)pnode->NodeObject->GetGameObjectType()][*pnode->NodeObject->m_UUID]["Sibling"] != "Null")
+		if (data[m_pcurrentScene->m_sceneIdentifier][std::to_string((int)pnode->NodeObject->GetGameObjectType())][*pnode->NodeObject->m_UUID]["Sibling"] != "Null")
 		{
-			pcomponent = gameObjects[data[m_pcurrentScene->m_sceneIdentifier][(int)pnode->NodeObject->GetGameObjectType()][*pnode->NodeObject->m_UUID]["Sibling"]];
+			pcomponent = gameObjects[data[m_pcurrentScene->m_sceneIdentifier][std::to_string((int)pnode->NodeObject->GetGameObjectType())][*pnode->NodeObject->m_UUID]["Sibling"]];
 
 			toPush.push(m_pcurrentScene->m_psceneGraph->AddSibling(pnode, pcomponent));
 		}
 
-		if (data[m_pcurrentScene->m_sceneIdentifier][(int)pnode->NodeObject->GetGameObjectType()][*pnode->NodeObject->m_UUID]["Child"] != "Null")
+		if (data[m_pcurrentScene->m_sceneIdentifier][std::to_string((int)pnode->NodeObject->GetGameObjectType())][*pnode->NodeObject->m_UUID]["Child"] != "Null")
 		{
-			pcomponent = gameObjects[data[m_pcurrentScene->m_sceneIdentifier][(int)pnode->NodeObject->GetGameObjectType()][*pnode->NodeObject->m_UUID]["Child"]];
+			pcomponent = gameObjects[data[m_pcurrentScene->m_sceneIdentifier][std::to_string((int)pnode->NodeObject->GetGameObjectType())][*pnode->NodeObject->m_UUID]["Child"]];
 
 			toPush.push(m_pcurrentScene->m_psceneGraph->AddSibling(pnode, pcomponent));
 		}

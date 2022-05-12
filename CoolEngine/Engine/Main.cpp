@@ -327,8 +327,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	GameManager::GetInstance()->GetTimer()->Tick();
 	GameManager::GetInstance()->GetTimer()->Tick();
 
-	SimpleFileIO::SaveScene("TheLongAwaitedCringe2");
- 	//SimpleFileIO::LoadScene("TheLongAwaitedCringe2", "TestScene");
+	//SimpleFileIO::SaveScene("TheLongAwaitedCringe2");
+ 	SimpleFileIO::LoadScene("TheLongAwaitedCringe2", "TestScene");
 
 #if _DEBUG
 	DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect("DebugRect1", XMFLOAT3(-100.0f, -300.0f, 0.0f), objectScale, DebugDrawManager::DebugColour::BEIGE);
