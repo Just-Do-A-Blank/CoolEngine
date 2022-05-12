@@ -11,6 +11,10 @@ PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : Character
 	EventManager::Instance()->AddClient(EventType::MouseMoved, this);
 
 	m_gameObjectType |= GameObjectType::PLAYER;
+
+	//GameManager* pgameManager = GameManager::GetInstance();
+	//pgameManager->CreateGameObject<CameraGameObject>("Camera"); //  use - GameManager::GetInstance()->GetCamera(); - to set camera to editor camera
+	//GameManager::GetInstance()->SetCamera(m_cameraRef);
 }
 
 PlayerGameObject::~PlayerGameObject()

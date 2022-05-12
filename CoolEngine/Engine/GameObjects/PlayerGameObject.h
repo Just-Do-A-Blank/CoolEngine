@@ -1,7 +1,8 @@
 #pragma once
 #include "Engine/GameObjects/CharacterGameObject.h"
 #include "Engine/Managers/Events/MouseEvents.h"
-#include "Engine/Managers/Events/KeyEvents.h"
+#include "Engine/Managers/Events/KeyEvents.h" 
+#include "CameraGameObject.h"
 
 class PlayerGameObject : public CharacterGameObject
 {
@@ -14,6 +15,8 @@ public:
     /// Handles events from the Observations
     /// </summary>
 	void Handle(Event* e) override;
+
+    CameraGameObject* m_cameraRef;
 
 protected:
 
@@ -31,6 +34,8 @@ protected:
     /// Occurs when two objects collide without collision on. Fired the frame the two stop colliding.
     /// </summary>
     virtual void OnTriggerExit(GameObject* obj1, GameObject* obj2) override { }
+
+    virtual void Update() override {}
 
 private:
 
