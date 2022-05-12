@@ -420,6 +420,12 @@
     <ClInclude Include="Engine\Managers\Events\KeyEvents.h">
       <Filter>Engine\Managers\Events</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\GameObjects\MeleeWeaponGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\RangedWeaponGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -594,6 +600,12 @@
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\WeaponGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\MeleeWeaponGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\RangedWeaponGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
   </ItemGroup>
