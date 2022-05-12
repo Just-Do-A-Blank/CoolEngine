@@ -753,7 +753,28 @@ void Render()
 
 	for (int i = 0; i < GraphicsManager::GetInstance()->GetNumLayers(); ++i)
 	{
-		GraphicsManager::GetInstance()->GetSpriteBatches()[i]->Begin();
+		GraphicsManager::GetInstance()->GetSpriteBatches()[i]->Begin(SpriteSortMode_Deferred, nullptr, nullptr, nullptr, nullptr, [=]
+		{
+				ID3D11Buffer* pbuffer = GraphicsManager::GetInstance()->m_pperFrameCB->GetBuffer();
+
+				D3D11_VIEWPORT viewport;
+				viewport.TopLeftX = 0;
+				viewport.TopLeftY = 0;
+				viewport.Width = EditorUI::GetViewportSize().x;
+				viewport.Height = EditorUI::GetViewportSize().y;
+				viewport.MinDepth = 0.01f;
+				viewport.MaxDepth = 1.0f;
+
+				g_pImmediateContext->RSSetViewports(1, &viewport);
+				g_pImmediateContext->RSSetState(g_prasterState);
+				g_pImmediateContext->IASetInputLayout(GraphicsManager::GetInstance()->GetInputLayout(GraphicsManager::InputLayouts::POS_TEX_COLOR));
+
+				g_pImmediateContext->VSSetShader(GraphicsManager::GetInstance()->GetVertexShader(SPRITE_BATCH_VERTEX_SHADER_NAME), nullptr, 0);
+				g_pImmediateContext->PSSetShader(GraphicsManager::GetInstance()->GetPixelShader(SPRITE_BATCH_PIXEL_SHADER_NAME), nullptr, 0);
+
+				g_pImmediateContext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pbuffer);
+				g_pImmediateContext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pbuffer);
+		});
 	}
 
 	GameManager* pgamemanager = GameManager::GetInstance();

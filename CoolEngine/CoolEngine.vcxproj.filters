@@ -625,6 +625,15 @@
     <FxCompile Include="Engine\Graphics\Shaders\TextPixel.hlsl">
       <Filter>Engine\Graphics\Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\DummyPosTexColor.hlsl">
+      <Filter>Engine\Graphics\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\SpriteBatchVertex.hlsl">
+      <Filter>Engine\Graphics\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\SpriteBatchPixel.hlsl">
+      <Filter>Engine\Graphics\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
