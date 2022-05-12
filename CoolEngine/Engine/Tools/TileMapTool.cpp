@@ -9,7 +9,7 @@
 #include "Engine/Tools/TileMapTool.h"
 #include "Engine/TileMap/TileMap/TileMap.h"
 #include "Engine/Managers/Events/EventManager.h"
-#include "Engine/GameObjects/TileMapCameraGameObject.h"
+#include "Engine/GameObjects/EditorCameraGameObject.h"
 #include "Engine/Helpers/Inputs.h"
 
 #include "Engine/Managers/Events/MouseEvents.h"
