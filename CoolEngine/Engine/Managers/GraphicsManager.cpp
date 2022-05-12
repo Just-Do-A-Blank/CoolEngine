@@ -240,7 +240,7 @@ void GraphicsManager::RenderQuad(ID3D11ShaderResourceView* psrv, XMFLOAT3 positi
 	rect.width = scale.x * 2.0f;
 	rect.height = scale.y * 2.0f;
 
-	m_pBatches[layer]->Draw(psrv, rect, nullptr, Colors::White, XMConvertToRadians(rotation), XMFLOAT2(desc.Width * 0.5f, desc.Height * 0.5f), SpriteEffects_None);
+	m_pBatches[0]->Draw(psrv, rect, nullptr, Colors::White, XMConvertToRadians(rotation), XMFLOAT2(desc.Width * 0.5f, desc.Height * 0.5f), SpriteEffects_None);
 
 	pResource->Release();
 	pTexture2D->Release();
@@ -324,7 +324,7 @@ SpriteAnimation GraphicsManager::GetAnimation(wstring name) const
 
 int GraphicsManager::GetNumLayers()
 {
-	return s_kNumLayers;
+	return 1;
 }
 
 bool GraphicsManager::IsTextureLoaded(wstring filename)
@@ -415,9 +415,9 @@ void GraphicsManager::CreateInputLayouts()
 	// Define the input layout
 	D3D11_INPUT_ELEMENT_DESC layoutPosTexColour[] =
 	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT , D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "SV_Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT , D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 	numElements = ARRAYSIZE(layoutPosTexColour);
 

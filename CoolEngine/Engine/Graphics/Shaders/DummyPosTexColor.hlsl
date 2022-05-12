@@ -1,7 +1,8 @@
 struct VS_INPUT
 {
-	float3 posL : POSITION;
+	float3 posW : POSITION;
 	float2 texCoords : TEXCOORD;
+	float4 color : COLOR;
 };
 
 struct VS_OUTPUT
