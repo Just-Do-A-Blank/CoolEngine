@@ -222,12 +222,6 @@ void PlayerWalkingState::MovePlayer(float timeDelta)
     if (vector.x != 0.0f || vector.y != 0.0f)
     {
         ApplyForce(timeDelta, vector);
-        /*float size = sqrt(vector.x * vector.x + vector.y * vector.y);
-        vector = MathHelper::Multiply
-            (XMFLOAT3((m_moveSpeed * vector.x) / size, (m_moveSpeed * vector.y) / size, 0),
-                GameManager::GetInstance()->GetTimer()->DeltaTime());
-        m_transform->Translate(vector);*/
-        LOG("APPLIED");
     }
 
     MoveByForce(timeDelta);
@@ -266,19 +260,8 @@ XMFLOAT3 PlayerWalkingState::GetVectorChangeForGameplayButton(EGAMEPLAYBUTTONCLA
 /// <param name="name">Direction to apply force</param>
 void PlayerWalkingState::ApplyForce(float timeDelta, XMFLOAT3 direction)
 {
-    /*XMFLOAT3 movement = direction;
-    float size = sqrt(movement.x * movement.x + movement.y * movement.y);
-
-    movement = MathHelper::Multiply
-        (XMFLOAT3((movement.x) / size, (movement.y) / size, 0), 1);*/
-
-        //m_forceApplied = movement;
-
     float originalX = m_forceApplied.x;
     float originalY = m_forceApplied.y;
-
-    //ECHARACTERDIRECTIONCLASS previousHDirection = m_hDirection;
-    //ECHARACTERDIRECTIONCLASS previousVDirection = m_vDirection;
 
     if (direction.x != 0)
     {
@@ -311,19 +294,14 @@ void PlayerWalkingState::ApplyForce(float timeDelta, XMFLOAT3 direction)
         m_forceApplied.y = -1;
     }
 
-    //m_hDirection = GetCharacterDirection(m_forceApplied.x, 0);
-    //m_vDirection = GetCharacterDirection(0, m_forceApplied.y);
-
     m_moveSpeed += m_moveSpeedPerFrame * timeDelta;
 
     if ((originalX > 0 && m_forceApplied.x < 0) || (originalX < 0 && m_forceApplied.x > 0))
-        //if(m_hDirection != previousHDirection)
     {
         LOG(m_moveSpeed);
         m_moveSpeed -= (m_moveSpeedMax / 2);
     }
     else if ((originalY > 0 && m_forceApplied.y < 0) || (originalY < 0 && m_forceApplied.y > 0))
-        //else if (m_vDirection != previousVDirection)
     {
         LOG(m_moveSpeed);
         m_moveSpeed -= (m_moveSpeedMax / 2);
@@ -341,8 +319,6 @@ void PlayerWalkingState::ApplyForce(float timeDelta, XMFLOAT3 direction)
         m_forceApplied.y = 0;
     }
 
-
-    //m_forceApplied.z += direction.z;
 }
 
 /// <summary>
@@ -414,28 +390,5 @@ void PlayerWalkingState::MoveByForce(float timeDelta)
             }
         }
 
-        /*float original = m_forceApplied.x;
-        m_forceApplied.x -= m_dragSpeed * delta;
-        if (original > 0 && m_forceApplied.x < 0)
-        {
-            m_forceApplied.x = 0;
-        }
-        else if (original < 0 && m_forceApplied.x > 0)
-        {
-            m_forceApplied.x = 0;
-        }
-
-        original = m_forceApplied.y;
-        m_forceApplied.y -= m_dragSpeed * delta;
-        if (original > 0 && m_forceApplied.y < 0)
-        {
-            m_forceApplied.y = 0;
-        }
-        else if (original < 0 && m_forceApplied.y > 0)
-        {
-            m_forceApplied.y = 0;
-        }*/
-
-        //m_forceApplied.z -= m_dragSpeed * delta;
     }
 }
