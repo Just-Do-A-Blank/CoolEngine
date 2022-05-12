@@ -25,7 +25,15 @@ enum class STATUSES
 	COUNT
 };
 
-DEFINE_ENUM_FLAG_OPERATORS(ELEMENTS);
+enum class ELEMENTALSTATUSES
+{
+	NONE = 0,
+	BURN = 1,
+	DRENCH = 2,
+	POISONED = 3,
+	PARALYSIS = 4,
+	COUNT
+};
 
 
 // e.g. The element weak to a fire attack is poison
@@ -49,7 +57,7 @@ static const ELEMENTS ElementResistantTo[9] =
 };
 
 // e.g. The dual element resistant to a fire attack is water electric
-static const ELEMENTS ElementResistantToDual[9] =
+static const ELEMENTS DualElementResistantTo[9] =
 {
 	ELEMENTS::NONE, ELEMENTS::WATERELECTRIC, ELEMENTS::ELECTRICPOISON, ELEMENTS::FIREWATER, ELEMENTS::POISONFIRE, ELEMENTS::FIREWATER, ELEMENTS::POISONFIRE, ELEMENTS::ELECTRICPOISON, ELEMENTS::WATERELECTRIC
 };
@@ -57,11 +65,12 @@ static const ELEMENTS ElementResistantToDual[9] =
 
 static class DamageCalculation
 {
+public:
 	// Damage calculation when attack connects
-	static float CalculateDamage(float weaponDamage, ELEMENTS weaponElement, ELEMENTS characterElement)
+	static float CalculateDamage(float weaponDamage, ELEMENTS weaponElement, ELEMENTS characterElement, ELEMENTALSTATUSES characterStatus)
 	{
 		float multiplier = 1.0f;
-		if (characterElement == ElementWeakTo[(int)weaponElement])
+		if ((characterElement == ElementWeakTo[(int)weaponElement] || characterElement == DualElementWeakTo[(int)weaponElement]) && characterElement != ELEMENTS::NONE)
 		{
 			// Character weak to attack
 			multiplier *= 2.0f;
@@ -71,7 +80,7 @@ static class DamageCalculation
 				multiplier *= 2.0f;
 			}
 		}
-		else if (characterElement == ElementResistantTo[(int)weaponElement])
+		else if ((characterElement == ElementResistantTo[(int)weaponElement] || characterElement == DualElementResistantTo[(int)weaponElement]) && characterElement != ELEMENTS::NONE)
 		{
 			// Character resistant to attack
 			multiplier /= 2.0f;
@@ -81,6 +90,14 @@ static class DamageCalculation
 				multiplier /= 2.0f;
 			}
 		}
+
+		if ((characterElement == ElementWeakTo[(int)characterStatus] || characterElement == DualElementWeakTo[(int)characterStatus]) && characterElement != ELEMENTS::NONE)
+		{
+			multiplier *= 2.0f;
+		}
+
+		if (multiplier > 4.0f)
+			multiplier = 4.0f;
 
 		return (weaponDamage * multiplier);
 	}
