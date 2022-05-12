@@ -1,61 +1,31 @@
 #pragma once
-#include <Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.h>
-#include <Engine\GameObjects\Transform.h>
+#include "Engine/GameObjects/Gameplay/Player/PlayerMovementState.h"
+#include <Engine/GameObjects/Transform.h>
 #include "Engine/Managers/Events/EventObserver.h"
 #include "Engine/Managers/Events/MouseEvents.h"
 #include "Engine/Managers/Events/KeyEvents.h"
-#include <Engine\GameObjects\GameObject.h>
+#include <Engine/GameObjects/Gameplay/GameplayButtons/InputsAsGameplayButtons.h>
 
-/// <summary>
-/// Handles movement around the scene for the player
-/// </summary>
-class PlayerController : public Observer
+class PlayerWalkingState : public PlayerMovementState, public Observer
 {
 public:
-    PlayerController(InputsAsGameplayButtons* gameplayButtons, Transform* transformOfTheGameObject);
-    ~PlayerController();
+	PlayerWalkingState(Transform* transform, InputsAsGameplayButtons* gameplayButtons);
+    ~PlayerWalkingState();
 
     /// <summary>
     /// Handles events from the Observations
     /// </summary>
     virtual void Handle(Event* e) override;
 
-    /// <summary>
-    /// Updates the controller
-    /// </summary>
-    virtual void Update();
+	virtual bool Update(float timeDelta) override;
+
+	virtual EPLAYERMOVEMENTSTATE NextState() override { LOG("YH"); return EPLAYERMOVEMENTSTATE::Walking; }
 
 private:
-
-    /// <summary>
-    /// Occurs when two objects collide without collision on. Fired on enter.
-    /// </summary>
-    virtual void ReactToTriggerEnter(GameObject* obj1, GameObject* obj2) {}
-
-    /// <summary>
-    /// Occurs when two objects collide without collision on. Fired every frame.
-    /// </summary>
-    virtual void ReactTonTriggerHold(GameObject* obj1, GameObject* obj2) {}
-
-    /// <summary>
-    /// Occurs when two objects collide without collision on. Fired the frame the two stop colliding.
-    /// </summary>
-    virtual void ReactToTriggerExit(GameObject* obj1, GameObject* obj2) {}
-
-    /// <summary>
-    /// Occurs when two objects collide with collision on. Fired on enter.
-    /// </summary>
-    virtual void ReactToCollisionEnter(GameObject* obj1, GameObject* obj2) {}
-
-    /// <summary>
-    /// Occurs when two objects collide with collision on. Fired every frame.
-    /// </summary>
-    virtual void OnCollisionHold(GameObject* obj1, GameObject* obj2) {}
-
-    /// <summary>
-    /// Occurs when two objects collide with collision on. Fired the frame the two stop colliding.
-    /// </summary>
-    virtual void ReactToCollisionExit(GameObject* obj1, GameObject* obj2) {}
+	/// <summary>
+	/// Relates inputs to gameplay buttons
+	/// </summary>
+	Transform* m_transform;
 
     /// <summary>
     /// Relates inputs to gameplay buttons
@@ -73,16 +43,26 @@ private:
     EGAMEPLAYBUTTONCLASS m_secondMovementButton;
 
     /// <summary>
-    /// Relates inputs to gameplay buttons
+    /// The way the player is currently moving
     /// </summary>
-    Transform* m_transform;
+    EPLAYERMOVEMENTSTATE m_movementState;
+
+
+
+
 
     /// <summary>
     /// The force currently applied to the player
     /// </summary>
     XMFLOAT3 m_forceApplied;
 
-    float m_moveSpeed = 100;
+    float m_moveSpeedMax = 200;
+    float m_moveSpeedPerFrame = 500;
+    float m_dragSpeedPerFrame = 250;
+    float m_moveSpeed = 0;
+
+    //ECHARACTERDIRECTIONCLASS m_vDirection;
+    //ECHARACTERDIRECTIONCLASS m_hDirection;
 
     float m_dragSpeed = 0.8f;
 
@@ -111,7 +91,7 @@ private:
     /// <summary>
     /// Handles moving the player
     /// </summary>
-    void MovePlayer();
+    void MovePlayer(float timeDelta);
 
     /// <summary>
     /// Detirmines if the button is a vertical direction button
@@ -154,11 +134,12 @@ private:
     /// Applies force in the given direction
     /// </summary>
     /// <param name="name">Direction to apply force</param>
-    void ApplyForce(XMFLOAT3 direction);
+    void ApplyForce(float timeDelta, XMFLOAT3 direction);
 
     /// <summary>
     /// Moves the player based on forces applied
     /// </summary>
-    void MoveByForce();
-};
+    void MoveByForce(float timeDelta);
 
+
+};

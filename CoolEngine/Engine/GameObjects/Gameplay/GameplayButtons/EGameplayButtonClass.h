@@ -6,9 +6,9 @@
 enum class EGAMEPLAYBUTTONCLASS : int
 {
     /// <summary>
-    /// Empty button, used to signal no button
+    /// Not a button. Used to return a null button.
     /// </summary>
-    Nothing,
+    Nothing = -1,
 
     /// <summary>
     /// Button(s) which signify moving up

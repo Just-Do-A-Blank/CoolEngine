@@ -2,7 +2,7 @@
 #include "Engine/GameObjects/CharacterGameObject.h"
 #include "Engine/Managers/Events/MouseEvents.h"
 #include "Engine/Managers/Events/KeyEvents.h"
-#include <PlayerController.h>
+#include "Engine/GameObjects/Gameplay/Player/PlayerController.h"
 
 class PlayerGameObject : public CharacterGameObject
 {

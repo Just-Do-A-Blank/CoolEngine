@@ -103,6 +103,9 @@
     <Filter Include="Engine\GameObjects\Gameplay\GameplayButtons">
       <UniqueIdentifier>{4937c6de-2fae-4081-9978-4adbfb464981}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\GameObjects\Gameplay\Character">
+      <UniqueIdentifier>{7d4f1d55-80de-442c-8cdc-4dca696b0783}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -429,16 +432,28 @@
     <ClInclude Include="Engine\Managers\Events\KeyEvents.h">
       <Filter>Engine\Managers\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\EGameplayButtonClass.h">
-      <Filter>Engine\GameObjects\Gameplay\GameplayButtons</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\GameplayButton.h">
       <Filter>Engine\GameObjects\Gameplay\GameplayButtons</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.h">
       <Filter>Engine\GameObjects\Gameplay\GameplayButtons</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerController.h">
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerController.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\EGameplayButtonClass.h">
+      <Filter>Engine\GameObjects\Gameplay\GameplayButtons</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\Character\ECharacterDirectionClass.h">
+      <Filter>Engine\GameObjects\Gameplay\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\EPLAYERMOVEMENTSTATE.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovementState.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerWalkingState.h">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClInclude>
   </ItemGroup>
@@ -620,7 +635,10 @@
     <ClCompile Include="Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.cpp">
       <Filter>Engine\GameObjects\Gameplay\GameplayButtons</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerController.cpp">
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerController.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerWalkingState.cpp">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClCompile>
   </ItemGroup>
