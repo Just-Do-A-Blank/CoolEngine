@@ -19,11 +19,6 @@ void MeleeWeaponGameObject::SetChargeTime(float time)
     m_chargeTime = time;
 }
 
-void MeleeWeaponGameObject::SetSwingTime(float time)
-{
-    m_swingTime = time;
-}
-
 void MeleeWeaponGameObject::SetRadius(float rad)
 {
     m_radius = rad;
@@ -42,11 +37,6 @@ float MeleeWeaponGameObject::GetSwingAngle()
 float MeleeWeaponGameObject::GetChargeTime()
 {
     return m_chargeTime;
-}
-
-float MeleeWeaponGameObject::GetSwingTime()
-{
-    return m_swingTime;
 }
 
 float MeleeWeaponGameObject::GetRadius()

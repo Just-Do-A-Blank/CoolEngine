@@ -9,11 +9,6 @@ RangedWeaponGameObject::~RangedWeaponGameObject()
 {
 }
 
-void RangedWeaponGameObject::SetShotCount(int count)
-{
-	m_shotCount = count;
-}
-
 void RangedWeaponGameObject::SetAngleInterval(float angle)
 {
 	m_angleInterval = angle;
@@ -22,11 +17,6 @@ void RangedWeaponGameObject::SetAngleInterval(float angle)
 void RangedWeaponGameObject::SetIsShot(bool shot)
 {
 	m_isShot = shot;
-}
-
-int RangedWeaponGameObject::GetShotCount()
-{
-	return m_shotCount;
 }
 
 float RangedWeaponGameObject::GetAngleInterval()

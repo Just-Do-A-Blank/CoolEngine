@@ -22,28 +22,45 @@ enum class Statuses
 	COUNT
 };
 
+DEFINE_ENUM_FLAG_OPERATORS(Elements);
+
 class WeaponGameObject : public TriggerableGameObject
 {
 public:
 	WeaponGameObject(string identifier, CoolUUID uuid);
 	virtual ~WeaponGameObject()override;
 
+	void CalculateWeaponStrength();
+
 	void SetLevel(int lvl);
 	void SetStrength(int strength);
 	void SetDamage(int dam);
-	void SetElement(int element1, int element2);
-	void SetStatusEffect(int effect);
+	void SetElement(Elements element1, Elements element2);
+	void SetStatusEffect(Statuses effect);
+	void SetShotCount(int count);
+	void SetTimeLethal(float time);
+	void SetDistanceTravelled(float dist);
 
 	int GetLevel();
 	int GetStrength();
 	int GetDamage();
-	int GetElement();
-	int GetStatusEffect();
+	Elements GetElement();
+	Statuses GetStatusEffect();
+	int GetShotCount();
+	float GetTimeLethal();
+	float GetDistanceTravelled();
+
+	bool GetIsDualType();
+	int RoundUp(float value);
 
 private:
 	int m_level = 0;
 	int m_strength = 0;
 	float m_damage = 0;
+
+	int m_shotCount = 1;
+	float m_timeLethal = 1;
+	float m_distanceTravelled = 1;
 
 	Elements m_element = Elements::NONE;
 	Statuses m_statusEffect = Statuses::NONE;
