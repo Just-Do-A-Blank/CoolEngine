@@ -81,6 +81,11 @@ public:
 		m_halfSize.y /= 2.0f;
 	}
 
+	XMFLOAT2 GetShapeDimensions()
+	{
+		return XMFLOAT2(m_scale.x * m_halfSize.x, m_scale.y * m_halfSize.y);
+	}
+
 	bool Collide(Shape* shape)
 	{
 		return shape->Collide(this);
@@ -118,7 +123,7 @@ public:
 
 		ImGui::Spacing();
 
-		EditorUI::DragFloat2("Dimensions", m_scale, 100.0f, 0.1f, 0, 10000);
+		EditorUI::DragFloat2("Dimensions", m_scale, 100.0f, 0.01f, 0, 100);
 	}
 #endif
 };
