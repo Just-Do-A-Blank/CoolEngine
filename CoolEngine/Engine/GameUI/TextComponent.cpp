@@ -21,7 +21,7 @@ TextComponent::TextComponent(nlohmann::json& data, CoolUUID uuid, ID3D11Device* 
 	m_ppixelShader = GraphicsManager::GetInstance()->GetPixelShader(TEXT_PIXEL_SHADER_NAME);
 
 	XMFLOAT4 colour;
-	colour = { data["GameUI"][(int)m_componentType][uuidString]["Colour"][0], data["GameUI"][(int)m_componentType][uuidString]["Colour"][1], data["GameUI"][(int)m_componentType][uuidString]["Colour"][2], data["GameUI"][(int)m_componentType][uuidString]["Colour"][3] };
+	colour = XMFLOAT4( data["GameUI"][(int)m_componentType][uuidString]["Colour"][0], data["GameUI"][(int)m_componentType][uuidString]["Colour"][1], data["GameUI"][(int)m_componentType][uuidString]["Colour"][2], data["GameUI"][(int)m_componentType][uuidString]["Colour"][3] );
 
 	Init(data["GameUI"][(int)m_componentType][uuidString]["Text"], data["GameUI"][(int)m_componentType][uuidString]["FontName"], data["GameUI"][(int)m_componentType][uuidString]["FontSize"], colour, pdevice);
 }
