@@ -24,10 +24,10 @@ float4 main(PS_INPUT input) : SV_TARGET
 {
     float4 albedo = Texture.Sample(TextureSampler, input.texCoords);
 
-    //if (albedo.a < alphaClipThreshold)
-    //{
-    //    discard;
-    //}
+    if (albedo.a < alphaClipThreshold)
+    {
+        discard;
+    }
 
-    return float4(1, 0, 0, 1);
+    return albedo;
 }

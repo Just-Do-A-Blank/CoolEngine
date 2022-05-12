@@ -55,9 +55,6 @@ void ParticleManager::Update(const float dTime)
 
 void ParticleManager::Render(ID3D11DeviceContext* pContext)
 {
-	pContext->VSSetShader(m_pVertexShader, nullptr, 0);
-	pContext->PSSetShader(m_pPixelShader, nullptr, 0);
-
 	for (unsigned int i = 0; i < PARTICLE_SIZE; ++i)
 	{
 		if (m_pParticles[i]->GetActive())
@@ -65,10 +62,6 @@ void ParticleManager::Render(ID3D11DeviceContext* pContext)
 			m_pParticles[i]->Render(pContext, m_pMesh);
 		}
 	}
-
-	// Unbind resources
-	pContext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 0, nullptr);
-	pContext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 0, nullptr);
 }
 
 void ParticleManager::AddSystem(Transform trans, float life, wstring albedoName, XMFLOAT2 vel, XMFLOAT2 accel, float partLife, float interval, float number, float randPos, float randVel, float randAccel, float randLife, int layer)

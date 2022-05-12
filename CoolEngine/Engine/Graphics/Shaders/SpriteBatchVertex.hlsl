@@ -27,6 +27,7 @@ VS_OUTPUT main(VS_INPUT input)
 	VS_OUTPUT output;
     output.posH = mul(float4(input.posW, 1), viewProjection);
 	output.texCoords = input.texCoords;
+	output.texCoords.y = 1 - output.texCoords.y;
 
 	return output;
 }

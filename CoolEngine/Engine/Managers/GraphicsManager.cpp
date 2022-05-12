@@ -16,6 +16,7 @@ void GraphicsManager::Init(ID3D11Device* pdevice, ID3D11DeviceContext* pcontext)
 	for (int i = 0; i < s_kNumLayers; ++i)
 	{
 		m_pBatches[i] = unique_ptr<SpriteBatch>(new SpriteBatch(pcontext));
+		m_pBatches[i]->SetRotation(DXGI_MODE_ROTATION_UNSPECIFIED);
 	}
 
 	CreateQuadMesh();
@@ -220,12 +221,6 @@ void GraphicsManager::SetHWND(HWND* hwnd)
 
 void GraphicsManager::RenderQuad(ID3D11ShaderResourceView* psrv, XMFLOAT3 position, XMFLOAT3 scale, float rotation, int layer)
 {
-	XMFLOAT4 pixelCoords;
-	XMStoreFloat4(&pixelCoords, XMVector2Transform(XMVectorSet(position.x, position.y, 0, 0), XMLoadFloat4x4(&GameManager::GetInstance()->GetCamera()->GetViewProjection())));
-
-	pixelCoords.x = (pixelCoords.x + 1.0f) * m_windowDimensions.x * 0.5f;
-	pixelCoords.y = (1.0f - pixelCoords.y) * m_windowDimensions.y * 0.5f;
-
 	ID3D11Resource* pResource = nullptr;
 	ID3D11Texture2D* pTexture2D = nullptr;
 	D3D11_TEXTURE2D_DESC desc;
@@ -235,8 +230,8 @@ void GraphicsManager::RenderQuad(ID3D11ShaderResourceView* psrv, XMFLOAT3 positi
 	pTexture2D->GetDesc(&desc);
 
 	SimpleMath::Rectangle rect;
-	rect.x = pixelCoords.x;
-	rect.y = pixelCoords.y;
+	rect.x = position.x;
+	rect.y = position.y;
 	rect.width = scale.x * 2.0f;
 	rect.height = scale.y * 2.0f;
 
