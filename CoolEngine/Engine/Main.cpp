@@ -756,6 +756,8 @@ void Render()
 		{
 				ID3D11Buffer* pbuffer = GraphicsManager::GetInstance()->m_pperFrameCB->GetBuffer();
 
+				g_pImmediateContext->IASetInputLayout(GraphicsManager::GetInstance()->GetInputLayout(GraphicsManager::InputLayouts::POS_TEX_COLOR));
+
 				g_pImmediateContext->VSSetShader(GraphicsManager::GetInstance()->GetVertexShader(SPRITE_BATCH_VERTEX_SHADER_NAME), nullptr, 0);
 				g_pImmediateContext->PSSetShader(GraphicsManager::GetInstance()->GetPixelShader(SPRITE_BATCH_PIXEL_SHADER_NAME), nullptr, 0);
 

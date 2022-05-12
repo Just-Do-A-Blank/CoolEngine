@@ -1,8 +1,8 @@
 
 struct PS_INPUT
 {
-	float4 posH : SV_POSITION;
-	float2 texCoords : TEXCOORD;
+    float4 posH : SV_POSITION;
+    float2 texCoords : TEXCOORD;
 };
 
 Texture2D<float4> Texture : register(t0);
@@ -24,10 +24,10 @@ float4 main(PS_INPUT input) : SV_TARGET
 {
     float4 albedo = Texture.Sample(TextureSampler, input.texCoords);
 
-    if (albedo.a < alphaClipThreshold)
-    {
-        discard;
-    }
+    //if (albedo.a < alphaClipThreshold)
+    //{
+    //    discard;
+    //}
 
-    return albedo;
+    return float4(1, 0, 0, 1);
 }
