@@ -21,8 +21,8 @@ public:
 	};
 
 	void Init(ID3D11Device* pd3dDevice);
-	void CreateWorldSpaceDebugRect(string identifier, XMFLOAT3& position, XMFLOAT3& dimension, DebugColour colour);
-	void CreateScreenSpaceDebugRect(string identifier, XMFLOAT3& position, XMFLOAT3& dimension, DebugColour colour);
+	void CreateWorldSpaceDebugRect(XMFLOAT3& position, XMFLOAT3& dimension, DebugColour colour);
+	void CreateScreenSpaceDebugRect(XMFLOAT3& position, XMFLOAT3& dimension, DebugColour colour);
 	void Render(RenderStruct& renderStruct);
 	void Update();
 

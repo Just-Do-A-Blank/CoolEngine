@@ -6,6 +6,8 @@
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/Managers/Events/CollisionEvents.h"
 
+#include "Engine/Managers/DebugDrawManager.h"
+
 bool Collision::BoxCollision(Box* box1, Box* box2)
 {
 	XMFLOAT2 halfSize1 = XMFLOAT2(box1->m_halfSize.x, box1->m_halfSize.y);
@@ -218,6 +220,13 @@ void Collision::Update(vector<GameObject*> gameObjectMap)
 		}
 		pcollidable1 = dynamic_cast<CollidableGameObject*>(gameObjectMap[it1]);
 		pcollidable1->SetShapeDimensions(pcollidable1->GetTransform()->GetWorldScale());
+
+		if (pcollidable1->GetShape()->IsRendered())
+		{
+			XMFLOAT3 p = pcollidable1->GetTransform()->GetWorldPosition();
+			XMFLOAT2 d = pcollidable1->GetShape()->GetShapeDimensions();
+			DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect(p, XMFLOAT3(d.x, d.y, 1), DebugDrawManager::DebugColour::PURPLE);
+		}
 	}
 
 	for (int it1 = 0; it1 < gameObjectMap.size(); ++it1)

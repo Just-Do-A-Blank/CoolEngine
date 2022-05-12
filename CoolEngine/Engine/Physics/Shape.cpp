@@ -31,6 +31,10 @@ void Shape::CreateEngineUI()
     ImGui::Spacing();
 
     EditorUI::Checkbox("Trigger", m_isTrigger);
+
+    ImGui::Spacing();
+
+    EditorUI::Checkbox("Render Hitbox", m_isRendered);
 }
 #endif
 
@@ -44,6 +48,11 @@ void Shape::SetIsCollidable(bool value)
     m_isCollidable = value;
 }
 
+void Shape::SetIsRendered(bool value)
+{
+    m_isRendered = value;
+}
+
 bool Shape::IsTrigger() const
 {
     return m_isTrigger;
@@ -52,4 +61,9 @@ bool Shape::IsTrigger() const
 bool Shape::IsCollidable() const
 {
     return m_isCollidable;
+}
+
+bool Shape::IsRendered() const
+{
+    return m_isRendered;
 }
