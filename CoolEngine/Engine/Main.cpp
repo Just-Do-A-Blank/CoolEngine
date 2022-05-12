@@ -752,7 +752,7 @@ void Render()
 
 	for (int i = 0; i < GraphicsManager::GetInstance()->GetNumLayers(); ++i)
 	{
-		GraphicsManager::GetInstance()->GetSpriteBatches()[i]->Begin(SpriteSortMode_Immediate, nullptr, nullptr, nullptr, nullptr, [=]
+		GraphicsManager::GetInstance()->GetSpriteBatches()[i]->Begin(SpriteSortMode_Deferred, nullptr, nullptr, nullptr, nullptr, [=]
 		{
 				ID3D11Buffer* pbuffer = GraphicsManager::GetInstance()->m_pperFrameCB->GetBuffer();
 

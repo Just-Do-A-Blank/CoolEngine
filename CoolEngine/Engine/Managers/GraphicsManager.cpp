@@ -235,7 +235,7 @@ void GraphicsManager::RenderQuad(ID3D11ShaderResourceView* psrv, XMFLOAT3 positi
 	rect.width = scale.x * 2.0f;
 	rect.height = scale.y * 2.0f;
 
-	m_pBatches[0]->Draw(psrv, rect, nullptr, Colors::White, XMConvertToRadians(rotation), XMFLOAT2(desc.Width * 0.5f, desc.Height * 0.5f), SpriteEffects_None);
+	m_pBatches[layer]->Draw(psrv, rect, nullptr, Colors::White, XMConvertToRadians(rotation), XMFLOAT2(desc.Width * 0.5f, desc.Height * 0.5f), SpriteEffects_None);
 
 	pResource->Release();
 	pTexture2D->Release();
@@ -319,7 +319,7 @@ SpriteAnimation GraphicsManager::GetAnimation(wstring name) const
 
 int GraphicsManager::GetNumLayers()
 {
-	return 1;
+	return 5;
 }
 
 bool GraphicsManager::IsTextureLoaded(wstring filename)
