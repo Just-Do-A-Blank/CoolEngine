@@ -20,10 +20,12 @@
 
 //Vertex shaders
 #define DEFAULT_VERTEX_SHADER_NAME L"Engine\\Graphics\\Shaders\\BasicVertex.hlsl"
+#define SPRITE_BATCH_VERTEX_SHADER_NAME L"Engine\\Graphics\\Shaders\\SpriteBatchVertex.hlsl"
 #define SCREENSPACE_VERTEX_SHADER_NAME L"Engine\\Graphics\\Shaders\\ScreenSpaceVertex.hlsl"
 
 //Pixel shaders
 #define DEFAULT_PIXEL_SHADER_NAME L"Engine\\Graphics\\Shaders\\BasicPixel.hlsl"
+#define SPRITE_BATCH_PIXEL_SHADER_NAME L"Engine\\Graphics\\Shaders\\SpriteBatchPixel.hlsl"
 #define TEXT_PIXEL_SHADER_NAME L"Engine\\Graphics\\Shaders\\TextPixel.hlsl"
 
 //Misc

@@ -385,7 +385,7 @@
       <Filter>Engine\EditorUI</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\UUID.h">
-          <Filter>Engine\GameObjects</Filter>
+      <Filter>Engine\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\TileMapCameraGameObject.h">
       <Filter>Engine\GameObjects</Filter>
@@ -579,7 +579,7 @@
       <Filter>Engine\EditorUI</Filter>
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\UUID.cpp">
-          <Filter>Engine\GameObjects</Filter>
+      <Filter>Engine\GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\TileMapCameraGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
@@ -611,6 +611,15 @@
       <Filter>Engine\Graphics\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Engine\Graphics\Shaders\TextPixel.hlsl">
+      <Filter>Engine\Graphics\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\DummyPosTexColor.hlsl">
+      <Filter>Engine\Graphics\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\SpriteBatchVertex.hlsl">
+      <Filter>Engine\Graphics\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\SpriteBatchPixel.hlsl">
       <Filter>Engine\Graphics\Shaders</Filter>
     </FxCompile>
   </ItemGroup>
