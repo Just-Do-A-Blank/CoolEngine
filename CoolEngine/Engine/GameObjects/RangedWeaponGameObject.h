@@ -26,19 +26,16 @@ class RangedWeaponGameObject : public WeaponGameObject
 public:
 	RangedWeaponGameObject(string identifier, CoolUUID uuid);
 	virtual ~RangedWeaponGameObject()override;
-
-	void SetShotCount(int count);
+	
 	void SetAngleInterval(float angle);
 	void SetIsShot(bool shot);
 
-	int GetShotCount();
 	float GetAngleInterval();
 	bool GetIsShot();
 
 private:
-	int m_shotCount;
-	float m_angleInterval;
-	float m_shotSpeed;
+	float m_angleInterval = 0.0f;
+	float m_shotSpeed = 0.0f;
 
-	bool m_isShot;
+	bool m_isShot = false;
 };
