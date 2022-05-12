@@ -39,6 +39,7 @@
 #include "Engine/Tools/TileMapTool.h"
 #include "Engine/Tools/AnimationTool.h"
 #include "Engine/Tools/InGameUITool.h"
+#include "Engine/GameObjects/EditorCameraGameObject.h"
 
 #include "Engine/Managers/Events/EventObserverExamples.h"
 
@@ -73,7 +74,7 @@ ID3D11ShaderResourceView* g_pRTTShaderResourceView;
 
 
 
-CameraGameObject* g_pcamera = nullptr;
+EditorCameraGameObject* g_pcamera = nullptr;
 PlayerGameObject* g_pplayer = nullptr;
 
 TileMap* g_testMap1;
@@ -153,7 +154,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	float farDepth = 1000.0f;
 
 	CoolUUID uuid;
-	g_pcamera = new CameraGameObject("Camera", uuid);
+	g_pcamera = new EditorCameraGameObject("Camera", uuid);
 	g_pcamera->Initialize(cameraPos, cameraForward, cameraUp, windowWidth, windowHeight, nearDepth, farDepth);
 
 	GameManager::GetInstance()->SetCamera(g_pcamera);
@@ -860,6 +861,7 @@ void Update()
 
 #if EDITOR
 	g_peditorUI->Update();
+	g_pcamera->Update();
 #endif
 
 	if (g_ptoolBase != nullptr)

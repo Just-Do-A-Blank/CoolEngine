@@ -1,17 +1,17 @@
-#include "TileMapCameraGameObject.h"
+#include "EditorCameraGameObject.h"
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/Managers/GameManager.h"
 
-TileMapCameraGameObject::TileMapCameraGameObject(string identifier, CoolUUID uuid) : CameraGameObject(identifier, uuid)
+EditorCameraGameObject::EditorCameraGameObject(string identifier, CoolUUID uuid) : CameraGameObject(identifier, uuid)
 {
 
 }
 
-TileMapCameraGameObject::~TileMapCameraGameObject()
+EditorCameraGameObject::~EditorCameraGameObject()
 {
 }
 
-void TileMapCameraGameObject::Initialize(XMFLOAT3& position, XMFLOAT3& forwardVector, XMFLOAT3& upVector, float& windowWidth, float& windowHeight, float& nearDepth, float& farDepth)
+void EditorCameraGameObject::Initialize(XMFLOAT3& position, XMFLOAT3& forwardVector, XMFLOAT3& upVector, float& windowWidth, float& windowHeight, float& nearDepth, float& farDepth)
 {
 	CameraGameObject::Initialize(position, forwardVector, upVector, windowWidth, windowHeight, nearDepth, farDepth);
 
@@ -19,7 +19,7 @@ void TileMapCameraGameObject::Initialize(XMFLOAT3& position, XMFLOAT3& forwardVe
 	EventManager::Instance()->AddClient(EventType::KeyReleased, this);
 }
 
-void TileMapCameraGameObject::Handle(Event* e)
+void EditorCameraGameObject::Handle(Event* e)
 {
 	switch (e->GetEventID())
 	{
@@ -33,7 +33,7 @@ void TileMapCameraGameObject::Handle(Event* e)
 	}
 }
 
-void TileMapCameraGameObject::KeyPressed(KeyPressedEvent* e)
+void EditorCameraGameObject::KeyPressed(KeyPressedEvent* e)
 {
 	if (e->GetKeyCode() == VK_SHIFT)
 	{
@@ -67,7 +67,7 @@ void TileMapCameraGameObject::KeyPressed(KeyPressedEvent* e)
 	}
 }
 
-void TileMapCameraGameObject::KeyReleased(KeyReleasedEvent* e)
+void EditorCameraGameObject::KeyReleased(KeyReleasedEvent* e)
 {
 	if (e->GetKeyCode() == VK_SHIFT)
 	{

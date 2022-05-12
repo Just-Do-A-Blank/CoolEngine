@@ -385,9 +385,9 @@
       <Filter>Engine\EditorUI</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\UUID.h">
-          <Filter>Engine\GameObjects</Filter>
+      <Filter>Engine\GameObjects</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\GameObjects\TileMapCameraGameObject.h">
+    <ClInclude Include="Engine\GameObjects\EditorCameraGameObject.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Includes\json.hpp">
@@ -579,9 +579,9 @@
       <Filter>Engine\EditorUI</Filter>
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\UUID.cpp">
-          <Filter>Engine\GameObjects</Filter>
+      <Filter>Engine\GameObjects</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GameObjects\TileMapCameraGameObject.cpp">
+    <ClCompile Include="Engine\GameObjects\EditorCameraGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Managers\SceneGraph.cpp">
