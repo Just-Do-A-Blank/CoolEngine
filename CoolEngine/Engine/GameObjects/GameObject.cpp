@@ -19,6 +19,16 @@ GameObject::GameObject(string identifier, CoolUUID uuid)
 	m_gameObjectType = GameObjectType::BASE;
 }
 
+GameObject::GameObject(json data, int index)
+{
+
+	json j = data["GUID"];
+	json j2 = data["Name"];
+
+	m_UUID = CoolUUID(j[index]);
+	m_identifier = j2[index];
+}
+
 void GameObject::Update()
 {
 	if (m_pTest != nullptr)

@@ -8,14 +8,12 @@ class TileMapCameraGameObject : public CameraGameObject, public Observer
 {
 public:
 	TileMapCameraGameObject(string identifier, CoolUUID uuid);
+	TileMapCameraGameObject(json data, int index);
 
 	void Initialize(XMFLOAT3& position, XMFLOAT3& forwardVector, XMFLOAT3& upVector,
 		float& windowWidth, float& windowHeight, float& nearDepth, float& farDepth) override;
 
 	void Handle(Event* e) override;
-
-	void KeyPressed(KeyPressedEvent* e);
-	void KeyReleased(KeyReleasedEvent* e);
 
 	void Serialize(json& jsonData);
 	void Deserialize(json& jsonData);

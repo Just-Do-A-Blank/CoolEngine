@@ -157,9 +157,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	float farDepth = 1000.0f;
 
 	CoolUUID uuid;
-	SimpleFileIO::LoadScene("TheLongAwaitedCringe2");
-	
-	json j = FileIO::LoadJson("TheLongAwaitedCringe2.json");
+	//SimpleFileIO::LoadScene("TheLongAwaitedCringe2", "");
 
 	g_pcamera = new CameraGameObject("Camera", uuid);
 	g_pcamera->Initialize(cameraPos, cameraForward, cameraUp, windowWidth, windowHeight, nearDepth, farDepth);
@@ -330,7 +328,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	GameManager::GetInstance()->GetTimer()->Tick();
 
 	SimpleFileIO::SaveScene("TheLongAwaitedCringe2");
-	SimpleFileIO::LoadScene("TheLongAwaitedCringe2");
+	SimpleFileIO::LoadScene("TheLongAwaitedCringe2", "TestScene");
 
 #if _DEBUG
 	DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect("DebugRect1", XMFLOAT3(-100.0f, -300.0f, 0.0f), objectScale, DebugDrawManager::DebugColour::BEIGE);

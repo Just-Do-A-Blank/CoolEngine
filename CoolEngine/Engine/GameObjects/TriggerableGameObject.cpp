@@ -21,6 +21,16 @@ TriggerableGameObject::TriggerableGameObject(string identifier, CoolUUID uuid) :
     EventManager::Instance()->AddClient(EventType::TriggerHold, this);
 }
 
+TriggerableGameObject::TriggerableGameObject(json& data, int index) : RenderableCollidableGameObject(data, index)
+{
+    EventManager::Instance()->AddClient(EventType::CollisionEnter, this);
+    EventManager::Instance()->AddClient(EventType::CollisionExit, this);
+    EventManager::Instance()->AddClient(EventType::CollisionHold, this);
+    EventManager::Instance()->AddClient(EventType::TriggerEnter, this);
+    EventManager::Instance()->AddClient(EventType::TriggerExit, this);
+    EventManager::Instance()->AddClient(EventType::TriggerHold, this);
+}
+
 TriggerableGameObject::~TriggerableGameObject()
 {
     EventManager::Instance()->RemoveClientEvent(EventType::CollisionEnter, this);

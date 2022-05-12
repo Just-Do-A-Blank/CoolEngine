@@ -9,7 +9,7 @@ EnemyGameObject::EnemyGameObject(string identifier, CoolUUID uuid) : CharacterGa
 
 EnemyGameObject::EnemyGameObject(json data, int index) : CharacterGameObject(data, index)
 {
-
+	m_gameObjectType |= GameObjectType::ENEMY;
 }
 
 

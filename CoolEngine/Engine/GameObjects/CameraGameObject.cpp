@@ -7,16 +7,22 @@ CameraGameObject::CameraGameObject(string identifier, CoolUUID uuid) : GameObjec
 
 CameraGameObject::CameraGameObject(json& data, int index) : GameObject(data[index]["Name"], CoolUUID(data["GUID"]))
 {
-	m_transform->SetPosition(XMFLOAT3(data[index]["Position"][0], data[index]["Position"][1], data[index]["Position"][2]));	
-	m_transform->SetRotation(XMFLOAT3(data[index]["Rotation"][0], data[index]["Rotation"][1], data[index]["Rotation"][2]));
-	m_transform->SetScale(XMFLOAT3(data[index]["Scale"][0], data[index]["Scale"][1], data[index]["Scale"][2]));
+	json j = data["Position"];
+	json j2 = data["Rotation"];
+	json j3 = data["Scale"];
+	json j4 = data["Window Height"];
+	json j5 = data["Window Width"];
+	json j6 = data["Near Depth"];
+	json j7 = data["Far Depth"];
 
-	m_windowHeight = data[index]["Window Height"];
-	m_windowWidth = data[index]["Window Width"];
 
-	m_nearDepth = data[index]["Near Depth"];
-	m_farDepth = data[index]["Far Depth"];
-
+	m_transform->SetPosition(XMFLOAT3(j[index][0], j[index][1], j[index][2]));
+	m_transform->SetRotation(XMFLOAT3(j2[index][0], j2[index][1], j2[index][2]));
+	m_transform->SetScale(XMFLOAT3(j3[index][0], j3[index][1], j3[index][2]));
+	m_windowHeight = j4[index];
+	m_windowWidth = j5[index];
+	m_nearDepth = j6[index];
+	m_farDepth = j7[index];
 
 	CreateViewMatrix();
 	CreateProjectionMatrix();

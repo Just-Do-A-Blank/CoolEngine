@@ -13,7 +13,7 @@ PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : Character
 	m_gameObjectType |= GameObjectType::PLAYER;
 }
 
-PlayerGameObject::PlayerGameObject(json data, int index) : CharacterGameObject(json, index)
+PlayerGameObject::PlayerGameObject(json data, int index) : CharacterGameObject(data, index)
 {
 	m_gameObjectType |= GameObjectType::PLAYER;
 }
@@ -27,17 +27,10 @@ PlayerGameObject::~PlayerGameObject()
 	EventManager::Instance()->RemoveClientEvent(EventType::MouseMoved, this);
 }
 
-}
+
 
 void PlayerGameObject::Serialize(json& jsonData)
 {
-	//int gUID = ;
-	std::string gUID = "GUID: ";
-
-	std::string name = "Name: ";
-	//name.append();
-
-
 	float position[3] = { m_transform->GetPosition().x ,m_transform->GetPosition().y ,m_transform->GetPosition().z };
 	float rotation[3] = { m_transform->GetRotation().x ,m_transform->GetRotation().y ,m_transform->GetRotation().z };
 	float scale[3] = { m_transform->GetScale().x ,m_transform->GetScale().y ,m_transform->GetScale().z };

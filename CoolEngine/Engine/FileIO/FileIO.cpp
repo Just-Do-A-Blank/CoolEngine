@@ -1559,15 +1559,15 @@ json FileIO::PackJson(GameObject* dataToPack, int count)
 	return dataDestination;
 }
 
-void SimpleFileIO::LoadScene(std::string location)
+void SimpleFileIO::LoadScene(std::string location, std::string sceneIdentifier)
 {
 	location.append(".json");
 	ifstream fileIn(location);
 	json dataIn;
 	fileIn >> dataIn;
 
-
-
+//	UIManager::GetInstance()->Deserialize(dataIn);
+	GameManager::GetInstance()->Deserialize(dataIn[sceneIdentifier]);
 }
 
 void SimpleFileIO::SaveScene(std::string location)
@@ -1577,16 +1577,9 @@ void SimpleFileIO::SaveScene(std::string location)
 
 	json outData;
 
-	GameManager* gameManager = GameManager::GetInstance();
-	Scene* scene = gameManager->GetCurrentScene();
 
-
-	std::vector<GameObject*> gmVector = gameManager->GetAllGameObjects();
-		
-	for (size_t i = 0; i < gmVector.size(); i++)
-	{
-		gmVector[i]->Serialize(outData);
-	}
+	//UIManager::GetInstance()->Serialize(outData);
+	GameManager::GetInstance()->Serialize(outData);
 
 
 	fileOut << outData;
@@ -1594,171 +1587,7 @@ void SimpleFileIO::SaveScene(std::string location)
 
 void SimpleFileIO::LoadGameObject(const char* fileAddress)
 {
-	//json data = LoadJsonFile(fileAddress);
 
-	//GameManager* gameManager = GameManager::GetInstance();
-
-	////GameObject gameObject((std::string)data.at(0)["Name"]);
-	//gameObject.GetTransform()->SetPosition(XMFLOAT3(data.at(0)["Position"][0], data.at(0)["Position"][1], data.at(0)["Position"][2]));
-	//gameObject.GetTransform()->SetRotation(XMFLOAT3(data.at(0)["Rotation"][0], data.at(0)["Rotation"][1], data.at(0)["Rotation"][2]));
-	//gameObject.GetTransform()->SetScale(XMFLOAT3(data.at(0)["Scale"][0], data.at(0)["Scale"][1], data.at(0)["Scale"][2]));
-
-	//if (data.at(0)["IsRenderable"] && data.at(0)["IsCollideable"])
-	//{
-	//	RenderableCollidableGameObject* renderColliderObject = new RenderableCollidableGameObject();
-
-	//	*renderColliderObject->GetTransform() = *gameObject.GetTransform();
-
-	//	//renderColliderObject->m_identifier = (std::string)data.at(0)["Name"];
-
-	//	if (data.at(0)["ColliderType"] == "CircleCollider")
-	//	{
-	//		Circle* pCircle = new Circle();
-	//		renderColliderObject->SetShape(pCircle);
-	//		pCircle->SetIsCollidable(true);
-	//		pCircle->SetIsTrigger(data.at(0)["IsTrigger"]);
-	//		pCircle->m_radius = data.at(0)["CircleRadius"];
-	//		pCircle->m_transform = renderColliderObject->GetTransform();
-	//	}
-	//	else
-	//	{
-	//		Box* pbox = new Box(gameObject.GetTransform());
-	//		renderColliderObject->SetShape(pbox);
-	//		pbox->SetIsCollidable(true);
-	//		pbox->SetIsTrigger(data.at(0)["IsTrigger"]);
-	//		pbox->m_transform = renderColliderObject->GetTransform();
-	//	}
-
-	//	renderColliderObject->SetMesh(QUAD_MESH_NAME);
-	//	bool isRenderable = data.at(0)["IsRenderable"];
-	//	renderColliderObject->SetIsRenderable(isRenderable);
-	//	if (data.at(0)["VertexShaderLocation"] == "NULL")
-	//	{
-	//		LOG("NO VERTEX SHADER WAS SPECIFIED")
-	//	}
-	//	else
-	//	{
-	//		wstring location = ToWstring((std::string)data.at(0)["VertexShaderLocation"]);
-	//		renderColliderObject->SetVertexShader(location);
-	//	}
-	//	if (data.at(0)["PixelShaderLocation"] == "NULL")
-	//	{
-	//		LOG("NO PIXEL SHADER WAS SPECIFIED")
-	//	}
-	//	else
-	//	{
-	//		wstring location = ToWstring((std::string)data.at(0)["PixelShaderLocation"]);
-	//		renderColliderObject->SetPixelShader(location);
-	//	}
-	//	if (data.at(0)["AlbedoLocation"] == "NULL")
-	//	{
-	//		renderColliderObject->SetAlbedo(L"Resources/Sprites/Brick.dds");
-	//	}
-	//	else
-	//	{
-	//		wstring location = ToWstring((std::string)data.at(0)["AlbedoLocation"]);
-	//		renderColliderObject->SetAlbedo(location);
-	//	}
-
-	//	std::vector<Frame> framesOfAnimation(data.at(0)["NumberOfAnimations"]);
-
-	//	if (framesOfAnimation.size() > 0)
-	//	{
-	//		for (size_t i = 0; i < framesOfAnimation.size(); ++i)
-	//		{
-	//			wstring animationFile = ToWstring((std::string)data.at(0)["AnimationFile"][i]);
-	//			GraphicsManager::GetInstance()->LoadAnimationFromFile(animationFile);
-	//			std::string name = data.at(0)["AnimationFile"][i];
-	//			SpriteAnimation* sAnimation = &GraphicsManager::GetInstance()->GetAnimation(ToWstring(name));
-	//			renderColliderObject->AddAnimation(name, *sAnimation);
-	//		}
-	//	}
-	//	//gameManager->CreateGameObject(renderColliderObject);
-	//}
-	//if (data.at(0)["IsRenderable"])
-	//{
-
-	//	bool renderable = data.at(0)["IsRenderable"];
-	//	gameObject.ContainsType(GameObjectType::RENDERABLE);
-	//	RenderableGameObject* renderObject = new RenderableGameObject((std::string)data.at(0)["Name"]);
-	//	*renderObject->GetTransform() = *gameObject.GetTransform();
-	//	renderObject->SetMesh(QUAD_MESH_NAME);
-	//	renderObject->SetIsRenderable(renderable);
-	//	if (data.at(0)["VertexShaderLocation"] == "NULL")
-	//	{
-	//		LOG("NO VERTEX SHADER WAS SPECIFIED")
-	//	}
-	//	else
-	//	{
-	//		wstring location = ToWstring((std::string)data.at(0)["VertexShaderLocation"]);
-	//		renderObject->SetVertexShader(location);
-	//	}
-	//	if (data.at(0)["PixelShaderLocation"] == "NULL")
-	//	{
-	//		LOG("NO PIXEL SHADER WAS SPECIFIED")
-	//	}
-	//	else
-	//	{
-	//		wstring location = ToWstring((std::string)data.at(0)["PixelShaderLocation"]);
-	//		renderObject->SetPixelShader(location);
-	//	}
-	//	if (data.at(0)["AlbedoLocation"] == "NULL")
-	//	{
-	//		renderObject->SetAlbedo(L"Resources/Sprites/Brick.dds");
-	//	}
-	//	else
-	//	{
-	//		wstring location = ToWstring((std::string)data.at(0)["AlbedoLocation"]);
-	//		renderObject->SetAlbedo(location);
-	//	}
-
-	//	std::vector<Frame> framesOfAnimation(data.at(0)["NumberOfAnimations"]);
-
-	//	if (framesOfAnimation.size() > 0)
-	//	{
-	//		for (size_t i = 0; i < framesOfAnimation.size(); ++i)
-	//		{
-	//			wstring animationFile = ToWstring((std::string)data.at(0)["AnimationFile"][i]);
-	//			GraphicsManager::GetInstance()->LoadAnimationFromFile(animationFile);
-	//			std::string name = data.at(0)["AnimationFile"][i];
-	//			SpriteAnimation* sAnimation = &GraphicsManager::GetInstance()->GetAnimation(ToWstring(name));
-	//			renderObject->AddAnimation(name, *sAnimation);
-	//		}
-	//	}
-	//	//return renderObject;
-	//}
-
-	//bool trigger = false;
-	//bool collideable = false;
-
-	//if (data.at(0)["IsCollideable"])
-	//{
-	//	//CollidableGameObject* colliderObject = new CollidableGameObject((std::string)data.at(0)["Name"]);
-	//	*colliderObject->GetTransform() = *gameObject.GetTransform();
-
-	//	if (data.at(0)["IsTrigger"])
-	//	{
-	//		trigger = true;
-	//	}
-	//	if (data.at(0)["ColliderType"] == "CircleCollider")
-	//	{
-	//		Circle* pCircle = new Circle();
-	//		colliderObject->SetShape(pCircle);
-	//		pCircle->SetIsCollidable(true);
-	//		pCircle->SetIsTrigger(trigger);
-	//		pCircle->m_radius = data.at(0)["CircleRadius"];
-	//		pCircle->m_transform = gameObject.GetTransform();
-	//	}
-	//	else
-	//	{
-	//		Box* pbox = new Box(gameObject.GetTransform());
-	//		colliderObject->SetShape(pbox);
-	//		pbox->SetIsCollidable(true);
-	//		pbox->SetIsTrigger(trigger);
-	//		pbox->m_transform = gameObject.GetTransform();
-	//	}
-	//	//return colliderObject;
-	//}
 }
 
 json SimpleFileIO::LoadJsonFile(const char* fileAddress)
@@ -1793,4 +1622,7 @@ std::wstring SimpleFileIO::ToWstring(std::string& string)
 	return wide;
 }
 
-
+json JsonSerializer::Deserialize(std::string obj)
+{
+	return json();
+}

@@ -5,4 +5,5 @@ class InteractableGameObject : public TriggerableGameObject
 {
 public:
 	InteractableGameObject(string identifier, CoolUUID uuid);
+	InteractableGameObject(json& json, int index);
 };

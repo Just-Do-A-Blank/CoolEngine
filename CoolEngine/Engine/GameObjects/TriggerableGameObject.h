@@ -9,6 +9,7 @@ class TriggerableGameObject : public RenderableCollidableGameObject, public Obse
 public:
 	TriggerableGameObject();
 	TriggerableGameObject(string identifier, CoolUUID uuid);
+	TriggerableGameObject(json& data, int index);
     ~TriggerableGameObject();
 
     /// <summary>

@@ -21,11 +21,59 @@ RenderableGameObject::RenderableGameObject(json data, int index) : GameObject(da
 {
 	if (m_gameObjectType == GameObjectType::BASE)
 	{
-		m_gameObjectType |= GameObjectType::RENDERABLE;
-		m_transform->SetPosition(XMFLOAT3(data[index]["Position"][0], data[index]["Position"][1], data[index]["Position"][2]));
-		m_transform->SetRotation(XMFLOAT3(data[index]["Rotation"][0], data[index]["Rotation"][1], data[index]["Rotation"][2]));
-		m_transform->SetScale(XMFLOAT3(data[index]["Scale"][0], data[index]["Scale"][1], data[index]["Scale"][2]));
-		m_layer = data[index]["Layers"];
+		int i = 0;
+
+		json j = data["Position"];
+		json j2 = data["Rotation"];
+		json j3 = data["Scale"];
+		json j4 = data["Layer"];
+
+		m_transform->SetPosition(XMFLOAT3(j[index][0], j[index][1], j[index][2]));
+		m_transform->SetRotation(XMFLOAT3(j2[index][0], j2[index][1], j2[index][2]));
+		m_transform->SetScale(XMFLOAT3(j3[index][0], j3[index][1], j3[index][2]));
+		m_layer = j4[index];
+	/*	for (auto it = j.begin(); it != j.end(); ++it)
+		{
+			if (i == index)
+			{
+				m_transform->SetPosition(XMFLOAT3(it.value()[0], it.value()[1], it.value()[2]));
+			}
+			++i;
+		}
+
+		i = 0;
+
+		for (auto it = j2.begin(); it != j2.end(); ++it)
+		{
+			if (i == index)
+			{
+				m_transform->SetRotation(XMFLOAT3(it.value()[0], it.value()[1], it.value()[2]));
+			}
+			++i;
+		}
+
+		i = 0;
+
+		for (auto it = j3.begin(); it != j3.end(); ++it)
+		{
+			if (i == index)
+			{
+				m_transform->SetScale(XMFLOAT3(it.value()[0], it.value()[1], it.value()[2]));
+			}
+			++i;
+		}
+
+		i = 0;
+
+		for (auto it = j4.begin(); it != j4.end(); ++it)
+		{
+			if (i == index)
+			{
+				m_layer = it.value();
+			}
+			++i;
+		}*/
+
 		InitGraphics();
 	}
 	else

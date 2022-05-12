@@ -49,6 +49,7 @@ protected:
 public:
 	GameObject();
 	GameObject(string identifier, CoolUUID uuid);
+	GameObject(json data, int index);
 
 	virtual void Update();
 

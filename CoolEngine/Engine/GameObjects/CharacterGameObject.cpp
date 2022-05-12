@@ -10,16 +10,21 @@ CharacterGameObject::CharacterGameObject(string identifier, CoolUUID uuid) : Tri
 	m_gameObjectType |= GameObjectType::CHARACTER;
 }
 
-CharacterGameObject::CharacterGameObject(json data, int index) : RenderableCollidableGameObject(data, index)
+CharacterGameObject::CharacterGameObject(json data, int index) : TriggerableGameObject(data, index)
 {
-	m_gameObjectType |= GameObjectType::CHARACTER;
-	m_transform->SetPosition(XMFLOAT3(data[index]["Position"][0], data[index]["Position"][1], data[index]["Position"][2]));
-	m_transform->SetRotation(XMFLOAT3(data[index]["Rotation"][0], data[index]["Rotation"][1], data[index]["Rotation"][2]));
-	m_transform->SetScale(XMFLOAT3(data[index]["Scale"][0], data[index]["Scale"][1], data[index]["Scale"][2]));
-	m_layer = data[index]["Layers"];
-	m_health = data[index]["Health"];
-	m_moveSpeed = data[index]["Movement Speed"];
-	
+	json j = data["Position"];
+	json j2 = data["Rotation"];
+	json j3 = data["Scale"];
+	json j4 = data["Layer"];
+	json j5 = data["Movement Speed"];
+	json j6 = data["Health"];
+
+	m_transform->SetPosition(XMFLOAT3(j[index][0], j[index][1], j[index][2]));
+	m_transform->SetRotation(XMFLOAT3(j2[index][0], j2[index][1], j2[index][2]));
+	m_transform->SetScale(XMFLOAT3(j3[index][0], j3[index][1], j3[index][2]));
+	m_layer = j4[index];
+	m_moveSpeed = j5[index];
+	m_health = j6[index];
 }
 
 CharacterGameObject::~CharacterGameObject()
@@ -35,11 +40,6 @@ void CharacterGameObject::Update()
 void CharacterGameObject::Serialize(json& jsonData)
 {
 
-	//int gUID = ;
-	std::string gUID = "GUID: ";
-
-	std::string name = "Name: ";
-	//name.append();
 
 
 	float position[3] = { m_transform->GetPosition().x ,m_transform->GetPosition().y ,m_transform->GetPosition().z };
