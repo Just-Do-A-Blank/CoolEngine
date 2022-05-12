@@ -17,7 +17,7 @@ void InGameUITool::Init(ID3D11Device* pdevice)
 	XMFLOAT3 pos = XMFLOAT3(0, 0, 0);
 	XMFLOAT3 scale = XMFLOAT3(100, 100, 1);
 
-	FontManager::GetInstance()->LoadFont(L"Resources/Fonts/ComicSans", "comicSans");
+	FontManager::GetInstance()->LoadFont(L"Resources\\Fonts\\ComicSans", "comicSans");
 	UIManager::GetInstance()->Init(pdevice);
 	UIManager::GetInstance()->CreateCanvas("testCanvas", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
 }
