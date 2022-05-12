@@ -9,7 +9,7 @@
 
 class TileMap;
 class Tile;
-class TileMapCameraGameObject;
+class EditorCameraGameObject;
 
 class TileMapTool : public ToolBase, public Observer
 {
@@ -29,7 +29,7 @@ private:
 	void CreateSelectDimensionsUI();
 
 	TileMap* m_ptileMap = nullptr;
-	TileMapCameraGameObject* m_pcamera = nullptr;
+	EditorCameraGameObject* m_pcamera = nullptr;
 
 	bool m_selectingDimensions = true;
 
