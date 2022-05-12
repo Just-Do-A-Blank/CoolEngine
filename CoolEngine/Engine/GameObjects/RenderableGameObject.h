@@ -14,7 +14,7 @@ class RenderableGameObject : virtual public GameObject
 public:
 	RenderableGameObject();
 	RenderableGameObject(string identifier, CoolUUID uuid);
-	RenderableGameObject(json data, int index);
+	RenderableGameObject(json data, CoolUUID index);
 
 
 	//Getters

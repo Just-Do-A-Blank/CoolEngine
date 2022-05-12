@@ -30,7 +30,7 @@ class EnemyGameObject :
 
 public:
     EnemyGameObject(string identifier, CoolUUID uuid);
-    EnemyGameObject(json data, int index);
+    EnemyGameObject(json data, CoolUUID index);
     void Update();
 
 

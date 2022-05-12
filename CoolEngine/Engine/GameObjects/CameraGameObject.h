@@ -14,7 +14,7 @@ private:
 
 public:
 	CameraGameObject(string identifier, CoolUUID uuid);
-	CameraGameObject(json& data, int index);
+	CameraGameObject(json data, CoolUUID index);
 
     virtual void Initialize(XMFLOAT3& position, XMFLOAT3& forwardVector, XMFLOAT3& upVector,
         float& windowWidth, float& windowHeight, float& nearDepth, float& farDepth);

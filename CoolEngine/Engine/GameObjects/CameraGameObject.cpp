@@ -5,24 +5,13 @@ CameraGameObject::CameraGameObject(string identifier, CoolUUID uuid) : GameObjec
 
 }
 
-CameraGameObject::CameraGameObject(json& data, int index) : GameObject(data[index]["Name"], CoolUUID(data["GUID"]))
+CameraGameObject::CameraGameObject(json data, CoolUUID index) : GameObject(data, index)	
 {
-	json j = data["Position"];
-	json j2 = data["Rotation"];
-	json j3 = data["Scale"];
-	json j4 = data["Window Height"];
-	json j5 = data["Window Width"];
-	json j6 = data["Near Depth"];
-	json j7 = data["Far Depth"];
 
-
-	m_transform->SetPosition(XMFLOAT3(j[index][0], j[index][1], j[index][2]));
-	m_transform->SetRotation(XMFLOAT3(j2[index][0], j2[index][1], j2[index][2]));
-	m_transform->SetScale(XMFLOAT3(j3[index][0], j3[index][1], j3[index][2]));
-	m_windowHeight = j4[index];
-	m_windowWidth = j5[index];
-	m_nearDepth = j6[index];
-	m_farDepth = j7[index];
+	m_windowHeight = data["Window Height"];
+	m_windowWidth =  data["Window Width"];
+	m_nearDepth = data["Near Depth"];
+	m_farDepth = data["Far Depth"];
 
 	CreateViewMatrix();
 	CreateProjectionMatrix();
@@ -85,13 +74,10 @@ void CameraGameObject::Serialize(json& jsonData)
 
 	GameObject::Serialize(jsonData);
 
-	jsonData[std::to_string((int)m_gameObjectType)]["Position"].push_back(position);
-	jsonData[std::to_string((int)m_gameObjectType)]["Rotation"].push_back(rotation);
-	jsonData[std::to_string((int)m_gameObjectType)]["Scale"].push_back(scale);
-	jsonData[std::to_string((int)m_gameObjectType)]["Window Height"].push_back(m_windowHeight);
-	jsonData[std::to_string((int)m_gameObjectType)]["Window Width"].push_back(m_windowWidth);
-	jsonData[std::to_string((int)m_gameObjectType)]["Near Depth"].push_back(m_nearDepth);
-	jsonData[std::to_string((int)m_gameObjectType)]["Far Depth"].push_back(m_farDepth);
+	jsonData["Window Height"].push_back(m_windowHeight);
+	jsonData["Window Width"].push_back(m_windowWidth);
+	jsonData["Near Depth"].push_back(m_nearDepth);
+	jsonData["Far Depth"].push_back(m_farDepth);
 
 }
 

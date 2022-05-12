@@ -10,7 +10,7 @@ CharacterGameObject::CharacterGameObject(string identifier, CoolUUID uuid) : Tri
 	m_gameObjectType |= GameObjectType::CHARACTER;
 }
 
-CharacterGameObject::CharacterGameObject(json data, int index) : TriggerableGameObject(data, index)
+CharacterGameObject::CharacterGameObject(json data, CoolUUID index) : TriggerableGameObject(data, index)
 {
 	json j = data["Position"];
 	json j2 = data["Rotation"];
@@ -19,12 +19,12 @@ CharacterGameObject::CharacterGameObject(json data, int index) : TriggerableGame
 	json j5 = data["Movement Speed"];
 	json j6 = data["Health"];
 
-	m_transform->SetPosition(XMFLOAT3(j[index][0], j[index][1], j[index][2]));
-	m_transform->SetRotation(XMFLOAT3(j2[index][0], j2[index][1], j2[index][2]));
-	m_transform->SetScale(XMFLOAT3(j3[index][0], j3[index][1], j3[index][2]));
-	m_layer = j4[index];
-	m_moveSpeed = j5[index];
-	m_health = j6[index];
+	m_transform->SetPosition(XMFLOAT3(j[0], j[1], j[2]));
+	m_transform->SetRotation(XMFLOAT3(j2[0], j2[1], j2[2]));
+	m_transform->SetScale(XMFLOAT3(j3[0], j3[1], j3[2]));
+	m_layer = j4;
+	m_moveSpeed = j5;
+	m_health = j6;
 }
 
 CharacterGameObject::~CharacterGameObject()
@@ -39,20 +39,10 @@ void CharacterGameObject::Update()
 
 void CharacterGameObject::Serialize(json& jsonData)
 {
-
-
-
-	float position[3] = { m_transform->GetPosition().x ,m_transform->GetPosition().y ,m_transform->GetPosition().z };
-	float rotation[3] = { m_transform->GetRotation().x ,m_transform->GetRotation().y ,m_transform->GetRotation().z };
-	float scale[3] = { m_transform->GetScale().x ,m_transform->GetScale().y ,m_transform->GetScale().z };
-
 	GameObject::Serialize(jsonData);
-	jsonData[std::to_string((int)m_gameObjectType)]["Position"].push_back(position);
-	jsonData[std::to_string((int)m_gameObjectType)]["Rotation"].push_back(rotation);
-	jsonData[std::to_string((int)m_gameObjectType)]["Scale"].push_back(scale);
-	jsonData[std::to_string((int)m_gameObjectType)]["Layers"].push_back(m_layer);
-	jsonData[std::to_string((int)m_gameObjectType)]["Health"].push_back(m_health);
-	jsonData[std::to_string((int)m_gameObjectType)]["Movement Speed"].push_back(m_moveSpeed);
+	TriggerableGameObject::Serialize(jsonData);
+	jsonData["Health"] = m_health;
+	jsonData["Movement Speed"] = m_moveSpeed;
 }
 
 void CharacterGameObject::Deserialize(json& jsonData)

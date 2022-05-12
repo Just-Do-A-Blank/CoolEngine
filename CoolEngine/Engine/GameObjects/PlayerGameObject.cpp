@@ -13,9 +13,14 @@ PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : Character
 	m_gameObjectType |= GameObjectType::PLAYER;
 }
 
-PlayerGameObject::PlayerGameObject(json data, int index) : CharacterGameObject(data, index)
+PlayerGameObject::PlayerGameObject(json data, CoolUUID index) : CharacterGameObject(data, index)
 {
 	m_gameObjectType |= GameObjectType::PLAYER;
+	EventManager::Instance()->AddClient(EventType::KeyPressed, this);
+	EventManager::Instance()->AddClient(EventType::KeyReleased, this);
+	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
+	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
+	EventManager::Instance()->AddClient(EventType::MouseMoved, this);
 }
 
 PlayerGameObject::~PlayerGameObject()
@@ -31,19 +36,7 @@ PlayerGameObject::~PlayerGameObject()
 
 void PlayerGameObject::Serialize(json& jsonData)
 {
-	float position[3] = { m_transform->GetPosition().x ,m_transform->GetPosition().y ,m_transform->GetPosition().z };
-	float rotation[3] = { m_transform->GetRotation().x ,m_transform->GetRotation().y ,m_transform->GetRotation().z };
-	float scale[3] = { m_transform->GetScale().x ,m_transform->GetScale().y ,m_transform->GetScale().z };
-
-
-	GameObject::Serialize(jsonData);
-	jsonData[std::to_string((int)m_gameObjectType)]["Position"].push_back(position);
-	jsonData[std::to_string((int)m_gameObjectType)]["Rotation"].push_back(rotation);
-	jsonData[std::to_string((int)m_gameObjectType)]["Scale"].push_back(scale);
-	jsonData[std::to_string((int)m_gameObjectType)]["Layers"].push_back(m_health);
-	jsonData[std::to_string((int)m_gameObjectType)]["Health"].push_back(m_layer);
-	jsonData[std::to_string((int)m_gameObjectType)]["Movement Speed"].push_back(m_moveSpeed);
-
+	CharacterGameObject::Serialize(jsonData);
 }
 
 void PlayerGameObject::Deserialize(json& jsonData)

@@ -17,62 +17,13 @@ RenderableGameObject::RenderableGameObject(string identifier, CoolUUID uuid) : G
 	m_gameObjectType |= GameObjectType::RENDERABLE;
 }
 
-RenderableGameObject::RenderableGameObject(json data, int index) : GameObject(data[index]["Name"], CoolUUID(data[index]["GUID"]))
+RenderableGameObject::RenderableGameObject(json data, CoolUUID index) : GameObject(data, index)
 {
 	if (m_gameObjectType == GameObjectType::BASE)
 	{
-		int i = 0;
+		m_layer = data["Layer"];
 
-		json j = data["Position"];
-		json j2 = data["Rotation"];
-		json j3 = data["Scale"];
-		json j4 = data["Layer"];
 
-		m_transform->SetPosition(XMFLOAT3(j[index][0], j[index][1], j[index][2]));
-		m_transform->SetRotation(XMFLOAT3(j2[index][0], j2[index][1], j2[index][2]));
-		m_transform->SetScale(XMFLOAT3(j3[index][0], j3[index][1], j3[index][2]));
-		m_layer = j4[index];
-	/*	for (auto it = j.begin(); it != j.end(); ++it)
-		{
-			if (i == index)
-			{
-				m_transform->SetPosition(XMFLOAT3(it.value()[0], it.value()[1], it.value()[2]));
-			}
-			++i;
-		}
-
-		i = 0;
-
-		for (auto it = j2.begin(); it != j2.end(); ++it)
-		{
-			if (i == index)
-			{
-				m_transform->SetRotation(XMFLOAT3(it.value()[0], it.value()[1], it.value()[2]));
-			}
-			++i;
-		}
-
-		i = 0;
-
-		for (auto it = j3.begin(); it != j3.end(); ++it)
-		{
-			if (i == index)
-			{
-				m_transform->SetScale(XMFLOAT3(it.value()[0], it.value()[1], it.value()[2]));
-			}
-			++i;
-		}
-
-		i = 0;
-
-		for (auto it = j4.begin(); it != j4.end(); ++it)
-		{
-			if (i == index)
-			{
-				m_layer = it.value();
-			}
-			++i;
-		}*/
 
 		InitGraphics();
 	}
@@ -226,16 +177,7 @@ bool RenderableGameObject::PlayAnimation(std::string name)
 void RenderableGameObject::Serialize(json& jsonData)
 {
 	GameObject::Serialize(jsonData);
-
-	float position[3] = { m_transform->GetPosition().x ,m_transform->GetPosition().y ,m_transform->GetPosition().z };
-	float rotation[3] = { m_transform->GetRotation().x ,m_transform->GetRotation().y ,m_transform->GetRotation().z };
-	float scale[3] = { m_transform->GetScale().x ,m_transform->GetScale().y ,m_transform->GetScale().z };
-
-
-	jsonData[std::to_string((int)m_gameObjectType)]["Position"].push_back(position);
-	jsonData[std::to_string((int)m_gameObjectType)]["Rotation"].push_back(rotation);
-	jsonData[std::to_string((int)m_gameObjectType)]["Scale"].push_back(scale);
-	jsonData[std::to_string((int)m_gameObjectType)]["Layers"].push_back(m_layer);
+	jsonData["Layers"] = m_layer;
 }
 
 void RenderableGameObject::Deserialize(json& jsonData)

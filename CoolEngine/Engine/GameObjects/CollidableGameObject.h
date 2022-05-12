@@ -8,7 +8,8 @@ class CollidableGameObject : virtual public GameObject
 public:
 	CollidableGameObject();
 	CollidableGameObject(string identifier, CoolUUID uuid);
-	CollidableGameObject(json data,  int index);
+	CollidableGameObject(json data, CoolUUID index);
+	~CollidableGameObject();
 
 	//Getters
 	Shape* GetShape();

@@ -15,9 +15,35 @@ CollidableGameObject::CollidableGameObject(string identifier, CoolUUID uuid) : G
 	m_gameObjectType |= GameObjectType::COLLIDABLE;
 }
 
-CollidableGameObject::CollidableGameObject(json data, int index) : GameObject(data, index)
+CollidableGameObject::CollidableGameObject(json data, CoolUUID index) : GameObject(data, index)
 {
+	json shape = data["Shape"];
 	m_gameObjectType |= GameObjectType::COLLIDABLE;
+
+	if (shape != "NULL")
+	{
+		if (shape == "Circle")
+		{
+			json radius = data["Radius"];
+			m_pcollider = new Circle(m_transform, radius);
+		}
+		else
+		{
+			json height = data["Half Size"];
+			XMFLOAT2 halfHeight = { height[0],   height[1] };
+			m_pcollider = new Box(m_transform, halfHeight);
+		}
+	}
+	else
+	{
+		LOG("No Collider")
+	}
+
+}
+
+CollidableGameObject::~CollidableGameObject()
+{
+	delete m_pcollider;
 }
 
 #if EDITOR
@@ -76,15 +102,26 @@ void CollidableGameObject::CreateEngineUI()
 void CollidableGameObject::Serialize(json& jsonData)
 {
 	GameObject::Serialize(jsonData);
-
-	float position[3] = { m_transform->GetPosition().x ,m_transform->GetPosition().y ,m_transform->GetPosition().z };
-	float rotation[3] = { m_transform->GetRotation().x ,m_transform->GetRotation().y ,m_transform->GetRotation().z };
-	float scale[3] = { m_transform->GetScale().x ,m_transform->GetScale().y ,m_transform->GetScale().z };
-
-	jsonData[std::to_string((int)m_gameObjectType)]["Position"].push_back(position);
-	jsonData[std::to_string((int)m_gameObjectType)]["Rotation"].push_back(rotation);
-	jsonData[std::to_string((int)m_gameObjectType)]["Scale"].push_back(scale);
-	jsonData[std::to_string((int)m_gameObjectType)]["Shape"].push_back(m_pcollider->ShapeTypeToString(m_pcollider->GetShapeType()));
+	if (m_pcollider == nullptr)
+	{
+		jsonData["Shape"].push_back("NULL");
+	}
+	else
+	{
+		jsonData["Shape"] = m_pcollider->ShapeTypeToString(m_pcollider->GetShapeType());
+	}
+	if (m_pcollider->ShapeTypeToString(m_pcollider->GetShapeType()) == "Circle")
+	{
+		jsonData["Radius"] = ((Circle*)m_pcollider)->m_radius;
+		float outputData[2] = { 0.0 };
+		jsonData["Half Size"] =outputData;
+	}
+	else
+	{
+		float halfHeight[2] = { ((Box*)m_pcollider)->m_halfSize.x, ((Box*)m_pcollider)->m_halfSize.y };
+		jsonData["Half Size"] = halfHeight;
+		jsonData["Radius"] = 0;
+	}
 }
 void CollidableGameObject::Deserialize(json& jsonData)
 {

@@ -1,4 +1,6 @@
 #pragma once
+
+#include <stack>
 #include "Engine/Helpers/Timer.h"
 #include "Engine/Structure/Manager.h"
 #include "Engine/Scene/Scene.h"
@@ -8,6 +10,8 @@ class Scene;
 template<class T>class TreeNode;
 class RenderStruct;
 class CameraGameObject;
+//class ParticleSystem;
+//class EnemyGameObject;
 
 
 enum class SceneDesc

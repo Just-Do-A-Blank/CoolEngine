@@ -5,5 +5,5 @@ class WeaponGameObject : public TriggerableGameObject
 {
 public:
 	WeaponGameObject(string identifier, CoolUUID uuid);
-	WeaponGameObject(json& data, int index);
+	WeaponGameObject(json data, CoolUUID index);
 };

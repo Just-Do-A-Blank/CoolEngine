@@ -7,7 +7,7 @@ TileMapCameraGameObject::TileMapCameraGameObject(string identifier, CoolUUID uui
 
 }
 
-TileMapCameraGameObject::TileMapCameraGameObject(json data, int index) : CameraGameObject(data, index)
+TileMapCameraGameObject::TileMapCameraGameObject(json data, CoolUUID index) : CameraGameObject(data, index)
 {
 
 }

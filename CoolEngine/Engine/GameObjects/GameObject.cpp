@@ -19,14 +19,25 @@ GameObject::GameObject(string identifier, CoolUUID uuid)
 	m_gameObjectType = GameObjectType::BASE;
 }
 
-GameObject::GameObject(json data, int index)
+GameObject::GameObject(json data, CoolUUID index)
 {
-
-	json j = data["GUID"];
 	json j2 = data["Name"];
+	json pos = data["Position"];
+	json rot = data["Rotation"];
+	json sca = data["Scale"];
 
-	m_UUID = CoolUUID(j[index]);
-	m_identifier = j2[index];
+	m_transform = new Transform();
+	m_transform->SetPosition(XMFLOAT3(pos[0], pos[1], pos[2]));
+	m_transform->SetPosition(XMFLOAT3(rot[0], rot[1], rot[2]));
+	m_transform->SetPosition(XMFLOAT3(sca[0], sca[1], sca[2]));
+
+	m_UUID = CoolUUID(index);
+	m_identifier = j2;
+}
+
+GameObject::~GameObject()
+{
+	delete m_transform;
 }
 
 void GameObject::Update()
@@ -39,9 +50,13 @@ void GameObject::Update()
 
 void GameObject::Serialize(json& jsonData)
 {
-	jsonData[std::to_string((int)m_gameObjectType)]["GUID"].push_back(*m_UUID);
-	jsonData[std::to_string((int)m_gameObjectType)]["Name"].push_back(m_identifier);
-
+	jsonData["Name"] = m_identifier;
+	float position[3] = { m_transform->GetPosition().x ,m_transform->GetPosition().y ,m_transform->GetPosition().z };
+	float rotation[3] = { m_transform->GetRotation().x ,m_transform->GetRotation().y ,m_transform->GetRotation().z };
+	float scale[3] = { m_transform->GetScale().x ,m_transform->GetScale().y ,m_transform->GetScale().z };
+	jsonData["Position"] = position;
+	jsonData["Rotation"] = rotation;
+	jsonData["Scale"] = scale;
 }
 
 void GameObject::Deserialize(json& jsonData)
