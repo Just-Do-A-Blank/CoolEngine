@@ -16,6 +16,12 @@ Tile::Tile(string identifier, CoolUUID uuid) : RenderableGameObject(identifier, 
 {
 }
 
+void Tile::Init(string identifier, CoolUUID uuid)
+{
+	SetIdentifier(identifier);
+	SetUUID(uuid);
+}
+
 Tile::Tile(wstring path, string identifier, CoolUUID uuid) : RenderableGameObject(identifier, uuid)
 {
 	InitAnimation(path);

@@ -13,6 +13,16 @@ class EditorCameraGameObject;
 class MouseButtonPressedEvent;
 class MouseButtonReleasedEvent;
 
+enum class ToolMode
+{
+	TEXTURE = 0,
+	LAYER,
+	DELETE_TILE,
+	SELECT,
+
+	COUNT
+};
+
 class TileMapTool : public ToolBase, public Observer
 {
 public:
@@ -40,12 +50,20 @@ private:
 	int m_tileMapWidth = 0;
 	int m_tileMapHeight = 0;
 
+	int m_paintLayer = 0;
+
 	float m_tileDimensions = 0;
+
+	std::wstring m_relativePath = L"";
+
+	ID3D11ShaderResourceView* m_ppaintSRV = nullptr;
 
 	DirectX::XMINT2 m_selectedTile = DirectX::XMINT2(-1, -1);
 	DirectX::XMINT2 m_CopiedTile = DirectX::XMINT2(-1, -1);
 
-	TileMapContentBrowser m_contentBrowser;
+	ContentBrowser m_contentBrowser;
+
+	ToolMode m_toolMode = ToolMode::SELECT;
 };
 
 #endif

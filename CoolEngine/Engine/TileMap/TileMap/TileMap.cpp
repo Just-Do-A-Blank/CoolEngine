@@ -294,7 +294,8 @@ bool TileMap::CreateTile(int row, int column, Tile*& ptile)
 		return false;
 	}
 
-	m_tiles[row][column] = new Tile("Tile_" + to_string(row) + "_" + to_string(column), CoolUUID());
+	m_tiles[row][column] = new Tile("", CoolUUID());
+	m_tiles[row][column]->Init("Tile_" + to_string(row) + "_" + to_string(column), CoolUUID());
 
 	XMFLOAT3 scale = GetTransform()->GetWorldScale();
 
@@ -347,6 +348,17 @@ void TileMap::AddAnimPath(Tile* ptile, wstring& path)
 #if TILE_MAP_TOOL
 	ptile->SetAnimIndex(m_animPaths.size() - 1);
 #endif
+}
+
+void TileMap::DeleteTile(int row, int column)
+{
+	if (m_tiles[row][column] == nullptr)
+	{
+		return;
+	}
+
+	delete m_tiles[row][column];
+	m_tiles[row][column] = nullptr;
 }
 
 #if EDITOR
