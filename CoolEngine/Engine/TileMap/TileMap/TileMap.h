@@ -32,7 +32,8 @@ public:
 	//Destructor
 	~TileMap();
 
-	void Update(float d);
+	void Update() override;
+	void Render(RenderStruct& renderStruct);
 
 	bool GetTileFromWorldPos(XMFLOAT2 pos, Tile*& ptile, int* prow = nullptr, int* pcolumn = nullptr);
 	bool GetTileFromMapPos(int x, int y, Tile*& ptile);
@@ -56,6 +57,9 @@ public:
 #if EDITOR
 	void CreateEngineUI() override;
 #endif
+
+	void Init(int width, int height, XMFLOAT3 position, float tileDimensions);
+	void Init(wstring mapPath, XMFLOAT3 position);
 
 protected:
 
