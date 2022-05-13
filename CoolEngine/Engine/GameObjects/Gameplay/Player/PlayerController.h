@@ -8,11 +8,12 @@
 #include "Engine/GameObjects/Gameplay/Character/ECharacterDirectionClass.h"
 #include <Engine/GameObjects/Gameplay/Player/EPLAYERMOVEMENTSTATE.h>
 #include <Engine/GameObjects/Gameplay/Player/PlayerMovementState.h>
+#include <Engine\GameObjects\Gameplay\Player\PlayerMovementParameters.h>
 
 /// <summary>
 /// Handles movement around the scene for the player
 /// </summary>
-class PlayerController : public Observer
+class PlayerController : public Observer, public EditorUIComponent
 {
 public:
     PlayerController(InputsAsGameplayButtons* gameplayButtons, Transform* transformOfTheGameObject);
@@ -27,6 +28,13 @@ public:
     /// Updates the controller
     /// </summary>
     virtual void Update();
+
+#if EDITOR
+    /// <summary>
+    /// Shows engine UI
+    /// </summary>
+    virtual void CreateEngineUI() override;
+#endif
 
 private:
 
@@ -61,18 +69,33 @@ private:
     virtual void ReactToCollisionExit(GameObject* obj1, GameObject* obj2) {}
 
     /// <summary>
-    /// Relates inputs to gameplay buttons
+    /// The state to move the player
     /// </summary>
-    Transform* m_transform;
-
-    /// <summary>
-    /// Relates inputs to gameplay buttons
-    /// </summary>
-    InputsAsGameplayButtons* m_gameplayButtons;
+    PlayerMovementState* m_currentState;
 
     /// <summary>
     /// The state to move the player
     /// </summary>
-    PlayerMovementState* m_currentState;
+    PlayerMovementParameters m_movementParameters;
+
+    /// <summary>
+    /// The max speed of the player in this state
+    /// </summary>
+    int m_moveSpeedMax;
+
+    /// <summary>
+    /// How much to multiply the speed by when actually calulcating the speed
+    /// </summary>
+    float m_speedMultiplierWalking;
+
+    /// <summary>
+    /// How much to move per frame
+    /// </summary>
+    int m_moveSpeedPerFrame;
+
+    /// <summary>
+    /// Drag speed per frame
+    /// </summary>
+    int m_dragSpeedPerFrame;
 };
 

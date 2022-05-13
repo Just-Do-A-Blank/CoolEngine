@@ -21,6 +21,13 @@ public:
     /// </summary>
     virtual void Update() override;
 
+#if EDITOR
+    /// <summary>
+    /// Shows engine UI
+    /// </summary>
+    virtual void CreateEngineUI() override;
+#endif
+
 protected:
 
     /// <summary>
