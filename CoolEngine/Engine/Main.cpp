@@ -822,9 +822,6 @@ void Render()
 		RecreateFrameResources(viewportSize);
 
 		EditorUI::SetViewportSize(viewportSize);
-
-		CameraGameObject* pcamera = GameManager::GetInstance()->GetCamera();
-		pcamera->ReshapeCamera(viewportSize.x, viewportSize.y, 0.01f, 1000.0f);
 	}
 
 	//Pass everything rendered till this point into ImGuiImage
