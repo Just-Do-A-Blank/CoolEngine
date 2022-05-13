@@ -11,6 +11,7 @@
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/GameObjects/EditorCameraGameObject.h"
 #include "Engine/Helpers/Inputs.h"
+#include "Engine/Managers/Events/MouseEvents.h"
 
 #include "Engine/Managers/Events/MouseEvents.h"
 
@@ -19,6 +20,7 @@ void TileMapTool::Init(ID3D11Device* pdevice)
 	ToolBase::Init(pdevice);
 
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
+	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
 
 	//Create camera
 	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, -5);
@@ -101,23 +103,8 @@ void TileMapTool::Update()
 			}
 		}
 	}
-}
 
-void TileMapTool::Destroy()
-{
-	ToolBase::Destroy();
-
-	EventManager::Instance()->RemoveClientEvent(EventType::MouseButtonPressed, this);
-}
-
-void TileMapTool::Handle(Event* e)
-{
-	if (m_selectingDimensions == true)
-	{
-		return;
-	}
-
-	if (((MouseButtonPressedEvent*)e)->GetButton() == VK_LBUTTON)
+	if (m_lmbPressed == true)
 	{
 		POINT point;
 		GetCursorPos(&point);
@@ -150,7 +137,60 @@ void TileMapTool::Handle(Event* e)
 			m_ptileMap->CreateTile(row, column, ptile);
 		}
 
-		m_selectedTile = DirectX::XMINT2(row, column);
+		if (m_contentBrowser.GetSelectedPath() != "" && m_contentBrowser.GetRelativePath() != L"")
+		{
+			ptile->SetAlbedo(m_contentBrowser.GetRelativePath());
+		}
+		else
+		{
+			m_selectedTile = DirectX::XMINT2(row, column);
+		}
+	}
+}
+
+void TileMapTool::Destroy()
+{
+	ToolBase::Destroy();
+
+	EventManager::Instance()->RemoveClientEvent(EventType::MouseButtonPressed, this);
+	EventManager::Instance()->RemoveClientEvent(EventType::MouseButtonReleased, this);
+}
+
+void TileMapTool::Handle(Event* e)
+{
+	if (m_selectingDimensions == true)
+	{
+		return;
+	}
+
+	switch (e->GetEventID())
+	{
+	case EventType::MouseButtonPressed:
+		MouseButtonPressed((MouseButtonPressedEvent*)e);
+		break;
+
+	case EventType::MouseButtonReleased:
+		MouseButtonReleased((MouseButtonReleasedEvent*)e);
+		break;
+
+	default:
+		break;
+	}
+}
+
+void TileMapTool::MouseButtonPressed(MouseButtonPressedEvent* e)
+{
+	if (e->GetButton() == VK_LBUTTON)
+	{
+		m_lmbPressed = true;
+	}
+}
+
+void TileMapTool::MouseButtonReleased(MouseButtonReleasedEvent* e)
+{
+	if (e->GetButton() == VK_LBUTTON)
+	{
+		m_lmbPressed = false;
 	}
 }
 

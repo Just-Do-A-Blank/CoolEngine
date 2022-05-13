@@ -216,6 +216,7 @@
     <ClCompile Include="Engine\Main.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\EditorUI\TileMapContentBrowser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -572,6 +573,7 @@
     <ClInclude Include="Engine\Includes\DirectXTK\DDSTextureLoader.h">
       <Filter>Engine\Includes\DirectXTK</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\EditorUI\TileMapContentBrowser.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Engine\Includes\DirectXTK\SimpleMath.inl" />
