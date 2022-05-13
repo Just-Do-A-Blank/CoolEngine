@@ -39,6 +39,14 @@
     <ClInclude Include="Engine\GameObjects\CameraGameObject.h" />
     <ClInclude Include="Engine\GameObjects\CharacterGameObject.h" />
     <ClInclude Include="Engine\GameObjects\CollidableGameObject.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\Character\ECharacterDirectionClass.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\EGameplayButtonClass.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\GameplayButton.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\EPLAYERMOVEMENTSTATE.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerController.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovementState.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerWalkingState.h" />
     <ClInclude Include="Engine\GameObjects\InteractableGameObject.h" />
     <ClInclude Include="Engine\GameObjects\MeleeWeaponGameObject.h" />
     <ClInclude Include="Engine\GameObjects\RangedWeaponGameObject.h" />
@@ -175,6 +183,9 @@
     <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\CharacterGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\CollidableGameObject.cpp" />
+    <ClCompile Include="Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.cpp" />
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerController.cpp" />
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerWalkingState.cpp" />
     <ClCompile Include="Engine\GameObjects\InteractableGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\MeleeWeaponGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\RangedWeaponGameObject.cpp" />
