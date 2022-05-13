@@ -11,7 +11,7 @@ WeaponGameObject::~WeaponGameObject()
 
 void WeaponGameObject::CalculateWeaponStrength()
 {
-    m_strength = ((float)GetIsDualType() + 0.5f) * (m_statusEffect == Statuses::NONE ? 0.5f : 1.5f) * RoundUp( (10.0f * m_distanceTravelled / m_timeLethal) * m_damage * m_shotCount );
+    m_strength = ((float)GetIsDualType() + 0.5f) * (m_statusEffect == STATUSES::NONE ? 0.5f : 1.5f) * RoundUp( (10.0f * m_distanceTravelled / m_timeLethal) * m_damage * m_shotCount );
 }
 
 void WeaponGameObject::SetLevel(int lvl)
@@ -29,12 +29,12 @@ void WeaponGameObject::SetDamage(int dam)
     m_damage = dam;
 }
 
-void WeaponGameObject::SetElement(Elements element1, Elements element2)
+void WeaponGameObject::SetElement(ELEMENTS element)
 {
-    m_element = (element1 | element2);
+    m_element = element;
 }
 
-void WeaponGameObject::SetStatusEffect(Statuses effect)
+void WeaponGameObject::SetStatusEffect(STATUSES effect)
 {
     m_statusEffect = effect;
 }
@@ -69,12 +69,12 @@ int WeaponGameObject::GetDamage()
     return m_damage;
 }
 
-Elements WeaponGameObject::GetElement()
+ELEMENTS WeaponGameObject::GetElement()
 {
     return m_element;
 }
 
-Statuses WeaponGameObject::GetStatusEffect()
+STATUSES WeaponGameObject::GetStatusEffect()
 {
     return m_statusEffect;
 }
@@ -96,20 +96,7 @@ float WeaponGameObject::GetDistanceTravelled()
 
 bool WeaponGameObject::GetIsDualType()
 {
-    // If the element is one bit, false
-    int mask = 0b1;
-    for (size_t i = 0; i < 4; ++i)
-    {
-        if (m_element == (Elements)mask)
-            return false;
-
-        mask <<= 1;
-    }
-
-    if(m_element != Elements::NONE)
-        return true;
-
-    return false;
+    return ((int)m_element >= (int)ELEMENTS::POISONFIRE);
 }
 
 int WeaponGameObject::RoundUp(float value)
