@@ -16,10 +16,7 @@ void TileMapContentBrowser::CreateFileEntry(const WIN32_FIND_DATAA& kfileData)
 	std::string pathToTest = m_sfilepath + "\\" + std::string(kfileData.cFileName);
 	bool selected = pathToTest == m_selectedFilePath;
 
-	if (ImGui::Selectable("##unique_id", &selected))
-	{
-		
-	}
+	ImGui::Selectable("##unique_id", &selected);
 
 	if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
 	{
