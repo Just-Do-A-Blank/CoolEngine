@@ -71,8 +71,7 @@ protected:
 public:
 	GameObject();
 	GameObject(string identifier, CoolUUID uuid);
-	GameObject(json data, CoolUUID index);
-	~GameObject();
+	GameObject(json data, CoolUUID index); 
 	virtual ~GameObject();
 
 	virtual void Update();

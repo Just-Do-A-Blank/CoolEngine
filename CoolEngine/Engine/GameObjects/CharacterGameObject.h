@@ -17,7 +17,6 @@ public:
 	CharacterGameObject();
 	CharacterGameObject(string identifier, CoolUUID uuid);
 	CharacterGameObject(json data, CoolUUID index);
-	~CharacterGameObject();
 	virtual ~CharacterGameObject()override;
 
 	virtual void Update();

@@ -9,7 +9,6 @@ public:
 	CollidableGameObject();
 	CollidableGameObject(string identifier, CoolUUID uuid);
 	CollidableGameObject(json data, CoolUUID index);
-	~CollidableGameObject();
 	virtual ~CollidableGameObject()override;
 
 	//Getters

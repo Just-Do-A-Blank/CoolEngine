@@ -10,7 +10,6 @@ public:
 
 	PlayerGameObject(string identifier, CoolUUID uuid);
 	PlayerGameObject(json data, CoolUUID index);
-	~PlayerGameObject();
 	virtual ~PlayerGameObject()override;
 
 	void Serialize(json& jsonData);

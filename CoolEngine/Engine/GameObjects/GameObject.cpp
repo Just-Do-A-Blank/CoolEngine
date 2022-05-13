@@ -50,9 +50,6 @@ GameObject::~GameObject()
 {
 	delete m_transform;
 }
-GameObject::~GameObject()
-{
-}
 
 void GameObject::Update()
 {
@@ -65,9 +62,9 @@ void GameObject::Update()
 void GameObject::Serialize(json& jsonData)
 {
 	jsonData["Name"] = m_identifier;
-	float position[3] = { m_transform->GetPosition().x ,m_transform->GetPosition().y ,m_transform->GetPosition().z };
-	float rotation[3] = { m_transform->GetRotation().x ,m_transform->GetRotation().y ,m_transform->GetRotation().z };
-	float scale[3] = { m_transform->GetScale().x ,m_transform->GetScale().y ,m_transform->GetScale().z };
+	float position[3] = { m_transform->GetLocalPosition().x ,m_transform->GetLocalPosition().y ,m_transform->GetLocalPosition().z };
+	float rotation[3] = { m_transform->GetLocalRotation().x ,m_transform->GetLocalRotation().y ,m_transform->GetLocalRotation().z };
+	float scale[3] = { m_transform->GetLocalScale().x ,m_transform->GetLocalScale().y ,m_transform->GetLocalScale().z };
 	jsonData["Position"] = position;
 	jsonData["Rotation"] = rotation;
 	jsonData["Scale"] = scale;

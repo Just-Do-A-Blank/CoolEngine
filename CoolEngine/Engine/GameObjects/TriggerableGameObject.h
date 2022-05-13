@@ -10,7 +10,6 @@ public:
 	TriggerableGameObject();
 	TriggerableGameObject(string identifier, CoolUUID uuid);
 	TriggerableGameObject(json data, CoolUUID index);
-    ~TriggerableGameObject();
     virtual ~TriggerableGameObject()override;
 
     /// <summary>

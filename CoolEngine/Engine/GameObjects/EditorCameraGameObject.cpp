@@ -12,7 +12,6 @@ EditorCameraGameObject::EditorCameraGameObject(json data, CoolUUID index) : Came
 
 }
 
-void TileMapCameraGameObject::Initialize(XMFLOAT3& position, XMFLOAT3& forwardVector, XMFLOAT3& upVector, float& windowWidth, float& windowHeight, float& nearDepth, float& farDepth)
 EditorCameraGameObject::~EditorCameraGameObject()
 {
 }
@@ -81,25 +80,16 @@ void EditorCameraGameObject::KeyReleased(KeyReleasedEvent* e)
 	}
 }
 
-void TileMapCameraGameObject::Serialize(json& jsonData)
+void EditorCameraGameObject::Serialize(json& jsonData)
 {
 
 	GameObject::Serialize(jsonData);
 
-
-	float position[3] = { m_transform->GetPosition().x ,m_transform->GetPosition().y ,m_transform->GetPosition().z };
-	float rotation[3] = { m_transform->GetRotation().x ,m_transform->GetRotation().y ,m_transform->GetRotation().z };
-	float scale[3] = { m_transform->GetScale().x ,m_transform->GetScale().y ,m_transform->GetScale().z };
-
-
-	jsonData[std::to_string((int)m_gameObjectType)]["Position"].push_back(position);
-	jsonData[std::to_string((int)m_gameObjectType)]["Rotation"].push_back(rotation);
-	jsonData[std::to_string((int)m_gameObjectType)]["Scale"].push_back(scale);
-	jsonData[std::to_string((int)m_gameObjectType)]["Speed Boost"].push_back(m_speedBoost);
-	jsonData[std::to_string((int)m_gameObjectType)]["Movement Speed"].push_back(m_moveSpeed);
+	jsonData["Speed Boost"] = m_speedBoost;
+	jsonData["Movement Speed"] = m_moveSpeed;
 
 }
 
-void TileMapCameraGameObject::Deserialize(json& jsonData)
+void EditorCameraGameObject::Deserialize(json& jsonData)
 {
 }

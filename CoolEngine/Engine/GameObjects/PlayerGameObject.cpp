@@ -153,39 +153,39 @@ void PlayerGameObject::CreateEngineUI()
 /// <summary>
 /// Handles any mouse button presses when pressed (frame whilst pressed)
 /// </summary>
-void PlayerGameObject::MouseButtonPressed(MouseButtonPressedEvent* e)
-{
-	if (e->GetButton() == VK_LBUTTON)
-	{
+//void PlayerGameObject::MouseButtonPressed(MouseButtonPressedEvent* e)
+//{
+//	if (e->GetButton() == VK_LBUTTON)
+//	{
+//
+//		//LOG("MB1");
+//
+//	}
+//
+//	if (e->GetButton() == VK_RBUTTON)
+//	{
+//
+//		//LOG("MB2");
+//
+//	}
+//
+//
+//}
 
-		//LOG("MB1");
-
-	}
-
-	if (e->GetButton() == VK_RBUTTON)
-	{
-
-		//LOG("MB2");
-
-	}
-
-
-}
-
-/// <summary>
-/// Handles any mouse button when they are released (first frame).
-/// </summary>
-void PlayerGameObject::MouseButtonReleased(MouseButtonReleasedEvent* e)
-{
-
-}
-
-/// <summary>
-/// Handles the mouse moving across the window
-/// </summary>
-void PlayerGameObject::MouseMoved(MouseMovedEvent* e)
-{
-	//LOG(e->GetX()); 
-	//LOG(e->GetY());
-}
+///// <summary>
+///// Handles any mouse button when they are released (first frame).
+///// </summary>
+//void PlayerGameObject::MouseButtonReleased(MouseButtonReleasedEvent* e)
+//{
+//
+//}
+//
+///// <summary>
+///// Handles the mouse moving across the window
+///// </summary>
+//void PlayerGameObject::MouseMoved(MouseMovedEvent* e)
+//{
+//	//LOG(e->GetX()); 
+//	//LOG(e->GetY());
+//}
 #endif

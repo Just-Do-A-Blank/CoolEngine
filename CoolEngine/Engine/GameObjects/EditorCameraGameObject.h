@@ -7,9 +7,8 @@
 class EditorCameraGameObject : public CameraGameObject, public Observer
 {
 public:
-	TileMapCameraGameObject(string identifier, CoolUUID uuid);
-	TileMapCameraGameObject(json data, CoolUUID index);
 	EditorCameraGameObject(string identifier, CoolUUID uuid);
+	EditorCameraGameObject(json data, CoolUUID index);
 	virtual ~EditorCameraGameObject()override;
 
 	void Initialize(XMFLOAT3& position, XMFLOAT3& forwardVector, XMFLOAT3& upVector,

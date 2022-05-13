@@ -5,17 +5,17 @@ CameraGameObject::CameraGameObject(string identifier, CoolUUID uuid) : GameObjec
 
 }
 
-CameraGameObject::CameraGameObject(json data, CoolUUID index) : GameObject(data, index)	
+CameraGameObject::CameraGameObject(json data, CoolUUID index) : GameObject(data, index)
 {
 
 	m_windowHeight = data["Window Height"];
-	m_windowWidth =  data["Window Width"];
+	m_windowWidth = data["Window Width"];
 	m_nearDepth = data["Near Depth"];
 	m_farDepth = data["Far Depth"];
 
 	CreateViewMatrix();
 	CreateProjectionMatrix();
-
+}
 CameraGameObject::~CameraGameObject()
 {
 }
@@ -69,11 +69,6 @@ void CameraGameObject::Update()
 
 void CameraGameObject::Serialize(json& jsonData)
 {
-	float position[3] = { m_transform->GetPosition().x ,m_transform->GetPosition().y ,m_transform->GetPosition().z };
-	float rotation[3] = { m_transform->GetRotation().x ,m_transform->GetRotation().y ,m_transform->GetRotation().z };
-	float scale[3] = { m_transform->GetScale().x ,m_transform->GetScale().y ,m_transform->GetScale().z };
-
-
 	GameObject::Serialize(jsonData);
 
 	jsonData["Window Height"].push_back(m_windowHeight);

@@ -44,8 +44,6 @@ CollidableGameObject::CollidableGameObject(json data, CoolUUID index) : GameObje
 CollidableGameObject::~CollidableGameObject()
 {
 	delete m_pcollider;
-CollidableGameObject::~CollidableGameObject()
-{
 }
 
 #if EDITOR
