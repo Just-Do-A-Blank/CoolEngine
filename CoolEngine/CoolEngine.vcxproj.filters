@@ -572,6 +572,9 @@
     <ClInclude Include="Engine\Includes\DirectXTK\DDSTextureLoader.h">
       <Filter>Engine\Includes\DirectXTK</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovementParameters.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Engine\Includes\DirectXTK\SimpleMath.inl" />

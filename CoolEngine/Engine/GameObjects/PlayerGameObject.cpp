@@ -119,3 +119,14 @@ void PlayerGameObject::Update()
     m_playerController->Update();
 }
 
+#if EDITOR
+/// <summary>
+/// Shows engine UI
+/// </summary>
+void PlayerGameObject::CreateEngineUI()
+{
+    CharacterGameObject::CreateEngineUI();
+
+    m_playerController->CreateEngineUI();
+}
+#endif

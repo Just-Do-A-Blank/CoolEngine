@@ -2,11 +2,22 @@
 #include "Engine/Managers/GameManager.h"
 #include <Engine\Managers\Events\EventManager.h>
 #include "Engine/GameObjects/Gameplay/Player/PlayerWalkingState.h"
+#include <Engine\Includes\IMGUI\imgui.h>
+#include <Engine\EditorUI\EditorUI.h>
 
 PlayerController::PlayerController(InputsAsGameplayButtons* gameplayButtons, Transform* transformOfTheGameObject)
 {
-    m_gameplayButtons = gameplayButtons;
-    m_transform = transformOfTheGameObject;
+    m_moveSpeedMax = 250;
+    m_speedMultiplierWalking = 0.8f;
+    m_moveSpeedPerFrame = 500;
+    m_dragSpeedPerFrame = 250;
+
+    m_movementParameters.m_transform = transformOfTheGameObject;
+    m_movementParameters.m_gameplayButtons = gameplayButtons;
+    m_movementParameters.m_maxSpeed = &m_moveSpeedMax;
+    m_movementParameters.m_walkingSpeed = &m_speedMultiplierWalking;
+    m_movementParameters.m_moveSpeedPerFrame = &m_moveSpeedPerFrame;
+    m_movementParameters.m_dragSpeedPerFrame = &m_dragSpeedPerFrame;
 
     EventManager::Instance()->AddClient(EventType::KeyPressed, this);
     EventManager::Instance()->AddClient(EventType::KeyReleased, this);
@@ -47,7 +58,7 @@ void PlayerController::Update()
 {
     if (m_currentState == nullptr)
     {
-        m_currentState = new PlayerWalkingState(m_transform, m_gameplayButtons);
+        m_currentState = new PlayerWalkingState(m_movementParameters);
     }
 
     float delta = GameManager::GetInstance()->GetTimer()->DeltaTime();
@@ -58,3 +69,21 @@ void PlayerController::Update()
         m_currentState = nextState;
     }
 }
+
+#if EDITOR
+/// <summary>
+/// Shows engine UI
+/// </summary>
+void PlayerController::CreateEngineUI()
+{
+    EditorUI::FullTitle("Player Controller", 150);
+
+    EditorUI::DragFloat("General Speed", m_speedMultiplierWalking, 150.0f, 0.1f, 0, 100);
+
+    EditorUI::DragInt("MaxSpeed", m_moveSpeedMax, 150.0f, 0.1f, 0, 1000);
+
+    EditorUI::DragInt("Speed Per Frame", m_moveSpeedPerFrame, 150.0f, 0.1f, 0, 1000);
+
+    EditorUI::DragInt("Drag Per Frame", m_dragSpeedPerFrame, 150.0f, 0.1f, 0, 1000);
+}
+#endif

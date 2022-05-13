@@ -5,6 +5,7 @@
 #include "Engine/Managers/Events/MouseEvents.h"
 #include "Engine/Managers/Events/KeyEvents.h"
 #include <Engine/GameObjects/Gameplay/GameplayButtons/InputsAsGameplayButtons.h>
+#include <Engine\GameObjects\Gameplay\Player\PlayerMovementParameters.h>
 
 /// <summary>
 /// Allows the player to walk around
@@ -12,7 +13,7 @@
 class PlayerWalkingState : public PlayerMovementState, public Observer
 {
 public:
-	PlayerWalkingState(Transform* transform, InputsAsGameplayButtons* gameplayButtons);
+	PlayerWalkingState(PlayerMovementParameters movement);
     ~PlayerWalkingState();
 
     /// <summary>
@@ -38,22 +39,26 @@ private:
     /// <summary>
     /// The max speed of the player in this state
     /// </summary>
-    float const m_moveSpeedMax = 200;
+    int *m_moveSpeedMax;
 
     /// <summary>
     /// How much to move the player per frame (time delta factors into this)
     /// </summary>
-    float const m_moveSpeedPerFrame = 500;
+    /// <param name="maxSpeed">The max speed of the player in this state</param>
+    /// <returns>How much to move the player per frame</returns>
+    int* m_moveSpeedPerFrame;
 
     /// <summary>
-    /// How much to drag the player back when buttons are not pressed or 
+    /// How much to drag the player back when buttons are not pressed or direction is changed
     /// </summary>
-    float const m_dragSpeedPerFrame = 250;
+    /// <param name="maxSpeed">The max speed of the player in this state</param>
+    /// <returns>How much to drag the player back when buttons are not pressed or direction is changed</returns>
+    int* m_dragSpeedPerFrame;
 
     /// <summary>
     /// How much to multiply the speed by when actually calulcating the speed
     /// </summary>
-    float const m_speedMultiplier = 0.8f;
+    float *m_speedMultiplier;
 
     /// <summary>
     /// The current speed of the player
