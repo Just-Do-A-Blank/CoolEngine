@@ -7,12 +7,14 @@ public:
 	void Draw();
 
 protected:
+	std::string m_sfilepath;
+	std::string m_sfileName;
+
+	virtual void CreateDirectoryEntry(const WIN32_FIND_DATAA& kfileData);
+	virtual void CreateFileEntry(const WIN32_FIND_DATAA& kfileData);
+	void CreateEntry(const WIN32_FIND_DATAA& kfileData);
 
 private:
-	std::string m_sfilepath;
 
-	void CreateDirectoryEntry(const WIN32_FIND_DATAA& kfileData);
-	void CreateFileEntry(const WIN32_FIND_DATAA& kfileData);
-	void CreateEntry(const WIN32_FIND_DATAA& kfileData);
 };
 

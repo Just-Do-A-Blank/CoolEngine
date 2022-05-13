@@ -34,6 +34,7 @@
     <ClInclude Include="Engine\AI\Pathfinding.h" />
     <ClInclude Include="Engine\EditorUI\ContentBrowser.h" />
     <ClInclude Include="Engine\EditorUI\EditorUI.h" />
+    <ClInclude Include="Engine\EditorUI\TileMapContentBrowser.h" />
     <ClInclude Include="Engine\FileIO\FileIO.h" />
     <ClInclude Include="Engine\FileIO\FileIOCache.h" />
     <ClInclude Include="Engine\GameObjects\CameraGameObject.h" />
@@ -180,6 +181,7 @@
     <ClCompile Include="Engine\AI\Pathfinding.cpp" />
     <ClCompile Include="Engine\EditorUI\ContentBrowser.cpp" />
     <ClCompile Include="Engine\EditorUI\EditorUI.cpp" />
+    <ClCompile Include="Engine\EditorUI\TileMapContentBrowser.cpp" />
     <ClCompile Include="Engine\FileIO\FileIO.cpp" />
     <ClCompile Include="Engine\FileIO\FileIOCache.cpp" />
     <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp" />

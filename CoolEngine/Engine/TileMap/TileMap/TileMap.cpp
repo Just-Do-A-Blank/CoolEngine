@@ -25,9 +25,7 @@ TileMap::TileMap(wstring mapPath, XMFLOAT3 position, string identifier, CoolUUID
 	Tile::s_ptileMap = this;
 #endif
 
-	m_transform->SetPosition(position);
-
-	Load(mapPath);
+	Init(mapPath, position);
 }
 
 TileMap::TileMap(int width, int height, string identifier, CoolUUID uuid, XMFLOAT3 position, float tileDimensions) : RenderableGameObject(identifier, uuid)
@@ -36,18 +34,7 @@ TileMap::TileMap(int width, int height, string identifier, CoolUUID uuid, XMFLOA
 	Tile::s_ptileMap = this;
 #endif
 
-	m_width = width;
-	m_height = height;
-
-	m_totalTiles = m_width * m_height;
-
-	XMFLOAT3 scale = XMFLOAT3(tileDimensions, tileDimensions, tileDimensions);
-
-	m_transform->SetScale(scale);
-
-	m_transform->SetPosition(position);
-
-	InitMap();
+	Init(width, height, position, tileDimensions);
 }
 
 TileMap::~TileMap()
@@ -59,13 +46,30 @@ TileMap::~TileMap()
 	m_animPaths.resize(0);
 }
 
-void TileMap::Update(float d)
+void TileMap::Update()
 {
 	for (int i = 0; i < m_height; i++)
 	{
 		for (int j = 0; j < m_width; j++)
 		{
-			m_tiles[i][j]->Update();
+			if (m_tiles[i][j] != nullptr)
+			{
+				m_tiles[i][j]->Update();
+			}
+		}
+	}
+}
+
+void TileMap::Render(RenderStruct& renderStruct)
+{
+	for (int i = 0; i < m_height; i++)
+	{
+		for (int j = 0; j < m_width; j++)
+		{
+			if (m_tiles[i][j] != nullptr)
+			{
+				m_tiles[i][j]->Render(renderStruct);
+			}
 		}
 	}
 }
@@ -259,8 +263,17 @@ bool TileMap::GetCoordsFromWorldPos(int* prow, int* pcolumn, const XMFLOAT2& pos
 
 	relativePos = MathHelper::Plus(relativePos, XMFLOAT2(m_width * tileScale.x * 0.5f, m_height * tileScale.y * 0.5f));
 
-	*prow = (relativePos.x / (int)tileScale.x);
-	*pcolumn = ((int)relativePos.y / (int)tileScale.y);
+	if (relativePos.x < 0 || relativePos.y < 0)
+	{
+		*prow = -1;
+		*pcolumn = -1;
+	}
+	else
+	{
+		*prow = (relativePos.x / (int)tileScale.x);
+		*pcolumn = ((int)relativePos.y / (int)tileScale.y);
+	}
+
 
 	if (*prow >= m_width || *pcolumn >= m_height || *prow < 0 || *pcolumn < 0)
 	{
@@ -281,7 +294,7 @@ bool TileMap::CreateTile(int row, int column, Tile*& ptile)
 		return false;
 	}
 
-	m_tiles[row][column] = GameManager::GetInstance()->CreateGameObject<Tile>("Tile_" + to_string(row) + "_" + to_string(column));
+	m_tiles[row][column] = new Tile("Tile_" + to_string(row) + "_" + to_string(column), CoolUUID());
 
 	XMFLOAT3 scale = GetTransform()->GetWorldScale();
 
@@ -408,6 +421,29 @@ void TileMap::CreateEngineUI()
 
 	ImGui::Spacing();
 	ImGui::Separator();
+}
+
+void TileMap::Init(int width, int height, XMFLOAT3 position, float tileDimensions)
+{
+	m_width = width;
+	m_height = height;
+
+	m_totalTiles = m_width * m_height;
+
+	XMFLOAT3 scale = XMFLOAT3(tileDimensions, tileDimensions, tileDimensions);
+
+	m_transform->SetScale(scale);
+
+	m_transform->SetPosition(position);
+
+	InitMap();
+}
+
+void TileMap::Init(wstring mapPath, XMFLOAT3 position)
+{
+	m_transform->SetPosition(position);
+
+	Load(mapPath);
 }
 #endif
 

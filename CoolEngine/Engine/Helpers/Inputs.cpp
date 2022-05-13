@@ -96,16 +96,16 @@ void Inputs::Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam)
 
 
 	case(WM_LBUTTONUP):
-		EventManager::Instance()->AddEvent(new MouseButtonReleasedEvent(*wParam));
+		EventManager::Instance()->AddEvent(new MouseButtonReleasedEvent(VK_LBUTTON));
 		break;
 	case(WM_MBUTTONUP):
-		EventManager::Instance()->AddEvent(new MouseButtonReleasedEvent(*wParam));
+		EventManager::Instance()->AddEvent(new MouseButtonReleasedEvent(VK_MBUTTON));
 		break;
 	case(WM_RBUTTONUP):
-		EventManager::Instance()->AddEvent(new MouseButtonReleasedEvent(*wParam));
+		EventManager::Instance()->AddEvent(new MouseButtonReleasedEvent(VK_RBUTTON));
 		break;
 	case(WM_XBUTTONUP):
-		EventManager::Instance()->AddEvent(new MouseButtonReleasedEvent(*wParam));
+		EventManager::Instance()->AddEvent(new MouseButtonReleasedEvent(VK_XBUTTON1));
 		break;
 
 	case(WM_MOUSEMOVE):
