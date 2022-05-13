@@ -117,18 +117,6 @@ public:
 
 private:
 
-
-	static void LoadGameObject(const char* fileAddress);
-
-	static void LoadTile(const char* fileAddress);
-
-	static void LoadParticle(const char* fileAddress);
-
-	static void LoadMap(const char* fileAddress);
-
-	static json LoadJsonFile(const char* fileAddress);
-
-
 	/// <summary>
 	/// Converts a string to wstring
 	/// </summary>

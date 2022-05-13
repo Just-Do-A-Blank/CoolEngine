@@ -33,6 +33,7 @@ GameObject::GameObject(json data, CoolUUID index)
 
 	m_UUID = CoolUUID(index);
 	m_identifier = j2;
+	m_gameObjectType |= GameObjectType::BASE;
 }
 
 GameObject::~GameObject()

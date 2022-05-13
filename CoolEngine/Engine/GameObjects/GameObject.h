@@ -20,10 +20,29 @@ enum class GameObjectType
 	PARTICLESYSTEM = 64,
     INTERACTABLE = 128,
 	WEAPON = 256,
+	TRIGGERABLE = 512,
 	COUNT
 };
 
 DEFINE_ENUM_FLAG_OPERATORS(GameObjectType);
+
+
+enum class AccumlateType
+{
+	BASE = 1,
+	RENDERABLE  = (int)(GameObjectType::RENDERABLE | GameObjectType::BASE),
+	COLLIDABLE = (int)(GameObjectType::COLLIDABLE | GameObjectType::BASE),
+	COLLIDABLE_RENDERERABLE = (int)(GameObjectType::COLLIDABLE | GameObjectType::RENDERABLE | GameObjectType::BASE),
+	CHARACTER = (int)(GameObjectType::CHARACTER | GameObjectType::COLLIDABLE | GameObjectType::RENDERABLE | GameObjectType::BASE),
+	ENEMY = (int)(GameObjectType::ENEMY | GameObjectType::CHARACTER | GameObjectType::COLLIDABLE | GameObjectType::RENDERABLE | GameObjectType::BASE),
+	PLAYER = (int)(GameObjectType::PLAYER | GameObjectType::CHARACTER | GameObjectType::COLLIDABLE | GameObjectType::RENDERABLE | GameObjectType::BASE),
+	PARTICLESYSTEM = (int)(GameObjectType::PARTICLESYSTEM | GameObjectType::BASE),
+	INTERACTABLE = (int)(GameObjectType::INTERACTABLE | GameObjectType::TRIGGERABLE | GameObjectType::BASE),
+	WEAPON = (int)(GameObjectType::WEAPON | GameObjectType::TRIGGERABLE | GameObjectType::BASE),
+	TRIGGERABLE = (int)(GameObjectType::TRIGGERABLE| GameObjectType::COLLIDABLE | GameObjectType::RENDERABLE| GameObjectType::BASE),
+	COUNT = (int)(GameObjectType::COUNT | GameObjectType::TRIGGERABLE | GameObjectType::WEAPON | GameObjectType::INTERACTABLE | GameObjectType::PARTICLESYSTEM | GameObjectType::PLAYER | GameObjectType::ENEMY | GameObjectType::CHARACTER | GameObjectType::COLLIDABLE | GameObjectType::RENDERABLE | GameObjectType::BASE)
+};
+
 
 class GameObject : public EditorUIComponent
 {

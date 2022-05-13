@@ -327,7 +327,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	GameManager::GetInstance()->GetTimer()->Tick();
 	GameManager::GetInstance()->GetTimer()->Tick();
 
-	//SimpleFileIO::SaveScene("TheLongAwaitedCringe2");
+	SimpleFileIO::SaveScene("TheLongAwaitedCringe2");
  	SimpleFileIO::LoadScene("TheLongAwaitedCringe2", "TestScene");
 
 #if _DEBUG

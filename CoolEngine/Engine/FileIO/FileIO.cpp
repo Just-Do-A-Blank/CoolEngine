@@ -1566,7 +1566,7 @@ void SimpleFileIO::LoadScene(std::string location, std::string sceneIdentifier)
 	json dataIn;
 	fileIn >> dataIn;
 
-//	UIManager::GetInstance()->Deserialize(dataIn);
+	//UIManager::GetInstance()->Deserialize(dataIn);
 	GameManager::GetInstance()->Deserialize(dataIn[sceneIdentifier]);
 }
 
@@ -1578,35 +1578,11 @@ void SimpleFileIO::SaveScene(std::string location)
 	json outData;
 
 
-	//UIManager::GetInstance()->Serialize(outData);
+	UIManager::GetInstance()->Serialize(outData);
 	GameManager::GetInstance()->Serialize(outData);
 
 
 	fileOut << outData;
-}
-
-void SimpleFileIO::LoadGameObject(const char* fileAddress)
-{
-
-}
-
-json SimpleFileIO::LoadJsonFile(const char* fileAddress)
-{
-	json data;
-	std::ifstream file(fileAddress);
-	try
-	{
-		if (file)
-		{
-			file >> data;
-			return data;
-		}
-		throw std::exception("File was not opened");
-	}
-	catch (const std::exception& e)
-	{
-		OutputDebugStringA(e.what());
-	}
 }
 
 std::string SimpleFileIO::ToString(std::wstring& wideString)

@@ -21,15 +21,17 @@ RenderableGameObject::RenderableGameObject(json data, CoolUUID index) : GameObje
 {
 	if (m_gameObjectType == GameObjectType::BASE)
 	{
-		m_layer = data["Layer"];
+		m_layer = data["Layers"];
 
-
+		m_gameObjectType |= GameObjectType::RENDERABLE;
 
 		InitGraphics();
 	}
 	else
 	{
+		m_layer = data["Layers"];
 		InitGraphics();
+		m_gameObjectType |= GameObjectType::RENDERABLE;
 	}
 }
 
