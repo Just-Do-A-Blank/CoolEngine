@@ -42,7 +42,6 @@ void TileMapContentBrowser::CreateFileEntry(const WIN32_FIND_DATAA& kfileData)
 				m_relativePath = m_relativePath.substr(index);
 			}
 		}
-
 	}
 
 	ImGui::SameLine();
