@@ -13,7 +13,6 @@ private:
 	SceneGraph<GameObject>* m_psceneGraph;
 
 	GameObject* m_pselectedGameObject = nullptr;
-	TreeNode<GameObject>* m_pselectedNode = nullptr;
 	TreeNode<GameObject>* m_prootTreeNode = nullptr;
 	
 public:
@@ -34,11 +33,6 @@ private:
 	{
 		return  dynamic_cast<T*>(m_psceneGraph->GetGameObjectUsingIdentifier(identifier));
 	}
-
-	void SelectGameObjectUsingIdentifier(string identifier);
-	void SelectGameObject(GameObject* pgameObject);
-	void SelectGameObjectUsingTreeNode(TreeNode<GameObject>* pnode);
-
 
 	template<typename T>
 	T* CreateGameObject(string identifier, TreeNode<GameObject>* nodeParent = nullptr)
@@ -101,11 +95,11 @@ private:
 		return gameObject;
 	}
 
-	void DeleteSelectedGameObject();
+	void DeleteGameObjectUsingNode(TreeNode<GameObject>* currentNode);
 	void DeleteGameObjectUsingIdentifier(string identifier);
 
 	template<typename T>
-	void DeleteGameObject(T* pgameObject, std::string identifier)
+	void DeleteGameObjectUsingNode(T* pgameObject, std::string identifier)
 	{
 		m_psceneGraph->DeleteGameObject(pgameObject, identifier);
 	}

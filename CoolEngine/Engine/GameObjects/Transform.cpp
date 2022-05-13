@@ -12,7 +12,7 @@ void Transform::Initialize(const XMFLOAT3& position, const XMFLOAT3& rotation, c
 
 void Transform::UpdateMatrix()
 {
-	m_rotationMatrix = XMMatrixRotationRollPitchYaw((-m_localRotation.x/180.0f)*XM_PI, (-m_localRotation.y / 180.0f) * XM_PI, (-m_localRotation.z / 180.0f) * XM_PI);
+	m_rotationMatrix = XMMatrixRotationRollPitchYaw((m_localRotation.x/180.0f)*XM_PI, (m_localRotation.y / 180.0f) * XM_PI, (m_localRotation.z / 180.0f) * XM_PI);
 	m_scaleMatrix = XMMatrixScaling(m_localScale.x, m_localScale.y, m_localScale.z);
 	m_translationalMatrix = XMMatrixTranslation(m_localPosition.x, m_localPosition.y, m_localPosition.z);
 
