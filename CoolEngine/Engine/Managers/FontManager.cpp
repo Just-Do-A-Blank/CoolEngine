@@ -73,7 +73,7 @@ void FontManager::LoadFont(wstring fontFilePath, string fontName)
 	}
 
 	m_fontAtlasMap[fontName] = fontAtlasData;
-	m_fontTexturePathMap[fontName] = fontFilePath;
+	m_fontTexturePathMap[fontName] = fontFilePath + L".dds";
 	m_fontTextureDimension[fontName] = textueDimension;
 }
 

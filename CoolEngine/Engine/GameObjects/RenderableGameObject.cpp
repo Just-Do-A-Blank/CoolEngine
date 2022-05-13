@@ -34,6 +34,9 @@ RenderableGameObject::RenderableGameObject(json data, CoolUUID index) : GameObje
 		m_gameObjectType |= GameObjectType::RENDERABLE;
 	}
 }
+RenderableGameObject::~RenderableGameObject()
+{
+}
 
 void RenderableGameObject::InitGraphics()
 {
@@ -50,17 +53,17 @@ const bool& RenderableGameObject::IsRenderable()
 
 void RenderableGameObject::Render(RenderStruct& renderStruct)
 {
-	if (m_palbedoSRV == nullptr)
-	{
-		return;
-	}
-
 	if (m_pcurrentAnimation != nullptr)
 	{
-		GraphicsManager::GetInstance()->RenderQuad(m_pcurrentAnimation->GetCurrentFrame(), m_transform->GetPosition(), m_transform->GetScale(), m_transform->GetRotation().z, m_layer);
+		GraphicsManager::GetInstance()->RenderQuad(m_pcurrentAnimation->GetCurrentFrame(), m_transform->GetWorldPosition(), m_transform->GetWorldScale(), m_transform->GetWorldRotation().z, m_layer);
 	}
 	else
 	{
+		if (m_palbedoSRV == nullptr)
+		{
+			return;
+		}
+
 		XMMATRIX worldMatrix = m_transform->GetWorldMatrix();
 		XMVECTOR scaleVector;
 		XMVECTOR rotationVector;
@@ -72,7 +75,7 @@ void RenderableGameObject::Render(RenderStruct& renderStruct)
 		XMStoreFloat3(&scale, scaleVector);
 		XMStoreFloat3(&position, positionVector);
 
-		GraphicsManager::GetInstance()->RenderQuad(m_palbedoSRV, position, scale, m_transform->GetAccumulatedRotation().z, m_layer);
+		GraphicsManager::GetInstance()->RenderQuad(m_palbedoSRV, position, scale, m_transform->GetWorldRotation().z, m_layer);
 	}
 }
 

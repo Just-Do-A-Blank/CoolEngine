@@ -13,7 +13,6 @@ private:
 	SceneGraph<GameObject>* m_psceneGraph;
 
 	GameObject* m_pselectedGameObject = nullptr;
-	TreeNode<GameObject>* m_pselectedNode = nullptr;
 	TreeNode<GameObject>* m_prootTreeNode = nullptr;
 	
 public:
@@ -35,13 +34,8 @@ private:
 		return  dynamic_cast<T*>(m_psceneGraph->GetGameObjectUsingIdentifier(identifier));
 	}
 
-	void SelectGameObjectUsingIdentifier(string identifier);
-	void SelectGameObject(GameObject* pgameObject);
-	void SelectGameObjectUsingTreeNode(TreeNode<GameObject>* pnode);
-
-
 	template<typename T>
-	T* CreateGameObject(string identifier)
+	T* CreateGameObject(string identifier, TreeNode<GameObject>* nodeParent = nullptr)
 	{
 		assert(m_psceneGraph != nullptr);
 
@@ -58,13 +52,13 @@ private:
 		}
 		else
 		{
-			if (!m_pselectedGameObject)
+			if (nodeParent == nullptr)
 			{
 				m_psceneGraph->AddSibling(m_prootTreeNode, gameObject);
 			}
 			else
 			{
-				m_psceneGraph->AddChild(m_psceneGraph->GetNodeUsingIdentifier(m_pselectedGameObject->GetIdentifier()), gameObject);
+				m_psceneGraph->AddChild(nodeParent, gameObject);
 			}
 		}
 
@@ -72,7 +66,7 @@ private:
 	}
 
 	template<typename T>
-	T* CreateGameObject(string identifier, CoolUUID uuid)
+	T* CreateGameObject(string identifier, CoolUUID uuid, TreeNode<GameObject>* nodeParent = nullptr)
 	{
 		assert(m_psceneGraph != nullptr);
 
@@ -88,24 +82,24 @@ private:
 		}
 		else
 		{
-			if (!m_pselectedGameObject)
+			if (nodeParent == nullptr)
 			{
 				m_psceneGraph->AddSibling(m_prootTreeNode, gameObject);
 			}
 			else
 			{
-				m_psceneGraph->AddChild(m_psceneGraph->GetNodeUsingIdentifier(m_pselectedGameObject->GetIdentifier()), gameObject);
+				m_psceneGraph->AddChild(nodeParent, gameObject);
 			}
 		}
 
 		return gameObject;
 	}
 
-	void DeleteSelectedGameObject();
+	void DeleteGameObjectUsingNode(TreeNode<GameObject>* currentNode);
 	void DeleteGameObjectUsingIdentifier(string identifier);
 
 	template<typename T>
-	void DeleteGameObject(T* pgameObject, std::string identifier)
+	void DeleteGameObjectUsingNode(T* pgameObject, std::string identifier)
 	{
 		m_psceneGraph->DeleteGameObject(pgameObject, identifier);
 	}

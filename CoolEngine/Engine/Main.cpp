@@ -35,13 +35,11 @@
 #include "Physics/ParticleManager.h"
 #include "Engine/Managers/FontManager.h"
 
-#if TOOL
 #include "Engine/Tools/ToolBase.h"
-
 #include "Engine/Tools/TileMapTool.h"
 #include "Engine/Tools/AnimationTool.h"
 #include "Engine/Tools/InGameUITool.h"
-#endif
+#include "Engine/GameObjects/EditorCameraGameObject.h"
 
 #include "Engine/Managers/Events/EventObserverExamples.h"
 
@@ -76,7 +74,7 @@ ID3D11ShaderResourceView* g_pRTTShaderResourceView;
 
 
 
-CameraGameObject* g_pcamera = nullptr;
+EditorCameraGameObject* g_pcamera = nullptr;
 PlayerGameObject* g_pplayer = nullptr;
 
 TileMap* g_testMap1;
@@ -85,11 +83,10 @@ TileMap* g_testMap2;
 
 #if EDITOR
 EditorUI* g_peditorUI;
-#endif
-
-#if TOOL
 ToolBase* g_ptoolBase = nullptr;
 #endif
+
+
 
 using namespace DirectX;
 
@@ -157,9 +154,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	float farDepth = 1000.0f;
 
 	CoolUUID uuid;
-	//SimpleFileIO::LoadScene("TheLongAwaitedCringe2", "");
-
-	g_pcamera = new CameraGameObject((std::string)"Camera", uuid);
+	g_pcamera = new EditorCameraGameObject("Camera", uuid);
 	g_pcamera->Initialize(cameraPos, cameraForward, cameraUp, windowWidth, windowHeight, nearDepth, farDepth);
 
 	GameManager::GetInstance()->SetCamera(g_pcamera);
@@ -169,26 +164,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameManager->CreateScene("TestScene");
 	pgameManager->SelectSceneUsingIdentifier("TestScene");
 	pgameManager->SelectSceneUsingIdentifier("TestScene");
-
-#if TOOL
-
-#if TILE_MAP_TOOL
-	g_ptoolBase = new TileMapTool();
-#elif ANIMATION_TOOL
-	g_ptoolBase = new AnimationTool();
-#elif IN_GAME_UI_TOOL
-	g_ptoolBase = new InGameUITool();
-	FontManager::GetInstance()->LoadFont("Resources/Fonts/ComicSans.xml", L"Resources/Fonts/ComicSans.dds", "comicSans");
-	UIManager::GetInstance()->Init(g_pd3dDevice);
-	UIManager::GetInstance()->CreateCanvas("testCanvas", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
-	//TextComponent* tc = UIManager::GetInstance()->CreateUIComponent<TextComponent>("TestText", XMFLOAT3(0.0, 20.0, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f));
-	//tc->Init("Cool Engine!", "comicSans", 16, Colors::Yellow, g_pd3dDevice);
-	UIManager::GetInstance()->CreateUIComponent<ImageComponent>("TestUIImage", XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT3(0.9f, 0.9f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
-
-#endif
-
-	g_ptoolBase->Init(g_pd3dDevice);
-#else
 
 	//Music
 	AudioManager::GetInstance()->LoadMusic(TEST_MUSIC);
@@ -327,17 +302,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	GameManager::GetInstance()->GetTimer()->Tick();
 	GameManager::GetInstance()->GetTimer()->Tick();
 
-	SimpleFileIO::SaveScene("TheLongAwaitedCringe2");
- 	SimpleFileIO::LoadScene("TheLongAwaitedCringe2", "TestScene");
-
-#if _DEBUG
-	DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect("DebugRect1", XMFLOAT3(-100.0f, -300.0f, 0.0f), objectScale, DebugDrawManager::DebugColour::BEIGE);
-#endif //_DEBUG
-
-#endif
-
-	//Create test Tile Map
-
 	// Main message loop
 	MSG msg = { 0 };
 	while (WM_QUIT != msg.message)
@@ -360,7 +324,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 #endif
 
 	CleanupDevice();
-
 
 	return (int)msg.wParam;
 }
@@ -790,7 +753,28 @@ void Render()
 
 	for (int i = 0; i < GraphicsManager::GetInstance()->GetNumLayers(); ++i)
 	{
-		GraphicsManager::GetInstance()->GetSpriteBatches()[i]->Begin();
+		GraphicsManager::GetInstance()->GetSpriteBatches()[i]->Begin(SpriteSortMode_Deferred, nullptr, nullptr, nullptr, nullptr, [=]
+		{
+				ID3D11Buffer* pbuffer = GraphicsManager::GetInstance()->m_pperFrameCB->GetBuffer();
+
+				D3D11_VIEWPORT viewport;
+				viewport.TopLeftX = 0;
+				viewport.TopLeftY = 0;
+				viewport.Width = EditorUI::GetViewportSize().x;
+				viewport.Height = EditorUI::GetViewportSize().y;
+				viewport.MinDepth = 0.01f;
+				viewport.MaxDepth = 1.0f;
+
+				g_pImmediateContext->RSSetViewports(1, &viewport);
+				g_pImmediateContext->RSSetState(g_prasterState);
+				g_pImmediateContext->IASetInputLayout(GraphicsManager::GetInstance()->GetInputLayout(GraphicsManager::InputLayouts::POS_TEX_COLOR));
+
+				g_pImmediateContext->VSSetShader(GraphicsManager::GetInstance()->GetVertexShader(SPRITE_BATCH_VERTEX_SHADER_NAME), nullptr, 0);
+				g_pImmediateContext->PSSetShader(GraphicsManager::GetInstance()->GetPixelShader(SPRITE_BATCH_PIXEL_SHADER_NAME), nullptr, 0);
+
+				g_pImmediateContext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pbuffer);
+				g_pImmediateContext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pbuffer);
+		});
 	}
 
 	GameManager* pgamemanager = GameManager::GetInstance();
@@ -809,13 +793,16 @@ void Render()
 
 	UIManager::GetInstance()->Render(renderStruct);
 
-#if TOOL
-	g_ptoolBase->Render();
-#else
+	if (g_ptoolBase != nullptr)
+	{
+		g_ptoolBase->Render();
+	}
+	else
+	{
 #if EDITOR
-	g_peditorUI->DrawEditorUI(g_pd3dDevice);
+		g_peditorUI->DrawEditorUI(g_pd3dDevice, g_ptoolBase);
 #endif
-#endif
+	}
 
 #if EDITOR
 	ImGuiWindowFlags viewportWindowFlags = 0;
@@ -828,16 +815,13 @@ void Render()
 	ImVec2 newViewportSize = ImGui::GetContentRegionAvail();
 	XMFLOAT2 oldViewportSize = EditorUI::GetViewportSize();
 
-	if (oldViewportSize.x != newViewportSize.x || oldViewportSize.y != newViewportSize.y)
+	if ((oldViewportSize.x != newViewportSize.x || oldViewportSize.y != newViewportSize.y) && (newViewportSize.x > 0 && newViewportSize.y > 0))
 	{
 		XMFLOAT2 viewportSize = XMFLOAT2(newViewportSize.x, newViewportSize.y);
 
 		RecreateFrameResources(viewportSize);
 
 		EditorUI::SetViewportSize(viewportSize);
-
-		CameraGameObject* pcamera = GameManager::GetInstance()->GetCamera();
-		pcamera->ReshapeCamera(viewportSize.x, viewportSize.y, 0.01f, 1000.0f);
 	}
 
 	//Pass everything rendered till this point into ImGuiImage
@@ -895,11 +879,21 @@ void Update()
 
 #if EDITOR
 	g_peditorUI->Update();
+	g_pcamera->Update();
 #endif
 
-#if TOOL
-	g_ptoolBase->Update();
-#endif
+	if (g_ptoolBase != nullptr)
+	{
+		if (g_ptoolBase->HasToolExited() == true)
+		{
+			delete g_ptoolBase;
+			g_ptoolBase = nullptr;
+		}
+		else
+		{
+			g_ptoolBase->Update();
+		}
+	}
 }
 
 void BindQuadBuffers()

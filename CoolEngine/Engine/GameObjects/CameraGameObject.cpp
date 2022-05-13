@@ -16,6 +16,8 @@ CameraGameObject::CameraGameObject(json data, CoolUUID index) : GameObject(data,
 	CreateViewMatrix();
 	CreateProjectionMatrix();
 
+CameraGameObject::~CameraGameObject()
+{
 }
 
 void CameraGameObject::Initialize(XMFLOAT3& position, XMFLOAT3& forwardVector, XMFLOAT3& upVector,
@@ -37,7 +39,7 @@ void CameraGameObject::Initialize(XMFLOAT3& position, XMFLOAT3& forwardVector, X
 
 void CameraGameObject::CreateViewMatrix()
 {
-	XMFLOAT3 position = m_transform->GetPosition();
+	XMFLOAT3 position = m_transform->GetWorldPosition();
 	XMFLOAT3 forwardVector = m_transform->GetForwardVector();
 	XMFLOAT3 upVector = m_transform->GetUpVector();
 

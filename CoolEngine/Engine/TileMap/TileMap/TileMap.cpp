@@ -25,9 +25,7 @@ TileMap::TileMap(wstring mapPath, XMFLOAT3 position, string identifier, CoolUUID
 	Tile::s_ptileMap = this;
 #endif
 
-	m_transform->SetPosition(position);
-
-	Load(mapPath);
+	Init(mapPath, position);
 }
 
 TileMap::TileMap(int width, int height, string identifier, CoolUUID uuid, XMFLOAT3 position, float tileDimensions) : RenderableGameObject(identifier, uuid)
@@ -36,18 +34,7 @@ TileMap::TileMap(int width, int height, string identifier, CoolUUID uuid, XMFLOA
 	Tile::s_ptileMap = this;
 #endif
 
-	m_width = width;
-	m_height = height;
-
-	m_totalTiles = m_width * m_height;
-
-	XMFLOAT3 scale = XMFLOAT3(tileDimensions, tileDimensions, tileDimensions);
-
-	m_transform->SetScale(scale);
-
-	m_transform->SetPosition(position);
-
-	InitMap();
+	Init(width, height, position, tileDimensions);
 }
 
 TileMap::~TileMap()
@@ -59,13 +46,30 @@ TileMap::~TileMap()
 	m_animPaths.resize(0);
 }
 
-void TileMap::Update(float d)
+void TileMap::Update()
 {
 	for (int i = 0; i < m_height; i++)
 	{
 		for (int j = 0; j < m_width; j++)
 		{
-			m_tiles[i][j]->Update();
+			if (m_tiles[i][j] != nullptr)
+			{
+				m_tiles[i][j]->Update();
+			}
+		}
+	}
+}
+
+void TileMap::Render(RenderStruct& renderStruct)
+{
+	for (int i = 0; i < m_height; i++)
+	{
+		for (int j = 0; j < m_width; j++)
+		{
+			if (m_tiles[i][j] != nullptr)
+			{
+				m_tiles[i][j]->Render(renderStruct);
+			}
 		}
 	}
 }
@@ -74,7 +78,7 @@ void TileMap::InitMap() // Create and store tiles in m_Tiles
 {
 	GameManager* pGameManager = GameManager::GetInstance();
 
-	XMFLOAT3 scale = GetTransform()->GetScale();
+	XMFLOAT3 scale = GetTransform()->GetWorldScale();
 
 	m_tiles.resize(m_height);
 
@@ -95,9 +99,9 @@ void TileMap::InitMap() // Create and store tiles in m_Tiles
 
 void TileMap::InitTilePosition(Tile* tile, int row, int column) // Give tiles positions in the world relative to the TileMaps position
 {
-	XMFLOAT2 tileScale = XMFLOAT2(m_transform->GetScale().x * 2.0f, m_transform->GetScale().y * 2.0f);
+	XMFLOAT2 tileScale = XMFLOAT2(m_transform->GetWorldScale().x * 2.0f, m_transform->GetWorldScale().y * 2.0f);
 
-	XMFLOAT2 pos = MathHelper::Minus(XMFLOAT2(m_transform->GetPosition().x, m_transform->GetPosition().y), XMFLOAT2(m_width * tileScale.x * 0.5f, m_height * tileScale.y * 0.5f));	//Offset to min tile can be
+	XMFLOAT2 pos = MathHelper::Minus(XMFLOAT2(m_transform->GetWorldPosition().x, m_transform->GetWorldPosition().y), XMFLOAT2(m_width * tileScale.x * 0.5f, m_height * tileScale.y * 0.5f));	//Offset to min tile can be
 
 	//Offsetting by half tile scale and then positioning based on row and column
 	pos = MathHelper::Plus(pos, XMFLOAT2(tileScale.x * 0.5f, tileScale.y * 0.5f));
@@ -242,7 +246,7 @@ bool TileMap::Save(wstring path)
 		}
 	}
 
-	jsonOutput["TileMapScale"].push_back({ m_transform->GetScale().x, m_transform->GetScale().y, m_transform->GetScale().z });
+	jsonOutput["TileMapScale"].push_back({ m_transform->GetWorldScale().x, m_transform->GetWorldScale().y, m_transform->GetWorldScale().z });
 
 	outFile << jsonOutput;
 
@@ -253,14 +257,23 @@ bool TileMap::Save(wstring path)
 
 bool TileMap::GetCoordsFromWorldPos(int* prow, int* pcolumn, const XMFLOAT2& pos)
 {
-	XMFLOAT2 relativePos = MathHelper::Minus(pos, XMFLOAT2(m_transform->GetPosition().x, m_transform->GetPosition().y));
+	XMFLOAT2 relativePos = MathHelper::Minus(pos, XMFLOAT2(m_transform->GetWorldPosition().x, m_transform->GetWorldPosition().y));
 
-	XMFLOAT2 tileScale = XMFLOAT2(m_transform->GetScale().x * 2.0f, m_transform->GetScale().y * 2.0f);
+	XMFLOAT2 tileScale = XMFLOAT2(m_transform->GetWorldScale().x * 2.0f, m_transform->GetWorldScale().y * 2.0f);
 
 	relativePos = MathHelper::Plus(relativePos, XMFLOAT2(m_width * tileScale.x * 0.5f, m_height * tileScale.y * 0.5f));
 
-	*prow = (relativePos.x / (int)tileScale.x);
-	*pcolumn = ((int)relativePos.y / (int)tileScale.y);
+	if (relativePos.x < 0 || relativePos.y < 0)
+	{
+		*prow = -1;
+		*pcolumn = -1;
+	}
+	else
+	{
+		*prow = (relativePos.x / (int)tileScale.x);
+		*pcolumn = ((int)relativePos.y / (int)tileScale.y);
+	}
+
 
 	if (*prow >= m_width || *pcolumn >= m_height || *prow < 0 || *pcolumn < 0)
 	{
@@ -281,9 +294,10 @@ bool TileMap::CreateTile(int row, int column, Tile*& ptile)
 		return false;
 	}
 
-	m_tiles[row][column] = GameManager::GetInstance()->CreateGameObject<Tile>("Tile_" + to_string(row) + "_" + to_string(column));
+	m_tiles[row][column] = new Tile("", CoolUUID());
+	m_tiles[row][column]->Init("Tile_" + to_string(row) + "_" + to_string(column), CoolUUID());
 
-	XMFLOAT3 scale = GetTransform()->GetScale();
+	XMFLOAT3 scale = GetTransform()->GetWorldScale();
 
 	m_tiles[row][column]->GetTransform()->SetScale(scale);
 
@@ -336,6 +350,17 @@ void TileMap::AddAnimPath(Tile* ptile, wstring& path)
 #endif
 }
 
+void TileMap::DeleteTile(int row, int column)
+{
+	if (m_tiles[row][column] == nullptr)
+	{
+		return;
+	}
+
+	delete m_tiles[row][column];
+	m_tiles[row][column] = nullptr;
+}
+
 #if EDITOR
 void TileMap::CreateEngineUI()
 {
@@ -385,7 +410,7 @@ void TileMap::CreateEngineUI()
 				{
 					if (m_tiles[i][j] != nullptr)
 					{
-						GameManager::GetInstance()->DeleteGameObject(m_tiles[i][j], m_tiles[i][j]->GetIdentifier());
+						GameManager::GetInstance()->DeleteGameObjectUsingNode(m_tiles[i][j], m_tiles[i][j]->GetIdentifier());
 					}
 				}
 
@@ -408,6 +433,29 @@ void TileMap::CreateEngineUI()
 
 	ImGui::Spacing();
 	ImGui::Separator();
+}
+
+void TileMap::Init(int width, int height, XMFLOAT3 position, float tileDimensions)
+{
+	m_width = width;
+	m_height = height;
+
+	m_totalTiles = m_width * m_height;
+
+	XMFLOAT3 scale = XMFLOAT3(tileDimensions, tileDimensions, tileDimensions);
+
+	m_transform->SetScale(scale);
+
+	m_transform->SetPosition(position);
+
+	InitMap();
+}
+
+void TileMap::Init(wstring mapPath, XMFLOAT3 position)
+{
+	m_transform->SetPosition(position);
+
+	Load(mapPath);
 }
 #endif
 
@@ -458,9 +506,9 @@ bool TileMap::GetTileFromMapPos(int x, int y, Tile*& ptile) // Returns the tile 
 
 void TileMap::SetTileAtWorldPos(XMFLOAT2 worldPos, Tile* newTile)
 {
-	XMFLOAT2 relativePos = MathHelper::Minus(worldPos, XMFLOAT2(m_transform->GetPosition().x, m_transform->GetPosition().y));
+	XMFLOAT2 relativePos = MathHelper::Minus(worldPos, XMFLOAT2(m_transform->GetWorldPosition().x, m_transform->GetWorldPosition().y));
 
-	XMFLOAT2 tileScale = XMFLOAT2(m_transform->GetScale().x * 2.0f, m_transform->GetScale().y * 2.0f);
+	XMFLOAT2 tileScale = XMFLOAT2(m_transform->GetWorldScale().x * 2.0f, m_transform->GetWorldScale().y * 2.0f);
 
 	relativePos = MathHelper::Plus(relativePos, XMFLOAT2(m_width * tileScale.x * 0.5f, m_height * tileScale.y * 0.5f));
 
@@ -484,7 +532,7 @@ void TileMap::SetTileAtMapPos(int posX, int posY, Tile* newTile)
 
 XMFLOAT3 TileMap::GetTileScale()
 {
-	return m_transform->GetScale();
+	return m_transform->GetWorldScale();
 }
 
 void TileMap::SetTileScale(XMFLOAT3 newScale)

@@ -18,7 +18,9 @@ RenderableCollidableGameObject::RenderableCollidableGameObject(string identifier
 
 RenderableCollidableGameObject::RenderableCollidableGameObject(json data, CoolUUID index) : CollidableGameObject(data, index), RenderableGameObject(data, index)
 {
-
+}
+RenderableCollidableGameObject::~RenderableCollidableGameObject()
+{
 }
 
 #if EDITOR

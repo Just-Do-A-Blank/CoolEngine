@@ -25,7 +25,7 @@ public:
 	Circle(Transform* t)
 	{
 		m_transform = t;
-		m_radius = m_transform->GetScale().x * 50;
+		m_radius = m_transform->GetWorldScale().x;
 
 		m_shapeType = ShapeType::CIRCLE;
 	}
@@ -51,7 +51,7 @@ public:
 
 	void SetShapeDimensions(XMFLOAT3 scale)
 	{
-		m_radius = m_transform->GetScale().x * 50;
+		m_radius = m_transform->GetWorldScale().x;
 	}
 
 	~Circle()
@@ -87,6 +87,11 @@ public:
 	bool CollideResponse(Box* box)
 	{
 		return Collision::CircleBoxCollisionAndResponse(this, box);
+	}
+
+	XMFLOAT2 GetShapeDimensions()
+	{
+		return XMFLOAT2(m_radius, m_radius);
 	}
 
 #if EDITOR

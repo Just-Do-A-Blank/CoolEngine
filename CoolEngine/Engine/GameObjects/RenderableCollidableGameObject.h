@@ -8,6 +8,7 @@ public:
 	RenderableCollidableGameObject();
 	RenderableCollidableGameObject(string identifier, CoolUUID uuid);
 	RenderableCollidableGameObject(json data, CoolUUID index);
+	virtual ~RenderableCollidableGameObject()override;
 
 #if EDITOR
 	virtual void CreateEngineUI() override;

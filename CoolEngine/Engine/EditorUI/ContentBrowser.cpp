@@ -6,6 +6,7 @@
 ContentBrowser::ContentBrowser()
 {
 	m_sfilepath = GameManager::GetInstance()->GetWorkingDirectory();
+	m_sfileName = "";
 }
 
 void ContentBrowser::Draw()
@@ -95,6 +96,7 @@ void ContentBrowser::CreateDirectoryEntry(const WIN32_FIND_DATAA& kfileData)
 		std::string tempString = std::string(kfileData.cFileName);
 
 		m_sfilepath += "\\" + tempString;
+		m_sfileName = tempString;
 	}
 
 	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID) == true)

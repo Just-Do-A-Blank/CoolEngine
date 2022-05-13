@@ -3,11 +3,16 @@
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/Scene/Scene.h"
 #include "Engine/Includes/IMGUI/imgui_internal.h"
-#include <ShlObj_core.h>
-#include <Engine/Physics/ParticleSystem.h>
+#include "Engine/Physics/ParticleSystem.h"
 #include "Engine/GameObjects/InteractableGameObject.h"
 #include "Engine/GameObjects/WeaponGameObject.h"
-#include <Engine\GameObjects\EnemyGameObject.h>
+#include "Engine\GameObjects\EnemyGameObject.h"
+#include "Engine/Tools/ToolBase.h"
+#include "Engine/Tools/AnimationTool.h"
+#include "Engine/Tools/InGameUITool.h"
+#include "Engine//Tools/TileMapTool.h"
+
+#include <ShlObj_core.h>
 
 #if EDITOR
 HWND* EditorUI::m_phwnd = nullptr;
@@ -47,15 +52,15 @@ EditorUI::EditorUI(ID3D11Device* pdevice)
 {
 }
 
-void EditorUI::DrawEditorUI(ID3D11Device* pdevice)
+void EditorUI::DrawEditorUI(ID3D11Device* pdevice, ToolBase*& ptoolBase)
 {
-	DrawSceneGraphWindow();
+	DrawSceneGraphWindow(ptoolBase, pdevice);
 
 	DrawSceneManagementWindow();
 
-	if (GameManager::GetInstance()->GetSelectedGameObject() != nullptr)
+	if (m_selecedGameObjectNode != nullptr)
 	{
-		GameManager::GetInstance()->GetSelectedGameObject()->ShowEngineUI();
+		m_selecedGameObjectNode->NodeObject->ShowEngineUI();
 	}
 
 	m_contentBrowser.Draw();
@@ -101,7 +106,7 @@ DirectX::XMFLOAT2 EditorUI::GetViewportPosition()
 	return s_viewportPosition;
 }
 
-void EditorUI::DrawSceneGraphWindow()
+void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 {
 	if (!GameManager::GetInstance()->GetCurrentScene())
 	{
@@ -193,10 +198,48 @@ void EditorUI::DrawSceneGraphWindow()
 		{
 			if (ImGui::MenuItem("GameObject"))
 			{
-				pgameManager->DeleteSelectedGameObject();
+				pgameManager->DeleteGameObjectUsingNode(m_selecedGameObjectNode);
 
 				m_gameObjectNodeClicked = -1;
-				pgameManager->SelectGameObject(nullptr);
+				m_selecedGameObjectNode = nullptr;
+			}
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Tools"))
+		{
+			if (ImGui::MenuItem("Animation"))
+			{
+				if (ptoolBase != nullptr)
+				{
+					delete ptoolBase;
+				}
+
+				ptoolBase = new AnimationTool();
+				ptoolBase->Init(pdevice);
+			}
+
+			if (ImGui::MenuItem("In Game UI"))
+			{
+				if (ptoolBase != nullptr)
+				{
+					delete ptoolBase;
+				}
+
+				ptoolBase = new InGameUITool();
+				ptoolBase->Init(pdevice);
+			}
+
+			if (ImGui::MenuItem("Tile Map"))
+			{
+				if (ptoolBase != nullptr)
+				{
+					delete ptoolBase;
+				}
+
+				ptoolBase = new TileMapTool();
+				ptoolBase->Init(pdevice);
 			}
 
 			ImGui::EndMenu();
@@ -227,7 +270,7 @@ void EditorUI::DrawSceneGraphWindow()
 	if (ImGui::IsItemClicked())
 	{
 		m_gameObjectNodeClicked = -1;
-		pgameManager->SelectGameObject(nullptr);
+		m_selecedGameObjectNode = nullptr;
 	}
 	
 	ImGui::End();
@@ -248,39 +291,39 @@ void EditorUI::DrawSceneGraphWindow()
 			switch (m_createObjectType)
 			{
 			case GameObjectType::RENDERABLE | GameObjectType::COLLIDABLE:
-				pgameManager->CreateGameObject<RenderableCollidableGameObject>(gameObjectName);
+				pgameManager->CreateGameObject<RenderableCollidableGameObject>(gameObjectName, m_selecedGameObjectNode);
 				break;
 
 			case GameObjectType::RENDERABLE:
-				pgameManager->CreateGameObject<RenderableGameObject>(gameObjectName);
+				pgameManager->CreateGameObject<RenderableGameObject>(gameObjectName, m_selecedGameObjectNode);
 				break;
 
 			case GameObjectType::COLLIDABLE:
-				pgameManager->CreateGameObject<CollidableGameObject>(gameObjectName);
+				pgameManager->CreateGameObject<CollidableGameObject>(gameObjectName, m_selecedGameObjectNode);
 				break;
 
 			case GameObjectType::BASE:
-				pgameManager->CreateGameObject<GameObject>(gameObjectName);
+				pgameManager->CreateGameObject<GameObject>(gameObjectName, m_selecedGameObjectNode);
 				break;
 
 			case GameObjectType::PARTICLESYSTEM:
-				pgameManager->CreateGameObject<ParticleSystem>(gameObjectName);
+				pgameManager->CreateGameObject<ParticleSystem>(gameObjectName, m_selecedGameObjectNode);
 				break;
 
 			case GameObjectType::PLAYER:
-				pgameManager->CreateGameObject<PlayerGameObject>(gameObjectName);
+				pgameManager->CreateGameObject<PlayerGameObject>(gameObjectName, m_selecedGameObjectNode);
 				break;
 
             case GameObjectType::ENEMY:
-                pgameManager->CreateGameObject<EnemyGameObject>(gameObjectName);
+                pgameManager->CreateGameObject<EnemyGameObject>(gameObjectName, m_selecedGameObjectNode);
                 break;
 
 			case GameObjectType::INTERACTABLE:
-				pgameManager->CreateGameObject<InteractableGameObject>(gameObjectName);
+				pgameManager->CreateGameObject<InteractableGameObject>(gameObjectName, m_selecedGameObjectNode);
 				break;
 
 			case GameObjectType::WEAPON:
-				pgameManager->CreateGameObject<WeaponGameObject>(gameObjectName);
+				pgameManager->CreateGameObject<WeaponGameObject>(gameObjectName, m_selecedGameObjectNode);
 				break;
 			}
 
@@ -426,7 +469,7 @@ void EditorUI::TraverseTree(TreeNode<GameObject>* pcurrentNode, int& nodeCount)
 	if (ImGui::IsMouseReleased(0) && ImGui::IsItemHovered())
 	{
 		m_gameObjectNodeClicked = nodeCount;
-		pgameManager->SelectGameObjectUsingTreeNode(pcurrentNode);
+		m_selecedGameObjectNode = pcurrentNode;
 	}
 
 	if (node_open)
@@ -981,6 +1024,34 @@ bool EditorUI::DragFloat(const string& label, float& value, const float& columnW
 	ImGui::PopID();
 
 	return interacted;
+}
+
+/// <summary>
+/// A title which spans the full length of the component editor window
+/// </summary>
+/// <param name="label">The title to display</param>
+/// <param name="columnWidth">The width of a single coloumn</param>
+void EditorUI::FullTitle(const string& label, const float& columnWidth)
+{
+    ImGui::Separator();
+    ImGui::PushID(label.c_str());
+
+    ImGui::Columns(2);
+    ImGui::SetColumnWidth(0, columnWidth);
+    ImGui::NextColumn();
+
+    ImGui::SetColumnWidth(0, columnWidth);
+    ImGui::Text(label.c_str());
+    ImGui::NextColumn();
+
+    ImGui::PushItemWidth(ImGui::CalcItemWidth());
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+    
+    ImGui::PopItemWidth();
+    ImGui::PopStyleVar();
+    ImGui::PopID();
+
+    ImGui::Separator();
 }
 
 #endif

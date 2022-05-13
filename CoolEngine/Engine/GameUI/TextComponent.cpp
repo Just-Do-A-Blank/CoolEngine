@@ -20,8 +20,8 @@ TextComponent::TextComponent(nlohmann::json& data, CoolUUID uuid, ID3D11Device* 
 
 	m_ppixelShader = GraphicsManager::GetInstance()->GetPixelShader(TEXT_PIXEL_SHADER_NAME);
 
-	XMVECTORF32 colour;
-	colour.v = XMVectorSet(data["GameUI"][(int)m_componentType][uuidString]["Colour"][0], data["GameUI"][(int)m_componentType][uuidString]["Colour"][1], data["GameUI"][(int)m_componentType][uuidString]["Colour"][2], data["GameUI"][(int)m_componentType][uuidString]["Colour"][3]);
+	XMFLOAT4 colour;
+	colour = XMFLOAT4( data["GameUI"][(int)m_componentType][uuidString]["Colour"][0], data["GameUI"][(int)m_componentType][uuidString]["Colour"][1], data["GameUI"][(int)m_componentType][uuidString]["Colour"][2], data["GameUI"][(int)m_componentType][uuidString]["Colour"][3] );
 
 	Init(data["GameUI"][(int)m_componentType][uuidString]["Text"], data["GameUI"][(int)m_componentType][uuidString]["FontName"], data["GameUI"][(int)m_componentType][uuidString]["FontSize"], colour, pdevice);
 }
@@ -41,7 +41,7 @@ void TextComponent::Serialize(nlohmann::json& data)
 	data["GameUI"][(int)m_componentType][uuidString]["Text"].push_back(m_text);
 	data["GameUI"][(int)m_componentType][uuidString]["FontName"].push_back(m_fontName);
 	data["GameUI"][(int)m_componentType][uuidString]["FontSize"].push_back(m_fontSize);
-	data["GameUI"][(int)m_componentType][uuidString]["Colour"].push_back({m_colour[0], m_colour[1], m_colour[2], m_colour[3]});
+	data["GameUI"][(int)m_componentType][uuidString]["Colour"].push_back({m_colour.x, m_colour.y, m_colour.z, m_colour.w});
 }
 
 #if EDITOR
@@ -79,12 +79,12 @@ void TextComponent::CreateEngineUI()
 
 	ImGui::Spacing();
 
-	XMFLOAT3 colour = XMFLOAT3(m_colour.f[0], m_colour.f[1], m_colour.f[2]);
+	XMFLOAT3 colour = XMFLOAT3(m_colour.x, m_colour.y, m_colour.z);
 	EditorUI::DragFloat3("Colour", colour, 100.0f, 0.01f, 0.0f, 1.0f );
 
-	m_colour.f[0] = colour.x;
-	m_colour.f[1] = colour.y;
-	m_colour.f[2] = colour.z;
+	m_colour.x = colour.x;
+	m_colour.y = colour.y;
+	m_colour.z = colour.z;
 
 	ImGui::Spacing();
 	ImGui::Separator();
@@ -97,7 +97,7 @@ void TextComponent::Render(RenderStruct& renderStruct)
 	//Update CB
 	TextPerInstanceCB cb;
 
-	cb.colour = XMFLOAT3(m_colour.f[0], m_colour.f[1], m_colour.f[2]);
+	cb.colour = XMFLOAT3(m_colour.x, m_colour.y, m_colour.z);
 
 	XMStoreFloat4x4(&cb.world, XMMatrixTranspose(m_transform->GetWorldMatrix()));
 
@@ -138,7 +138,7 @@ void TextComponent::Render(RenderStruct& renderStruct)
 	renderStruct.m_pcontext->IASetIndexBuffer(m_pmesh->GetIndexBuffer(), DXGI_FORMAT_R16_UINT, 0);
 }
 
-void TextComponent::Init(string text, string fontName, int fontSize, XMVECTORF32 colour, ID3D11Device* pdevice)
+void TextComponent::Init(string text, string fontName, int fontSize, XMFLOAT4 colour, ID3D11Device* pdevice)
 {
 	m_colour = colour;
 	m_text = text;
@@ -164,7 +164,7 @@ void TextComponent::CreateVertexBuffer(ID3D11Device* pdevice)
 
 	XMFLOAT2 windowDimension = GraphicsManager::GetInstance()->GetWindowDimensions();
 
-	XMFLOAT3 position = m_transform->GetPosition();
+	XMFLOAT3 position = m_transform->GetWorldPosition();
 
 	int numLetters = m_text.length();
 

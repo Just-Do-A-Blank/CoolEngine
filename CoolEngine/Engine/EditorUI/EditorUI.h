@@ -12,6 +12,7 @@
 
 #if EDITOR
 
+class ToolBase;
 class GameManager;
 
 struct SelectableText
@@ -43,6 +44,7 @@ private:
 	ImGuiTreeNodeFlags m_base_flags;
 	int m_selectionMask;
 	int m_gameObjectNodeClicked = -1;
+	TreeNode<GameObject>* m_selecedGameObjectNode;
 
 	WCHAR m_texNameBuffer[FILEPATH_BUFFER_SIZE];
 
@@ -53,7 +55,7 @@ private:
 	ContentBrowser m_contentBrowser;
 
 
-	void DrawSceneGraphWindow();
+	void DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice);
 	void DrawSceneManagementWindow();
 	void TraverseTree(TreeNode<GameObject>* pcurrentNode, int& count);
 public:
@@ -61,7 +63,7 @@ public:
 
 	void InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, HWND* hwnd);
 	void ShutdownIMGUI();
-	void DrawEditorUI(ID3D11Device* pdevice);
+	void DrawEditorUI(ID3D11Device* pdevice, ToolBase*& ptoolBase);
 
 	static void SetIsViewportHovered(bool bHovered);
 	static bool GetIsViewportHovered();
@@ -77,7 +79,14 @@ public:
 	static void OpenFileExplorer(const WCHAR* fileFilters, WCHAR* buffer, int bufferSize);
 	static void OpenFolderExplorer(WCHAR* buffer, int bufferSize);
 
-	static bool DragFloat(const string& label, float& value, const float& columnWidth = 100.0f, const float& speed = 0.1f, const float& min = 0, const float& max = 0);
+    /// <summary>
+    /// A title which spans the full length of the component editor window
+    /// </summary>
+    /// <param name="label">The title to display</param>
+    /// <param name="columnWidth">The width of a single coloumn</param>
+	static void FullTitle(const string& label, const float& columnWidth = 100.0f);
+
+    static bool DragFloat(const string& label, float& value, const float& columnWidth = 100.0f, const float& speed = 0.1f, const float& min = 0, const float& max = 0);
 	static void DragFloat2(const string& label, XMFLOAT2& values, const float& columnWidth = 100.0f, const float& speed = 0.1f, const float& min = 0, const float& max = 0);
 	static void DragFloat3(const string& label, XMFLOAT3& values, const float& columnWidth = 100.0f, const float& speed = 0.1f, const float& min = 0, const float& max = 0);
 

@@ -9,8 +9,9 @@
 #include "Engine/Tools/TileMapTool.h"
 #include "Engine/TileMap/TileMap/TileMap.h"
 #include "Engine/Managers/Events/EventManager.h"
-#include "Engine/GameObjects/TileMapCameraGameObject.h"
+#include "Engine/GameObjects/EditorCameraGameObject.h"
 #include "Engine/Helpers/Inputs.h"
+#include "Engine/Managers/Events/MouseEvents.h"
 
 #include "Engine/Managers/Events/MouseEvents.h"
 
@@ -19,6 +20,7 @@ void TileMapTool::Init(ID3D11Device* pdevice)
 	ToolBase::Init(pdevice);
 
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
+	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
 
 	//Create camera
 	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, -5);
@@ -32,7 +34,7 @@ void TileMapTool::Init(ID3D11Device* pdevice)
 	float farDepth = 1000.0f;
 
 	CoolUUID uuid;
-	m_pcamera = new TileMapCameraGameObject((std::string)"Camera", uuid);
+	m_pcamera = new EditorCameraGameObject("Camera", uuid);
 	m_pcamera->Initialize(cameraPos, cameraForward, cameraUp, windowWidth, windowHeight, nearDepth, farDepth);
 
 	GameManager::GetInstance()->SetCamera(m_pcamera);
@@ -62,7 +64,60 @@ void TileMapTool::Render()
 
 		ImGui::End();
 
-		ImGui::Begin("Master");
+		ImGui::Begin("Master", nullptr, ImGuiWindowFlags_MenuBar);
+
+		if (ImGui::BeginMenuBar())
+		{
+			if (ImGui::BeginMenu("Back"))
+			{
+				Destroy();
+
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Texture", m_toolMode != ToolMode::TEXTURE))
+			{
+				m_toolMode = ToolMode::TEXTURE;
+
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Layer", m_toolMode != ToolMode::LAYER))
+			{
+				m_toolMode = ToolMode::LAYER;
+
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Select", m_toolMode != ToolMode::SELECT))
+			{
+				m_toolMode = ToolMode::SELECT;
+
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Delete Tile", m_toolMode != ToolMode::DELETE_TILE))
+			{
+				m_toolMode = ToolMode::DELETE_TILE;
+
+				ImGui::EndMenu();
+			}
+
+			ImGui::EndMenuBar();
+		}
+
+		switch (m_toolMode)
+		{
+		case ToolMode::LAYER:
+			EditorUI::DragInt("Layer", m_paintLayer, 100.0f, 0.1f, 0, GraphicsManager::GetInstance()->GetNumLayers() - 1);
+			break;
+
+		case ToolMode::TEXTURE:
+			EditorUI::Texture("Texture", m_relativePath, m_ppaintSRV);
+			break;
+		}
+
+		ImGui::Spacing();
 
 		m_ptileMap->CreateEngineUI();
 
@@ -99,30 +154,24 @@ void TileMapTool::Update()
 			}
 		}
 	}
-}
 
-void TileMapTool::Handle(Event* e)
-{
-	if (m_selectingDimensions == true)
-	{
-		return;
-	}
-
-	if (((MouseButtonPressedEvent*)e)->GetButton() == VK_LBUTTON)
+	if (m_lmbPressed == true)
 	{
 		POINT point;
 		GetCursorPos(&point);
 		ScreenToClient(*GraphicsManager::GetInstance()->GetHWND(), &point);
 
-		DirectX::XMFLOAT2 relativePos = EditorUI::GetViewportPosition();
-		relativePos = DirectX::XMFLOAT2(point.x - relativePos.x, point.y - relativePos.y);
+		ImVec2 test = ImGui::GetMousePos();
 
-		float x = ((2.0f * relativePos.x) / GraphicsManager::GetInstance()->GetWindowDimensions().x) - 1.0f;
-		float y = 1.0f - ((2.0f * relativePos.y) / GraphicsManager::GetInstance()->GetWindowDimensions().y);
+		DirectX::XMFLOAT2 relativePos = EditorUI::GetViewportPosition();
+		relativePos = DirectX::XMFLOAT2(test.x - relativePos.x, test.y - relativePos.y);
+
+		float x = ((2.0f * relativePos.x) / EditorUI::GetViewportSize().x) - 1.0f;
+		float y = 1.0f - ((2.0f * relativePos.y) / EditorUI::GetViewportSize().y);
 
 		XMFLOAT2 clickPosWorld;
 
-		XMStoreFloat2(&clickPosWorld, XMVector2Transform(XMVectorSet(x, y, 0, 0), XMMatrixInverse(nullptr, XMLoadFloat4x4(&GameManager::GetInstance()->GetCamera()->GetViewProjection()))));
+		XMStoreFloat2(&clickPosWorld, XMVector4Transform(XMVectorSet(x, y, 0, 1), XMMatrixInverse(nullptr, XMLoadFloat4x4(&GameManager::GetInstance()->GetCamera()->GetViewProjection()))));
 
 		Tile* ptile;
 
@@ -134,12 +183,86 @@ void TileMapTool::Handle(Event* e)
 			return;
 		}
 
-		if (ptile == nullptr)
+		if (ptile == nullptr && m_toolMode != ToolMode::DELETE_TILE)
 		{
 			m_ptileMap->CreateTile(row, column, ptile);
 		}
 
-		m_selectedTile = DirectX::XMINT2(row, column);
+		switch (m_toolMode)
+		{
+		case ToolMode::DELETE_TILE:
+			if (ptile != nullptr)
+			{
+				m_ptileMap->DeleteTile(row, column);
+
+				ptile = nullptr;
+			}
+			break;
+
+		case ToolMode::LAYER:
+			ptile->SetLayer(m_paintLayer);
+			break;
+
+		case ToolMode::SELECT:
+			m_selectedTile = DirectX::XMINT2(row, column);
+			break;
+
+		case ToolMode::TEXTURE:
+			if (m_ppaintSRV != nullptr)
+			{
+				ptile->SetAlbedo(m_ppaintSRV);
+			}
+			break;
+
+		default:
+			break;
+		}
+	}
+}
+
+void TileMapTool::Destroy()
+{
+	ToolBase::Destroy();
+
+	EventManager::Instance()->RemoveClientEvent(EventType::MouseButtonPressed, this);
+	EventManager::Instance()->RemoveClientEvent(EventType::MouseButtonReleased, this);
+}
+
+void TileMapTool::Handle(Event* e)
+{
+	if (m_selectingDimensions == true)
+	{
+		return;
+	}
+
+	switch (e->GetEventID())
+	{
+	case EventType::MouseButtonPressed:
+		MouseButtonPressed((MouseButtonPressedEvent*)e);
+		break;
+
+	case EventType::MouseButtonReleased:
+		MouseButtonReleased((MouseButtonReleasedEvent*)e);
+		break;
+
+	default:
+		break;
+	}
+}
+
+void TileMapTool::MouseButtonPressed(MouseButtonPressedEvent* e)
+{
+	if (e->GetButton() == VK_LBUTTON)
+	{
+		m_lmbPressed = true;
+	}
+}
+
+void TileMapTool::MouseButtonReleased(MouseButtonReleasedEvent* e)
+{
+	if (e->GetButton() == VK_LBUTTON)
+	{
+		m_lmbPressed = false;
 	}
 }
 
@@ -153,8 +276,8 @@ void TileMapTool::CreateSelectDimensionsUI()
 
 	if (ImGui::Button("Create") == true)
 	{
-		CoolUUID uuid;
-		m_ptileMap = new TileMap(m_tileMapWidth, m_tileMapHeight, "TileMap", uuid, XMFLOAT3(0, 0, 0), m_tileDimensions);
+		m_ptileMap = GameManager::GetInstance()->CreateGameObject<TileMap>("TileMap");
+		m_ptileMap->Init(m_tileMapWidth, m_tileMapHeight, XMFLOAT3(0, 0, 0), m_tileDimensions);
 
 		m_selectingDimensions = false;
 	}

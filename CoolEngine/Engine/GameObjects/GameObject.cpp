@@ -2,6 +2,16 @@
 
 #include "Engine/EditorUI/EditorUI.h"
 
+void GameObject::SetIdentifier(std::string identifier)
+{
+	m_identifier = identifier;
+}
+
+void GameObject::SetUUID(CoolUUID uuid)
+{
+	m_UUID = CoolUUID(*uuid);
+}
+
 GameObject::GameObject()
 {
 	m_transform = new Transform();
@@ -39,6 +49,9 @@ GameObject::GameObject(json data, CoolUUID index)
 GameObject::~GameObject()
 {
 	delete m_transform;
+}
+GameObject::~GameObject()
+{
 }
 
 void GameObject::Update()

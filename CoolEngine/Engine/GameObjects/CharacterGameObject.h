@@ -1,5 +1,6 @@
 #pragma once
 #include "TriggerableGameObject.h"
+#include "Engine/GameObjects/DamageCalculation.h"
 
 class CharacterGameObject : public TriggerableGameObject
 {
@@ -17,6 +18,7 @@ public:
 	CharacterGameObject(string identifier, CoolUUID uuid);
 	CharacterGameObject(json data, CoolUUID index);
 	~CharacterGameObject();
+	virtual ~CharacterGameObject()override;
 
 	virtual void Update();
 

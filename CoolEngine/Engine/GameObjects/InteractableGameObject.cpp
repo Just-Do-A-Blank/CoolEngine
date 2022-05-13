@@ -9,3 +9,6 @@ InteractableGameObject::InteractableGameObject(json& data, CoolUUID index) : Tri
 {
     m_gameObjectType |= GameObjectType::INTERACTABLE;
 }
+InteractableGameObject::~InteractableGameObject()
+{
+}

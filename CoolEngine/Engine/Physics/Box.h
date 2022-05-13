@@ -1,29 +1,35 @@
 #pragma once
 #include "Engine/Physics/Shape.h"
-#include "Engine/Managers/DebugDrawManager.h"
+#include "Engine/Includes/IMGUI/imgui.h"
+#include "Engine/EditorUI/EditorUI.h"
+
 class Box : public Shape
 {
 public:
 	XMFLOAT2 m_halfSize;
+	XMFLOAT2 m_scale;
 
 	Box()
 	{
+		m_scale = XMFLOAT2(1, 1);
 		m_transform = nullptr;
-		m_halfSize = { 0,0 };
+		m_halfSize = XMFLOAT2(0, 0);
 
 		m_shapeType = ShapeType::BOX;
 	}
 
 	Box(Transform* trans)
 	{
+		m_scale = XMFLOAT2(1, 1);
 		m_transform = trans;
-		m_halfSize = { m_transform->GetScale().x * 50, m_transform->GetScale().y * 50 };
+		m_halfSize = XMFLOAT2(m_scale.x * m_transform->GetWorldScale().x, m_scale.y * m_transform->GetWorldScale().y);
 
 		m_shapeType = ShapeType::BOX;
 	}
 
 	Box(Transform* trans, XMFLOAT2 size)
 	{
+		m_scale = XMFLOAT2(1, 1);
 		m_transform = trans;
 		m_halfSize = size;
 
@@ -40,10 +46,12 @@ public:
 		return m_halfSize;
 	}
 
+
+
 	// Based on gamedev.stackexchange.com/questions/20703/bounding-box-of-a-rotated-rectangle-2d
 	void SetShapeDimensions(XMFLOAT3 scale)
 	{
-		m_halfSize = { m_transform->GetScale().x, m_transform->GetScale().y };
+		m_halfSize = XMFLOAT2(m_transform->GetWorldScale().x * m_scale.x, m_transform->GetWorldScale().y * m_scale.y);
 
 		XMVECTOR topLeft = XMVectorSet(-m_halfSize.x, m_halfSize.y, 0, 1);
 		XMVECTOR topRight = XMVectorSet(m_halfSize.x, m_halfSize.y, 0, 1);
@@ -71,6 +79,11 @@ public:
 		m_halfSize = XMFLOAT2(maxX - minX, maxY - minY);
 		m_halfSize.x /= 2.0f;
 		m_halfSize.y /= 2.0f;
+	}
+
+	XMFLOAT2 GetShapeDimensions()
+	{
+		return XMFLOAT2(m_scale.x * m_halfSize.x, m_scale.y * m_halfSize.y);
 	}
 
 	bool Collide(Shape* shape)
@@ -107,6 +120,10 @@ public:
 	void CreateEngineUI() override
 	{
 		Shape::CreateEngineUI();
+
+		ImGui::Spacing();
+
+		EditorUI::DragFloat2("Dimensions", m_scale, 100.0f, 0.01f, 0, 100);
 	}
 #endif
 };

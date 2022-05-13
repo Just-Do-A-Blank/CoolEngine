@@ -16,6 +16,7 @@ public:
 	RenderableGameObject(string identifier, CoolUUID uuid);
 	RenderableGameObject(json data, CoolUUID index);
 
+	virtual ~RenderableGameObject()override;
 
 	//Getters
 	const bool& IsRenderable();

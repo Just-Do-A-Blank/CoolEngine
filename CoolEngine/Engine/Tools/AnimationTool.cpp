@@ -13,7 +13,7 @@ void AnimationTool::Init(ID3D11Device* pdevice)
 	ToolBase::Init(pdevice);
 
 	XMFLOAT3 pos = XMFLOAT3(0, 0, 0);
-	XMFLOAT3 scale = XMFLOAT3(100, 100, 1);
+	XMFLOAT3 scale = XMFLOAT3(300, 300, 1);
 
 	m_pgameObject = GameManager::GetInstance()->CreateGameObject<RenderableGameObject>("AnimModel");
 	m_pgameObject->GetTransform()->SetPosition(pos);
@@ -29,7 +29,9 @@ void AnimationTool::Render()
 {
 	bool updateAnim = false;
 
-	ImGui::Begin("Animation");
+	ImGui::Begin("Animation", nullptr, ImGuiWindowFlags_MenuBar);
+
+	CreateMenuBar();
 
 	for (int i = 0; i < m_frameInfos.size(); ++i)
 	{
@@ -132,6 +134,7 @@ void AnimationTool::Render()
 
 void AnimationTool::Destroy()
 {
+	ToolBase::Destroy();
 }
 
 bool AnimationTool::SaveAnim(string animName)
