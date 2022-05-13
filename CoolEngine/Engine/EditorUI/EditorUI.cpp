@@ -198,7 +198,7 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 		{
 			if (ImGui::MenuItem("GameObject"))
 			{
-				pgameManager->DeleteSelectedGameObject();
+				pgameManager->DeleteGameObjectUsingNode(m_selecedGameObjectNode);
 
 				m_gameObjectNodeClicked = -1;
 				m_selecedGameObjectNode = nullptr;
