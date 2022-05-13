@@ -66,7 +66,58 @@ void TileMapTool::Render()
 
 		ImGui::Begin("Master", nullptr, ImGuiWindowFlags_MenuBar);
 
-		CreateMenuBar();
+		if (ImGui::BeginMenuBar())
+		{
+			if (ImGui::BeginMenu("Back"))
+			{
+				Destroy();
+
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Texture", m_toolMode != ToolMode::TEXTURE))
+			{
+				m_toolMode = ToolMode::TEXTURE;
+
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Layer", m_toolMode != ToolMode::LAYER))
+			{
+				m_toolMode = ToolMode::LAYER;
+
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Select", m_toolMode != ToolMode::SELECT))
+			{
+				m_toolMode = ToolMode::SELECT;
+
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Delete Tile", m_toolMode != ToolMode::DELETE_TILE))
+			{
+				m_toolMode = ToolMode::DELETE_TILE;
+
+				ImGui::EndMenu();
+			}
+
+			ImGui::EndMenuBar();
+		}
+
+		switch (m_toolMode)
+		{
+		case ToolMode::LAYER:
+			EditorUI::DragInt("Layer", m_paintLayer, 100.0f, 0.1f, 0, GraphicsManager::GetInstance()->GetNumLayers() - 1);
+			break;
+
+		case ToolMode::TEXTURE:
+			EditorUI::Texture("Texture", m_relativePath, m_ppaintSRV);
+			break;
+		}
+
+		ImGui::Spacing();
 
 		m_ptileMap->CreateEngineUI();
 
@@ -132,18 +183,39 @@ void TileMapTool::Update()
 			return;
 		}
 
-		if (ptile == nullptr)
+		if (ptile == nullptr && m_toolMode != ToolMode::DELETE_TILE)
 		{
 			m_ptileMap->CreateTile(row, column, ptile);
 		}
 
-		if (m_contentBrowser.GetSelectedPath() != "" && m_contentBrowser.GetRelativePath() != L"")
+		switch (m_toolMode)
 		{
-			ptile->SetAlbedo(m_contentBrowser.GetRelativePath());
-		}
-		else
-		{
+		case ToolMode::DELETE_TILE:
+			if (ptile != nullptr)
+			{
+				m_ptileMap->DeleteTile(row, column);
+
+				ptile = nullptr;
+			}
+			break;
+
+		case ToolMode::LAYER:
+			ptile->SetLayer(m_paintLayer);
+			break;
+
+		case ToolMode::SELECT:
 			m_selectedTile = DirectX::XMINT2(row, column);
+			break;
+
+		case ToolMode::TEXTURE:
+			if (m_ppaintSRV != nullptr)
+			{
+				ptile->SetAlbedo(m_ppaintSRV);
+			}
+			break;
+
+		default:
+			break;
 		}
 	}
 }

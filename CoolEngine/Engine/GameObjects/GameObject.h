@@ -40,6 +40,9 @@ protected:
 
 	GameObjectType m_gameObjectType = (GameObjectType)0;
 
+	void SetIdentifier(std::string identifier);
+	void SetUUID(CoolUUID uuid);
+
 public:
 	GameObject();
 	GameObject(string identifier, CoolUUID uuid);

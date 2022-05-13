@@ -54,6 +54,8 @@ public:
 	void AddSpritePath(Tile* ptile, wstring& path);
 	void AddAnimPath(Tile* ptile, wstring& path);
 
+	void DeleteTile(int row, int column);
+
 #if EDITOR
 	void CreateEngineUI() override;
 #endif

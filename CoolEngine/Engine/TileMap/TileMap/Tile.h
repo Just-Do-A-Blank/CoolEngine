@@ -21,6 +21,8 @@ public:
 	// Load empty
 	Tile(string identifier, CoolUUID uuid);
 
+	void Init(string identifier, CoolUUID uuid);
+
 	//Setup
 
 	void InitAnimation(wstring animPath);

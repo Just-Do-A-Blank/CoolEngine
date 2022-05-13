@@ -2,6 +2,16 @@
 
 #include "Engine/EditorUI/EditorUI.h"
 
+void GameObject::SetIdentifier(std::string identifier)
+{
+	m_identifier = identifier;
+}
+
+void GameObject::SetUUID(CoolUUID uuid)
+{
+	m_UUID = CoolUUID(*uuid);
+}
+
 GameObject::GameObject()
 {
 	m_transform = new Transform();
