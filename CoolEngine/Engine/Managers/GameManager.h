@@ -72,13 +72,13 @@ public:
 		return m_pcurrentScene->CreateGameObject<T>(identifier, nodeParent);
 	}
 
-	void DeleteSelectedGameObject();
+	void DeleteGameObjectUsingNode(TreeNode<GameObject>* currentNode);
 	void DeleteGameObjectUsingIdentifier(string identifier);
 
 	template<typename T>
-	void DeleteGameObject(T* pgameObject, std::string identifier)
+	void DeleteGameObjectUsingNode(T* pgameObject, std::string identifier)
 	{
-		m_pcurrentScene->DeleteGameObject(pgameObject, identifier);
+		m_pcurrentScene->DeleteGameObjectUsingNode(pgameObject, identifier);
 	}
 
 	TreeNode<GameObject>* GetRootTreeNode();

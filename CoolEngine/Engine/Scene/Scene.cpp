@@ -48,46 +48,9 @@ vector<GameObject*>& Scene::GetAllGameObjects()
 	return m_psceneGraph->GetAllGameObjects();
 }
 
-void Scene::SelectGameObjectUsingIdentifier(string identifier)
+void Scene::DeleteGameObjectUsingNode(TreeNode<GameObject>* currentNode)
 {
-	m_pselectedNode = m_psceneGraph->GetNodeUsingIdentifier(identifier);
-	m_pselectedGameObject = m_pselectedNode->NodeObject;
-}
-
-void Scene::SelectGameObject(GameObject* pgameObject)
-{
-	if (pgameObject)
-	{
-		SelectGameObjectUsingIdentifier(pgameObject->GetIdentifier());
-	}
-	else
-	{
-		m_pselectedNode = nullptr;
-		m_pselectedGameObject = nullptr;
-	}
-}
-
-void Scene::SelectGameObjectUsingTreeNode(TreeNode<GameObject>* pnode)
-{
-	if (!pnode)
-	{
-		m_pselectedNode = nullptr;
-		m_pselectedGameObject = nullptr;
-		return;
-	}
-
-	m_pselectedNode = pnode;
-	m_pselectedGameObject = pnode->NodeObject;
-}
-
-
-void Scene::DeleteSelectedGameObject()
-{
-	if (!m_pselectedNode)
-	{
-		return;
-	}
-	m_psceneGraph->DeleteGameObjectUsingNode(m_pselectedNode);
+	m_psceneGraph->DeleteGameObjectUsingNode(currentNode);
 }
 
 void Scene::DeleteGameObjectUsingIdentifier(string identifier)

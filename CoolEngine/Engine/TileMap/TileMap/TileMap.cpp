@@ -394,7 +394,7 @@ void TileMap::CreateEngineUI()
 				{
 					if (m_tiles[i][j] != nullptr)
 					{
-						GameManager::GetInstance()->DeleteGameObject(m_tiles[i][j], m_tiles[i][j]->GetIdentifier());
+						GameManager::GetInstance()->DeleteGameObjectUsingNode(m_tiles[i][j], m_tiles[i][j]->GetIdentifier());
 					}
 				}
 
