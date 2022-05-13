@@ -16,6 +16,7 @@ void GraphicsManager::Init(ID3D11Device* pdevice, ID3D11DeviceContext* pcontext)
 	for (int i = 0; i < s_kNumLayers; ++i)
 	{
 		m_pBatches[i] = unique_ptr<SpriteBatch>(new SpriteBatch(pcontext));
+		m_pBatches[i]->SetRotation(DXGI_MODE_ROTATION_UNSPECIFIED);
 	}
 
 	CreateQuadMesh();
@@ -220,12 +221,6 @@ void GraphicsManager::SetHWND(HWND* hwnd)
 
 void GraphicsManager::RenderQuad(ID3D11ShaderResourceView* psrv, XMFLOAT3 position, XMFLOAT3 scale, float rotation, int layer)
 {
-	XMFLOAT4 pixelCoords;
-	XMStoreFloat4(&pixelCoords, XMVector2Transform(XMVectorSet(position.x, position.y, 0, 0), XMLoadFloat4x4(&GameManager::GetInstance()->GetCamera()->GetViewProjection())));
-
-	pixelCoords.x = (pixelCoords.x + 1.0f) * m_windowDimensions.x * 0.5f;
-	pixelCoords.y = (1.0f - pixelCoords.y) * m_windowDimensions.y * 0.5f;
-
 	ID3D11Resource* pResource = nullptr;
 	ID3D11Texture2D* pTexture2D = nullptr;
 	D3D11_TEXTURE2D_DESC desc;
@@ -235,8 +230,8 @@ void GraphicsManager::RenderQuad(ID3D11ShaderResourceView* psrv, XMFLOAT3 positi
 	pTexture2D->GetDesc(&desc);
 
 	SimpleMath::Rectangle rect;
-	rect.x = pixelCoords.x;
-	rect.y = pixelCoords.y;
+	rect.x = position.x;
+	rect.y = position.y;
 	rect.width = scale.x * 2.0f;
 	rect.height = scale.y * 2.0f;
 
@@ -324,7 +319,7 @@ SpriteAnimation GraphicsManager::GetAnimation(wstring name) const
 
 int GraphicsManager::GetNumLayers()
 {
-	return s_kNumLayers;
+	return 5;
 }
 
 bool GraphicsManager::IsTextureLoaded(wstring filename)
@@ -388,12 +383,12 @@ void GraphicsManager::CreateInputLayouts()
 	m_inputLayouts.resize((int)InputLayouts::COUNT);
 
 	// Define the input layout
-	D3D11_INPUT_ELEMENT_DESC layout[] =
+	D3D11_INPUT_ELEMENT_DESC layoutPosTex[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT , D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
-	UINT numElements = ARRAYSIZE(layout);
+	UINT numElements = ARRAYSIZE(layoutPosTex);
 
 	//Compile dummy shader and use blob to verify the input layout
 	ID3DBlob* pblob = nullptr;
@@ -401,13 +396,35 @@ void GraphicsManager::CreateInputLayouts()
 	CompileShaderFromFile(POS_TEX_DUMMY_FILE_NAME, "main", "vs_4_0", pblob);
 
 	// Create the input layout
-	HRESULT hr = m_pdevice->CreateInputLayout(layout, numElements, pblob->GetBufferPointer(), pblob->GetBufferSize(), &m_inputLayouts[(int)InputLayouts::POS_TEX]);
+	HRESULT hr = m_pdevice->CreateInputLayout(layoutPosTex, numElements, pblob->GetBufferPointer(), pblob->GetBufferSize(), &m_inputLayouts[(int)InputLayouts::POS_TEX]);
 
 	pblob->Release();
 
 	if (FAILED(hr))
 	{
 		LOG("Failed to create input POS_TEX input layout!");
+	}
+
+	pblob = nullptr;
+
+	// Define the input layout
+	D3D11_INPUT_ELEMENT_DESC layoutPosTexColour[] =
+	{
+		{ "SV_Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT , D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	};
+	numElements = ARRAYSIZE(layoutPosTexColour);
+
+	CompileShaderFromFile(POS_TEX_COLOR_DUMMY_FILE_NAME, "main", "vs_4_0", pblob);
+
+	hr = m_pdevice->CreateInputLayout(layoutPosTexColour, numElements, pblob->GetBufferPointer(), pblob->GetBufferSize(), &m_inputLayouts[(int)InputLayouts::POS_TEX_COLOR]);
+
+	pblob->Release();
+
+	if (FAILED(hr))
+	{
+		LOG("Failed to create input POS_TEX_COLOR input layout!");
 	}
 }
 
@@ -508,6 +525,8 @@ void GraphicsManager::CompileDefaultShaders()
 	CompileShaderFromFile(SCREENSPACE_VERTEX_SHADER_NAME, "main", "vs_4_0");
 	CompileShaderFromFile(DEFAULT_PIXEL_SHADER_NAME, "main", "ps_4_0");
 	CompileShaderFromFile(TEXT_PIXEL_SHADER_NAME, "main", "ps_4_0");
+	CompileShaderFromFile(SPRITE_BATCH_VERTEX_SHADER_NAME, "main", "vs_4_0");
+	CompileShaderFromFile(SPRITE_BATCH_PIXEL_SHADER_NAME, "main", "ps_4_0");
 }
 
 bool GraphicsManager::CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob*& pblob)
