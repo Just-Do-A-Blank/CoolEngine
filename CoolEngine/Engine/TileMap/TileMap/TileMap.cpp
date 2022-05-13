@@ -259,8 +259,17 @@ bool TileMap::GetCoordsFromWorldPos(int* prow, int* pcolumn, const XMFLOAT2& pos
 
 	relativePos = MathHelper::Plus(relativePos, XMFLOAT2(m_width * tileScale.x * 0.5f, m_height * tileScale.y * 0.5f));
 
-	*prow = (relativePos.x / (int)tileScale.x);
-	*pcolumn = ((int)relativePos.y / (int)tileScale.y);
+	if (relativePos.x < 0 || relativePos.y < 0)
+	{
+		*prow = -1;
+		*pcolumn = -1;
+	}
+	else
+	{
+		*prow = (relativePos.x / (int)tileScale.x);
+		*pcolumn = ((int)relativePos.y / (int)tileScale.y);
+	}
+
 
 	if (*prow >= m_width || *pcolumn >= m_height || *prow < 0 || *pcolumn < 0)
 	{
