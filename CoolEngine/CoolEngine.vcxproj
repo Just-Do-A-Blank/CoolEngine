@@ -39,7 +39,18 @@
     <ClInclude Include="Engine\GameObjects\CameraGameObject.h" />
     <ClInclude Include="Engine\GameObjects\CharacterGameObject.h" />
     <ClInclude Include="Engine\GameObjects\CollidableGameObject.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\Character\ECharacterDirectionClass.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\EGameplayButtonClass.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\GameplayButton.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\EPLAYERMOVEMENTSTATE.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerController.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovementParameters.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovementState.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerWalkingState.h" />
     <ClInclude Include="Engine\GameObjects\InteractableGameObject.h" />
+    <ClInclude Include="Engine\GameObjects\MeleeWeaponGameObject.h" />
+    <ClInclude Include="Engine\GameObjects\RangedWeaponGameObject.h" />
     <ClInclude Include="Engine\GameObjects\RenderableCollidableGameObject.h" />
     <ClInclude Include="Engine\GameObjects\DebugRect.h" />
     <ClInclude Include="Engine\GameObjects\EnemyGameObject.h" />
@@ -174,7 +185,12 @@
     <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\CharacterGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\CollidableGameObject.cpp" />
+    <ClCompile Include="Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.cpp" />
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerController.cpp" />
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerWalkingState.cpp" />
     <ClCompile Include="Engine\GameObjects\InteractableGameObject.cpp" />
+    <ClCompile Include="Engine\GameObjects\MeleeWeaponGameObject.cpp" />
+    <ClCompile Include="Engine\GameObjects\RangedWeaponGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\RenderableCollidableGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\DebugRect.cpp" />
     <ClCompile Include="Engine\GameObjects\EnemyGameObject.cpp" />
@@ -278,6 +294,15 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
     </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\DummyPosTexColor.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='InGameUIDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="Engine\Graphics\Shaders\ScreenSpaceVertex.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
@@ -286,6 +311,24 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\SpriteBatchPixel.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='InGameUIDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\SpriteBatchVertex.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='InGameUIDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Engine\Graphics\Shaders\TextPixel.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>

@@ -102,9 +102,13 @@ void GameManager::SetCamera(CameraGameObject* pcamera)
 	m_pcamera = pcamera;
 }
 
-void GameManager::DeleteSelectedGameObject()
+void GameManager::DeleteGameObjectUsingNode(TreeNode<GameObject>* currentNode)
 {
-    m_pcurrentScene->DeleteSelectedGameObject();
+	if (!currentNode)
+	{
+		return;
+	}
+    m_pcurrentScene->DeleteGameObjectUsingNode(currentNode);
 }
 
 void GameManager::DeleteGameObjectUsingIdentifier(string identifier)

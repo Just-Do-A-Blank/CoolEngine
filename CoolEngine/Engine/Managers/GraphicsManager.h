@@ -78,6 +78,7 @@ public:
 	enum class InputLayouts
 	{
 		POS_TEX = 0,
+		POS_TEX_COLOR,
 		COUNT
 	};
 

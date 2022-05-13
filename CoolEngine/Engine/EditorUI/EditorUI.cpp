@@ -198,7 +198,7 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 		{
 			if (ImGui::MenuItem("GameObject"))
 			{
-				pgameManager->DeleteSelectedGameObject();
+				pgameManager->DeleteGameObjectUsingNode(m_selecedGameObjectNode);
 
 				m_gameObjectNodeClicked = -1;
 				m_selecedGameObjectNode = nullptr;
@@ -1024,6 +1024,34 @@ bool EditorUI::DragFloat(const string& label, float& value, const float& columnW
 	ImGui::PopID();
 
 	return interacted;
+}
+
+/// <summary>
+/// A title which spans the full length of the component editor window
+/// </summary>
+/// <param name="label">The title to display</param>
+/// <param name="columnWidth">The width of a single coloumn</param>
+void EditorUI::FullTitle(const string& label, const float& columnWidth)
+{
+    ImGui::Separator();
+    ImGui::PushID(label.c_str());
+
+    ImGui::Columns(2);
+    ImGui::SetColumnWidth(0, columnWidth);
+    ImGui::NextColumn();
+
+    ImGui::SetColumnWidth(0, columnWidth);
+    ImGui::Text(label.c_str());
+    ImGui::NextColumn();
+
+    ImGui::PushItemWidth(ImGui::CalcItemWidth());
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+    
+    ImGui::PopItemWidth();
+    ImGui::PopStyleVar();
+    ImGui::PopID();
+
+    ImGui::Separator();
 }
 
 #endif

@@ -4,13 +4,53 @@
 
 PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : CharacterGameObject(identifier, uuid)
 {
-	EventManager::Instance()->AddClient(EventType::KeyPressed, this);
-	EventManager::Instance()->AddClient(EventType::KeyReleased, this);
-	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
-	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
-	EventManager::Instance()->AddClient(EventType::MouseMoved, this);
+    m_gameObjectType |= GameObjectType::PLAYER;
 
-	m_gameObjectType |= GameObjectType::PLAYER;
+    GameplayButton up = 
+    {
+        EGAMEPLAYBUTTONCLASS::MoveUp,
+        list<int>(),
+        list<int>(),
+    };
+    up.m_keyCodes.push_back('W');
+    GameplayButton down =
+    {
+        EGAMEPLAYBUTTONCLASS::MoveDown,
+        list<int>(),
+        list<int>(),
+    };
+    down.m_keyCodes.push_back('S');
+
+    GameplayButton left =
+    {
+        EGAMEPLAYBUTTONCLASS::MoveLeft,
+        list<int>(),
+        list<int>(),
+    };
+    left.m_keyCodes.push_back('A');
+
+    GameplayButton right =
+    {
+        EGAMEPLAYBUTTONCLASS::MoveRight,
+        list<int>(),
+        list<int>(),
+    };
+    right.m_keyCodes.push_back('D');
+
+    list< GameplayButton> gameplayButtons;
+    gameplayButtons.push_back(up);
+    gameplayButtons.push_back(down);
+    gameplayButtons.push_back(left);
+    gameplayButtons.push_back(right);
+
+    InputsAsGameplayButtons* buttons = new InputsAsGameplayButtons(gameplayButtons);
+    m_playerController = new PlayerController(buttons, GetTransform());
+
+    EventManager::Instance()->AddClient(EventType::KeyPressed, this);
+    EventManager::Instance()->AddClient(EventType::KeyReleased, this);
+    EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
+    EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
+    EventManager::Instance()->AddClient(EventType::MouseMoved, this);
 }
 
 PlayerGameObject::~PlayerGameObject()
@@ -20,6 +60,8 @@ PlayerGameObject::~PlayerGameObject()
 	EventManager::Instance()->RemoveClientEvent(EventType::MouseButtonPressed, this);
 	EventManager::Instance()->RemoveClientEvent(EventType::MouseButtonReleased, this);
 	EventManager::Instance()->RemoveClientEvent(EventType::MouseMoved, this);
+
+    delete m_playerController;
 }
 
 /// <summary>
@@ -31,115 +73,60 @@ void PlayerGameObject::Handle(Event* e)
 
 	switch (e->GetEventID())
 	{
+    case EventType::CollisionEnter:
+        m_playerController->Handle(e);
+        break;
+    case EventType::CollisionExit:
+        m_playerController->Handle(e);
+        break;
+    case EventType::CollisionHold:
+        m_playerController->Handle(e);
+        break;
+    case EventType::TriggerEnter:
+        m_playerController->Handle(e);
+        break;
+    case EventType::TriggerExit:
+        m_playerController->Handle(e);
+        break;
+    case EventType::TriggerHold:
+        m_playerController->Handle(e);
+        break;
 	case EventType::KeyPressed:
-		KeyPressed((KeyPressedEvent*)e);
+        
+		//KeyPressed((KeyPressedEvent*)e);
 		break;
 	case EventType::KeyReleased:
-		KeyReleased((KeyReleasedEvent*)e);
+		//KeyReleased((KeyReleasedEvent*)e);
 		break;
 	case EventType::MouseButtonPressed:
-		MouseButtonPressed((MouseButtonPressedEvent*)e);
+		//MouseButtonPressed((MouseButtonPressedEvent*)e);
 		break;
 	case EventType::MouseButtonReleased:
-		MouseButtonReleased((MouseButtonReleasedEvent*)e);
+		//MouseButtonReleased((MouseButtonReleasedEvent*)e);
 		break;
 	case EventType::MouseMoved:
-		MouseMoved((MouseMovedEvent*)e);
+		//MouseMoved((MouseMovedEvent*)e);
 		break;
 
 	}
 }
 
 /// <summary>
-/// Handles any keypresses when they are pressed (frame whilst pressed)
+/// Update loop for the gameobject
 /// </summary>
-void PlayerGameObject::KeyPressed(KeyPressedEvent* e)
+void PlayerGameObject::Update()
 {
-	//Can use 'Letter' or the raw keycode for keyboard inputs.
-	if (e->GetKeyCode() == 'C')
-	{
-		//LOG("C");
-	}
-
-	if (e->GetKeyCode() == 0x43)
-	{
-
-	}
-
-	if (e->GetKeyCode() == 0x44)
-	{
-		//LOG("D");
-	}
-
-	// Player movement
-	XMFLOAT3 vector = XMFLOAT3(0, 0, 0);
-	if (e->GetKeyCode() == 'W')
-	{
-		vector.y = 1.0f;
-	}
-	if (e->GetKeyCode() == 'S')
-	{
-		vector.y = -1.0f;
-	}
-	if (e->GetKeyCode() == 'A')
-	{
-		vector.x = -1.0f;
-	}
-	if (e->GetKeyCode() == 'D')
-	{
-		vector.x = 1.0f;
-	}
-	if (vector.x != 0.0f || vector.y != 0.0f)
-	{
-		float size = sqrt(vector.x * vector.x + vector.y * vector.y);
-		vector = MathHelper::Multiply(XMFLOAT3((GetMoveSpeed() * vector.x) / size, (GetMoveSpeed() * vector.y) / size, 0), GameManager::GetInstance()->GetTimer()->DeltaTime());
-		GetTransform()->Translate(vector);
-	}
+    m_playerController->Update();
 }
 
+#if EDITOR
 /// <summary>
-/// Handles any keypresses when they are released (first frame).
+/// Shows engine UI
 /// </summary>
-void PlayerGameObject::KeyReleased(KeyReleasedEvent* e)
+void PlayerGameObject::CreateEngineUI()
 {
+    CharacterGameObject::CreateEngineUI();
 
+    m_playerController->CreateEngineUI();
 }
-
-/// <summary>
-/// Handles any mouse button presses when pressed (frame whilst pressed)
-/// </summary>
-void PlayerGameObject::MouseButtonPressed(MouseButtonPressedEvent* e)
-{
-	if (e->GetButton() == VK_LBUTTON)
-	{
-
-		//LOG("MB1");
-
-	}
-
-	if (e->GetButton() == VK_RBUTTON)
-	{
-
-		//LOG("MB2");
-
-	}
-
-
-}
-
-/// <summary>
-/// Handles any mouse button when they are released (first frame).
-/// </summary>
-void PlayerGameObject::MouseButtonReleased(MouseButtonReleasedEvent* e)
-{
-
-}
-
-/// <summary>
-/// Handles the mouse moving across the window
-/// </summary>
-void PlayerGameObject::MouseMoved(MouseMovedEvent* e)
-{
-	//LOG(e->GetX()); 
-	//LOG(e->GetY());
-}
+#endif
