@@ -85,7 +85,7 @@ public:
     /// <param name="label">The title to display</param>
     /// <param name="columnWidth">The width of a single coloumn</param>
 	static void FullTitle(const string& label, const float& columnWidth = 100.0f);
-	
+
     static bool DragFloat(const string& label, float& value, const float& columnWidth = 100.0f, const float& speed = 0.1f, const float& min = 0, const float& max = 0);
 	static void DragFloat2(const string& label, XMFLOAT2& values, const float& columnWidth = 100.0f, const float& speed = 0.1f, const float& min = 0, const float& max = 0);
 	static void DragFloat3(const string& label, XMFLOAT3& values, const float& columnWidth = 100.0f, const float& speed = 0.1f, const float& min = 0, const float& max = 0);

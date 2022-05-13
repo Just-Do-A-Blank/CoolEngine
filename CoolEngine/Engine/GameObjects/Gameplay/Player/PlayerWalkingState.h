@@ -58,7 +58,7 @@ private:
     /// <summary>
     /// How much to multiply the speed by when actually calulcating the speed
     /// </summary>
-    float *m_speedMultiplier;// = 0.8f
+    float *m_speedMultiplier;
 
     /// <summary>
     /// The current speed of the player
