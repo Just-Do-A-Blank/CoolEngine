@@ -1,10 +1,14 @@
 #include "Engine/GameObjects/Gameplay/Player/PlayerWalkingState.h"
 #include <Engine/Managers/Events/EventManager.h>
 
-PlayerWalkingState::PlayerWalkingState(Transform* transform, InputsAsGameplayButtons* gameplayButtons)
+PlayerWalkingState::PlayerWalkingState(PlayerMovementParameters movement)
 {
-	m_transform = transform;
-	m_gameplayButtons = gameplayButtons;
+	m_transform = movement.m_transform;
+	m_gameplayButtons = movement.m_gameplayButtons;
+    m_moveSpeedMax = movement.m_maxSpeed;
+    m_speedMultiplier = movement.m_walkingSpeed;
+    m_moveSpeedPerFrame = movement.m_moveSpeedPerFrame;
+    m_dragSpeedPerFrame = movement.m_dragSpeedPerFrame;
 
     m_forceApplied = XMFLOAT3(0, 0, 0);
 
@@ -283,11 +287,11 @@ void PlayerWalkingState::ApplyForce(float timeDelta, XMFLOAT3 direction)
     ApplyForceToSingleAxis(&m_forceApplied.x, direction.x);
     ApplyForceToSingleAxis(&m_forceApplied.y, direction.y);
 
-    m_moveSpeed += m_moveSpeedPerFrame * timeDelta;
+    m_moveSpeed += *m_moveSpeedPerFrame * timeDelta;
 
-    float drag = ((m_moveSpeedMax * 100) / 2) * timeDelta;
+    float drag = ((*m_moveSpeedMax * 100) / 2) * timeDelta;
     SlowSpeedIfDirectionChanged(original, m_forceApplied, drag,  &m_moveSpeed);
-    RestrictSpeedAndForceToResonableBounds(&m_moveSpeed, m_moveSpeedMax, &m_forceApplied);
+    RestrictSpeedAndForceToResonableBounds(&m_moveSpeed, *m_moveSpeedMax, &m_forceApplied);
 }
 
 /// <summary>
@@ -362,8 +366,8 @@ void PlayerWalkingState::MoveByForce(float timeDelta)
     {
 
         XMFLOAT3 movement = m_forceApplied;
-        MoveTransformInDirectionByDistance(m_transform, m_forceApplied, m_moveSpeed, timeDelta * m_speedMultiplier);
-        SlowPlayerBasedOnDrag(&m_moveSpeed, m_dragSpeedPerFrame, timeDelta);
+        MoveTransformInDirectionByDistance(m_transform, m_forceApplied, m_moveSpeed, timeDelta * *m_speedMultiplier);
+        SlowPlayerBasedOnDrag(&m_moveSpeed, *m_dragSpeedPerFrame, timeDelta);
 
         if (m_moveSpeed == 0)
         {
