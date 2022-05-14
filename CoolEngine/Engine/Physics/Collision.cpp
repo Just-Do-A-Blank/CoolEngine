@@ -221,7 +221,7 @@ void Collision::Update(vector<GameObject*> gameObjectMap)
 		pcollidable1 = dynamic_cast<CollidableGameObject*>(gameObjectMap[it1]);
 		pcollidable1->SetShapeDimensions(pcollidable1->GetTransform()->GetWorldScale());
 
-		if (pcollidable1->GetShape()->IsRendered())
+		if (pcollidable1->GetShape() != nullptr && pcollidable1->GetShape()->IsRendered())
 		{
 			XMFLOAT3 p = pcollidable1->GetTransform()->GetWorldPosition();
 			XMFLOAT2 d = pcollidable1->GetShape()->GetShapeDimensions();
