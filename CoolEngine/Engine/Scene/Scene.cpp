@@ -16,7 +16,7 @@ Scene::~Scene()
 
 void Scene::Update()
 {
-	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllGameObjects();
+	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
 	for (int it = 0; it < gameObjectList.size(); ++it)
 	{
 		gameObjectList[it]->Update();
@@ -29,7 +29,7 @@ void Scene::Render(RenderStruct& renderStruct)
 {
 	RenderableGameObject* prenderableGameObject = nullptr;
 
-	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllGameObjects();
+	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
 	for (int it = 0; it < gameObjectList.size(); ++it)
 	{
 		if (gameObjectList[it]->ContainsType(GameObjectType::RENDERABLE) == false)
@@ -45,17 +45,17 @@ void Scene::Render(RenderStruct& renderStruct)
 
 vector<GameObject*>& Scene::GetAllGameObjects()
 {
-	return m_psceneGraph->GetAllGameObjects();
+	return m_psceneGraph->GetAllNodeObjects();
 }
 
 void Scene::DeleteGameObjectUsingNode(TreeNode<GameObject>* currentNode)
 {
-	m_psceneGraph->DeleteGameObjectUsingNode(currentNode);
+	m_psceneGraph->DeleteNodeObjectUsingNode(currentNode);
 }
 
 void Scene::DeleteGameObjectUsingIdentifier(string identifier)
 {
-	m_psceneGraph->DeleteGameObjectUsingIdentifier(identifier);
+	m_psceneGraph->DeleteNodeObjectUsingIdentifier(identifier);
 }
 
 TreeNode<GameObject>* Scene::GetRootTreeNode()
