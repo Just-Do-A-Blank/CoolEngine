@@ -27,7 +27,6 @@
 #define DEFAULT_PIXEL_SHADER_NAME L"Engine\\Graphics\\Shaders\\BasicPixel.hlsl"
 #define SPRITE_BATCH_PIXEL_SHADER_NAME L"Engine\\Graphics\\Shaders\\SpriteBatchPixel.hlsl"
 #define TEXT_PIXEL_SHADER_NAME L"Engine\\Graphics\\Shaders\\TextPixel.hlsl"
-#define BUTTON_PIXEL_SHADER_NAME L"Engine\\Graphics\\Shaders\\ButtonPixel.hlsl"
 
 //Misc
 #define POS_TEX_DUMMY_FILE_NAME L"Engine\\Graphics\\Shaders\\DummyPosTex.hlsl"
