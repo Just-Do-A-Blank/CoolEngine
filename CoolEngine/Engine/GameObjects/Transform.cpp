@@ -127,7 +127,14 @@ const XMFLOAT3& Transform::GetLeftVector() const
 
 void Transform::SetWorldPosition(XMFLOAT3& position)
 {
-    m_localPosition = position;
+	if (m_pparentTransform == nullptr)
+	{
+		m_localPosition = position;
+	}
+	else
+	{
+		m_localPosition = MathHelper::Minus(position, m_pparentTransform->GetWorldPosition());
+	}
 
 	UpdateMatrix();
 }
