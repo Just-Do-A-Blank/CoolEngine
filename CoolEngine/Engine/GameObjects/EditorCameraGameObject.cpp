@@ -7,7 +7,7 @@ EditorCameraGameObject::EditorCameraGameObject(string identifier, CoolUUID uuid)
 
 }
 
-EditorCameraGameObject::EditorCameraGameObject(json data, CoolUUID index) : CameraGameObject(data, index)
+EditorCameraGameObject::EditorCameraGameObject(nlohmann::json data, CoolUUID index) : CameraGameObject(data, index)
 {
 
 }

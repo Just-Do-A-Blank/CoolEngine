@@ -5,8 +5,6 @@
 #define FILEPATH_BUFFER_SIZE 200
 #define ANIM_NAME_SIZE 50
 
-
-
 using namespace nlohmann;
 
 enum class GameObjectType

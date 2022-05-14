@@ -72,6 +72,7 @@ void GameObject::Serialize(json& jsonData)
 
 void GameObject::Deserialize(json& jsonData)
 {
+
 }
 
 #if EDITOR

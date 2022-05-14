@@ -11,6 +11,7 @@
 #include "Engine/Tools/AnimationTool.h"
 #include "Engine/Tools/InGameUITool.h"
 #include "Engine//Tools/TileMapTool.h"
+#include "Engine/FileIO/FileIO.h"
 
 #include <ShlObj_core.h>
 
@@ -379,12 +380,16 @@ void EditorUI::DrawSceneManagementWindow()
 
 			if (ImGui::MenuItem("Save Scene", "Ctrl+S"))
 			{
-				/* Do stuff */
+				SimpleFileIO::SaveScene(std::string("Resources\\Levels\\") + GameManager::GetInstance()->GetCurrentSceneName() + ".json");
 			}
 
 			if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
 			{
 				OpenFileExplorer(L"Scene files\0*.json\0", m_texNameBuffer, _countof(m_texNameBuffer));
+
+				std::wstring tempString = std::wstring(m_texNameBuffer);
+
+				SimpleFileIO::LoadScene(std::string(tempString.begin(), tempString.end()), "Test");
 			}
 
 			if (ImGui::MenuItem("Delete Scene", "Ctrl+D"))
