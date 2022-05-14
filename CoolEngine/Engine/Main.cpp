@@ -877,6 +877,8 @@ void Update()
 	pgamemanager->GetTimer()->Tick();
 	pgamemanager->Update();
 
+	UIManager::GetInstance()->Update();
+
 #if EDITOR
 	g_peditorUI->Update();
 	g_pcamera->Update();
