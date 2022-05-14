@@ -151,6 +151,11 @@ void Transform::SetRotation(XMFLOAT3& rotation)
 	UpdateMatrix();
 }
 
+void Transform::SetLocalRotation(XMFLOAT3& rotation)
+{
+	m_localRotation = rotation;
+}
+
 void Transform::SetRotationMatrix(XMMATRIX& rotationMatrix)
 {
     m_rotationMatrix = rotationMatrix;
@@ -163,6 +168,11 @@ void Transform::SetScale(XMFLOAT3& scale)
     m_localScale = scale;
 
 	UpdateMatrix();
+}
+
+void Transform::SetLocalScale(XMFLOAT3& scale)
+{
+	m_localScale = scale;
 }
 
 void Transform::SetForwardVector(XMFLOAT3& forwardVector)
