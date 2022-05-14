@@ -105,16 +105,14 @@ void InGameUITool::DrawUIWindow()
 			ButtonComponent* buttonUI = puiManager->CreateUIComponent<ButtonComponent>(m_buttonName, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(10.0f, 10.0f, 10.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
 			if (buttonUI)
 			{
-				buttonUI->SetTexture(L"", ButtonTexture::PRESSED);
-				buttonUI->SetTexture(L"", ButtonTexture::RELEASED);
-				buttonUI->SetTexture(L"", ButtonTexture::HOVERED);
+				buttonUI->SetTexture(L"", ButtonState::PRESSED);
+				buttonUI->SetTexture(L"", ButtonState::RELEASED);
+				buttonUI->SetTexture(L"", ButtonState::HOVERED);
 				m_buttonName = "";
 
 				m_showUICreation = false;
 			}
 		}
-
-		
 
 		if (m_gameObjectNodeClicked != -1)
 		{

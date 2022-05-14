@@ -106,21 +106,7 @@ void TileMapTool::Update()
 
 	if (m_lmbPressed == true)
 	{
-		POINT point;
-		GetCursorPos(&point);
-		ScreenToClient(*GraphicsManager::GetInstance()->GetHWND(), &point);
-
-		ImVec2 test = ImGui::GetMousePos();
-
-		DirectX::XMFLOAT2 relativePos = EditorUI::GetViewportPosition();
-		relativePos = DirectX::XMFLOAT2(test.x - relativePos.x, test.y - relativePos.y);
-
-		float x = ((2.0f * relativePos.x) / EditorUI::GetViewportSize().x) - 1.0f;
-		float y = 1.0f - ((2.0f * relativePos.y) / EditorUI::GetViewportSize().y);
-
-		XMFLOAT2 clickPosWorld;
-
-		XMStoreFloat2(&clickPosWorld, XMVector4Transform(XMVectorSet(x, y, 0, 1), XMMatrixInverse(nullptr, XMLoadFloat4x4(&GameManager::GetInstance()->GetCamera()->GetViewProjection()))));
+		XMFLOAT2 clickPosWorld = GameManager::GetInstance()->GetCamera()->GetMousePositionInWorldSpace();
 
 		Tile* ptile;
 
