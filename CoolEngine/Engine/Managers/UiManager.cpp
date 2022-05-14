@@ -120,7 +120,7 @@ void UIManager::Serialize(nlohmann::json& data)
 
 	if (m_prootTreeNode == nullptr)
 	{
-		data["GameUI"]["RootNode"].push_back("Null");
+		data["GameUI"]["RootNode"] = -1;
 	}
 	else
 	{
@@ -178,7 +178,19 @@ void UIManager::Serialize(nlohmann::json& data)
 
 void UIManager::Deserialize(nlohmann::json& data)
 {
-	m_pUISceneGraph->DeleteNode(m_prootTreeNode);
+	if (m_pUISceneGraph != nullptr)
+	{
+		m_pUISceneGraph->DeleteNode(m_prootTreeNode);
+	}
+	else
+	{
+		m_pUISceneGraph = new SceneGraph<GameUIComponent>();
+	}
+
+	if (data["GameUI"]["RootNode"] == -1)
+	{
+		return;
+	}
 
 	//First loop through and create all the objects
 	std::unordered_map<uint64_t, GameUIComponent*> components;
@@ -231,17 +243,6 @@ void UIManager::Deserialize(nlohmann::json& data)
 
 	TreeNode<GameUIComponent>* pnode = nullptr;
 	GameUIComponent* pcomponent = nullptr;
-
-	//Next loop through and insert into scene graph
-	for (int i = 0; i < components.size(); ++i)
-	{
-		if (*components[i]->GetUUID() == data["GameUI"]["RootNode"])
-		{
-			pnode = m_pUISceneGraph->NewNode(components[i]);
-
-			break;
-		}
-	}
 
 	pcomponent = components[data["GameUI"]["RootNode"]];
 	pnode = m_pUISceneGraph->NewNode(pcomponent);

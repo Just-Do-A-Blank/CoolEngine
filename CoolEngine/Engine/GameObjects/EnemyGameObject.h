@@ -28,7 +28,7 @@ class EnemyGameObject : public CharacterGameObject
 {
 public:
     EnemyGameObject(string identifier, CoolUUID uuid);
-    EnemyGameObject(json data, CoolUUID index);
+    EnemyGameObject(const json& data, CoolUUID uuid);
 	virtual ~EnemyGameObject()override;
 
     void Update();
@@ -47,8 +47,7 @@ public:
     const XMFLOAT3 GetDirection() const;
     const EnemyState GetEnemyState() const; //will be changed to FsSM states in the future
 
-    void Serialize(json& jsonData);
-    void Deserialize(json& jsonData);
+    virtual void Serialize(json& jsonData) override;
 
 private:
 

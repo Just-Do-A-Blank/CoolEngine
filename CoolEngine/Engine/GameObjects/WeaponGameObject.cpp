@@ -5,13 +5,36 @@ WeaponGameObject::WeaponGameObject(string identifier, CoolUUID uuid) : Triggerab
     m_gameObjectType |= GameObjectType::WEAPON;
 }
 
-WeaponGameObject::WeaponGameObject(json data, CoolUUID index) : TriggerableGameObject(data, index)
+WeaponGameObject::WeaponGameObject(const json& data, CoolUUID uuid) : TriggerableGameObject(data, uuid)
 {
     m_gameObjectType |= GameObjectType::WEAPON;
+
+	m_level = data["WeaponLevel"];
+	m_strength = data["WeaponStrength"];
+	m_damage = data["WeaponDamage"];
+	m_shotCount = data["WeaponShotCount"];
+	m_timeLethal = data["WeaponTimeLethal"];
+	m_distanceTravelled = data["WeaponDistanceTravelled"];
+	m_element = (ELEMENTS)data["WeaponElement"];
+	m_statusEffect = (STATUSES)data["WeaponStatus"];
 }
 
 WeaponGameObject::~WeaponGameObject()
 {
+}
+
+void WeaponGameObject::Serialize(nlohmann::json& data)
+{
+	TriggerableGameObject::Serialize(data);
+
+	data["WeaponLevel"] = m_level;
+	data["WeaponStrength"] = m_strength;
+	data["WeaponDamage"] = m_damage;
+	data["WeaponShotCount"] = m_shotCount;
+	data["WeaponTimeLethal"] = m_timeLethal;
+	data["WeaponDistanceTravelled"] = m_distanceTravelled;
+	data["WeaponElement"] = (int)m_element;
+	data["WeaponStatus"] = (int)m_statusEffect;
 }
 
 void WeaponGameObject::CalculateWeaponStrength()

@@ -1,6 +1,10 @@
 #include "GameManager.h"
 
 #include "Engine/GameObjects/GameObject.h"
+#include "Engine/GameObjects/WeaponGameObject.h"
+#include "Engine/GameObjects/RangedWeaponGameObject.h"
+#include "Engine/GameObjects/MeleeWeaponGameObject.h"
+#include "Engine/GameObjects/InteractableGameObject.h"
 #include "Engine/Scene/Scene.h"
 #include "SceneGraph.h"
 #include "GraphicsManager.h"
@@ -138,15 +142,12 @@ vector<GameObject*>& GameManager::GetAllGameObjectsInCurrentScene()
 
 void GameManager::Serialize(nlohmann::json& data)
 {
-
-    data[m_pcurrentScene->m_sceneIdentifier] = {};
-
 	vector<GameObject*> gameObjectsInScene = m_pcurrentScene->GetAllGameObjects();
 
 	for (size_t i = 0; i < gameObjectsInScene.size(); i++)
 	{
 		std::string typeIdentifier = std::to_string((int)gameObjectsInScene[i]->GetGameObjectType());
-		gameObjectsInScene[i]->Serialize(data[m_pcurrentScene->m_sceneIdentifier][typeIdentifier][std::to_string(*gameObjectsInScene[i]->m_UUID)]);
+		gameObjectsInScene[i]->Serialize(data[typeIdentifier][std::to_string(*gameObjectsInScene[i]->m_UUID)]);
 	}
 
 	TreeNode<GameObject>* pnode = nullptr;
@@ -154,11 +155,11 @@ void GameManager::Serialize(nlohmann::json& data)
 
 	if (m_pcurrentScene->GetRootTreeNode() == nullptr)
 	{
-		data[m_pcurrentScene->m_sceneIdentifier]["RootNode"].push_back("Null");
+		data["RootNode"] = -1;
 	}
 	else
 	{
-		data[m_pcurrentScene->m_sceneIdentifier]["RootNode"].push_back(*m_pcurrentScene->GetRootTreeNode()->NodeObject->m_UUID);
+		data["RootNode"] = *m_pcurrentScene->GetRootTreeNode()->NodeObject->m_UUID;
 	}
 
 	for (int i = 0; i < gameObjectsInScene.size(); ++i)
@@ -167,44 +168,42 @@ void GameManager::Serialize(nlohmann::json& data)
 
 		if (pnode != nullptr)
 		{
-			pnode->NodeObject->Serialize(data);
-
 			std::string uuidString = to_string(*pnode->NodeObject->m_UUID);
 
 			if (pnode->Sibling == nullptr)
 			{
-				data[m_pcurrentScene->m_sceneIdentifier][to_string((int)pnode->NodeObject->GetGameObjectType())][uuidString]["Sibling"].push_back(0);
+				data[to_string((int)pnode->NodeObject->GetGameObjectType())][uuidString]["Sibling"] = -1;
 			}
 			else
 			{
-				data[m_pcurrentScene->m_sceneIdentifier][to_string((int)pnode->NodeObject->GetGameObjectType())][uuidString]["Sibling"].push_back(*pnode->Sibling->NodeObject->m_UUID);
+				data[to_string((int)pnode->NodeObject->GetGameObjectType())][uuidString]["Sibling"] = *pnode->Sibling->NodeObject->m_UUID;
 			}
 
 			if (pnode->PreviousSibling == nullptr)
 			{
-				data[m_pcurrentScene->m_sceneIdentifier][to_string((int)pnode->NodeObject->GetGameObjectType())][uuidString]["PreviousSibling"].push_back(0);
+				data[to_string((int)pnode->NodeObject->GetGameObjectType())][uuidString]["PreviousSibling"] = -1;
 			}
 			else
 			{
-				data[m_pcurrentScene->m_sceneIdentifier][to_string((int)pnode->NodeObject->GetGameObjectType())][uuidString]["PreviousSibling"].push_back(*pnode->PreviousSibling->NodeObject->m_UUID);
+				data[to_string((int)pnode->NodeObject->GetGameObjectType())][uuidString]["PreviousSibling"] = *pnode->PreviousSibling->NodeObject->m_UUID;
 			}
 
 			if (pnode->PreviousParent == nullptr)
 			{
-				data[m_pcurrentScene->m_sceneIdentifier][to_string((int)pnode->NodeObject->GetGameObjectType())][uuidString]["PreviousParent"].push_back(0);
+				data[to_string((int)pnode->NodeObject->GetGameObjectType())][uuidString]["PreviousParent"] = -1;
 			}
 			else
 			{
-				data[m_pcurrentScene->m_sceneIdentifier][to_string((int)pnode->NodeObject->GetGameObjectType())][uuidString]["PreviousParent"].push_back(*pnode->PreviousParent->NodeObject->m_UUID);
+				data[to_string((int)pnode->NodeObject->GetGameObjectType())][uuidString]["PreviousParent"] = *pnode->PreviousParent->NodeObject->m_UUID;
 			}
 
 			if (pnode->Child == nullptr)
 			{
-				data[m_pcurrentScene->m_sceneIdentifier][to_string((int)pnode->NodeObject->GetGameObjectType())][uuidString]["Child"].push_back(0);
+				data[to_string((int)pnode->NodeObject->GetGameObjectType())][uuidString]["Child"] = -1;
 			}
 			else
 			{
-				data[m_pcurrentScene->m_sceneIdentifier][to_string((int)pnode->NodeObject->GetGameObjectType())][uuidString]["Child"].push_back(*pnode->PreviousParent->NodeObject->m_UUID);
+				data[to_string((int)pnode->NodeObject->GetGameObjectType())][uuidString]["Child"] = *pnode->Child->NodeObject->m_UUID;
 			}
 		}
 	}
@@ -217,94 +216,91 @@ void GameManager::Deserialize(nlohmann::json& data)
 {
     std::unordered_map<uint64_t, GameObject*> gameObjects;
 
-
-	for (auto it = data.begin(); it != data.end(); ++it)
+	for (nlohmann::json::const_iterator typeIt = data.begin(); typeIt != data.end(); ++typeIt)
 	{
-		for (size_t i = 0; i < it.value().size(); i++)
+		if (typeIt.key() == "RootNode" || typeIt.key() == "AudioManager" || typeIt.key() == "GraphicsManager" || typeIt.key() == "GameUI" || typeIt.key() == "FontManager")
 		{
-			nlohmann::json::iterator idIterator = data[it.key()].begin();
-			uint64_t iD;
-			std::string uID;
+			continue;
+		}
 
-			if (it.key() == "RootNode")
-			{
-				break;
-			}
-			for (size_t j = 0; j < i + 1; j++)
-			{
-				uID = idIterator.key();
-				//https://stackoverflow.com/questions/42356939/c-convert-string-to-uint64-t
-				std::istringstream iss(idIterator.key());
-				iss >> iD;
-				++idIterator;
-			}
+		for (nlohmann::json::const_iterator objectIt = data[typeIt.key()].begin(); objectIt != data[typeIt.key()].end(); ++objectIt)
+		{
+			CoolUUID uuid = CoolUUID(stoull(objectIt.key()));
+			std::string uuidString = to_string(*uuid);
 
-			int its = (int)AccumlateType::PLAYER;
-			json inputData = data[it.key()];
-			int outputs = std::stoi(it.key());
-			switch ((AccumlateType)std::stoi(it.key()))
+			switch ((AccumlateType)stoi(typeIt.key()))
 			{
 			case AccumlateType::BASE:
-				gameObjects[iD] = new GameObject(inputData[uID], iD);
-				gameObjects[iD]->m_UUID = iD;
+				gameObjects[*uuid] = new GameObject(data[typeIt.key()][uuidString], uuid);
+				gameObjects[*uuid]->m_UUID = uuid;
 				break;
+
 			case AccumlateType::RENDERABLE:
-				gameObjects[iD] = new RenderableGameObject(inputData[uID], iD);
-				gameObjects[iD]->m_UUID = iD;
+				gameObjects[*uuid] = new RenderableGameObject(data[typeIt.key()][uuidString], uuid);
+				gameObjects[*uuid]->m_UUID = uuid;
 				break;
+
 			case AccumlateType::COLLIDABLE:
-				gameObjects[iD] = new CollidableGameObject(inputData[uID], iD);
-				gameObjects[iD]->m_UUID = iD;
+				gameObjects[*uuid] = new CollidableGameObject(data[typeIt.key()][uuidString], uuid);
+				gameObjects[*uuid]->m_UUID = uuid;
 				break;
+
 			case AccumlateType::COLLIDABLE_RENDERERABLE:
-				gameObjects[iD] = new RenderableCollidableGameObject(inputData[uID], iD);
-				gameObjects[iD]->m_UUID = iD;
+				gameObjects[*uuid] = new RenderableCollidableGameObject(data[typeIt.key()][uuidString], uuid);
+				gameObjects[*uuid]->m_UUID = uuid;
 				break;
+
 			case AccumlateType::CHARACTER:
-				gameObjects[iD] = new CharacterGameObject(inputData[uID], iD);
-				gameObjects[iD]->m_UUID = iD;
+				gameObjects[*uuid] = new CharacterGameObject(data[typeIt.key()][uuidString], uuid);
+				gameObjects[*uuid]->m_UUID = uuid;
 				break;
+
 			case AccumlateType::ENEMY:
-				gameObjects[iD] = new EnemyGameObject(inputData[uID], iD);
-				gameObjects[iD]->m_UUID = iD;
+				gameObjects[*uuid] = new EnemyGameObject(data[typeIt.key()][uuidString], uuid);
+				gameObjects[*uuid]->m_UUID = uuid;
 				break;
+
 			case AccumlateType::PLAYER:
-				gameObjects[iD] = new PlayerGameObject(inputData[uID], iD);
-				gameObjects[iD]->m_UUID = iD;
+				gameObjects[*uuid] = new PlayerGameObject(data[typeIt.key()][uuidString], uuid);
+				gameObjects[*uuid]->m_UUID = uuid;
 				break;
-			case AccumlateType::PARTICLESYSTEM:
-				gameObjects[iD] = new ParticleSystem(inputData[uID], iD);
-				gameObjects[iD]->m_UUID = iD;
+
+			case AccumlateType::PARTICLE_SYSTEM:
+				gameObjects[*uuid] = new ParticleSystem(data[typeIt.key()][uuidString], uuid);
+				gameObjects[*uuid]->m_UUID = uuid;
 				break;
+
 			case AccumlateType::INTERACTABLE:
+				gameObjects[*uuid] = new InteractableGameObject(data[typeIt.key()][uuidString], uuid);
+				gameObjects[*uuid]->m_UUID = uuid;
 				break;
+
 			case AccumlateType::WEAPON:
+				gameObjects[*uuid] = new WeaponGameObject(data[typeIt.key()][uuidString], uuid);
+				gameObjects[*uuid]->m_UUID = uuid;
 				break;
-			//case AccumlateType::TRIGGERABLE:
-			//	break;
-			//case AccumlateType::COUNT:
-			//	break;
+
+			case AccumlateType::MELEE_WEAPON:
+				gameObjects[*uuid] = new MeleeWeaponGameObject(data[typeIt.key()][uuidString], uuid);
+				gameObjects[*uuid]->m_UUID = uuid;
+				break;
+
+			case AccumlateType::RANGE_WEAPON:
+				gameObjects[*uuid] = new RangedWeaponGameObject(data[typeIt.key()][uuidString], uuid);
+				gameObjects[*uuid]->m_UUID = uuid;
+				break;
+
 			default:
+				LOG("Tried to deserialize an object that doesn't have a correct object type!");
 				break;
 			}
 		}
-	}	
+	}
 
 	TreeNode<GameObject>* pnode = nullptr;
 	GameObject* pcomponent = nullptr;
 
-	uint64_t target = data["RootNode"][0].get<uint64_t>();
-	for (std::unordered_map<uint64_t, GameObject*>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
-	{
-		if (it->first == target)
-		{
-			pnode = m_pcurrentScene->m_psceneGraph->NewNode(it->second);
-			break;
-		}
-	}
-
-
-	pcomponent = gameObjects[target];
+	pcomponent = gameObjects[data["RootNode"]];
 	pnode = m_pcurrentScene->m_psceneGraph->NewNode(pcomponent);
 
 	std::stack<TreeNode<GameObject>*> toPush;
@@ -315,18 +311,17 @@ void GameManager::Deserialize(nlohmann::json& data)
 		pnode = toPush.top();
 		toPush.pop();
 
-		int test = (int)pnode->NodeObject->GetGameObjectType();
-		int siblingCheck = data[std::to_string((int)pnode->NodeObject->GetGameObjectType())][std::to_string(*pnode->NodeObject->m_UUID)]["Sibling"][0].get<int>();
-		if (siblingCheck != 0)
+		uint64_t siblingCheck = data[std::to_string((int)pnode->NodeObject->GetGameObjectType())][std::to_string(*pnode->NodeObject->m_UUID)]["Sibling"];
+		if (siblingCheck != -1)
 		{
-			pcomponent = gameObjects[data[std::to_string((int)pnode->NodeObject->GetGameObjectType())][std::to_string(*pnode->NodeObject->m_UUID)]["Sibling"][0].get<uint64_t>()];
+			pcomponent = gameObjects[siblingCheck];
 			toPush.push(m_pcurrentScene->m_psceneGraph->AddSibling(pnode, pcomponent));
 		}
 		
-		int childCheck = data[std::to_string((int)pnode->NodeObject->GetGameObjectType())][std::to_string(*pnode->NodeObject->m_UUID)]["Child"][0].get<uint64_t>();
-		if (childCheck != 0)
+		uint64_t childCheck = data[std::to_string((int)pnode->NodeObject->GetGameObjectType())][std::to_string(*pnode->NodeObject->m_UUID)]["Child"];
+		if (childCheck != -1)
 		{
-			pcomponent = gameObjects[data[std::to_string((int)pnode->NodeObject->GetGameObjectType())][std::to_string(*pnode->NodeObject->m_UUID)]["Child"][0].get<uint64_t>()];
+			pcomponent = gameObjects[childCheck];
 			toPush.push(m_pcurrentScene->m_psceneGraph->AddSibling(pnode, pcomponent));
 		}
 	}

@@ -9,11 +9,11 @@ class PlayerGameObject : public CharacterGameObject
 public:
 
 	PlayerGameObject(string identifier, CoolUUID uuid);
-	PlayerGameObject(json data, CoolUUID index);
+	PlayerGameObject(const json& data, CoolUUID uuid);
 	virtual ~PlayerGameObject()override;
 
-	void Serialize(json& jsonData);
-	void Deserialize(json& jsonData);
+	virtual void Serialize(json& data) override;
+
     /// <summary>
     /// Handles events from the Observations
     /// </summary>

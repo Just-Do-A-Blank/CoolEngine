@@ -5,6 +5,8 @@ class InteractableGameObject : public TriggerableGameObject
 {
 public:
 	InteractableGameObject(string identifier, CoolUUID uuid);
-	InteractableGameObject(json& data, CoolUUID index);
+	InteractableGameObject(const json& data, CoolUUID index);
 	virtual ~InteractableGameObject()override;
+
+	virtual void Serialize(json& jsonData) override;
 };

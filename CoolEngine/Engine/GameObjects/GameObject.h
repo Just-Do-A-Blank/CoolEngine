@@ -15,11 +15,12 @@ enum class GameObjectType
 	CHARACTER = 8,
 	ENEMY = 16,
 	PLAYER = 32,
-	PARTICLESYSTEM = 64,
+	PARTICLE_SYSTEM = 64,
     INTERACTABLE = 128,
 	WEAPON = 256,
 	TRIGGERABLE = 512,
-	COUNT
+	MELEE_WEAPON = 1024,
+	RANGE_WEAPON = 2048,
 };
 
 DEFINE_ENUM_FLAG_OPERATORS(GameObjectType);
@@ -28,17 +29,18 @@ DEFINE_ENUM_FLAG_OPERATORS(GameObjectType);
 enum class AccumlateType
 {
 	BASE = 1,
+	PARTICLE_SYSTEM = (int)(GameObjectType::PARTICLE_SYSTEM | GameObjectType::BASE),
 	RENDERABLE  = (int)(GameObjectType::RENDERABLE | GameObjectType::BASE),
 	COLLIDABLE = (int)(GameObjectType::COLLIDABLE | GameObjectType::BASE),
 	COLLIDABLE_RENDERERABLE = (int)(GameObjectType::COLLIDABLE | GameObjectType::RENDERABLE | GameObjectType::BASE),
-	CHARACTER = (int)(GameObjectType::CHARACTER | GameObjectType::COLLIDABLE | GameObjectType::RENDERABLE | GameObjectType::BASE),
-	ENEMY = (int)(GameObjectType::ENEMY | GameObjectType::CHARACTER | GameObjectType::COLLIDABLE | GameObjectType::RENDERABLE | GameObjectType::BASE),
-	PLAYER = (int)(GameObjectType::PLAYER | GameObjectType::CHARACTER | GameObjectType::COLLIDABLE | GameObjectType::RENDERABLE | GameObjectType::BASE),
-	PARTICLESYSTEM = (int)(GameObjectType::PARTICLESYSTEM | GameObjectType::BASE),
-	INTERACTABLE = (int)(GameObjectType::INTERACTABLE | GameObjectType::TRIGGERABLE | GameObjectType::BASE),
-	WEAPON = (int)(GameObjectType::WEAPON | GameObjectType::TRIGGERABLE | GameObjectType::BASE),
-	TRIGGERABLE = (int)(GameObjectType::TRIGGERABLE| GameObjectType::COLLIDABLE | GameObjectType::RENDERABLE| GameObjectType::BASE),
-	COUNT = (int)(GameObjectType::COUNT | GameObjectType::TRIGGERABLE | GameObjectType::WEAPON | GameObjectType::INTERACTABLE | GameObjectType::PARTICLESYSTEM | GameObjectType::PLAYER | GameObjectType::ENEMY | GameObjectType::CHARACTER | GameObjectType::COLLIDABLE | GameObjectType::RENDERABLE | GameObjectType::BASE)
+	TRIGGERABLE = (int)((int)GameObjectType::TRIGGERABLE | COLLIDABLE_RENDERERABLE),
+	INTERACTABLE = (int)((int)GameObjectType::INTERACTABLE | TRIGGERABLE),
+	CHARACTER = (int)((int)GameObjectType::CHARACTER | TRIGGERABLE),
+	ENEMY = (int)((int)GameObjectType::ENEMY | CHARACTER),
+	PLAYER = (int)((int)GameObjectType::PLAYER | CHARACTER),
+	WEAPON = (int)((int)GameObjectType::WEAPON | TRIGGERABLE),
+	MELEE_WEAPON = (int)((int)GameObjectType::MELEE_WEAPON | WEAPON),
+	RANGE_WEAPON = (int)((int)GameObjectType::RANGE_WEAPON | WEAPON),
 };
 
 
@@ -69,13 +71,12 @@ protected:
 public:
 	GameObject();
 	GameObject(string identifier, CoolUUID uuid);
-	GameObject(json data, CoolUUID index); 
+	GameObject(const json& data, CoolUUID uuid);
 	virtual ~GameObject();
 
 	virtual void Update();
 
 	virtual void Serialize(json& jsonData);
-	virtual void Deserialize(json& jsonData);
 
 #if EDITOR
 	virtual void ShowEngineUI();

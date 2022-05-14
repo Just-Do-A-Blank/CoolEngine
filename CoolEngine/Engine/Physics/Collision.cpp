@@ -63,6 +63,7 @@ bool Collision::BoxCollisionAndResponse(Box* player, Box* object)
 		// Bottom to top - positive
 
 		// Based on stackoverflow.com/questions/46172953/aabb-collision-resolution-slipping-sides
+
 		XMFLOAT2 penetration = XMFLOAT2(0, 0);
 		XMFLOAT2 vertexToPlayerCentre = XMFLOAT2(middleP.x - middleO.x, middleP.y - middleO.y);
 		XMFLOAT2 minDistance = XMFLOAT2(halfSizeO.x + halfSizeP.x, halfSizeO.y + halfSizeP.y);

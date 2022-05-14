@@ -3,6 +3,7 @@
 
 CharacterGameObject::CharacterGameObject() : TriggerableGameObject()
 {
+	m_gameObjectType |= GameObjectType::CHARACTER;
 }
 
 CharacterGameObject::CharacterGameObject(string identifier, CoolUUID uuid) : TriggerableGameObject(identifier, uuid)
@@ -10,14 +11,12 @@ CharacterGameObject::CharacterGameObject(string identifier, CoolUUID uuid) : Tri
 	m_gameObjectType |= GameObjectType::CHARACTER;
 }
 
-CharacterGameObject::CharacterGameObject(json data, CoolUUID index) : TriggerableGameObject(data, index)
+CharacterGameObject::CharacterGameObject(const json& data, CoolUUID uuid) : TriggerableGameObject(data, uuid)
 {
 	m_gameObjectType |= GameObjectType::CHARACTER;
-	json j5 = data["Movement Speed"];
-	json j6 = data["Health"];
 
-	m_moveSpeed = j5;
-	m_health = j6;
+	m_moveSpeed = data["Movement Speed"];
+	m_health = data["Health"];
 }
 
 CharacterGameObject::~CharacterGameObject()
@@ -32,12 +31,8 @@ void CharacterGameObject::Update()
 
 void CharacterGameObject::Serialize(json& jsonData)
 {
-	GameObject::Serialize(jsonData);
 	TriggerableGameObject::Serialize(jsonData);
+
 	jsonData["Health"] = m_health;
 	jsonData["Movement Speed"] = m_moveSpeed;
-}
-
-void CharacterGameObject::Deserialize(json& jsonData)
-{
 }

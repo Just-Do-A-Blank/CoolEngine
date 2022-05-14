@@ -9,8 +9,10 @@ class TriggerableGameObject : public RenderableCollidableGameObject, public Obse
 public:
 	TriggerableGameObject();
 	TriggerableGameObject(string identifier, CoolUUID uuid);
-	TriggerableGameObject(json data, CoolUUID index);
+	TriggerableGameObject(const json& data, CoolUUID uuid);
     virtual ~TriggerableGameObject()override;
+
+	virtual void Serialize(nlohmann::json& data) override;
 
     /// <summary>
     /// Handles events from the Observations

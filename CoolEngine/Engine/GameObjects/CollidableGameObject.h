@@ -8,7 +8,7 @@ class CollidableGameObject : virtual public GameObject
 public:
 	CollidableGameObject();
 	CollidableGameObject(string identifier, CoolUUID uuid);
-	CollidableGameObject(json data, CoolUUID index);
+	CollidableGameObject(const json& data, CoolUUID uuid);
 	virtual ~CollidableGameObject()override;
 
 	//Getters
@@ -22,8 +22,7 @@ public:
 	virtual void CreateEngineUI() override;
 #endif
 
-	void Serialize(json& jsonData);
-	void Deserialize(json& jsonData);
+	virtual void Serialize(json& jsonData) override;
 
 protected:
 	Shape* m_pcollider = nullptr;

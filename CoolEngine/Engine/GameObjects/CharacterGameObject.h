@@ -16,7 +16,7 @@ public:
 
 	CharacterGameObject();
 	CharacterGameObject(string identifier, CoolUUID uuid);
-	CharacterGameObject(json data, CoolUUID index);
+	CharacterGameObject(const json& data, CoolUUID uuid);
 	virtual ~CharacterGameObject()override;
 
 	virtual void Update();
@@ -24,6 +24,5 @@ public:
 	float GetMoveSpeed() { return m_moveSpeed; }
 	void SetSpeed(float speed) { m_moveSpeed = speed; }
 
-	void Serialize(json& jsonData);
-	void Deserialize(json& jsonData);
+	virtual void Serialize(json& jsonData) override;
 };

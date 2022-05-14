@@ -15,30 +15,21 @@ CollidableGameObject::CollidableGameObject(string identifier, CoolUUID uuid) : G
 	m_gameObjectType |= GameObjectType::COLLIDABLE;
 }
 
-CollidableGameObject::CollidableGameObject(json data, CoolUUID index) : GameObject(data, index)
+CollidableGameObject::CollidableGameObject(const json& data, CoolUUID uuid) : GameObject(data, uuid)
 {
-	json shape = data["Shape"];
 	m_gameObjectType |= GameObjectType::COLLIDABLE;
 
-	if (shape != "NULL")
+	if (data["ShapeType"] != -1)
 	{
-		if (shape == "Circle")
+		if (data["ShapeType"] == "Circle")
 		{
-			json radius = data["Radius"];
-			m_pcollider = new Circle(m_transform, radius);
+			m_pcollider = new Circle(data, m_transform);
 		}
 		else
 		{
-			json height = data["Half Size"];
-			XMFLOAT2 halfHeight = { height[0],   height[1] };
-			m_pcollider = new Box(m_transform, halfHeight);
+			m_pcollider = new Box(data, m_transform);
 		}
 	}
-	else
-	{
-		LOG("No Collider")
-	}
-
 }
 
 CollidableGameObject::~CollidableGameObject()
@@ -99,32 +90,20 @@ void CollidableGameObject::CreateEngineUI()
 		m_pcollider->CreateEngineUI();
 	}
 }
+
+//Due to diamond pattern code here needs to be updated in RenderableCollidable as well
 void CollidableGameObject::Serialize(json& jsonData)
 {
 	GameObject::Serialize(jsonData);
+
 	if (m_pcollider == nullptr)
 	{
-		jsonData["Shape"].push_back("NULL");
+		jsonData["ShapeType"] = -1;
 	}
 	else
 	{
-		jsonData["Shape"] = m_pcollider->ShapeTypeToString(m_pcollider->GetShapeType());
+		m_pcollider->Serialize(jsonData);
 	}
-	if (m_pcollider->ShapeTypeToString(m_pcollider->GetShapeType()) == "Circle")
-	{
-		jsonData["Radius"] = ((Circle*)m_pcollider)->m_radius;
-		float outputData[2] = { 0.0 };
-		jsonData["Half Size"] =outputData;
-	}
-	else
-	{
-		float halfHeight[2] = { ((Box*)m_pcollider)->m_halfSize.x, ((Box*)m_pcollider)->m_halfSize.y };
-		jsonData["Half Size"] = halfHeight;
-		jsonData["Radius"] = 0;
-	}
-}
-void CollidableGameObject::Deserialize(json& jsonData)
-{
 }
 #endif
 

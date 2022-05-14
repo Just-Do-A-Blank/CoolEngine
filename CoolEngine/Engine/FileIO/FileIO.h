@@ -110,7 +110,7 @@ class SimpleFileIO
 	friend GameObject;
 public:
 
-	static void LoadScene(std::string location, std::string sceneIdentifier);
+	static void LoadScene(std::string location);
 
 	static void SaveScene(std::string location);
 

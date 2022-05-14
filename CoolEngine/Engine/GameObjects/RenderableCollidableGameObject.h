@@ -7,15 +7,14 @@ class RenderableCollidableGameObject : public RenderableGameObject, public Colli
 public:
 	RenderableCollidableGameObject();
 	RenderableCollidableGameObject(string identifier, CoolUUID uuid);
-	RenderableCollidableGameObject(json data, CoolUUID index);
+	RenderableCollidableGameObject(const json& data, CoolUUID uuid);
 	virtual ~RenderableCollidableGameObject()override;
 
 #if EDITOR
 	virtual void CreateEngineUI() override;
 #endif
 
-	void Serialize(json& jsonData);
-	void Deserialize(json& jsonData);
+	virtual void Serialize(json& jsonData) override;
 
 protected:
 

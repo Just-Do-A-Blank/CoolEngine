@@ -189,7 +189,7 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 			{
 				m_createGameObjectClicked = true;
 
-				m_createObjectType = GameObjectType::PARTICLESYSTEM;
+				m_createObjectType = GameObjectType::PARTICLE_SYSTEM;
 			}
 
 			ImGui::EndMenu();
@@ -307,7 +307,7 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 				pgameManager->CreateGameObject<GameObject>(gameObjectName, m_selecedGameObjectNode);
 				break;
 
-			case GameObjectType::PARTICLESYSTEM:
+			case GameObjectType::PARTICLE_SYSTEM:
 				pgameManager->CreateGameObject<ParticleSystem>(gameObjectName, m_selecedGameObjectNode);
 				break;
 
@@ -380,7 +380,7 @@ void EditorUI::DrawSceneManagementWindow()
 
 			if (ImGui::MenuItem("Save Scene", "Ctrl+S"))
 			{
-				SimpleFileIO::SaveScene(std::string("Resources\\Levels\\") + GameManager::GetInstance()->GetCurrentSceneName() + ".json");
+				SimpleFileIO::SaveScene(std::string("Resources\\Levels\\") + GameManager::GetInstance()->GetCurrentSceneName());
 			}
 
 			if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
@@ -389,7 +389,7 @@ void EditorUI::DrawSceneManagementWindow()
 
 				std::wstring tempString = std::wstring(m_texNameBuffer);
 
-				SimpleFileIO::LoadScene(std::string(tempString.begin(), tempString.end()), "Test");
+				SimpleFileIO::LoadScene(std::string(tempString.begin(), tempString.end()));
 			}
 
 			if (ImGui::MenuItem("Delete Scene", "Ctrl+D"))

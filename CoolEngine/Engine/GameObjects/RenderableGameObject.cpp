@@ -17,22 +17,14 @@ RenderableGameObject::RenderableGameObject(string identifier, CoolUUID uuid) : G
 	m_gameObjectType |= GameObjectType::RENDERABLE;
 }
 
-RenderableGameObject::RenderableGameObject(json data, CoolUUID index) : GameObject(data, index)
+RenderableGameObject::RenderableGameObject(const json& data, CoolUUID uuid) : GameObject(data, uuid)
 {
-	if (m_gameObjectType == GameObjectType::BASE)
-	{
-		m_layer = data["Layers"];
+	m_layer = data["Layers"];
+	m_isRenderable = data["IsRenderable"];
 
-		m_gameObjectType |= GameObjectType::RENDERABLE;
+	m_gameObjectType |= GameObjectType::RENDERABLE;
 
-		InitGraphics();
-	}
-	else
-	{
-		m_layer = data["Layers"];
-		InitGraphics();
-		m_gameObjectType |= GameObjectType::RENDERABLE;
-	}
+	InitGraphics();
 }
 RenderableGameObject::~RenderableGameObject()
 {
@@ -179,14 +171,12 @@ bool RenderableGameObject::PlayAnimation(std::string name)
 	return true;
 }
 
-void RenderableGameObject::Serialize(json& jsonData)
+void RenderableGameObject::Serialize(json& data)
 {
-	GameObject::Serialize(jsonData);
-	jsonData["Layers"] = m_layer;
-}
+	GameObject::Serialize(data);
 
-void RenderableGameObject::Deserialize(json& jsonData)
-{
+	data["Layers"] = m_layer;
+	data["IsRenderable"] = m_isRenderable;
 }
 
 SpriteAnimation* RenderableGameObject::GetCurrentAnimation()

@@ -53,9 +53,50 @@ PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : Character
     EventManager::Instance()->AddClient(EventType::MouseMoved, this);
 }
 
-PlayerGameObject::PlayerGameObject(json data, CoolUUID index) : CharacterGameObject(data, index)
+PlayerGameObject::PlayerGameObject(const json& data, CoolUUID uuid) : CharacterGameObject(data, uuid)
 {
 	m_gameObjectType |= GameObjectType::PLAYER;
+
+	GameplayButton up =
+	{
+		EGAMEPLAYBUTTONCLASS::MoveUp,
+		list<int>(),
+		list<int>(),
+	};
+	up.m_keyCodes.push_back('W');
+	GameplayButton down =
+	{
+		EGAMEPLAYBUTTONCLASS::MoveDown,
+		list<int>(),
+		list<int>(),
+	};
+	down.m_keyCodes.push_back('S');
+
+	GameplayButton left =
+	{
+		EGAMEPLAYBUTTONCLASS::MoveLeft,
+		list<int>(),
+		list<int>(),
+	};
+	left.m_keyCodes.push_back('A');
+
+	GameplayButton right =
+	{
+		EGAMEPLAYBUTTONCLASS::MoveRight,
+		list<int>(),
+		list<int>(),
+	};
+	right.m_keyCodes.push_back('D');
+
+	list< GameplayButton> gameplayButtons;
+	gameplayButtons.push_back(up);
+	gameplayButtons.push_back(down);
+	gameplayButtons.push_back(left);
+	gameplayButtons.push_back(right);
+
+	InputsAsGameplayButtons* buttons = new InputsAsGameplayButtons(gameplayButtons);
+	m_playerController = new PlayerController(buttons, GetTransform());
+
 	EventManager::Instance()->AddClient(EventType::KeyPressed, this);
 	EventManager::Instance()->AddClient(EventType::KeyReleased, this);
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
@@ -81,9 +122,6 @@ void PlayerGameObject::Serialize(json& jsonData)
 	CharacterGameObject::Serialize(jsonData);
 }
 
-void PlayerGameObject::Deserialize(json& jsonData)
-{
-}
 /// <summary>
 /// Handles events from the Observations
 /// </summary>

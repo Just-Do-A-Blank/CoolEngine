@@ -1,5 +1,9 @@
 #include "FileIO.h"
 
+#include "Engine/Managers/AudioManager.h"
+#include "Engine/Managers/FontManager.h"
+#include "Engine/Managers/GraphicsManager.h"
+
 FileIOCache FileIO::m_Cache = FileIOCache();
 
 COLLIDER_TYPE FileIO::ColliderType(std::string colliderType)
@@ -1559,15 +1563,17 @@ json FileIO::PackJson(GameObject* dataToPack, int count)
 	return dataDestination;
 }
 
-void SimpleFileIO::LoadScene(std::string location, std::string sceneIdentifier)
+void SimpleFileIO::LoadScene(std::string location)
 {
-	location.append(".json");
 	ifstream fileIn(location);
 	json dataIn;
 	fileIn >> dataIn;
 
-	//UIManager::GetInstance()->Deserialize(dataIn);
-	GameManager::GetInstance()->Deserialize(dataIn[sceneIdentifier]);
+	AudioManager::GetInstance()->Deserialize(dataIn);
+	GraphicsManager::GetInstance()->Deserialize(dataIn);
+	FontManager::GetInstance()->Deserialize(dataIn);
+	UIManager::GetInstance()->Deserialize(dataIn);
+	GameManager::GetInstance()->Deserialize(dataIn);
 }
 
 void SimpleFileIO::SaveScene(std::string location)
@@ -1578,11 +1584,15 @@ void SimpleFileIO::SaveScene(std::string location)
 	json outData;
 
 
+	AudioManager::GetInstance()->Serialize(outData);
+	GraphicsManager::GetInstance()->Serialize(outData);
+	FontManager::GetInstance()->Serialize(outData);
 	UIManager::GetInstance()->Serialize(outData);
 	GameManager::GetInstance()->Serialize(outData);
 
-
 	fileOut << outData;
+
+	fileOut.close();
 }
 
 std::string SimpleFileIO::ToString(std::wstring& wideString)

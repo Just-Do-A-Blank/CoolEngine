@@ -34,7 +34,10 @@ private:
 
 public:
 	ParticleSystem(string identifier, CoolUUID uuid);
+	ParticleSystem(const nlohmann::json& data, CoolUUID uuid);
 	~ParticleSystem();
+
+	virtual void Serialize(nlohmann::json& data) override;
 
 	/// <summary>
 	/// Activate a free particle system slot

@@ -5,10 +5,16 @@ InteractableGameObject::InteractableGameObject(string identifier, CoolUUID uuid)
     m_gameObjectType |= GameObjectType::INTERACTABLE;
 }
 
-InteractableGameObject::InteractableGameObject(json& data, CoolUUID index) : TriggerableGameObject(data, index)
+InteractableGameObject::InteractableGameObject(const json& data, CoolUUID index) : TriggerableGameObject(data, index)
 {
     m_gameObjectType |= GameObjectType::INTERACTABLE;
 }
+
 InteractableGameObject::~InteractableGameObject()
 {
+}
+
+void InteractableGameObject::Serialize(json& jsonData)
+{
+	TriggerableGameObject::Serialize(jsonData);
 }

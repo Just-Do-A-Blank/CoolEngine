@@ -9,6 +9,8 @@ TriggerableGameObject::TriggerableGameObject() : RenderableCollidableGameObject(
     EventManager::Instance()->AddClient(EventType::TriggerEnter, this);
     EventManager::Instance()->AddClient(EventType::TriggerExit, this);
     EventManager::Instance()->AddClient(EventType::TriggerHold, this);
+
+	m_gameObjectType |= GameObjectType::TRIGGERABLE;
 }
 
 TriggerableGameObject::TriggerableGameObject(string identifier, CoolUUID uuid) : RenderableCollidableGameObject(identifier, uuid)
@@ -19,9 +21,11 @@ TriggerableGameObject::TriggerableGameObject(string identifier, CoolUUID uuid) :
     EventManager::Instance()->AddClient(EventType::TriggerEnter, this);
     EventManager::Instance()->AddClient(EventType::TriggerExit, this);
     EventManager::Instance()->AddClient(EventType::TriggerHold, this);
+
+	m_gameObjectType |= GameObjectType::TRIGGERABLE;
 }
 
-TriggerableGameObject::TriggerableGameObject(json data, CoolUUID index) : RenderableCollidableGameObject(data, index)
+TriggerableGameObject::TriggerableGameObject(const json& data, CoolUUID uuid) : RenderableCollidableGameObject(data, uuid)
 {
     EventManager::Instance()->AddClient(EventType::CollisionEnter, this);
     EventManager::Instance()->AddClient(EventType::CollisionExit, this);
@@ -29,6 +33,8 @@ TriggerableGameObject::TriggerableGameObject(json data, CoolUUID index) : Render
     EventManager::Instance()->AddClient(EventType::TriggerEnter, this);
     EventManager::Instance()->AddClient(EventType::TriggerExit, this);
     EventManager::Instance()->AddClient(EventType::TriggerHold, this);
+
+	m_gameObjectType |= GameObjectType::TRIGGERABLE;
 }
 
 TriggerableGameObject::~TriggerableGameObject()
@@ -39,6 +45,11 @@ TriggerableGameObject::~TriggerableGameObject()
     EventManager::Instance()->RemoveClientEvent(EventType::TriggerEnter, this);
     EventManager::Instance()->RemoveClientEvent(EventType::TriggerExit, this);
     EventManager::Instance()->RemoveClientEvent(EventType::TriggerHold, this);
+}
+
+void TriggerableGameObject::Serialize(nlohmann::json& data)
+{
+	RenderableCollidableGameObject::Serialize(data);
 }
 
 /// <summary>

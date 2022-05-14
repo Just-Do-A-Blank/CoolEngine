@@ -29,20 +29,15 @@ GameObject::GameObject(string identifier, CoolUUID uuid)
 	m_gameObjectType = GameObjectType::BASE;
 }
 
-GameObject::GameObject(json data, CoolUUID index)
+GameObject::GameObject(const json& data, CoolUUID uuid)
 {
-	json j2 = data["Name"];
-	json pos = data["Position"];
-	json rot = data["Rotation"];
-	json sca = data["Scale"];
-
 	m_transform = new Transform();
-	m_transform->SetLocalPosition(XMFLOAT3(pos[0], pos[1], pos[2]));
-	m_transform->SetLocalRotation(XMFLOAT3(rot[0], rot[1], rot[2]));
-	m_transform->SetLocalScale(XMFLOAT3(sca[0], sca[1], sca[2]));
+	m_transform->SetLocalPosition(XMFLOAT3(data["Position"][0], data["Position"][1], data["Position"][2]));
+	m_transform->SetLocalRotation(XMFLOAT3(data["Rotation"][0], data["Rotation"][1], data["Rotation"][2]));
+	m_transform->SetLocalScale(XMFLOAT3(data["Scale"][0], data["Scale"][1], data["Scale"][2]));
 
-	m_UUID = CoolUUID(index);
-	m_identifier = j2;
+	m_UUID = CoolUUID(*uuid);
+	m_identifier = data["Name"];
 	m_gameObjectType |= GameObjectType::BASE;
 }
 
@@ -68,11 +63,6 @@ void GameObject::Serialize(json& jsonData)
 	jsonData["Position"] = position;
 	jsonData["Rotation"] = rotation;
 	jsonData["Scale"] = scale;
-}
-
-void GameObject::Deserialize(json& jsonData)
-{
-
 }
 
 #if EDITOR

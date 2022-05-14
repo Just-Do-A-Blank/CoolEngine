@@ -16,9 +16,10 @@ RenderableCollidableGameObject::RenderableCollidableGameObject(string identifier
 
 }
 
-RenderableCollidableGameObject::RenderableCollidableGameObject(json data, CoolUUID index) : CollidableGameObject(data, index), RenderableGameObject(data, index)
+RenderableCollidableGameObject::RenderableCollidableGameObject(const json& data, CoolUUID uuid) : CollidableGameObject(data, uuid), RenderableGameObject(data, uuid)
 {
 }
+
 RenderableCollidableGameObject::~RenderableCollidableGameObject()
 {
 }
@@ -76,12 +77,19 @@ void RenderableCollidableGameObject::CreateEngineUI()
 		m_pcollider->CreateEngineUI();
 	}
 }
+
 void RenderableCollidableGameObject::Serialize(json& jsonData)
 {
 	RenderableGameObject::Serialize(jsonData);
-	CollidableGameObject::Serialize(jsonData);
+	
+	if (m_pcollider == nullptr)
+	{
+		jsonData["ShapeType"] = -1;
+	}
+	else
+	{
+		m_pcollider->Serialize(jsonData);
+	}
 }
-void RenderableCollidableGameObject::Deserialize(json& jsonData)
-{
-}
+
 #endif
