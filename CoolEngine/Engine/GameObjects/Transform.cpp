@@ -154,7 +154,6 @@ void Transform::SetWorldRotation(XMFLOAT3& rotation)
 	{
 		m_localPosition = MathHelper::Minus(rotation, m_pparentTransform->GetWorldRotation());
 	}
-    m_localRotation = rotation;
 
 	UpdateMatrix();
 }
@@ -173,7 +172,14 @@ void Transform::SetRotationMatrix(XMMATRIX& rotationMatrix)
 
 void Transform::SetWorldScale(XMFLOAT3& scale)
 {
-    m_localScale = scale;
+	if (m_pparentTransform == nullptr)
+	{
+		m_localScale = scale;
+	}
+	else
+	{
+		m_localPosition = MathHelper::Minus(scale, m_pparentTransform->GetWorldScale());
+	}
 
 	UpdateMatrix();
 }
