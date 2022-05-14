@@ -12,6 +12,7 @@ enum class UIComponentType
 	IMAGE = 2,
 	TEXT = 4,
 	CANVAS = 8,
+	BUTTON = 16,
 };
 
 DEFINE_ENUM_FLAG_OPERATORS(UIComponentType);
