@@ -16,8 +16,8 @@ GameUIComponent::GameUIComponent(string identifier, CoolUUID uuid, XMFLOAT3& pos
 	InitGraphics();
 
 	m_transform->SetScale(scale);
-	m_transform->SetWorldPosition(position);
-	m_transform->SetRotation(rotation);
+	m_transform->SetLocalPosition(position);
+	m_transform->SetLocalRotation(rotation);
 
 }
 
@@ -33,7 +33,7 @@ GameUIComponent::GameUIComponent(nlohmann::json& data, CoolUUID uuid)
 	InitGraphics();
 
 	m_transform->SetLocalPosition(XMFLOAT3(data["GameUI"][(int)m_componentType][uuidString]["Position"][0], data["GameUI"][(int)m_componentType][uuidString]["Position"][1], data["GameUI"][(int)m_componentType][uuidString]["Position"][2]));
-	m_transform->SetRotation(XMFLOAT3(data["GameUI"][(int)m_componentType][uuidString]["rotation"][0], data["GameUI"][(int)m_componentType][uuidString]["rotation"][1], data["GameUI"][(int)m_componentType][uuidString]["rotation"][2]));
+	m_transform->SetLocalRotation(XMFLOAT3(data["GameUI"][(int)m_componentType][uuidString]["rotation"][0], data["GameUI"][(int)m_componentType][uuidString]["rotation"][1], data["GameUI"][(int)m_componentType][uuidString]["rotation"][2]));
 	m_transform->SetScale(XMFLOAT3(data["GameUI"][(int)m_componentType][uuidString]["scale"][0], data["GameUI"][(int)m_componentType][uuidString]["scale"][1], data["GameUI"][(int)m_componentType][uuidString]["scale"][2]));
 
 	m_isRenderable = data["GameUI"][(int)m_componentType][uuidString]["IsRendering"];

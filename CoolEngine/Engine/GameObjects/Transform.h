@@ -56,7 +56,7 @@ public:
 	void SetWorldPosition(XMFLOAT3& position);
 	void SetLocalPosition(XMFLOAT3& position);
 
-	void SetRotation(XMFLOAT3& rotation);
+	void SetWorldRotation(XMFLOAT3& rotation);
 	void SetLocalRotation(XMFLOAT3& rotation);
 
 	void SetRotationMatrix(XMMATRIX& rotationMatrix);

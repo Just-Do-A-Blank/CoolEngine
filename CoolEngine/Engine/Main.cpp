@@ -221,7 +221,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetAlbedo(TEST2);
 	pgameObject->GetTransform()->SetWorldPosition(objectPos);
 	pgameObject->GetTransform()->SetScale(objectScale);
-	pgameObject->GetTransform()->SetRotation(objectRot);
+	pgameObject->GetTransform()->SetWorldRotation(objectRot);
 	pbox = new Box(pgameObject->GetTransform());
 	pbox->SetIsCollidable(isCollision);
 	pbox->SetIsTrigger(isCollision);
@@ -279,7 +279,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	XMFLOAT3 scale = XMFLOAT3(0.5f, 0.5f, 0.5f);
 	Transform trans = Transform();
 	trans.SetWorldPosition(pos);
-	trans.SetRotation(rot);
+	trans.SetWorldRotation(rot);
 	trans.SetScale(scale);
 	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 1.0f, 0.2f, 3, 20, 90.0f, 0.0f, 0.2f, 0);
 
@@ -287,7 +287,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	rot = XMFLOAT3(0, 0, 0);
 	scale = XMFLOAT3(0.5f, 0.5f, 0.5f);
 	trans.SetWorldPosition(pos);
-	trans.SetRotation(rot);
+	trans.SetWorldRotation(rot);
 	trans.SetScale(scale);
 	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 0.5f, 1.0f, 16, 100.0f, 0.0f, 0.0f, 0.2f, 2);
 
@@ -295,7 +295,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	rot = XMFLOAT3(0, 0, 0);
 	scale = XMFLOAT3(0.5f, 0.5f, 0.5f);
 	trans.SetWorldPosition(pos);
-	trans.SetRotation(rot);
+	trans.SetWorldRotation(rot);
 	trans.SetScale(scale);
 	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { -100,150 }, { 300,-75 }, 2.0f, 0.25f, 3, 100.0f, 25.0f, 25.0f, 0.1f, 1);
 

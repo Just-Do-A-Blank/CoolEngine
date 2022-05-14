@@ -144,7 +144,7 @@ void Transform::SetLocalPosition(XMFLOAT3& position)
 	m_localPosition = position;
 }
 
-void Transform::SetRotation(XMFLOAT3& rotation)
+void Transform::SetWorldRotation(XMFLOAT3& rotation)
 {
     m_localRotation = rotation;
 
