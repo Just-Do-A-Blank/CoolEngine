@@ -61,7 +61,7 @@ public:
 
 	void SetRotationMatrix(XMMATRIX& rotationMatrix);
 
-	void SetScale(XMFLOAT3& scale);
+	void SetWorldScale(XMFLOAT3& scale);
 	void SetLocalScale(XMFLOAT3& scale);
 
 	void SetForwardVector(XMFLOAT3& forwardVector);

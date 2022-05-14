@@ -109,7 +109,7 @@ public:
 
 	void SetScale(XMFLOAT3 scale) 
 	{ 
-		m_transform.SetScale(scale); 
+		m_transform.SetWorldScale(scale); 
 	}
 
 	void SetTexture(ID3D11ShaderResourceView* tex)

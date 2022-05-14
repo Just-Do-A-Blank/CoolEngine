@@ -171,7 +171,7 @@ void Transform::SetRotationMatrix(XMMATRIX& rotationMatrix)
 	UpdateMatrix();
 }
 
-void Transform::SetScale(XMFLOAT3& scale)
+void Transform::SetWorldScale(XMFLOAT3& scale)
 {
     m_localScale = scale;
 

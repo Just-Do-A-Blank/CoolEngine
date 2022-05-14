@@ -39,7 +39,7 @@ GameObject::GameObject(json data, CoolUUID index)
 	m_transform = new Transform();
 	m_transform->SetLocalPosition(XMFLOAT3(pos[0], pos[1], pos[2]));
 	m_transform->SetLocalRotation(XMFLOAT3(rot[0], rot[1], rot[2]));
-	m_transform->SetScale(XMFLOAT3(sca[0], sca[1], sca[2]));
+	m_transform->SetLocalScale(XMFLOAT3(sca[0], sca[1], sca[2]));
 
 	m_UUID = CoolUUID(index);
 	m_identifier = j2;

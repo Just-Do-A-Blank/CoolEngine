@@ -203,7 +203,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
 	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 	pgameObject->GetTransform()->SetWorldPosition(objectPos);
-	pgameObject->GetTransform()->SetScale(objectScale);
+	pgameObject->GetTransform()->SetWorldScale(objectScale);
 	Box* pbox = new Box(pgameObject->GetTransform());
 	pbox->SetIsCollidable(isCollision);
 	pbox->SetIsTrigger(isCollision);
@@ -220,7 +220,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
 	pgameObject->SetAlbedo(TEST2);
 	pgameObject->GetTransform()->SetWorldPosition(objectPos);
-	pgameObject->GetTransform()->SetScale(objectScale);
+	pgameObject->GetTransform()->SetWorldScale(objectScale);
 	pgameObject->GetTransform()->SetWorldRotation(objectRot);
 	pbox = new Box(pgameObject->GetTransform());
 	pbox->SetIsCollidable(isCollision);
@@ -237,7 +237,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
 	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 	pgameObject->GetTransform()->SetWorldPosition(objectPos);
-	pgameObject->GetTransform()->SetScale(objectScale);
+	pgameObject->GetTransform()->SetWorldScale(objectScale);
 	pbox = new Box(pgameObject->GetTransform());
 	pbox->SetIsCollidable(isCollision);
 	pbox->SetIsTrigger(isCollision);
@@ -254,7 +254,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
 	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 	pgameObject->GetTransform()->SetWorldPosition(objectPos);
-	pgameObject->GetTransform()->SetScale(objectScale);
+	pgameObject->GetTransform()->SetWorldScale(objectScale);
 	pbox = new Box(pgameObject->GetTransform());
 	pbox->SetIsCollidable(isCollision);
 	pbox->SetIsTrigger(isCollision);
@@ -280,7 +280,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	Transform trans = Transform();
 	trans.SetWorldPosition(pos);
 	trans.SetWorldRotation(rot);
-	trans.SetScale(scale);
+	trans.SetWorldScale(scale);
 	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 1.0f, 0.2f, 3, 20, 90.0f, 0.0f, 0.2f, 0);
 
 	pos = XMFLOAT3(0, 250, 5);
@@ -288,7 +288,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	scale = XMFLOAT3(0.5f, 0.5f, 0.5f);
 	trans.SetWorldPosition(pos);
 	trans.SetWorldRotation(rot);
-	trans.SetScale(scale);
+	trans.SetWorldScale(scale);
 	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 0.5f, 1.0f, 16, 100.0f, 0.0f, 0.0f, 0.2f, 2);
 
 	pos = XMFLOAT3(400, 250, 5);
@@ -296,7 +296,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	scale = XMFLOAT3(0.5f, 0.5f, 0.5f);
 	trans.SetWorldPosition(pos);
 	trans.SetWorldRotation(rot);
-	trans.SetScale(scale);
+	trans.SetWorldScale(scale);
 	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { -100,150 }, { 300,-75 }, 2.0f, 0.25f, 3, 100.0f, 25.0f, 25.0f, 0.1f, 1);
 
 	GameManager::GetInstance()->GetTimer()->Tick();

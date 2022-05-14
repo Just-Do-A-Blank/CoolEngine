@@ -17,7 +17,7 @@ void AnimationTool::Init(ID3D11Device* pdevice)
 
 	m_pgameObject = GameManager::GetInstance()->CreateGameObject<RenderableGameObject>("AnimModel");
 	m_pgameObject->GetTransform()->SetWorldPosition(pos);
-	m_pgameObject->GetTransform()->SetScale(scale);
+	m_pgameObject->GetTransform()->SetWorldScale(scale);
 }
 
 void AnimationTool::Update()

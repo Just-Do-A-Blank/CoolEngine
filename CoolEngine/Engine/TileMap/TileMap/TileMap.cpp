@@ -128,7 +128,7 @@ bool TileMap::Load(wstring path) // Load data for the map from a given path
 	inFile.close();
 
 	XMFLOAT3 scale = XMFLOAT3(jsonData["TileMapScale"][0][0], jsonData["TileMapScale"][0][1], jsonData["TileMapScale"][0][2]);
-	m_transform->SetScale(scale);
+	m_transform->SetWorldScale(scale);
 
 	m_width = jsonData["Dimensions"][0];
 	m_height = jsonData["Dimensions"][1];
@@ -299,7 +299,7 @@ bool TileMap::CreateTile(int row, int column, Tile*& ptile)
 
 	XMFLOAT3 scale = GetTransform()->GetWorldScale();
 
-	m_tiles[row][column]->GetTransform()->SetScale(scale);
+	m_tiles[row][column]->GetTransform()->SetWorldScale(scale);
 
 	InitTilePosition(m_tiles[row][column], row, column);
 
@@ -444,7 +444,7 @@ void TileMap::Init(int width, int height, XMFLOAT3 position, float tileDimension
 
 	XMFLOAT3 scale = XMFLOAT3(tileDimensions, tileDimensions, tileDimensions);
 
-	m_transform->SetScale(scale);
+	m_transform->SetWorldScale(scale);
 
 	m_transform->SetWorldPosition(position);
 
@@ -537,7 +537,7 @@ XMFLOAT3 TileMap::GetTileScale()
 
 void TileMap::SetTileScale(XMFLOAT3 newScale)
 {
-	m_transform->SetScale(newScale);
+	m_transform->SetWorldScale(newScale);
 }
 
 void TileMap::SetPassable(int x, int y, bool passable)
