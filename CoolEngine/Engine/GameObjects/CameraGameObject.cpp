@@ -1,4 +1,7 @@
 #include "CameraGameObject.h"
+#include "Engine/Managers/GraphicsManager.h"
+#include "Engine/Managers/GameManager.h"
+#include "Engine/EditorUI/EditorUI.h"
 
 CameraGameObject::CameraGameObject(string identifier, CoolUUID uuid) : GameObject(identifier, uuid)
 {
@@ -73,4 +76,23 @@ XMFLOAT4X4 CameraGameObject::GetViewProjection() const
 	XMStoreFloat4x4(&viewProj, XMMatrixMultiply(XMLoadFloat4x4(&m_viewMatrix), XMLoadFloat4x4(&m_projectionMatrix)));
 
 	return viewProj;
+}
+
+XMFLOAT2& CameraGameObject::GetMousePositionInWorldSpace()const
+{
+	POINT point;
+	GetCursorPos(&point);
+	ScreenToClient(*GraphicsManager::GetInstance()->GetHWND(), &point);
+
+	DirectX::XMFLOAT2 relativePos = EditorUI::GetViewportPosition();
+	relativePos = DirectX::XMFLOAT2(point.x - relativePos.x, point.y - relativePos.y);
+
+	float x = ((2.0f * relativePos.x) / EditorUI::GetViewportSize().x) - 1.0f;
+	float y = 1.0f - ((2.0f * relativePos.y) / EditorUI::GetViewportSize().y);
+
+	XMFLOAT2 clickPosWorld;
+
+	XMStoreFloat2(&clickPosWorld, XMVector2Transform(XMVectorSet(x, y, 0, 0), XMMatrixInverse(nullptr, XMLoadFloat4x4(&GameManager::GetInstance()->GetCamera()->GetViewProjection()))));
+
+	return clickPosWorld;
 }
