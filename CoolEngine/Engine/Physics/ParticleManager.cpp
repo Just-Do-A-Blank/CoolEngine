@@ -102,7 +102,7 @@ void ParticleManager::AddParticle(Transform trans, float life, ID3D11ShaderResou
 				pos.x += rand;
 				rand = MathHelper::RandomNumber(-abs(randPos), abs(randPos));
 				pos.y += rand;
-				trans.SetPosition(pos);
+				trans.SetWorldPosition(pos);
 			}
 			if (randVel != 0.0f)
 			{

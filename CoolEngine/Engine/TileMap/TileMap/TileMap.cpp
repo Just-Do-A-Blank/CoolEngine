@@ -107,7 +107,7 @@ void TileMap::InitTilePosition(Tile* tile, int row, int column) // Give tiles po
 	pos = MathHelper::Plus(pos, XMFLOAT2(tileScale.x * 0.5f, tileScale.y * 0.5f));
 	pos = MathHelper::Plus(pos, XMFLOAT2(row * tileScale.x, column * tileScale.y));
 
-	tile->GetTransform()->SetPosition(XMFLOAT3(pos.x, pos.y, 0));
+	tile->GetTransform()->SetWorldPosition(XMFLOAT3(pos.x, pos.y, 0));
 }
 
 bool TileMap::Load(wstring path) // Load data for the map from a given path
@@ -446,14 +446,14 @@ void TileMap::Init(int width, int height, XMFLOAT3 position, float tileDimension
 
 	m_transform->SetScale(scale);
 
-	m_transform->SetPosition(position);
+	m_transform->SetWorldPosition(position);
 
 	InitMap();
 }
 
 void TileMap::Init(wstring mapPath, XMFLOAT3 position)
 {
-	m_transform->SetPosition(position);
+	m_transform->SetWorldPosition(position);
 
 	Load(mapPath);
 }

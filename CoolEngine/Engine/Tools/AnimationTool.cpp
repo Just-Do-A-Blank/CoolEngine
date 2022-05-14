@@ -16,7 +16,7 @@ void AnimationTool::Init(ID3D11Device* pdevice)
 	XMFLOAT3 scale = XMFLOAT3(300, 300, 1);
 
 	m_pgameObject = GameManager::GetInstance()->CreateGameObject<RenderableGameObject>("AnimModel");
-	m_pgameObject->GetTransform()->SetPosition(pos);
+	m_pgameObject->GetTransform()->SetWorldPosition(pos);
 	m_pgameObject->GetTransform()->SetScale(scale);
 }
 

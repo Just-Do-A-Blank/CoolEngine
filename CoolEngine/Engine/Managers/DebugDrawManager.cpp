@@ -27,7 +27,7 @@ void DebugDrawManager::CreateWorldSpaceDebugRect(XMFLOAT3& position, XMFLOAT3& d
 
 	CoolUUID uuid;
 	DebugRect* debugRect = new DebugRect(m_albedoMap.find(colour)->second, name, uuid, false);
-	debugRect->GetTransform()->SetPosition(position);
+	debugRect->GetTransform()->SetWorldPosition(position);
 	debugRect->GetTransform()->SetScale(dimension);
 
 	m_debugRectMap.insert(pair<string, DebugRect*>(name, debugRect));
@@ -40,7 +40,7 @@ void DebugDrawManager::CreateScreenSpaceDebugRect(XMFLOAT3& position, XMFLOAT3& 
 
 	CoolUUID uuid;
 	DebugRect* debugRect = new DebugRect(m_albedoMap.find(colour)->second, name, uuid, true);
-	debugRect->GetTransform()->SetPosition(position);
+	debugRect->GetTransform()->SetWorldPosition(position);
 	debugRect->GetTransform()->SetScale(dimension);
 
 	m_debugRectMap.insert(pair<string, DebugRect*>(name, debugRect));

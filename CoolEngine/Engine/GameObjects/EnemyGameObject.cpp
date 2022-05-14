@@ -40,7 +40,7 @@ void EnemyGameObject::Update()
 
 		XMFLOAT3 stepPos = MathHelper::Multiply(m_direction, step);
 		stepPos = MathHelper::Plus(stepPos, m_transform->GetWorldPosition());
-		m_transform->SetPosition(stepPos);
+		m_transform->SetWorldPosition(stepPos);
 
 	}
 	else

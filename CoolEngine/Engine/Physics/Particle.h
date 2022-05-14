@@ -104,7 +104,7 @@ public:
 
 	void SetPosition(XMFLOAT3 pos) 
 	{ 
-		m_transform.SetPosition(pos); 
+		m_transform.SetWorldPosition(pos); 
 	}
 
 	void SetScale(XMFLOAT3 scale) 

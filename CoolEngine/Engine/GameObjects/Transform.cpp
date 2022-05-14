@@ -125,11 +125,16 @@ const XMFLOAT3& Transform::GetLeftVector() const
     return m_leftVector;
 }
 
-void Transform::SetPosition(XMFLOAT3& position)
+void Transform::SetWorldPosition(XMFLOAT3& position)
 {
     m_localPosition = position;
 
 	UpdateMatrix();
+}
+
+void Transform::SetLocalPosition(XMFLOAT3& position)
+{
+	m_localPosition = position;
 }
 
 void Transform::SetRotation(XMFLOAT3& rotation)

@@ -24,7 +24,7 @@ void Particle::Update(const float dTime)
 	XMFLOAT3 pos = m_transform.GetWorldPosition();
 	pos.x += m_velocity.x * dTime;
 	pos.y += m_velocity.y * dTime;
-	m_transform.SetPosition(pos);
+	m_transform.SetWorldPosition(pos);
 
 	m_lifetime -= dTime;
 	if (m_lifetime <= 0.0f)
