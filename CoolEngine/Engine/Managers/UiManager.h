@@ -31,6 +31,7 @@ public:
     TreeNode<GameUIComponent>* GetRootTreeNode();
 
     void Render(RenderStruct& renderStruct);
+    void Update();
 
 	template<typename T>
 	T* CreateUIComponent(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation)
@@ -64,7 +65,7 @@ public:
     template<typename T>
     void DeleteUIElementUsingNode(TreeNode<T>* currentNode)
     {
-        m_pUISceneGraph->DeleteGameObjectUsingNode(currentNode);
+        m_pUISceneGraph->DeleteNodeObjectUsingNode(currentNode);
     }
 
     void DeleteSelectedUIComponent();

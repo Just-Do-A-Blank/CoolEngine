@@ -99,22 +99,34 @@ void UIManager::Render(RenderStruct& renderStruct)
 
 	renderStruct.m_pcontext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pperFrame);
 
-	vector<GameUIComponent*> uiComponentList = m_pUISceneGraph->GetAllGameObjects();
+	vector<GameUIComponent*> uiComponentList = m_pUISceneGraph->GetAllNodeObjects();
 	for (int i = 0; i < uiComponentList.size(); ++i)
 	{
 		uiComponentList[i]->Render(renderStruct);
 	}
 }
 
+void UIManager::Update()
+{
+	if (m_pUISceneGraph)
+	{
+		vector<GameUIComponent*> uiComponentList = m_pUISceneGraph->GetAllNodeObjects();
+		for (int it = 0; it < uiComponentList.size(); ++it)
+		{
+			uiComponentList[it]->Update();
+		}
+	}
+}
+
 void UIManager::DeleteSelectedUIComponent()
 {
-	m_pUISceneGraph->DeleteGameObjectUsingNode(m_pselectedUINode);
+	m_pUISceneGraph->DeleteNodeObjectUsingNode(m_pselectedUINode);
 	m_pselectedUINode = nullptr;
 }
 
 void UIManager::Serialize(nlohmann::json& data)
 {
-	vector<GameUIComponent*>& components = m_pUISceneGraph->GetAllGameObjects();
+	vector<GameUIComponent*>& components = m_pUISceneGraph->GetAllNodeObjects();
 
 	TreeNode<GameUIComponent>* pnode = nullptr;
 
@@ -273,5 +285,5 @@ void UIManager::Deserialize(nlohmann::json& data)
 
 vector<GameUIComponent*>& UIManager::GetAllUIComponents()
 {
-    return m_pUISceneGraph->GetAllGameObjects();
+    return m_pUISceneGraph->GetAllNodeObjects();
 }

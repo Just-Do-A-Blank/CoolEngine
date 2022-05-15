@@ -40,6 +40,7 @@ private:
 
 	string m_canvasName = "";
 	string m_imageName = "";
+	string m_buttonName = "";
 	string m_textName = "";
 
 	wstring m_savePath;

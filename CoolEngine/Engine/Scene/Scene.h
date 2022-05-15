@@ -31,7 +31,7 @@ private:
 	template<typename T>
 	T* GetGameObjectUsingIdentifier(string& identifier)
 	{
-		return  dynamic_cast<T*>(m_psceneGraph->GetGameObjectUsingIdentifier(identifier));
+		return  dynamic_cast<T*>(m_psceneGraph->GetNodeObjectUsingIdentifier(identifier));
 	}
 
 	template<typename T>
