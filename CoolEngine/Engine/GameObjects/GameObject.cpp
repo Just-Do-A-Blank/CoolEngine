@@ -19,6 +19,18 @@ GameObject::GameObject()
 	m_gameObjectType |= GameObjectType::BASE;
 }
 
+GameObject::GameObject(GameObject const &other)
+{
+	m_identifier = other.m_identifier;
+	m_UUID = other.m_UUID;
+	m_transform = new Transform(*other.m_transform);
+
+	m_pTest = other.m_pTest;
+
+	m_gameObjectType = other.m_gameObjectType;
+
+}
+
 GameObject::GameObject(string identifier, CoolUUID uuid)
 {
 	m_identifier = identifier;
@@ -80,9 +92,14 @@ const GameObjectType& GameObject::GetGameObjectType() const
 	return m_gameObjectType;
 }
 
-const string& GameObject::GetIdentifier()
+string& GameObject::GetIdentifier()
 {
 	return m_identifier;
+}
+
+const CoolUUID& GameObject::GetUUID()
+{
+	return m_UUID;
 }
 
 bool GameObject::ContainsType(GameObjectType type)

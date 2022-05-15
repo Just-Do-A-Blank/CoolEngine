@@ -12,6 +12,11 @@
 #include "Engine/Tools/InGameUITool.h"
 #include "Engine//Tools/TileMapTool.h"
 
+#include "Engine/GameUI/UiCanvas.h"
+#include "Engine/GameUI/ImageComponent.h"
+#include "Engine/GameUI/TextComponent.h"
+#include "Engine/GameUI/ButtonComponent.h"
+
 #include <ShlObj_core.h>
 
 #if EDITOR
@@ -190,6 +195,40 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 
 				m_createObjectType = GameObjectType::PARTICLESYSTEM;
 			}
+			bool disableCheck = false;
+			if (m_selecedGameObjectNode && m_selecedGameObjectNode->NodeObject->ContainsType(GameObjectType::GAME_UI_COMPONENT))
+			{
+				disableCheck = (dynamic_cast<GameUIComponent*>(m_selecedGameObjectNode->NodeObject)->ContainsType(UIComponentType::CANVAS));
+			}
+			if (ImGui::BeginMenu("UI Component"))
+			{
+				m_createObjectType = GameObjectType::GAME_UI_COMPONENT;
+				if (ImGui::MenuItem("Canvas"))
+				{
+					m_createUIObjectClicked = true;
+					m_createUIComponentType = UIComponentType::CANVAS;
+				}
+				if (ImGui::MenuItem("Image", nullptr, nullptr, disableCheck))
+				{
+					m_createUIObjectClicked = true;
+					m_createUIComponentType = UIComponentType::IMAGE;
+				}
+				ToolTip("Select a Canvas GameObject to enable");
+				if (ImGui::MenuItem("Text", nullptr, nullptr, disableCheck))
+				{
+					m_createUIObjectClicked = true;
+					m_createUIComponentType = UIComponentType::TEXT;
+				}
+				ToolTip("Select a Canvas GameObject to enable");
+				if (ImGui::MenuItem("Button", nullptr, nullptr, disableCheck))
+				{
+					m_createUIObjectClicked = true;
+					m_createUIComponentType = UIComponentType::BUTTON;
+				}
+				ToolTip("Select a Canvas GameObject to enable");
+
+				ImGui::EndMenu();
+			}
 
 			ImGui::EndMenu();
 		}
@@ -220,6 +259,7 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 				ptoolBase->Init(pdevice);
 			}
 
+			
 			if (ImGui::MenuItem("In Game UI"))
 			{
 				if (ptoolBase != nullptr)
@@ -230,6 +270,7 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 				ptoolBase = new InGameUITool();
 				ptoolBase->Init(pdevice);
 			}
+
 
 			if (ImGui::MenuItem("Tile Map"))
 			{
@@ -334,6 +375,48 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 			gameObjectName[0] = {};
 		}
 		
+		ImGui::End();
+	}
+	else if (m_createUIObjectClicked)
+	{
+		ImGui::Begin("New UI Component");
+		static char uiObjectName[64] = "";
+		IMGUI_LEFT_LABEL(ImGui::InputText, "UI Component Name", uiObjectName, 64);
+
+		int clicked = 0;
+		if (ImGui::Button("Create"))
+		{
+			++clicked;
+		}
+		if (clicked & 1)
+		{
+			switch (m_createUIComponentType)
+			{
+			case UIComponentType::CANVAS:
+				pgameManager->CreateGameObject<UICanvas>(uiObjectName, m_selecedGameObjectNode);
+				break;
+
+			case UIComponentType::IMAGE:
+				pgameManager->CreateGameObject<ImageComponent>(uiObjectName, m_selecedGameObjectNode);
+				break;
+
+			case UIComponentType::TEXT:
+				pgameManager->CreateGameObject<TextComponent>(uiObjectName, m_selecedGameObjectNode)->Init(uiObjectName, "comicSans", 20, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), GraphicsManager::GetInstance()->GetDevice());
+				break;
+
+			case UIComponentType::BUTTON:
+				pgameManager->CreateGameObject<ButtonComponent>(uiObjectName, m_selecedGameObjectNode);
+				break;
+
+			}
+
+
+			m_createUIComponentType = (UIComponentType)0;
+
+			m_createUIObjectClicked = false;
+			uiObjectName[0] = {};
+		}
+
 		ImGui::End();
 	}
 }
@@ -1052,6 +1135,18 @@ void EditorUI::FullTitle(const string& label, const float& columnWidth)
     ImGui::PopID();
 
     ImGui::Separator();
+}
+
+void EditorUI::ToolTip(const char* desc)
+{
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
+	{
+		ImGui::BeginTooltip();
+		ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+		ImGui::TextUnformatted(desc);
+		ImGui::PopTextWrapPos();
+		ImGui::EndTooltip();
+	}
 }
 
 #endif

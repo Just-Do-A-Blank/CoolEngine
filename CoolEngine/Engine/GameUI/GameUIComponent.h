@@ -17,7 +17,7 @@ enum class UIComponentType
 
 DEFINE_ENUM_FLAG_OPERATORS(UIComponentType);
 
-class GameUIComponent : public EditorUIComponent
+class GameUIComponent : public GameObject
 {
 	friend FileIO;
 private:
@@ -29,22 +29,18 @@ private:
 	//Flags
 	bool m_isRenderable = true;
 
-	CoolUUID m_uuid;
-
 protected:
 	ID3D11VertexShader* m_pvertexShader = nullptr;
 	ID3D11PixelShader* m_ppixelShader = nullptr;	
 	Mesh* m_pmesh = nullptr;
-	string m_uiElementIdentifier;
 
-	Transform* m_transform;
 	ID3D11ShaderResourceView* m_ptexture = nullptr;
 	wstring m_texFilepath = L"";
 
 	UIComponentType m_componentType = (UIComponentType)0;
 
 public:
-	GameUIComponent(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation);
+	GameUIComponent(string identifier, CoolUUID uuid);
 	GameUIComponent(nlohmann::json& data, CoolUUID uuid);
 
 	void InitGraphics();
@@ -58,11 +54,10 @@ public:
 	int& GetLayer();
 	const bool& IsRenderable();
 	Transform* GetTransform();
-	const string& GetIdentifier();
-
-	const CoolUUID& GetUUID() const;
 
 	const UIComponentType& GetComponentType() const;
+
+	bool ContainsType(UIComponentType type);
 
 	//Setters
 	void SetIsRenderable(bool& condition);
@@ -71,9 +66,10 @@ public:
 	void SetTexture(std::wstring wsfilepath);
 
 #if EDITOR
-	virtual void ShowEngineUI();
+	virtual void ShowEngineUI()override;
 	virtual void CreateEngineUI() override;
 #endif
+	UIComponentType GetUIComponentType()const;
 
 };
 

@@ -13,6 +13,7 @@ class RenderableGameObject : virtual public GameObject
 {
 public:
 	RenderableGameObject();
+	RenderableGameObject(RenderableGameObject const& other);
 	RenderableGameObject(string identifier, CoolUUID uuid);
 	virtual ~RenderableGameObject()override;
 

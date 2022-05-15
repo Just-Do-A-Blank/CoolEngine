@@ -14,6 +14,7 @@ private:
 
 public:
 	CameraGameObject(string identifier, CoolUUID uuid);
+	CameraGameObject(CameraGameObject const& other);
 	virtual ~CameraGameObject()override;
 
     virtual void Initialize(XMFLOAT3& position, XMFLOAT3& forwardVector, XMFLOAT3& upVector,

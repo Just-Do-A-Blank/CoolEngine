@@ -30,6 +30,7 @@ TreeNode<T>* SceneGraph<T>::NewNode(T* gameObject)
 		m_sceneTreeNodeMap.insert(pair<string, TreeNode<T>*>(gameObject->GetIdentifier(), m_rootNode));
 		m_sceneNodeObjectsMap.insert(pair<string, T*>(gameObject->GetIdentifier(), gameObject));
 		m_sceneNodeObjectList.push_back(gameObject);
+		m_sceneNodeList.push_back(m_rootNode);
 		return m_rootNode;		
 	}
 
@@ -44,6 +45,7 @@ TreeNode<T>* SceneGraph<T>::NewNode(T* gameObject)
 	m_sceneTreeNodeMap.insert(pair<string, TreeNode<T>*>(gameObjectName, newNode));
 	m_sceneNodeObjectsMap.insert(pair<string, T*>(gameObjectName, gameObject));
 	m_sceneNodeObjectList.push_back(gameObject);
+	m_sceneNodeList.push_back(newNode);
 	return newNode;
 }
 
@@ -215,6 +217,7 @@ void SceneGraph<T>::DeleteNode(TreeNode<T>* currentNode, bool deleteData)
 	m_sceneTreeNodeMap.erase(gameObjectName);
 	m_sceneNodeObjectsMap.erase(gameObjectName);
 	m_sceneNodeObjectList.erase(remove(m_sceneNodeObjectList.begin(), m_sceneNodeObjectList.end(), currentNode->NodeObject));
+	m_sceneNodeList.erase(remove(m_sceneNodeList.begin(), m_sceneNodeList.end(), currentNode));
 
 	if (deleteData)
 	{
@@ -284,6 +287,7 @@ void SceneGraph<T>::DeleteNodeObjectUsingNode(TreeNode<T>* currentNode)
 	m_sceneTreeNodeMap.erase(gameObjectName);
 	m_sceneNodeObjectsMap.erase(gameObjectName);
 	m_sceneNodeObjectList.erase(remove(m_sceneNodeObjectList.begin(), m_sceneNodeObjectList.end(), currentNode->NodeObject));
+	m_sceneNodeList.erase(remove(m_sceneNodeList.begin(), m_sceneNodeList.end(), currentNode));
 
 	delete currentNode->NodeObject;
 	currentNode->NodeObject = nullptr;
@@ -314,6 +318,12 @@ template<class T>
 vector<T*>& SceneGraph<T>::GetAllNodeObjects()
 {
 	return m_sceneNodeObjectList;
+}
+
+template<class T>
+vector<TreeNode<T>*>& SceneGraph<T>::GetAllNodes()
+{
+	return m_sceneNodeList;
 }
 
 template<class T>

@@ -6,6 +6,7 @@
 #include "Engine/Graphics/SpriteAnimation.h"
 #include "Engine/Managers/SceneGraph.h"
 #include "Engine/EditorUI/ContentBrowser.h"
+#include "Engine/GameUI/GameUIComponent.h"
 
 #define IMGUI_LEFT_LABEL(func, label, ...) (ImGui::TextUnformatted(label), ImGui::SameLine(), func("##" label, __VA_ARGS__))
 #define DEFAULT_IMGUI_IMAGE_SIZE ImVec2(256, 256)
@@ -33,6 +34,7 @@ private:
 	static HWND* m_phwnd;
 	bool m_createSceneClicked = false;
 	bool m_createGameObjectClicked = false;
+	bool m_createUIObjectClicked = false;
 	bool m_deleteGameObjectClicked = false;
 	static bool s_bisViewportHovered;
 
@@ -52,6 +54,7 @@ private:
 	string m_animUpdateName = "";
 
 	GameObjectType m_createObjectType;
+	UIComponentType m_createUIComponentType;
 	ContentBrowser m_contentBrowser;
 
 
@@ -85,6 +88,8 @@ public:
     /// <param name="label">The title to display</param>
     /// <param name="columnWidth">The width of a single coloumn</param>
 	static void FullTitle(const string& label, const float& columnWidth = 100.0f);
+
+	static void ToolTip(const char* desc);
 
     static bool DragFloat(const string& label, float& value, const float& columnWidth = 100.0f, const float& speed = 0.1f, const float& min = 0, const float& max = 0);
 	static void DragFloat2(const string& label, XMFLOAT2& values, const float& columnWidth = 100.0f, const float& speed = 0.1f, const float& min = 0, const float& max = 0);

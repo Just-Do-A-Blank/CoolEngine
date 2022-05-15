@@ -26,7 +26,7 @@ private:
 	void (*m_OnClickFunction)(void*) = nullptr;
 	void* m_OnClickFunctionArg = nullptr;
 public:
-	ButtonComponent(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation);
+	ButtonComponent(string identifier, CoolUUID uuid);
 	ButtonComponent(nlohmann::json& data, CoolUUID uuid);
 	~ButtonComponent();
 

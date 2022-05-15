@@ -37,6 +37,7 @@ public:
 
 	unordered_map<string, Scene*> m_sceneMap;
 	Scene* m_pcurrentScene;
+	Scene* m_pplayScene;
 
 	void Update();
 	void Render(RenderStruct& renderStruct);
@@ -47,6 +48,9 @@ public:
 	void DeleteScene(Scene* pscene);
 	void DeleteSceneUsingIdentifier(string sceneIdentifier);
 	void DeleteSelectedScene();
+
+	void BeginPlay();
+	void EndPlay();
 
 	string GetWorkingDirectory();
 	wstring GetWideWorkingDirectory();

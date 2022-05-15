@@ -4,7 +4,7 @@
 #include "Engine/ResourceDefines.h"
 #include "Engine/Managers/GraphicsManager.h"
 
-UICanvas::UICanvas(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation) : GameUIComponent(identifier, uuid, position, scale, rotation)
+UICanvas::UICanvas(string identifier, CoolUUID uuid) : GameUIComponent(identifier, uuid)
 {
 	m_componentType |= UIComponentType::CANVAS;
 }

@@ -52,6 +52,40 @@ void GameManager::DeleteSelectedScene()
     m_sceneMap.erase(m_pcurrentScene->GetSceneIdentifier());
 }
 
+void GameManager::BeginPlay()
+{
+	m_pplayScene = new Scene(m_pcurrentScene->m_sceneIdentifier);
+
+	vector<TreeNode<GameObject>*> gameObjectNodeList = m_pcurrentScene->GetSceneGraph()->GetAllNodes();
+	for (int it = 0; it < gameObjectNodeList.size(); ++it)
+	{
+		switch (gameObjectNodeList[it]->NodeObject->m_gameObjectType)
+		{
+		case GameObjectType::RENDERABLE | GameObjectType::BASE:
+			if (gameObjectNodeList[it]->PreviousParent)
+			{
+				TreeNode<GameObject>* parentNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
+				m_pplayScene->CopyGameObject<RenderableGameObject>(*(dynamic_cast<RenderableGameObject*>(gameObjectNodeList[it]->NodeObject)), parentNode);
+			}
+			else if (gameObjectNodeList[it]->PreviousSibling)
+			{
+				TreeNode<GameObject>* previousSiblingNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousSibling->NodeObject);
+				m_pplayScene->CopyGameObject<RenderableGameObject>(*(dynamic_cast<RenderableGameObject*>(gameObjectNodeList[it]->NodeObject)), nullptr, previousSiblingNode);
+			}
+			else
+			{
+				m_pplayScene->CopyGameObject<RenderableGameObject>(*(dynamic_cast<RenderableGameObject*>(gameObjectNodeList[it]->NodeObject)));
+			}
+			break;
+		}
+	}
+}
+
+void GameManager::EndPlay()
+{
+	m_pplayScene->DeleteGameObjectUsingNode(m_pplayScene->m_prootTreeNode);
+}
+
 string GameManager::GetWorkingDirectory()
 {
     return m_workingDirectory;

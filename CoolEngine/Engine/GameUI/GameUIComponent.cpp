@@ -6,29 +6,24 @@
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/EditorUI/EditorUI.h"
 
-GameUIComponent::GameUIComponent(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation)
+GameUIComponent::GameUIComponent(string identifier, CoolUUID uuid):GameObject(identifier, uuid)
 {
+	m_gameObjectType |= GameObjectType::GAME_UI_COMPONENT;
 	m_componentType |= UIComponentType::BASE;
 
-	m_uiElementIdentifier = identifier;
-	m_uuid = uuid;
 	m_transform = new Transform();
 	InitGraphics();
-
-	m_transform->SetScale(scale);
-	m_transform->SetPosition(position);
-	m_transform->SetRotation(rotation);
-
 }
 
 GameUIComponent::GameUIComponent(nlohmann::json& data, CoolUUID uuid)
 {
+	m_gameObjectType |= GameObjectType::GAME_UI_COMPONENT;
 	m_componentType |= UIComponentType::BASE;
 
-	m_uuid = CoolUUID(*uuid);
-	std::string uuidString = to_string(*m_uuid);
+	m_UUID = CoolUUID(*uuid);
+	std::string uuidString = to_string(*uuid);
 
-	m_uiElementIdentifier = data["GameUI"][(int)m_componentType][uuidString]["Identifier"];
+	SetIdentifier(data["GameUI"][(int)m_componentType][uuidString]["Identifier"]);
 	m_transform = new Transform();
 	InitGraphics();
 
@@ -84,9 +79,9 @@ void GameUIComponent::Update()
 
 void GameUIComponent::Serialize(nlohmann::json& data)
 {
-	std::string uuidString = to_string(*m_uuid);
+	std::string uuidString = to_string(*m_UUID);
 
-	data["GameUI"][(int)m_componentType][uuidString]["Identifier"].push_back(m_uiElementIdentifier);
+	data["GameUI"][(int)m_componentType][uuidString]["Identifier"].push_back(m_identifier);
 	data["GameUI"][(int)m_componentType][uuidString]["Position"].push_back({ m_transform->GetLocalPosition().x, m_transform->GetLocalPosition().y, m_transform->GetLocalPosition().z });
 	data["GameUI"][(int)m_componentType][uuidString]["Rotation"].push_back({ m_transform->GetLocalRotation().x, m_transform->GetLocalRotation().y, m_transform->GetLocalRotation().z });
 	data["GameUI"][(int)m_componentType][uuidString]["Scale"].push_back({ m_transform->GetLocalScale().x, m_transform->GetLocalScale().y, m_transform->GetLocalScale().z });
@@ -124,7 +119,7 @@ void GameUIComponent::ShowEngineUI()
 {
 	ImGui::Begin("Properties");
 
-	EditorUI::IdentifierText("Identifier", m_uiElementIdentifier);
+	EditorUI::IdentifierText("Identifier", m_identifier);
 
 	ImGui::Spacing();
 	ImGui::Separator();
@@ -135,9 +130,11 @@ void GameUIComponent::ShowEngineUI()
 }
 void GameUIComponent::CreateEngineUI()
 {
-	ImGui::Spacing();
-
-	m_transform->CreateEngineUI();
+	GameObject::CreateEngineUI();
+}
+UIComponentType GameUIComponent::GetUIComponentType() const
+{
+	return m_componentType;
 }
 #endif
 
@@ -156,17 +153,13 @@ Transform* GameUIComponent::GetTransform()
 	return m_transform;
 }
 
-const string& GameUIComponent::GetIdentifier()
-{
-	return m_uiElementIdentifier;
-}
-
-const CoolUUID& GameUIComponent::GetUUID() const
-{
-	return m_uuid;
-}
-
 const UIComponentType& GameUIComponent::GetComponentType() const
 {
 	return m_componentType;
 }
+
+bool GameUIComponent::ContainsType(UIComponentType type)
+{
+	return (m_componentType & type) == type;
+}
+

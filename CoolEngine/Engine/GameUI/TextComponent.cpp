@@ -5,7 +5,7 @@
 #include"Engine/ResourceDefines.h"
 #include "Engine/EditorUI/EditorUI.h"
 
-TextComponent::TextComponent(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation):GameUIComponent(identifier, uuid, position, scale, rotation)
+TextComponent::TextComponent(string identifier, CoolUUID uuid):GameUIComponent(identifier, uuid)
 {	
 	m_componentType |= UIComponentType::TEXT;
 
@@ -16,7 +16,7 @@ TextComponent::TextComponent(nlohmann::json& data, CoolUUID uuid, ID3D11Device* 
 {
 	m_componentType |= UIComponentType::TEXT;
 
-	std::string uuidString = to_string(*GetUUID());
+	std::string uuidString = to_string(*m_UUID);
 
 	m_ppixelShader = GraphicsManager::GetInstance()->GetPixelShader(TEXT_PIXEL_SHADER_NAME);
 
@@ -36,7 +36,7 @@ void TextComponent::Serialize(nlohmann::json& data)
 {
 	GameUIComponent::Serialize(data);
 
-	std::string uuidString = to_string(*GetUUID());
+	std::string uuidString = to_string(*m_UUID);
 
 	data["GameUI"][(int)m_componentType][uuidString]["Text"].push_back(m_text);
 	data["GameUI"][(int)m_componentType][uuidString]["FontName"].push_back(m_fontName);

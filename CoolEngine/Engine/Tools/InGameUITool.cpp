@@ -89,7 +89,7 @@ void InGameUITool::DrawUIWindow()
 			TextComponent* textUI = puiManager->CreateUIComponent<TextComponent>(m_textName, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
 			if (textUI)
 			{
-				textUI->Init("New Text", "comicSans", 20, {1, 1, 1, 1}, m_pdevice);
+				textUI->Init("New Text", "comicSans", 20, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), m_pdevice);
 				m_textName = "";
 
 				m_showUICreation = false;

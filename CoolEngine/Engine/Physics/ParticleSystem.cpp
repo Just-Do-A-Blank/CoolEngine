@@ -6,6 +6,7 @@
 
 ParticleSystem::ParticleSystem(string identifier, CoolUUID uuid) : GameObject(identifier, uuid)
 {
+	m_gameObjectType |= GameObjectType::PARTICLESYSTEM;
 	m_systemLife = 0.0f;
 	m_timer = 0.0f;
 	m_isActive = false;

@@ -40,7 +40,7 @@ private:
 		assert(m_psceneGraph != nullptr);
 
 		CoolUUID uuid;
-		T* gameObject = new T(identifier, uuid);
+		T* gameObject = new T(std::string(identifier), uuid);
 
 		GameObject* pgameObject = dynamic_cast<GameObject*>(gameObject);
 		pgameObject->m_identifier = identifier;
@@ -55,6 +55,43 @@ private:
 			if (nodeParent == nullptr)
 			{
 				m_psceneGraph->AddSibling(m_prootTreeNode, gameObject);
+			}
+			else
+			{
+				m_psceneGraph->AddChild(nodeParent, gameObject);
+			}
+		}
+
+		return gameObject;
+	}
+
+	template<typename T>
+	T* CopyGameObject(T object, TreeNode<GameObject>* nodeParent = nullptr, TreeNode<GameObject>* nodePreviousSibling = nullptr)
+	{
+		assert(m_psceneGraph != nullptr);
+
+		CoolUUID uuid;
+		T* gameObject = new T(object);
+
+		GameObject* pgameObject = dynamic_cast<GameObject*>(gameObject);
+
+		m_prootTreeNode = m_psceneGraph->GetRootNode();
+		if (!m_prootTreeNode)
+		{
+			m_prootTreeNode = m_psceneGraph->NewNode(gameObject);
+		}
+		else
+		{
+			if (nodeParent == nullptr)
+			{
+				if (nodePreviousSibling == nullptr)
+				{
+					m_psceneGraph->AddSibling(m_prootTreeNode, gameObject);
+				}
+				else
+				{
+					m_psceneGraph->AddSibling(nodePreviousSibling, gameObject);
+				}
 			}
 			else
 			{

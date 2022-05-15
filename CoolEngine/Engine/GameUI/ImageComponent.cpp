@@ -4,13 +4,15 @@
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/EditorUI/EditorUI.h"
 
-ImageComponent::ImageComponent(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation) : GameUIComponent(identifier, uuid, position, scale, rotation)
+ImageComponent::ImageComponent(string identifier, CoolUUID uuid) : GameUIComponent(identifier, uuid)
 {
+	m_gameObjectType |= GameObjectType::RENDERABLE;
 	m_componentType |= UIComponentType::IMAGE;
 }
 
 ImageComponent::ImageComponent(nlohmann::json& data, CoolUUID uuid) : GameUIComponent(data, uuid)
 {
+	m_gameObjectType |= GameObjectType::RENDERABLE;
 	m_componentType |= UIComponentType::IMAGE;
 }
 

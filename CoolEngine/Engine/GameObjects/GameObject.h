@@ -15,6 +15,7 @@ enum class GameObjectType
 	PARTICLESYSTEM = 64,
     INTERACTABLE = 128,
 	WEAPON = 256,
+	GAME_UI_COMPONENT = 512,
 	COUNT
 };
 
@@ -26,11 +27,12 @@ class GameObject : public EditorUIComponent
 	friend class Scene;
 	friend class FileIO;
 private:
-	string m_identifier;
-	CoolUUID m_UUID;
+	
 
 protected:
 	Transform* m_transform;
+	string m_identifier;
+	CoolUUID m_UUID;
 
 	GameObject* m_pTest = nullptr;
 
@@ -45,6 +47,7 @@ protected:
 
 public:
 	GameObject();
+	GameObject(GameObject const &other);
 	GameObject(string identifier, CoolUUID uuid);
 	virtual ~GameObject();
 
@@ -58,7 +61,8 @@ public:
 	Transform* GetTransform();
 	const GameObjectType& GetGameObjectType() const;
 
-	const string& GetIdentifier();
+	string& GetIdentifier();
+	const CoolUUID& GetUUID();
 
 	//Setters
 

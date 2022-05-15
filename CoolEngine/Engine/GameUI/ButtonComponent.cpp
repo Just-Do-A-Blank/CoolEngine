@@ -7,8 +7,9 @@
 #include "Engine/Managers/GameManager.h"
 #include "Engine/GameObjects/CameraGameObject.h"
 
-ButtonComponent::ButtonComponent(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation) : GameUIComponent(identifier, uuid, position, scale, rotation)
+ButtonComponent::ButtonComponent(string identifier, CoolUUID uuid) : GameUIComponent(identifier, uuid)
 {
+	m_gameObjectType |= GameObjectType::RENDERABLE;
 	m_componentType |= UIComponentType::BUTTON;
 
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
@@ -17,6 +18,7 @@ ButtonComponent::ButtonComponent(string identifier, CoolUUID uuid, XMFLOAT3& pos
 
 ButtonComponent::ButtonComponent(nlohmann::json& data, CoolUUID uuid) : GameUIComponent(data, uuid)
 {
+	m_gameObjectType |= GameObjectType::RENDERABLE;
 	m_componentType |= UIComponentType::BUTTON;
 
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);

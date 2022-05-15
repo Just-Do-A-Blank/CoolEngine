@@ -8,6 +8,17 @@ CameraGameObject::CameraGameObject(string identifier, CoolUUID uuid) : GameObjec
 
 }
 
+CameraGameObject::CameraGameObject(CameraGameObject const& other):GameObject(other)
+{
+	m_viewMatrix = other.m_viewMatrix;
+	m_projectionMatrix = other.m_projectionMatrix;
+
+	m_windowHeight = other.m_windowHeight;
+	m_windowWidth = other.m_windowWidth;
+	m_nearDepth = other.m_nearDepth;
+	m_farDepth = other.m_nearDepth;
+}
+
 CameraGameObject::~CameraGameObject()
 {
 }
