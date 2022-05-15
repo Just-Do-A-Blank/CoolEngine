@@ -24,7 +24,6 @@
 
 ///All wstring handling is based off of this https://json.nlohmann.me/home/faq/#wide-string-handling & https://stackoverflow.com/questions/2573834/c-convert-string-or-char-to-wstring-or-wchar-t
 
-
 using namespace nlohmann;
 
 /// <summary>
@@ -81,6 +80,59 @@ enum JSON_VARIABLE_TYPE
 	JSON_VARIABLE_TYPE_XMFLOAT4,
 	JSON_VARIABLE_TYPE_GAME_OBJECTS
 };
+
+
+
+static class JsonSerializer
+{
+public:
+
+	std::string Serialize(json data);
+
+	//std::string Serialize(std::string objecrName);
+
+	json Deserialize(std::string obj);
+
+
+private:
+
+	void ParseString();
+
+};
+
+
+
+/// <summary>
+/// This class can be used to load & save files in the engine, it is a simplified version focusing on loading one object at a time.
+/// </summary>
+class SimpleFileIO
+{
+	friend GameObject;
+public:
+
+	static void LoadScene(std::string location);
+
+	static void SaveScene(std::string location);
+
+
+private:
+
+	/// <summary>
+	/// Converts a string to wstring
+	/// </summary>
+	/// <param name="wide_string"></param>
+	/// <returns></returns>
+	static std::wstring ToWstring(std::string& wide_string);
+
+	/// <summary>
+	/// Converts a wstring to string
+	/// </summary>
+	/// <param name="wide_string"></param>
+	/// <returns></returns>
+	static std::string ToString(std::wstring& wide_string);
+
+};
+
 
 /// <summary>
 /// This class can be used to load & save files in the engine
@@ -192,7 +244,7 @@ public:
 	/// <summary>
 	/// To DO
 	/// </summary>
-	static void SaveGameObject(const char* fileLocation ,GameObject* gameObject);
+	static void SaveGameObject(const char* fileLocation, GameObject* gameObject);
 
 	/// <summary>
 	/// Saves the current active scene in a json file.
@@ -279,10 +331,10 @@ private:
 	/// <param name="shader"></param>
 	/// <returns></returns>
 	static wstring GrabAlbedoName(ID3D11ShaderResourceView* albedo);
-	
+
 	static json PackJson(GameObject* dataToPack, int count);
-	 /// <summary>
-	 /// Local cache that contains data on the location textures, shaders and more.
-	 /// </summary>
-	 static FileIOCache m_Cache;
+	/// <summary>
+	/// Local cache that contains data on the location textures, shaders and more.
+	/// </summary>
+	static FileIOCache m_Cache;
 };

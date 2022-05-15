@@ -154,7 +154,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	float farDepth = 1000.0f;
 
 	CoolUUID uuid;
-	g_pcamera = new EditorCameraGameObject("Camera", uuid);
+	g_pcamera = new EditorCameraGameObject(std::string("Camera"), uuid);
 	g_pcamera->Initialize(cameraPos, cameraForward, cameraUp, windowWidth, windowHeight, nearDepth, farDepth);
 
 	GameManager::GetInstance()->SetCamera(g_pcamera);
@@ -202,8 +202,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
 	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
 	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
-	pgameObject->GetTransform()->SetPosition(objectPos);
-	pgameObject->GetTransform()->SetScale(objectScale);
+	pgameObject->GetTransform()->SetWorldPosition(objectPos);
+	pgameObject->GetTransform()->SetWorldScale(objectScale);
 	Box* pbox = new Box(pgameObject->GetTransform());
 	pbox->SetIsCollidable(isCollision);
 	pbox->SetIsTrigger(isCollision);
@@ -219,9 +219,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
 	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
 	pgameObject->SetAlbedo(TEST2);
-	pgameObject->GetTransform()->SetPosition(objectPos);
-	pgameObject->GetTransform()->SetScale(objectScale);
-	pgameObject->GetTransform()->SetRotation(objectRot);
+	pgameObject->GetTransform()->SetWorldPosition(objectPos);
+	pgameObject->GetTransform()->SetWorldScale(objectScale);
+	pgameObject->GetTransform()->SetWorldRotation(objectRot);
 	pbox = new Box(pgameObject->GetTransform());
 	pbox->SetIsCollidable(isCollision);
 	pbox->SetIsTrigger(isCollision);
@@ -236,8 +236,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
 	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
 	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
-	pgameObject->GetTransform()->SetPosition(objectPos);
-	pgameObject->GetTransform()->SetScale(objectScale);
+	pgameObject->GetTransform()->SetWorldPosition(objectPos);
+	pgameObject->GetTransform()->SetWorldScale(objectScale);
 	pbox = new Box(pgameObject->GetTransform());
 	pbox->SetIsCollidable(isCollision);
 	pbox->SetIsTrigger(isCollision);
@@ -253,8 +253,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
 	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
 	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
-	pgameObject->GetTransform()->SetPosition(objectPos);
-	pgameObject->GetTransform()->SetScale(objectScale);
+	pgameObject->GetTransform()->SetWorldPosition(objectPos);
+	pgameObject->GetTransform()->SetWorldScale(objectScale);
 	pbox = new Box(pgameObject->GetTransform());
 	pbox->SetIsCollidable(isCollision);
 	pbox->SetIsTrigger(isCollision);
@@ -278,25 +278,25 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	XMFLOAT3 rot = XMFLOAT3(0, 0, 0);
 	XMFLOAT3 scale = XMFLOAT3(0.5f, 0.5f, 0.5f);
 	Transform trans = Transform();
-	trans.SetPosition(pos);
-	trans.SetRotation(rot);
-	trans.SetScale(scale);
+	trans.SetWorldPosition(pos);
+	trans.SetWorldRotation(rot);
+	trans.SetWorldScale(scale);
 	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 1.0f, 0.2f, 3, 20, 90.0f, 0.0f, 0.2f, 0);
 
 	pos = XMFLOAT3(0, 250, 5);
 	rot = XMFLOAT3(0, 0, 0);
 	scale = XMFLOAT3(0.5f, 0.5f, 0.5f);
-	trans.SetPosition(pos);
-	trans.SetRotation(rot);
-	trans.SetScale(scale);
+	trans.SetWorldPosition(pos);
+	trans.SetWorldRotation(rot);
+	trans.SetWorldScale(scale);
 	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 0.5f, 1.0f, 16, 100.0f, 0.0f, 0.0f, 0.2f, 2);
 
 	pos = XMFLOAT3(400, 250, 5);
 	rot = XMFLOAT3(0, 0, 0);
 	scale = XMFLOAT3(0.5f, 0.5f, 0.5f);
-	trans.SetPosition(pos);
-	trans.SetRotation(rot);
-	trans.SetScale(scale);
+	trans.SetWorldPosition(pos);
+	trans.SetWorldRotation(rot);
+	trans.SetWorldScale(scale);
 	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { -100,150 }, { 300,-75 }, 2.0f, 0.25f, 3, 100.0f, 25.0f, 25.0f, 0.1f, 1);
 
 	GameManager::GetInstance()->GetTimer()->Tick();

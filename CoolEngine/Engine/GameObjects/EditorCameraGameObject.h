@@ -8,12 +8,15 @@ class EditorCameraGameObject : public CameraGameObject, public Observer
 {
 public:
 	EditorCameraGameObject(string identifier, CoolUUID uuid);
+	EditorCameraGameObject(const nlohmann::json& data, CoolUUID uuid);
 	virtual ~EditorCameraGameObject()override;
 
 	void Initialize(XMFLOAT3& position, XMFLOAT3& forwardVector, XMFLOAT3& upVector,
 		float& windowWidth, float& windowHeight, float& nearDepth, float& farDepth) override;
 
 	void Handle(Event* e) override;
+
+	virtual void Serialize(nlohmann::json& jsonData) override;
 
 protected:
 

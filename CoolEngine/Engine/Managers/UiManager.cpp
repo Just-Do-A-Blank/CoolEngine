@@ -132,57 +132,57 @@ void UIManager::Serialize(nlohmann::json& data)
 
 	if (m_prootTreeNode == nullptr)
 	{
-		data["GameUI"]["RootNode"].push_back("Null");
+		data["GameUI"]["RootNode"] = -1;
 	}
 	else
 	{
 		data["GameUI"]["RootNode"].push_back(*m_prootTreeNode->NodeObject->GetUUID());
-	}
 
-	for (int i = 0; i < components.size(); ++i)
-	{
-		pnode = m_pUISceneGraph->GetNodeUsingIdentifier(components[i]->GetIdentifier());
-
-		if (pnode != nullptr)
+		for (int i = 0; i < components.size(); ++i)
 		{
-			pnode->NodeObject->Serialize(data);
+			pnode = m_pUISceneGraph->GetNodeUsingIdentifier(components[i]->GetIdentifier());
 
-			std::string uuidString = to_string(*pnode->NodeObject->GetUUID());
+			if (pnode != nullptr)
+			{
+				pnode->NodeObject->Serialize(data);
 
-			if (pnode->Sibling == nullptr)
-			{
-				data["GameUI"][(int)pnode->NodeObject->GetComponentType()][uuidString]["Sibling"].push_back("Null");
-			}
-			else
-			{
-				data["GameUI"][(int)pnode->NodeObject->GetComponentType()][uuidString]["Sibling"].push_back(*pnode->Sibling->NodeObject->GetUUID());
-			}
+				std::string uuidString = to_string(*pnode->NodeObject->GetUUID());
 
-			if (pnode->PreviousSibling == nullptr)
-			{
-				data["GameUI"][(int)pnode->NodeObject->GetComponentType()][uuidString]["PreviousSibling"].push_back("Null");
-			}
-			else
-			{
-				data["GameUI"][(int)pnode->NodeObject->GetComponentType()][uuidString]["PreviousSibling"].push_back(*pnode->PreviousSibling->NodeObject->GetUUID());
-			}
+				if (pnode->Sibling == nullptr)
+				{
+					data["GameUI"][(int)pnode->NodeObject->GetComponentType()][uuidString]["Sibling"].push_back("Null");
+				}
+				else
+				{
+					data["GameUI"][(int)pnode->NodeObject->GetComponentType()][uuidString]["Sibling"].push_back(*pnode->Sibling->NodeObject->GetUUID());
+				}
 
-			if (pnode->PreviousParent == nullptr)
-			{
-				data["GameUI"][(int)pnode->NodeObject->GetComponentType()][uuidString]["PreviousParent"].push_back("Null");
-			}
-			else
-			{
-				data["GameUI"][(int)pnode->NodeObject->GetComponentType()][uuidString]["PreviousParent"].push_back(*pnode->PreviousParent->NodeObject->GetUUID());
-			}
+				if (pnode->PreviousSibling == nullptr)
+				{
+					data["GameUI"][(int)pnode->NodeObject->GetComponentType()][uuidString]["PreviousSibling"].push_back("Null");
+				}
+				else
+				{
+					data["GameUI"][(int)pnode->NodeObject->GetComponentType()][uuidString]["PreviousSibling"].push_back(*pnode->PreviousSibling->NodeObject->GetUUID());
+				}
 
-			if (pnode->Child == nullptr)
-			{
-				data["GameUI"][(int)pnode->NodeObject->GetComponentType()][uuidString]["Child"].push_back("Null");
-			}
-			else
-			{
-				data["GameUI"][(int)pnode->NodeObject->GetComponentType()][uuidString]["Child"].push_back(*pnode->PreviousParent->NodeObject->GetUUID());
+				if (pnode->PreviousParent == nullptr)
+				{
+					data["GameUI"][(int)pnode->NodeObject->GetComponentType()][uuidString]["PreviousParent"].push_back("Null");
+				}
+				else
+				{
+					data["GameUI"][(int)pnode->NodeObject->GetComponentType()][uuidString]["PreviousParent"].push_back(*pnode->PreviousParent->NodeObject->GetUUID());
+				}
+
+				if (pnode->Child == nullptr)
+				{
+					data["GameUI"][(int)pnode->NodeObject->GetComponentType()][uuidString]["Child"].push_back("Null");
+				}
+				else
+				{
+					data["GameUI"][(int)pnode->NodeObject->GetComponentType()][uuidString]["Child"].push_back(*pnode->PreviousParent->NodeObject->GetUUID());
+				}
 			}
 		}
 	}
@@ -190,7 +190,19 @@ void UIManager::Serialize(nlohmann::json& data)
 
 void UIManager::Deserialize(nlohmann::json& data)
 {
-	m_pUISceneGraph->DeleteNode(m_prootTreeNode);
+	if (m_pUISceneGraph != nullptr)
+	{
+		m_pUISceneGraph->DeleteNode(m_prootTreeNode);
+	}
+	else
+	{
+		m_pUISceneGraph = new SceneGraph<GameUIComponent>();
+	}
+
+	if (data["GameUI"]["RootNode"] == -1)
+	{
+		return;
+	}
 
 	//First loop through and create all the objects
 	std::unordered_map<uint64_t, GameUIComponent*> components;
@@ -243,17 +255,6 @@ void UIManager::Deserialize(nlohmann::json& data)
 
 	TreeNode<GameUIComponent>* pnode = nullptr;
 	GameUIComponent* pcomponent = nullptr;
-
-	//Next loop through and insert into scene graph
-	for (int i = 0; i < components.size(); ++i)
-	{
-		if (*components[i]->GetUUID() == data["GameUI"]["RootNode"])
-		{
-			pnode = m_pUISceneGraph->NewNode(components[i]);
-
-			break;
-		}
-	}
 
 	pcomponent = components[data["GameUI"]["RootNode"]];
 	pnode = m_pUISceneGraph->NewNode(pcomponent);

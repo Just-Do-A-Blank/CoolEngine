@@ -44,6 +44,21 @@ public:
 		m_shapeType = ShapeType::CIRCLE;
 	}
 
+	Circle(const nlohmann::json& data, Transform* trans) : Shape(data)
+	{
+		m_transform = trans;
+		m_radius = data["CircleRadius"];
+
+		m_shapeType = ShapeType::CIRCLE;
+	}
+
+	void Serialize(nlohmann::json& data) override
+	{
+		Shape::Serialize(data);
+
+		data["CircleRadius"] = m_radius;
+	}
+
 	float GetRadius()
 	{
 		return m_radius;

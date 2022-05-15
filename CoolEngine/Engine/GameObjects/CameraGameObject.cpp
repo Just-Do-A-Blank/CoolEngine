@@ -8,6 +8,17 @@ CameraGameObject::CameraGameObject(string identifier, CoolUUID uuid) : GameObjec
 
 }
 
+CameraGameObject::CameraGameObject(const nlohmann::json& data, CoolUUID index) : GameObject(data, index)
+{
+
+	m_windowHeight = data["Window Height"];
+	m_windowWidth = data["Window Width"];
+	m_nearDepth = data["Near Depth"];
+	m_farDepth = data["Far Depth"];
+
+	CreateViewMatrix();
+	CreateProjectionMatrix();
+}
 CameraGameObject::~CameraGameObject()
 {
 }
@@ -57,6 +68,16 @@ void CameraGameObject::ReshapeCamera(float newWindowWidth, float newWindowHeight
 void CameraGameObject::Update()
 {
 	CreateViewMatrix();
+}
+
+void CameraGameObject::Serialize(nlohmann::json& jsonData)
+{
+	GameObject::Serialize(jsonData);
+
+	jsonData["Window Height"].push_back(m_windowHeight);
+	jsonData["Window Width"].push_back(m_windowWidth);
+	jsonData["Near Depth"].push_back(m_nearDepth);
+	jsonData["Far Depth"].push_back(m_farDepth);
 }
 
 XMFLOAT4X4 CameraGameObject::GetView() const

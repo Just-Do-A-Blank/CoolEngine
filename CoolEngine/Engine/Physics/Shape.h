@@ -17,6 +17,8 @@ enum class ShapeType
 class Shape : EditorUIComponent
 {
 public:
+	Shape(const nlohmann::json& data);
+	Shape();
 
     virtual bool Collide(Shape* shape) = 0;
     virtual bool Collide(Circle* circle) = 0;
@@ -35,6 +37,8 @@ public:
 #if EDITOR
     virtual void CreateEngineUI() override;
 #endif
+
+	virtual void Serialize(nlohmann::json& data);
 
     void SetIsTrigger(bool value);
     void SetIsCollidable(bool value);

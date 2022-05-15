@@ -11,6 +11,7 @@
 #include "Engine/Tools/AnimationTool.h"
 #include "Engine/Tools/InGameUITool.h"
 #include "Engine//Tools/TileMapTool.h"
+#include "Engine/FileIO/FileIO.h"
 
 #include <ShlObj_core.h>
 
@@ -188,7 +189,7 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 			{
 				m_createGameObjectClicked = true;
 
-				m_createObjectType = GameObjectType::PARTICLESYSTEM;
+				m_createObjectType = GameObjectType::PARTICLE_SYSTEM;
 			}
 
 			ImGui::EndMenu();
@@ -306,7 +307,7 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 				pgameManager->CreateGameObject<GameObject>(gameObjectName, m_selecedGameObjectNode);
 				break;
 
-			case GameObjectType::PARTICLESYSTEM:
+			case GameObjectType::PARTICLE_SYSTEM:
 				pgameManager->CreateGameObject<ParticleSystem>(gameObjectName, m_selecedGameObjectNode);
 				break;
 
@@ -379,12 +380,16 @@ void EditorUI::DrawSceneManagementWindow()
 
 			if (ImGui::MenuItem("Save Scene", "Ctrl+S"))
 			{
-				/* Do stuff */
+				SimpleFileIO::SaveScene(std::string("Resources\\Levels\\") + GameManager::GetInstance()->GetCurrentSceneName());
 			}
 
 			if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
 			{
 				OpenFileExplorer(L"Scene files\0*.json\0", m_texNameBuffer, _countof(m_texNameBuffer));
+
+				std::wstring tempString = std::wstring(m_texNameBuffer);
+
+				SimpleFileIO::LoadScene(std::string(tempString.begin(), tempString.end()));
 			}
 
 			if (ImGui::MenuItem("Delete Scene", "Ctrl+D"))
@@ -750,19 +755,19 @@ bool EditorUI::Texture(const string& label, wstring& filepath, ID3D11ShaderResou
 			else
 			{
 				//Get relative file path
-				wsfilepath = wsfilepath.substr(index);
+				filepath = wsfilepath.substr(index);
 
 				//Load texture if not loaded
 				bool bloaded = true;
 
-				if (GraphicsManager::GetInstance()->IsTextureLoaded(wsfilepath) == false)
+				if (GraphicsManager::GetInstance()->IsTextureLoaded(filepath) == false)
 				{
-					bloaded = GraphicsManager::GetInstance()->LoadTextureFromFile(wsfilepath);
+					bloaded = GraphicsManager::GetInstance()->LoadTextureFromFile(filepath);
 				}
 
 				if (bloaded == true)
 				{
-					psrv = GraphicsManager::GetInstance()->GetShaderResourceView(wsfilepath);
+					psrv = GraphicsManager::GetInstance()->GetShaderResourceView(filepath);
 				}
 
 				interacted = true;
@@ -923,13 +928,16 @@ void EditorUI::Animations(const string& label, unordered_map<string, SpriteAnima
 
 	string animOldName = "";
 	string animNewName = "";
+	string nameToUpdate = "";
 
 	bool updateAnim = false;
 	bool updateAnimName = false;
 
+	int count = 0;
+
 	for (unordered_map<string, SpriteAnimation>::iterator it = animations.begin(); it != animations.end(); ++it)
 	{
-		ImGui::PushID(label.c_str());
+		ImGui::PushID(to_string(count).c_str());
 
 		ImGui::Columns(2);
 
@@ -964,6 +972,8 @@ void EditorUI::Animations(const string& label, unordered_map<string, SpriteAnima
 				animOldName = it->first;
 
 				updateAnim = filepath != L"";
+
+				nameToUpdate = it->first;
 			}
 
 			if (ImGui::BeginDragDropTarget())
@@ -976,6 +986,7 @@ void EditorUI::Animations(const string& label, unordered_map<string, SpriteAnima
 					filepath = wstring(tempString.begin(), tempString.end());
 
 					updateAnim = true;
+					nameToUpdate = it->first;
 				}
 
 				ImGui::EndDragDropTarget();
@@ -991,6 +1002,8 @@ void EditorUI::Animations(const string& label, unordered_map<string, SpriteAnima
 		ImGui::Columns(1);
 
 		ImGui::PopID();
+
+		++count;
 	}
 
 	if (updateAnimName == true)
@@ -1010,7 +1023,7 @@ void EditorUI::Animations(const string& label, unordered_map<string, SpriteAnima
 		{
 			if (GraphicsManager::GetInstance()->LoadAnimationFromFile(filepath) == true)
 			{
-				animations[animName] = GraphicsManager::GetInstance()->GetAnimation(filepath);
+				animations[nameToUpdate] = GraphicsManager::GetInstance()->GetAnimation(filepath);
 			}
 			else
 			{
@@ -1019,7 +1032,7 @@ void EditorUI::Animations(const string& label, unordered_map<string, SpriteAnima
 		}
 		else
 		{
-			animations[animName] = anim;
+			animations[nameToUpdate] = anim;
 		}
 	}
 }

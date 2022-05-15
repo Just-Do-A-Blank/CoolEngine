@@ -1,7 +1,9 @@
 #pragma once
 #include "Engine/Physics/Shape.h"
 #include "Engine/Includes/IMGUI/imgui.h"
+#include "Engine/Includes/json.hpp"
 #include "Engine/EditorUI/EditorUI.h"
+
 
 class Box : public Shape
 {
@@ -36,6 +38,16 @@ public:
 		m_shapeType = ShapeType::BOX;
 	}
 
+	Box(const nlohmann::json& data, Transform* trans) : Shape(data)
+	{
+		m_transform = trans;
+		m_halfSize = XMFLOAT2(m_scale.x * m_transform->GetWorldScale().x, m_scale.y * m_transform->GetWorldScale().y);
+
+		m_scale = XMFLOAT2(data["BoxScale"][0], data["BoxScale"][1]);
+
+		m_shapeType = ShapeType::BOX;
+	}
+
 	~Box()
 	{
 		m_transform = nullptr;
@@ -46,7 +58,12 @@ public:
 		return m_halfSize;
 	}
 
+	void Serialize(nlohmann::json& data) override
+	{
+		Shape::Serialize(data);
 
+		data["BoxScale"] = { m_scale.x, m_scale.y };
+	}
 
 	// Based on gamedev.stackexchange.com/questions/20703/bounding-box-of-a-rotated-rectangle-2d
 	void SetShapeDimensions(XMFLOAT3 scale)
