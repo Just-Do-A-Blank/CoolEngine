@@ -63,6 +63,12 @@ TreeNode<T>* SceneGraph<T>::AddSibling(TreeNode<T>* currentNode, T* gameObject)
 	currentNode->Sibling = NewNode(gameObject);
 	currentNode->Sibling->PreviousSibling = currentNode;
 
+	if (currentNode->PreviousParent != nullptr)
+	{
+		gameObject->GetTransform()->SetParentTransform(currentNode->PreviousParent->NodeObject->GetTransform());
+		currentNode->PreviousParent->NodeObject->GetTransform()->AddChildTransform(gameObject->GetTransform());
+	}
+
 	return currentNode->Sibling;
 }
 
