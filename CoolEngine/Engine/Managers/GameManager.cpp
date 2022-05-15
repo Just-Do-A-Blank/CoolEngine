@@ -322,8 +322,18 @@ void GameManager::Deserialize(nlohmann::json& data)
 		if (childCheck != -1)
 		{
 			pcomponent = gameObjects[childCheck];
-			toPush.push(m_pcurrentScene->m_psceneGraph->AddSibling(pnode, pcomponent));
+			toPush.push(m_pcurrentScene->m_psceneGraph->AddChild(pnode, pcomponent));
 		}
+	}
+
+	pnode = m_pcurrentScene->m_psceneGraph->GetRootNode();
+
+
+	while (pnode != nullptr)
+	{
+		pnode->NodeObject->GetTransform()->UpdateMatrix();
+
+		pnode = pnode->Sibling;
 	}
 }
 
