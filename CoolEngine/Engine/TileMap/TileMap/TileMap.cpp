@@ -171,10 +171,8 @@ bool TileMap::Load(wstring path) // Load data for the map from a given path
 			{
 				CreateTile(i, j, ptile);
 
-#if TILE_MAP_TOOL
 				m_tiles[i][j]->SetSpriteIndex(spriteIndex);
 				m_tiles[i][j]->SetAnimIndex(animIndex);
-#endif
 
 				m_tiles[i][j]->SetLayer(tileLayer);
 				m_tiles[i][j]->SetIsPassable(tilePassable);
@@ -234,10 +232,8 @@ bool TileMap::Save(wstring path)
 			}
 			else
 			{
-#if TILE_MAP_TOOL
 				jsonOutput["TileSpriteIndexes"].push_back({ m_tiles[i][j]->GetSpriteIndex() });
 				jsonOutput["TileAnimIndexes"].push_back({ m_tiles[i][j]->GetAnimIndex() });
-#endif
 
 				jsonOutput["TileLayer"].push_back({ m_tiles[i][j]->GetLayer() });
 				jsonOutput["TilePassable"].push_back({ m_tiles[i][j]->GetIsPassable() });
@@ -314,9 +310,7 @@ void TileMap::AddSpritePath(Tile* ptile, wstring& path)
 	{
 		if (m_spritePaths[i] == path)
 		{
-#if TILE_MAP_TOOL
 			ptile->SetSpriteIndex(i);
-#endif
 
 			return;
 		}
@@ -324,9 +318,7 @@ void TileMap::AddSpritePath(Tile* ptile, wstring& path)
 
 	m_spritePaths.push_back(path);
 
-#if TILE_MAP_TOOL
 	ptile->SetSpriteIndex(m_spritePaths.size() - 1);
-#endif
 }
 
 void TileMap::AddAnimPath(Tile* ptile, wstring& path)
@@ -335,9 +327,7 @@ void TileMap::AddAnimPath(Tile* ptile, wstring& path)
 	{
 		if (m_animPaths[i] == path)
 		{
-#if TILE_MAP_TOOL
 			ptile->SetAnimIndex(i);
-#endif
 
 			return;
 		}
@@ -345,9 +335,7 @@ void TileMap::AddAnimPath(Tile* ptile, wstring& path)
 
 	m_animPaths.push_back(path);
 
-#if TILE_MAP_TOOL
 	ptile->SetAnimIndex(m_animPaths.size() - 1);
-#endif
 }
 
 void TileMap::DeleteTile(int row, int column)

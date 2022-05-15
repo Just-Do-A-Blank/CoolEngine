@@ -196,6 +196,7 @@ void TileMapTool::Update()
 		case ToolMode::TEXTURE:
 			if (m_ppaintSRV != nullptr)
 			{
+				m_ptileMap->AddSpritePath(ptile, m_relativePath);
 				ptile->SetAlbedo(m_ppaintSRV);
 			}
 			break;
