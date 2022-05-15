@@ -97,7 +97,7 @@ public:
 #if EDITOR
 	void CreateEngineUI() override
 	{
-		EditorUI::DragFloat("Radius", m_radius, 100.0f, 0.1f, 0);
+        EditorUI::DragFloat("Radius", m_radius);
 
 		ImGui::Spacing();
 
