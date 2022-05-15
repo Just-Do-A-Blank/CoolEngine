@@ -385,7 +385,7 @@
       <Filter>Engine\EditorUI</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\UUID.h">
-          <Filter>Engine\GameObjects</Filter>
+      <Filter>Engine\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\TileMapCameraGameObject.h">
       <Filter>Engine\GameObjects</Filter>
@@ -419,6 +419,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Managers\Events\KeyEvents.h">
       <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\AIState.h">
+      <Filter>Engine\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -579,7 +582,7 @@
       <Filter>Engine\EditorUI</Filter>
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\UUID.cpp">
-          <Filter>Engine\GameObjects</Filter>
+      <Filter>Engine\GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\TileMapCameraGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
@@ -595,6 +598,9 @@
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\WeaponGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\AIState.cpp">
+      <Filter>Engine\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -140,6 +140,8 @@ void Pathfinding::CalculatePath()
 /// <returns></returns>
 bool Pathfinding::GeneratePath(XMFLOAT3 tarPos, vector<node*>& path)
 {
+	path.clear();
+
 	//Follow the parent of the end node to the start node
 	node* nodeCurrentTemp;
 

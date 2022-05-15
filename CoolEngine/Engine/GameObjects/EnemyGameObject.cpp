@@ -4,12 +4,24 @@
 
 EnemyGameObject::EnemyGameObject(string identifier, CoolUUID uuid) : CharacterGameObject(identifier, uuid)
 {
-    m_gameObjectType |= GameObjectType::ENEMY;
+    m_gameObjectType = GameObjectType::ENEMY;
+
 }
 
 
 void EnemyGameObject::Update()
-{
+{	
+	if (m_pUnitAIType != nullptr)
+	{
+		m_pUnitAIType->Update();
+	}
+	else
+	{
+		LOG("MISSING AI")
+	}
+
+
+
 	if (!m_curPath.empty())
 	{
 
