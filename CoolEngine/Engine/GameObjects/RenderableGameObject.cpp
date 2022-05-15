@@ -44,6 +44,31 @@ RenderableGameObject::RenderableGameObject(string identifier, CoolUUID uuid) : G
 	m_gameObjectType |= GameObjectType::RENDERABLE;
 }
 
+RenderableGameObject::RenderableGameObject(const nlohmann::json& data, CoolUUID uuid) : GameObject(data, uuid)
+{
+	GameObject::Init(data, uuid);
+
+	m_layer = data["Layers"];
+	m_isRenderable = data["IsRenderable"];
+
+	std::string tempPath = data["TexturePath"];
+	m_texFilepath = std::wstring(tempPath.begin(), tempPath.end());
+
+	SetAlbedo(m_texFilepath);
+
+	for (int i = 0; i < data["AnimNames"].size(); ++i)
+	{
+		std::string tempAnimPath = data["AnimPaths"][i];
+
+		AddAnimation(data["AnimNames"][i], std::wstring(tempAnimPath.begin(), tempAnimPath.end()));
+	}
+
+	m_gameObjectType |= GameObjectType::RENDERABLE;
+
+	InitGraphics();
+
+}
+
 RenderableGameObject::~RenderableGameObject()
 {
 }
@@ -63,6 +88,11 @@ const bool& RenderableGameObject::IsRenderable()
 
 void RenderableGameObject::Render(RenderStruct& renderStruct)
 {
+	if (m_isRenderable == false)
+	{
+		return;
+	}
+
 	if (m_pcurrentAnimation != nullptr)
 	{
 		GraphicsManager::GetInstance()->RenderQuad(m_pcurrentAnimation->GetCurrentFrame(), m_transform->GetWorldPosition(), m_transform->GetWorldScale(), m_transform->GetWorldRotation().z, m_layer);
@@ -74,18 +104,7 @@ void RenderableGameObject::Render(RenderStruct& renderStruct)
 			return;
 		}
 
-		XMMATRIX worldMatrix = m_transform->GetWorldMatrix();
-		XMVECTOR scaleVector;
-		XMVECTOR rotationVector;
-		XMVECTOR positionVector;
-		DirectX::XMMatrixDecompose(&scaleVector, &rotationVector, &positionVector, worldMatrix);
-
-		XMFLOAT3 scale;
-		XMFLOAT3 position;
-		XMStoreFloat3(&scale, scaleVector);
-		XMStoreFloat3(&position, positionVector);
-
-		GraphicsManager::GetInstance()->RenderQuad(m_palbedoSRV, position, scale, m_transform->GetWorldRotation().z, m_layer);
+		GraphicsManager::GetInstance()->RenderQuad(m_palbedoSRV, m_transform->GetWorldPosition(), m_transform->GetWorldScale(), m_transform->GetWorldRotation().z, m_layer);
 	}
 }
 
@@ -189,6 +208,30 @@ bool RenderableGameObject::PlayAnimation(std::string name)
 	return true;
 }
 
+void RenderableGameObject::Serialize(nlohmann::json& data)
+{
+	GameObject::Serialize(data);
+
+	std::string texPath = std::string(m_texFilepath.begin(), m_texFilepath.end());
+
+	data["Layers"] = m_layer;
+	data["IsRenderable"] = m_isRenderable;
+	data["TexturePath"] = texPath;
+
+	data["AnimNames"] = {};
+	data["AnimPaths"] = {};
+
+	for (std::unordered_map<std::string, SpriteAnimation>::iterator it = m_animations.begin(); it != m_animations.end(); ++it)
+	{
+		data["AnimNames"].push_back(it->first);
+
+		std::wstring animPath = it->second.GetAnimPath();
+		std::string tempAnimPath = std::string(animPath.begin(), animPath.end());
+
+		data["AnimPaths"].push_back(tempAnimPath);
+	}
+}
+
 SpriteAnimation* RenderableGameObject::GetCurrentAnimation()
 {
 	return m_pcurrentAnimation;
@@ -242,6 +285,8 @@ bool RenderableGameObject::SetAlbedo(std::wstring albedoName)
 	}
 
 	m_palbedoSRV = psRV;
+
+	m_texFilepath = albedoName;
 
 	return true;
 }

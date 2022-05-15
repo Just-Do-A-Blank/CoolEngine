@@ -63,6 +63,7 @@ bool Collision::BoxCollisionAndResponse(Box* player, Box* object)
 		// Bottom to top - positive
 
 		// Based on stackoverflow.com/questions/46172953/aabb-collision-resolution-slipping-sides
+
 		XMFLOAT2 penetration = XMFLOAT2(0, 0);
 		XMFLOAT2 vertexToPlayerCentre = XMFLOAT2(middleP.x - middleO.x, middleP.y - middleO.y);
 		XMFLOAT2 minDistance = XMFLOAT2(halfSizeO.x + halfSizeP.x, halfSizeO.y + halfSizeP.y);
@@ -78,13 +79,13 @@ bool Collision::BoxCollisionAndResponse(Box* player, Box* object)
 			{
 				// Left side
 				XMFLOAT3 pos = XMFLOAT3(middleO.x - halfSizeO.x - halfSizeP.x, middleP.y, player->m_transform->GetWorldPosition().z);
-				player->m_transform->SetPosition(pos);
+				player->m_transform->SetWorldPosition(pos);
 			}
 			else
 			{
 				// Right side
 				XMFLOAT3 pos = XMFLOAT3(middleO.x + halfSizeO.x + halfSizeP.x, middleP.y, player->m_transform->GetWorldPosition().z);
-				player->m_transform->SetPosition(pos);
+				player->m_transform->SetWorldPosition(pos);
 			}
 		}
 		else if (abs(penetration.x) > abs(penetration.y))
@@ -93,13 +94,13 @@ bool Collision::BoxCollisionAndResponse(Box* player, Box* object)
 			{
 				// Bottom side
 				XMFLOAT3 pos = XMFLOAT3(middleP.x, middleO.y - halfSizeO.y - halfSizeP.y, player->m_transform->GetWorldPosition().z);
-				player->m_transform->SetPosition(pos);
+				player->m_transform->SetWorldPosition(pos);
 			}
 			else
 			{
 				// Top side
 				XMFLOAT3 pos = XMFLOAT3(middleP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_transform->GetWorldPosition().z);
-				player->m_transform->SetPosition(pos);
+				player->m_transform->SetWorldPosition(pos);
 			}
 		}
 		else
@@ -110,13 +111,13 @@ bool Collision::BoxCollisionAndResponse(Box* player, Box* object)
 				{
 					// Top right corner
 					XMFLOAT3 pos = XMFLOAT3(middleO.x + halfSizeO.x + halfSizeP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_transform->GetWorldPosition().z);
-					player->m_transform->SetPosition(pos);
+					player->m_transform->SetWorldPosition(pos);
 				}
 				else
 				{
 					// Bottom right corner
 					XMFLOAT3 pos = XMFLOAT3(middleO.x + halfSizeO.x + halfSizeP.x, middleO.y - halfSizeO.y - halfSizeP.y, player->m_transform->GetWorldPosition().z);
-					player->m_transform->SetPosition(pos);
+					player->m_transform->SetWorldPosition(pos);
 				}
 			}
 			else if(penetration.x < 0)
@@ -125,13 +126,13 @@ bool Collision::BoxCollisionAndResponse(Box* player, Box* object)
 				{
 					// Top left corner
 					XMFLOAT3 pos = XMFLOAT3(middleO.x - halfSizeO.x - halfSizeP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_transform->GetWorldPosition().z);
-					player->m_transform->SetPosition(pos);
+					player->m_transform->SetWorldPosition(pos);
 				}
 				else
 				{
 					// Top right corner
 					XMFLOAT3 pos = XMFLOAT3(middleO.x + halfSizeO.x + halfSizeP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_transform->GetWorldPosition().z);
-					player->m_transform->SetPosition(pos);
+					player->m_transform->SetWorldPosition(pos);
 				}
 			}
 		}
@@ -173,12 +174,12 @@ bool Collision::CircleBoxCollisionAndResponse(Circle* circle, Box* box)
 		if (abs(penetrationDepth.x) < abs(penetrationDepth.y))
 		{
 			XMFLOAT3 pos = XMFLOAT3(box->m_transform->GetWorldPosition().x + penetration.x, box->m_transform->GetWorldPosition().y + penetration.y, box->m_transform->GetWorldPosition().z);
-			box->m_transform->SetPosition(pos);
+			box->m_transform->SetWorldPosition(pos);
 		}
 		else if (abs(penetrationDepth.x) > abs(penetrationDepth.y))
 		{
 			XMFLOAT3 pos = XMFLOAT3(box->m_transform->GetWorldPosition().x + penetration.x, box->m_transform->GetWorldPosition().y + penetration.y, box->m_transform->GetWorldPosition().z);
-			box->m_transform->SetPosition(pos);
+			box->m_transform->SetWorldPosition(pos);
 		}
 
 		return true;
@@ -199,7 +200,7 @@ bool Collision::CircleCollisionAndResponse(Circle* circle1, Circle* circle2)
 		float penetration = circle1->m_radius + circle2->m_radius - m_distanceBetweenCircles;
 
 		XMFLOAT3 pos = XMFLOAT3(pos1.x + vectorToPlayer.x / m_distanceBetweenCircles * penetration, pos1.y + vectorToPlayer.y / m_distanceBetweenCircles * penetration, circle1->m_transform->GetWorldPosition().z);
-		circle1->m_transform->SetPosition(pos);
+		circle1->m_transform->SetWorldPosition(pos);
 
 		return true;
 	}
@@ -221,7 +222,7 @@ void Collision::Update(vector<GameObject*> gameObjectMap)
 		pcollidable1 = dynamic_cast<CollidableGameObject*>(gameObjectMap[it1]);
 		pcollidable1->SetShapeDimensions(pcollidable1->GetTransform()->GetWorldScale());
 
-		if (pcollidable1->GetShape()->IsRendered())
+		if (pcollidable1->GetShape() != nullptr && pcollidable1->GetShape()->IsRendered())
 		{
 			XMFLOAT3 p = pcollidable1->GetTransform()->GetWorldPosition();
 			XMFLOAT2 d = pcollidable1->GetShape()->GetShapeDimensions();

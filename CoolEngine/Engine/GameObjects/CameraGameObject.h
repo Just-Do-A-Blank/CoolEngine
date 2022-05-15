@@ -14,7 +14,9 @@ private:
 
 public:
 	CameraGameObject(string identifier, CoolUUID uuid);
+	CameraGameObject(const nlohmann::json& data, CoolUUID index);
 	CameraGameObject(CameraGameObject const& other);
+  
 	virtual ~CameraGameObject()override;
 
     virtual void Initialize(XMFLOAT3& position, XMFLOAT3& forwardVector, XMFLOAT3& upVector,
@@ -28,10 +30,11 @@ public:
 
     void Update();
 
+    virtual void Serialize(nlohmann::json& jsonData) override;
+
 	//Getters
 	XMFLOAT4X4 GetView() const;
 	XMFLOAT4X4 GetProjection() const;
 	XMFLOAT4X4 GetViewProjection() const;
     XMFLOAT2& GetMousePositionInWorldSpace()const;
 };
-

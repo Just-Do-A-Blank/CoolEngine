@@ -7,7 +7,7 @@
 template<class T>
 SceneGraph<T>::SceneGraph()
 {
-	
+
 }
 
 template<class T>
@@ -22,20 +22,20 @@ TreeNode<T>* SceneGraph<T>::NewNode(T* gameObject)
 	if (!m_rootNode)
 	{
 		m_rootNode = new TreeNode<T>;
-		m_rootNode->Sibling = nullptr; 
+		m_rootNode->Sibling = nullptr;
 		m_rootNode->Child = nullptr;
 		m_rootNode->NodeObject = gameObject;
-		m_rootNode->PreviousParent = nullptr; 
+		m_rootNode->PreviousParent = nullptr;
 		m_rootNode->PreviousSibling = nullptr;
 		m_sceneTreeNodeMap.insert(pair<string, TreeNode<T>*>(gameObject->GetIdentifier(), m_rootNode));
 		m_sceneNodeObjectsMap.insert(pair<string, T*>(gameObject->GetIdentifier(), gameObject));
 		m_sceneNodeObjectList.push_back(gameObject);
 		m_sceneNodeList.push_back(m_rootNode);
-		return m_rootNode;		
+		return m_rootNode;
 	}
 
 	TreeNode<T>* newNode = new TreeNode<T>();
-	newNode->Sibling = nullptr; 
+	newNode->Sibling = nullptr;
 	newNode->Child = nullptr;
 	newNode->NodeObject = gameObject;
 	newNode->PreviousParent = nullptr;
@@ -61,9 +61,15 @@ TreeNode<T>* SceneGraph<T>::AddSibling(TreeNode<T>* currentNode, T* gameObject)
 	{
 		currentNode = currentNode->Sibling;
 	}
-		
+
 	currentNode->Sibling = NewNode(gameObject);
 	currentNode->Sibling->PreviousSibling = currentNode;
+
+	if (currentNode->PreviousParent != nullptr)
+	{
+		gameObject->GetTransform()->SetParentTransform(currentNode->PreviousParent->NodeObject->GetTransform());
+		currentNode->PreviousParent->NodeObject->GetTransform()->AddChildTransform(gameObject->GetTransform());
+	}
 
 	return currentNode->Sibling;
 }
@@ -79,7 +85,7 @@ void SceneGraph<T>::MoveNode(TreeNode<T>* currentNode, TreeNode<T>* parentNode)
 	if (currentNode->Sibling)
 	{
 		currentNode->Sibling->PreviousSibling = currentNode->PreviousSibling;
-		
+
 	}
 	if (currentNode == m_rootNode)
 	{
@@ -103,8 +109,8 @@ void SceneGraph<T>::MoveNode(TreeNode<T>* currentNode, TreeNode<T>* parentNode)
 		Transform* oldParentTransform = currentNode->PreviousParent->NodeObject->GetTransform();
 		oldParentTransform->RemoveChildTransform(currentNode->NodeObject->GetTransform());
 	}
-	
-	Transform* currentTransform = currentNode->NodeObject->GetTransform();	
+
+	Transform* currentTransform = currentNode->NodeObject->GetTransform();
 
 	currentNode->PreviousSibling = nullptr;
 	currentNode->Sibling = nullptr;
@@ -132,15 +138,18 @@ void SceneGraph<T>::MoveNode(TreeNode<T>* currentNode, TreeNode<T>* parentNode)
 	}
 	else
 	{
+
 		TreeNode<T>* siblingNode = m_rootNode->Sibling;
 		if (siblingNode == nullptr)
 		{
 			siblingNode = m_rootNode;
 		}
+
 		while (siblingNode->Sibling != nullptr)
 		{
 			siblingNode = siblingNode->Sibling;
 		}
+
 		siblingNode->Sibling = currentNode;
 		currentNode->PreviousSibling = siblingNode;
 
@@ -336,7 +345,3 @@ T* SceneGraph<T>::GetNodeObjectUsingIdentifier(string& identifier)
 	}
 	return it->second;
 }
-
-
-
-

@@ -34,7 +34,10 @@ private:
 
 public:
 	ParticleSystem(string identifier, CoolUUID uuid);
+	ParticleSystem(const nlohmann::json& data, CoolUUID uuid);
 	~ParticleSystem();
+
+	virtual void Serialize(nlohmann::json& data) override;
 
 	/// <summary>
 	/// Activate a free particle system slot
@@ -42,7 +45,7 @@ public:
 	/// <param name="trans"></param>
 	/// <param name="life"></param>
 	/// <param name="tex"></param>
-	void Initialise(Transform trans, float life, ID3D11ShaderResourceView* tex, int layer);
+	void Initialise(Transform trans, float life, std::wstring texPath, int layer);
 
 	/// <summary>
 	/// Activate a free particle system slot, and set particle properties
@@ -59,7 +62,7 @@ public:
 	/// <param name="randVel"></param>
 	/// <param name="randAccel"></param>
 	/// <param name="randLife"></param>
-	void Initialise(Transform trans, float life, ID3D11ShaderResourceView* tex, XMFLOAT2 vel, XMFLOAT2 accel, float partLife, float interval, int number, float randPos, float randVel, float randAccel, float randLife, int layer);
+	void Initialise(Transform trans, float life, std::wstring texPath, XMFLOAT2 vel, XMFLOAT2 accel, float partLife, float interval, int number, float randPos, float randVel, float randAccel, float randLife, int layer);
 
 	/// <summary>
 	/// Set the properties used to create particles
@@ -153,6 +156,7 @@ public:
 		return m_layer;
 	}
 
+	const std::wstring& GetTexturePath() const;
 
 	// Setters
 	void SetActive(bool active) 

@@ -24,7 +24,7 @@ void Particle::Update(const float dTime)
 	XMFLOAT3 pos = m_transform.GetWorldPosition();
 	pos.x += m_velocity.x * dTime;
 	pos.y += m_velocity.y * dTime;
-	m_transform.SetPosition(pos);
+	m_transform.SetWorldPosition(pos);
 
 	m_lifetime -= dTime;
 	if (m_lifetime <= 0.0f)
@@ -35,6 +35,11 @@ void Particle::Update(const float dTime)
 
 void Particle::Render(ID3D11DeviceContext* pContext, Mesh* mesh)
 {
+	if (m_pTexture == nullptr)
+	{
+		return;
+	}
+
 	GraphicsManager::GetInstance()->RenderQuad(m_pTexture, m_transform.GetWorldPosition(), m_transform.GetWorldScale(), m_transform.GetWorldRotation().z, m_layer);
 }
 

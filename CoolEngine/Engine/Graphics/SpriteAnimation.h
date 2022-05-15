@@ -20,12 +20,16 @@ class SpriteAnimation
 	bool m_isLooping = true;
 	bool m_isPaused = false;
 
+	std::wstring m_animPath = L"";
+
 public:
 	SpriteAnimation();
-	SpriteAnimation(std::vector<Frame>* pframes);
+	SpriteAnimation(std::vector<Frame>* pframes, std::wstring animPath);
 
 	void SetFrames(std::vector<Frame>* pframes);
 	std::vector<Frame>* GetFrames();
+
+	const std::wstring& GetAnimPath() const;
 
 	bool IsLooping();
 	void SetLooping(bool isLooping);

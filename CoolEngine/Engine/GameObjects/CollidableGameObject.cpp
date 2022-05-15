@@ -15,8 +15,26 @@ CollidableGameObject::CollidableGameObject(string identifier, CoolUUID uuid) : G
 	m_gameObjectType |= GameObjectType::COLLIDABLE;
 }
 
+CollidableGameObject::CollidableGameObject(const nlohmann::json& data, CoolUUID uuid) : GameObject(data, uuid)
+{
+	m_gameObjectType |= GameObjectType::COLLIDABLE;
+
+	if (data["ShapeType"] != -1)
+	{
+		if (data["ShapeType"] == "Circle")
+		{
+			m_pcollider = new Circle(data, m_transform);
+		}
+		else
+		{
+			m_pcollider = new Box(data, m_transform);
+		}
+	}
+}
+
 CollidableGameObject::~CollidableGameObject()
 {
+	delete m_pcollider;
 }
 
 #if EDITOR
@@ -70,6 +88,21 @@ void CollidableGameObject::CreateEngineUI()
 	if (m_pcollider != nullptr)
 	{
 		m_pcollider->CreateEngineUI();
+	}
+}
+
+//Due to diamond pattern code here needs to be updated in RenderableCollidable as well
+void CollidableGameObject::Serialize(nlohmann::json& jsonData)
+{
+	GameObject::Serialize(jsonData);
+
+	if (m_pcollider == nullptr)
+	{
+		jsonData["ShapeType"] = -1;
+	}
+	else
+	{
+		m_pcollider->Serialize(jsonData);
 	}
 }
 #endif

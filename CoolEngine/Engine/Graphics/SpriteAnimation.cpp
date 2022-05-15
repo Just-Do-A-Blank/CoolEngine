@@ -10,11 +10,13 @@ SpriteAnimation::SpriteAnimation()
 	m_timeMilestone = 0;
 }
 
-SpriteAnimation::SpriteAnimation(std::vector<Frame>* frames)
+SpriteAnimation::SpriteAnimation(std::vector<Frame>* frames, std::wstring animPath)
 {
 	m_pframes = frames;
 
 	m_currentFrameIndex = 0;
+
+	m_animPath = animPath;
 
 	if (frames != nullptr)
 	{
@@ -30,6 +32,11 @@ void SpriteAnimation::SetFrames(std::vector<Frame>* pframes)
 std::vector<Frame>* SpriteAnimation::GetFrames()
 {
 	return m_pframes;
+}
+
+const std::wstring& SpriteAnimation::GetAnimPath() const
+{
+	return m_animPath;
 }
 
 bool SpriteAnimation::IsLooping()

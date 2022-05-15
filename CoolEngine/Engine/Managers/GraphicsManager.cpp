@@ -310,11 +310,11 @@ SpriteAnimation GraphicsManager::GetAnimation(wstring name) const
 	{
 		if (GetInstance()->LoadAnimationFromFile(name) == false)
 		{
-			return SpriteAnimation(nullptr);
+			return SpriteAnimation(nullptr, L"");
 		}
 	}
 
-	return SpriteAnimation(m_animationFrames.at(name));
+	return SpriteAnimation(m_animationFrames.at(name), name);
 }
 
 int GraphicsManager::GetNumLayers()
@@ -356,12 +356,16 @@ void GraphicsManager::Serialize(nlohmann::json& data)
 {
 	for (std::unordered_map<wstring, ID3D11ShaderResourceView*>::iterator it = m_textureSRVs.begin(); it != m_textureSRVs.end(); ++it)
 	{
-		data["GraphicsManager"]["Textures"].push_back(it->first);
+		std::string tempPath = std::string(it->first.begin(), it->first.end());
+
+		data["GraphicsManager"]["Textures"].push_back(tempPath);
 	}
 
 	for (std::unordered_map<wstring, std::vector<Frame>*>::iterator it = m_animationFrames.begin(); it != m_animationFrames.end(); ++it)
 	{
-		data["GraphicsManager"]["Animations"].push_back(it->first);
+		std::string tempPath = std::string(it->first.begin(), it->first.end());
+
+		data["GraphicsManager"]["Animations"].push_back(tempPath);
 	}
 }
 
@@ -369,12 +373,16 @@ void GraphicsManager::Deserialize(nlohmann::json& data)
 {
 	for (int i = 0; i < data["GraphicsManager"]["Textures"].size(); ++i)
 	{
-		LoadTextureFromFile(data["GraphicsManager"]["Textures"][i]);
+		std::string tempPath = data["GraphicsManager"]["Textures"][i];
+
+		LoadTextureFromFile(std::wstring(tempPath.begin(), tempPath.end()));
 	}
 
 	for (int i = 0; i < data["GraphicsManager"]["Animations"].size(); ++i)
 	{
-		LoadAnimationFromFile(data["GraphicsManager"]["Animations"][i]);
+		std::string tempPath = data["GraphicsManager"]["Animations"][i];
+
+		LoadAnimationFromFile(std::wstring(tempPath.begin(), tempPath.end()));
 	}
 }
 

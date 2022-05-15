@@ -30,18 +30,14 @@ public:
 	//Getters
 	const bool& GetIsPassable() const;
 
-#if TILE_MAP_TOOL
 	int GetSpriteIndex() const;
 	int GetAnimIndex() const;
-#endif
 
 	//Setters
 	void SetIsPassable(bool passable);
 
-#if TILE_MAP_TOOL
 	void SetSpriteIndex(int index);
 	void SetAnimIndex(int index);
-#endif
 
 #if EDITOR
 	void CreateEngineUI() override;
@@ -55,10 +51,8 @@ private:
 	// True = walkable, False = Blocked
 	bool m_isPassable = true; 
 
-#if TILE_MAP_TOOL
 	int m_spriteIndex = -1;
 	int m_animIndex = -1;
-#endif
 
 #if EDITOR
 	wstring m_animPath;
