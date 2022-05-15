@@ -310,11 +310,11 @@ SpriteAnimation GraphicsManager::GetAnimation(wstring name) const
 	{
 		if (GetInstance()->LoadAnimationFromFile(name) == false)
 		{
-			return SpriteAnimation(nullptr);
+			return SpriteAnimation(nullptr, L"");
 		}
 	}
 
-	return SpriteAnimation(m_animationFrames.at(name));
+	return SpriteAnimation(m_animationFrames.at(name), name);
 }
 
 int GraphicsManager::GetNumLayers()
