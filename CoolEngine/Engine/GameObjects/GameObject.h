@@ -5,8 +5,6 @@
 #define FILEPATH_BUFFER_SIZE 200
 #define ANIM_NAME_SIZE 50
 
-using namespace nlohmann;
-
 enum class GameObjectType
 {
 	BASE = 1,
@@ -71,12 +69,12 @@ protected:
 public:
 	GameObject();
 	GameObject(string identifier, CoolUUID uuid);
-	GameObject(const json& data, CoolUUID uuid);
+	GameObject(const nlohmann::json& data, CoolUUID uuid);
 	virtual ~GameObject();
 
 	virtual void Update();
 
-	virtual void Serialize(json& jsonData);
+	virtual void Serialize(nlohmann::json& jsonData);
 
 	void Init(const nlohmann::json& data, CoolUUID uuid);
 

@@ -14,7 +14,7 @@ private:
 
 public:
 	CameraGameObject(string identifier, CoolUUID uuid);
-	CameraGameObject(const json& data, CoolUUID index);
+	CameraGameObject(const nlohmann::json& data, CoolUUID index);
 	virtual ~CameraGameObject()override;
 
     virtual void Initialize(XMFLOAT3& position, XMFLOAT3& forwardVector, XMFLOAT3& upVector,
@@ -28,7 +28,7 @@ public:
 
     void Update();
 
-    virtual void Serialize(json& jsonData) override;
+    virtual void Serialize(nlohmann::json& jsonData) override;
 
 	//Getters
 	XMFLOAT4X4 GetView() const;

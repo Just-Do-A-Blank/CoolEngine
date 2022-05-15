@@ -29,7 +29,7 @@ GameObject::GameObject(string identifier, CoolUUID uuid)
 	m_gameObjectType = GameObjectType::BASE;
 }
 
-GameObject::GameObject(const json& data, CoolUUID uuid)
+GameObject::GameObject(const nlohmann::json& data, CoolUUID uuid)
 {
 	m_transform = new Transform();
 	m_transform->SetLocalPosition(XMFLOAT3(data["Position"][0], data["Position"][1], data["Position"][2]));
@@ -55,7 +55,7 @@ void GameObject::Update()
 	}
 }
 
-void GameObject::Serialize(json& jsonData)
+void GameObject::Serialize(nlohmann::json& jsonData)
 {
 	jsonData["Name"] = m_identifier;
 	float position[3] = { m_transform->GetLocalPosition().x ,m_transform->GetLocalPosition().y ,m_transform->GetLocalPosition().z };

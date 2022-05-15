@@ -14,7 +14,7 @@ class RenderableGameObject : virtual public GameObject
 public:
 	RenderableGameObject();
 	RenderableGameObject(string identifier, CoolUUID uuid);
-	RenderableGameObject(const json& data, CoolUUID uuid);
+	RenderableGameObject(const nlohmann::json& data, CoolUUID uuid);
 
 	virtual ~RenderableGameObject()override;
 
@@ -67,7 +67,7 @@ public:
 
 	bool PlayAnimation(std::string name);
 
-	virtual void Serialize(json& data) override;
+	virtual void Serialize(nlohmann::json& data) override;
 
 #if EDITOR
 	virtual void CreateEngineUI() override;

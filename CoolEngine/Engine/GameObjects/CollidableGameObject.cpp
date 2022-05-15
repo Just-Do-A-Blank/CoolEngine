@@ -15,7 +15,7 @@ CollidableGameObject::CollidableGameObject(string identifier, CoolUUID uuid) : G
 	m_gameObjectType |= GameObjectType::COLLIDABLE;
 }
 
-CollidableGameObject::CollidableGameObject(const json& data, CoolUUID uuid) : GameObject(data, uuid)
+CollidableGameObject::CollidableGameObject(const nlohmann::json& data, CoolUUID uuid) : GameObject(data, uuid)
 {
 	m_gameObjectType |= GameObjectType::COLLIDABLE;
 
@@ -92,7 +92,7 @@ void CollidableGameObject::CreateEngineUI()
 }
 
 //Due to diamond pattern code here needs to be updated in RenderableCollidable as well
-void CollidableGameObject::Serialize(json& jsonData)
+void CollidableGameObject::Serialize(nlohmann::json& jsonData)
 {
 	GameObject::Serialize(jsonData);
 

@@ -5,7 +5,7 @@ MeleeWeaponGameObject::MeleeWeaponGameObject(string identifier, CoolUUID uuid) :
 	m_gameObjectType |= GameObjectType::MELEE_WEAPON;
 }
 
-MeleeWeaponGameObject::MeleeWeaponGameObject(const json& data, CoolUUID uuid) : WeaponGameObject(data, uuid)
+MeleeWeaponGameObject::MeleeWeaponGameObject(const nlohmann::json& data, CoolUUID uuid) : WeaponGameObject(data, uuid)
 {
 	m_gameObjectType |= GameObjectType::MELEE_WEAPON;
 
@@ -59,7 +59,7 @@ bool MeleeWeaponGameObject::GetIsBlunt()
     return m_isBlunt;
 }
 
-void MeleeWeaponGameObject::Serialize(json& data)
+void MeleeWeaponGameObject::Serialize(nlohmann::json& data)
 {
 	WeaponGameObject::Serialize(data);
 

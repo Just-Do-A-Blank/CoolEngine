@@ -17,7 +17,7 @@ RenderableGameObject::RenderableGameObject(string identifier, CoolUUID uuid) : G
 	m_gameObjectType |= GameObjectType::RENDERABLE;
 }
 
-RenderableGameObject::RenderableGameObject(const json& data, CoolUUID uuid) : GameObject(data, uuid)
+RenderableGameObject::RenderableGameObject(const nlohmann::json& data, CoolUUID uuid) : GameObject(data, uuid)
 {
 	GameObject::Init(data, uuid);
 
@@ -181,7 +181,7 @@ bool RenderableGameObject::PlayAnimation(std::string name)
 	return true;
 }
 
-void RenderableGameObject::Serialize(json& data)
+void RenderableGameObject::Serialize(nlohmann::json& data)
 {
 	GameObject::Serialize(data);
 

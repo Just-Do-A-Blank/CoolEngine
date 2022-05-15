@@ -7,7 +7,7 @@ EditorCameraGameObject::EditorCameraGameObject(string identifier, CoolUUID uuid)
 
 }
 
-EditorCameraGameObject::EditorCameraGameObject(const json& data, CoolUUID uuid) : CameraGameObject(data, uuid)
+EditorCameraGameObject::EditorCameraGameObject(const nlohmann::json& data, CoolUUID uuid) : CameraGameObject(data, uuid)
 {
 	m_speedBoost = data["Speed Boost"];
 	m_moveSpeed = data["Movement Speed"];
@@ -81,7 +81,7 @@ void EditorCameraGameObject::KeyReleased(KeyReleasedEvent* e)
 	}
 }
 
-void EditorCameraGameObject::Serialize(json& jsonData)
+void EditorCameraGameObject::Serialize(nlohmann::json& jsonData)
 {
 	CameraGameObject::Serialize(jsonData);
 

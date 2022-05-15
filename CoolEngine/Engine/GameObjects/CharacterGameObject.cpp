@@ -11,7 +11,7 @@ CharacterGameObject::CharacterGameObject(string identifier, CoolUUID uuid) : Tri
 	m_gameObjectType |= GameObjectType::CHARACTER;
 }
 
-CharacterGameObject::CharacterGameObject(const json& data, CoolUUID uuid) : TriggerableGameObject(data, uuid)
+CharacterGameObject::CharacterGameObject(const nlohmann::json& data, CoolUUID uuid) : TriggerableGameObject(data, uuid)
 {
 	m_gameObjectType |= GameObjectType::CHARACTER;
 
@@ -29,7 +29,7 @@ void CharacterGameObject::Update()
 
 }
 
-void CharacterGameObject::Serialize(json& jsonData)
+void CharacterGameObject::Serialize(nlohmann::json& jsonData)
 {
 	TriggerableGameObject::Serialize(jsonData);
 

@@ -25,7 +25,7 @@ class MeleeWeaponGameObject : public WeaponGameObject
 {
 public:
 	MeleeWeaponGameObject(string identifier, CoolUUID uuid);
-	MeleeWeaponGameObject(const json& data, CoolUUID uuid);
+	MeleeWeaponGameObject(const nlohmann::json& data, CoolUUID uuid);
 
 	virtual ~MeleeWeaponGameObject()override;
 
@@ -39,7 +39,7 @@ public:
 	float GetRadius();
 	bool GetIsBlunt();
 
-	virtual void Serialize(json& data) override;
+	virtual void Serialize(nlohmann::json& data) override;
 
 private:
 	float m_swingAngle = 0.0f;

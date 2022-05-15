@@ -53,7 +53,7 @@ PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : Character
     EventManager::Instance()->AddClient(EventType::MouseMoved, this);
 }
 
-PlayerGameObject::PlayerGameObject(const json& data, CoolUUID uuid) : CharacterGameObject(data, uuid)
+PlayerGameObject::PlayerGameObject(const nlohmann::json& data, CoolUUID uuid) : CharacterGameObject(data, uuid)
 {
 	m_gameObjectType |= GameObjectType::PLAYER;
 
@@ -117,7 +117,7 @@ PlayerGameObject::~PlayerGameObject()
 
 
 
-void PlayerGameObject::Serialize(json& jsonData)
+void PlayerGameObject::Serialize(nlohmann::json& jsonData)
 {
 	CharacterGameObject::Serialize(jsonData);
 }

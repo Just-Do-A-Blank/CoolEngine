@@ -25,7 +25,7 @@ TriggerableGameObject::TriggerableGameObject(string identifier, CoolUUID uuid) :
 	m_gameObjectType |= GameObjectType::TRIGGERABLE;
 }
 
-TriggerableGameObject::TriggerableGameObject(const json& data, CoolUUID uuid) : RenderableCollidableGameObject(data, uuid)
+TriggerableGameObject::TriggerableGameObject(const nlohmann::json& data, CoolUUID uuid) : RenderableCollidableGameObject(data, uuid)
 {
     EventManager::Instance()->AddClient(EventType::CollisionEnter, this);
     EventManager::Instance()->AddClient(EventType::CollisionExit, this);

@@ -8,7 +8,7 @@ CameraGameObject::CameraGameObject(string identifier, CoolUUID uuid) : GameObjec
 
 }
 
-CameraGameObject::CameraGameObject(const json& data, CoolUUID index) : GameObject(data, index)
+CameraGameObject::CameraGameObject(const nlohmann::json& data, CoolUUID index) : GameObject(data, index)
 {
 
 	m_windowHeight = data["Window Height"];
@@ -70,7 +70,7 @@ void CameraGameObject::Update()
 	CreateViewMatrix();
 }
 
-void CameraGameObject::Serialize(json& jsonData)
+void CameraGameObject::Serialize(nlohmann::json& jsonData)
 {
 	GameObject::Serialize(jsonData);
 

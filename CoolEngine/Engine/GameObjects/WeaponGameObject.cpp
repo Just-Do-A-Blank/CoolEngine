@@ -5,7 +5,7 @@ WeaponGameObject::WeaponGameObject(string identifier, CoolUUID uuid) : Triggerab
     m_gameObjectType |= GameObjectType::WEAPON;
 }
 
-WeaponGameObject::WeaponGameObject(const json& data, CoolUUID uuid) : TriggerableGameObject(data, uuid)
+WeaponGameObject::WeaponGameObject(const nlohmann::json& data, CoolUUID uuid) : TriggerableGameObject(data, uuid)
 {
     m_gameObjectType |= GameObjectType::WEAPON;
 

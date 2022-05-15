@@ -7,7 +7,7 @@ EnemyGameObject::EnemyGameObject(string identifier, CoolUUID uuid) : CharacterGa
     m_gameObjectType |= GameObjectType::ENEMY;
 }
 
-EnemyGameObject::EnemyGameObject(const json& data, CoolUUID uuid) : CharacterGameObject(data, uuid)
+EnemyGameObject::EnemyGameObject(const nlohmann::json& data, CoolUUID uuid) : CharacterGameObject(data, uuid)
 {
 	m_gameObjectType |= GameObjectType::ENEMY;
 }
@@ -62,7 +62,7 @@ const vector<node*> EnemyGameObject::GetPath() const
 	return m_curPath;
 }
 
-void EnemyGameObject::Serialize(json& jsonData)
+void EnemyGameObject::Serialize(nlohmann::json& jsonData)
 {
 	CharacterGameObject::Serialize(jsonData);
 }

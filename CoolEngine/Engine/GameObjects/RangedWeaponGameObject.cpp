@@ -5,7 +5,7 @@ RangedWeaponGameObject::RangedWeaponGameObject(string identifier, CoolUUID uuid)
 	m_gameObjectType |= GameObjectType::RANGE_WEAPON;
 }
 
-RangedWeaponGameObject::RangedWeaponGameObject(const json& data, CoolUUID uuid) : WeaponGameObject(data, uuid)
+RangedWeaponGameObject::RangedWeaponGameObject(const nlohmann::json& data, CoolUUID uuid) : WeaponGameObject(data, uuid)
 {
 	m_gameObjectType |= GameObjectType::RANGE_WEAPON;
 

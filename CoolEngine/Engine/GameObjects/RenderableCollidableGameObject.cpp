@@ -16,7 +16,7 @@ RenderableCollidableGameObject::RenderableCollidableGameObject(string identifier
 
 }
 
-RenderableCollidableGameObject::RenderableCollidableGameObject(const json& data, CoolUUID uuid) : CollidableGameObject(data, uuid), RenderableGameObject(data, uuid)
+RenderableCollidableGameObject::RenderableCollidableGameObject(const nlohmann::json& data, CoolUUID uuid) : CollidableGameObject(data, uuid), RenderableGameObject(data, uuid)
 {
 }
 
@@ -78,7 +78,7 @@ void RenderableCollidableGameObject::CreateEngineUI()
 	}
 }
 
-void RenderableCollidableGameObject::Serialize(json& jsonData)
+void RenderableCollidableGameObject::Serialize(nlohmann::json& jsonData)
 {
 	RenderableGameObject::Serialize(jsonData);
 	

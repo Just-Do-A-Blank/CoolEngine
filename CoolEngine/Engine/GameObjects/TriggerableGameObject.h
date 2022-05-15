@@ -9,7 +9,7 @@ class TriggerableGameObject : public RenderableCollidableGameObject, public Obse
 public:
 	TriggerableGameObject();
 	TriggerableGameObject(string identifier, CoolUUID uuid);
-	TriggerableGameObject(const json& data, CoolUUID uuid);
+	TriggerableGameObject(const nlohmann::json& data, CoolUUID uuid);
     virtual ~TriggerableGameObject()override;
 
 	virtual void Serialize(nlohmann::json& data) override;

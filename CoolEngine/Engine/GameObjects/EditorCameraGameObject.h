@@ -16,7 +16,7 @@ public:
 
 	void Handle(Event* e) override;
 
-	virtual void Serialize(json& jsonData) override;
+	virtual void Serialize(nlohmann::json& jsonData) override;
 
 protected:
 
