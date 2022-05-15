@@ -92,21 +92,30 @@ void ParticleSystem::Serialize(nlohmann::json& data)
 	data["ParticleLayer"] = m_layer;
 }
 
-void ParticleSystem::Initialise(Transform trans, float life, ID3D11ShaderResourceView* tex, int layer)
+void ParticleSystem::Initialise(Transform trans, float life, std::wstring texPath, int layer)
 {
 	*m_transform = trans;
 	m_transform->UpdateMatrix();
 
+	ID3D11ShaderResourceView* psRV = GraphicsManager::GetInstance()->GetShaderResourceView(texPath);
+
+	if (psRV == nullptr)
+	{
+		LOG("Failed to set the albedo SRV as one with that name doesn't exist!");
+		return;
+	}
+
+	m_texFilepath = texPath;
+	m_pTexture = psRV;
 	m_systemLife = life;
 	m_timer = 0.0f;
 	m_isActive = true;
-	m_pTexture = tex;
 	m_layer = layer;
 }
 
-void ParticleSystem::Initialise(Transform trans, float life, ID3D11ShaderResourceView* tex, XMFLOAT2 vel, XMFLOAT2 accel, float partLife, float interval, int number, float randPos, float randVel, float randAccel, float randLife, int layer)
+void ParticleSystem::Initialise(Transform trans, float life, std::wstring texPath, XMFLOAT2 vel, XMFLOAT2 accel, float partLife, float interval, int number, float randPos, float randVel, float randAccel, float randLife, int layer)
 {
-	Initialise(trans, life, tex, layer);
+	Initialise(trans, life, texPath, layer);
 	SetProperties(vel, accel, partLife, interval, number);
 	SetRandomness(randPos, randVel, randAccel, randLife);
 }
@@ -203,5 +212,9 @@ void ParticleSystem::CreateEngineUI()
 	EditorUI::Checkbox("System Active?", m_isActive, 150.0f);
 
 	ImGui::Spacing();
+}
+const std::wstring& ParticleSystem::GetTexturePath() const
+{
+	return m_texFilepath;
 }
 #endif
