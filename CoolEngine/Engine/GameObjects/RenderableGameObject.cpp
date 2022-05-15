@@ -25,7 +25,10 @@ RenderableGameObject::RenderableGameObject(const json& data, CoolUUID uuid) : Ga
 	m_gameObjectType |= GameObjectType::RENDERABLE;
 
 	InitGraphics();
+
+	GameObject::Init(data, uuid);
 }
+
 RenderableGameObject::~RenderableGameObject()
 {
 }
@@ -45,6 +48,11 @@ const bool& RenderableGameObject::IsRenderable()
 
 void RenderableGameObject::Render(RenderStruct& renderStruct)
 {
+	if (m_isRenderable == false)
+	{
+		return;
+	}
+
 	if (m_pcurrentAnimation != nullptr)
 	{
 		GraphicsManager::GetInstance()->RenderQuad(m_pcurrentAnimation->GetCurrentFrame(), m_transform->GetWorldPosition(), m_transform->GetWorldScale(), m_transform->GetWorldRotation().z, m_layer);
