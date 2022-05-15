@@ -6,7 +6,10 @@ class WeaponGameObject : public TriggerableGameObject
 {
 public:
 	WeaponGameObject(string identifier, CoolUUID uuid);
+	WeaponGameObject(const nlohmann::json& data, CoolUUID uuid);
 	virtual ~WeaponGameObject()override;
+
+	virtual void Serialize(nlohmann::json& data) override;
 
 	// Calculates the overall strength stat from the other stats
 	void CalculateWeaponStrength();

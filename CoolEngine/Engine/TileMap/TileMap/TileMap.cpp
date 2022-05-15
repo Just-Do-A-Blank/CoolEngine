@@ -107,7 +107,7 @@ void TileMap::InitTilePosition(Tile* tile, int row, int column) // Give tiles po
 	pos = MathHelper::Plus(pos, XMFLOAT2(tileScale.x * 0.5f, tileScale.y * 0.5f));
 	pos = MathHelper::Plus(pos, XMFLOAT2(row * tileScale.x, column * tileScale.y));
 
-	tile->GetTransform()->SetPosition(XMFLOAT3(pos.x, pos.y, 0));
+	tile->GetTransform()->SetWorldPosition(XMFLOAT3(pos.x, pos.y, 0));
 }
 
 bool TileMap::Load(wstring path) // Load data for the map from a given path
@@ -128,7 +128,7 @@ bool TileMap::Load(wstring path) // Load data for the map from a given path
 	inFile.close();
 
 	XMFLOAT3 scale = XMFLOAT3(jsonData["TileMapScale"][0][0], jsonData["TileMapScale"][0][1], jsonData["TileMapScale"][0][2]);
-	m_transform->SetScale(scale);
+	m_transform->SetWorldScale(scale);
 
 	m_width = jsonData["Dimensions"][0];
 	m_height = jsonData["Dimensions"][1];
@@ -171,10 +171,8 @@ bool TileMap::Load(wstring path) // Load data for the map from a given path
 			{
 				CreateTile(i, j, ptile);
 
-#if TILE_MAP_TOOL
 				m_tiles[i][j]->SetSpriteIndex(spriteIndex);
 				m_tiles[i][j]->SetAnimIndex(animIndex);
-#endif
 
 				m_tiles[i][j]->SetLayer(tileLayer);
 				m_tiles[i][j]->SetIsPassable(tilePassable);
@@ -234,10 +232,8 @@ bool TileMap::Save(wstring path)
 			}
 			else
 			{
-#if TILE_MAP_TOOL
 				jsonOutput["TileSpriteIndexes"].push_back({ m_tiles[i][j]->GetSpriteIndex() });
 				jsonOutput["TileAnimIndexes"].push_back({ m_tiles[i][j]->GetAnimIndex() });
-#endif
 
 				jsonOutput["TileLayer"].push_back({ m_tiles[i][j]->GetLayer() });
 				jsonOutput["TilePassable"].push_back({ m_tiles[i][j]->GetIsPassable() });
@@ -299,7 +295,7 @@ bool TileMap::CreateTile(int row, int column, Tile*& ptile)
 
 	XMFLOAT3 scale = GetTransform()->GetWorldScale();
 
-	m_tiles[row][column]->GetTransform()->SetScale(scale);
+	m_tiles[row][column]->GetTransform()->SetWorldScale(scale);
 
 	InitTilePosition(m_tiles[row][column], row, column);
 
@@ -314,9 +310,7 @@ void TileMap::AddSpritePath(Tile* ptile, wstring& path)
 	{
 		if (m_spritePaths[i] == path)
 		{
-#if TILE_MAP_TOOL
 			ptile->SetSpriteIndex(i);
-#endif
 
 			return;
 		}
@@ -324,9 +318,7 @@ void TileMap::AddSpritePath(Tile* ptile, wstring& path)
 
 	m_spritePaths.push_back(path);
 
-#if TILE_MAP_TOOL
 	ptile->SetSpriteIndex(m_spritePaths.size() - 1);
-#endif
 }
 
 void TileMap::AddAnimPath(Tile* ptile, wstring& path)
@@ -335,9 +327,7 @@ void TileMap::AddAnimPath(Tile* ptile, wstring& path)
 	{
 		if (m_animPaths[i] == path)
 		{
-#if TILE_MAP_TOOL
 			ptile->SetAnimIndex(i);
-#endif
 
 			return;
 		}
@@ -345,9 +335,7 @@ void TileMap::AddAnimPath(Tile* ptile, wstring& path)
 
 	m_animPaths.push_back(path);
 
-#if TILE_MAP_TOOL
 	ptile->SetAnimIndex(m_animPaths.size() - 1);
-#endif
 }
 
 void TileMap::DeleteTile(int row, int column)
@@ -444,16 +432,16 @@ void TileMap::Init(int width, int height, XMFLOAT3 position, float tileDimension
 
 	XMFLOAT3 scale = XMFLOAT3(tileDimensions, tileDimensions, tileDimensions);
 
-	m_transform->SetScale(scale);
+	m_transform->SetWorldScale(scale);
 
-	m_transform->SetPosition(position);
+	m_transform->SetWorldPosition(position);
 
 	InitMap();
 }
 
 void TileMap::Init(wstring mapPath, XMFLOAT3 position)
 {
-	m_transform->SetPosition(position);
+	m_transform->SetWorldPosition(position);
 
 	Load(mapPath);
 }
@@ -537,7 +525,7 @@ XMFLOAT3 TileMap::GetTileScale()
 
 void TileMap::SetTileScale(XMFLOAT3 newScale)
 {
-	m_transform->SetScale(newScale);
+	m_transform->SetWorldScale(newScale);
 }
 
 void TileMap::SetPassable(int x, int y, bool passable)

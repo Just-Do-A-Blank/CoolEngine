@@ -2,7 +2,15 @@
 
 RangedWeaponGameObject::RangedWeaponGameObject(string identifier, CoolUUID uuid) : WeaponGameObject(identifier, uuid)
 {
+	m_gameObjectType |= GameObjectType::RANGE_WEAPON;
+}
 
+RangedWeaponGameObject::RangedWeaponGameObject(const nlohmann::json& data, CoolUUID uuid) : WeaponGameObject(data, uuid)
+{
+	m_gameObjectType |= GameObjectType::RANGE_WEAPON;
+
+	m_angleInterval = data["AngleInterval"];
+	m_shotSpeed = data["ShotSpeed"];
 }
 
 RangedWeaponGameObject::~RangedWeaponGameObject()
@@ -27,4 +35,12 @@ float RangedWeaponGameObject::GetAngleInterval()
 bool RangedWeaponGameObject::GetIsShot()
 {
 	return m_isShot;
+}
+
+void RangedWeaponGameObject::Serialize(nlohmann::json& data)
+{
+	WeaponGameObject::Serialize(data);
+
+	data["AngleInterval"] = m_angleInterval;
+	data["ShotSpeed"] = m_shotSpeed;
 }

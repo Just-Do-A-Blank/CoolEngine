@@ -38,7 +38,6 @@ const bool& Tile::GetIsPassable() const
 	return m_isPassable;
 }
 
-#if TILE_MAP_TOOL
 int Tile::GetSpriteIndex() const
 {
 	return m_spriteIndex;
@@ -48,14 +47,12 @@ int Tile::GetAnimIndex() const
 {
 	return m_animIndex;
 }
-#endif
 
 void Tile::SetIsPassable(bool passable)
 {
 	m_isPassable = passable;
 }
 
-#if TILE_MAP_TOOL
 void Tile::SetSpriteIndex(int index)
 {
 	m_spriteIndex = index;
@@ -65,7 +62,6 @@ void Tile::SetAnimIndex(int index)
 {
 	m_animIndex = index;
 }
-#endif
 
 #if EDITOR
 void Tile::CreateEngineUI()
@@ -116,10 +112,8 @@ void Tile::CreateEngineUI()
 }
 void Tile::CopyTile(Tile* ptile)
 {
-#if TILE_MAP_TOOL
 	SetSpriteIndex(ptile->m_spriteIndex);
 	SetAnimIndex(ptile->m_animIndex);
-#endif
 
 	SetLayer(ptile->m_layer);
 	SetIsPassable(ptile->m_isPassable);

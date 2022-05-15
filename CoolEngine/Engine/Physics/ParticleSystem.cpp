@@ -6,6 +6,8 @@
 
 ParticleSystem::ParticleSystem(string identifier, CoolUUID uuid) : GameObject(identifier, uuid)
 {
+	m_gameObjectType |= GameObjectType::PARTICLE_SYSTEM;
+
 	m_systemLife = 0.0f;
 	m_timer = 0.0f;
 	m_isActive = false;
@@ -32,26 +34,88 @@ ParticleSystem::ParticleSystem(string identifier, CoolUUID uuid) : GameObject(id
 	m_pTexture = psRV;
 }
 
+ParticleSystem::ParticleSystem(const nlohmann::json& data, CoolUUID uuid) : GameObject(data, uuid)
+{
+	m_gameObjectType |= GameObjectType::PARTICLE_SYSTEM;
+
+	m_systemLife = data["SystemLife"];
+	m_timer = data["Timer"];
+	m_isActive = data["IsActive"];
+	m_velocity = XMFLOAT2(data["ParticleVelocity"][0], data["ParticleVelocity"][1]);
+	m_accel = XMFLOAT2(data["ParticleAcceleration"][0], data["ParticleAcceleration"][1]);
+	m_particleLife = data["ParticleLife"];
+	m_spawnInterval = data["SpawnInterval"];
+	m_spawnNumber = data["SpawnNumber"];
+
+	std::string tempPath = data["TexturePath"];
+
+	m_texFilepath = std::wstring(tempPath.begin(), tempPath.end());
+	m_positionRand = data["PositionRandom"];
+	m_velocityRand = data["VelocityRandom"];
+	m_accelRand = data["AccelerationRandom"];
+	m_lifeRand = data["LifeRandom"];
+	m_layer = data["ParticleLayer"];
+
+	ID3D11ShaderResourceView* psRV = GraphicsManager::GetInstance()->GetShaderResourceView(m_texFilepath);
+
+	if (psRV == nullptr)
+	{
+		LOG("Failed to set the albedo SRV as one with that name doesn't exist!");
+		return;
+	}
+
+	m_pTexture = psRV;
+}
+
 ParticleSystem::~ParticleSystem()
 {
 
 }
 
-void ParticleSystem::Initialise(Transform trans, float life, ID3D11ShaderResourceView* tex, int layer)
+void ParticleSystem::Serialize(nlohmann::json& data)
+{
+	GameObject::Serialize(data);
+
+	data["SystemLife"] = m_systemLife;
+	data["Timer"] = m_timer;
+	data["IsActive"] = m_isActive;
+	data["ParticleVelocity"] = { m_velocity.x, m_velocity.y };
+	data["ParticleAcceleration"] = { m_accel.x, m_accel.y };
+	data["ParticleLife"] = m_particleLife;
+	data["SpawnInterval"] = m_spawnInterval;
+	data["SpawnNumber"] = m_spawnNumber;
+	data["TexturePath"] = std::string(m_texFilepath.begin(), m_texFilepath.end());
+	data["PositionRandom"] = m_positionRand;
+	data["VelocityRandom"] = m_velocityRand;
+	data["AccelerationRandom"] = m_accelRand;
+	data["LifeRandom"] = m_lifeRand;
+	data["ParticleLayer"] = m_layer;
+}
+
+void ParticleSystem::Initialise(Transform trans, float life, std::wstring texPath, int layer)
 {
 	*m_transform = trans;
 	m_transform->UpdateMatrix();
 
+	ID3D11ShaderResourceView* psRV = GraphicsManager::GetInstance()->GetShaderResourceView(texPath);
+
+	if (psRV == nullptr)
+	{
+		LOG("Failed to set the albedo SRV as one with that name doesn't exist!");
+		return;
+	}
+
+	m_texFilepath = texPath;
+	m_pTexture = psRV;
 	m_systemLife = life;
 	m_timer = 0.0f;
 	m_isActive = true;
-	m_pTexture = tex;
 	m_layer = layer;
 }
 
-void ParticleSystem::Initialise(Transform trans, float life, ID3D11ShaderResourceView* tex, XMFLOAT2 vel, XMFLOAT2 accel, float partLife, float interval, int number, float randPos, float randVel, float randAccel, float randLife, int layer)
+void ParticleSystem::Initialise(Transform trans, float life, std::wstring texPath, XMFLOAT2 vel, XMFLOAT2 accel, float partLife, float interval, int number, float randPos, float randVel, float randAccel, float randLife, int layer)
 {
-	Initialise(trans, life, tex, layer);
+	Initialise(trans, life, texPath, layer);
 	SetProperties(vel, accel, partLife, interval, number);
 	SetRandomness(randPos, randVel, randAccel, randLife);
 }
@@ -148,5 +212,9 @@ void ParticleSystem::CreateEngineUI()
 	EditorUI::Checkbox("System Active?", m_isActive, 150.0f);
 
 	ImGui::Spacing();
+}
+const std::wstring& ParticleSystem::GetTexturePath() const
+{
+	return m_texFilepath;
 }
 #endif

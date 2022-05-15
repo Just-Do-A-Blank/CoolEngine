@@ -15,9 +15,9 @@ GameUIComponent::GameUIComponent(string identifier, CoolUUID uuid, XMFLOAT3& pos
 	m_transform = new Transform();
 	InitGraphics();
 
-	m_transform->SetScale(scale);
-	m_transform->SetPosition(position);
-	m_transform->SetRotation(rotation);
+	m_transform->SetLocalScale(scale);
+	m_transform->SetLocalPosition(position);
+	m_transform->SetLocalRotation(rotation);
 
 }
 
@@ -32,9 +32,9 @@ GameUIComponent::GameUIComponent(nlohmann::json& data, CoolUUID uuid)
 	m_transform = new Transform();
 	InitGraphics();
 
-	m_transform->SetPosition(XMFLOAT3(data["GameUI"][(int)m_componentType][uuidString]["Position"][0], data["GameUI"][(int)m_componentType][uuidString]["Position"][1], data["GameUI"][(int)m_componentType][uuidString]["Position"][2]));
-	m_transform->SetRotation(XMFLOAT3(data["GameUI"][(int)m_componentType][uuidString]["rotation"][0], data["GameUI"][(int)m_componentType][uuidString]["rotation"][1], data["GameUI"][(int)m_componentType][uuidString]["rotation"][2]));
-	m_transform->SetScale(XMFLOAT3(data["GameUI"][(int)m_componentType][uuidString]["scale"][0], data["GameUI"][(int)m_componentType][uuidString]["scale"][1], data["GameUI"][(int)m_componentType][uuidString]["scale"][2]));
+	m_transform->SetLocalPosition(XMFLOAT3(data["GameUI"][(int)m_componentType][uuidString]["Position"][0], data["GameUI"][(int)m_componentType][uuidString]["Position"][1], data["GameUI"][(int)m_componentType][uuidString]["Position"][2]));
+	m_transform->SetLocalRotation(XMFLOAT3(data["GameUI"][(int)m_componentType][uuidString]["rotation"][0], data["GameUI"][(int)m_componentType][uuidString]["rotation"][1], data["GameUI"][(int)m_componentType][uuidString]["rotation"][2]));
+	m_transform->SetLocalScale(XMFLOAT3(data["GameUI"][(int)m_componentType][uuidString]["scale"][0], data["GameUI"][(int)m_componentType][uuidString]["scale"][1], data["GameUI"][(int)m_componentType][uuidString]["scale"][2]));
 
 	m_isRenderable = data["GameUI"][(int)m_componentType][uuidString]["IsRendering"];
 	m_layer = data["GameUI"][(int)m_componentType][uuidString]["Layer"];
