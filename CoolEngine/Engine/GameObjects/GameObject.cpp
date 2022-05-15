@@ -38,7 +38,8 @@ GameObject::GameObject(const json& data, CoolUUID uuid)
 
 	m_UUID = CoolUUID(*uuid);
 	m_identifier = data["Name"];
-	m_gameObjectType |= GameObjectType::BASE;
+
+	m_gameObjectType = GameObjectType::BASE;
 }
 
 GameObject::~GameObject()
@@ -63,6 +64,16 @@ void GameObject::Serialize(json& jsonData)
 	jsonData["Position"] = position;
 	jsonData["Rotation"] = rotation;
 	jsonData["Scale"] = scale;
+}
+
+void GameObject::Init(const nlohmann::json& data, CoolUUID uuid)
+{
+	m_transform->SetLocalPosition(XMFLOAT3(data["Position"][0], data["Position"][1], data["Position"][2]));
+	m_transform->SetLocalRotation(XMFLOAT3(data["Rotation"][0], data["Rotation"][1], data["Rotation"][2]));
+	m_transform->SetLocalScale(XMFLOAT3(data["Scale"][0], data["Scale"][1], data["Scale"][2]));
+
+	m_UUID = CoolUUID(*uuid);
+	m_identifier = data["Name"];
 }
 
 #if EDITOR

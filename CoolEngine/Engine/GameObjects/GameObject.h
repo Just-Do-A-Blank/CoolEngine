@@ -78,6 +78,8 @@ public:
 
 	virtual void Serialize(json& jsonData);
 
+	void Init(const nlohmann::json& data, CoolUUID uuid);
+
 #if EDITOR
 	virtual void ShowEngineUI();
 #endif
