@@ -101,5 +101,11 @@ protected:
 
 private:
 
+#if EDITOR
+	/// <summary>
+	/// Creates the animation editor section of the renderable UI
+	/// </summary>
+	void CreateAnimationEditorUI();
+#endif
 };
 
