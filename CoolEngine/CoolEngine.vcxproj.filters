@@ -225,6 +225,9 @@
     <ClCompile Include="Engine\Managers\Events\BulletCreator.cpp">
       <Filter>Engine\Managers\Events</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerDodgingState.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -604,6 +607,12 @@
     </ClInclude>
     <ClInclude Include="Engine\Managers\Events\AttackEvents.h">
       <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerDodgingState.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\EVirtualKeyCode.h">
+      <Filter>Engine\GameObjects\Gameplay\GameplayButtons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -9,8 +9,12 @@ PlayerController::PlayerController(InputsAsGameplayButtons* gameplayButtons, Tra
 {
     m_moveSpeedMax = 250;
     m_speedMultiplierWalking = 0.8f;
+    m_dodgeSpeed = 1.6f;
     m_moveSpeedPerFrame = 500;
     m_dragSpeedPerFrame = 250;
+    m_timeInSecondsToDodgeFor = 0.4f;
+    m_forceApplied = new XMFLOAT3(0, 0, 0);
+    m_moveSpeed = 0;
 
     m_movementParameters.m_transform = transformOfTheGameObject;
     m_movementParameters.m_gameplayButtons = gameplayButtons;
@@ -18,6 +22,12 @@ PlayerController::PlayerController(InputsAsGameplayButtons* gameplayButtons, Tra
     m_movementParameters.m_walkingSpeed = &m_speedMultiplierWalking;
     m_movementParameters.m_moveSpeedPerFrame = &m_moveSpeedPerFrame;
     m_movementParameters.m_dragSpeedPerFrame = &m_dragSpeedPerFrame;
+    m_movementParameters.m_dodgeSpeed = &m_dodgeSpeed;
+    m_movementParameters.m_timeInSecondsToDodgeFor = &m_timeInSecondsToDodgeFor;
+    m_movementParameters.m_lastFirstPressedInputButton = EGAMEPLAYBUTTONCLASS::Nothing;
+    m_movementParameters.m_lastSecondPressedInputButton = EGAMEPLAYBUTTONCLASS::Nothing;
+    m_movementParameters.m_forceApplied = m_forceApplied;
+    m_movementParameters.m_moveSpeed = &m_moveSpeed;
 
     EventManager::Instance()->AddClient(EventType::KeyPressed, this);
     EventManager::Instance()->AddClient(EventType::KeyReleased, this);
@@ -28,6 +38,12 @@ PlayerController::PlayerController(InputsAsGameplayButtons* gameplayButtons, Tra
 
 PlayerController::~PlayerController()
 {
+    delete m_forceApplied;
+    if (m_currentState == nullptr)
+    {
+        delete m_currentState;
+    }
+
     EventManager::Instance()->RemoveClientEvent(EventType::KeyPressed, this);
     EventManager::Instance()->RemoveClientEvent(EventType::KeyReleased, this);
     EventManager::Instance()->RemoveClientEvent(EventType::MouseButtonPressed, this);
@@ -89,6 +105,14 @@ void PlayerController::CreateEngineUI()
         speedParameters.m_speed = 0.01f;
 
         EditorUI::DragFloat("Walking Speed", m_speedMultiplierWalking, speedParameters);
+
+        speedParameters.m_tooltipText = "When dodging this is the main multiplier - sensitive to big changes!";
+
+        EditorUI::DragFloat("Dodge Speed", m_dodgeSpeed, speedParameters);
+
+        speedParameters.m_tooltipText = "The time in seconds to dodge for before returning to walking!";
+
+        EditorUI::DragFloat("Dodge Time in Seconds ", m_timeInSecondsToDodgeFor, speedParameters);
 
 
         auto numberParameters = EditorUIIntParameters();
