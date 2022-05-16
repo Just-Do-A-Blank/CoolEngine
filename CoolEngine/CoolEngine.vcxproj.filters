@@ -222,6 +222,9 @@
     <ClCompile Include="Engine\Managers\Events\DamageCalculation.cpp">
       <Filter>Engine\Managers\Events</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Managers\Events\BulletCreator.cpp">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -595,6 +598,12 @@
     </ClInclude>
     <ClInclude Include="Engine\EditorUI\EditorUINonSpecificParameters.h">
       <Filter>Engine\EditorUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\BulletCreator.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\AttackEvents.h">
+      <Filter>Engine\Managers\Events</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

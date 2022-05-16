@@ -144,6 +144,8 @@
     <ClInclude Include="Engine\Includes\RapidXML\rapidxml_utils.hpp" />
     <ClInclude Include="Engine\Managers\AudioManager.h" />
     <ClInclude Include="Engine\Managers\DebugDrawManager.h" />
+    <ClInclude Include="Engine\Managers\Events\AttackEvents.h" />
+    <ClInclude Include="Engine\Managers\Events\BulletCreator.h" />
     <ClInclude Include="Engine\Managers\Events\CollisionEvents.h" />
     <ClInclude Include="Engine\Managers\Events\DamageCalculation.h" />
     <ClInclude Include="Engine\Managers\Events\EventManager.h" />
@@ -242,6 +244,7 @@
     </ClCompile>
     <ClCompile Include="Engine\Main.cpp" />
     <ClCompile Include="Engine\Managers\DebugDrawManager.cpp" />
+    <ClCompile Include="Engine\Managers\Events\BulletCreator.cpp" />
     <ClCompile Include="Engine\Managers\Events\DamageCalculation.cpp" />
     <ClCompile Include="Engine\Managers\Events\EventManager.cpp" />
     <ClCompile Include="Engine\Managers\Events\EventObserver.cpp" />
