@@ -50,11 +50,14 @@ void InGameUITool::DrawUIWindow()
 
 	m_base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
 
+    auto textInputParameters = EditorUINonSpecificParameters();
+    textInputParameters.m_columnWidth = 120;
+
 	if (m_showUICreation == true)
 	{
 		ImGui::Begin("Game UI", nullptr, ImGuiWindowFlags_MenuBar);
 
-		EditorUI::InputText("Canvas Name", m_canvasName, 120);
+		EditorUI::InputText("Canvas Name", m_canvasName, textInputParameters);
 
 		ImGui::SameLine();
 
@@ -64,7 +67,7 @@ void InGameUITool::DrawUIWindow()
 			m_canvasName = "";
 		}
 
-		EditorUI::InputText("Image UI Name", m_imageName, 120);
+		EditorUI::InputText("Image UI Name", m_imageName, textInputParameters);
 
 		ImGui::SameLine();
 
@@ -80,7 +83,7 @@ void InGameUITool::DrawUIWindow()
 			}
 		}
 
-		EditorUI::InputText("Text UI Name", m_textName, 120);
+		EditorUI::InputText("Text UI Name", m_textName, textInputParameters);
 
 		ImGui::SameLine();
 
@@ -96,7 +99,7 @@ void InGameUITool::DrawUIWindow()
 			}
 		}
 
-		EditorUI::InputText("Button UI Name", m_buttonName, 120);
+		EditorUI::InputText("Button UI Name", m_buttonName, textInputParameters);
 
 		ImGui::SameLine();
 
@@ -247,13 +250,11 @@ void InGameUITool::TraverseTree(TreeNode<GameUIComponent>* pcurrentNode, int& no
 
 bool InGameUITool::SaveUI()
 {
-	FileIO::SaveUI(GAME_UI_PATH, UIManager::GetInstance());
 	return true;
 }
 
 bool InGameUITool::LoadUI()
 {
-	FileIO::LoadUI(GAME_UI_PATH, UIManager::GetInstance(), m_pdevice);
 	return true;
 }
 

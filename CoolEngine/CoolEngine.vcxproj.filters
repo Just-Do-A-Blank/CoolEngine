@@ -186,9 +186,6 @@
     <ClCompile Include="Engine\FileIO\FileIO.cpp">
       <Filter>Engine\FileIO</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\FileIO\FileIOCache.cpp">
-      <Filter>Engine\FileIO</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Managers\FontManager.cpp">
       <Filter>Engine\Managers</Filter>
     </ClCompile>
@@ -461,9 +458,6 @@
     <ClInclude Include="Engine\Managers\UIManager.h">
       <Filter>Engine\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\FileIO\FileIOCache.h">
-      <Filter>Engine\FileIO</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\FileIO\FileIO.h">
       <Filter>Engine\FileIO</Filter>
     </ClInclude>
@@ -592,6 +586,15 @@
     </ClInclude>
     <ClInclude Include="Engine\Managers\Events\DamageCalculation.h">
       <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\EditorUI\EditorUIFloatParameters.h">
+      <Filter>Engine\EditorUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\EditorUI\EditorUIIntParameters.h">
+      <Filter>Engine\EditorUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\EditorUI\EditorUINonSpecificParameters.h">
+      <Filter>Engine\EditorUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,7 @@
 #include "PlayerGameObject.h"
 #include "Engine/Managers/GameManager.h"
 #include <Engine/Managers/Events/EventManager.h>
+#include <Engine/EditorUI/EditorUI.h>
 
 PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : CharacterGameObject(identifier, uuid)
 {
@@ -194,7 +195,10 @@ void PlayerGameObject::CreateEngineUI()
 {
     CharacterGameObject::CreateEngineUI();
 
-    m_playerController->CreateEngineUI();
+	if (EditorUI::CollapsingSection("Player", true))
+	{
+		m_playerController->CreateEngineUI();
+	}
 }
 
 #endif

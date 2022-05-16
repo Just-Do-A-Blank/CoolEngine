@@ -76,14 +76,31 @@ void PlayerController::Update()
 /// </summary>
 void PlayerController::CreateEngineUI()
 {
-    EditorUI::FullTitle("Player Controller", 150);
+    float colWidth = 150;
 
-    EditorUI::DragFloat("General Speed", m_speedMultiplierWalking, 150.0f, 0.1f, 0, 100);
+    auto titleParameters = EditorUINonSpecificParameters();
+    titleParameters.m_columnWidth = 150;
+    
+    if (EditorUI::CollapsingSection("Player Controller", false))
+    {
+        auto speedParameters = EditorUIFloatParameters();
+        speedParameters.m_columnWidth = 150;
+        speedParameters.m_tooltipText = "When walking this is the main multiplier - sensitive to big changes!";
+        speedParameters.m_speed = 0.01f;
 
-    EditorUI::DragInt("MaxSpeed", m_moveSpeedMax, 150.0f, 0.1f, 0, 1000);
+        EditorUI::DragFloat("Walking Speed", m_speedMultiplierWalking, speedParameters);
 
-    EditorUI::DragInt("Speed Per Frame", m_moveSpeedPerFrame, 150.0f, 0.1f, 0, 1000);
 
-    EditorUI::DragInt("Drag Per Frame", m_dragSpeedPerFrame, 150.0f, 0.1f, 0, 1000);
+        auto numberParameters = EditorUIIntParameters();
+        numberParameters.m_columnWidth = 150;
+        numberParameters.m_minValue = 0;
+        numberParameters.m_maxValue = 1000;
+
+        EditorUI::DragInt("MaxSpeed", m_moveSpeedMax, numberParameters);
+
+        EditorUI::DragInt("Speed Per Frame", m_moveSpeedPerFrame, numberParameters);
+
+        EditorUI::DragInt("Drag Per Frame", m_dragSpeedPerFrame, numberParameters);
+    }
 }
 #endif
