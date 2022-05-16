@@ -735,7 +735,7 @@ void Render()
 	ID3D11SamplerState* psampler = GraphicsManager::GetInstance()->GetSampler(GraphicsManager::Samplers::LINEAR_WRAP);
 
 	g_pImmediateContext->PSSetSamplers(0, 1, &psampler);
-
+			
 	//Update per frame CB
 	PerFrameCB perFrameCB;
 	XMStoreFloat4x4(&perFrameCB.viewProjection, XMMatrixTranspose(XMLoadFloat4x4(&g_pcamera->GetViewProjection())));

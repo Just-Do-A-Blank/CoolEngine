@@ -881,11 +881,20 @@ bool EditorUI::Animation(const string& label, wstring& filepath, ID3D11ShaderRes
 		{
 			WCHAR buffer[FILEPATH_BUFFER_SIZE];
 
-			EditorUI::OpenFolderExplorer(buffer, FILEPATH_BUFFER_SIZE);
+			EditorUI::OpenFileExplorer(L"Animation Files\0*.json\0", buffer, FILEPATH_BUFFER_SIZE);
 
-			if (buffer[0] != '\0')
+			std::wstring tempPath = wstring(buffer);
+
+			int index = tempPath.find(L"Animations");
+
+			if (index == -1)
 			{
-				filepath = wstring(buffer);
+				LOG("The resource specified isn't stored in a animation folder!");
+			}
+			else
+			{
+				//Get relative file path
+				filepath = tempPath.substr(index);
 
 				interacted = true;
 			}
@@ -893,14 +902,26 @@ bool EditorUI::Animation(const string& label, wstring& filepath, ID3D11ShaderRes
 
 		if (ImGui::BeginDragDropTarget())
 		{
-			const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowserDirectory", ImGuiDragDropFlags_SourceAllowNullID);
+			const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowserFile", ImGuiDragDropFlags_SourceAllowNullID);
 
 			if (ppayload != nullptr)
 			{
 				std::string tempString = std::string((char*)ppayload->Data, ppayload->DataSize / sizeof(char));
-				filepath = wstring(tempString.begin(), tempString.end());
+				std::wstring tempPath = wstring(tempString.begin(), tempString.end());
 
-				interacted = true;
+				int index = tempPath.find(L"Animations");
+
+				if (index == -1)
+				{
+					LOG("The resource specified isn't stored in a animation folder!");
+				}
+				else
+				{
+					//Get relative file path
+					filepath = tempPath.substr(index);
+
+					interacted = true;
+				}
 			}
 
 			ImGui::EndDragDropTarget();
@@ -965,28 +986,55 @@ void EditorUI::Animations(const string& label, unordered_map<string, SpriteAnima
 			{
 				WCHAR buffer[FILEPATH_BUFFER_SIZE];
 
-				EditorUI::OpenFolderExplorer(buffer, FILEPATH_BUFFER_SIZE);
+				EditorUI::OpenFileExplorer(L"Animation Files\0*.json\0", buffer, FILEPATH_BUFFER_SIZE);
 
-				filepath = wstring(buffer);
+				std::wstring tempPath = wstring(buffer);
 
-				animOldName = it->first;
+				int index = tempPath.find(L"Animations");
 
-				updateAnim = filepath != L"";
+				if (index == -1)
+				{
+					LOG("The resource specified isn't stored in a animation folder!");
+				}
+				else
+				{
+					//Get relative file path
+					filepath = tempPath.substr(index);
 
-				nameToUpdate = it->first;
+					animOldName = it->first;
+
+					updateAnim = filepath != L"";
+
+					nameToUpdate = it->first;
+				}
 			}
 
 			if (ImGui::BeginDragDropTarget())
 			{
-				const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowserDirectory", ImGuiDragDropFlags_SourceAllowNullID);
+				const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowserFile", ImGuiDragDropFlags_SourceAllowNullID);
 
 				if (ppayload != nullptr)
 				{
 					std::string tempString = std::string((char*)ppayload->Data, ppayload->DataSize / sizeof(char));
-					filepath = wstring(tempString.begin(), tempString.end());
+					std::wstring tempPath = wstring(tempString.begin(), tempString.end());
 
-					updateAnim = true;
-					nameToUpdate = it->first;
+					int index = tempPath.find(L"Animations");
+
+					if (index == -1)
+					{
+						LOG("The resource specified isn't stored in a animation folder!");
+					}
+					else
+					{
+						//Get relative file path
+						filepath = tempPath.substr(index);
+
+						animOldName = it->first;
+
+						updateAnim = filepath != L"";
+
+						nameToUpdate = it->first;
+					}
 				}
 
 				ImGui::EndDragDropTarget();

@@ -4,6 +4,7 @@
 #include "Engine/Managers/GameManager.h"
 #include "Engine/ResourceDefines.h"
 #include "Engine/GameObjects/RenderableGameObject.h"
+#include "Engine/Includes/json.hpp"
 
 #include <direct.h>
 #include <fstream>
@@ -139,50 +140,30 @@ void AnimationTool::Destroy()
 
 bool AnimationTool::SaveAnim(string animName)
 {
-	string filepath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Animations\\" + m_animName;
-
-	int result = _mkdir(filepath.c_str());
-
-	if (result != 0)
-	{
-		LOG("Failed to create the file to save the animation!");
-
-		return false;
-	}
+	nlohmann::json data;
 
 	//Copy all the frames to the correct locations
 	for (int i = 0; i < m_frameInfos.size(); ++i)
 	{
-		string frameName = animName + to_string(i) + ".dds";
+		std::string tempFilePath = std::string(m_frameInfos[i].m_filepath.begin(), m_frameInfos[i].m_filepath.end());
 
-		string tempPath = filepath + "\\" + frameName;
-		wstring destPath = wstring(tempPath.begin(), tempPath.end());
-		wstring sourcePath = GameManager::GetInstance()->GetWideWorkingDirectory() + L"\\" + m_frameInfos[i].m_filepath;
-
-		if (CopyFile(sourcePath.c_str(), destPath.c_str(), true) == false)
-		{
-			LOG("Failed to copy one of the files of the animation!");
-		}
-
+		data["FrameTimes"].push_back(m_frameInfos[i].m_frame.m_frameTime);
+		data["FramePaths"].push_back(tempFilePath);
 	}
 
-	ofstream textFile = ofstream(filepath + "\\" + animName + ".txt");
+	string filepath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Animations\\" + m_animName + ".json";
+	ofstream outFile = ofstream(filepath);
 	
-	if (textFile.is_open() == false)
+	if (outFile.is_open() == false)
 	{
 		LOG("Failed to create the text file for the animation!");
 
 		return false;
 	}
 
-	textFile << m_frameInfos.size() << endl;
-	
-	for (int i = 0; i < m_frameInfos.size(); ++i)
-	{
-		textFile << m_frameInfos[i].m_frame.m_frameTime << endl;
-	}
+	outFile << data;
 
-	textFile.close();
+	outFile.close();
 
 	return true;
 }
