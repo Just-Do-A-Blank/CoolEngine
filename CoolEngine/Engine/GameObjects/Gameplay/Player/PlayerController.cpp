@@ -9,7 +9,7 @@ PlayerController::PlayerController(InputsAsGameplayButtons* gameplayButtons, Tra
 {
     m_moveSpeedMax = 250;
     m_speedMultiplierWalking = 0.8f;
-    m_dodgeSpeed = 3.8f;
+    m_dodgeSpeed = 1.6f;
     m_moveSpeedPerFrame = 500;
     m_dragSpeedPerFrame = 250;
     m_timeInSecondsToDodgeFor = 0.4f;
