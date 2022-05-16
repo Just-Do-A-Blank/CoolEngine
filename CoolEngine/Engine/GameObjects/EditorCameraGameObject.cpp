@@ -1,7 +1,7 @@
 #include "EditorCameraGameObject.h"
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/Managers/GameManager.h"
-#include <Engine/EditorUI/EditorUI.h>
+#include "Engine/EditorUI/EditorUI.h"
 
 EditorCameraGameObject::EditorCameraGameObject(string identifier, CoolUUID uuid) : CameraGameObject(identifier, uuid)
 {
@@ -111,7 +111,7 @@ void EditorCameraGameObject::Serialize(nlohmann::json& jsonData)
 
 		if (EditorUI::CollapsingSection("Camera controller", false))
 		{
-			auto cameraParameters = EditorUINonSpecificParameters();
+			EditorUINonSpecificParameters cameraParameters = EditorUINonSpecificParameters();
 			cameraParameters.m_tooltipText = "Ticked means you can control the camera, Unticked means it will act more like the game.";
 			EditorUI::Checkbox("Controlled by User", m_areControlledByUser, cameraParameters);
 		}

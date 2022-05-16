@@ -1,6 +1,6 @@
 #pragma once
-#include <Engine\GameObjects\Gameplay\GameplayButtons\EGameplayButtonClass.h>
-#include <Engine/GameObjects/Gameplay/GameplayButtons/EVirtualKeyCode.h>
+#include "Engine\GameObjects\Gameplay\GameplayButtons\EGameplayButtonClass.h"
+#include "Engine/GameObjects/Gameplay/GameplayButtons/EVirtualKeyCode.h"
 
 /// <summary>
 /// Stores information about a single gameplay button relating to the inputs required to hit that button

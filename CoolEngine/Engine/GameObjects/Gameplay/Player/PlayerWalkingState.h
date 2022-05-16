@@ -4,9 +4,9 @@
 #include "Engine/Managers/Events/EventObserver.h"
 #include "Engine/Managers/Events/MouseEvents.h"
 #include "Engine/Managers/Events/KeyEvents.h"
-#include <Engine/GameObjects/Gameplay/GameplayButtons/InputsAsGameplayButtons.h>
-#include <Engine\GameObjects\Gameplay\Player\PlayerMovementParameters.h>
-#include <Engine/GameObjects/Gameplay/Player/EPLAYERMOVEMENTSTATE.h>
+#include "Engine/GameObjects/Gameplay/GameplayButtons/InputsAsGameplayButtons.h"
+#include "Engine\GameObjects\Gameplay\Player\PlayerMovementParameters.h"
+#include "Engine/GameObjects/Gameplay/Player/EPLAYERMOVEMENTSTATE.h"
 
 /// <summary>
 /// Allows the player to walk around
