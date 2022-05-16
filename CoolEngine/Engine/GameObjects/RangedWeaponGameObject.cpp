@@ -27,6 +27,11 @@ void RangedWeaponGameObject::SetIsShot(bool shot)
 	m_isShot = shot;
 }
 
+void RangedWeaponGameObject::SetSpeed(float speed)
+{
+	m_shotSpeed = speed;
+}
+
 float RangedWeaponGameObject::GetAngleInterval()
 {
 	return m_angleInterval;
@@ -35,6 +40,11 @@ float RangedWeaponGameObject::GetAngleInterval()
 bool RangedWeaponGameObject::GetIsShot()
 {
 	return m_isShot;
+}
+
+float RangedWeaponGameObject::GetSpeed()
+{
+	return m_shotSpeed;
 }
 
 void RangedWeaponGameObject::Serialize(nlohmann::json& data)

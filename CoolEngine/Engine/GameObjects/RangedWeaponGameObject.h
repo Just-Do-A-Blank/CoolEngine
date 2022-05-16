@@ -31,9 +31,11 @@ public:
 	
 	void SetAngleInterval(float angle);
 	void SetIsShot(bool shot);
+	void SetSpeed(float speed);
 
 	float GetAngleInterval();
 	bool GetIsShot();
+	float GetSpeed();
 
 	virtual void Serialize(nlohmann::json& data) override;
 

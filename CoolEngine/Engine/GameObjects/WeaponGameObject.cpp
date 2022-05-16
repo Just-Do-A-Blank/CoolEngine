@@ -82,6 +82,11 @@ void WeaponGameObject::SetDistanceTravelled(float dist)
     m_distanceTravelled = dist;
 }
 
+void WeaponGameObject::SetIsPlayerWeapon(bool player)
+{
+    m_isPlayerWeapon = player;
+}
+
 int WeaponGameObject::GetLevel()
 {
     return m_level;
@@ -120,6 +125,11 @@ float WeaponGameObject::GetTimeLethal()
 float WeaponGameObject::GetDistanceTravelled()
 {
     return m_distanceTravelled;
+}
+
+bool WeaponGameObject::GetIsPlayerWeapon()
+{
+    return m_isPlayerWeapon;
 }
 
 bool WeaponGameObject::GetIsDualType()

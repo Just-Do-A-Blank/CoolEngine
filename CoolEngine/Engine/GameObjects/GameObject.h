@@ -19,6 +19,7 @@ enum class GameObjectType
 	TRIGGERABLE = 512,
 	MELEE_WEAPON = 1024,
 	RANGE_WEAPON = 2048,
+	BULLET = 4096,
 };
 
 DEFINE_ENUM_FLAG_OPERATORS(GameObjectType);
@@ -39,6 +40,7 @@ enum class AccumlateType
 	WEAPON = (int)((int)GameObjectType::WEAPON | TRIGGERABLE),
 	MELEE_WEAPON = (int)((int)GameObjectType::MELEE_WEAPON | WEAPON),
 	RANGE_WEAPON = (int)((int)GameObjectType::RANGE_WEAPON | WEAPON),
+	BULLET = (int)((int)GameObjectType::BULLET | WEAPON),
 };
 
 

@@ -22,6 +22,7 @@ public:
 	void SetShotCount(int count);
 	void SetTimeLethal(float time);
 	void SetDistanceTravelled(float dist);
+	void SetIsPlayerWeapon(bool player);
 
 	int GetLevel();
 	int GetStrength();
@@ -31,6 +32,7 @@ public:
 	int GetShotCount();
 	float GetTimeLethal();
 	float GetDistanceTravelled();
+	bool GetIsPlayerWeapon();
 
 	bool GetIsDualType();
 	int RoundUp(float value);
@@ -46,4 +48,6 @@ private:
 
 	ELEMENTS m_element = ELEMENTS::NONE;
 	STATUSES m_statusEffect = STATUSES::NONE;
+
+	bool m_isPlayerWeapon = true;
 };

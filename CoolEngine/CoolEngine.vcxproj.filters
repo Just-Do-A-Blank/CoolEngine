@@ -225,6 +225,9 @@
     <ClCompile Include="Engine\Managers\Events\BulletCreator.cpp">
       <Filter>Engine\Managers\Events</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GameObjects\BulletGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -604,6 +607,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Managers\Events\AttackEvents.h">
       <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\BulletGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
