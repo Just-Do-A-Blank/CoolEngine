@@ -186,9 +186,6 @@
     <ClCompile Include="Engine\FileIO\FileIO.cpp">
       <Filter>Engine\FileIO</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\FileIO\FileIOCache.cpp">
-      <Filter>Engine\FileIO</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Managers\FontManager.cpp">
       <Filter>Engine\Managers</Filter>
     </ClCompile>
@@ -457,9 +454,6 @@
     </ClInclude>
     <ClInclude Include="Engine\Managers\UIManager.h">
       <Filter>Engine\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\FileIO\FileIOCache.h">
-      <Filter>Engine\FileIO</Filter>
     </ClInclude>
     <ClInclude Include="Engine\FileIO\FileIO.h">
       <Filter>Engine\FileIO</Filter>

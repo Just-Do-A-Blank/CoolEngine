@@ -253,7 +253,7 @@ bool InGameUITool::SaveUI()
 
 bool InGameUITool::LoadUI()
 {
-	FileIO::LoadUI(GAME_UI_PATH, UIManager::GetInstance(), m_pdevice);
+	FileIO::	(GAME_UI_PATH, UIManager::GetInstance(), m_pdevice);
 	return true;
 }
 
