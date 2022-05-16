@@ -219,6 +219,9 @@
     <ClCompile Include="Engine\GameUI\ButtonComponent.cpp">
       <Filter>Engine\GameUI</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Managers\Events\DamageCalculation.cpp">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -580,6 +583,9 @@
     </ClInclude>
     <ClInclude Include="Engine\GameUI\ButtonComponent.h">
       <Filter>Engine\GameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\DamageCalculation.h">
+      <Filter>Engine\Managers\Events</Filter>
     </ClInclude>
     <ClInclude Include="Engine\EditorUI\EditorUIFloatParameters.h">
       <Filter>Engine\EditorUI</Filter>
