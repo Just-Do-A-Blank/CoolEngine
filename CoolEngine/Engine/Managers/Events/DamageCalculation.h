@@ -79,5 +79,5 @@ public:
 	
 	void Handle(Event* e) override;
 
-	DamageCalculation() {}
+	DamageCalculation();
 };

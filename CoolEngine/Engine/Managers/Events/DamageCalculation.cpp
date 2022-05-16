@@ -1,7 +1,15 @@
 #include "Engine/Managers/Events/DamageCalculation.h"
 #include "Engine/GameObjects/CharacterGameObject.h"
 #include "Engine/GameObjects/WeaponGameObject.h"
+#include "Engine/Managers/Events/EventManager.h"
 
+
+DamageCalculation::DamageCalculation()
+{
+	EventManager::Instance()->AddClient(EventType::TriggerEnter, this);
+	EventManager::Instance()->AddClient(EventType::TriggerHold, this);
+	EventManager::Instance()->AddClient(EventType::TriggerExit, this);
+}
 
 float DamageCalculation::CalculateDamage(float weaponDamage, ELEMENTS weaponElement, ELEMENTS characterElement, ELEMENTALSTATUSES characterStatus)
 {
