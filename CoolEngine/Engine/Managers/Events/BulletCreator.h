@@ -13,5 +13,5 @@ public:
 
 	int m_bulletCounter = 0;
 
-	BulletCreator() { }
+	BulletCreator();
 };

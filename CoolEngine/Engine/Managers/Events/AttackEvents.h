@@ -1,6 +1,6 @@
 #pragma once
-#include <Engine/Managers/Events/Events.h>
-#include <Engine/GameObjects/GameObject.h>
+#include "Engine/Managers/Events/Events.h"
+#include "Engine/GameObjects/GameObject.h"
 
 
 class AttackEvent : public Event

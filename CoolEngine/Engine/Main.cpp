@@ -287,24 +287,14 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//Pathfinding::GetInstance()->Initialize(g_testMap1);
 
 	// Observer for collision detection
-	CollisionObserver collisionObserver;
-	EventManager::Instance()->AddClient(EventType::TriggerEnter, &collisionObserver);
-	EventManager::Instance()->AddClient(EventType::TriggerHold, &collisionObserver);
-	EventManager::Instance()->AddClient(EventType::TriggerExit, &collisionObserver);
-	EventManager::Instance()->AddClient(EventType::CollisionEnter, &collisionObserver);
-	EventManager::Instance()->AddClient(EventType::CollisionHold, &collisionObserver);
-	EventManager::Instance()->AddClient(EventType::CollisionExit, &collisionObserver);
+	CollisionObserver collisionObserver = CollisionObserver();
 
 	// Observer for taking damage
-	DamageCalculation damageObserver;
-	EventManager::Instance()->AddClient(EventType::TriggerEnter, &damageObserver);
-	EventManager::Instance()->AddClient(EventType::TriggerHold, &damageObserver);
-	EventManager::Instance()->AddClient(EventType::TriggerExit, &damageObserver);
+	DamageCalculation damageObserver = DamageCalculation();
 
 	// Observer for making attacks
-	BulletCreator bulletCreator;
-	EventManager::Instance()->AddClient(EventType::CreateBullet, &bulletCreator);
-	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, &bulletCreator);
+	BulletCreator bulletCreator = BulletCreator();
+	
 
 	XMFLOAT3 pos = XMFLOAT3(-400, 250, 5);
 	XMFLOAT3 rot = XMFLOAT3(0, 0, 0);

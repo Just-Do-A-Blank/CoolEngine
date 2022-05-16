@@ -5,6 +5,12 @@
 #include "Engine/Managers/Events/EventManager.h"
 
 
+BulletCreator::BulletCreator()
+{
+	EventManager::Instance()->AddClient(EventType::CreateBullet, this);
+	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
+}
+
 void BulletCreator::CreateBullet(CreateBulletEvent* e)
 {
 	string name = "Bullet" + to_string(m_bulletCounter);
