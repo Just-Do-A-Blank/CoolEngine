@@ -81,25 +81,26 @@ void PlayerController::CreateEngineUI()
     auto titleParameters = EditorUINonSpecificParameters();
     titleParameters.m_columnWidth = 150;
     
-    EditorUI::FullTitle("Player Controller", titleParameters);
+    if (EditorUI::CollapsingSection("Player Controller", false))
+    {
+        auto speedParameters = EditorUIFloatParameters();
+        speedParameters.m_columnWidth = 150;
+        speedParameters.m_tooltipText = "When walking this is the main multiplier - sensitive to big changes!";
+        speedParameters.m_speed = 0.01f;
 
-    auto speedParameters = EditorUIFloatParameters();
-    speedParameters.m_columnWidth = 150;
-    speedParameters.m_tooltipText = "When walking this is the main multiplier - sensitive to big changes!";
-    speedParameters.m_speed = 0.01f;
-
-    EditorUI::DragFloat("Walking Speed", m_speedMultiplierWalking, speedParameters);
+        EditorUI::DragFloat("Walking Speed", m_speedMultiplierWalking, speedParameters);
 
 
-    auto numberParameters = EditorUIIntParameters();
-    numberParameters.m_columnWidth = 150;
-    numberParameters.m_minValue = 0;
-    numberParameters.m_maxValue = 1000;
+        auto numberParameters = EditorUIIntParameters();
+        numberParameters.m_columnWidth = 150;
+        numberParameters.m_minValue = 0;
+        numberParameters.m_maxValue = 1000;
 
-    EditorUI::DragInt("MaxSpeed", m_moveSpeedMax, numberParameters);
+        EditorUI::DragInt("MaxSpeed", m_moveSpeedMax, numberParameters);
 
-    EditorUI::DragInt("Speed Per Frame", m_moveSpeedPerFrame, numberParameters);
+        EditorUI::DragInt("Speed Per Frame", m_moveSpeedPerFrame, numberParameters);
 
-    EditorUI::DragInt("Drag Per Frame", m_dragSpeedPerFrame, numberParameters);
+        EditorUI::DragInt("Drag Per Frame", m_dragSpeedPerFrame, numberParameters);
+    }
 }
 #endif

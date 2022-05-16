@@ -89,6 +89,15 @@ public:
     /// <param name="columnWidth">The width of a single coloumn</param>
 	static void FullTitle(const string& label, EditorUINonSpecificParameters parameters = {});
 
+	/// <summary>
+	/// Creates a section of UI which is sectioned off. Major sections of the UI should be in collapsing sections
+	/// such that they do not clutter the User Interface
+	/// </summary>
+	/// <param name="label">The label to use in the UI</param>
+	/// <param name="defaultValue">true means open on load, will retain value between equal headers.</param>
+	/// <returns>Use this in the if statement, returns if the area is open or closed</returns>
+	static bool CollapsingSection(const string& label, bool defaultValue = true);
+
     static bool DragFloat(const string& label, float& value, EditorUIFloatParameters parameters = {});
 	static void DragFloat2(const string& label, XMFLOAT2& values1f, EditorUIFloatParameters parameters = {});
 	static void DragFloat3(const string& label, XMFLOAT3& values, EditorUIFloatParameters parameters = {});
