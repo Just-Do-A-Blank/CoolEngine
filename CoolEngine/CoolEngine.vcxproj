@@ -31,6 +31,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ObjectPool.h" />
     <ClInclude Include="Engine\AI\Pathfinding.h" />
     <ClInclude Include="Engine\EditorUI\ContentBrowser.h" />
     <ClInclude Include="Engine\EditorUI\EditorUI.h" />
@@ -145,7 +146,6 @@
     <ClInclude Include="Engine\Managers\AudioManager.h" />
     <ClInclude Include="Engine\Managers\DebugDrawManager.h" />
     <ClInclude Include="Engine\Managers\Events\CollisionEvents.h" />
-    <ClInclude Include="Engine\Managers\Events\DamageCalculation.h" />
     <ClInclude Include="Engine\Managers\Events\EventManager.h" />
     <ClInclude Include="Engine\Managers\Events\EventObserver.h" />
     <ClInclude Include="Engine\Managers\Events\EventObserverExamples.h" />
@@ -181,6 +181,7 @@
     <ClInclude Include="Engine\GameUI\ImageComponent.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ObjectPool.cpp" />
     <ClCompile Include="Engine\AI\Pathfinding.cpp" />
     <ClCompile Include="Engine\EditorUI\ContentBrowser.cpp" />
     <ClCompile Include="Engine\EditorUI\EditorUI.cpp" />
@@ -242,7 +243,6 @@
     </ClCompile>
     <ClCompile Include="Engine\Main.cpp" />
     <ClCompile Include="Engine\Managers\DebugDrawManager.cpp" />
-    <ClCompile Include="Engine\Managers\Events\DamageCalculation.cpp" />
     <ClCompile Include="Engine\Managers\Events\EventManager.cpp" />
     <ClCompile Include="Engine\Managers\Events\EventObserver.cpp" />
     <ClCompile Include="Engine\Managers\Events\Events.cpp" />

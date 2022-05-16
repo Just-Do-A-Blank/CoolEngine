@@ -219,8 +219,8 @@
     <ClCompile Include="Engine\GameUI\ButtonComponent.cpp">
       <Filter>Engine\GameUI</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Managers\Events\DamageCalculation.cpp">
-      <Filter>Engine\Managers\Events</Filter>
+    <ClCompile Include="ObjectPool.cpp">
+      <Filter>Engine\Structure</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -458,9 +458,6 @@
     <ClInclude Include="Engine\Managers\UIManager.h">
       <Filter>Engine\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\FileIO\FileIO.h">
-      <Filter>Engine\FileIO</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Managers\FontManager.h">
       <Filter>Engine\Managers</Filter>
     </ClInclude>
@@ -584,9 +581,6 @@
     <ClInclude Include="Engine\GameUI\ButtonComponent.h">
       <Filter>Engine\GameUI</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Managers\Events\DamageCalculation.h">
-      <Filter>Engine\Managers\Events</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\EditorUI\EditorUIFloatParameters.h">
       <Filter>Engine\EditorUI</Filter>
     </ClInclude>
@@ -595,6 +589,12 @@
     </ClInclude>
     <ClInclude Include="Engine\EditorUI\EditorUINonSpecificParameters.h">
       <Filter>Engine\EditorUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\FileIO\FileIO.h">
+      <Filter>Engine\FileIO</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectPool.h">
+      <Filter>Engine\Structure</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
