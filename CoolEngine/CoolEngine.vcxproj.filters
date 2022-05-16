@@ -581,6 +581,15 @@
     <ClInclude Include="Engine\GameUI\ButtonComponent.h">
       <Filter>Engine\GameUI</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\EditorUI\EditorUIFloatParameters.h">
+      <Filter>Engine\EditorUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\EditorUI\EditorUIIntParameters.h">
+      <Filter>Engine\EditorUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\EditorUI\EditorUINonSpecificParameters.h">
+      <Filter>Engine\EditorUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Engine\Includes\DirectXTK\SimpleMath.inl" />

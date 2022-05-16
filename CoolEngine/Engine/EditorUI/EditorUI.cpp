@@ -548,15 +548,19 @@ void EditorUI::OpenFolderExplorer(WCHAR* buffer, int bufferSize)
 	SHBrowseForFolder(&browserInfo);
 }
 
-void EditorUI::DragFloat2(const string& label, XMFLOAT2& values, const float& columnWidth, const float& speed, const float& min, const float& max)
+void EditorUI::DragFloat2(const string& label, XMFLOAT2& values, EditorUIFloatParameters parameters)
 {
+    SetupDefaultsInParameters(parameters);
+
 	ImGuiIO& io = ImGui::GetIO();
 
 	ImGui::PushID(label.c_str());
 
 	ImGui::Columns(2);
-	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::SetColumnWidth(0, parameters.m_columnWidth);
 	ImGui::Text(label.c_str());
+    SetupTooltip(parameters.m_tooltipText);
+
 	ImGui::NextColumn();
 
 	ImGui::PushMultiItemsWidths(2, ImGui::CalcItemWidth());
@@ -567,13 +571,13 @@ void EditorUI::DragFloat2(const string& label, XMFLOAT2& values, const float& co
 
 	ImGui::Button("X", buttonSize);
 	ImGui::SameLine();
-	ImGui::DragFloat("##X", &values.x, speed, min, max, "%.2f");
+	ImGui::DragFloat("##X", &values.x, parameters.m_speed, parameters.m_minValue, parameters.m_maxValue, "%.2f");
 	ImGui::PopItemWidth();
 	ImGui::SameLine();
 
 	ImGui::Button("Y", buttonSize);
 	ImGui::SameLine();
-	ImGui::DragFloat("##Y", &values.y, speed, min, max, "%.2f");
+	ImGui::DragFloat("##Y", &values.y, parameters.m_speed, parameters.m_minValue, parameters.m_maxValue, "%.2f");
 	ImGui::PopItemWidth();
 
 	ImGui::PopStyleVar();
@@ -583,15 +587,19 @@ void EditorUI::DragFloat2(const string& label, XMFLOAT2& values, const float& co
 	ImGui::PopID();
 }
 
-void EditorUI::DragFloat3(const string& label, XMFLOAT3& values, const float& columnWidth, const float& speed, const float& min, const float& max)
+void EditorUI::DragFloat3(const string& label, XMFLOAT3& values, EditorUIFloatParameters parameters)
 {
+    SetupDefaultsInParameters(parameters);
+
 	ImGuiIO& io = ImGui::GetIO();
 
 	ImGui::PushID(label.c_str());
 
 	ImGui::Columns(2);
-	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::SetColumnWidth(0, parameters.m_maxValue);
 	ImGui::Text(label.c_str());
+    SetupTooltip(parameters.m_tooltipText);
+
 	ImGui::NextColumn();
 
 	ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
@@ -602,19 +610,19 @@ void EditorUI::DragFloat3(const string& label, XMFLOAT3& values, const float& co
 
 	ImGui::Button("X", buttonSize);
 	ImGui::SameLine();
-	ImGui::DragFloat("##X", &values.x, speed, min, max, "%.2f");
+	ImGui::DragFloat("##X", &values.x, parameters.m_speed, parameters.m_minValue, parameters.m_maxValue, "%.2f");
 	ImGui::PopItemWidth();
 	ImGui::SameLine();
 
 	ImGui::Button("Y", buttonSize);
 	ImGui::SameLine();
-	ImGui::DragFloat("##Y", &values.y, speed, min, max, "%.2f");
+	ImGui::DragFloat("##Y", &values.y, parameters.m_speed, parameters.m_minValue, parameters.m_maxValue, "%.2f");
 	ImGui::PopItemWidth();
 	ImGui::SameLine();
 
 	ImGui::Button("Z", buttonSize);
 	ImGui::SameLine();
-	ImGui::DragFloat("##Z", &values.z, speed, min, max, "%.2f");
+	ImGui::DragFloat("##Z", &values.z, parameters.m_speed, parameters.m_minValue, parameters.m_maxValue, "%.2f");
 	ImGui::PopItemWidth();
 
 	ImGui::PopStyleVar();
@@ -624,20 +632,24 @@ void EditorUI::DragFloat3(const string& label, XMFLOAT3& values, const float& co
 ImGui::PopID();
 }
 
-void EditorUI::DragInt(const string& label, int& value, const float& columnWidth, const float& speed, const int& min, const int& max)
+void EditorUI::DragInt(const string& label, int& value, EditorUIIntParameters parameters)
 {
+    SetupDefaultsInParameters(parameters);
+
 	ImGui::PushID(label.c_str());
 
 	ImGui::Columns(2);
 
-	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::SetColumnWidth(0, parameters.m_columnWidth);
 	ImGui::Text(label.c_str());
+    SetupTooltip(parameters.m_tooltipText);
+
 	ImGui::NextColumn();
 
 	ImGui::PushItemWidth(ImGui::CalcItemWidth());
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
 
-	ImGui::DragInt("##Int", &value, speed, min, max, "%.2f");
+	ImGui::DragInt("##Int", &value, parameters.m_speed, parameters.m_minValue, parameters.m_maxValue, "%.2f");
 
 	ImGui::PopItemWidth();
 
@@ -648,14 +660,18 @@ void EditorUI::DragInt(const string& label, int& value, const float& columnWidth
 	ImGui::PopID();
 }
 
-void EditorUI::Checkbox(const string& label, bool& value, const float& columnWidth)
+void EditorUI::Checkbox(const string& label, bool& value, EditorUINonSpecificParameters parameters)
 {
+    SetupDefaultsInParameters(parameters);
+
 	ImGui::PushID(label.c_str());
 
 	ImGui::Columns(2);
 
-	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::SetColumnWidth(0, parameters.m_columnWidth);
 	ImGui::Text(label.c_str());
+    SetupTooltip(parameters.m_tooltipText);
+
 	ImGui::NextColumn();
 
 	ImGui::PushItemWidth(ImGui::CalcItemWidth());
@@ -682,6 +698,7 @@ bool EditorUI::Texture(const string& label, wstring& filepath, ID3D11ShaderResou
 
 	ImGui::SetColumnWidth(0, columnWidth);
 	ImGui::Text(label.c_str());
+
 	ImGui::NextColumn();
 
 	ImGui::PushItemWidth(ImGui::CalcItemWidth());
@@ -771,16 +788,20 @@ bool EditorUI::Texture(const string& label, wstring& filepath, ID3D11ShaderResou
 	return interacted;
 }
 
-bool EditorUI::InputText(const string& label, string& text, const float& columnWidth)
+bool EditorUI::InputText(const string& label, string& text, EditorUINonSpecificParameters parameters)
 {
+    SetupDefaultsInParameters(parameters);
+
 	bool interacted = false;
 
 	ImGui::PushID(label.c_str());
 
 	ImGui::Columns(2);
 
-	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::SetColumnWidth(0, parameters.m_columnWidth);
 	ImGui::Text(label.c_str());
+    SetupTooltip(parameters.m_tooltipText);
+
 	ImGui::NextColumn();
 
 	ImGui::PushItemWidth(ImGui::CalcItemWidth());
@@ -809,14 +830,18 @@ bool EditorUI::InputText(const string& label, string& text, const float& columnW
 	return interacted;
 }
 
-void EditorUI::IdentifierText(const string& label, string& text, const float& columnWidth)
+void EditorUI::IdentifierText(const string& label, string& text, EditorUINonSpecificParameters parameters)
 {
+    SetupDefaultsInParameters(parameters);
+
 	ImGui::PushID(label.c_str());
 
 	ImGui::Columns(2);
 
-	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::SetColumnWidth(0, parameters.m_columnWidth);
 	ImGui::Text(label.c_str());
+    SetupTooltip(parameters.m_tooltipText);
+
 	ImGui::NextColumn();
 
 	ImGui::PushItemWidth(ImGui::CalcItemWidth());
@@ -843,6 +868,7 @@ bool EditorUI::Animation(const string& label, wstring& filepath, ID3D11ShaderRes
 
 	ImGui::SetColumnWidth(0, columnWidth);
 	ImGui::Text(label.c_str());
+
 	ImGui::NextColumn();
 
 	ImGui::PushItemWidth(ImGui::CalcItemWidth());
@@ -1011,22 +1037,26 @@ void EditorUI::Animations(const string& label, unordered_map<string, SpriteAnima
 	}
 }
 
-bool EditorUI::DragFloat(const string& label, float& value, const float& columnWidth, const float& speed, const float& min, const float& max)
+bool EditorUI::DragFloat(const string& label, float& value, EditorUIFloatParameters parameters)
 {
+    SetupDefaultsInParameters(parameters);
+
 	bool interacted = false;
 
 	ImGui::PushID(label.c_str());
 
 	ImGui::Columns(2);
 
-	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::SetColumnWidth(0, parameters.m_columnWidth);
 	ImGui::Text(label.c_str());
+    SetupTooltip(parameters.m_tooltipText);
+
 	ImGui::NextColumn();
 
 	ImGui::PushItemWidth(ImGui::CalcItemWidth());
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
 
-	interacted = ImGui::DragFloat("##Float", &value, speed, min, max, "%.2f");
+	interacted = ImGui::DragFloat("##Float", &value, parameters.m_speed, parameters.m_minValue, parameters.m_maxValue, "%.2f");
 
 	ImGui::PopItemWidth();
 
@@ -1044,17 +1074,21 @@ bool EditorUI::DragFloat(const string& label, float& value, const float& columnW
 /// </summary>
 /// <param name="label">The title to display</param>
 /// <param name="columnWidth">The width of a single coloumn</param>
-void EditorUI::FullTitle(const string& label, const float& columnWidth)
+void EditorUI::FullTitle(const string& label, EditorUINonSpecificParameters parameters)
 {
+    SetupDefaultsInParameters(parameters);
+
     ImGui::Separator();
     ImGui::PushID(label.c_str());
 
     ImGui::Columns(2);
-    ImGui::SetColumnWidth(0, columnWidth);
+    ImGui::SetColumnWidth(0, parameters.m_columnWidth);
     ImGui::NextColumn();
 
-    ImGui::SetColumnWidth(0, columnWidth);
+    ImGui::SetColumnWidth(0, parameters.m_columnWidth);
     ImGui::Text(label.c_str());
+    SetupTooltip(parameters.m_tooltipText);
+
     ImGui::NextColumn();
 
     ImGui::PushItemWidth(ImGui::CalcItemWidth());
@@ -1067,4 +1101,105 @@ void EditorUI::FullTitle(const string& label, const float& columnWidth)
     ImGui::Separator();
 }
 
+/// <summary>
+/// Sets up the default parameters for floats with defaults where optional parameters were opt-out
+/// </summary>
+/// <param name="parameters">Parameters optionally required to display a float or set of floats in the editor</param>
+void EditorUI::SetupDefaultsInParameters(EditorUIFloatParameters& parameters)
+{
+    if (parameters.m_columnWidth == NULL)
+    {
+        parameters.m_columnWidth = GetDefaultColumnWidth();
+    }
+
+    if (parameters.m_speed == NULL)
+    {
+        parameters.m_speed = GetDefaultSpeed();
+    }
+
+    if (parameters.m_minValue == NULL)
+    {
+        parameters.m_minValue = GetDefaultMinimumValue();
+    }
+
+    if (parameters.m_maxValue == NULL)
+    {
+        parameters.m_maxValue = GetDefaultMaximumValue();
+    }
+
+    if (parameters.m_tooltipText == NULL)
+    {
+        parameters.m_tooltipText = "";
+    }
+}
+
+/// <summary>
+/// Sets up the default parameters for ints with defaults where optional parameters were opt-out
+/// </summary>
+/// <param name="parameters">Parameters optionally required to display a ints or set of ints in the editor</param>
+void EditorUI::SetupDefaultsInParameters(EditorUIIntParameters& parameters)
+{
+    if (parameters.m_columnWidth == NULL)
+    {
+        parameters.m_columnWidth = GetDefaultColumnWidth();
+    }
+
+    if (parameters.m_speed == NULL)
+    {
+        parameters.m_speed = GetDefaultSpeed();
+    }
+
+    if (parameters.m_minValue == NULL)
+    {
+        parameters.m_minValue = (int)GetDefaultMinimumValue();
+    }
+
+    if (parameters.m_maxValue == NULL)
+    {
+        parameters.m_maxValue = (int)GetDefaultMaximumValue();
+    }
+
+    if (parameters.m_tooltipText == NULL)
+    {
+        parameters.m_tooltipText = "";
+    }
+}
+
+/// <summary>
+/// Sets up the default parameters for inputs which do not have any data which relate to one another
+/// </summary>
+/// <param name="parameters">Sets up the default parameters for inputs which do not have any data which relate to one another</param>
+void EditorUI::SetupDefaultsInParameters(EditorUINonSpecificParameters& parameters)
+{
+    if (parameters.m_columnWidth == NULL)
+    {
+        parameters.m_columnWidth = GetDefaultColumnWidth();
+    }
+
+    if (parameters.m_tooltipText == NULL)
+    {
+        parameters.m_tooltipText = "";
+    }
+}
+
+/// <summary>
+/// If tooltip text found, it will add tooltip text to which ever element is just displayed from IMGUI
+/// </summary>
+/// <param name="tooltipText">Text to display in the tooltip</param>
+void EditorUI::SetupTooltip(char* tooltipText)
+{
+    if (tooltipText == "")
+    {
+        return;
+    }
+
+    if (ImGui::IsItemHovered())
+    {
+        ImGui::BeginTooltip();
+        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+        ImGui::TextUnformatted(tooltipText);
+        ImGui::PopTextWrapPos();
+        ImGui::EndTooltip();
+    }
+}
 #endif
