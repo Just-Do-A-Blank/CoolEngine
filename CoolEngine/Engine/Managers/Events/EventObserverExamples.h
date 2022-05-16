@@ -1,6 +1,8 @@
 #pragma once
 #include "Engine/Managers/Events/EventObserver.h"
 #include "Engine/Managers/Events/CollisionEvents.h"
+#include "Engine/Managers/Events/EventManager.h"
+
 
 class CollisionObserver : public Observer
 {
@@ -60,5 +62,13 @@ public:
 		}
 	}
 
-	CollisionObserver() { }
+	CollisionObserver()
+	{
+		EventManager::Instance()->AddClient(EventType::TriggerEnter, this);
+		EventManager::Instance()->AddClient(EventType::TriggerHold, this);
+		EventManager::Instance()->AddClient(EventType::TriggerExit, this);
+		EventManager::Instance()->AddClient(EventType::CollisionEnter, this);
+		EventManager::Instance()->AddClient(EventType::CollisionHold, this);
+		EventManager::Instance()->AddClient(EventType::CollisionExit, this);
+	}
 };

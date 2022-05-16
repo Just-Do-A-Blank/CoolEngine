@@ -43,6 +43,14 @@ void EnemyGameObject::Update()
 		stepPos = MathHelper::Plus(stepPos, m_transform->GetWorldPosition());
 		m_transform->SetWorldPosition(stepPos);
 
+		if (m_invincibilityTime > 0.0f)
+		{
+			m_invincibilityTime -= GameManager::GetInstance()->GetTimer()->DeltaTime();
+		}
+		else
+		{
+			m_invincibilityTime = 0;
+		}
 	}
 	else
 	{

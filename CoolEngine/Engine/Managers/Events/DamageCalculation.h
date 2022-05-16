@@ -1,4 +1,6 @@
 #pragma once
+#include "Engine/Managers/Events/EventObserver.h"
+#include "Engine/Managers/Events/CollisionEvents.h"
 
 enum class ELEMENTS
 {
@@ -35,6 +37,8 @@ enum class ELEMENTALSTATUSES
 	COUNT
 };
 
+#define INVINCIBLE_TIME 1.0f
+
 
 // e.g. The element weak to a fire attack is poison
 // 0 - 0 and 1 - 0
@@ -63,42 +67,17 @@ static const ELEMENTS DualElementResistantTo[9] =
 };
 
 
-static class DamageCalculation
+class DamageCalculation : public Observer
 {
 public:
 	// Damage calculation when attack connects
-	static float CalculateDamage(float weaponDamage, ELEMENTS weaponElement, ELEMENTS characterElement, ELEMENTALSTATUSES characterStatus)
-	{
-		float multiplier = 1.0f;
-		if ((characterElement == ElementWeakTo[(int)weaponElement] || characterElement == DualElementWeakTo[(int)weaponElement]) && characterElement != ELEMENTS::NONE)
-		{
-			// Character weak to attack
-			multiplier *= 2.0f;
-			if ((int)characterElement >= (int)ELEMENTS::POISONFIRE)
-			{
-				// Dual element character is extra weak
-				multiplier *= 2.0f;
-			}
-		}
-		else if ((characterElement == ElementResistantTo[(int)weaponElement] || characterElement == DualElementResistantTo[(int)weaponElement]) && characterElement != ELEMENTS::NONE)
-		{
-			// Character resistant to attack
-			multiplier /= 2.0f;
-			if ((int)characterElement >= (int)ELEMENTS::POISONFIRE)
-			{
-				// Dual element character is extra weak
-				multiplier /= 2.0f;
-			}
-		}
+	static float CalculateDamage(float weaponDamage, ELEMENTS weaponElement, ELEMENTS characterElement, ELEMENTALSTATUSES characterStatus);
 
-		if ((characterElement == ElementWeakTo[(int)characterStatus] || characterElement == DualElementWeakTo[(int)characterStatus]) && characterElement != ELEMENTS::NONE)
-		{
-			multiplier *= 2.0f;
-		}
+	void TriggerEnter(TriggerEnterEvent* e);
+	void TriggerHold(TriggerHoldEvent* e);
+	void TriggerExit(TriggerExitEvent* e);
+	
+	void Handle(Event* e) override;
 
-		if (multiplier > 4.0f)
-			multiplier = 4.0f;
-
-		return (weaponDamage * multiplier);
-	}
+	DamageCalculation();
 };
