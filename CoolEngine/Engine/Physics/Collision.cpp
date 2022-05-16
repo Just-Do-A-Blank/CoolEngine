@@ -249,7 +249,7 @@ void Collision::Update(vector<GameObject*> gameObjectMap)
 					continue;
 				}
 
-				// Whether to just collisde or collide with response
+				// Whether to just collide or collide with response
 				if (pcollidable1->GetShape()->IsCollidable() && pcollidable2->GetShape()->IsCollidable())
 				{
 					bool hasCollided = pcollidable1->GetShape()->CollideResponse(pcollidable2->GetShape());
@@ -260,13 +260,10 @@ void Collision::Update(vector<GameObject*> gameObjectMap)
 				}
 				else if (pcollidable1->GetShape()->IsTrigger() && pcollidable2->GetShape()->IsTrigger() || pcollidable1->GetShape()->IsCollidable() && pcollidable2->GetShape()->IsTrigger() || pcollidable2->GetShape()->IsCollidable() && pcollidable1->GetShape()->IsTrigger())
 				{
-					if (it1 < it2)
+					bool hasCollided = pcollidable1->GetShape()->Collide(pcollidable2->GetShape());
+					if (hasCollided)
 					{
-						bool hasCollided = pcollidable2->GetShape()->Collide(pcollidable2->GetShape());
-						if (hasCollided)
-						{
-							EventManager::Instance()->AddEvent(new TriggerHoldEvent(pcollidable1, pcollidable2));
-						}
+						EventManager::Instance()->AddEvent(new TriggerHoldEvent(pcollidable1, pcollidable2));
 					}
 				}
 			}

@@ -10,6 +10,7 @@
 #include "Engine/Graphics/SpriteAnimation.h"
 #include "Engine/GameObjects/CameraGameObject.h"
 #include "Engine/GameObjects/EnemyGameObject.h"
+#include "Engine/GameObjects/WeaponGameObject.h"
 
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/Managers/Events/EventObserver.h"
@@ -42,6 +43,7 @@
 #include "Engine/GameObjects/EditorCameraGameObject.h"
 
 #include "Engine/Managers/Events/EventObserverExamples.h"
+#include "Engine/Managers/Events/DamageCalculation.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
@@ -185,11 +187,13 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	string obj1Name = "TestObject1";
 	string playerName = "Player";
 	string enemyName = "Enemy";
+	string weaponName = "Weapon";
 
 	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj0Name);
 	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj1Name);
 	pgameManager->CreateGameObject<PlayerGameObject>(playerName);
 	pgameManager->CreateGameObject<EnemyGameObject>(enemyName);
+	pgameManager->CreateGameObject<WeaponGameObject>(weaponName);
 
 	RenderableCollidableGameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj0Name);
 
@@ -247,7 +251,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject = pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName);
 
 	objectPos = XMFLOAT3(200.0f, -200.0f, 5.0f);
-	objectScale = XMFLOAT3(1, 1, 1);
+	objectScale = XMFLOAT3(50, 50, 50);
 
 	pgameObject->SetMesh(QUAD_MESH_NAME);
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
@@ -261,6 +265,22 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetShape(pbox);
 
 
+	// Weapon test
+	pgameObject = pgameManager->CreateGameObject<WeaponGameObject>(weaponName);
+	pgameObject->SetMesh(QUAD_MESH_NAME);
+	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
+	objectPos = XMFLOAT3(200.0f, 0.0f, 5.0f);
+	objectScale = XMFLOAT3(25, 25, 25);
+	pgameObject->GetTransform()->SetWorldPosition(objectPos);
+	pgameObject->GetTransform()->SetWorldScale(objectScale);
+	pbox = new Box(pgameObject->GetTransform());
+	pbox->SetIsTrigger(isCollision);
+	isCollision = false;
+	pbox->SetIsCollidable(isCollision);
+	pgameObject->SetShape(pbox);
+
 	//g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, -200, 0), "TestMap");
 
 	//Pathfinding::GetInstance()->Initialize(g_testMap1);
@@ -273,6 +293,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	EventManager::Instance()->AddClient(EventType::CollisionEnter, &collisionObserver);
 	EventManager::Instance()->AddClient(EventType::CollisionHold, &collisionObserver);
 	EventManager::Instance()->AddClient(EventType::CollisionExit, &collisionObserver);
+
+	DamageCalculation damageObserver;
+	EventManager::Instance()->AddClient(EventType::TriggerEnter, &damageObserver);
+	EventManager::Instance()->AddClient(EventType::TriggerHold, &damageObserver);
+	EventManager::Instance()->AddClient(EventType::TriggerExit, &damageObserver);
 
 	XMFLOAT3 pos = XMFLOAT3(-400, 250, 5);
 	XMFLOAT3 rot = XMFLOAT3(0, 0, 0);
