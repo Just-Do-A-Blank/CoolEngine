@@ -169,31 +169,60 @@ void ParticleSystem::CreateEngineUI()
 
 	ImGui::Spacing();
 
-	EditorUI::DragFloat2("Velocity", m_velocity, 150.0f, 0.1f, 0, 0);
+    auto velocityAccelerationParameters = EditorUIFloatParameters();
+    velocityAccelerationParameters.m_columnWidth = 150;
+    velocityAccelerationParameters.m_speed = 0.1f;
+
+	EditorUI::DragFloat2("Velocity", m_velocity, velocityAccelerationParameters);
 	ImGui::Spacing();
-	EditorUI::DragFloat2("Acceleration", m_accel, 150.0f, 0.1f, 0, 0);
+	EditorUI::DragFloat2("Acceleration", m_accel, velocityAccelerationParameters);
 
 	ImGui::Spacing();
 	ImGui::Separator();
 	ImGui::Spacing();
 
-	EditorUI::DragFloat("Particle Lifetime", m_particleLife, 150.0f, 0.02f, 0, 10000.0f);
+    auto particleParameters = EditorUIFloatParameters();
+    particleParameters.m_columnWidth = 150;
+    particleParameters.m_speed = 0.02f;
+    particleParameters.m_minValue = 0;
+    particleParameters.m_maxValue = 10000;
+
+	EditorUI::DragFloat("Particle Lifetime", m_particleLife, particleParameters);
 	ImGui::Spacing();
-	EditorUI::DragFloat("Particle Interval", m_spawnInterval, 150.0f, 0.02f, 0, 10000.0f);
+	EditorUI::DragFloat("Particle Interval", m_spawnInterval, particleParameters);
+
+    auto quantityParameters = EditorUIIntParameters();
+    quantityParameters.m_columnWidth = 150;
+    quantityParameters.m_speed = 0.05f;
+    quantityParameters.m_minValue = 0;
+    quantityParameters.m_maxValue = 128;
+
 	ImGui::Spacing();
-	EditorUI::DragInt("Particle Quantity", m_spawnNumber, 150.0f, 0.05f, 0, 128);
+	EditorUI::DragInt("Particle Quantity", m_spawnNumber, quantityParameters);
 
 	ImGui::Spacing();
 	ImGui::Separator();
 	ImGui::Spacing();
 
-	EditorUI::DragFloat("Position Spread", m_positionRand, 150.0f, 0.1f, 0, 10000.0f);
+    auto spreadParameters = EditorUIFloatParameters();
+    spreadParameters.m_columnWidth = 150;
+    spreadParameters.m_speed = 0.1f;
+    spreadParameters.m_minValue = 0;
+    spreadParameters.m_maxValue = 10000;
+
+    auto lifetimeSpreadParameters = EditorUIFloatParameters();
+    lifetimeSpreadParameters.m_columnWidth = 150;
+    lifetimeSpreadParameters.m_speed = 0.005f;
+    lifetimeSpreadParameters.m_minValue = 0;
+    lifetimeSpreadParameters.m_maxValue = 10000;
+
+	EditorUI::DragFloat("Position Spread", m_positionRand, spreadParameters);
 	ImGui::Spacing();
-	EditorUI::DragFloat("Velocity Spread", m_velocityRand, 150.0f, 0.1f, 0, 10000.0f);
+	EditorUI::DragFloat("Velocity Spread", m_velocityRand, spreadParameters);
 	ImGui::Spacing();
-	EditorUI::DragFloat("Acceleration Spread", m_accelRand, 150.0f, 0.1f, 0, 10000.0f);
+	EditorUI::DragFloat("Acceleration Spread", m_accelRand, spreadParameters);
 	ImGui::Spacing();
-	EditorUI::DragFloat("Lifetime Spread", m_lifeRand, 150.0f, 0.005f, 0, 10000.0f);
+	EditorUI::DragFloat("Lifetime Spread", m_lifeRand, lifetimeSpreadParameters);
 
 	ImGui::Spacing();
 	ImGui::Separator();
@@ -201,15 +230,24 @@ void ParticleSystem::CreateEngineUI()
 
 	EditorUI::Texture("Texture", m_texFilepath, m_pTexture, 150.0f);
 	ImGui::Spacing();
-	EditorUI::DragInt("Layer", m_layer, 100.0f, 0.1f, 0, GraphicsManager::GetInstance()->GetNumLayers());
+
+    auto layerParameters = EditorUIIntParameters();
+    layerParameters.m_minValue = 0;
+    layerParameters.m_maxValue = GraphicsManager::GetInstance()->GetNumLayers();
+
+	EditorUI::DragInt("Layer", m_layer, layerParameters);
 
 	ImGui::Spacing();
 	ImGui::Separator();
 	ImGui::Spacing();
 
-	EditorUI::DragFloat("System Lifetime", m_systemLife, 150.0f, 0.1f, 0, 10000.0f);
+	EditorUI::DragFloat("System Lifetime", m_systemLife, spreadParameters);
 	ImGui::Spacing();
-	EditorUI::Checkbox("System Active?", m_isActive, 150.0f);
+
+    auto activeParameters = EditorUINonSpecificParameters();
+    activeParameters.m_columnWidth = 150;
+
+	EditorUI::Checkbox("System Active?", m_isActive, activeParameters);
 
 	ImGui::Spacing();
 }

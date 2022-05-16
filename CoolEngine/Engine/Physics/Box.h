@@ -140,7 +140,12 @@ public:
 
 		ImGui::Spacing();
 
-		EditorUI::DragFloat2("Dimensions", m_scale, 100.0f, 0.01f, 0, 100);
+        auto boxParameters = EditorUIFloatParameters();
+        boxParameters.m_speed = 0.01f;
+        boxParameters.m_minValue = 0;
+        boxParameters.m_maxValue = 100;
+
+		EditorUI::DragFloat2("Dimensions", m_scale, boxParameters);
 	}
 #endif
 };

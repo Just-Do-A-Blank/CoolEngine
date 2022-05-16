@@ -106,10 +106,14 @@ void TileMapTool::Render()
 			ImGui::EndMenuBar();
 		}
 
+        auto layerParameters = EditorUIIntParameters();
+        layerParameters.m_minValue = 0;
+        layerParameters.m_maxValue = GraphicsManager::GetInstance()->GetNumLayers() - 1;
+
 		switch (m_toolMode)
 		{
 		case ToolMode::LAYER:
-			EditorUI::DragInt("Layer", m_paintLayer, 100.0f, 0.1f, 0, GraphicsManager::GetInstance()->GetNumLayers() - 1);
+			EditorUI::DragInt("Layer", m_paintLayer, layerParameters);
 			break;
 
 		case ToolMode::TEXTURE:

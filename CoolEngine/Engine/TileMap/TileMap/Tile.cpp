@@ -101,7 +101,11 @@ void Tile::CreateEngineUI()
 
 	ImGui::Spacing();
 
-	EditorUI::DragInt("Layer", m_layer, 100.0f, 0.1f, 0, GraphicsManager::GetInstance()->GetNumLayers() - 1);
+    auto layerParameters = EditorUIIntParameters();
+    layerParameters.m_minValue = 0;
+    layerParameters.m_maxValue = GraphicsManager::GetInstance()->GetNumLayers() - 1;
+
+	EditorUI::DragInt("Layer", m_layer, layerParameters);
 
 	ImGui::Spacing();
 
