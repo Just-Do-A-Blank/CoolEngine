@@ -1,6 +1,6 @@
-#include <Engine/Managers/Events/DamageCalculation.h>
-#include <Engine/GameObjects/CharacterGameObject.h>
-#include <Engine/GameObjects/WeaponGameObject.h>
+#include "Engine/Managers/Events/DamageCalculation.h"
+#include "Engine/GameObjects/CharacterGameObject.h"
+#include "Engine/GameObjects/WeaponGameObject.h"
 
 
 float DamageCalculation::CalculateDamage(float weaponDamage, ELEMENTS weaponElement, ELEMENTS characterElement, ELEMENTALSTATUSES characterStatus)
@@ -40,7 +40,7 @@ float DamageCalculation::CalculateDamage(float weaponDamage, ELEMENTS weaponElem
 
 void DamageCalculation::TriggerEnter(TriggerEnterEvent* e)
 {
-	//LOG("Trigger enter!");
+	
 }
 
 void DamageCalculation::TriggerHold(TriggerHoldEvent* e)
@@ -60,7 +60,7 @@ void DamageCalculation::TriggerHold(TriggerHoldEvent* e)
 
 void DamageCalculation::TriggerExit(TriggerExitEvent* e)
 {
-	//LOG("Trigger exit!");
+	
 }
 
 void DamageCalculation::Handle(Event* e)

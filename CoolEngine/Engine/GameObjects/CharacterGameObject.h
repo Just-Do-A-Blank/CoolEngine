@@ -1,6 +1,6 @@
 #pragma once
 #include "TriggerableGameObject.h"
-#include <Engine/Managers/Events/DamageCalculation.h>
+#include "Engine/Managers/Events/DamageCalculation.h"
 
 class CharacterGameObject : public TriggerableGameObject
 {
