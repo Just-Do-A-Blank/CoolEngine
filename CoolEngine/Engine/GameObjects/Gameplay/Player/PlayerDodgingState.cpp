@@ -1,22 +1,24 @@
-#include "Engine/GameObjects/Gameplay/Player/PlayerWalkingState.h"
-#include <Engine/Managers/Events/EventManager.h>
 #include "PlayerDodgingState.h"
+#include "PlayerWalkingState.h"
+#include <Engine/Managers/Events/EventManager.h>
 
-PlayerWalkingState::PlayerWalkingState(PlayerMovementParameters movement)
+PlayerDodgingState::PlayerDodgingState(PlayerMovementParameters movement)
 {
-    m_nextState = EPLAYERMOVEMENTSTATE::Walking;
+    m_nextState = EPLAYERMOVEMENTSTATE::Dodging;
     m_playerMovementParameters = movement;
 
-	m_transform = movement.m_transform;
-	m_gameplayButtons = movement.m_gameplayButtons;
+    m_transform = movement.m_transform;
+    m_gameplayButtons = movement.m_gameplayButtons;
     m_moveSpeedMax = movement.m_maxSpeed;
-    m_speedMultiplier = movement.m_walkingSpeed;
+    m_speedMultiplier = movement.m_dodgeSpeed;
     m_moveSpeedPerFrame = movement.m_moveSpeedPerFrame;
     m_dragSpeedPerFrame = movement.m_dragSpeedPerFrame;
-    m_firstMovementButton = movement.m_lastFirstPressedInputButton;
-    m_secondMovementButton = movement.m_lastSecondPressedInputButton;
+    m_timeInSecondsToDodgeFor = movement.m_timeInSecondsToDodgeFor;
     m_forceApplied = movement.m_forceApplied;
     m_moveSpeed = movement.m_moveSpeed;
+
+    m_firstMovementButton = movement.m_lastFirstPressedInputButton;
+    m_secondMovementButton = movement.m_lastSecondPressedInputButton;
 
     EventManager::Instance()->AddClient(EventType::KeyPressed, this);
     EventManager::Instance()->AddClient(EventType::KeyReleased, this);
@@ -25,7 +27,7 @@ PlayerWalkingState::PlayerWalkingState(PlayerMovementParameters movement)
     EventManager::Instance()->AddClient(EventType::MouseMoved, this);
 }
 
-PlayerWalkingState::~PlayerWalkingState()
+PlayerDodgingState::~PlayerDodgingState()
 {
     EventManager::Instance()->RemoveClientEvent(EventType::KeyPressed, this);
     EventManager::Instance()->RemoveClientEvent(EventType::KeyReleased, this);
@@ -35,29 +37,24 @@ PlayerWalkingState::~PlayerWalkingState()
 }
 
 /// <summary>
-/// Handles events from the Observations
+/// Updates the state and moves the player
 /// </summary>
-void PlayerWalkingState::Handle(Event* e)
+/// <param name="timeDelta">Time between frames</param>
+/// <returns>True means state may remain, False means the state is complete</returns>
+bool PlayerDodgingState::Update(float timeDelta)
 {
-    switch (e->GetEventID())
+    m_timeElapsed += timeDelta;
+    if (m_timeElapsed >= *m_timeInSecondsToDodgeFor)
     {
-    case EventType::KeyPressed:
-        KeyPressed((KeyPressedEvent*)e);
-        break;
-    case EventType::KeyReleased:
-        KeyReleased((KeyReleasedEvent*)e);
-        break;
+        m_nextState = EPLAYERMOVEMENTSTATE::Walking;
     }
-}
 
-bool PlayerWalkingState::Update(float timeDelta)
-{
-    bool areCurrentlyRunning = m_nextState == EPLAYERMOVEMENTSTATE::Walking;
+    bool areCurrentlyRunning = m_nextState == EPLAYERMOVEMENTSTATE::Dodging;
     if (areCurrentlyRunning)
     {
         MovePlayer(timeDelta);
     }
-    
+
     return areCurrentlyRunning;
 }
 
@@ -65,46 +62,46 @@ bool PlayerWalkingState::Update(float timeDelta)
 /// The next state use if this state no longer needed
 /// </summary>
 /// <returns>The next state to use</returns>
-PlayerMovementState* PlayerWalkingState::NextState()
+PlayerMovementState* PlayerDodgingState::NextState()
 {
     m_playerMovementParameters.m_lastFirstPressedInputButton = m_firstMovementButton;
     m_playerMovementParameters.m_lastSecondPressedInputButton = m_secondMovementButton;
 
-    switch (m_nextState)
-    {
-        case EPLAYERMOVEMENTSTATE::Walking:
-            return this;
-        case EPLAYERMOVEMENTSTATE::Dodging:
-            LOG("Dodging");
-            return new PlayerDodgingState(m_playerMovementParameters);
-    }
+	return new PlayerWalkingState(m_playerMovementParameters);
+}
 
-    return this;
+/// <summary>
+/// Handles events from the Observations
+/// </summary>
+void PlayerDodgingState::Handle(Event* e)
+{
+    switch (e->GetEventID())
+    {
+    case EventType::KeyPressed:
+        m_nextState = KeyPressed((KeyPressedEvent*)e);
+        break;
+    case EventType::KeyReleased:
+        KeyReleased((KeyReleasedEvent*)e);
+        break;
+    }
 }
 
 /// <summary>
 /// Handles any keypresses when they are pressed (frame whilst pressed)
 /// </summary>
-void PlayerWalkingState::KeyPressed(KeyPressedEvent* e)
+EPLAYERMOVEMENTSTATE PlayerDodgingState::KeyPressed(KeyPressedEvent* e)
 {
+    auto returnState = EPLAYERMOVEMENTSTATE::Dodging;
     EGAMEPLAYBUTTONCLASS button = m_gameplayButtons->GetGameplayButtonFromKeyInput(e->GetKeyCode());
-    if (button == EGAMEPLAYBUTTONCLASS::Dodge)
-    {
-        m_nextState = EPLAYERMOVEMENTSTATE::Dodging;
-    }
-    
+    UpdateButtonOrderOnButtonPressed(button);
 
-    if (m_nextState == EPLAYERMOVEMENTSTATE::Walking &&
-        button != EGAMEPLAYBUTTONCLASS::Nothing)
-    {
-        UpdateButtonOrderOnButtonPressed(button);
-    }
+    return returnState;
 }
 
 /// <summary>
 /// Handles any keypresses when they are released (first frame).
 /// </summary>
-void PlayerWalkingState::KeyReleased(KeyReleasedEvent* e)
+void PlayerDodgingState::KeyReleased(KeyReleasedEvent* e)
 {
     EGAMEPLAYBUTTONCLASS button = m_gameplayButtons->GetGameplayButtonFromKeyInput(e->GetKeyCode());
     if (button != EGAMEPLAYBUTTONCLASS::Nothing)
@@ -117,7 +114,7 @@ void PlayerWalkingState::KeyReleased(KeyReleasedEvent* e)
 /// Updates the button pressed first/second on button pressed
 /// </summary>
 /// <param name="buttons">The gameplay button pressed</param>
-void PlayerWalkingState::UpdateButtonOrderOnButtonPressed(EGAMEPLAYBUTTONCLASS button)
+void PlayerDodgingState::UpdateButtonOrderOnButtonPressed(EGAMEPLAYBUTTONCLASS button)
 {
     if (m_firstMovementButton == button || m_secondMovementButton == button)
     {
@@ -147,7 +144,7 @@ void PlayerWalkingState::UpdateButtonOrderOnButtonPressed(EGAMEPLAYBUTTONCLASS b
 /// </summary>
 /// <param name="button">The gameplay button pressed</param>
 /// <return>True, means the button moves a vertical direction</return>
-bool PlayerWalkingState::IsVerticalDirection(EGAMEPLAYBUTTONCLASS button)
+bool PlayerDodgingState::IsVerticalDirection(EGAMEPLAYBUTTONCLASS button)
 {
     bool isVertical = false;
     switch (button)
@@ -166,7 +163,7 @@ bool PlayerWalkingState::IsVerticalDirection(EGAMEPLAYBUTTONCLASS button)
 /// </summary>
 /// <param name="button">The gameplay button pressed</param>
 /// <return>True, means the button moves a horizontal direction</return>
-bool PlayerWalkingState::IsHorizontalDirection(EGAMEPLAYBUTTONCLASS button)
+bool PlayerDodgingState::IsHorizontalDirection(EGAMEPLAYBUTTONCLASS button)
 {
     bool isVertical = false;
     switch (button)
@@ -186,7 +183,7 @@ bool PlayerWalkingState::IsHorizontalDirection(EGAMEPLAYBUTTONCLASS button)
 /// <param name="current">The button to check</param>
 /// <param name="test">The button to test against</param>
 /// <return>True means the buttons are on the same axis</return>
-bool PlayerWalkingState::ButtonIsOnTheSameAxis(EGAMEPLAYBUTTONCLASS current, EGAMEPLAYBUTTONCLASS test)
+bool PlayerDodgingState::ButtonIsOnTheSameAxis(EGAMEPLAYBUTTONCLASS current, EGAMEPLAYBUTTONCLASS test)
 {
     bool sameAxis = IsVerticalDirection(current) && IsVerticalDirection(test);
     if (!sameAxis)
@@ -203,7 +200,7 @@ bool PlayerWalkingState::ButtonIsOnTheSameAxis(EGAMEPLAYBUTTONCLASS current, EGA
 /// <param name="current">The button to check</param>
 /// <param name="test">The button to test against</param>
 /// <return>True means the buttons do not match but the axis match</return>
-bool PlayerWalkingState::ButtonIsNotTheSameButIsInTheSameAxis(EGAMEPLAYBUTTONCLASS current, EGAMEPLAYBUTTONCLASS test)
+bool PlayerDodgingState::ButtonIsNotTheSameButIsInTheSameAxis(EGAMEPLAYBUTTONCLASS current, EGAMEPLAYBUTTONCLASS test)
 {
     bool buttonsSameAndOnSameAxis = current != test;
     if (buttonsSameAndOnSameAxis)
@@ -218,7 +215,7 @@ bool PlayerWalkingState::ButtonIsNotTheSameButIsInTheSameAxis(EGAMEPLAYBUTTONCLA
 /// Updates the button pressed first/second on button released
 /// </summary>
 /// <param name="buttons">The gameplay button pressed</param>
-void PlayerWalkingState::UpdateButtonOrderOnButtonReleased(EGAMEPLAYBUTTONCLASS button)
+void PlayerDodgingState::UpdateButtonOrderOnButtonReleased(EGAMEPLAYBUTTONCLASS button)
 {
     if (m_firstMovementButton == button)
     {
@@ -242,7 +239,7 @@ void PlayerWalkingState::UpdateButtonOrderOnButtonReleased(EGAMEPLAYBUTTONCLASS 
 /// Handles moving the player
 /// </summary>
 /// <param name="timeDelta">Delta time between frames</param>
-void PlayerWalkingState::MovePlayer(float timeDelta)
+void PlayerDodgingState::MovePlayer(float timeDelta)
 {
     XMFLOAT3 vector = XMFLOAT3(0, 0, 0);
     MoveVectorByButton(&vector, m_firstMovementButton);
@@ -257,7 +254,7 @@ void PlayerWalkingState::MovePlayer(float timeDelta)
 /// </summary>
 /// <param name="vector">Vector to move</param>
 /// <param name="button">Button pressed</param>
-void PlayerWalkingState::MoveVectorByButton(XMFLOAT3* vector, EGAMEPLAYBUTTONCLASS button)
+void PlayerDodgingState::MoveVectorByButton(XMFLOAT3* vector, EGAMEPLAYBUTTONCLASS button)
 {
     if (button != EGAMEPLAYBUTTONCLASS::Nothing)
     {
@@ -272,7 +269,7 @@ void PlayerWalkingState::MoveVectorByButton(XMFLOAT3* vector, EGAMEPLAYBUTTONCLA
 /// </summary>
 /// <param name="button">The button to test against</param>
 /// <return>The direction change to apply to the transform to apply the force of the button</return>
-XMFLOAT3 PlayerWalkingState::GetVectorChangeForGameplayButton(EGAMEPLAYBUTTONCLASS button)
+XMFLOAT3 PlayerDodgingState::GetVectorChangeForGameplayButton(EGAMEPLAYBUTTONCLASS button)
 {
     XMFLOAT3 vector = XMFLOAT3(0, 0, 0);
     switch (button)
@@ -299,7 +296,7 @@ XMFLOAT3 PlayerWalkingState::GetVectorChangeForGameplayButton(EGAMEPLAYBUTTONCLA
 /// </summary>
 /// <param name="timeDelta">Delta time between frames</param>
 /// <param name="direction">Direction to apply force</param>
-void PlayerWalkingState::ApplyForce(float timeDelta, XMFLOAT3 direction)
+void PlayerDodgingState::ApplyForce(float timeDelta, XMFLOAT3 direction)
 {
     if (direction.x == 0.0f && direction.y == 0.0f)
     {
@@ -316,7 +313,7 @@ void PlayerWalkingState::ApplyForce(float timeDelta, XMFLOAT3 direction)
     *m_moveSpeed += *m_moveSpeedPerFrame * timeDelta;
 
     float drag = ((*m_moveSpeedMax * 100) / 2) * timeDelta;
-    SlowSpeedIfDirectionChanged(original, *m_forceApplied, drag,  m_moveSpeed);
+    SlowSpeedIfDirectionChanged(original, *m_forceApplied, drag, m_moveSpeed);
     RestrictSpeedAndForceToResonableBounds(m_moveSpeed, *m_moveSpeedMax, m_forceApplied);
 }
 
@@ -325,7 +322,7 @@ void PlayerWalkingState::ApplyForce(float timeDelta, XMFLOAT3 direction)
 /// </summary>
 /// <param name="axisValue">The value to update</param>
 /// <param name="direction">The intensity to apply</param>
-void PlayerWalkingState::ApplyForceToSingleAxis(float* axisValue, float direction)
+void PlayerDodgingState::ApplyForceToSingleAxis(float* axisValue, float direction)
 {
     if (direction != 0)
     {
@@ -350,7 +347,7 @@ void PlayerWalkingState::ApplyForceToSingleAxis(float* axisValue, float directio
 /// <param name="newDirection">The direction the vector is moving now</param>
 /// <param name="drag">The drag amount if direction moves</param>
 /// <param name="movementSpeed">The movement speed to adjust</param>
-void PlayerWalkingState::SlowSpeedIfDirectionChanged(XMFLOAT3 originalDirection, XMFLOAT3 newDirection, float drag, float* movementSpeed)
+void PlayerDodgingState::SlowSpeedIfDirectionChanged(XMFLOAT3 originalDirection, XMFLOAT3 newDirection, float drag, float* movementSpeed)
 {
     if ((originalDirection.x > 0 && newDirection.x < 0) || (originalDirection.x < 0 && newDirection.x > 0))
     {
@@ -368,7 +365,7 @@ void PlayerWalkingState::SlowSpeedIfDirectionChanged(XMFLOAT3 originalDirection,
 /// <param name="speed">Current speed to restrict</param>
 /// <param name="maxSpeed">The max speed for the instance</param>
 /// <param name="force">Force which is also restricted if speed is 0</param>
-void PlayerWalkingState::RestrictSpeedAndForceToResonableBounds(float* speed, float maxSpeed, XMFLOAT3* force)
+void PlayerDodgingState::RestrictSpeedAndForceToResonableBounds(float* speed, float maxSpeed, XMFLOAT3* force)
 {
     if (*speed > maxSpeed)
     {
@@ -386,7 +383,7 @@ void PlayerWalkingState::RestrictSpeedAndForceToResonableBounds(float* speed, fl
 /// Moves the player based on forces applied
 /// </summary>
 /// <param name="timeDelta">Delta time between frames</param>
-void PlayerWalkingState::MoveByForce(float timeDelta)
+void PlayerDodgingState::MoveByForce(float timeDelta)
 {
     if (m_moveSpeed > 0 && (m_forceApplied->x != 0 || m_forceApplied->y != 0))
     {
@@ -415,7 +412,7 @@ void PlayerWalkingState::MoveByForce(float timeDelta)
 /// <param name="speed">Speed to move the player</param>
 /// <param name="drag">Drag value to apply</param>
 /// <param name="delta">Time delta to use when slowing the player</param>
-void PlayerWalkingState::SlowPlayerBasedOnDrag(float* speed, float drag, float delta)
+void PlayerDodgingState::SlowPlayerBasedOnDrag(float* speed, float drag, float delta)
 {
     *speed -= drag * delta;
     if (*speed < 0)
@@ -431,7 +428,7 @@ void PlayerWalkingState::SlowPlayerBasedOnDrag(float* speed, float drag, float d
 /// <param name="force">Force to apply</param>
 /// <param name="speed">Speed to use</param>
 /// <param name="distance">Distance to move the player</param>
-void PlayerWalkingState::MoveTransformInDirectionByDistance(Transform* transform, XMFLOAT3 force, float speed, float distance)
+void PlayerDodgingState::MoveTransformInDirectionByDistance(Transform* transform, XMFLOAT3 force, float speed, float distance)
 {
     float size = sqrt(force.x * force.x + force.y * force.y);
 
@@ -445,7 +442,7 @@ void PlayerWalkingState::MoveTransformInDirectionByDistance(Transform* transform
 /// </summary>
 /// <param name="value">Value to adjust</param>
 /// <param name="intensity">Intensity to adjust the value by</param>
-void PlayerWalkingState::MoveFloatTowardZero(float* value, float intensity)
+void PlayerDodgingState::MoveFloatTowardZero(float* value, float intensity)
 {
     if (*value != 0)
     {

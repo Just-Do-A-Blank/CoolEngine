@@ -219,6 +219,9 @@
     <ClCompile Include="Engine\GameUI\ButtonComponent.cpp">
       <Filter>Engine\GameUI</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerDodgingState.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -589,6 +592,12 @@
     </ClInclude>
     <ClInclude Include="Engine\EditorUI\EditorUINonSpecificParameters.h">
       <Filter>Engine\EditorUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerDodgingState.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\EVirtualKeyCode.h">
+      <Filter>Engine\GameObjects\Gameplay\GameplayButtons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

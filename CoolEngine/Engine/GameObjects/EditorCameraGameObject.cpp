@@ -1,14 +1,16 @@
 #include "EditorCameraGameObject.h"
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/Managers/GameManager.h"
+#include <Engine/EditorUI/EditorUI.h>
 
 EditorCameraGameObject::EditorCameraGameObject(string identifier, CoolUUID uuid) : CameraGameObject(identifier, uuid)
 {
-
+	m_areControlledByUser = true;
 }
 
 EditorCameraGameObject::EditorCameraGameObject(const nlohmann::json& data, CoolUUID uuid) : CameraGameObject(data, uuid)
 {
+	m_areControlledByUser = true;
 	m_speedBoost = data["Speed Boost"];
 	m_moveSpeed = data["Movement Speed"];
 }
@@ -41,6 +43,11 @@ void EditorCameraGameObject::Handle(Event* e)
 
 void EditorCameraGameObject::KeyPressed(KeyPressedEvent* e)
 {
+	if (!m_areControlledByUser)
+	{
+		return;
+	}
+
 	if (e->GetKeyCode() == VK_SHIFT)
 	{
 		m_speedBoost = 5.0f;
@@ -75,6 +82,11 @@ void EditorCameraGameObject::KeyPressed(KeyPressedEvent* e)
 
 void EditorCameraGameObject::KeyReleased(KeyReleasedEvent* e)
 {
+	if (!m_areControlledByUser)
+	{
+
+	}
+
 	if (e->GetKeyCode() == VK_SHIFT)
 	{
 		m_speedBoost = 1.0f;
@@ -88,3 +100,20 @@ void EditorCameraGameObject::Serialize(nlohmann::json& jsonData)
 	jsonData["Speed Boost"] = m_speedBoost;
 	jsonData["Movement Speed"] = m_moveSpeed;
 }
+
+#if EDITOR
+	/// <summary>
+	/// Shows engine UI
+	/// </summary>
+	void EditorCameraGameObject::CreateEngineUI()
+	{
+		CameraGameObject::CreateEngineUI();
+
+		if (EditorUI::CollapsingSection("Camera controller", false))
+		{
+			auto cameraParameters = EditorUINonSpecificParameters();
+			cameraParameters.m_tooltipText = "Ticked means you can control the camera, Unticked means it will act more like the game.";
+			EditorUI::Checkbox("Controlled by User", m_areControlledByUser, cameraParameters);
+		}
+	}
+#endif

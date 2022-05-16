@@ -10,39 +10,48 @@ PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : Character
     GameplayButton up = 
     {
         EGAMEPLAYBUTTONCLASS::MoveUp,
-        list<int>(),
-        list<int>(),
+        list<EVIRTUALKEYCODE>(),
+        list<EVIRTUALKEYCODE>(),
     };
-    up.m_keyCodes.push_back('W');
+    up.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_W);
     GameplayButton down =
     {
         EGAMEPLAYBUTTONCLASS::MoveDown,
-        list<int>(),
-        list<int>(),
+        list<EVIRTUALKEYCODE>(),
+        list<EVIRTUALKEYCODE>(),
     };
-    down.m_keyCodes.push_back('S');
+    down.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_S);
 
     GameplayButton left =
     {
         EGAMEPLAYBUTTONCLASS::MoveLeft,
-        list<int>(),
-        list<int>(),
+        list<EVIRTUALKEYCODE>(),
+        list<EVIRTUALKEYCODE>(),
     };
-    left.m_keyCodes.push_back('A');
+    left.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_A);
 
     GameplayButton right =
     {
         EGAMEPLAYBUTTONCLASS::MoveRight,
-        list<int>(),
-        list<int>(),
+        list<EVIRTUALKEYCODE>(),
+        list<EVIRTUALKEYCODE>(),
     };
-    right.m_keyCodes.push_back('D');
+    right.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_D);
+
+	GameplayButton dash =
+	{
+		EGAMEPLAYBUTTONCLASS::Dodge,
+		list<EVIRTUALKEYCODE>(),
+		list<EVIRTUALKEYCODE>(),
+	};
+	dash.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_SHIFT);
 
     list< GameplayButton> gameplayButtons;
     gameplayButtons.push_back(up);
     gameplayButtons.push_back(down);
     gameplayButtons.push_back(left);
     gameplayButtons.push_back(right);
+    gameplayButtons.push_back(dash);
 
     InputsAsGameplayButtons* buttons = new InputsAsGameplayButtons(gameplayButtons);
     m_playerController = new PlayerController(buttons, GetTransform());
@@ -61,39 +70,48 @@ PlayerGameObject::PlayerGameObject(const nlohmann::json& data, CoolUUID uuid) : 
 	GameplayButton up =
 	{
 		EGAMEPLAYBUTTONCLASS::MoveUp,
-		list<int>(),
-		list<int>(),
+		list<EVIRTUALKEYCODE>(),
+		list<EVIRTUALKEYCODE>(),
 	};
-	up.m_keyCodes.push_back('W');
+	up.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_W);
 	GameplayButton down =
 	{
 		EGAMEPLAYBUTTONCLASS::MoveDown,
-		list<int>(),
-		list<int>(),
+		list<EVIRTUALKEYCODE>(),
+		list<EVIRTUALKEYCODE>(),
 	};
-	down.m_keyCodes.push_back('S');
+	down.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_S);
 
 	GameplayButton left =
 	{
 		EGAMEPLAYBUTTONCLASS::MoveLeft,
-		list<int>(),
-		list<int>(),
+		list<EVIRTUALKEYCODE>(),
+		list<EVIRTUALKEYCODE>(),
 	};
-	left.m_keyCodes.push_back('A');
+	left.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_A);
 
 	GameplayButton right =
 	{
 		EGAMEPLAYBUTTONCLASS::MoveRight,
-		list<int>(),
-		list<int>(),
+		list<EVIRTUALKEYCODE>(),
+		list<EVIRTUALKEYCODE>(),
 	};
-	right.m_keyCodes.push_back('D');
+	right.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_D);
+
+	GameplayButton dodge =
+	{
+		EGAMEPLAYBUTTONCLASS::Dodge,
+		list<EVIRTUALKEYCODE>(),
+		list<EVIRTUALKEYCODE>(),
+	};
+	dodge.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_SHIFT); //VK_LSHIFT
 
 	list< GameplayButton> gameplayButtons;
 	gameplayButtons.push_back(up);
 	gameplayButtons.push_back(down);
 	gameplayButtons.push_back(left);
 	gameplayButtons.push_back(right);
+	gameplayButtons.push_back(dodge);
 
 	InputsAsGameplayButtons* buttons = new InputsAsGameplayButtons(gameplayButtons);
 	m_playerController = new PlayerController(buttons, GetTransform());
