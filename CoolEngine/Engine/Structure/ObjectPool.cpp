@@ -45,7 +45,6 @@ bool ObjectPool<T>::ReleaseEntryInPool(ObjectEntry<T>* entry)
 	{
 		if (m_pObjects[i] == entry)
 		{
-			m_pObjects[i].m_pObject = nullptr;
 			m_pObjects[i].m_Active = false;
 			return	true;
 		}
