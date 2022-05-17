@@ -41,16 +41,17 @@
     <ClInclude Include="Engine\EditorUI\EditorUINonSpecificParameters.h" />
     <ClInclude Include="Engine\EditorUI\TileMapContentBrowser.h" />
     <ClInclude Include="Engine\FileIO\FileIO.h" />
-    <ClInclude Include="Engine\FileIO\FileIOCache.h" />
     <ClInclude Include="Engine\GameObjects\CameraGameObject.h" />
     <ClInclude Include="Engine\GameObjects\CharacterGameObject.h" />
     <ClInclude Include="Engine\GameObjects\CollidableGameObject.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Character\ECharacterDirectionClass.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\EGameplayButtonClass.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\EVirtualKeyCode.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\GameplayButton.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\EPLAYERMOVEMENTSTATE.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerController.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerDodgingState.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovementParameters.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovementState.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerWalkingState.h" />
@@ -148,7 +149,10 @@
     <ClInclude Include="Engine\Includes\RapidXML\rapidxml_utils.hpp" />
     <ClInclude Include="Engine\Managers\AudioManager.h" />
     <ClInclude Include="Engine\Managers\DebugDrawManager.h" />
+    <ClInclude Include="Engine\Managers\Events\AttackEvents.h" />
+    <ClInclude Include="Engine\Managers\Events\BulletCreator.h" />
     <ClInclude Include="Engine\Managers\Events\CollisionEvents.h" />
+    <ClInclude Include="Engine\Managers\Events\DamageCalculation.h" />
     <ClInclude Include="Engine\Managers\Events\EventManager.h" />
     <ClInclude Include="Engine\Managers\Events\EventObserver.h" />
     <ClInclude Include="Engine\Managers\Events\EventObserverExamples.h" />
@@ -191,12 +195,12 @@
     <ClCompile Include="Engine\EditorUI\EditorUI.cpp" />
     <ClCompile Include="Engine\EditorUI\TileMapContentBrowser.cpp" />
     <ClCompile Include="Engine\FileIO\FileIO.cpp" />
-    <ClCompile Include="Engine\FileIO\FileIOCache.cpp" />
     <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\CharacterGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\CollidableGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.cpp" />
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerController.cpp" />
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerDodgingState.cpp" />
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerWalkingState.cpp" />
     <ClCompile Include="Engine\GameObjects\InteractableGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\MeleeWeaponGameObject.cpp" />
@@ -249,6 +253,8 @@
     </ClCompile>
     <ClCompile Include="Engine\Main.cpp" />
     <ClCompile Include="Engine\Managers\DebugDrawManager.cpp" />
+    <ClCompile Include="Engine\Managers\Events\BulletCreator.cpp" />
+    <ClCompile Include="Engine\Managers\Events\DamageCalculation.cpp" />
     <ClCompile Include="Engine\Managers\Events\EventManager.cpp" />
     <ClCompile Include="Engine\Managers\Events\EventObserver.cpp" />
     <ClCompile Include="Engine\Managers\Events\Events.cpp" />

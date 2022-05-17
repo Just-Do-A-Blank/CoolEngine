@@ -250,13 +250,11 @@ void InGameUITool::TraverseTree(TreeNode<GameUIComponent>* pcurrentNode, int& no
 
 bool InGameUITool::SaveUI()
 {
-	FileIO::SaveUI(GAME_UI_PATH, UIManager::GetInstance());
 	return true;
 }
 
 bool InGameUITool::LoadUI()
 {
-	FileIO::LoadUI(GAME_UI_PATH, UIManager::GetInstance(), m_pdevice);
 	return true;
 }
 

@@ -1150,6 +1150,28 @@ void EditorUI::FullTitle(const string& label, EditorUINonSpecificParameters para
 }
 
 /// <summary>
+/// Creates a section of UI which is sectioned off. Major sections of the UI should be in collapsing sections
+/// such that they do not clutter the User Interface
+/// </summary>
+/// <param name="label">The label to use in the UI</param>
+/// <param name="defaultValue">true means open on load, will retain value between equal headers.</param>
+/// <returns>Use this in the if statement, returns if the area is open or closed</returns>
+bool EditorUI::CollapsingSection(const string& label, bool defaultValue)
+{
+	bool returnValue = false;
+	if (defaultValue)
+	{
+		returnValue = ImGui::CollapsingHeader(label.c_str(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen);
+	}
+	else
+	{
+		returnValue = ImGui::CollapsingHeader(label.c_str(), ImGuiTreeNodeFlags_OpenOnArrow);
+	}
+
+	return returnValue;
+}
+
+/// <summary>
 /// Sets up the default parameters for floats with defaults where optional parameters were opt-out
 /// </summary>
 /// <param name="parameters">Parameters optionally required to display a float or set of floats in the editor</param>

@@ -1,5 +1,6 @@
 #pragma once
-#include <Engine\GameObjects\Gameplay\GameplayButtons\EGameplayButtonClass.h>
+#include "Engine\GameObjects\Gameplay\GameplayButtons\EGameplayButtonClass.h"
+#include "Engine/GameObjects/Gameplay/GameplayButtons/EVirtualKeyCode.h"
 
 /// <summary>
 /// Stores information about a single gameplay button relating to the inputs required to hit that button
@@ -15,10 +16,10 @@ public:
     /// <summary>
     /// Key codes which relate to the gameplay buttons
     /// </summary>
-    list<int> m_keyCodes;
+    list<EVIRTUALKEYCODE> m_keyCodes;
 
     /// <summary>
     /// Mouse button codes relating to the gameplay buttons
     /// </summary>
-    list<int> m_mouseCode;
+    list<EVIRTUALKEYCODE> m_mouseCode;
 };

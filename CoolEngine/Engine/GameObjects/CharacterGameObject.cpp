@@ -29,6 +29,12 @@ void CharacterGameObject::Update()
 
 }
 
+void CharacterGameObject::TakeDamage(float damage)
+{
+	m_health -= damage;
+	// To do - Kill at zero health
+}
+
 void CharacterGameObject::Serialize(nlohmann::json& jsonData)
 {
 	TriggerableGameObject::Serialize(jsonData);
