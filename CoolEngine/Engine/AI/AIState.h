@@ -7,106 +7,190 @@ using namespace std;
 
 class EnemyGameObject;
 
-enum UnitClassType
+enum class enemyState
 {
-	Avoid,
+	AttackMelee,
+	AttackRanged,
+	Ability,
+	Advance,
+	Flee,
 	Stationary,
-	Aggressive
+	Wander
 };
 
-enum unitReaction
+enum class StateTriggers
 {
-	Away,
-	Towards,
-	None
+	DistanceFromPlayer,
 };
 
-class UnitClass
+struct StateTrigger 
+{
+
+};
+
+
+class StateController
 {
 public:
-
+	StateController(EnemyGameObject* enemy);
+	~StateController();
 	void Update();
 
-	UnitClass(EnemyGameObject* enemy, UnitClassType unitClass, bool attacker);
 
-	//Getters / Setters for max/min ranges
-	void SetDesiredRangeFromPlayer(float min, float max);
-	void SetMinimumDistanceFromPlayer(float min);
-	void SetMaximumDistanceFromPlayer(float max);
+	map<enemyState, StateBase*> GetAllStates() { return allStates; }
+	map<enemyState, StateBase*> GetAllActiveStates() { return activeStates; }
 
-	float GetMinimumDistanceFromPlayer() { return minimumDistance; }
-	float GetMaximumDistanceFromPlayer() { return maximumDistance; }
+	void AddState(StateBase* state);
 
+private:
+	map<enemyState,StateBase*> allStates;
+	map<enemyState,StateBase*> activeStates;
 
+};
+
+class StateBase
+{
+public:
+	StateBase(EnemyGameObject* enemy);
+	~StateBase();
+
+	bool CheckStateTrigger();
+
+	enemyState GetState() { return curState; }
+	void OnStateEntry();
+	void OnStateExit();
+	void ExecuteState();
 
 protected:
-	//Sets if the current Unit should be performing it's attacks
-	bool canAttack;
 
-	//Distance from player that the enemy wishes to be from the player. Default will be based on weapon type. Can be changed with setters.
-	float minimumDistance;
-	float maximumDistance;
-	float perfectDistance;
+	enemyState curState;
+	XMFLOAT3 GetPlayerPos();
+	StateTrigger trigger;
 
-	UnitClassType UnitType;
 
+	//Pointer to the enemy this state system is part of
 	EnemyGameObject* pEnemy;
-
-	unitReaction lastReaction;
-	unitReaction curReaction;
-
 };
 
-class UnitClassPassive : public UnitClass
-{
-private:
 
 
-public:
-	UnitClassPassive(EnemyGameObject* enemy, UnitClassType type);
-
-	void Update();
-};
-
-class UnitClassPassiveAvoid : public UnitClassPassive
+//Attack states
+class StateAttackBase : public StateBase
 {
 public:
-	UnitClassPassiveAvoid(EnemyGameObject* enemy);
 
-	void Update();
+	bool CheckStateTrigger();
+	void ExecuteState();
+	void OnStateEntry();
+	void OnStateExit();
+
+protected:
+	StateAttackBase(EnemyGameObject* enemy);
+	bool isAttacking;
 };
 
-class UnitClassPassiveStationary : public UnitClassPassive
+class StateAttackMelee : public StateAttackBase
 {
 public:
-	UnitClassPassiveStationary(EnemyGameObject* enemy);
 
-	void Update();
+	StateAttackMelee(EnemyGameObject* enemy);
+
+	void ExecuteState();
+	void OnStateEntry();
+	void OnStateExit();
+
+	bool CheckStateTrigger();
 };
 
-
-
-class UnitClassAggressive : public UnitClass
+class StateAttackRanged : public StateAttackBase
 {
 public:
-	UnitClassAggressive(EnemyGameObject* enemy);
-	UnitClassAggressive* GetCurrentState() { return this; }
+
+	StateAttackRanged(EnemyGameObject* enemy);
+
+	void ExecuteState();
+	void OnStateEntry();
+	void OnStateExit();
+
+	bool CheckStateTrigger();
 };
 
-
-
-
-
-
-class UnitClassMixed : public UnitClass
+class StateAbility : public StateAttackBase
 {
-private:
+	StateAbility(EnemyGameObject* enemy);
+
+	void ExecuteState();
+	void OnStateEntry();
+	void OnStateExit();
+
+	bool CheckStateTrigger();
+};
 
 
 
-public:
-	UnitClassMixed(EnemyGameObject* enemy);
-	UnitClassMixed* GetCurrentState() { return this; }
 
+//Movement controlling states
+class StateMovementBase : public StateBase
+{
+protected:
+	StateMovementBase(EnemyGameObject* enemy);
+
+	vector<node*> newPath;
+
+	void ExecuteState();
+	void OnStateEntry();
+	void OnStateExit();
+
+	bool CheckStateTrigger();
 
 };
+
+
+class StateAdvance : public StateMovementBase
+{
+public:
+	StateAdvance(EnemyGameObject* enemy);
+
+	void ExecuteState();
+	void OnStateEntry();
+	void OnStateExit();
+
+	bool CheckStateTrigger();
+};
+
+class StateFlee : public StateMovementBase
+{
+public: 
+	StateFlee(EnemyGameObject* enemy);
+
+	void ExecuteState();
+	void OnStateEntry();
+	void OnStateExit();
+
+	bool CheckStateTrigger();
+};
+
+class StateStationary : public StateMovementBase
+{
+public:
+	StateStationary(EnemyGameObject* enemy);
+
+	void ExecuteState();
+	void OnStateEntry();
+	void OnStateExit();
+
+	bool CheckStateTrigger();
+};
+
+class StateWander : public StateMovementBase
+{
+public:
+	StateWander(EnemyGameObject* enemy);
+
+	void ExecuteState();
+	void OnStateEntry();
+	void OnStateExit();
+
+	bool CheckStateTrigger();
+};
+

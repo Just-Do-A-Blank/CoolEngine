@@ -98,6 +98,7 @@ bool Pathfinding::FindPerfectPath(XMFLOAT3 curPos, XMFLOAT3 tarPos, vector<node*
 	return GeneratePath(tarPos,path);
 }
 
+
 /// <summary>
 /// 
 /// Calculates the path from start to end using A*

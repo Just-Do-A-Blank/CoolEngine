@@ -20,8 +20,6 @@ void EnemyGameObject::Update()
 		LOG("MISSING AI")
 	}
 
-
-
 	if (!m_curPath.empty())
 	{
 

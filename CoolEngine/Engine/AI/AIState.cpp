@@ -1,122 +1,373 @@
 #include "AIState.h"
 #include "Engine/GameObjects/EnemyGameObject.h"
+#include "Engine/Managers/GameManager.h"
+#include "Pathfinding.h"
 
+//---------------------------------------------------------------------------//
+//
+// State Controller
+//
+//---------------------------------------------------------------------------//
 
-
-UnitClass::UnitClass(EnemyGameObject* enemy, UnitClassType unitClass, bool attacker) : pEnemy(enemy), UnitType(unitClass), canAttack(attacker)
+StateController::StateController(EnemyGameObject* enemy)
 {
-	curReaction = None;
-	lastReaction = None;
+	
+}
+
+StateController::~StateController()
+{
+}
+
+void StateController::Update()
+{
+	//Looping all states to check if they should be active
+	for (auto const& state : allStates)
+	{
+		bool active = (activeStates.find(state.first) == activeStates.end());
+
+		//if this current state should be triggered this update loop
+		if (state.second->CheckStateTrigger())
+		{
+			//if this state isnt active already, add to the active states list and trigger it's on-entry
+			if (active)
+			{
+				activeStates.insert(state);
+				state.second->OnStateEntry();
+			}
+		}
+		else
+		{
+			//If this state is active, remove from the active list and trigger its on-exit
+			if (active)
+			{
+				activeStates.erase(state.first);
+				state.second->OnStateExit();
+			}
+		}
+	}
+
+	//Trigger all active states. This does involve some looping over already looped items but allows better debugging 
+	for (auto const& state : activeStates)
+	{
+		state.second->ExecuteState();
+	}
+}
+
+//Adds a state into the controller if the state key doesnt already exist, if it does exist then it won't be added to the list of states
+void StateController::AddState(StateBase* state)
+{
+	allStates.insert({ state->GetState(), state });
 }
 
 
-void UnitClass::SetDesiredRangeFromPlayer(float min, float max)
+
+//---------------------------------------------------------------------------//
+//
+// Base State
+//
+//---------------------------------------------------------------------------//
+StateBase::StateBase(EnemyGameObject* enemy) : pEnemy(enemy)
 {
-	minimumDistance = min;
-	maximumDistance = max;
-	perfectDistance = minimumDistance + maximumDistance / 2;
+
 }
 
-void UnitClass::SetMinimumDistanceFromPlayer(float min)
+StateBase::~StateBase()
 {
-	minimumDistance = min;
-	perfectDistance = minimumDistance + maximumDistance / 2;
 }
 
-void UnitClass::SetMaximumDistanceFromPlayer(float max)
+bool StateBase::CheckStateTrigger()
 {
-	maximumDistance = max;
-	perfectDistance = minimumDistance + maximumDistance / 2;
+	return false;
 }
 
-void UnitClass::Update()
+void StateBase::ExecuteState()
 {
-	XMFLOAT3 playerPos;
-	XMFLOAT3 enemyPos = pEnemy->GetTransform()->GetPosition();
-	float distanceToPlayer = MathHelper::Distance(playerPos, enemyPos);
+}
 
-	//Check if the player is too close, or too far
-	if (distanceToPlayer > maximumDistance)
-	{
-		curReaction = Towards;
-	}
-	else if (distanceToPlayer < minimumDistance)
-	{
-		curReaction = Away;
-	}
-	else
-	{
-		curReaction = None;
-	}
+void StateBase::OnStateEntry()
+{
+}
 
-	//Currently generating a new path for the character on each tick of the game, if this proves to be slow, have a timer for only doing it every second or so
-	vector<node*> newPath;
-	switch (curReaction)
-	{
-	case Towards:
-		//Generating a new path towards the player with each update loop
-		Pathfinding::GetInstance()->FindPath(enemyPos, playerPos, newPath);
+void StateBase::OnStateExit()
+{
+}
 
-		break;
-	case Away:
-		//Forming a path between the enemy and the minimum radius
-		XMFLOAT3 dir = MathHelper::Normalize(MathHelper::Minus(playerPos, enemyPos));
-		dir = MathHelper::Multiply(dir, perfectDistance);
-		Pathfinding::GetInstance()->FindPath(enemyPos, dir, newPath);
+XMFLOAT3 StateBase::GetPlayerPos()
+{
+	//Gets the player's position from the GameManager, for usage within the states for movement / attacking
+	return (*GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject*>(string("Player")))->GetTransform()->GetPosition();
+}
 
-		break;
-	case None:
-		newPath = pEnemy->GetPath();
-		break;
-	}
+//---------------------------------------------------------------------------//
+// 
+//Attacking states
+// 
+//---------------------------------------------------------------------------//
+
+StateAttackBase::StateAttackBase(EnemyGameObject* enemy) : StateBase(enemy)
+{
+
+}
+
+void StateAttackBase::ExecuteState()
+{
+	StateBase::ExecuteState();
+}
+
+void StateAttackBase::OnStateEntry()
+{
+	StateBase::OnStateEntry();
+}
+
+void StateAttackBase::OnStateExit()
+{
+	StateBase::OnStateExit();
+}
+
+bool StateAttackBase::CheckStateTrigger()
+{
+	StateBase::CheckStateTrigger();
+}
+
+
+
+
+//Melee Attack state, causes the enemy to use its melee weapon
+StateAttackMelee::StateAttackMelee(EnemyGameObject* enemy) : StateAttackBase(enemy)
+{
+	curState = enemyState::AttackMelee;
+	isAttacking = true;
+}
+
+void StateAttackMelee::ExecuteState()
+{
+	//Use respective weapon
+	StateAttackBase::ExecuteState();
+}
+
+void StateAttackMelee::OnStateEntry()
+{
+	StateAttackBase::OnStateEntry();
+}
+
+void StateAttackMelee::OnStateExit()
+{
+	StateAttackBase::OnStateExit();
+}
+
+
+
+//Ranged Attack State, causes the enemy to fire its weapon
+StateAttackRanged::StateAttackRanged(EnemyGameObject* enemy) : StateAttackBase(enemy)
+{
+	curState = enemyState::AttackRanged;
+	isAttacking = true;
+}
+
+void StateAttackRanged::ExecuteState()
+{
+	//Use respective weapon
+	StateAttackBase::ExecuteState();
+}
+
+void StateAttackRanged::OnStateEntry()
+{
+	StateAttackBase::OnStateEntry();
+}
+
+void StateAttackRanged::OnStateExit()
+{
+	StateAttackBase::OnStateExit();
+}
+
+//---------------------------------------------------------------------------//
+// 
+//Movement States
+// 
+//---------------------------------------------------------------------------//
+
+StateMovementBase::StateMovementBase(EnemyGameObject* enemy) : StateBase(enemy)
+{
+
+}
+
+void StateMovementBase::ExecuteState()
+{
+	//Sets the new constructed path
 	pEnemy->SetPath(newPath);
+	StateBase::ExecuteState();
+}
 
+void StateMovementBase::OnStateEntry()
+{
+	StateBase::OnStateEntry();
+}
+
+void StateMovementBase::OnStateExit()
+{
+	StateBase::OnStateExit();
 }
 
 
-UnitClassPassive::UnitClassPassive(EnemyGameObject* enemy, UnitClassType type) : UnitClass(enemy, type ,false)
+
+
+
+
+//Advance state, causes the enemy to pathfind towards the player
+StateAdvance::StateAdvance(EnemyGameObject* enemy) : StateMovementBase(enemy)
 {
-	if (curReaction == None)
+	curState = enemyState::Advance;
+}
+
+void StateAdvance::ExecuteState()
+{
+	XMFLOAT3 playerPos = StateBase::GetPlayerPos();
+	XMFLOAT3 enemyPos = pEnemy->GetTransform()->GetPosition();
+
+	//Generating a new path towards the player with each update loop
+	Pathfinding::GetInstance()->FindPath(enemyPos, playerPos, newPath);
+
+	StateMovementBase::ExecuteState();
+}
+
+void StateAdvance::OnStateEntry()
+{
+	StateMovementBase::OnStateEntry();
+}
+
+void StateAdvance::OnStateExit()
+{
+	StateMovementBase::OnStateExit();
+}
+
+
+
+
+
+
+
+//Flee State, causes the enemy to pathfind away from the player
+StateFlee::StateFlee(EnemyGameObject* enemy) : StateMovementBase(enemy)
+{
+	curState = enemyState::Flee;
+}
+
+void StateFlee::ExecuteState()
+{
+	XMFLOAT3 playerPos = StateBase::GetPlayerPos();
+	XMFLOAT3 enemyPos = pEnemy->GetTransform()->GetPosition();
+
+	//Set path to be the furthest node from the player
+	node* closestNode = Pathfinding::GetInstance()->FindClosestNode(enemyPos);
+	node* nodeToPath;
+	float distToFurthest = INT64_MIN;
+
+	for (int i = 0; closestNode->m_pNeighbours.size(); i++)
 	{
-		//Check if ability can be used
-		//Use ability if it can be used
+		//Skip obstacles
+		if (closestNode->m_pNeighbours[i]->m_obstacle)
+		{
+			continue;
+		}
+
+		float curDist = MathHelper::Distance(closestNode->m_pNeighbours[i]->m_pos, playerPos);
+
+		if (curDist > distToFurthest)
+		{
+			distToFurthest = curDist;
+			nodeToPath = closestNode->m_pNeighbours[i];
+		}
+	}
+
+
+	//If the node we want to construct a path to isn't the next node that we want to path to
+	if (nodeToPath != pEnemy->GetPath()[0])
+	{
+		Pathfinding::GetInstance()->FindPath(enemyPos, nodeToPath->m_pos, newPath);
+		StateMovementBase::ExecuteState();
+	}
+
+	//if it is then continue as usual, avoids constructing a new path, the constructed path will almost always be of size 1. Possible to change but this is super simple to get the enemy to run in the opposite direction of the player (or an available node)
+
+
+
+}
+
+void StateFlee::OnStateEntry()
+{
+	StateMovementBase::OnStateEntry();
+}
+
+void StateFlee::OnStateExit()
+{
+	StateMovementBase::OnStateExit();
+}
+
+
+
+
+//Stationary state, clears the current path as the enemy doesnt want to move
+StateStationary::StateStationary(EnemyGameObject* enemy) : StateMovementBase(enemy)
+{
+	curState = enemyState::Stationary;
+}
+
+void StateStationary::ExecuteState()
+{
+	newPath.clear();
+	StateMovementBase::ExecuteState();
+}
+
+void StateStationary::OnStateEntry()
+{
+	StateMovementBase::OnStateEntry();
+}
+
+void StateStationary::OnStateExit()
+{
+	StateMovementBase::OnStateExit();
+}
+
+
+
+//Wander state, causes the pathfinder to choose a random nearby node and move towards it, will only select a new node when there is no node to move towards currently
+
+StateWander::StateWander(EnemyGameObject* enemy) : StateMovementBase(enemy)
+{
+	curState = enemyState::Wander;
+}
+
+void StateWander::ExecuteState()
+{
+
+	//if there is not currently a node for this state to go towards, then generate one
+	if (pEnemy->GetPath().size() == 0)
+	{
+		XMFLOAT3 enemyPos = pEnemy->GetTransform()->GetPosition();
+		node* closest = Pathfinding::GetInstance()->FindClosestNode(enemyPos);
+
+		node* chosenNode;
+
+		do
+		{
+			int random = rand() % (closest->m_pNeighbours.size() - 1);
+			chosenNode = closest->m_pNeighbours[random];
+		}while (!chosenNode->m_obstacle);
+
+
+		//If the node we want to construct a path to isn't the next node that we want to path to
+		Pathfinding::GetInstance()->FindPath(pEnemy->GetTransform()->GetPosition(), chosenNode->m_pos, newPath);
+		StateMovementBase::ExecuteState();
 	}
 }
 
-void UnitClassPassive::Update()
+void StateWander::OnStateEntry()
 {
-	UnitClass::Update();
+	StateMovementBase::OnStateEntry();
 }
 
-UnitClassPassiveAvoid::UnitClassPassiveAvoid(EnemyGameObject* enemy) : UnitClassPassive(enemy,Avoid)
+void StateWander::OnStateExit()
 {
-	//Change these to be the values that we need
-	minimumDistance = 0;
-	maximumDistance = INT64_MAX;
+	StateMovementBase::OnStateExit();
 }
 
-void UnitClassPassiveAvoid::Update()
-{
-	UnitClassPassive::Update();
-}
-
-UnitClassPassiveStationary::UnitClassPassiveStationary(EnemyGameObject* enemy) : UnitClassPassive(enemy,Stationary)
-{
-	//This unit doesn't move away or towards the player ever. It will just move towards a nearby node on update loop
-	minimumDistance = 0;
-	maximumDistance = INT64_MAX;
-}
-
-void UnitClassPassiveStationary::Update()
-{
-	//Randomly selects a nearby node to move towards
-	vector<node*> path;
-	node* closest = Pathfinding::GetInstance()->FindClosestNode(pEnemy->GetTransform()->GetPosition());
-	int random = rand() % (closest->m_pNeighbours.size() - 1);
-
-	Pathfinding::GetInstance()->FindPath(pEnemy->GetTransform()->GetPosition(), closest->m_pNeighbours[random]->m_pos, path);
-
-	pEnemy->SetPath(path);
-
-	UnitClassPassive::Update();
-}
