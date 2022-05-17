@@ -31,9 +31,9 @@ enum class EGAMEPLAYBUTTONCLASS : int
     MoveRight,
 
     /// <summary>
-    /// Button(s) for dashing as the player
+    /// Button(s) for dodging as the player
     /// </summary>
-    Dash,
+    Dodge,
 
     /// <summary>
     /// Button(s) for rolling as the player

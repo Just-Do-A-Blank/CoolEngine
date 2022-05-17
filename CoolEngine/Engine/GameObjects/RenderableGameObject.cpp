@@ -128,49 +128,69 @@ void RenderableGameObject::CreateEngineUI()
 {
 	GameObject::CreateEngineUI();
 
-	ImGui::Spacing();
-
-	EditorUI::Texture("Texture", m_texFilepath, m_palbedoSRV);
-
-	ImGui::Spacing();
-
-	EditorUI::DragInt("Layer", m_layer, 100.0f, 0.1f, 0, GraphicsManager::GetInstance()->GetNumLayers() - 1);
-
-	ImGui::Spacing();
-
-	EditorUI::Checkbox("Renderable", m_isRenderable);
-
-	ImGui::Spacing();
-	ImGui::Separator();
-	ImGui::Spacing();
-
-	EditorUI::Animations("Animation", m_animations);
-
-	ImGui::Spacing();
-
-	//Create button for adding animations to object
-	IMGUI_LEFT_LABEL(ImGui::InputText, "Name", m_createDeleteAnimName, ANIM_NAME_SIZE);
-
-	ImGui::SameLine();
-
-	if (ImGui::Button("New") == true && m_animations.count(m_createDeleteAnimName) == 0)
+	if (EditorUI::CollapsingSection("Renderable", true))
 	{
-		if (AddAnimation(m_createDeleteAnimName, SpriteAnimation()) == true)
-		{
-			//Add string terminator so it appears the field has been wiped
-			m_createDeleteAnimName[0] = '\0';
-		}
+		ImGui::Spacing();
+
+		EditorUI::Texture("Texture", m_texFilepath, m_palbedoSRV);
+
+		ImGui::Spacing();
+
+		auto layerParameters = EditorUIIntParameters();
+		layerParameters.m_minValue = 0;
+		layerParameters.m_maxValue = GraphicsManager::GetInstance()->GetNumLayers() - 1;
+
+		EditorUI::DragInt("Layer", m_layer, layerParameters);
+
+		ImGui::Spacing();
+
+		EditorUI::Checkbox("Renderable", m_isRenderable);
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+
+		CreateAnimationEditorUI();
 	}
 
-	//Create button for deleting animations from object
-	ImGui::SameLine();
+	
+}
 
-	if (ImGui::Button("Delete") == true)
+/// <summary>
+/// Creates the animation editor section of the renderable UI
+/// </summary>
+void RenderableGameObject::CreateAnimationEditorUI()
+{
+	if (EditorUI::CollapsingSection("Animations", false))
 	{
-		if (RemoveAnimation(m_createDeleteAnimName) == true)
+		EditorUI::Animations("Animation", m_animations);
+
+		ImGui::Spacing();
+
+		//Create button for adding animations to object
+		IMGUI_LEFT_LABEL(ImGui::InputText, "Name", m_createDeleteAnimName, ANIM_NAME_SIZE);
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("New") == true && m_animations.count(m_createDeleteAnimName) == 0)
 		{
-			//Add string terminator so it appears the field has been wiped
-			m_createDeleteAnimName[0] = '\0';
+			if (AddAnimation(m_createDeleteAnimName, SpriteAnimation()) == true)
+			{
+				//Add string terminator so it appears the field has been wiped
+				m_createDeleteAnimName[0] = '\0';
+			}
+		}
+
+		//Create button for deleting animations from object
+		ImGui::SameLine();
+
+		if (ImGui::Button("Delete") == true)
+		{
+			if (RemoveAnimation(m_createDeleteAnimName) == true)
+			{
+				//Add string terminator so it appears the field has been wiped
+				m_createDeleteAnimName[0] = '\0';
+			}
 		}
 	}
 }

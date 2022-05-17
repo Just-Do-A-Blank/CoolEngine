@@ -7,6 +7,9 @@
 #include "Engine/Managers/SceneGraph.h"
 #include "Engine/EditorUI/ContentBrowser.h"
 #include "Engine/GameUI/GameUIComponent.h"
+#include <Engine\EditorUI\EditorUIFloatParameters.h>
+#include <Engine\EditorUI\EditorUIIntParameters.h>
+#include <Engine\EditorUI\EditorUINonSpecificParameters.h>
 
 #define IMGUI_LEFT_LABEL(func, label, ...) (ImGui::TextUnformatted(label), ImGui::SameLine(), func("##" label, __VA_ARGS__))
 #define DEFAULT_IMGUI_IMAGE_SIZE ImVec2(256, 256)
@@ -92,20 +95,32 @@ public:
     /// </summary>
     /// <param name="label">The title to display</param>
     /// <param name="columnWidth">The width of a single coloumn</param>
-	static void FullTitle(const string& label, const float& columnWidth = 100.0f);
+	static void FullTitle(const string& label, EditorUINonSpecificParameters parameters = {});
 
 	static void ToolTip(const char* desc);
 
     static bool DragFloat(const string& label, float& value, const float& columnWidth = 100.0f, const float& speed = 0.1f, const float& min = 0, const float& max = 0);
 	static void DragFloat2(const string& label, XMFLOAT2& values, const float& columnWidth = 100.0f, const float& speed = 0.1f, const float& min = 0, const float& max = 0);
 	static void DragFloat3(const string& label, XMFLOAT3& values, const float& columnWidth = 100.0f, const float& speed = 0.1f, const float& min = 0, const float& max = 0);
+	/// <summary>
+	/// Creates a section of UI which is sectioned off. Major sections of the UI should be in collapsing sections
+	/// such that they do not clutter the User Interface
+	/// </summary>
+	/// <param name="label">The label to use in the UI</param>
+	/// <param name="defaultValue">true means open on load, will retain value between equal headers.</param>
+	/// <returns>Use this in the if statement, returns if the area is open or closed</returns>
+	static bool CollapsingSection(const string& label, bool defaultValue = true);
 
-	static void DragInt(const string& label, int& value, const float& columnWidth = 100.0f, const float& speed = 0.1f, const int& min = 0, const int& max = 0);
+    static bool DragFloat(const string& label, float& value, EditorUIFloatParameters parameters = {});
+	static void DragFloat2(const string& label, XMFLOAT2& values1f, EditorUIFloatParameters parameters = {});
+	static void DragFloat3(const string& label, XMFLOAT3& values, EditorUIFloatParameters parameters = {});
 
-	static void Checkbox(const string& label, bool& value, const float& columnWidth = 100.0f);
+    static void DragInt(const string& label, int& value, EditorUIIntParameters parameters = {});
 
-	static bool InputText(const string& label, string& text, const float& columnWidth = 100.0f);
-	static void IdentifierText(const string& label, string& text, const float& columnWidth = 100.0f);
+    static void Checkbox(const string& label, bool& value, EditorUINonSpecificParameters parameters = {});
+
+	static bool InputText(const string& label, string& text, EditorUINonSpecificParameters parameters = {});
+	static void IdentifierText(const string& label, string& text, EditorUINonSpecificParameters parameters = {});
 
 	static bool Texture(const string& label, wstring& filepath, ID3D11ShaderResourceView*& psrv, const float& columnWidth = 100.0f, ImVec2& imageDimensions = DEFAULT_IMGUI_IMAGE_SIZE);
 	static bool Animation(const string& label, wstring& filepath, ID3D11ShaderResourceView* psrv, const float& columnWidth = 100.0f);
@@ -162,6 +177,56 @@ public:
 
 		ImGui::PopID();
 	}
+
+private:
+
+    /// <summary>
+    /// Default width of a coloumn
+    /// </summary>
+    /// <returns>Default width of coloumns</returns>
+    static float GetDefaultColumnWidth() { return 100; }
+
+    /// <summary>
+    /// Default movement speed with sliders
+    /// </summary>
+    /// <returns>Default speed</returns>
+    static float GetDefaultSpeed() { return 0.1f; }
+
+    /// <summary>
+    /// Default minimum value of a number entry value
+    /// </summary>
+    /// <returns>Default minimum</returns>
+    static float GetDefaultMinimumValue() { return 0; }
+
+    /// <summary>
+    /// Default maximum value of a number entry value
+    /// </summary>
+    /// <returns>Default maximum</returns>
+    static float GetDefaultMaximumValue() { return 0; }
+
+    /// <summary>
+    /// Sets up the default parameters for floats with defaults where optional parameters were opt-out
+    /// </summary>
+    /// <param name="parameters">Parameters optionally required to display a float or set of floats in the editor</param>
+    static void SetupDefaultsInParameters(EditorUIFloatParameters& parameters);
+
+    /// <summary>
+    /// Sets up the default parameters for ints with defaults where optional parameters were opt-out
+    /// </summary>
+    /// <param name="parameters">Parameters optionally required to display a ints or set of ints in the editor</param>
+    static void SetupDefaultsInParameters(EditorUIIntParameters& parameters);
+
+    /// <summary>
+    /// Sets up the default parameters for inputs which do not have any data which relate to one another
+    /// </summary>
+    /// <param name="parameters">Sets up the default parameters for inputs which do not have any data which relate to one another</param>
+    static void SetupDefaultsInParameters(EditorUINonSpecificParameters& parameters);
+
+    /// <summary>
+    /// If tooltip text found, it will add tooltip text to which ever element is just displayed from IMGUI
+    /// </summary>
+    /// <param name="tooltipText">Text to display in the tooltip</param>
+    static void SetupTooltip(char* tooltipText);
 };
 
 #endif

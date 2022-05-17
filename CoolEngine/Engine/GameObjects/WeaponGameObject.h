@@ -1,6 +1,6 @@
 #pragma once
 #include "Engine/GameObjects/TriggerableGameObject.h"
-#include "Engine/GameObjects/DamageCalculation.h"
+#include "Engine/Managers/Events/DamageCalculation.h"
 
 class WeaponGameObject : public TriggerableGameObject
 {
@@ -39,7 +39,7 @@ public:
 private:
 	int m_level = 0;
 	int m_strength = 0;
-	float m_damage = 0;
+	float m_damage = 1;
 
 	int m_shotCount = 1;
 	float m_timeLethal = 1;

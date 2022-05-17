@@ -13,7 +13,7 @@ enum class EPLAYERMOVEMENTSTATE : int
 	/// <summary>
 	/// Player is dashing
 	/// </summary>
-	Dashing,
+	Dodging,
 
 	/// <summary>
 	/// Player is rolling

@@ -78,9 +78,14 @@ void TextComponent::CreateEngineUI()
 	ImGui::DragFloat("Character Spacing", &m_characterSpacing, 10.0f, 50.0f);
 
 	ImGui::Spacing();
+    EditorUIFloatParameters colorParameters = EditorUIFloatParameters();
+    colorParameters.m_columnWidth = 100;
+    colorParameters.m_speed = 0.01f;
+    colorParameters.m_minValue = 0;
+    colorParameters.m_maxValue = 1;
 
 	XMFLOAT3 colour = XMFLOAT3(m_colour.x, m_colour.y, m_colour.z);
-	EditorUI::DragFloat3("Colour", colour, 100.0f, 0.01f, 0.0f, 1.0f );
+	EditorUI::DragFloat3("Colour", colour, colorParameters);
 
 	m_colour.x = colour.x;
 	m_colour.y = colour.y;

@@ -4,25 +4,22 @@
 #include "Engine/Managers/Events/EventObserver.h"
 #include "Engine/Managers/Events/MouseEvents.h"
 #include "Engine/Managers/Events/KeyEvents.h"
-#include "Engine/GameObjects/Gameplay/GameplayButtons/InputsAsGameplayButtons.h"
-#include "Engine\GameObjects\Gameplay\Player\PlayerMovementParameters.h"
-#include "Engine/GameObjects/Gameplay/Player/EPLAYERMOVEMENTSTATE.h"
+#include <Engine/GameObjects/Gameplay/GameplayButtons/InputsAsGameplayButtons.h>
+#include <Engine\GameObjects\Gameplay\Player\PlayerMovementParameters.h>
+#include <Engine/GameObjects/Gameplay/Player/EPLAYERMOVEMENTSTATE.h>
 
-/// <summary>
-/// Allows the player to walk around
-/// </summary>
-class PlayerWalkingState : public PlayerMovementState, public Observer
+class PlayerDodgingState : public PlayerMovementState, public Observer
 {
 public:
-	PlayerWalkingState(PlayerMovementParameters movement);
-    virtual ~PlayerWalkingState();
+    PlayerDodgingState(PlayerMovementParameters movement);
+    ~PlayerDodgingState();
 
     /// <summary>
     /// Updates the state and moves the player
     /// </summary>
     /// <param name="timeDelta">Time between frames</param>
     /// <returns>True means state may remain, False means the state is complete</returns>
-	virtual bool Update(float timeDelta) override;
+    virtual bool Update(float timeDelta) override;
 
     /// <summary>
     /// The next state use if this state no longer needed
@@ -50,7 +47,7 @@ private:
     /// <summary>
     /// The max speed of the player in this state
     /// </summary>
-    int *m_moveSpeedMax;
+    int* m_moveSpeedMax;
 
     /// <summary>
     /// How much to move the player per frame (time delta factors into this)
@@ -69,7 +66,7 @@ private:
     /// <summary>
     /// How much to multiply the speed by when actually calulcating the speed
     /// </summary>
-    float *m_speedMultiplier;
+    float* m_speedMultiplier;
 
     /// <summary>
     /// The current speed of the player
@@ -77,14 +74,24 @@ private:
     float* m_moveSpeed;
 
     /// <summary>
+    /// How long to doge for in seconds
+    /// </summary>
+    float* m_timeInSecondsToDodgeFor;
+
+    /// <summary>
+    /// Amount of time passed in state
+    /// </summary>
+    float m_timeElapsed;
+
+    /// <summary>
     /// The force currently applied to the player
     /// </summary>
     XMFLOAT3* m_forceApplied;
 
-	/// <summary>
-	/// Relates inputs to gameplay buttons
-	/// </summary>
-	PlayerGameObject* m_playerReference;
+    /// <summary>
+    /// Relates inputs to gameplay buttons
+    /// </summary>
+    Transform* m_transform;
 
     /// <summary>
     /// Relates inputs to gameplay buttons
@@ -104,7 +111,7 @@ private:
     /// <summary>
     /// Handles any keypresses when they are pressed (frame whilst pressed)
     /// </summary>
-    void KeyPressed(KeyPressedEvent* e);
+    EPLAYERMOVEMENTSTATE KeyPressed(KeyPressedEvent* e);
 
     /// <summary>
     /// Handles any keypresses when they are released (first frame).
@@ -234,3 +241,4 @@ private:
     /// <param name="intensity">Intensity to adjust the value by</param>
     void MoveFloatTowardZero(float* value, float intensity);
 };
+

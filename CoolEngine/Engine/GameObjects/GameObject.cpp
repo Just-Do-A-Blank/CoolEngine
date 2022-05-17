@@ -125,13 +125,18 @@ void GameObject::CreateEngineUI()
 {
 	ImGui::Spacing();
 
-	m_transform->CreateEngineUI();
-	
-	ImGui::Spacing();
-	ImGui::Separator();
-	ImGui::Spacing();
+	if (EditorUI::CollapsingSection("Game Object Options", true))
+	{
 
-	EditorUI::ReferenceField("Reference test", m_pTest);
+		m_transform->CreateEngineUI();
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+
+		EditorUI::ReferenceField("Reference test", m_pTest);
+
+	}
 }
 #endif
 
