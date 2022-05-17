@@ -6,14 +6,17 @@
 
 ImageComponent::ImageComponent(string identifier, CoolUUID uuid) : GameUIComponent(identifier, uuid)
 {
-	m_gameObjectType |= GameObjectType::RENDERABLE;
-	m_componentType |= UIComponentType::IMAGE;
+	m_uiComponentType |= UIComponentType::IMAGE;
 }
 
 ImageComponent::ImageComponent(nlohmann::json& data, CoolUUID uuid) : GameUIComponent(data, uuid)
 {
 	m_gameObjectType |= GameObjectType::RENDERABLE;
-	m_componentType |= UIComponentType::IMAGE;
+	m_uiComponentType |= UIComponentType::IMAGE;
+}
+
+ImageComponent::ImageComponent(ImageComponent const& other) : GameUIComponent(other)
+{
 }
 
 #if EDITOR

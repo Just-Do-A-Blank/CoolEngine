@@ -40,6 +40,7 @@ enum class AccumlateType
 	WEAPON = (int)((int)GameObjectType::WEAPON | TRIGGERABLE),
 	MELEE_WEAPON = (int)((int)GameObjectType::MELEE_WEAPON | WEAPON),
 	RANGE_WEAPON = (int)((int)GameObjectType::RANGE_WEAPON | WEAPON),
+	UI_COMPONENT = (int)((int)GameObjectType::GAME_UI_COMPONENT | BASE),
 };
 
 
@@ -76,10 +77,12 @@ public:
 	virtual ~GameObject();
 
 	virtual void Update();
+	virtual void EditorUpdate();
 
 	virtual void Serialize(nlohmann::json& jsonData);
 
 	void Init(const nlohmann::json& data, CoolUUID uuid);
+	void Init(GameObject const& other);
 
 #if EDITOR
 	virtual void ShowEngineUI();

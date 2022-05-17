@@ -13,6 +13,12 @@ EditorCameraGameObject::EditorCameraGameObject(const nlohmann::json& data, CoolU
 	m_moveSpeed = data["Movement Speed"];
 }
 
+EditorCameraGameObject::EditorCameraGameObject(EditorCameraGameObject const& other) : CameraGameObject(other)
+{
+	m_moveSpeed = other.m_moveSpeed;
+	m_speedBoost = other.m_speedBoost;
+}
+
 EditorCameraGameObject::~EditorCameraGameObject()
 {
 }
@@ -27,7 +33,7 @@ void EditorCameraGameObject::Initialize(XMFLOAT3& position, XMFLOAT3& forwardVec
 
 void EditorCameraGameObject::Handle(Event* e)
 {
-	switch (e->GetEventID())
+	/*switch (e->GetEventID())
 	{
 	case EventType::KeyPressed:
 		KeyPressed((KeyPressedEvent*)e);
@@ -36,7 +42,7 @@ void EditorCameraGameObject::Handle(Event* e)
 	case EventType::KeyReleased:
 		KeyReleased((KeyReleasedEvent*)e);
 		break;
-	}
+	}*/
 }
 
 void EditorCameraGameObject::KeyPressed(KeyPressedEvent* e)

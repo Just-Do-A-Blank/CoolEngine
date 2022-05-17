@@ -17,9 +17,11 @@ public:
 	CharacterGameObject();
 	CharacterGameObject(string identifier, CoolUUID uuid);
 	CharacterGameObject(const nlohmann::json& data, CoolUUID uuid);
+	CharacterGameObject(CharacterGameObject const& other);
 	virtual ~CharacterGameObject()override;
 
 	virtual void Update();
+	virtual void EditorUpdate();
 
 	float GetMoveSpeed() { return m_moveSpeed; }
 	void SetSpeed(float speed) { m_moveSpeed = speed; }

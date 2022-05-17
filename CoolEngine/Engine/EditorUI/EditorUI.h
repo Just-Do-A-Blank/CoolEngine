@@ -46,7 +46,7 @@ private:
 	ImGuiTreeNodeFlags m_base_flags;
 	int m_selectionMask;
 	int m_gameObjectNodeClicked = -1;
-	TreeNode<GameObject>* m_selecedGameObjectNode;
+	TreeNode<GameObject>* m_selectedGameObjectNode;
 
 	WCHAR m_texNameBuffer[FILEPATH_BUFFER_SIZE];
 
@@ -56,6 +56,9 @@ private:
 	GameObjectType m_createObjectType;
 	UIComponentType m_createUIComponentType;
 	ContentBrowser m_contentBrowser;
+
+	ID3D11ShaderResourceView* m_playButtonTexture;
+	ID3D11ShaderResourceView* m_stopButtonTexture;
 
 
 	void DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice);
@@ -67,6 +70,8 @@ public:
 	void InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, HWND* hwnd);
 	void ShutdownIMGUI();
 	void DrawEditorUI(ID3D11Device* pdevice, ToolBase*& ptoolBase);
+
+	void DrawPlayButtonWindow(XMFLOAT2 buttonSize, float verticalOffset);
 
 	static void SetIsViewportHovered(bool bHovered);
 	static bool GetIsViewportHovered();

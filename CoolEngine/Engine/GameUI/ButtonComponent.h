@@ -28,9 +28,11 @@ private:
 public:
 	ButtonComponent(string identifier, CoolUUID uuid);
 	ButtonComponent(nlohmann::json& data, CoolUUID uuid);
+	ButtonComponent(ButtonComponent const& other);
 	~ButtonComponent();
 
 	virtual void Update()override;
+	virtual void EditorUpdate()override;
 
 	void SetTexture(std::wstring wsfilepath, ButtonState textureType);
 

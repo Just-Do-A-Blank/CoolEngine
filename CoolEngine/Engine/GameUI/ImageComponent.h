@@ -6,6 +6,7 @@ class ImageComponent : public GameUIComponent
 public:
     ImageComponent(string identifier, CoolUUID uuid);
 	ImageComponent(nlohmann::json& data, CoolUUID uuid);
+	ImageComponent(ImageComponent const& other);
 
 #if EDITOR
 		void CreateEngineUI() override;

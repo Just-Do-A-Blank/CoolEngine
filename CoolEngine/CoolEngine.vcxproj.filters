@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <FxCompile Include="Engine\Graphics\Shaders\TextPixel.hlsl">
-      <Filter>Engine\Graphics\Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Engine\Graphics\Shaders\SpriteBatchPixel.hlsl">
       <Filter>Engine\Graphics\Shaders</Filter>
     </FxCompile>
@@ -194,9 +191,6 @@
     </ClCompile>
     <ClCompile Include="Engine\GameUI\TextComponent.cpp">
       <Filter>Engine\GameUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Tools\InGameUITool.cpp">
-      <Filter>Engine\Tools</Filter>
     </ClCompile>
     <ClCompile Include="Engine\EditorUI\ContentBrowser.cpp">
       <Filter>Engine\EditorUI</Filter>
@@ -481,9 +475,6 @@
     </ClInclude>
     <ClInclude Include="Engine\GameUI\TextComponent.h">
       <Filter>Engine\GameUI</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Tools\InGameUITool.h">
-      <Filter>Engine\Tools</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Includes\DirectXTK\Audio.h">
       <Filter>Engine\Includes\DirectXTK</Filter>

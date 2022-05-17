@@ -12,6 +12,12 @@ EnemyGameObject::EnemyGameObject(const nlohmann::json& data, CoolUUID uuid) : Ch
 	m_gameObjectType |= GameObjectType::ENEMY;
 }
 
+EnemyGameObject::EnemyGameObject(EnemyGameObject const& other) : CharacterGameObject(other)
+{
+	m_curPath = other.m_curPath;
+	m_enemyState = other.m_enemyState;
+}
+
 EnemyGameObject::~EnemyGameObject()
 {
 }
@@ -50,6 +56,10 @@ void EnemyGameObject::Update()
 		//Pathfinding::GetInstance()->FindPath(m_transform->GetPosition(), XMFLOAT3(1000, 200, 0), m_curPath); //test function
 	}
 
+}
+
+void EnemyGameObject::EditorUpdate()
+{
 }
 
 void EnemyGameObject::SetPath(vector<node*> path)

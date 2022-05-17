@@ -28,7 +28,8 @@ public:
     void ReshapeCamera(float newWindowWidth, float newWindowHeight, float
         newNearDepth, float newFarDepth);
 
-    void Update();
+    virtual void Update()override;
+    virtual void EditorUpdate()override;
 
     virtual void Serialize(nlohmann::json& jsonData) override;
 

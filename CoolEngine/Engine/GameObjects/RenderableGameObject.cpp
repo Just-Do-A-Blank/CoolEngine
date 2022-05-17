@@ -12,6 +12,8 @@ RenderableGameObject::RenderableGameObject() : GameObject()
 
 RenderableGameObject::RenderableGameObject(RenderableGameObject const& other) : GameObject(other)
 {
+	GameObject::Init(other);
+
 	m_palbedoSRV = other.m_palbedoSRV;
 	m_pvertexShader = other.m_pvertexShader;
 	m_ppixelShader = other.m_ppixelShader;
@@ -114,6 +116,10 @@ void RenderableGameObject::Update()
 	{
 		m_pcurrentAnimation->Update();
 	}
+}
+
+void RenderableGameObject::EditorUpdate()
+{
 }
 
 

@@ -67,6 +67,29 @@ ParticleSystem::ParticleSystem(const nlohmann::json& data, CoolUUID uuid) : Game
 	m_pTexture = psRV;
 }
 
+ParticleSystem::ParticleSystem(ParticleSystem const& other) : GameObject(other)
+{
+	m_systemLife = other.m_systemLife;
+	m_timer = other.m_timer;
+	m_isActive = other.m_isActive;
+
+	m_velocity = other.m_velocity;
+	m_accel = other.m_accel;
+	m_particleLife = other.m_particleLife;
+	m_spawnInterval = other.m_spawnInterval;
+	m_spawnNumber = other.m_spawnNumber;
+
+	m_pTexture = other.m_pTexture;
+	m_positionRand = other.m_positionRand;
+	m_velocityRand = other.m_velocityRand;
+	m_accelRand = other.m_accelRand;
+	m_lifeRand = other.m_lifeRand;
+
+	m_texFilepath = other.m_texFilepath;
+
+	m_layer = other.m_layer;
+}
+
 ParticleSystem::~ParticleSystem()
 {
 
@@ -160,6 +183,11 @@ void ParticleSystem::Update()
 			m_isActive = false;
 		}
 	}
+}
+
+void ParticleSystem::EditorUpdate()
+{
+	Update();
 }
 
 #if EDITOR

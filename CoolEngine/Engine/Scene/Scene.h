@@ -20,6 +20,7 @@ public:
 	~Scene();
 
 	virtual void Update();
+	virtual void EditorUpdate();
 	virtual void Render(RenderStruct& renderStruct);
 
 	SceneGraph<GameObject>* GetSceneGraph();

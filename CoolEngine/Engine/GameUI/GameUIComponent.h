@@ -21,32 +21,24 @@ class GameUIComponent : public GameObject
 {
 	friend FileIO;
 private:
-	//Graphics variables
-
-	
-	int m_layer = 0;
-
 	//Flags
 	bool m_isRenderable = true;
 
 protected:
-	ID3D11VertexShader* m_pvertexShader = nullptr;
-	ID3D11PixelShader* m_ppixelShader = nullptr;	
-	Mesh* m_pmesh = nullptr;
-
 	ID3D11ShaderResourceView* m_ptexture = nullptr;
 	wstring m_texFilepath = L"";
 
-	UIComponentType m_componentType = (UIComponentType)0;
+	UIComponentType m_uiComponentType = (UIComponentType)0;
+	int m_layer = 0;
 
 public:
 	GameUIComponent(string identifier, CoolUUID uuid);
 	GameUIComponent(nlohmann::json& data, CoolUUID uuid);
-
-	void InitGraphics();
+	GameUIComponent(GameUIComponent const& other);
 
 	virtual void Render(RenderStruct& renderStruct);
-	virtual void Update();
+	virtual void Update()override;
+	virtual void EditorUpdate()override;
 
 	virtual void Serialize(nlohmann::json& data);
 

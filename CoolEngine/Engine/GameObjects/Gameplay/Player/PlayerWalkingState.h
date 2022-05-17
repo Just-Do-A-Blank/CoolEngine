@@ -73,7 +73,7 @@ private:
 	/// <summary>
 	/// Relates inputs to gameplay buttons
 	/// </summary>
-	Transform* m_transform;
+	PlayerGameObject* m_playerReference;
 
     /// <summary>
     /// Relates inputs to gameplay buttons

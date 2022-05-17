@@ -5,14 +5,14 @@
 #include <Engine\Includes\IMGUI\imgui.h>
 #include <Engine\EditorUI\EditorUI.h>
 
-PlayerController::PlayerController(InputsAsGameplayButtons* gameplayButtons, Transform* transformOfTheGameObject)
+PlayerController::PlayerController(InputsAsGameplayButtons* gameplayButtons, PlayerGameObject* playerReference)
 {
     m_moveSpeedMax = 250;
     m_speedMultiplierWalking = 0.8f;
     m_moveSpeedPerFrame = 500;
     m_dragSpeedPerFrame = 250;
 
-    m_movementParameters.m_transform = transformOfTheGameObject;
+    m_movementParameters.m_playerReference = playerReference;
     m_movementParameters.m_gameplayButtons = gameplayButtons;
     m_movementParameters.m_maxSpeed = &m_moveSpeedMax;
     m_movementParameters.m_walkingSpeed = &m_speedMultiplierWalking;
@@ -24,6 +24,17 @@ PlayerController::PlayerController(InputsAsGameplayButtons* gameplayButtons, Tra
     EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
     EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
     EventManager::Instance()->AddClient(EventType::MouseMoved, this);
+}
+
+PlayerController::PlayerController(PlayerController const& other, PlayerGameObject* newPlayer)
+{
+	m_currentState = other.m_currentState;
+	m_movementParameters = other.m_movementParameters;
+	m_movementParameters.m_playerReference = newPlayer;
+	m_moveSpeedMax = other.m_moveSpeedMax;
+	m_speedMultiplierWalking = other.m_speedMultiplierWalking;
+	m_moveSpeedPerFrame = other.m_moveSpeedPerFrame;
+	m_dragSpeedPerFrame = other.m_dragSpeedPerFrame;
 }
 
 PlayerController::~PlayerController()

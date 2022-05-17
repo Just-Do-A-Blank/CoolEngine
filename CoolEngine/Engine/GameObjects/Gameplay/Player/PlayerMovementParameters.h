@@ -1,7 +1,8 @@
 #pragma once
-#include <Engine\GameObjects\Transform.h>
-#include <Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.h>
+#include "Engine\GameObjects\Transform.h"
+#include "Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.h"
 
+class PlayerGameObject;
 /// <summary>
 /// Everything required to move the player around the scene
 /// </summary>
@@ -10,7 +11,7 @@ struct PlayerMovementParameters
     /// <summary>
     /// Relates inputs to gameplay buttons
     /// </summary>
-    Transform* m_transform;
+	PlayerGameObject* m_playerReference;
     
     /// <summary>
     /// Relates inputs to gameplay buttons

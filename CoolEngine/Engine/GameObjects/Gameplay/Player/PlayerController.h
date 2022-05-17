@@ -16,7 +16,8 @@
 class PlayerController : public Observer, public EditorUIComponent
 {
 public:
-    PlayerController(InputsAsGameplayButtons* gameplayButtons, Transform* transformOfTheGameObject);
+    PlayerController(InputsAsGameplayButtons* gameplayButtons, PlayerGameObject* transformOfTheGameObject);
+    PlayerController(PlayerController const& other, PlayerGameObject* newPlayer);
     ~PlayerController();
 
     /// <summary>

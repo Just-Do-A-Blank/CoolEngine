@@ -13,59 +13,119 @@
 
 void GameManager::Init()
 {
-    char buffer[FILEPATH_BUFFER_SIZE];
-    _getcwd(buffer, FILEPATH_BUFFER_SIZE);
+	char buffer[FILEPATH_BUFFER_SIZE];
+	_getcwd(buffer, FILEPATH_BUFFER_SIZE);
 
-    m_workingDirectory = string(buffer);
+	m_workingDirectory = string(buffer);
 
-    m_wideWorkingDirectory = wstring(m_workingDirectory.begin(), m_workingDirectory.end());
+	m_wideWorkingDirectory = wstring(m_workingDirectory.begin(), m_workingDirectory.end());
 }
 
 Timer* GameManager::GetTimer()
 {
-    return &m_timer;
+	return &m_timer;
 }
 
 void GameManager::Update()
 {
-    if (!m_pcurrentScene)
-    {
-        return;
-    }
+	switch (m_viewState)
+	{
+	case ViewState::EDITOR_VIEW:
+		if (!m_pcurrentScene)
+		{
+			return;
+		}
 
-    m_pcurrentScene->Update();
+		m_pcurrentScene->EditorUpdate();
+		break;
+
+	case ViewState::GAME_VIEW:
+		m_pplayScene->Update();
+		break;
+	}
+	
 }
 
 void GameManager::Render(RenderStruct& renderStruct)
 {
-    if (!m_pcurrentScene)
-    {
-        return;
-    }
+	switch (m_viewState)
+	{
+	case ViewState::EDITOR_VIEW:
+		if (!m_pcurrentScene)
+		{
+			return;
+		}
 
-    m_pcurrentScene->Render(renderStruct);
+		m_pcurrentScene->Render(renderStruct);
+		break;
+
+	case ViewState::GAME_VIEW:
+		m_pplayScene->Render(renderStruct);
+		break;
+	}	
 }
 
 void GameManager::DeleteSceneUsingIdentifier(string sceneIdentifier)
 {
-    m_sceneMap.erase(sceneIdentifier);
+	m_sceneMap.erase(sceneIdentifier);
 }
 
 void GameManager::DeleteSelectedScene()
 {
-    m_sceneMap.erase(m_pcurrentScene->GetSceneIdentifier());
+	m_sceneMap.erase(m_pcurrentScene->GetSceneIdentifier());
 }
 
 void GameManager::BeginPlay()
 {
+	if (m_pplayScene)
+	{
+		return;
+	}
+
 	m_pplayScene = new Scene(m_pcurrentScene->m_sceneIdentifier);
 
+	CopyScene();
+
+	m_viewState = ViewState::GAME_VIEW;
+}
+
+void GameManager::EndPlay()
+{
+	if (m_pplayScene)
+	{
+		m_pplayScene->DeleteGameObjectUsingNode(m_pplayScene->m_prootTreeNode);
+		delete m_pplayScene;
+		m_pplayScene = nullptr;
+
+		m_viewState = ViewState::EDITOR_VIEW;
+	}
+}
+
+void GameManager::CopyScene()
+{
 	vector<TreeNode<GameObject>*> gameObjectNodeList = m_pcurrentScene->GetSceneGraph()->GetAllNodes();
 	for (int it = 0; it < gameObjectNodeList.size(); ++it)
 	{
-		switch (gameObjectNodeList[it]->NodeObject->m_gameObjectType)
+		switch ((AccumlateType)gameObjectNodeList[it]->NodeObject->m_gameObjectType)
 		{
-		case GameObjectType::RENDERABLE | GameObjectType::BASE:
+		case AccumlateType::BASE:
+			if (gameObjectNodeList[it]->PreviousParent)
+			{
+				TreeNode<GameObject>* parentNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
+				m_pplayScene->CopyGameObject<GameObject>(*(dynamic_cast<GameObject*>(gameObjectNodeList[it]->NodeObject)), parentNode);
+			}
+			else if (gameObjectNodeList[it]->PreviousSibling)
+			{
+				TreeNode<GameObject>* previousSiblingNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousSibling->NodeObject);
+				m_pplayScene->CopyGameObject<GameObject>(*(dynamic_cast<GameObject*>(gameObjectNodeList[it]->NodeObject)), nullptr, previousSiblingNode);
+			}
+			else
+			{
+				m_pplayScene->CopyGameObject<GameObject>(*(dynamic_cast<GameObject*>(gameObjectNodeList[it]->NodeObject)));
+			}
+			break;
+
+		case AccumlateType::RENDERABLE:
 			if (gameObjectNodeList[it]->PreviousParent)
 			{
 				TreeNode<GameObject>* parentNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
@@ -81,53 +141,223 @@ void GameManager::BeginPlay()
 				m_pplayScene->CopyGameObject<RenderableGameObject>(*(dynamic_cast<RenderableGameObject*>(gameObjectNodeList[it]->NodeObject)));
 			}
 			break;
+
+		case AccumlateType::COLLIDABLE:
+			if (gameObjectNodeList[it]->PreviousParent)
+			{
+				TreeNode<GameObject>* parentNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
+				m_pplayScene->CopyGameObject<CollidableGameObject>(*(dynamic_cast<CollidableGameObject*>(gameObjectNodeList[it]->NodeObject)), parentNode);
+			}
+			else if (gameObjectNodeList[it]->PreviousSibling)
+			{
+				TreeNode<GameObject>* previousSiblingNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousSibling->NodeObject);
+				m_pplayScene->CopyGameObject<CollidableGameObject>(*(dynamic_cast<CollidableGameObject*>(gameObjectNodeList[it]->NodeObject)), nullptr, previousSiblingNode);
+			}
+			else
+			{
+				m_pplayScene->CopyGameObject<CollidableGameObject>(*(dynamic_cast<CollidableGameObject*>(gameObjectNodeList[it]->NodeObject)));
+			}
+			break;
+
+		case AccumlateType::COLLIDABLE_RENDERERABLE:
+			if (gameObjectNodeList[it]->PreviousParent)
+			{
+				TreeNode<GameObject>* parentNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
+				m_pplayScene->CopyGameObject<RenderableCollidableGameObject>(*(dynamic_cast<RenderableCollidableGameObject*>(gameObjectNodeList[it]->NodeObject)), parentNode);
+			}
+			else if (gameObjectNodeList[it]->PreviousSibling)
+			{
+				TreeNode<GameObject>* previousSiblingNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousSibling->NodeObject);
+				m_pplayScene->CopyGameObject<RenderableCollidableGameObject>(*(dynamic_cast<RenderableCollidableGameObject*>(gameObjectNodeList[it]->NodeObject)), nullptr, previousSiblingNode);
+			}
+			else
+			{
+				m_pplayScene->CopyGameObject<RenderableCollidableGameObject>(*(dynamic_cast<RenderableCollidableGameObject*>(gameObjectNodeList[it]->NodeObject)));
+			}
+			break;
+
+		case AccumlateType::CHARACTER:
+			if (gameObjectNodeList[it]->PreviousParent)
+			{
+				TreeNode<GameObject>* parentNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
+				m_pplayScene->CopyGameObject<CharacterGameObject>(*(dynamic_cast<CharacterGameObject*>(gameObjectNodeList[it]->NodeObject)), parentNode);
+			}
+			else if (gameObjectNodeList[it]->PreviousSibling)
+			{
+				TreeNode<GameObject>* previousSiblingNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousSibling->NodeObject);
+				m_pplayScene->CopyGameObject<CharacterGameObject>(*(dynamic_cast<CharacterGameObject*>(gameObjectNodeList[it]->NodeObject)), nullptr, previousSiblingNode);
+			}
+			else
+			{
+				m_pplayScene->CopyGameObject<CharacterGameObject>(*(dynamic_cast<CharacterGameObject*>(gameObjectNodeList[it]->NodeObject)));
+			}
+			break;
+
+		case AccumlateType::ENEMY:
+			if (gameObjectNodeList[it]->PreviousParent)
+			{
+				TreeNode<GameObject>* parentNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
+				m_pplayScene->CopyGameObject<EnemyGameObject>(*(dynamic_cast<EnemyGameObject*>(gameObjectNodeList[it]->NodeObject)), parentNode);
+			}
+			else if (gameObjectNodeList[it]->PreviousSibling)
+			{
+				TreeNode<GameObject>* previousSiblingNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousSibling->NodeObject);
+				m_pplayScene->CopyGameObject<EnemyGameObject>(*(dynamic_cast<EnemyGameObject*>(gameObjectNodeList[it]->NodeObject)), nullptr, previousSiblingNode);
+			}
+			else
+			{
+				m_pplayScene->CopyGameObject<EnemyGameObject>(*(dynamic_cast<EnemyGameObject*>(gameObjectNodeList[it]->NodeObject)));
+			}
+			break;
+
+		case AccumlateType::PLAYER:
+			if (gameObjectNodeList[it]->PreviousParent)
+			{
+				TreeNode<GameObject>* parentNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
+				m_pplayScene->CopyGameObject<PlayerGameObject>(*(dynamic_cast<PlayerGameObject*>(gameObjectNodeList[it]->NodeObject)), parentNode);
+			}
+			else if (gameObjectNodeList[it]->PreviousSibling)
+			{
+				TreeNode<GameObject>* previousSiblingNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousSibling->NodeObject);
+				m_pplayScene->CopyGameObject<PlayerGameObject>(*(dynamic_cast<PlayerGameObject*>(gameObjectNodeList[it]->NodeObject)), nullptr, previousSiblingNode);
+			}
+			else
+			{
+				m_pplayScene->CopyGameObject<PlayerGameObject>(*(dynamic_cast<PlayerGameObject*>(gameObjectNodeList[it]->NodeObject)));
+			}
+			break;
+
+		case AccumlateType::PARTICLE_SYSTEM:
+			if (gameObjectNodeList[it]->PreviousParent)
+			{
+				TreeNode<GameObject>* parentNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
+				m_pplayScene->CopyGameObject<ParticleSystem>(*(dynamic_cast<ParticleSystem*>(gameObjectNodeList[it]->NodeObject)), parentNode);
+			}
+			else if (gameObjectNodeList[it]->PreviousSibling)
+			{
+				TreeNode<GameObject>* previousSiblingNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousSibling->NodeObject);
+				m_pplayScene->CopyGameObject<ParticleSystem>(*(dynamic_cast<ParticleSystem*>(gameObjectNodeList[it]->NodeObject)), nullptr, previousSiblingNode);
+			}
+			else
+			{
+				m_pplayScene->CopyGameObject<ParticleSystem>(*(dynamic_cast<ParticleSystem*>(gameObjectNodeList[it]->NodeObject)));
+			}
+			break;
+
+		case AccumlateType::INTERACTABLE:
+			if (gameObjectNodeList[it]->PreviousParent)
+			{
+				TreeNode<GameObject>* parentNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
+				m_pplayScene->CopyGameObject<InteractableGameObject>(*(dynamic_cast<InteractableGameObject*>(gameObjectNodeList[it]->NodeObject)), parentNode);
+			}
+			else if (gameObjectNodeList[it]->PreviousSibling)
+			{
+				TreeNode<GameObject>* previousSiblingNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousSibling->NodeObject);
+				m_pplayScene->CopyGameObject<InteractableGameObject>(*(dynamic_cast<InteractableGameObject*>(gameObjectNodeList[it]->NodeObject)), nullptr, previousSiblingNode);
+			}
+			else
+			{
+				m_pplayScene->CopyGameObject<InteractableGameObject>(*(dynamic_cast<InteractableGameObject*>(gameObjectNodeList[it]->NodeObject)));
+			}
+			break;
+
+		case AccumlateType::WEAPON:
+			if (gameObjectNodeList[it]->PreviousParent)
+			{
+				TreeNode<GameObject>* parentNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
+				m_pplayScene->CopyGameObject<WeaponGameObject>(*(dynamic_cast<WeaponGameObject*>(gameObjectNodeList[it]->NodeObject)), parentNode);
+			}
+			else if (gameObjectNodeList[it]->PreviousSibling)
+			{
+				TreeNode<GameObject>* previousSiblingNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousSibling->NodeObject);
+				m_pplayScene->CopyGameObject<WeaponGameObject>(*(dynamic_cast<WeaponGameObject*>(gameObjectNodeList[it]->NodeObject)), nullptr, previousSiblingNode);
+			}
+			else
+			{
+				m_pplayScene->CopyGameObject<WeaponGameObject>(*(dynamic_cast<WeaponGameObject*>(gameObjectNodeList[it]->NodeObject)));
+			}
+			break;
+
+		case AccumlateType::MELEE_WEAPON:
+			if (gameObjectNodeList[it]->PreviousParent)
+			{
+				TreeNode<GameObject>* parentNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
+				m_pplayScene->CopyGameObject<MeleeWeaponGameObject>(*(dynamic_cast<MeleeWeaponGameObject*>(gameObjectNodeList[it]->NodeObject)), parentNode);
+			}
+			else if (gameObjectNodeList[it]->PreviousSibling)
+			{
+				TreeNode<GameObject>* previousSiblingNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousSibling->NodeObject);
+				m_pplayScene->CopyGameObject<MeleeWeaponGameObject>(*(dynamic_cast<MeleeWeaponGameObject*>(gameObjectNodeList[it]->NodeObject)), nullptr, previousSiblingNode);
+			}
+			else
+			{
+				m_pplayScene->CopyGameObject<MeleeWeaponGameObject>(*(dynamic_cast<MeleeWeaponGameObject*>(gameObjectNodeList[it]->NodeObject)));
+			}
+			break;
+
+		case AccumlateType::RANGE_WEAPON:
+			if (gameObjectNodeList[it]->PreviousParent)
+			{
+				TreeNode<GameObject>* parentNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
+				m_pplayScene->CopyGameObject<RangedWeaponGameObject>(*(dynamic_cast<RangedWeaponGameObject*>(gameObjectNodeList[it]->NodeObject)), parentNode);
+			}
+			else if (gameObjectNodeList[it]->PreviousSibling)
+			{
+				TreeNode<GameObject>* previousSiblingNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousSibling->NodeObject);
+				m_pplayScene->CopyGameObject<RangedWeaponGameObject>(*(dynamic_cast<RangedWeaponGameObject*>(gameObjectNodeList[it]->NodeObject)), nullptr, previousSiblingNode);
+			}
+			else
+			{
+				m_pplayScene->CopyGameObject<RangedWeaponGameObject>(*(dynamic_cast<RangedWeaponGameObject*>(gameObjectNodeList[it]->NodeObject)));
+			}
+			break;
 		}
 	}
 }
 
-void GameManager::EndPlay()
+ViewState GameManager::GetViewState()const
 {
-	m_pplayScene->DeleteGameObjectUsingNode(m_pplayScene->m_prootTreeNode);
+	return m_viewState;
 }
 
 string GameManager::GetWorkingDirectory()
 {
-    return m_workingDirectory;
+	return m_workingDirectory;
 }
 
 wstring GameManager::GetWideWorkingDirectory()
 {
-    return m_wideWorkingDirectory;
+	return m_wideWorkingDirectory;
 }
 
 Scene* GameManager::GetCurrentScene()
 {
-    return m_pcurrentScene;
+	return m_pcurrentScene;
 }
 
 void GameManager::SelectScene(Scene* pscene)
 {
-    m_pcurrentScene = pscene;
+	m_pcurrentScene = pscene;
 }
 
 void GameManager::SelectSceneUsingIdentifier(string sceneIdentifier)
 {
-    if (m_sceneMap.count(sceneIdentifier) == 0)
-    {
-        LOG("Scene : " << sceneIdentifier << "; was not found in Scene Map ");
-        return;
-    }
-    m_pcurrentScene = m_sceneMap.find(sceneIdentifier)->second;
+	if (m_sceneMap.count(sceneIdentifier) == 0)
+	{
+		LOG("Scene : " << sceneIdentifier << "; was not found in Scene Map ");
+		return;
+	}
+	m_pcurrentScene = m_sceneMap.find(sceneIdentifier)->second;
 }
 
 void GameManager::DeleteScene(Scene* pscene)
 {
-    m_sceneMap.erase(pscene->GetSceneIdentifier());
+	m_sceneMap.erase(pscene->GetSceneIdentifier());
 }
 
 vector<GameObject*>& GameManager::GetAllGameObjects()
 {
-    return m_pcurrentScene->GetAllGameObjects();
+	return m_pcurrentScene->GetAllGameObjects();
 }
 
 CameraGameObject* GameManager::GetCamera()
@@ -146,32 +376,42 @@ void GameManager::DeleteGameObjectUsingNode(TreeNode<GameObject>* currentNode)
 	{
 		return;
 	}
-    m_pcurrentScene->DeleteGameObjectUsingNode(currentNode);
+	m_pcurrentScene->DeleteGameObjectUsingNode(currentNode);
 }
 
 void GameManager::DeleteGameObjectUsingIdentifier(string identifier)
 {
-    m_pcurrentScene->DeleteGameObjectUsingIdentifier(identifier);
+	m_pcurrentScene->DeleteGameObjectUsingIdentifier(identifier);
 }
 
 TreeNode<GameObject>* GameManager::GetRootTreeNode()
 {
-    return m_pcurrentScene->GetRootTreeNode();
+	switch (m_viewState)
+	{
+	case ViewState::EDITOR_VIEW:
+		return m_pcurrentScene->GetRootTreeNode();
+		break;
+
+	case ViewState::GAME_VIEW:
+		return m_pplayScene->GetRootTreeNode();
+		break;
+	}
+	
 }
 
 TreeNode<GameObject>* GameManager::GetTreeNode(GameObject* pgameObject)
 {
-    return m_pcurrentScene->GetTreeNode(pgameObject);
+	return m_pcurrentScene->GetTreeNode(pgameObject);
 }
 
 string& GameManager::GetCurrentSceneName()
 {
-    return m_pcurrentScene->GetSceneIdentifier();
+	return m_pcurrentScene->GetSceneIdentifier();
 }
 
 vector<GameObject*>& GameManager::GetAllGameObjectsInCurrentScene()
 {
-    return m_pcurrentScene->GetAllGameObjects();
+	return m_pcurrentScene->GetAllGameObjects();
 }
 
 void GameManager::Serialize(nlohmann::json& data)
@@ -248,7 +488,7 @@ void GameManager::Serialize(nlohmann::json& data)
 
 void GameManager::Deserialize(nlohmann::json& data)
 {
-    std::unordered_map<uint64_t, GameObject*> gameObjects;
+	std::unordered_map<uint64_t, GameObject*> gameObjects;
 
 	for (nlohmann::json::const_iterator typeIt = data.begin(); typeIt != data.end(); ++typeIt)
 	{
@@ -373,18 +613,18 @@ void GameManager::Deserialize(nlohmann::json& data)
 
 unordered_map<string, Scene*> GameManager::GetSceneList()
 {
-    return m_sceneMap;
+	return m_sceneMap;
 }
 
 void GameManager::CreateScene(string sceneIdentifier)
 {
-    Scene* newScene = new Scene(sceneIdentifier);
-    m_sceneMap.insert(pair<string, Scene*>(sceneIdentifier, newScene));
+	Scene* newScene = new Scene(sceneIdentifier);
+	m_sceneMap.insert(pair<string, Scene*>(sceneIdentifier, newScene));
 
-    if (!m_pcurrentScene)
-    {
-        m_pcurrentScene = newScene;
-    }
+	if (!m_pcurrentScene)
+	{
+		m_pcurrentScene = newScene;
+	}
 }
 
 GameObject* GameManager::GetSelectedGameObject()
@@ -394,5 +634,5 @@ GameObject* GameManager::GetSelectedGameObject()
 		return nullptr;
 	}
 
-    return m_pcurrentScene->GetSelectedGameObject();
+	return m_pcurrentScene->GetSelectedGameObject();
 }

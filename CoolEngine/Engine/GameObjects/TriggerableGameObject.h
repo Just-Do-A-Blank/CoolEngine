@@ -10,6 +10,7 @@ public:
 	TriggerableGameObject();
 	TriggerableGameObject(string identifier, CoolUUID uuid);
 	TriggerableGameObject(const nlohmann::json& data, CoolUUID uuid);
+	TriggerableGameObject(TriggerableGameObject const& other);
     virtual ~TriggerableGameObject()override;
 
 	virtual void Serialize(nlohmann::json& data) override;

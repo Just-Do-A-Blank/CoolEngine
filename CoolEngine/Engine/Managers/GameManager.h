@@ -26,6 +26,12 @@ enum class SceneDesc
 	SIZE
 };
 
+enum class ViewState
+{
+	EDITOR_VIEW,
+	GAME_VIEW,
+};
+
 class GameManager : public Manager<GameManager>
 {
 	
@@ -37,6 +43,8 @@ private:
 	wstring m_wideWorkingDirectory = L"";
 
 	CameraGameObject* m_pcamera = nullptr;
+
+	ViewState m_viewState = ViewState::EDITOR_VIEW;
 
 public:
 	void Init();
@@ -59,6 +67,8 @@ public:
 
 	void BeginPlay();
 	void EndPlay();
+	void CopyScene();
+	ViewState GetViewState()const;
 
 	string GetWorkingDirectory();
 	wstring GetWideWorkingDirectory();

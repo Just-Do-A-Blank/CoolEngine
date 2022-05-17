@@ -6,12 +6,16 @@
 
 UICanvas::UICanvas(string identifier, CoolUUID uuid) : GameUIComponent(identifier, uuid)
 {
-	m_componentType |= UIComponentType::CANVAS;
+	m_uiComponentType |= UIComponentType::CANVAS;
 }
 
 UICanvas::UICanvas(nlohmann::json& data, CoolUUID uuid) : GameUIComponent(data, uuid)
 {
-	m_componentType |= UIComponentType::CANVAS;
+	m_uiComponentType |= UIComponentType::CANVAS;
+}
+
+UICanvas::UICanvas(UICanvas const& other) : GameUIComponent(other)
+{
 }
 
 void UICanvas::Render(RenderStruct& renderStruct)
@@ -19,5 +23,9 @@ void UICanvas::Render(RenderStruct& renderStruct)
 }
 
 void UICanvas::Update()
+{
+}
+
+void UICanvas::EditorUpdate()
 {
 }

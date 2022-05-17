@@ -65,6 +65,7 @@ public:
 
 	virtual void Render(RenderStruct& renderStruct);
 	virtual void Update() override;
+	virtual void EditorUpdate() override;
 
 	bool PlayAnimation(std::string name);
 

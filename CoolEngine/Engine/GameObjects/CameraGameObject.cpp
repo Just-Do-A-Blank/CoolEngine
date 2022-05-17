@@ -82,6 +82,10 @@ void CameraGameObject::Update()
 	CreateViewMatrix();
 }
 
+void CameraGameObject::EditorUpdate()
+{
+}
+
 void CameraGameObject::Serialize(nlohmann::json& jsonData)
 {
 	GameObject::Serialize(jsonData);

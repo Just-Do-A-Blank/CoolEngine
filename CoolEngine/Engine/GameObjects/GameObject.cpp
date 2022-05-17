@@ -28,7 +28,6 @@ GameObject::GameObject(GameObject const &other)
 	m_pTest = other.m_pTest;
 
 	m_gameObjectType = other.m_gameObjectType;
-
 }
 
 GameObject::GameObject(string identifier, CoolUUID uuid)
@@ -67,6 +66,14 @@ void GameObject::Update()
 	}
 }
 
+void GameObject::EditorUpdate()
+{
+	if (m_pTest != nullptr)
+	{
+		LOG(m_pTest->GetIdentifier());
+	}
+}
+
 void GameObject::Serialize(nlohmann::json& jsonData)
 {
 	jsonData["Name"] = m_identifier;
@@ -86,6 +93,17 @@ void GameObject::Init(const nlohmann::json& data, CoolUUID uuid)
 
 	m_UUID = CoolUUID(*uuid);
 	m_identifier = data["Name"];
+}
+
+void GameObject::Init(GameObject const& other)
+{
+	m_identifier = other.m_identifier;
+	m_UUID = other.m_UUID;
+	*m_transform = *other.m_transform;
+
+	m_pTest = other.m_pTest;
+
+	m_gameObjectType = other.m_gameObjectType;
 }
 
 #if EDITOR
