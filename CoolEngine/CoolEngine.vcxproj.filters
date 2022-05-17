@@ -228,6 +228,9 @@
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerDodgingState.cpp">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Structure\ObjectPool.cpp">
+      <Filter>Engine\Structure</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -613,6 +616,9 @@
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\EVirtualKeyCode.h">
       <Filter>Engine\GameObjects\Gameplay\GameplayButtons</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Structure\ObjectPool.h">
+      <Filter>Engine\Structure</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
