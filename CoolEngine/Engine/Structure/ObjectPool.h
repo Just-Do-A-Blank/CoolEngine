@@ -18,6 +18,8 @@ public:
 	
 	ObjectEntry<T>* CreateEntryInPool(T* entry);
 
+	bool ReleaseEntryInPool(ObjectEntry<T>* entry);
+
 	const std::vector<ObjectEntry<T>*> ReturnPool() { return &m_pObjects; }
 
 private:

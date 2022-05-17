@@ -37,3 +37,18 @@ ObjectEntry<T>* ObjectPool<T>::CreateEntryInPool(T* entry)
 		}
 	}
 }
+
+template<class T>
+bool ObjectPool<T>::ReleaseEntryInPool(ObjectEntry<T>* entry)
+{
+	for (size_t i = 0; i < m_pObjects.size(); i++)
+	{
+		if (m_pObjects[i] == entry)
+		{
+			m_pObjects[i].m_pObject = nullptr;
+			m_pObjects[i].m_Active = false;
+			return	true;
+		}
+	}
+	return false;
+}
