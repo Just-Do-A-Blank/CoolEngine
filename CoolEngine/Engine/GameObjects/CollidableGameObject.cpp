@@ -34,15 +34,18 @@ CollidableGameObject::CollidableGameObject(const nlohmann::json& data, CoolUUID 
 
 CollidableGameObject::CollidableGameObject(CollidableGameObject const& other) : GameObject(other)
 {
-	switch (other.m_pcollider->GetShapeType())
+	if (other.m_pcollider)
 	{
-	case ShapeType::BOX:
-		m_pcollider = new Box(*dynamic_cast<Box*>(other.m_pcollider));
-		break;
+		switch (other.m_pcollider->GetShapeType())
+		{
+		case ShapeType::BOX:
+			m_pcollider = new Box(*dynamic_cast<Box*>(other.m_pcollider));
+			break;
 
-	case ShapeType::CIRCLE:
-		m_pcollider = new Circle(*dynamic_cast<Circle*>(other.m_pcollider));
-		break;
+		case ShapeType::CIRCLE:
+			m_pcollider = new Circle(*dynamic_cast<Circle*>(other.m_pcollider));
+			break;
+		}
 	}
 }
 

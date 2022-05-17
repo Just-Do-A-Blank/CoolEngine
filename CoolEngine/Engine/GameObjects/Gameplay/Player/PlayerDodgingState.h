@@ -1,12 +1,13 @@
 #pragma once
 #include "Engine/GameObjects/Gameplay/Player/PlayerMovementState.h"
-#include <Engine/GameObjects/Transform.h>
 #include "Engine/Managers/Events/EventObserver.h"
 #include "Engine/Managers/Events/MouseEvents.h"
 #include "Engine/Managers/Events/KeyEvents.h"
 #include <Engine/GameObjects/Gameplay/GameplayButtons/InputsAsGameplayButtons.h>
 #include <Engine\GameObjects\Gameplay\Player\PlayerMovementParameters.h>
 #include <Engine/GameObjects/Gameplay/Player/EPLAYERMOVEMENTSTATE.h>
+
+class PlayerGameObject;
 
 class PlayerDodgingState : public PlayerMovementState, public Observer
 {
@@ -91,7 +92,7 @@ private:
     /// <summary>
     /// Relates inputs to gameplay buttons
     /// </summary>
-    Transform* m_transform;
+    PlayerGameObject* m_playerReference;
 
     /// <summary>
     /// Relates inputs to gameplay buttons

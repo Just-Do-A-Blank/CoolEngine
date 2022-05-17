@@ -393,8 +393,8 @@ void PlayerWalkingState::MoveByForce(float timeDelta)
     {
 
         XMFLOAT3 movement = *m_forceApplied;
-        MoveTransformInDirectionByDistance(m_playerReference->GetTransform(), m_forceApplied, m_moveSpeed, timeDelta * *m_speedMultiplier);
-        SlowPlayerBasedOnDrag(&m_moveSpeed, *m_dragSpeedPerFrame, timeDelta);
+        MoveTransformInDirectionByDistance(m_playerReference->GetTransform(), *m_forceApplied, *m_moveSpeed, timeDelta * (*m_speedMultiplier));
+        SlowPlayerBasedOnDrag(m_moveSpeed, *m_dragSpeedPerFrame, timeDelta);
 
         if (m_moveSpeed == 0)
         {
