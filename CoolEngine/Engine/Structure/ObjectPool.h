@@ -7,28 +7,21 @@ struct ObjectEntry
 {
 	T* m_pObject;
 	bool m_Active;
-	CoolUUID m_ID;
 };
 
 template<class T>
 class ObjectPool
 {
 public:
-	ObjectPool();
 	ObjectPool(int objectCount);
 	~ObjectPool();
 	
-	ObjectEntry* CreateEntryInPool(T* entry);
-	ObjectEntry* CreateEntryInPool(T* entry, CoolUUID ID);
+	ObjectEntry<T>* CreateEntryInPool(T* entry);
 
-	bool RemoveEntryInPool(ObjectEntry entry);
-	bool RemoveEntryInPool(CoolUUID ID);
-
-	bool SetObjectActiveValue(ObjectEntry entry, bool value);
-	void SetObjectActiveValue(CoolUUID ID, bool value);
+	const std::vector<ObjectEntry<T>*> ReturnPool() { return &m_pObjects; }
 
 private:
 
-	std::vector<ObjectEntry*> m_pObjects;
+	std::vector<ObjectEntry<T>*> m_pObjects;
 
 };

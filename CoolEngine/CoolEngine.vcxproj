@@ -171,6 +171,7 @@
     <ClInclude Include="Engine\Scene\Scene.h" />
     <ClInclude Include="Engine\stdafx.h" />
     <ClInclude Include="Engine\Structure\Manager.h" />
+    <ClInclude Include="Engine\Structure\ObjectPool.h" />
     <ClInclude Include="Engine\Structure\Singleton.h" />
     <ClInclude Include="Engine\Structure\EditorUIComponent.h" />
     <ClInclude Include="Engine\TileMap\TileMap\Tile.h" />
@@ -263,6 +264,7 @@
     <ClCompile Include="Engine\Physics\Particle.cpp" />
     <ClCompile Include="Engine\Physics\ParticleManager.cpp" />
     <ClCompile Include="Engine\Physics\ParticleSystem.cpp" />
+    <ClCompile Include="Engine\Structure\ObjectPool.cpp" />
     <ClCompile Include="Engine\TileMap\TileMap\Tile.cpp" />
     <ClCompile Include="Engine\TileMap\TileMap\TileMap.cpp" />
     <ClCompile Include="Engine\Tools\AnimationTool.cpp" />
