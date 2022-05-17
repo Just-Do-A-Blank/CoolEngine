@@ -54,13 +54,15 @@ private:
 	int m_animNameUpdateIndex = -1;
 	string m_animUpdateName = "";
 
+	std::string m_SelectedNodeIdentifier = "";
+
 	GameObjectType m_createObjectType;
 	ContentBrowser m_contentBrowser;
 
 
 	void DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice);
 	void DrawSceneManagementWindow();
-	void TraverseTree(TreeNode<GameObject>* pcurrentNode, int& count);
+	void TraverseTree(TreeNode<GameObject>* pcurrentNode, std::string& selectedIdentifier);
 public:
 	EditorUI(ID3D11Device* pdevice);
 

@@ -123,7 +123,7 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 	m_base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
 	int nodeCount = -1;
 
-	TraverseTree(prootNode, nodeCount);
+	TraverseTree(prootNode, m_SelectedNodeIdentifier);
 
 	if (ImGui::BeginMenuBar())
 	{
@@ -430,7 +430,7 @@ void EditorUI::DrawSceneManagementWindow()
 	}
 }
 
-void EditorUI::TraverseTree(TreeNode<GameObject>* pcurrentNode, int& nodeCount)
+void EditorUI::TraverseTree(TreeNode<GameObject>* pcurrentNode, std::string& selectedIdentifier)
 {
 	if (!pcurrentNode)
 	{
@@ -439,17 +439,26 @@ void EditorUI::TraverseTree(TreeNode<GameObject>* pcurrentNode, int& nodeCount)
 
 	GameManager* pgameManager = GameManager::GetInstance();
 
-	++nodeCount;
 	ImGuiTreeNodeFlags node_flags = m_base_flags;
-	const bool is_selected = (m_selectionMask & (1 << nodeCount)) != 0;
 
-
-	if (is_selected)
+	if (selectedIdentifier == pcurrentNode->NodeObject->GetIdentifier())
 	{
 		node_flags |= ImGuiTreeNodeFlags_Selected;
 	}
 
-	bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)nodeCount, node_flags, pcurrentNode->NodeObject->GetIdentifier().c_str(), nodeCount);
+	bool node_open = ImGui::TreeNodeEx(pcurrentNode->NodeObject->GetIdentifier().c_str(), node_flags);
+
+	if (ImGui::IsItemClicked(ImGuiMouseButton_Left) == true && ImGui::IsItemHovered() == true)
+	{
+		if (selectedIdentifier == pcurrentNode->NodeObject->GetIdentifier())
+		{
+			selectedIdentifier = "";
+		}
+		else
+		{
+			selectedIdentifier = pcurrentNode->NodeObject->GetIdentifier();
+		}
+	}
 
 	if (ImGui::BeginDragDropTarget())
 	{
@@ -471,24 +480,18 @@ void EditorUI::TraverseTree(TreeNode<GameObject>* pcurrentNode, int& nodeCount)
 		ImGui::EndDragDropSource();
 	}
 
-	if (ImGui::IsMouseReleased(0) && ImGui::IsItemHovered())
-	{
-		m_gameObjectNodeClicked = nodeCount;
-		m_selecedGameObjectNode = pcurrentNode;
-	}
-
 	if (node_open)
 	{
 		if (pcurrentNode->Child)
 		{
-			TraverseTree(pcurrentNode->Child, nodeCount);
+			TraverseTree(pcurrentNode->Child, selectedIdentifier);
 		}
 		ImGui::TreePop();
 	}
 
 	if (pcurrentNode->Sibling)
 	{
-		TraverseTree(pcurrentNode->Sibling, nodeCount);
+		TraverseTree(pcurrentNode->Sibling, selectedIdentifier);
 	}
 
 
