@@ -15,6 +15,8 @@ PlayerController::PlayerController(InputsAsGameplayButtons* gameplayButtons, Pla
     m_moveSpeedPerFrame = 500;
     m_dragSpeedPerFrame = 250;
     m_timeInSecondsToDodgeFor = 0.4f;
+    m_rollSpeed = 1.6f;
+    m_timeInSecondsToRollFor = 2;
 
     m_movementParameters.m_playerReference = playerReference;
     m_movementParameters.m_gameplayButtons = gameplayButtons;
@@ -23,7 +25,9 @@ PlayerController::PlayerController(InputsAsGameplayButtons* gameplayButtons, Pla
     m_movementParameters.m_moveSpeedPerFrame = &m_moveSpeedPerFrame;
     m_movementParameters.m_dragSpeedPerFrame = &m_dragSpeedPerFrame;
     m_movementParameters.m_dodgeSpeed = &m_dodgeSpeed;
+    m_movementParameters.m_rollingSpeed = &m_rollSpeed;
     m_movementParameters.m_timeInSecondsToDodgeFor = &m_timeInSecondsToDodgeFor;
+    m_movementParameters.m_timeInSecondsToRollFor = &m_timeInSecondsToRollFor;
     m_movementParameters.m_lastFirstPressedInputButton = EGAMEPLAYBUTTONCLASS::Nothing;
     m_movementParameters.m_lastSecondPressedInputButton = EGAMEPLAYBUTTONCLASS::Nothing;
     m_movementParameters.m_playerMovingBody = m_playerMovingBody;
@@ -111,7 +115,7 @@ void PlayerController::CreateEngineUI()
     
     if (EditorUI::CollapsingSection("Player Controller", false))
     {
-        auto speedParameters = EditorUIFloatParameters();
+        EditorUIFloatParameters speedParameters = EditorUIFloatParameters();
         speedParameters.m_columnWidth = 150;
         speedParameters.m_tooltipText = "When walking this is the main multiplier - sensitive to big changes!";
         speedParameters.m_speed = 0.01f;
@@ -126,8 +130,16 @@ void PlayerController::CreateEngineUI()
 
         EditorUI::DragFloat("Dodge Time in Seconds ", m_timeInSecondsToDodgeFor, speedParameters);
 
+        speedParameters.m_tooltipText = "When rolling this is the main multiplier - sensitive to big changes!";
 
-        auto numberParameters = EditorUIIntParameters();
+        EditorUI::DragFloat("Roll Speed", m_rollSpeed, speedParameters);
+
+        speedParameters.m_tooltipText = "The time in seconds to roll for before returning to walking!";
+
+        EditorUI::DragFloat("Roll Time in Seconds ", m_timeInSecondsToRollFor, speedParameters);
+
+
+        EditorUIIntParameters numberParameters = EditorUIIntParameters();
         numberParameters.m_columnWidth = 150;
         numberParameters.m_minValue = 0;
         numberParameters.m_maxValue = 1000;

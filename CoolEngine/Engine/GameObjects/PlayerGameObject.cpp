@@ -46,12 +46,21 @@ PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : Character
 	};
 	dash.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_SHIFT);
 
+    GameplayButton roll =
+    {
+        EGAMEPLAYBUTTONCLASS::Roll,
+        list<EVIRTUALKEYCODE>(),
+        list<EVIRTUALKEYCODE>(),
+    };
+    roll.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_CTRL);
+
     list< GameplayButton> gameplayButtons;
     gameplayButtons.push_back(up);
     gameplayButtons.push_back(down);
     gameplayButtons.push_back(left);
     gameplayButtons.push_back(right);
     gameplayButtons.push_back(dash);
+    gameplayButtons.push_back(roll);
 
     InputsAsGameplayButtons* buttons = new InputsAsGameplayButtons(gameplayButtons);
     m_playerController = new PlayerController(buttons, this);

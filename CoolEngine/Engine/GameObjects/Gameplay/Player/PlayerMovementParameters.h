@@ -50,6 +50,16 @@ struct PlayerMovementParameters
     float* m_timeInSecondsToDodgeFor;
 
     /// <summary>
+    /// How much to multiply the speed by when actually calulcating the speed when rolling
+    /// </summary>
+    float* m_rollingSpeed;
+
+    /// <summary>
+    /// How long to roll for in seconds
+    /// </summary>
+    float* m_timeInSecondsToRollFor;
+
+    /// <summary>
     /// The input button pressed by the user in the last state
     /// </summary>
     EGAMEPLAYBUTTONCLASS m_lastFirstPressedInputButton;

@@ -111,6 +111,16 @@ private:
     float m_timeInSecondsToDodgeFor;
 
     /// <summary>
+    /// How much to multiply the speed by when actually calulcating the speed when rolling
+    /// </summary>
+    float m_rollSpeed;
+
+    /// <summary>
+    /// How long to roll for in seconds
+    /// </summary>
+    float m_timeInSecondsToRollFor;
+
+    /// <summary>
     /// The force currently applied to the player. Shared among states as this is the force on the player as a whole
     /// </summary>
     XMFLOAT3* m_forceApplied;
