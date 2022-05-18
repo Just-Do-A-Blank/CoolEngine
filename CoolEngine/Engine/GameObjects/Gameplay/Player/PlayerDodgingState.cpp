@@ -392,12 +392,8 @@ void PlayerDodgingState::MoveByForce(float timeDelta)
     float bodySpeed = m_playerMovingBody->GetMoveSpeed();
     if (bodySpeed > 0 && (newForce.x != 0 || newForce.y != 0))
     {
-        MoveTransformInDirectionByDistance(m_transform, newForce, bodySpeed, timeDelta * *m_speedMultiplier);
+        MoveTransformInDirectionByDistance(m_playerReference->GetTransform(), newForce, bodySpeed, timeDelta * *m_speedMultiplier);
         SlowPlayerBasedOnDrag(bodySpeed, *m_dragSpeedPerFrame, timeDelta);
-
-        XMFLOAT3 movement = *m_forceApplied;
-        MoveTransformInDirectionByDistance(m_playerReference->GetTransform(), *m_forceApplied, *m_moveSpeed, timeDelta * *m_speedMultiplier);
-        SlowPlayerBasedOnDrag(m_moveSpeed, *m_dragSpeedPerFrame, timeDelta);
 
         if (bodySpeed == 0)
         {

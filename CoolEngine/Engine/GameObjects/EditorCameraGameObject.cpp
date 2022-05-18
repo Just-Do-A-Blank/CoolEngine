@@ -5,7 +5,7 @@
 
 EditorCameraGameObject::EditorCameraGameObject(string identifier, CoolUUID uuid) : CameraGameObject(identifier, uuid)
 {
-	m_areControlledByUser = false;
+	m_areControlledByUser = true;
 }
 
 EditorCameraGameObject::EditorCameraGameObject(const nlohmann::json& data, CoolUUID uuid) : CameraGameObject(data, uuid)
