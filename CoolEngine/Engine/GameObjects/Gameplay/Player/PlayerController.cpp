@@ -120,9 +120,13 @@ void PlayerController::CreateEngineUI()
         speedParameters.m_tooltipText = "When walking this is the main multiplier - sensitive to big changes!";
         speedParameters.m_speed = 0.01f;
 
+        EditorUI::FullTitle("Walking", titleParameters);
+
         EditorUI::DragFloat("Walking Speed", m_speedMultiplierWalking, speedParameters);
 
         speedParameters.m_tooltipText = "When dodging this is the main multiplier - sensitive to big changes!";
+
+        EditorUI::FullTitle("Dodge", titleParameters);
 
         EditorUI::DragFloat("Dodge Speed", m_dodgeSpeed, speedParameters);
 
@@ -132,12 +136,15 @@ void PlayerController::CreateEngineUI()
 
         speedParameters.m_tooltipText = "When rolling this is the main multiplier - sensitive to big changes!";
 
+        EditorUI::FullTitle("Roll", titleParameters);
+
         EditorUI::DragFloat("Roll Speed", m_rollSpeed, speedParameters);
 
         speedParameters.m_tooltipText = "The time in seconds to roll for before returning to walking!";
 
         EditorUI::DragFloat("Roll Time in Seconds ", m_timeInSecondsToRollFor, speedParameters);
 
+        EditorUI::FullTitle("All Speed Stats", titleParameters);
 
         EditorUIIntParameters numberParameters = EditorUIIntParameters();
         numberParameters.m_columnWidth = 150;
