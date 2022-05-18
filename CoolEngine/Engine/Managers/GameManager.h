@@ -26,6 +26,12 @@ enum class SceneDesc
 	SIZE
 };
 
+enum class ViewState
+{
+	EDITOR_VIEW,
+	GAME_VIEW,
+};
+
 class GameManager : public Manager<GameManager>
 {
 	
@@ -38,6 +44,8 @@ private:
 
 	CameraGameObject* m_pcamera = nullptr;
 
+	ViewState m_viewState = ViewState::EDITOR_VIEW;
+
 public:
 	void Init();
 
@@ -45,6 +53,7 @@ public:
 
 	unordered_map<string, Scene*> m_sceneMap;
 	Scene* m_pcurrentScene;
+	Scene* m_pplayScene;
 
 	void Update();
 	void Render(RenderStruct& renderStruct);
@@ -55,6 +64,11 @@ public:
 	void DeleteScene(Scene* pscene);
 	void DeleteSceneUsingIdentifier(string sceneIdentifier);
 	void DeleteSelectedScene();
+
+	void BeginPlay();
+	void EndPlay();
+	void CopyScene();
+	ViewState GetViewState()const;
 
 	string GetWorkingDirectory();
 	wstring GetWideWorkingDirectory();

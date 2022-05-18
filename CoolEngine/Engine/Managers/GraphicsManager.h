@@ -51,6 +51,7 @@ public:
 	void SetHWND(HWND* hwnd);
 
 	void RenderQuad(ID3D11ShaderResourceView* psrv, XMFLOAT3 position, XMFLOAT3 scale, float rotation, int layer);
+	void RenderOffsettedColouredSpriteSheetQuad(ID3D11ShaderResourceView* psrv, RECT* sourceRect, const RECT& destinationRect, float rotation, XMFLOAT2 offset, XMFLOAT4 colour, int layer);
 
 	std::unique_ptr<DirectX::SpriteBatch>* GetSpriteBatches();
 

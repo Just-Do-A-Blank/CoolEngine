@@ -8,6 +8,7 @@ public:
 	RenderableCollidableGameObject();
 	RenderableCollidableGameObject(string identifier, CoolUUID uuid);
 	RenderableCollidableGameObject(const nlohmann::json& data, CoolUUID uuid);
+	RenderableCollidableGameObject(RenderableCollidableGameObject const& other);
 	virtual ~RenderableCollidableGameObject()override;
 
 #if EDITOR

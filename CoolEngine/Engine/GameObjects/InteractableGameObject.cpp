@@ -10,6 +10,10 @@ InteractableGameObject::InteractableGameObject(const nlohmann::json& data, CoolU
     m_gameObjectType |= GameObjectType::INTERACTABLE;
 }
 
+InteractableGameObject::InteractableGameObject(InteractableGameObject const& other) : TriggerableGameObject(other)
+{
+}
+
 InteractableGameObject::~InteractableGameObject()
 {
 }

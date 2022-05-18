@@ -37,6 +37,10 @@ TriggerableGameObject::TriggerableGameObject(const nlohmann::json& data, CoolUUI
 	m_gameObjectType |= GameObjectType::TRIGGERABLE;
 }
 
+TriggerableGameObject::TriggerableGameObject(TriggerableGameObject const& other) : RenderableCollidableGameObject(other)
+{
+}
+
 TriggerableGameObject::~TriggerableGameObject()
 {
     EventManager::Instance()->RemoveClientEvent(EventType::CollisionEnter, this);

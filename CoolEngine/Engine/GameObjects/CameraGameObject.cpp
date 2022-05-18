@@ -19,6 +19,18 @@ CameraGameObject::CameraGameObject(const nlohmann::json& data, CoolUUID index) :
 	CreateViewMatrix();
 	CreateProjectionMatrix();
 }
+
+CameraGameObject::CameraGameObject(CameraGameObject const& other):GameObject(other)
+{
+	m_viewMatrix = other.m_viewMatrix;
+	m_projectionMatrix = other.m_projectionMatrix;
+
+	m_windowHeight = other.m_windowHeight;
+	m_windowWidth = other.m_windowWidth;
+	m_nearDepth = other.m_nearDepth;
+	m_farDepth = other.m_nearDepth;
+}
+
 CameraGameObject::~CameraGameObject()
 {
 }
@@ -68,6 +80,10 @@ void CameraGameObject::ReshapeCamera(float newWindowWidth, float newWindowHeight
 void CameraGameObject::Update()
 {
 	CreateViewMatrix();
+}
+
+void CameraGameObject::EditorUpdate()
+{
 }
 
 void CameraGameObject::Serialize(nlohmann::json& jsonData)

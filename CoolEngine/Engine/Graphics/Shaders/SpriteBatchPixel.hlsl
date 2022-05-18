@@ -2,6 +2,7 @@
 struct PS_INPUT
 {
     float4 posH : SV_POSITION;
+    float4 color : COLOR;
     float2 texCoords : TEXCOORD;
 };
 
@@ -29,5 +30,5 @@ float4 main(PS_INPUT input) : SV_TARGET
         discard;
     }
 
-    return albedo;
+    return albedo * input.color;
 }

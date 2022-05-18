@@ -4,8 +4,9 @@ class ImageComponent : public GameUIComponent
 {
 	friend FileIO;
 public:
-    ImageComponent(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation);
+    ImageComponent(string identifier, CoolUUID uuid);
 	ImageComponent(nlohmann::json& data, CoolUUID uuid);
+	ImageComponent(ImageComponent const& other);
 
 #if EDITOR
 		void CreateEngineUI() override;

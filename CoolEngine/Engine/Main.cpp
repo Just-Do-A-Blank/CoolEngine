@@ -39,7 +39,6 @@
 #include "Engine/Tools/ToolBase.h"
 #include "Engine/Tools/TileMapTool.h"
 #include "Engine/Tools/AnimationTool.h"
-#include "Engine/Tools/InGameUITool.h"
 #include "Engine/GameObjects/EditorCameraGameObject.h"
 
 #include "Engine/Managers/Events/EventObserverExamples.h"
@@ -121,10 +120,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	GameManager::GetInstance()->Init();
 
-#if EDITOR
-	g_peditorUI = new EditorUI(g_pd3dDevice);
-	g_peditorUI->InitIMGUI(g_pImmediateContext, g_pd3dDevice, &g_hWnd);
-#endif
 
 	//Setup audio stuff
 	AudioManager::GetInstance()->Init();
@@ -133,6 +128,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	GraphicsManager::GetInstance()->Init(g_pd3dDevice, g_pImmediateContext);
 	GraphicsManager::GetInstance()->SetHWND(&g_hWnd);
+
+#if EDITOR
+	g_peditorUI = new EditorUI(g_pd3dDevice);
+	g_peditorUI->InitIMGUI(g_pImmediateContext, g_pd3dDevice, &g_hWnd);
+#endif
 
 	Inputs::GetInstance();
 
@@ -161,6 +161,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_pcamera->Initialize(cameraPos, cameraForward, cameraUp, windowWidth, windowHeight, nearDepth, farDepth);
 
 	GameManager::GetInstance()->SetCamera(g_pcamera);
+	FontManager::GetInstance()->LoadFont(L"Resources\\Fonts\\ComicSans", "comicSans");
 
 	//Create scene
 	GameManager* pgameManager = GameManager::GetInstance();

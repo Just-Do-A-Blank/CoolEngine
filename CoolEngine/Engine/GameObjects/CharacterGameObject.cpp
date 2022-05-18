@@ -19,12 +19,24 @@ CharacterGameObject::CharacterGameObject(const nlohmann::json& data, CoolUUID uu
 	m_health = data["Health"];
 }
 
+CharacterGameObject::CharacterGameObject(CharacterGameObject const& other) : TriggerableGameObject(other)
+{
+	m_moveSpeed = other.m_moveSpeed;
+	m_health = other.m_health;
+	m_direction = other.m_direction;
+}
+
 CharacterGameObject::~CharacterGameObject()
 {
 
 }
 
 void CharacterGameObject::Update()
+{
+
+}
+
+void CharacterGameObject::EditorUpdate()
 {
 
 }

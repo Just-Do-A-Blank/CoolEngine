@@ -1,13 +1,14 @@
 #include "PlayerDodgingState.h"
 #include "PlayerWalkingState.h"
 #include <Engine/Managers/Events/EventManager.h>
+#include "Engine/GameObjects/PlayerGameObject.h"
 
 PlayerDodgingState::PlayerDodgingState(PlayerMovementParameters movement)
 {
     m_nextState = EPLAYERMOVEMENTSTATE::Dodging;
     m_playerMovementParameters = movement;
 
-    m_transform = movement.m_transform;
+	m_playerReference = movement.m_playerReference;
     m_gameplayButtons = movement.m_gameplayButtons;
     m_moveSpeedMax = movement.m_maxSpeed;
     m_speedMultiplier = movement.m_dodgeSpeed;
@@ -393,6 +394,10 @@ void PlayerDodgingState::MoveByForce(float timeDelta)
     {
         MoveTransformInDirectionByDistance(m_transform, newForce, bodySpeed, timeDelta * *m_speedMultiplier);
         SlowPlayerBasedOnDrag(bodySpeed, *m_dragSpeedPerFrame, timeDelta);
+
+        XMFLOAT3 movement = *m_forceApplied;
+        MoveTransformInDirectionByDistance(m_playerReference->GetTransform(), *m_forceApplied, *m_moveSpeed, timeDelta * *m_speedMultiplier);
+        SlowPlayerBasedOnDrag(m_moveSpeed, *m_dragSpeedPerFrame, timeDelta);
 
         if (bodySpeed == 0)
         {

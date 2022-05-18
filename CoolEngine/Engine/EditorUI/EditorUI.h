@@ -6,6 +6,7 @@
 #include "Engine/Graphics/SpriteAnimation.h"
 #include "Engine/Managers/SceneGraph.h"
 #include "Engine/EditorUI/ContentBrowser.h"
+#include "Engine/GameUI/GameUIComponent.h"
 #include <Engine\EditorUI\EditorUIFloatParameters.h>
 #include <Engine\EditorUI\EditorUIIntParameters.h>
 #include <Engine\EditorUI\EditorUINonSpecificParameters.h>
@@ -36,6 +37,7 @@ private:
 	static HWND* m_phwnd;
 	bool m_createSceneClicked = false;
 	bool m_createGameObjectClicked = false;
+	bool m_createUIObjectClicked = false;
 	bool m_deleteGameObjectClicked = false;
 	static bool s_bisViewportHovered;
 
@@ -47,7 +49,7 @@ private:
 	ImGuiTreeNodeFlags m_base_flags;
 	int m_selectionMask;
 	int m_gameObjectNodeClicked = -1;
-	TreeNode<GameObject>* m_selecedGameObjectNode;
+	TreeNode<GameObject>* m_selectedGameObjectNode;
 
 	WCHAR m_texNameBuffer[FILEPATH_BUFFER_SIZE];
 
@@ -55,7 +57,11 @@ private:
 	string m_animUpdateName = "";
 
 	GameObjectType m_createObjectType;
+	UIComponentType m_createUIComponentType;
 	ContentBrowser m_contentBrowser;
+
+	ID3D11ShaderResourceView* m_playButtonTexture;
+	ID3D11ShaderResourceView* m_stopButtonTexture;
 
 
 	void DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice);
@@ -67,6 +73,8 @@ public:
 	void InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, HWND* hwnd);
 	void ShutdownIMGUI();
 	void DrawEditorUI(ID3D11Device* pdevice, ToolBase*& ptoolBase);
+
+	void DrawPlayButtonWindow(XMFLOAT2 buttonSize, float verticalOffset);
 
 	static void SetIsViewportHovered(bool bHovered);
 	static bool GetIsViewportHovered();
@@ -88,6 +96,8 @@ public:
     /// <param name="label">The title to display</param>
     /// <param name="columnWidth">The width of a single coloumn</param>
 	static void FullTitle(const string& label, EditorUINonSpecificParameters parameters = {});
+
+	static void ToolTip(const char* desc);
 
 	/// <summary>
 	/// Creates a section of UI which is sectioned off. Major sections of the UI should be in collapsing sections

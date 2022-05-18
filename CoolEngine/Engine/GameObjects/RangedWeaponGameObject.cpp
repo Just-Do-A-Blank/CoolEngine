@@ -13,6 +13,14 @@ RangedWeaponGameObject::RangedWeaponGameObject(const nlohmann::json& data, CoolU
 	m_shotSpeed = data["ShotSpeed"];
 }
 
+RangedWeaponGameObject::RangedWeaponGameObject(RangedWeaponGameObject const& other) : WeaponGameObject(other)
+{
+	m_angleInterval = other.m_angleInterval;
+	m_shotSpeed = other.m_shotSpeed;
+
+	m_isShot = other.m_isShot;
+}
+
 RangedWeaponGameObject::~RangedWeaponGameObject()
 {
 }

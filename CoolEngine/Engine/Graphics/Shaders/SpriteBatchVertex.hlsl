@@ -8,8 +8,9 @@ struct VS_INPUT
 
 struct VS_OUTPUT
 {
-	float4 posH : SV_POSITION;	
-	float2 texCoords : TEXCOORD;
+	float4 posH : SV_POSITION;
+    float4 color : COLOR;
+    float2 texCoords : TEXCOORD;
 };
 
 cbuffer perFrameCB : register(b0)
@@ -28,6 +29,7 @@ VS_OUTPUT main(VS_INPUT input)
     output.posH = mul(float4(input.posW, 1), viewProjection);
 	output.texCoords = input.texCoords;
 	output.texCoords.y = 1 - output.texCoords.y;
+    output.color = input.color;
 
 	return output;
 }

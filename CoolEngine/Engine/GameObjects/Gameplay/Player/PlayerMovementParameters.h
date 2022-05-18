@@ -3,6 +3,7 @@
 #include "Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.h"
 #include "Engine\GameObjects\Gameplay\Player\PlayerMovingBody.h"
 
+class PlayerGameObject;
 /// <summary>
 /// Everything required to move the player around the scene
 /// </summary>
@@ -11,8 +12,8 @@ struct PlayerMovementParameters
     /// <summary>
     /// Relates inputs to gameplay buttons
     /// </summary>
-    Transform* m_transform;
-    
+	PlayerGameObject* m_playerReference;
+
     /// <summary>
     /// Relates inputs to gameplay buttons
     /// </summary>
@@ -27,12 +28,12 @@ struct PlayerMovementParameters
     /// How much to move per frame
     /// </summary>
     int* m_moveSpeedPerFrame;
-    
+
     /// <summary>
     /// Drag speed per frame
     /// </summary>
     int* m_dragSpeedPerFrame;
-    
+
     /// <summary>
     /// How much to multiply the speed by when actually calulcating the speed when walking
     /// </summary>

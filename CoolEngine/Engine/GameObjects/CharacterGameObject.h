@@ -21,9 +21,11 @@ public:
 	CharacterGameObject();
 	CharacterGameObject(string identifier, CoolUUID uuid);
 	CharacterGameObject(const nlohmann::json& data, CoolUUID uuid);
+	CharacterGameObject(CharacterGameObject const& other);
 	virtual ~CharacterGameObject()override;
 
 	virtual void Update();
+	virtual void EditorUpdate();
 
 	float GetMoveSpeed() { return m_moveSpeed; }
 	float GetInvincibilityTime() { return m_invincibilityTime; }
