@@ -9,7 +9,10 @@
 //
 //---------------------------------------------------------------------------//
 
-StateController::StateController(EnemyGameObject* enemy)
+//There is no exclusively clause for movement, so the most recently added movement state will be the controller of movement but the other movement states will still process pathfinding. If bad performance, consider exclusivity. 
+//Or fix movement states that require pathfinding
+
+StateController::StateController(EnemyGameObject* enemy) : pEnemy(enemy)
 {
 	
 }
@@ -20,16 +23,21 @@ StateController::~StateController()
 
 void StateController::Update()
 {
+	XMFLOAT3 playerPos = (*GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject*>(string("Player")))->GetTransform()->GetPosition();
+	float distFromPlayer = MathHelper::Distance(playerPos, pEnemy->GetTransform()->GetPosition());
+
+
 	//Looping all states to check if they should be active
 	for (auto const& state : allStates)
 	{
-		bool active = (activeStates.find(state.first) == activeStates.end());
+		//Returns true if the state is not found
+		bool inactive = (activeStates.find(state.first) == activeStates.end());
 
-		//if this current state should be triggered this update loop
-		if (state.second->CheckStateTrigger())
+		//if this current state should be active this update loop. Call through all the state triggers if more triggers are wanted (for example HP)
+		if (state.second->CheckStateTrigger(StateTriggers::DistanceFromPlayer,distFromPlayer))
 		{
 			//if this state isnt active already, add to the active states list and trigger it's on-entry
-			if (active)
+			if (inactive)
 			{
 				activeStates.insert(state);
 				state.second->OnStateEntry();
@@ -38,7 +46,7 @@ void StateController::Update()
 		else
 		{
 			//If this state is active, remove from the active list and trigger its on-exit
-			if (active)
+			if (inactive)
 			{
 				activeStates.erase(state.first);
 				state.second->OnStateExit();
@@ -75,9 +83,40 @@ StateBase::~StateBase()
 {
 }
 
-bool StateBase::CheckStateTrigger()
+bool StateBase::CheckStateTrigger(StateTriggers triggerType, float value)
 {
+
+	//Looping through the triggers in this state to check if this trigger type and value have a match to trigger this state
+	for (int i = 0; i < triggers.size(); i++)
+	{
+		if (triggers[i]->reactionVariable == triggerType)
+		{
+			switch (triggers[i]->triggerWhen)
+			{
+			case StateTriggerValueAt::Above:
+				if (triggers[i]->triggerValue < value)
+				{
+					return true;
+				}
+				break;
+			case StateTriggerValueAt::Below:
+				if (triggers[i]->triggerValue > value)
+				{
+					return true;
+				}
+				break;
+			case StateTriggerValueAt::Equal:
+				if (triggers[i]->triggerValue == value)
+				{
+					return true;
+				}
+				break;
+			}
+		}
+	}
+
 	return false;
+
 }
 
 void StateBase::ExecuteState()
@@ -122,11 +161,6 @@ void StateAttackBase::OnStateEntry()
 void StateAttackBase::OnStateExit()
 {
 	StateBase::OnStateExit();
-}
-
-bool StateAttackBase::CheckStateTrigger()
-{
-	StateBase::CheckStateTrigger();
 }
 
 

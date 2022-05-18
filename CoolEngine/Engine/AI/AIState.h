@@ -18,6 +18,14 @@ enum class enemyState
 	Wander
 };
 
+
+enum class StateTriggerValueAt
+{
+	Above,
+	Below,
+	Equal
+};
+
 enum class StateTriggers
 {
 	DistanceFromPlayer,
@@ -25,6 +33,19 @@ enum class StateTriggers
 
 struct StateTrigger 
 {
+	StateTriggers reactionVariable;
+	float checkValue;
+	float triggerValue;
+	StateTriggerValueAt triggerWhen;
+
+
+	StateTrigger(StateTriggers ReactionVariable, float valueToTrigger,float TriggerValueWhen, StateTriggerValueAt TriggerWhen)
+	{
+		reactionVariable = ReactionVariable;
+		checkValue = valueToTrigger;
+		triggerValue = TriggerValueWhen;
+		triggerWhen = TriggerWhen;
+	}
 
 };
 
@@ -46,6 +67,8 @@ private:
 	map<enemyState,StateBase*> allStates;
 	map<enemyState,StateBase*> activeStates;
 
+	EnemyGameObject* pEnemy;
+
 };
 
 class StateBase
@@ -54,7 +77,9 @@ public:
 	StateBase(EnemyGameObject* enemy);
 	~StateBase();
 
-	bool CheckStateTrigger();
+	bool CheckStateTrigger(StateTriggers triggerType, float value);
+
+
 
 	enemyState GetState() { return curState; }
 	void OnStateEntry();
@@ -65,7 +90,7 @@ protected:
 
 	enemyState curState;
 	XMFLOAT3 GetPlayerPos();
-	StateTrigger trigger;
+	vector<StateTrigger*> triggers;
 
 
 	//Pointer to the enemy this state system is part of
@@ -79,7 +104,7 @@ class StateAttackBase : public StateBase
 {
 public:
 
-	bool CheckStateTrigger();
+
 	void ExecuteState();
 	void OnStateEntry();
 	void OnStateExit();
@@ -99,7 +124,7 @@ public:
 	void OnStateEntry();
 	void OnStateExit();
 
-	bool CheckStateTrigger();
+
 };
 
 class StateAttackRanged : public StateAttackBase
@@ -112,7 +137,7 @@ public:
 	void OnStateEntry();
 	void OnStateExit();
 
-	bool CheckStateTrigger();
+
 };
 
 class StateAbility : public StateAttackBase
@@ -123,7 +148,7 @@ class StateAbility : public StateAttackBase
 	void OnStateEntry();
 	void OnStateExit();
 
-	bool CheckStateTrigger();
+
 };
 
 
@@ -141,7 +166,7 @@ protected:
 	void OnStateEntry();
 	void OnStateExit();
 
-	bool CheckStateTrigger();
+
 
 };
 
@@ -155,7 +180,7 @@ public:
 	void OnStateEntry();
 	void OnStateExit();
 
-	bool CheckStateTrigger();
+
 };
 
 class StateFlee : public StateMovementBase
@@ -167,7 +192,7 @@ public:
 	void OnStateEntry();
 	void OnStateExit();
 
-	bool CheckStateTrigger();
+
 };
 
 class StateStationary : public StateMovementBase
@@ -179,7 +204,6 @@ public:
 	void OnStateEntry();
 	void OnStateExit();
 
-	bool CheckStateTrigger();
 };
 
 class StateWander : public StateMovementBase
@@ -191,6 +215,5 @@ public:
 	void OnStateEntry();
 	void OnStateExit();
 
-	bool CheckStateTrigger();
 };
 
