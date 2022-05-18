@@ -7,14 +7,14 @@
 
 PlayerController::PlayerController(InputsAsGameplayButtons* gameplayButtons, Transform* transformOfTheGameObject)
 {
+    m_playerMovingBody = new PlayerMovingBody();
+
     m_moveSpeedMax = 250;
     m_speedMultiplierWalking = 0.8f;
     m_dodgeSpeed = 1.6f;
     m_moveSpeedPerFrame = 500;
     m_dragSpeedPerFrame = 250;
     m_timeInSecondsToDodgeFor = 0.4f;
-    m_forceApplied = new XMFLOAT3(0, 0, 0);
-    m_moveSpeed = 0;
 
     m_movementParameters.m_transform = transformOfTheGameObject;
     m_movementParameters.m_gameplayButtons = gameplayButtons;
@@ -26,8 +26,7 @@ PlayerController::PlayerController(InputsAsGameplayButtons* gameplayButtons, Tra
     m_movementParameters.m_timeInSecondsToDodgeFor = &m_timeInSecondsToDodgeFor;
     m_movementParameters.m_lastFirstPressedInputButton = EGAMEPLAYBUTTONCLASS::Nothing;
     m_movementParameters.m_lastSecondPressedInputButton = EGAMEPLAYBUTTONCLASS::Nothing;
-    m_movementParameters.m_forceApplied = m_forceApplied;
-    m_movementParameters.m_moveSpeed = &m_moveSpeed;
+    m_movementParameters.m_playerMovingBody = m_playerMovingBody;
 
     EventManager::Instance()->AddClient(EventType::KeyPressed, this);
     EventManager::Instance()->AddClient(EventType::KeyReleased, this);
@@ -43,6 +42,8 @@ PlayerController::~PlayerController()
     {
         delete m_currentState;
     }
+
+    delete m_playerMovingBody;
 
     EventManager::Instance()->RemoveClientEvent(EventType::KeyPressed, this);
     EventManager::Instance()->RemoveClientEvent(EventType::KeyReleased, this);

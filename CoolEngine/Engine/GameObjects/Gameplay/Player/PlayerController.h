@@ -4,11 +4,12 @@
 #include "Engine/Managers/Events/EventObserver.h"
 #include "Engine/Managers/Events/MouseEvents.h"
 #include "Engine/Managers/Events/KeyEvents.h"
-#include <Engine\GameObjects\GameObject.h>
+#include "Engine\GameObjects\GameObject.h"
 #include "Engine/GameObjects/Gameplay/Character/ECharacterDirectionClass.h"
-#include <Engine/GameObjects/Gameplay/Player/EPLAYERMOVEMENTSTATE.h>
-#include <Engine/GameObjects/Gameplay/Player/PlayerMovementState.h>
-#include <Engine\GameObjects\Gameplay\Player\PlayerMovementParameters.h>
+#include "Engine/GameObjects/Gameplay/Player/EPLAYERMOVEMENTSTATE.h"
+#include "Engine/GameObjects/Gameplay/Player/PlayerMovementState.h"
+#include "Engine\GameObjects\Gameplay\Player\PlayerMovementParameters.h"
+#include "Engine\GameObjects\Gameplay\Player\PlayerMovingBody.h"
 
 /// <summary>
 /// Handles movement around the scene for the player
@@ -117,5 +118,10 @@ private:
     /// The current speed of the player. Shared among states as this is the force on the player as a whole
     /// </summary>
     float m_moveSpeed;
+
+    /// <summary>
+    /// Indicators on what the player is currently doing
+    /// </summary>
+    PlayerMovingBody* m_playerMovingBody;
 };
 

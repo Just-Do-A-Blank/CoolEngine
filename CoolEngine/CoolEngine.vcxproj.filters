@@ -231,6 +231,9 @@
     <ClCompile Include="Engine\Structure\ObjectPool.cpp">
       <Filter>Engine\Structure</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerMovingBody.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -619,6 +622,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Structure\ObjectPool.h">
       <Filter>Engine\Structure</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovingBody.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

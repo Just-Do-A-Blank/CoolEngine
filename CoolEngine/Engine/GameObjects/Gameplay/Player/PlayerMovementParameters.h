@@ -1,6 +1,7 @@
 #pragma once
-#include <Engine\GameObjects\Transform.h>
-#include <Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.h>
+#include "Engine\GameObjects\Transform.h"
+#include "Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.h"
+#include "Engine\GameObjects\Gameplay\Player\PlayerMovingBody.h"
 
 /// <summary>
 /// Everything required to move the player around the scene
@@ -58,12 +59,7 @@ struct PlayerMovementParameters
     EGAMEPLAYBUTTONCLASS m_lastSecondPressedInputButton;
 
     /// <summary>
-    /// The force currently applied to the player. Shared among states as this is the force on the player as a whole
+    /// Indicators on what the player is currently doing
     /// </summary>
-    XMFLOAT3* m_forceApplied;
-
-    /// <summary>
-    /// The current speed of the player. Shared among states as this is the force on the player as a whole
-    /// </summary>
-    float* m_moveSpeed;
+    PlayerMovingBody* m_playerMovingBody;
 };
