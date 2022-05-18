@@ -8,6 +8,7 @@ Scene::Scene(string identifier)
 {
 	m_sceneIdentifier = identifier;
 	m_psceneGraph = new SceneGraph<GameObject>();
+
 }
 
 Scene::~Scene()

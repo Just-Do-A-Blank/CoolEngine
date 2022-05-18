@@ -44,6 +44,7 @@
 #include "Engine/Managers/Events/EventObserverExamples.h"
 #include "Engine/Managers/Events/DamageCalculation.h"
 #include "Engine/Managers/Events/BulletCreator.h"
+#include "Engine\GameObjects\GameCameraGameObject.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
@@ -156,8 +157,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	float nearDepth = 0.01f;
 	float farDepth = 1000.0f;
 
-	CoolUUID uuid;
-	g_pcamera = new EditorCameraGameObject(std::string("Camera"), uuid);
+	CoolUUID editorCameraUUID;
+	g_pcamera = new EditorCameraGameObject(std::string("Camera"), editorCameraUUID);
 	g_pcamera->Initialize(cameraPos, cameraForward, cameraUp, windowWidth, windowHeight, nearDepth, farDepth);
 
 	GameManager::GetInstance()->SetCamera(g_pcamera);
@@ -904,7 +905,6 @@ void Update()
 
 #if EDITOR
 	g_peditorUI->Update();
-	g_pcamera->Update();
 #endif
 
 	if (g_ptoolBase != nullptr)

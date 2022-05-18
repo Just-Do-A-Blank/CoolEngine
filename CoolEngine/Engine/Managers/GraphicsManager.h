@@ -104,6 +104,7 @@ public:
 	void Serialize(nlohmann::json& data) override;
 	void Deserialize(nlohmann::json& data) override;
 
+    ID3D11DeviceContext* GetInitialDeviceContext(){return m_deviceContext;}
 private:
 
 	//Init functions
@@ -122,5 +123,10 @@ private:
 	HWND* m_pHWND = nullptr;
 
 	std::unique_ptr<DirectX::SpriteBatch> m_pBatches[GraphicsManager::s_kNumLayers] = { nullptr };
+
+    /// <summary>
+    /// The device context when the manager is started
+    /// </summary>
+    ID3D11DeviceContext* m_deviceContext;
 };
 

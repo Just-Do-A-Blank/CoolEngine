@@ -42,6 +42,7 @@
     <ClInclude Include="Engine\GameObjects\CameraGameObject.h" />
     <ClInclude Include="Engine\GameObjects\CharacterGameObject.h" />
     <ClInclude Include="Engine\GameObjects\CollidableGameObject.h" />
+    <ClInclude Include="Engine\GameObjects\GameCameraGameObject.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Character\ECharacterDirectionClass.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\EGameplayButtonClass.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\EVirtualKeyCode.h" />
@@ -168,6 +169,9 @@
     <ClInclude Include="Engine\Physics\ParticleSystem.h" />
     <ClInclude Include="Engine\Physics\Shape.h" />
     <ClInclude Include="Engine\ResourceDefines.h" />
+    <ClInclude Include="Engine\Scene\EditorScene.h" />
+    <ClInclude Include="Engine\Scene\ESceneEnvironment.h" />
+    <ClInclude Include="Engine\Scene\GameScene.h" />
     <ClInclude Include="Engine\Scene\Scene.h" />
     <ClInclude Include="Engine\stdafx.h" />
     <ClInclude Include="Engine\Structure\Manager.h" />
@@ -185,6 +189,7 @@
     <ClInclude Include="Engine\GameUI\ImageComponent.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="EditorScene.cpp" />
     <ClCompile Include="Engine\AI\Pathfinding.cpp" />
     <ClCompile Include="Engine\EditorUI\ContentBrowser.cpp" />
     <ClCompile Include="Engine\EditorUI\EditorUI.cpp" />
@@ -193,6 +198,7 @@
     <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\CharacterGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\CollidableGameObject.cpp" />
+    <ClCompile Include="Engine\GameObjects\GameCameraGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.cpp" />
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerController.cpp" />
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerDodgingState.cpp" />
@@ -273,6 +279,7 @@
     <ClCompile Include="Engine\GameUI\GameUIComponent.cpp" />
     <ClCompile Include="Engine\GameUI\UICanvas.cpp" />
     <ClCompile Include="Engine\GameUI\ImageComponent.cpp" />
+    <ClCompile Include="GameScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">

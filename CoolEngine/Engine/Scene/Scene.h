@@ -2,6 +2,7 @@
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/GameObjects/PlayerGameObject.h"
 #include "Engine/Managers/SceneGraph.h"
+#include "Engine\Scene\ESceneEnvironment.h"
 
 class GameObject;
 
@@ -17,14 +18,18 @@ private:
 	
 public:
 	Scene(string identifier);
-	~Scene();
+	virtual ~Scene();
 
 	virtual void Update();
 	virtual void EditorUpdate();
 	virtual void Render(RenderStruct& renderStruct);
 
-	SceneGraph<GameObject>* GetSceneGraph();
+    /// <summary>
+    /// Describes where the scene is running
+    /// </summary>
+    virtual ESCENEENVIRONMENT GetCurrentEnvironment() = 0;
 
+	SceneGraph<GameObject>* GetSceneGraph();
 private:
 
 	vector<GameObject*>& GetAllGameObjects();

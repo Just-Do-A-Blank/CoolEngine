@@ -5,7 +5,8 @@
 #include "Engine/GameObjects/RangedWeaponGameObject.h"
 #include "Engine/GameObjects/MeleeWeaponGameObject.h"
 #include "Engine/GameObjects/InteractableGameObject.h"
-#include "Engine/Scene/Scene.h"
+#include "Engine/Scene/EditorScene.h"
+#include "Engine/Scene/GameScene.h"
 #include "SceneGraph.h"
 #include "GraphicsManager.h"
 #include "Engine/GameUI/GameUIComponent.h"
@@ -87,7 +88,7 @@ void GameManager::BeginPlay()
 		return;
 	}
 
-	m_pplayScene = new Scene(m_pcurrentScene->m_sceneIdentifier);
+	m_pplayScene = new GameScene(m_pcurrentScene->m_sceneIdentifier);
 
 	CopyScene();
 
@@ -464,6 +465,22 @@ CameraGameObject* GameManager::GetCamera()
 void GameManager::SetCamera(CameraGameObject* pcamera)
 {
 	m_pcamera = pcamera;
+
+    GraphicsManager* manager = GraphicsManager::GetInstance();
+    ID3D11DeviceContext* context = manager->GetInitialDeviceContext();
+    if (context == nullptr)
+    {
+        return;
+    }
+
+    //Bind sampler
+    ID3D11SamplerState* psampler = manager->GetSampler(GraphicsManager::Samplers::LINEAR_WRAP);
+
+    //Update per frame CB
+    PerFrameCB perFrameCB;
+    XMStoreFloat4x4(&perFrameCB.viewProjection, XMMatrixTranspose(XMLoadFloat4x4(&m_pcamera->GetViewProjection())));
+
+    manager->m_pperFrameCB->Update(perFrameCB, manager->GetInitialDeviceContext());
 }
 
 void GameManager::DeleteGameObjectUsingNode(TreeNode<GameObject>* currentNode)
@@ -714,7 +731,7 @@ unordered_map<string, Scene*> GameManager::GetSceneList()
 
 void GameManager::CreateScene(string sceneIdentifier)
 {
-	Scene* newScene = new Scene(sceneIdentifier);
+	Scene* newScene = new EditorScene(sceneIdentifier);
 	m_sceneMap.insert(pair<string, Scene*>(sceneIdentifier, newScene));
 
 	if (!m_pcurrentScene)
