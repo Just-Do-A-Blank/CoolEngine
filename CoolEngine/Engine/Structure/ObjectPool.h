@@ -16,7 +16,7 @@ public:
 	ObjectPool(int objectCount);
 	~ObjectPool();
 	
-	ObjectEntry<T>* CreateEntryInPool(T* entry);
+	ObjectEntry<T>* CreateEntryInPool();
 
 	bool ReleaseEntryInPool(ObjectEntry<T>* entry);
 

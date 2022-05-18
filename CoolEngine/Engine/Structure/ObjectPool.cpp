@@ -8,9 +8,8 @@ ObjectPool<T>::ObjectPool(int objectCount)
 	for (size_t i = 0; i < objectCount; i++)
 	{
 		ObjectEntry<T> entry;
-		entry.m_ID = -1;
 		entry.m_Active = false;
-		entry.m_pObject = nullptr;
+		entry.m_pObject = new T();
 		m_pObjects.push_back(entry);
 	}
 }
@@ -25,13 +24,12 @@ ObjectPool<T>::~ObjectPool()
 }
 
 template<class T>
-ObjectEntry<T>* ObjectPool<T>::CreateEntryInPool(T* entry)
+ObjectEntry<T>* ObjectPool<T>::CreateEntryInPool()
 {
 	for (size_t i = 0; i < m_pObjects.size(); i++)
 	{
 		if (!m_pObjects[i].m_Active)
 		{
-			m_pObjects[i].m_pObject = entry;
 			m_pObjects[i].m_Active = true;
 			return	m_pObjects[i];
 		}
