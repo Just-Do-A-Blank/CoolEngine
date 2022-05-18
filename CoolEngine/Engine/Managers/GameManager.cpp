@@ -8,6 +8,11 @@
 #include "Engine/Scene/Scene.h"
 #include "SceneGraph.h"
 #include "GraphicsManager.h"
+#include "Engine/GameUI/GameUIComponent.h"
+#include "Engine/GameUI/ButtonComponent.h"
+#include "Engine/GameUI/ImageComponent.h"
+#include "Engine/GameUI/UiCanvas.h"
+#include "Engine/GameUI/TextComponent.h"
 
 #include <direct.h>
 
@@ -309,6 +314,97 @@ void GameManager::CopyScene()
 			else
 			{
 				m_pplayScene->CopyGameObject<RangedWeaponGameObject>(*(dynamic_cast<RangedWeaponGameObject*>(gameObjectNodeList[it]->NodeObject)));
+			}
+			break;
+
+		case AccumlateType::UI_COMPONENT:
+			GameUIComponent* uiComponent = dynamic_cast<GameUIComponent*>(gameObjectNodeList[it]->NodeObject);
+			switch (uiComponent->GetComponentType())
+			{
+			case UIComponentType::BASE:
+				if (gameObjectNodeList[it]->PreviousParent)
+				{
+					TreeNode<GameObject>* parentNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
+					m_pplayScene->CopyGameObject<GameUIComponent>(*(dynamic_cast<GameUIComponent*>(gameObjectNodeList[it]->NodeObject)), parentNode);
+				}
+				else if (gameObjectNodeList[it]->PreviousSibling)
+				{
+					TreeNode<GameObject>* previousSiblingNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousSibling->NodeObject);
+					m_pplayScene->CopyGameObject<GameUIComponent>(*(dynamic_cast<GameUIComponent*>(gameObjectNodeList[it]->NodeObject)), nullptr, previousSiblingNode);
+				}
+				else
+				{
+					m_pplayScene->CopyGameObject<GameUIComponent>(*(dynamic_cast<GameUIComponent*>(gameObjectNodeList[it]->NodeObject)));
+				}
+				break;
+
+			case UIComponentType::BUTTON:
+				if (gameObjectNodeList[it]->PreviousParent)
+				{
+					TreeNode<GameObject>* parentNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
+					m_pplayScene->CopyGameObject<ButtonComponent>(*(dynamic_cast<ButtonComponent*>(gameObjectNodeList[it]->NodeObject)), parentNode);
+				}
+				else if (gameObjectNodeList[it]->PreviousSibling)
+				{
+					TreeNode<GameObject>* previousSiblingNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousSibling->NodeObject);
+					m_pplayScene->CopyGameObject<ButtonComponent>(*(dynamic_cast<ButtonComponent*>(gameObjectNodeList[it]->NodeObject)), nullptr, previousSiblingNode);
+				}
+				else
+				{
+					m_pplayScene->CopyGameObject<ButtonComponent>(*(dynamic_cast<ButtonComponent*>(gameObjectNodeList[it]->NodeObject)));
+				}
+				break;
+
+			case UIComponentType::CANVAS:
+				if (gameObjectNodeList[it]->PreviousParent)
+				{
+					TreeNode<GameObject>* parentNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
+					m_pplayScene->CopyGameObject<UICanvas>(*(dynamic_cast<UICanvas*>(gameObjectNodeList[it]->NodeObject)), parentNode);
+				}
+				else if (gameObjectNodeList[it]->PreviousSibling)
+				{
+					TreeNode<GameObject>* previousSiblingNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousSibling->NodeObject);
+					m_pplayScene->CopyGameObject<UICanvas>(*(dynamic_cast<UICanvas*>(gameObjectNodeList[it]->NodeObject)), nullptr, previousSiblingNode);
+				}
+				else
+				{
+					m_pplayScene->CopyGameObject<UICanvas>(*(dynamic_cast<UICanvas*>(gameObjectNodeList[it]->NodeObject)));
+				}
+				break;
+
+			case UIComponentType::IMAGE:
+				if (gameObjectNodeList[it]->PreviousParent)
+				{
+					TreeNode<GameObject>* parentNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
+					m_pplayScene->CopyGameObject<ImageComponent>(*(dynamic_cast<ImageComponent*>(gameObjectNodeList[it]->NodeObject)), parentNode);
+				}
+				else if (gameObjectNodeList[it]->PreviousSibling)
+				{
+					TreeNode<GameObject>* previousSiblingNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousSibling->NodeObject);
+					m_pplayScene->CopyGameObject<ImageComponent>(*(dynamic_cast<ImageComponent*>(gameObjectNodeList[it]->NodeObject)), nullptr, previousSiblingNode);
+				}
+				else
+				{
+					m_pplayScene->CopyGameObject<UICanvas>(*(dynamic_cast<UICanvas*>(gameObjectNodeList[it]->NodeObject)));
+				}
+				break;
+
+			case UIComponentType::TEXT:
+				if (gameObjectNodeList[it]->PreviousParent)
+				{
+					TreeNode<GameObject>* parentNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
+					m_pplayScene->CopyGameObject<TextComponent>(*(dynamic_cast<TextComponent*>(gameObjectNodeList[it]->NodeObject)), parentNode);
+				}
+				else if (gameObjectNodeList[it]->PreviousSibling)
+				{
+					TreeNode<GameObject>* previousSiblingNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousSibling->NodeObject);
+					m_pplayScene->CopyGameObject<TextComponent>(*(dynamic_cast<TextComponent*>(gameObjectNodeList[it]->NodeObject)), nullptr, previousSiblingNode);
+				}
+				else
+				{
+					m_pplayScene->CopyGameObject<TextComponent>(*(dynamic_cast<TextComponent*>(gameObjectNodeList[it]->NodeObject)));
+				}
+				break;
 			}
 			break;
 		}
