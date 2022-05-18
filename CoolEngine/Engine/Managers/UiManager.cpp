@@ -20,7 +20,7 @@ void UIManager::CreateCanvas(string identifier, XMFLOAT3& position, XMFLOAT3& sc
 
 void UIManager::CreateCanvas(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation)
 {
-	UICanvas* canvas = new UICanvas(identifier, uuid, position, scale, rotation);
+	UICanvas* canvas = new UICanvas(identifier, uuid);
 	if (!m_pUISceneGraph)
 	{
 		m_pUISceneGraph = new SceneGraph<GameUIComponent>();

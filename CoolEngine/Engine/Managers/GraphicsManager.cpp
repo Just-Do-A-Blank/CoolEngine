@@ -241,6 +241,12 @@ void GraphicsManager::RenderQuad(ID3D11ShaderResourceView* psrv, XMFLOAT3 positi
 	pTexture2D->Release();
 }
 
+void GraphicsManager::RenderOffsettedColouredSpriteSheetQuad(ID3D11ShaderResourceView* psrv, RECT* sourceRect, const RECT& destinationRect, float rotation, XMFLOAT2 offset, XMFLOAT4 colour, int layer)
+{
+	XMFLOAT2 pos = XMFLOAT2(destinationRect.left + ((destinationRect.right - destinationRect.left)*0.5), destinationRect.bottom + ((destinationRect.top - destinationRect.bottom)*0.5));
+	m_pBatches[layer]->Draw(psrv, destinationRect, sourceRect, XMLoadFloat4(&colour), XMConvertToRadians(rotation), XMFLOAT2(((destinationRect.right - destinationRect.left) * 0.5f) + offset.x, ((destinationRect.top - destinationRect.bottom) * 0.5f) + offset.y), SpriteEffects_FlipVertically);
+}
+
 std::unique_ptr<DirectX::SpriteBatch>* GraphicsManager::GetSpriteBatches()
 {
 	return m_pBatches;
@@ -532,7 +538,6 @@ void GraphicsManager::CompileDefaultShaders()
 	CompileShaderFromFile(DEFAULT_VERTEX_SHADER_NAME, "main", "vs_4_0");
 	CompileShaderFromFile(SCREENSPACE_VERTEX_SHADER_NAME, "main", "vs_4_0");
 	CompileShaderFromFile(DEFAULT_PIXEL_SHADER_NAME, "main", "ps_4_0");
-	CompileShaderFromFile(TEXT_PIXEL_SHADER_NAME, "main", "ps_4_0");
 	CompileShaderFromFile(SPRITE_BATCH_VERTEX_SHADER_NAME, "main", "vs_4_0");
 	CompileShaderFromFile(SPRITE_BATCH_PIXEL_SHADER_NAME, "main", "ps_4_0");
 }

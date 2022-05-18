@@ -10,6 +10,7 @@ public:
 
 	PlayerGameObject(string identifier, CoolUUID uuid);
 	PlayerGameObject(const nlohmann::json& data, CoolUUID uuid);
+	PlayerGameObject(PlayerGameObject const& other);
 	virtual ~PlayerGameObject()override;
 
 	virtual void Serialize(nlohmann::json& data) override;
@@ -23,6 +24,7 @@ public:
     /// Update loop for the gameobject
     /// </summary>
     virtual void Update() override;
+    virtual void EditorUpdate() override;
 
 #if EDITOR
     /// <summary>

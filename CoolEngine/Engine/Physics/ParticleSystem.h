@@ -35,7 +35,8 @@ private:
 public:
 	ParticleSystem(string identifier, CoolUUID uuid);
 	ParticleSystem(const nlohmann::json& data, CoolUUID uuid);
-	~ParticleSystem();
+	ParticleSystem(ParticleSystem const& other);
+	virtual ~ParticleSystem()override;
 
 	virtual void Serialize(nlohmann::json& data) override;
 
@@ -79,7 +80,8 @@ public:
 	/// <summary>
 	/// Tick timer down to zero, and generate particles in pattern according to type
 	/// </summary>
-	void Update();
+	virtual void Update()override;
+	virtual void EditorUpdate()override;
 
 #if EDITOR
 	void CreateEngineUI() override;

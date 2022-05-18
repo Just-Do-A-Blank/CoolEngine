@@ -20,6 +20,10 @@ RenderableCollidableGameObject::RenderableCollidableGameObject(const nlohmann::j
 {
 }
 
+RenderableCollidableGameObject::RenderableCollidableGameObject(RenderableCollidableGameObject const& other) : RenderableGameObject(other), CollidableGameObject(other)
+{
+}
+
 RenderableCollidableGameObject::~RenderableCollidableGameObject()
 {
 }

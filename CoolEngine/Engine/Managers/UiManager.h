@@ -42,7 +42,7 @@ public:
 			return nullptr;
 		}
 
-		T* uiComponent = new T(identifier, uuid, position, scale, rotation);
+		T* uiComponent = new T(identifier, uuid);
 
 		m_pUISceneGraph->AddChild(m_pselectedUINode, uiComponent);
 

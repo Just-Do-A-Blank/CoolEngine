@@ -1,5 +1,6 @@
 #include "Engine/GameObjects/Gameplay/Player/PlayerWalkingState.h"
-#include <Engine/Managers/Events/EventManager.h>
+#include "Engine/Managers/Events/EventManager.h"
+#include "Engine/GameObjects/PlayerGameObject.h"
 #include "PlayerDodgingState.h"
 
 PlayerWalkingState::PlayerWalkingState(PlayerMovementParameters movement)
@@ -7,7 +8,7 @@ PlayerWalkingState::PlayerWalkingState(PlayerMovementParameters movement)
     m_nextState = EPLAYERMOVEMENTSTATE::Walking;
     m_playerMovementParameters = movement;
 
-	m_transform = movement.m_transform;
+	m_playerReference = movement.m_playerReference;
 	m_gameplayButtons = movement.m_gameplayButtons;
     m_moveSpeedMax = movement.m_maxSpeed;
     m_speedMultiplier = movement.m_walkingSpeed;
@@ -392,7 +393,7 @@ void PlayerWalkingState::MoveByForce(float timeDelta)
     {
 
         XMFLOAT3 movement = *m_forceApplied;
-        MoveTransformInDirectionByDistance(m_transform, *m_forceApplied, *m_moveSpeed, timeDelta * *m_speedMultiplier);
+        MoveTransformInDirectionByDistance(m_playerReference->GetTransform(), *m_forceApplied, *m_moveSpeed, timeDelta * (*m_speedMultiplier));
         SlowPlayerBasedOnDrag(m_moveSpeed, *m_dragSpeedPerFrame, timeDelta);
 
         if (m_moveSpeed == 0)
