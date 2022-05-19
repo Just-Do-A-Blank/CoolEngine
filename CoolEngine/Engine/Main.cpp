@@ -195,7 +195,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj1Name);
 	pgameManager->CreateGameObject<PlayerGameObject>(playerName);
 	pgameManager->CreateGameObject<EnemyGameObject>(enemyName);
-	pgameManager->CreateGameObject<WeaponGameObject>(weaponName);
+	pgameManager->CreateGameObject<RangedWeaponGameObject>(weaponName);
 
 	RenderableCollidableGameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj0Name);
 
@@ -268,7 +268,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 
 	// Weapon test
-	pgameObject = pgameManager->CreateGameObject<WeaponGameObject>(weaponName);
+	pgameObject = pgameManager->GetGameObjectUsingIdentifier<RangedWeaponGameObject>(weaponName);
 	pgameObject->SetMesh(QUAD_MESH_NAME);
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
 	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);

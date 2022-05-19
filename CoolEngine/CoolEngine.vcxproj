@@ -39,6 +39,7 @@
     <ClInclude Include="Engine\EditorUI\EditorUINonSpecificParameters.h" />
     <ClInclude Include="Engine\EditorUI\TileMapContentBrowser.h" />
     <ClInclude Include="Engine\FileIO\FileIO.h" />
+    <ClInclude Include="Engine\GameObjects\BulletGameObject.h" />
     <ClInclude Include="Engine\GameObjects\CameraGameObject.h" />
     <ClInclude Include="Engine\GameObjects\CharacterGameObject.h" />
     <ClInclude Include="Engine\GameObjects\CollidableGameObject.h" />
@@ -192,6 +193,7 @@
     <ClCompile Include="Engine\EditorUI\EditorUI.cpp" />
     <ClCompile Include="Engine\EditorUI\TileMapContentBrowser.cpp" />
     <ClCompile Include="Engine\FileIO\FileIO.cpp" />
+    <ClCompile Include="Engine\GameObjects\BulletGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\CharacterGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\CollidableGameObject.cpp" />
