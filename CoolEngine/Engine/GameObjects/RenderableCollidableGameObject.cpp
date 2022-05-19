@@ -67,12 +67,12 @@ void RenderableCollidableGameObject::CreateEngineUI()
 			else if (ImGui::Selectable(Shape::ShapeTypeToString(ShapeType::BOX).c_str(), shapeType == ShapeType::BOX))
 			{
 				delete m_pcollider;
-				m_pcollider = new Box(m_transform);
+				m_pcollider = new Box(this);
 			}
 			else if (ImGui::Selectable(Shape::ShapeTypeToString(ShapeType::CIRCLE).c_str(), shapeType == ShapeType::CIRCLE))
 			{
 				delete m_pcollider;
-				m_pcollider = new Circle(m_transform, 1.0f);
+				m_pcollider = new Circle(this, 1.0f);
 			}
 
 			ImGui::EndCombo();

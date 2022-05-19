@@ -16,16 +16,16 @@ public:
 	/// </summary>
 	Circle()
 	{
-		m_transform = nullptr;
+		m_pgameObject = nullptr;
 		m_radius = 0;
 
 		m_shapeType = ShapeType::CIRCLE;
 	};
 
-	Circle(Transform* t)
+	Circle(GameObject* gameObject)
 	{
-		m_transform = t;
-		m_radius = m_transform->GetWorldScale().x;
+		m_pgameObject = gameObject;
+		m_radius = m_pgameObject->GetTransform()->GetWorldScale().x;
 
 		m_shapeType = ShapeType::CIRCLE;
 	}
@@ -36,17 +36,17 @@ public:
 	/// <param name="x"></param>
 	/// <param name="y"></param>
 	/// <param name="radius"></param>
-	Circle(Transform* t, float radius)
+	Circle(GameObject* gameObject, float radius)
 	{
-		m_transform = t;
+		m_pgameObject = gameObject;
 		m_radius = radius;
 
 		m_shapeType = ShapeType::CIRCLE;
 	}
 
-	Circle(const nlohmann::json& data, Transform* trans) : Shape(data)
+	Circle(const nlohmann::json& data, GameObject* gameObject) : Shape(data)
 	{
-		m_transform = trans;
+		m_pgameObject = gameObject;
 		m_radius = data["CircleRadius"];
 
 		m_shapeType = ShapeType::CIRCLE;
@@ -66,12 +66,12 @@ public:
 
 	void SetShapeDimensions(XMFLOAT3 scale)
 	{
-		m_radius = m_transform->GetWorldScale().x;
+		m_radius = m_pgameObject->GetTransform()->GetWorldScale().x;
 	}
 
 	~Circle()
 	{
-		m_transform = nullptr;
+		m_pgameObject = nullptr;
 	}
 
 	bool Collide(Shape* shape)
