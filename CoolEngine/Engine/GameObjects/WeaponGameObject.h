@@ -46,7 +46,7 @@ private:
 
 	int m_shotCount = 1;
 	float m_timeLethal = 1;
-	float m_distanceTravelled = 1;
+	float m_distanceTravelled = 100.0f;
 
 	ELEMENTS m_element = ELEMENTS::NONE;
 	STATUSES m_statusEffect = STATUSES::NONE;

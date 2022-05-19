@@ -32,4 +32,11 @@ void BulletGameObject::Update()
 	float dTime = GameManager::GetInstance()->GetTimer()->DeltaTime();
 	XMFLOAT3 translate = XMFLOAT3(m_direction.x * dTime * m_speed, m_direction.y * dTime * m_speed, 0.0f);
 	m_transform->Translate(translate);
+
+	m_currentTravelTime += dTime;
+	if (m_currentTravelTime >= m_totalTravelTime)
+	{
+		// Lifetime over
+		m_isActive = false;
+	}
 }
