@@ -12,6 +12,8 @@ public:
     /// Shows engine UI
     /// </summary>
     virtual void CreateEngineUI();
+
+    const string m_popupKeyResourceKeyFound = "PlayerResourceInterface_ResourceErrorKey";
 #endif
 
 private:
@@ -20,6 +22,7 @@ private:
     string m_entryKey;
 
     bool m_lastEntryIsError;
+    bool m_lastEntryIsError2;
 
     bool AddResourceToList(string key);
 };
