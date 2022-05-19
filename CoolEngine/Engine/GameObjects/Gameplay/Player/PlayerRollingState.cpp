@@ -98,14 +98,8 @@ PlayerMovementState* PlayerRollingState::NextState()
 void PlayerRollingState::KeyPressed(KeyPressedEvent* e)
 {
     EGAMEPLAYBUTTONCLASS button = m_gameplayButtons->GetGameplayButtonFromKeyInput(e->GetKeyCode());
-    //if (button == EGAMEPLAYBUTTONCLASS::)
-    //{
-    //    m_nextState = EPLAYERMOVEMENTSTATE::Dodging;
-    //}
 
-
-    if (m_nextState == EPLAYERMOVEMENTSTATE::Rolling)// &&
-        //button != EGAMEPLAYBUTTONCLASS::Nothing)
+    if (m_nextState == EPLAYERMOVEMENTSTATE::Rolling)
     {
         UpdateButtonOrderOnButtonPressed(button);
     }
