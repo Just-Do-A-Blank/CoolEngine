@@ -5,6 +5,7 @@
 class BulletGameObject : public WeaponGameObject
 {
 public:
+	BulletGameObject();
 	BulletGameObject(string identifier, CoolUUID uuid);
 	BulletGameObject(const nlohmann::json& data, CoolUUID uuid);
 	virtual ~BulletGameObject()override;

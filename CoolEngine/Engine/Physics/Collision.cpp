@@ -7,6 +7,7 @@
 #include "Engine/Managers/Events/CollisionEvents.h"
 
 #include "Engine/Managers/DebugDrawManager.h"
+#include "Engine/Managers/Events/BulletCreator.h"
 
 bool Collision::BoxCollision(Box* box1, Box* box2)
 {
@@ -264,6 +265,43 @@ void Collision::Update(vector<GameObject*> gameObjectMap)
 					if (hasCollided)
 					{
 						EventManager::Instance()->AddEvent(new TriggerHoldEvent(pcollidable1, pcollidable2));
+					}
+				}
+			}
+		}
+	}
+}
+
+void Collision::Update(vector<GameObject*> gameObjectMap, vector<ObjectEntry<BulletGameObject>*> bulletMap)
+{
+	CollidableGameObject* pcollidable = nullptr;
+	BulletGameObject* pbullet = nullptr;
+
+	for (int itObj = 0; itObj < gameObjectMap.size(); ++itObj)
+	{
+		for (int itBullet = 0; itBullet < bulletMap.size(); ++itBullet)
+		{
+			if (itObj != itBullet)
+			{
+				if (gameObjectMap[itObj]->ContainsType(GameObjectType::COLLIDABLE) == false)
+				{
+					continue;
+				}
+
+				pcollidable = dynamic_cast<CollidableGameObject*>(gameObjectMap[itObj]);
+				pbullet = bulletMap[itBullet]->m_pObject;
+
+				if (pcollidable->GetShape() == nullptr || pbullet->GetShape() == nullptr)
+				{
+					continue;
+				}
+
+				if (pcollidable->GetShape()->IsTrigger() && pbullet->GetShape()->IsTrigger() || pcollidable->GetShape()->IsCollidable() && pbullet->GetShape()->IsTrigger() || pbullet->GetShape()->IsCollidable() && pcollidable->GetShape()->IsTrigger())
+				{
+					bool hasCollided = pcollidable->GetShape()->Collide(pbullet->GetShape());
+					if (hasCollided)
+					{
+						EventManager::Instance()->AddEvent(new TriggerHoldEvent(pcollidable, pbullet));
 					}
 				}
 			}

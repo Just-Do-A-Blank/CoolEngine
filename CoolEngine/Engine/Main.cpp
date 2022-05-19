@@ -43,6 +43,8 @@
 #include "Engine/Managers/Events/EventObserverExamples.h"
 #include "Engine/Managers/Events/DamageCalculation.h"
 #include "Engine/Managers/Events/BulletCreator.h"
+#include "Engine/Structure/ObjectPool.h"
+#include "Engine/GameObjects/BulletGameObject.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
@@ -80,6 +82,9 @@ PlayerGameObject* g_pplayer = nullptr;
 TileMap* g_testMap1;
 
 TileMap* g_testMap2;
+
+// Observer for making attacks
+BulletCreator bulletCreator;
 
 #if EDITOR
 EditorUI* g_peditorUI;
@@ -274,9 +279,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	// Observer for taking damage
 	DamageCalculation damageObserver = DamageCalculation();
-
-	// Observer for making attacks
-	BulletCreator bulletCreator = BulletCreator();
 	
 
 	XMFLOAT3 pos = XMFLOAT3(-400, 250, 5);
@@ -787,6 +789,8 @@ void Render()
 
 	ParticleManager::GetInstance()->Render(renderStruct.m_pcontext);
 
+	bulletCreator.Render(renderStruct);
+
 #if _DEBUG
 	DebugDrawManager::GetInstance()->Render(renderStruct);
 #endif
@@ -879,6 +883,8 @@ void Update()
 
 	pgamemanager->GetTimer()->Tick();
 	pgamemanager->Update();
+
+	bulletCreator.Update();
 
 #if EDITOR
 	g_peditorUI->Update();

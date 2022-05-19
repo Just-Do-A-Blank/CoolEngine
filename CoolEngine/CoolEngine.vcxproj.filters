@@ -219,10 +219,9 @@
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerDodgingState.cpp">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Structure\ObjectPool.cpp">
-      <Filter>Engine\Structure</Filter>
+    <ClCompile Include="Engine\GameObjects\BulletGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GameObjects\BulletGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerMovingBody.cpp">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClCompile>
@@ -612,7 +611,9 @@
     <ClInclude Include="Engine\Structure\ObjectPool.h">
       <Filter>Engine\Structure</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\GameObjects\BulletGameObject.h" />
+    <ClInclude Include="Engine\GameObjects\BulletGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovingBody.h">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClInclude>
