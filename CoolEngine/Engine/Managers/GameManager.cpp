@@ -678,7 +678,7 @@ void GameManager::Deserialize(nlohmann::json& data)
 					break;
 
 				case AccumulatedUIComponentType::TEXT:
-					gameObjects[*uuid] = new TextComponent(data[typeIt.key()][uuidString], uuid);
+					gameObjects[*uuid] = new TextComponent(data[typeIt.key()][uuidString], uuid, GraphicsManager::GetInstance()->GetDevice());
 					break;
 				}
 			}

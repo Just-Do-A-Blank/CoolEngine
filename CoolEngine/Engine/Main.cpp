@@ -28,7 +28,6 @@
 #include "Scene/Scene.h"
 #include "Engine/Managers/GameManager.h"
 #include <Engine/Physics/Box.h>
-#include "Engine/Managers/UIManager.h"
 #include "Engine/GameUI/GameUIComponent.h"
 #include "Engine/GameUI/ImageComponent.h"
 #include "Engine/GameUI/TextComponent.h"
@@ -814,8 +813,6 @@ void Render()
 		GraphicsManager::GetInstance()->GetSpriteBatches()[i]->End();
 	}
 
-	UIManager::GetInstance()->Render(renderStruct);
-
 	if (g_ptoolBase != nullptr)
 	{
 		g_ptoolBase->Render();
@@ -899,8 +896,6 @@ void Update()
 
 	pgamemanager->GetTimer()->Tick();
 	pgamemanager->Update();
-
-	UIManager::GetInstance()->Update();
 
 #if EDITOR
 	g_peditorUI->Update();

@@ -34,6 +34,8 @@ public:
 	virtual void Update()override;
 	virtual void EditorUpdate()override;
 
+	virtual void Render(RenderStruct& renderStruct);
+
 	void SetTexture(std::wstring wsfilepath, ButtonState textureType);
 
 	void Handle(Event* e) override;

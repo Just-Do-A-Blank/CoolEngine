@@ -88,6 +88,16 @@ void ButtonComponent::EditorUpdate()
 {
 }
 
+void ButtonComponent::Render(RenderStruct& renderStruct)
+{
+	if (m_pButtonTextures[(int)m_currentButtonState] == nullptr)
+	{
+		return;
+	}
+
+	GraphicsManager::GetInstance()->RenderQuad(m_pButtonTextures[(int)m_currentButtonState], m_transform->GetWorldPosition(), m_transform->GetWorldScale(), m_transform->GetWorldRotation().z, m_layer);
+}
+
 void ButtonComponent::SetTexture(std::wstring wsfilepath, ButtonState textureType)
 {
 	m_pButtonTextures[int(textureType)] = GraphicsManager::GetInstance()->GetShaderResourceView(wsfilepath);

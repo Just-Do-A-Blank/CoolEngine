@@ -10,8 +10,6 @@ private:
 	vector<DirectX::SimpleMath::Rectangle> m_characterSourceRects;
 	vector<DirectX::SimpleMath::Rectangle> m_characterDestinationRects;
 
-	float m_characterSpacing = 10.0f;
-
 	XMFLOAT2 m_dimensions;
 	XMFLOAT2 m_fontTextureDimension;
 

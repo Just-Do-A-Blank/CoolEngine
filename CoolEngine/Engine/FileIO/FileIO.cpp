@@ -13,14 +13,16 @@ void SimpleFileIO::LoadScene(std::string location)
 	AudioManager::GetInstance()->Deserialize(dataIn);
 	GraphicsManager::GetInstance()->Deserialize(dataIn);
 	FontManager::GetInstance()->Deserialize(dataIn);
-	UIManager::GetInstance()->Deserialize(dataIn);
 	GameManager::GetInstance()->Deserialize(dataIn);
 }
 
 void SimpleFileIO::SaveScene(std::string location)
 {
 	location.append(".json");
-	ofstream fileOut(location);
+
+	std::string path = GameManager::GetInstance()->GetWorkingDirectory() + "\\" + location;
+
+	ofstream fileOut(path);
 
 	json outData;
 
@@ -28,7 +30,6 @@ void SimpleFileIO::SaveScene(std::string location)
 	AudioManager::GetInstance()->Serialize(outData);
 	GraphicsManager::GetInstance()->Serialize(outData);
 	FontManager::GetInstance()->Serialize(outData);
-	UIManager::GetInstance()->Serialize(outData);
 	GameManager::GetInstance()->Serialize(outData);
 
 	fileOut << outData;

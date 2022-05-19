@@ -22,7 +22,12 @@ GameUIComponent::GameUIComponent(nlohmann::json& data, CoolUUID uuid) : GameObje
 	m_isRenderable = data["IsRendering"];
 	m_layer = data["Layer"];
 
-	SetTexture(data["TexturePath"]);
+	m_texFilepath = L"";
+
+	std::string tempTexPath = data["TexturePath"];
+	std::wstring wideTexPath = std::wstring(tempTexPath.begin(), tempTexPath.end());
+
+	SetTexture(wideTexPath);
 }
 
 GameUIComponent::GameUIComponent(GameUIComponent const& other) : GameObject(other)

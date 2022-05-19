@@ -180,7 +180,6 @@
     <ClInclude Include="Engine\Tools\AnimationTool.h" />
     <ClInclude Include="Engine\Tools\TileMapTool.h" />
     <ClInclude Include="Engine\Tools\ToolBase.h" />
-    <ClInclude Include="Engine\Managers\UIManager.h" />
     <ClInclude Include="Engine\GameUI\GameUIComponent.h" />
     <ClInclude Include="Engine\GameUI\UICanvas.h" />
     <ClInclude Include="Engine\GameUI\ImageComponent.h" />
@@ -271,7 +270,6 @@
     <ClCompile Include="Engine\Tools\AnimationTool.cpp" />
     <ClCompile Include="Engine\Tools\TileMapTool.cpp" />
     <ClCompile Include="Engine\Tools\ToolBase.cpp" />
-    <ClCompile Include="Engine\Managers\UIManager.cpp" />
     <ClCompile Include="Engine\GameUI\GameUIComponent.cpp" />
     <ClCompile Include="Engine\GameUI\UICanvas.cpp" />
     <ClCompile Include="Engine\GameUI\ImageComponent.cpp" />
