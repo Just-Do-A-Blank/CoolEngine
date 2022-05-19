@@ -14,25 +14,20 @@ GameUIComponent::GameUIComponent(string identifier, CoolUUID uuid):GameObject(id
 	m_transform = new Transform();
 }
 
-GameUIComponent::GameUIComponent(nlohmann::json& data, CoolUUID uuid)
+GameUIComponent::GameUIComponent(nlohmann::json& data, CoolUUID uuid) : GameObject(data, uuid)
 {
 	m_gameObjectType |= GameObjectType::GAME_UI_COMPONENT;
 	m_uiComponentType |= UIComponentType::BASE;
 
-	m_UUID = CoolUUID(*uuid);
-	std::string uuidString = to_string(*uuid);
+	m_isRenderable = data["IsRendering"];
+	m_layer = data["Layer"];
 
-	SetIdentifier(data["GameUI"][(int)m_uiComponentType][uuidString]["Identifier"]);
-	m_transform = new Transform();
+	m_texFilepath = L"";
 
-	m_transform->SetLocalPosition(XMFLOAT3(data["GameUI"][(int)m_uiComponentType][uuidString]["Position"][0], data["GameUI"][(int)m_uiComponentType][uuidString]["Position"][1], data["GameUI"][(int)m_uiComponentType][uuidString]["Position"][2]));
-	m_transform->SetLocalRotation(XMFLOAT3(data["GameUI"][(int)m_uiComponentType][uuidString]["rotation"][0], data["GameUI"][(int)m_uiComponentType][uuidString]["rotation"][1], data["GameUI"][(int)m_uiComponentType][uuidString]["rotation"][2]));
-	m_transform->SetLocalScale(XMFLOAT3(data["GameUI"][(int)m_uiComponentType][uuidString]["scale"][0], data["GameUI"][(int)m_uiComponentType][uuidString]["scale"][1], data["GameUI"][(int)m_uiComponentType][uuidString]["scale"][2]));
+	std::string tempTexPath = data["TexturePath"];
+	std::wstring wideTexPath = std::wstring(tempTexPath.begin(), tempTexPath.end());
 
-	m_isRenderable = data["GameUI"][(int)m_uiComponentType][uuidString]["IsRendering"];
-	m_layer = data["GameUI"][(int)m_uiComponentType][uuidString]["Layer"];
-
-	SetTexture(data["GameUI"][(int)m_uiComponentType][uuidString]["TexturePath"]);
+	SetTexture(wideTexPath);
 }
 
 GameUIComponent::GameUIComponent(GameUIComponent const& other) : GameObject(other)
@@ -63,15 +58,13 @@ void GameUIComponent::EditorUpdate()
 
 void GameUIComponent::Serialize(nlohmann::json& data)
 {
-	std::string uuidString = to_string(*m_UUID);
+	GameObject::Serialize(data);
 
-	data["GameUI"][(int)m_uiComponentType][uuidString]["Identifier"].push_back(m_identifier);
-	data["GameUI"][(int)m_uiComponentType][uuidString]["Position"].push_back({ m_transform->GetLocalPosition().x, m_transform->GetLocalPosition().y, m_transform->GetLocalPosition().z });
-	data["GameUI"][(int)m_uiComponentType][uuidString]["Rotation"].push_back({ m_transform->GetLocalRotation().x, m_transform->GetLocalRotation().y, m_transform->GetLocalRotation().z });
-	data["GameUI"][(int)m_uiComponentType][uuidString]["Scale"].push_back({ m_transform->GetLocalScale().x, m_transform->GetLocalScale().y, m_transform->GetLocalScale().z });
-	data["GameUI"][(int)m_uiComponentType][uuidString]["TexturePath"].push_back(m_texFilepath);
-	data["GameUI"][(int)m_uiComponentType][uuidString]["Layer"].push_back(m_layer);
-	data["GameUI"][(int)m_uiComponentType][uuidString]["IsRendering"].push_back(m_isRenderable);
+	std::string tempPath = std::string(m_texFilepath.begin(), m_texFilepath.end());
+	data["TexturePath"] = tempPath;
+	data["Layer"] = m_layer;
+	data["IsRendering"] = m_isRenderable;
+	data["UIType"] = (int)m_uiComponentType;
 }
 
 void GameUIComponent::SetIsRenderable(bool& condition)

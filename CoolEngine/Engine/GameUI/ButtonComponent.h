@@ -34,10 +34,14 @@ public:
 	virtual void Update()override;
 	virtual void EditorUpdate()override;
 
+	virtual void Render(RenderStruct& renderStruct);
+
 	void SetTexture(std::wstring wsfilepath, ButtonState textureType);
 
 	void Handle(Event* e) override;
 	void SetButtonOnClick(void (*onClick)(void*), void* argument);
+
+	void Serialize(nlohmann::json& data) override;
 
 #if EDITOR
 	void CreateEngineUI() override;

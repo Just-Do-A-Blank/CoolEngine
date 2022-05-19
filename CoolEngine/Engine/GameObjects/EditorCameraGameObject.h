@@ -12,12 +12,13 @@ public:
 	EditorCameraGameObject(EditorCameraGameObject const& other);
 	virtual ~EditorCameraGameObject()override;
 
-	void Initialize(XMFLOAT3& position, XMFLOAT3& forwardVector, XMFLOAT3& upVector,
-		float& windowWidth, float& windowHeight, float& nearDepth, float& farDepth) override;
+	void Initialize();
 
 	void Handle(Event* e) override;
 
 	virtual void Serialize(nlohmann::json& jsonData) override;
+	
+	virtual void EditorUpdate()override;
 
 #if EDITOR
 	/// <summary>
@@ -31,6 +32,8 @@ protected:
 private:
 	float m_moveSpeed = 100.0f;
 	float m_speedBoost = 1;
+
+	XMFLOAT3 m_movement = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	
 	/// <summary>
 	/// True means we take input from the user not following the player

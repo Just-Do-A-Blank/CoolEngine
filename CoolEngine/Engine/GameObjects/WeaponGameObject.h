@@ -5,6 +5,7 @@
 class WeaponGameObject : public TriggerableGameObject
 {
 public:
+	WeaponGameObject();
 	WeaponGameObject(string identifier, CoolUUID uuid);
 	WeaponGameObject(const nlohmann::json& data, CoolUUID uuid);
 	WeaponGameObject(WeaponGameObject const& other);
