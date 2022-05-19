@@ -576,7 +576,7 @@ void EditorUI::DrawSceneManagementWindow()
 
 		if (clicked & 1)
 		{
-			pgameManager->CreateScene(sceneName);
+			pgameManager->CreateScene(sceneName, true);
 			m_createSceneClicked = false;
 			sceneName[0] = {};
 		}

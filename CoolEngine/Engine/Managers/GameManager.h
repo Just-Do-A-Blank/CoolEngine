@@ -20,8 +20,6 @@ class RenderStruct;
 class CameraGameObject;
 class ParticleSystem;
 class EnemyGameObject;
-class EditorCameraGameObject;
-
 
 enum class SceneDesc
 {
@@ -47,7 +45,7 @@ private:
 	string m_workingDirectory = "";
 	wstring m_wideWorkingDirectory = L"";
 
-	EditorCameraGameObject* m_peditorCamera = nullptr;
+	CameraGameObject* m_peditorCamera = nullptr;
 
 	ViewState m_viewState = ViewState::EDITOR_VIEW;
 

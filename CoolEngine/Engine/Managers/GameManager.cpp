@@ -85,17 +85,19 @@ void GameManager::DeleteSceneUsingIdentifier(string sceneIdentifier)
 
 void GameManager::DeleteSelectedScene()
 {
-	Scene* pcurrentScene = GetCurrentViewStateScene();
+	Scene*& pcurrentScene = GetCurrentViewStateScene();
 	pcurrentScene->m_psceneGraph->DeleteAllGameObjects();
 
-	unordered_map<string, Scene*> sceneMap = GetCurrentViewStateSceneMap();
+	unordered_map<string, Scene*>& sceneMap = GetCurrentViewStateSceneMap();
 	sceneMap.erase(pcurrentScene->GetSceneIdentifier());
+
+	delete pcurrentScene;
+	pcurrentScene = nullptr;
 	for (unordered_map<string, Scene*>::iterator it = sceneMap.begin(); it != sceneMap.end(); ++it)
 	{
 		pcurrentScene = it->second;
 		return;
 	}
-	pcurrentScene = nullptr;
 }
 
 void GameManager::SwitchAndDeleteScene(string sceneIdentifier)
@@ -132,6 +134,8 @@ bool GameManager::BeginPlay()
 	m_pcurrentGameScene->SetActiveCameraUsingIdentifier(m_pcurrentEditorScene->GetActiveCamera()->GetIdentifier());
 	m_viewState = ViewState::GAME_VIEW;
 
+	GetCurrentViewStateSceneMap().insert(pair<string, Scene*>(m_pcurrentEditorScene->m_sceneIdentifier, m_pcurrentGameScene));
+
 	return true;
 }
 
@@ -139,8 +143,13 @@ bool GameManager::EndPlay()
 {
 	if (m_pcurrentGameScene)
 	{
-		m_pcurrentGameScene->DeleteGameObjectUsingNode(m_pcurrentGameScene->m_prootTreeNode);
-		delete m_pcurrentGameScene;
+		for (unordered_map<string, Scene*>::iterator it = m_gameSceneMap.begin(); it != m_gameSceneMap.end(); ++it)
+		{
+			it->second->m_psceneGraph->DeleteAllGameObjects();
+			delete it->second;
+			it->second = nullptr;
+		}
+		m_gameSceneMap.clear();
 		m_pcurrentGameScene = nullptr;
 
 		m_viewState = ViewState::EDITOR_VIEW;
@@ -562,7 +571,7 @@ void GameManager::DeleteGameObjectUsingIdentifier(string identifier)
 
 TreeNode<GameObject>* GameManager::GetRootTreeNode()
 {
-	return GetCurrentViewStateScene()->GetRootTreeNode();	
+	return GetCurrentViewStateScene()->GetRootTreeNode();
 }
 
 TreeNode<GameObject>* GameManager::GetTreeNode(GameObject* pgameObject)
@@ -766,7 +775,7 @@ void GameManager::Deserialize(nlohmann::json& data)
 	pcomponent = gameObjects[data["RootNode"]];
 
 	string sceneName = data["SceneName"];
-	Scene* pnewScene = new Scene(sceneName);	
+	Scene* pnewScene = new Scene(sceneName);
 	 
 	pnode = pnewScene->m_psceneGraph->NewNode(pcomponent);
 
@@ -804,6 +813,8 @@ void GameManager::Deserialize(nlohmann::json& data)
 	}
 
 	GetCurrentViewStateSceneMap().insert(pair<string, Scene*>(sceneName, pnewScene));
+	Scene*& pcurrentScene = GetCurrentViewStateScene();
+	pcurrentScene = pnewScene;
 }
 
 unordered_map<string, Scene*>& GameManager::GetCurrentViewStateSceneMap()
@@ -836,7 +847,7 @@ Scene*& GameManager::GetCurrentViewStateScene()
 
 unordered_map<string, Scene*> GameManager::GetSceneList()
 {
-	return m_editorSceneMap;
+	return GetCurrentViewStateSceneMap();
 }
 
 void GameManager::CreateScene(string sceneIdentifier, bool unloadCurrentScene)
@@ -847,13 +858,10 @@ void GameManager::CreateScene(string sceneIdentifier, bool unloadCurrentScene)
 	}
 
 	Scene* newScene = new Scene(sceneIdentifier);
-	GetCurrentViewStateSceneMap().insert(pair<string, Scene*>(sceneIdentifier, newScene));	
+	GetCurrentViewStateSceneMap().insert(pair<string, Scene*>(sceneIdentifier, newScene));
 
-	Scene* pcurrentScene = GetCurrentViewStateScene();
-	if (!pcurrentScene)
-	{
-		pcurrentScene = newScene;
-	}
+	Scene*& pcurrentScene = GetCurrentViewStateScene();
+	pcurrentScene = newScene;
 }
 
 void GameManager::LoadSceneFromFile(std::string fileLocation, bool unloadCurrentScene)
@@ -866,7 +874,7 @@ void GameManager::LoadSceneFromFile(std::string fileLocation, bool unloadCurrent
 	GraphicsManager::GetInstance()->Deserialize(dataIn);
 	FontManager::GetInstance()->Deserialize(dataIn);
 
-	if (unloadCurrentScene)
+	if (unloadCurrentScene && GetCurrentViewStateScene())
 	{
 		DeleteSelectedScene();
 	}

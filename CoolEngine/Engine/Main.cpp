@@ -745,7 +745,10 @@ void Render()
 
 	//Update per frame CB
 	PerFrameCB perFrameCB;
-	XMStoreFloat4x4(&perFrameCB.viewProjection, XMMatrixTranspose(XMLoadFloat4x4(&GameManager::GetInstance()->GetCamera()->GetViewProjection())));
+	if (GameManager::GetInstance()->GetCamera())
+	{
+		XMStoreFloat4x4(&perFrameCB.viewProjection, XMMatrixTranspose(XMLoadFloat4x4(&GameManager::GetInstance()->GetCamera()->GetViewProjection())));
+	}
 
 	GraphicsManager::GetInstance()->m_pperFrameCB->Update(perFrameCB, g_pImmediateContext);
 
