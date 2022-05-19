@@ -1,7 +1,8 @@
 #include "Engine/GameObjects/Gameplay/Player/PlayerWalkingState.h"
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/GameObjects/PlayerGameObject.h"
-#include "PlayerDodgingState.h"
+#include "Engine/GameObjects/Gameplay/Player/PlayerDodgingState.h"
+#include "Engine/GameObjects/Gameplay/Player/PlayerRollingState.h"
 
 PlayerWalkingState::PlayerWalkingState(PlayerMovementParameters movement)
 {
@@ -16,8 +17,7 @@ PlayerWalkingState::PlayerWalkingState(PlayerMovementParameters movement)
     m_dragSpeedPerFrame = movement.m_dragSpeedPerFrame;
     m_firstMovementButton = movement.m_lastFirstPressedInputButton;
     m_secondMovementButton = movement.m_lastSecondPressedInputButton;
-    m_forceApplied = movement.m_forceApplied;
-    m_moveSpeed = movement.m_moveSpeed;
+    m_playerMovingBody = movement.m_playerMovingBody;
 
     EventManager::Instance()->AddClient(EventType::KeyPressed, this);
     EventManager::Instance()->AddClient(EventType::KeyReleased, this);
@@ -58,7 +58,7 @@ bool PlayerWalkingState::Update(float timeDelta)
     {
         MovePlayer(timeDelta);
     }
-    
+
     return areCurrentlyRunning;
 }
 
@@ -78,6 +78,9 @@ PlayerMovementState* PlayerWalkingState::NextState()
         case EPLAYERMOVEMENTSTATE::Dodging:
             LOG("Dodging");
             return new PlayerDodgingState(m_playerMovementParameters);
+        case EPLAYERMOVEMENTSTATE::Rolling:
+            LOG("Rolling");
+            return new PlayerRollingState(m_playerMovementParameters);
     }
 
     return this;
@@ -93,10 +96,11 @@ void PlayerWalkingState::KeyPressed(KeyPressedEvent* e)
     {
         m_nextState = EPLAYERMOVEMENTSTATE::Dodging;
     }
-    
-
-    if (m_nextState == EPLAYERMOVEMENTSTATE::Walking &&
-        button != EGAMEPLAYBUTTONCLASS::Nothing)
+    else if (button == EGAMEPLAYBUTTONCLASS::Roll)
+    {
+        m_nextState = EPLAYERMOVEMENTSTATE::Rolling;
+    }
+    else if (button != EGAMEPLAYBUTTONCLASS::Nothing)
     {
         UpdateButtonOrderOnButtonPressed(button);
     }
@@ -307,18 +311,21 @@ void PlayerWalkingState::ApplyForce(float timeDelta, XMFLOAT3 direction)
         return;
     }
 
-    float originalX = m_forceApplied->x;
-    float originalY = m_forceApplied->y;
-    XMFLOAT3 original = XMFLOAT3(m_forceApplied->x, m_forceApplied->y, 0);
+    XMFLOAT3 original = m_playerMovingBody->GetForceApplied();
 
-    ApplyForceToSingleAxis(&m_forceApplied->x, direction.x);
-    ApplyForceToSingleAxis(&m_forceApplied->y, direction.y);
+    XMFLOAT3 newForce = m_playerMovingBody->GetForceApplied();
+    ApplyForceToSingleAxis(&newForce.x, direction.x);
+    ApplyForceToSingleAxis(&newForce.y, direction.y);
 
-    *m_moveSpeed += *m_moveSpeedPerFrame * timeDelta;
+    float moveSpeed = m_playerMovingBody->GetMoveSpeed();
+    moveSpeed += *m_moveSpeedPerFrame * timeDelta;
 
     float drag = ((*m_moveSpeedMax * 100) / 2) * timeDelta;
-    SlowSpeedIfDirectionChanged(original, *m_forceApplied, drag,  m_moveSpeed);
-    RestrictSpeedAndForceToResonableBounds(m_moveSpeed, *m_moveSpeedMax, m_forceApplied);
+    SlowSpeedIfDirectionChanged(original, newForce, drag, moveSpeed);
+    RestrictSpeedAndForceToResonableBounds(moveSpeed, *m_moveSpeedMax, newForce);
+
+    m_playerMovingBody->SetForceApplied(newForce);
+    m_playerMovingBody->SetMoveSpeed(moveSpeed);
 }
 
 /// <summary>
@@ -351,15 +358,16 @@ void PlayerWalkingState::ApplyForceToSingleAxis(float* axisValue, float directio
 /// <param name="newDirection">The direction the vector is moving now</param>
 /// <param name="drag">The drag amount if direction moves</param>
 /// <param name="movementSpeed">The movement speed to adjust</param>
-void PlayerWalkingState::SlowSpeedIfDirectionChanged(XMFLOAT3 originalDirection, XMFLOAT3 newDirection, float drag, float* movementSpeed)
+void PlayerWalkingState::SlowSpeedIfDirectionChanged(XMFLOAT3 originalDirection, XMFLOAT3 newDirection, float drag, float& movementSpeed)
 {
     if ((originalDirection.x > 0 && newDirection.x < 0) || (originalDirection.x < 0 && newDirection.x > 0))
     {
-        *movementSpeed -= drag;
+        movementSpeed -= drag;
     }
-    else if ((originalDirection.y > 0 && newDirection.y < 0) || (originalDirection.y < 0 && newDirection.y > 0))
+    
+    if ((originalDirection.y > 0 && newDirection.y < 0) || (originalDirection.y < 0 && newDirection.y > 0))
     {
-        *movementSpeed -= drag;
+        movementSpeed -= drag;
     }
 }
 
@@ -369,17 +377,17 @@ void PlayerWalkingState::SlowSpeedIfDirectionChanged(XMFLOAT3 originalDirection,
 /// <param name="speed">Current speed to restrict</param>
 /// <param name="maxSpeed">The max speed for the instance</param>
 /// <param name="force">Force which is also restricted if speed is 0</param>
-void PlayerWalkingState::RestrictSpeedAndForceToResonableBounds(float* speed, float maxSpeed, XMFLOAT3* force)
+void PlayerWalkingState::RestrictSpeedAndForceToResonableBounds(float& speed, float maxSpeed, XMFLOAT3& force)
 {
-    if (*speed > maxSpeed)
+    if (speed > maxSpeed)
     {
-        *speed = maxSpeed;
+        speed = maxSpeed;
     }
-    else if (*speed <= 0)
+    else if (speed <= 0)
     {
-        *speed = 0;
-        force->x = 0;
-        force->y = 0;
+        speed = 0;
+        force.x = 0;
+        force.y = 0;
     }
 }
 
@@ -389,24 +397,26 @@ void PlayerWalkingState::RestrictSpeedAndForceToResonableBounds(float* speed, fl
 /// <param name="timeDelta">Delta time between frames</param>
 void PlayerWalkingState::MoveByForce(float timeDelta)
 {
-    if (m_moveSpeed > 0 && (m_forceApplied->x != 0 || m_forceApplied->y != 0))
+    XMFLOAT3 newForce = m_playerMovingBody->GetForceApplied();
+    float bodySpeed = m_playerMovingBody->GetMoveSpeed();
+    if (bodySpeed > 0 && (newForce.x != 0 || newForce.y != 0))
     {
+        MoveTransformInDirectionByDistance(m_playerReference->GetTransform(), newForce, bodySpeed, timeDelta * *m_speedMultiplier);
+        SlowPlayerBasedOnDrag(bodySpeed, *m_dragSpeedPerFrame, timeDelta);
 
-        XMFLOAT3 movement = *m_forceApplied;
-        MoveTransformInDirectionByDistance(m_playerReference->GetTransform(), *m_forceApplied, *m_moveSpeed, timeDelta * (*m_speedMultiplier));
-        SlowPlayerBasedOnDrag(m_moveSpeed, *m_dragSpeedPerFrame, timeDelta);
-
-        if (m_moveSpeed == 0)
+        if (bodySpeed == 0)
         {
-            m_forceApplied->x = 0;
-            m_forceApplied->y = 0;
+            newForce.x = 0;
+            newForce.y = 0;
         }
         else
         {
-            MoveFloatTowardZero(&m_forceApplied->x, timeDelta);
-            MoveFloatTowardZero(&m_forceApplied->y, timeDelta);
+            MoveFloatTowardZero(&newForce.x, timeDelta);
+            MoveFloatTowardZero(&newForce.y, timeDelta);
+            m_playerMovingBody->SetForceApplied(newForce);
         }
 
+        m_playerMovingBody->SetMoveSpeed(bodySpeed);
     }
 }
 
@@ -416,12 +426,12 @@ void PlayerWalkingState::MoveByForce(float timeDelta)
 /// <param name="speed">Speed to move the player</param>
 /// <param name="drag">Drag value to apply</param>
 /// <param name="delta">Time delta to use when slowing the player</param>
-void PlayerWalkingState::SlowPlayerBasedOnDrag(float* speed, float drag, float delta)
+void PlayerWalkingState::SlowPlayerBasedOnDrag(float& speed, float drag, float delta)
 {
-    *speed -= drag * delta;
-    if (*speed < 0)
+    speed -= drag * delta;
+    if (speed < 0)
     {
-        *speed = 0;
+        speed = 0;
     }
 }
 

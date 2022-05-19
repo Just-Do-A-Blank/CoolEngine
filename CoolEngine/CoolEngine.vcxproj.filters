@@ -223,6 +223,12 @@
       <Filter>Engine\Structure</Filter>
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\BulletGameObject.cpp" />
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerMovingBody.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerRollingState.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -607,6 +613,12 @@
       <Filter>Engine\Structure</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\BulletGameObject.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovingBody.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerRollingState.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Engine\Includes\DirectXTK\SimpleMath.inl" />

@@ -7,7 +7,7 @@
 /// <param name="buttons">A list of all the gameplay buttons relating to inputs</param>
 InputsAsGameplayButtons::InputsAsGameplayButtons(list<GameplayButton> buttons)
 {
-    for (const auto& button : buttons)
+    for (const GameplayButton& button : buttons)
     {
         m_currentButtons.insert(pair<EGAMEPLAYBUTTONCLASS,GameplayButton>
             (button.m_gameplayButton, button));
