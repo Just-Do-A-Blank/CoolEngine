@@ -1381,4 +1381,39 @@ void EditorUI::SetupTooltip(char* tooltipText)
         ImGui::EndTooltip();
     }
 }
+
+bool EditorUI::BasicButton(const string& label)
+{
+	return ImGui::Button(label.c_str());
+}
+
+void EditorUI::ShowError(const string& label, EditorUINonSpecificParameters parameters)
+{
+	SetupDefaultsInParameters(parameters);
+
+	ImGui::Separator();
+	ImGui::PushID(label.c_str());
+
+	ImGui::Columns(2);
+	ImGui::SetColumnWidth(0, parameters.m_columnWidth);
+	ImGui::NextColumn();
+
+	ImGui::SetColumnWidth(0, parameters.m_columnWidth);
+	ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(199, 44, 44, 255));
+	ImGui::Text(label.c_str());
+	
+	SetupTooltip(parameters.m_tooltipText);
+
+	ImGui::NextColumn();
+
+	ImGui::PushItemWidth(ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+	ImGui::PopItemWidth();
+	ImGui::PopStyleVar();
+	ImGui::PopID();
+	ImGui::PopStyleColor();
+
+	ImGui::Separator();
+}
 #endif

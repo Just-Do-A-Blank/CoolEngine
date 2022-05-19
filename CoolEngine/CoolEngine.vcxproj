@@ -54,6 +54,8 @@
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovementParameters.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovementState.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovingBody.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerResource.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerResourceInterface.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerRollingState.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerWalkingState.h" />
     <ClInclude Include="Engine\GameObjects\InteractableGameObject.h" />
@@ -277,6 +279,8 @@
     <ClCompile Include="Engine\GameUI\GameUIComponent.cpp" />
     <ClCompile Include="Engine\GameUI\UICanvas.cpp" />
     <ClCompile Include="Engine\GameUI\ImageComponent.cpp" />
+    <ClCompile Include="PlayerResource.cpp" />
+    <ClCompile Include="PlayerResourceInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">

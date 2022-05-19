@@ -125,6 +125,10 @@ public:
 
 	static void Animations(const string& label, unordered_map<string, SpriteAnimation>& animations, const float& columnWidth = 100.0f);
 
+	static bool BasicButton(const string& label);
+
+	static void ShowError(const string& label, EditorUINonSpecificParameters parameters = {});
+
 	template<class T>
 	static void ReferenceField(const string& label, T*& objectPointer, const float& columnWidth = 100.0f)
 	{

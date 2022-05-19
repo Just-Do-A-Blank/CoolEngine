@@ -65,6 +65,12 @@ PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : Character
     InputsAsGameplayButtons* buttons = new InputsAsGameplayButtons(gameplayButtons);
     m_playerController = new PlayerController(buttons, this);
 
+	m_resources = map<string, PlayerResource*>();
+
+#if EDITOR
+	m_resourceInterface = new PlayerResourceInterface(&m_resources);
+#endif
+
     EventManager::Instance()->AddClient(EventType::KeyPressed, this);
     EventManager::Instance()->AddClient(EventType::KeyReleased, this);
     EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
@@ -130,6 +136,11 @@ PlayerGameObject::PlayerGameObject(const nlohmann::json& data, CoolUUID uuid) : 
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
 	EventManager::Instance()->AddClient(EventType::MouseMoved, this);
+
+	m_resources = map<string, PlayerResource*>();
+#if EDITOR
+	m_resourceInterface = new PlayerResourceInterface(&m_resources);
+#endif
 }
 
 PlayerGameObject::PlayerGameObject(PlayerGameObject const& other) : CharacterGameObject(other)
@@ -141,6 +152,11 @@ PlayerGameObject::PlayerGameObject(PlayerGameObject const& other) : CharacterGam
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
 	EventManager::Instance()->AddClient(EventType::MouseMoved, this);
+
+	m_resources = map<string, PlayerResource*>();
+#if EDITOR
+	m_resourceInterface = new PlayerResourceInterface(&m_resources);
+#endif
 }
 
 PlayerGameObject::~PlayerGameObject()
@@ -153,6 +169,8 @@ PlayerGameObject::~PlayerGameObject()
 
     delete m_playerController;
 	m_playerController = nullptr;
+
+	delete m_resourceInterface;
 }
 
 
@@ -240,6 +258,8 @@ void PlayerGameObject::CreateEngineUI()
 
 	if (EditorUI::CollapsingSection("Player", true))
 	{
+		m_resourceInterface->CreateEngineUI();
+
 		m_playerController->CreateEngineUI();
 	}
 }

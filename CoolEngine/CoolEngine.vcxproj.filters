@@ -229,6 +229,12 @@
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerRollingState.cpp">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerResource.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerResourceInterface.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -617,6 +623,12 @@
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerRollingState.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerResource.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerResourceInterface.h">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClInclude>
   </ItemGroup>

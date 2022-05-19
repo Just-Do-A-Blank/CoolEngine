@@ -3,6 +3,8 @@
 #include "Engine/Managers/Events/MouseEvents.h"
 #include "Engine/Managers/Events/KeyEvents.h"
 #include "Engine/GameObjects/Gameplay/Player/PlayerController.h"
+#include "Engine/GameObjects/Gameplay/Player/PlayerResource.h"
+#include "Engine/GameObjects/Gameplay/Player/PlayerResourceInterface.h"
 
 class PlayerGameObject : public CharacterGameObject
 {
@@ -55,6 +57,10 @@ private:
     /// Handles movement around the scene for the player
     /// </summary>
     PlayerController* m_playerController;
+
+    map<string, PlayerResource*> m_resources;
+
+    PlayerResourceInterface* m_resourceInterface;
 
     /// <summary>
     /// Handles any keypresses when they are pressed (frame whilst pressed)
