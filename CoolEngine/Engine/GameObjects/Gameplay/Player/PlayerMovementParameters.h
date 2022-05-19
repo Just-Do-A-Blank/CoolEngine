@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine\GameObjects\Transform.h"
 #include "Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.h"
+#include "Engine\GameObjects\Gameplay\Player\PlayerMovingBody.h"
 
 class PlayerGameObject;
 /// <summary>
@@ -12,7 +13,7 @@ struct PlayerMovementParameters
     /// Relates inputs to gameplay buttons
     /// </summary>
 	PlayerGameObject* m_playerReference;
-    
+
     /// <summary>
     /// Relates inputs to gameplay buttons
     /// </summary>
@@ -27,12 +28,12 @@ struct PlayerMovementParameters
     /// How much to move per frame
     /// </summary>
     int* m_moveSpeedPerFrame;
-    
+
     /// <summary>
     /// Drag speed per frame
     /// </summary>
     int* m_dragSpeedPerFrame;
-    
+
     /// <summary>
     /// How much to multiply the speed by when actually calulcating the speed when walking
     /// </summary>
@@ -49,6 +50,16 @@ struct PlayerMovementParameters
     float* m_timeInSecondsToDodgeFor;
 
     /// <summary>
+    /// How much to multiply the speed by when actually calulcating the speed when rolling
+    /// </summary>
+    float* m_rollingSpeed;
+
+    /// <summary>
+    /// How long to roll for in seconds
+    /// </summary>
+    float* m_timeInSecondsToRollFor;
+
+    /// <summary>
     /// The input button pressed by the user in the last state
     /// </summary>
     EGAMEPLAYBUTTONCLASS m_lastFirstPressedInputButton;
@@ -59,12 +70,7 @@ struct PlayerMovementParameters
     EGAMEPLAYBUTTONCLASS m_lastSecondPressedInputButton;
 
     /// <summary>
-    /// The force currently applied to the player. Shared among states as this is the force on the player as a whole
+    /// Indicators on what the player is currently doing
     /// </summary>
-    XMFLOAT3* m_forceApplied;
-
-    /// <summary>
-    /// The current speed of the player. Shared among states as this is the force on the player as a whole
-    /// </summary>
-    float* m_moveSpeed;
+    PlayerMovingBody* m_playerMovingBody;
 };
