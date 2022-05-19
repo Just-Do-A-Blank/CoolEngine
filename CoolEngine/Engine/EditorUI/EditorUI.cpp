@@ -94,12 +94,11 @@ void EditorUI::DrawPlayButtonWindow(XMFLOAT2 buttonSize, float verticalOffset)
 	}
 	ImGui::BeginDisabled(GameManager::GetInstance()->GetViewState() == ViewState::GAME_VIEW);
 
-	static bool cameraPresent = true;
 	if (ImGui::ImageButton(m_playButtonTexture, ImVec2(buttonSize.x, buttonSize.y)))
 	{
-		cameraPresent = GameManager::GetInstance()->BeginPlay();
+		m_cameraPresent = GameManager::GetInstance()->BeginPlay();
 
-		if (cameraPresent)
+		if (m_cameraPresent)
 		{
 			m_gameObjectNodeClicked = -1;
 			m_selectedGameObjectNode = nullptr;
@@ -120,7 +119,7 @@ void EditorUI::DrawPlayButtonWindow(XMFLOAT2 buttonSize, float verticalOffset)
 	ImGui::EndDisabled();
 	ImGui::End();
 
-	if (!cameraPresent)
+	if (!m_cameraPresent)
 	{
 		ImGui::Begin("No Camera GameObject Present on Scene");
 
@@ -131,7 +130,7 @@ void EditorUI::DrawPlayButtonWindow(XMFLOAT2 buttonSize, float verticalOffset)
 		}
 		if (clicked & 1)
 		{
-			cameraPresent = true;
+			m_cameraPresent = true;
 		}
 
 		ImGui::End();

@@ -40,6 +40,7 @@ private:
 	bool m_createUIObjectClicked = false;
 	bool m_deleteGameObjectClicked = false;
 	static bool s_bisViewportHovered;
+	bool m_cameraPresent = true;
 
 	static DirectX::XMFLOAT2 s_viewportSize;
 	static DirectX::XMFLOAT2 s_viewportPosition;
