@@ -9,9 +9,13 @@
 #include "Engine\GameObjects\EnemyGameObject.h"
 #include "Engine/Tools/ToolBase.h"
 #include "Engine/Tools/AnimationTool.h"
-#include "Engine/Tools/InGameUITool.h"
 #include "Engine//Tools/TileMapTool.h"
 #include "Engine/FileIO/FileIO.h"
+
+#include "Engine/GameUI/UiCanvas.h"
+#include "Engine/GameUI/ImageComponent.h"
+#include "Engine/GameUI/TextComponent.h"
+#include "Engine/GameUI/ButtonComponent.h"
 
 #include <ShlObj_core.h>
 
@@ -47,6 +51,9 @@ void EditorUI::InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, H
 
 	ImGui_ImplWin32_Init(*m_phwnd);
 	ImGui_ImplDX11_Init(pdevice, pcontext);
+
+	m_playButtonTexture = GraphicsManager::GetInstance()->GetShaderResourceView(PLAY_BUTTON_IMAGE);
+	m_stopButtonTexture = GraphicsManager::GetInstance()->GetShaderResourceView(STOP_BUTTON_IMAGE);
 }
 
 EditorUI::EditorUI(ID3D11Device* pdevice)
@@ -59,13 +66,54 @@ void EditorUI::DrawEditorUI(ID3D11Device* pdevice, ToolBase*& ptoolBase)
 
 	DrawSceneManagementWindow();
 
-	if (m_selecedGameObjectNode != nullptr)
+	DrawPlayButtonWindow(XMFLOAT2(20.0f, 20.0f), -4.0f);
+
+
+	if (m_selectedGameObjectNode != nullptr)
 	{
-		m_selecedGameObjectNode->NodeObject->ShowEngineUI();
+		m_selectedGameObjectNode->NodeObject->ShowEngineUI();
 	}
 
 	m_contentBrowser.Draw();
 
+}
+
+void EditorUI::DrawPlayButtonWindow(XMFLOAT2 buttonSize, float verticalOffset)
+{
+	ImGui::Begin("Play Mode");
+	ImGuiStyle& style = ImGui::GetStyle();
+
+	float size = buttonSize.x + style.FramePadding.x * 4.0f;
+	float avail = ImGui::GetContentRegionAvail().x;
+
+	float horizontalOffset = (avail - size) * 0.5f;
+	if (horizontalOffset > 0.0f)
+	{
+		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + horizontalOffset);
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + verticalOffset);
+	}
+	ImGui::BeginDisabled(GameManager::GetInstance()->GetViewState() == ViewState::GAME_VIEW);
+	if (ImGui::ImageButton(m_playButtonTexture, ImVec2(buttonSize.x, buttonSize.y)))
+	{
+		GameManager::GetInstance()->BeginPlay();
+
+		m_gameObjectNodeClicked = -1;
+		m_selectedGameObjectNode = nullptr;
+	}
+	ImGui::EndDisabled();
+
+	ImGui::SameLine();
+
+	ImGui::BeginDisabled(GameManager::GetInstance()->GetViewState() == ViewState::EDITOR_VIEW);
+	if (ImGui::ImageButton(m_stopButtonTexture, ImVec2(buttonSize.x, buttonSize.y)))
+	{
+		GameManager::GetInstance()->EndPlay();
+
+		m_gameObjectNodeClicked = -1;
+		m_selectedGameObjectNode = nullptr;
+	}
+	ImGui::EndDisabled();
+	ImGui::End();
 }
 
 void EditorUI::SetIsViewportHovered(bool bHovered)
@@ -191,6 +239,40 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 
 				m_createObjectType = GameObjectType::PARTICLE_SYSTEM;
 			}
+			bool disableCheck = false;
+			if (m_selectedGameObjectNode && m_selectedGameObjectNode->NodeObject->ContainsType(GameObjectType::GAME_UI_COMPONENT))
+			{
+				disableCheck = (dynamic_cast<GameUIComponent*>(m_selectedGameObjectNode->NodeObject)->ContainsType(UIComponentType::CANVAS));
+			}
+			if (ImGui::BeginMenu("UI Component"))
+			{
+				m_createObjectType = GameObjectType::GAME_UI_COMPONENT;
+				if (ImGui::MenuItem("Canvas"))
+				{
+					m_createUIObjectClicked = true;
+					m_createUIComponentType = UIComponentType::CANVAS;
+				}
+				if (ImGui::MenuItem("Image", nullptr, nullptr, disableCheck))
+				{
+					m_createUIObjectClicked = true;
+					m_createUIComponentType = UIComponentType::IMAGE;
+				}
+				ToolTip("Select a Canvas GameObject to enable");
+				if (ImGui::MenuItem("Text", nullptr, nullptr, disableCheck))
+				{
+					m_createUIObjectClicked = true;
+					m_createUIComponentType = UIComponentType::TEXT;
+				}
+				ToolTip("Select a Canvas GameObject to enable");
+				if (ImGui::MenuItem("Button", nullptr, nullptr, disableCheck))
+				{
+					m_createUIObjectClicked = true;
+					m_createUIComponentType = UIComponentType::BUTTON;
+				}
+				ToolTip("Select a Canvas GameObject to enable");
+
+				ImGui::EndMenu();
+			}
 
 			ImGui::EndMenu();
 		}
@@ -199,10 +281,10 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 		{
 			if (ImGui::MenuItem("GameObject"))
 			{
-				pgameManager->DeleteGameObjectUsingNode(m_selecedGameObjectNode);
+				pgameManager->DeleteGameObjectUsingNode(m_selectedGameObjectNode);
 
 				m_gameObjectNodeClicked = -1;
-				m_selecedGameObjectNode = nullptr;
+				m_selectedGameObjectNode = nullptr;
 			}
 
 			ImGui::EndMenu();
@@ -218,17 +300,6 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 				}
 
 				ptoolBase = new AnimationTool();
-				ptoolBase->Init(pdevice);
-			}
-
-			if (ImGui::MenuItem("In Game UI"))
-			{
-				if (ptoolBase != nullptr)
-				{
-					delete ptoolBase;
-				}
-
-				ptoolBase = new InGameUITool();
 				ptoolBase->Init(pdevice);
 			}
 
@@ -271,7 +342,7 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 	if (ImGui::IsItemClicked())
 	{
 		m_gameObjectNodeClicked = -1;
-		m_selecedGameObjectNode = nullptr;
+		m_selectedGameObjectNode = nullptr;
 	}
 	
 	ImGui::End();
@@ -292,39 +363,39 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 			switch (m_createObjectType)
 			{
 			case GameObjectType::RENDERABLE | GameObjectType::COLLIDABLE:
-				pgameManager->CreateGameObject<RenderableCollidableGameObject>(gameObjectName, m_selecedGameObjectNode);
+				pgameManager->CreateGameObject<RenderableCollidableGameObject>(gameObjectName, m_selectedGameObjectNode);
 				break;
 
 			case GameObjectType::RENDERABLE:
-				pgameManager->CreateGameObject<RenderableGameObject>(gameObjectName, m_selecedGameObjectNode);
+				pgameManager->CreateGameObject<RenderableGameObject>(gameObjectName, m_selectedGameObjectNode);
 				break;
 
 			case GameObjectType::COLLIDABLE:
-				pgameManager->CreateGameObject<CollidableGameObject>(gameObjectName, m_selecedGameObjectNode);
+				pgameManager->CreateGameObject<CollidableGameObject>(gameObjectName, m_selectedGameObjectNode);
 				break;
 
 			case GameObjectType::BASE:
-				pgameManager->CreateGameObject<GameObject>(gameObjectName, m_selecedGameObjectNode);
+				pgameManager->CreateGameObject<GameObject>(gameObjectName, m_selectedGameObjectNode);
 				break;
 
 			case GameObjectType::PARTICLE_SYSTEM:
-				pgameManager->CreateGameObject<ParticleSystem>(gameObjectName, m_selecedGameObjectNode);
+				pgameManager->CreateGameObject<ParticleSystem>(gameObjectName, m_selectedGameObjectNode);
 				break;
 
 			case GameObjectType::PLAYER:
-				pgameManager->CreateGameObject<PlayerGameObject>(gameObjectName, m_selecedGameObjectNode);
+				pgameManager->CreateGameObject<PlayerGameObject>(gameObjectName, m_selectedGameObjectNode);
 				break;
 
             case GameObjectType::ENEMY:
-                pgameManager->CreateGameObject<EnemyGameObject>(gameObjectName, m_selecedGameObjectNode);
+                pgameManager->CreateGameObject<EnemyGameObject>(gameObjectName, m_selectedGameObjectNode);
                 break;
 
 			case GameObjectType::INTERACTABLE:
-				pgameManager->CreateGameObject<InteractableGameObject>(gameObjectName, m_selecedGameObjectNode);
+				pgameManager->CreateGameObject<InteractableGameObject>(gameObjectName, m_selectedGameObjectNode);
 				break;
 
 			case GameObjectType::WEAPON:
-				pgameManager->CreateGameObject<WeaponGameObject>(gameObjectName, m_selecedGameObjectNode);
+				pgameManager->CreateGameObject<WeaponGameObject>(gameObjectName, m_selectedGameObjectNode);
 				break;
 			}
 
@@ -335,6 +406,48 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 			gameObjectName[0] = {};
 		}
 		
+		ImGui::End();
+	}
+	else if (m_createUIObjectClicked)
+	{
+		ImGui::Begin("New UI Component");
+		static char uiObjectName[64] = "";
+		IMGUI_LEFT_LABEL(ImGui::InputText, "UI Component Name", uiObjectName, 64);
+
+		int clicked = 0;
+		if (ImGui::Button("Create"))
+		{
+			++clicked;
+		}
+		if (clicked & 1)
+		{
+			switch (m_createUIComponentType)
+			{
+			case UIComponentType::CANVAS:
+				pgameManager->CreateGameObject<UICanvas>(uiObjectName, m_selectedGameObjectNode);
+				break;
+
+			case UIComponentType::IMAGE:
+				pgameManager->CreateGameObject<ImageComponent>(uiObjectName, m_selectedGameObjectNode);
+				break;
+
+			case UIComponentType::TEXT:
+				pgameManager->CreateGameObject<TextComponent>(uiObjectName, m_selectedGameObjectNode)->Init(uiObjectName, "comicSans", 20, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+				break;
+
+			case UIComponentType::BUTTON:
+				pgameManager->CreateGameObject<ButtonComponent>(uiObjectName, m_selectedGameObjectNode);
+				break;
+
+			}
+
+
+			m_createUIComponentType = (UIComponentType)0;
+
+			m_createUIObjectClicked = false;
+			uiObjectName[0] = {};
+		}
+
 		ImGui::End();
 	}
 }
@@ -452,10 +565,12 @@ void EditorUI::TraverseTree(TreeNode<GameObject>* pcurrentNode, std::string& sel
 	{
 		if (selectedIdentifier == pcurrentNode->NodeObject->GetIdentifier())
 		{
+			m_selectedGameObjectNode = nullptr;
 			selectedIdentifier = "";
 		}
 		else
 		{
+			m_selectedGameObjectNode = pcurrentNode;
 			selectedIdentifier = pcurrentNode->NodeObject->GetIdentifier();
 		}
 	}
@@ -1150,6 +1265,18 @@ void EditorUI::FullTitle(const string& label, EditorUINonSpecificParameters para
     ImGui::PopID();
 
     ImGui::Separator();
+}
+
+void EditorUI::ToolTip(const char* desc)
+{
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
+	{
+		ImGui::BeginTooltip();
+		ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+		ImGui::TextUnformatted(desc);
+		ImGui::PopTextWrapPos();
+		ImGui::EndTooltip();
+	}
 }
 
 /// <summary>

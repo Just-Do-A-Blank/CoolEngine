@@ -26,14 +26,17 @@ class RangedWeaponGameObject : public WeaponGameObject
 public:
 	RangedWeaponGameObject(string identifier, CoolUUID uuid);
 	RangedWeaponGameObject(const nlohmann::json& data, CoolUUID uuid);
+	RangedWeaponGameObject(RangedWeaponGameObject const& other);
 
 	virtual ~RangedWeaponGameObject()override;
 	
 	void SetAngleInterval(float angle);
 	void SetIsShot(bool shot);
+	void SetSpeed(float speed);
 
 	float GetAngleInterval();
 	bool GetIsShot();
+	float GetSpeed();
 
 	virtual void Serialize(nlohmann::json& data) override;
 

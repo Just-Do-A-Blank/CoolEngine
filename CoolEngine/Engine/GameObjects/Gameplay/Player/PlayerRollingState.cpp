@@ -1,24 +1,26 @@
-#include "PlayerDodgingState.h"
-#include "PlayerWalkingState.h"
-#include <Engine/Managers/Events/EventManager.h>
+#include "PlayerRollingState.h"
+#include "Engine/GameObjects/Gameplay/Player/PlayerWalkingState.h"
+#include "Engine/Managers/Events/EventManager.h"
 #include "Engine/GameObjects/PlayerGameObject.h"
+#include "PlayerWalkingState.h"
 
-PlayerDodgingState::PlayerDodgingState(PlayerMovementParameters movement)
+PlayerRollingState::PlayerRollingState(PlayerMovementParameters movement)
 {
-    m_nextState = EPLAYERMOVEMENTSTATE::Dodging;
+    m_nextState = EPLAYERMOVEMENTSTATE::Rolling;
     m_playerMovementParameters = movement;
 
-	m_playerReference = movement.m_playerReference;
+    m_playerReference = movement.m_playerReference;
     m_gameplayButtons = movement.m_gameplayButtons;
     m_moveSpeedMax = movement.m_maxSpeed;
-    m_speedMultiplier = movement.m_dodgeSpeed;
+    m_speedMultiplier = movement.m_rollingSpeed;
     m_moveSpeedPerFrame = movement.m_moveSpeedPerFrame;
     m_dragSpeedPerFrame = movement.m_dragSpeedPerFrame;
-    m_timeInSecondsToDodgeFor = movement.m_timeInSecondsToDodgeFor;
-    m_playerMovingBody = movement.m_playerMovingBody;
-
     m_firstMovementButton = movement.m_lastFirstPressedInputButton;
     m_secondMovementButton = movement.m_lastSecondPressedInputButton;
+    m_playerMovingBody = movement.m_playerMovingBody;
+    m_timeInSecondsToRollFor = movement.m_timeInSecondsToRollFor;
+
+    m_timeElapsed = 0;
 
     EventManager::Instance()->AddClient(EventType::KeyPressed, this);
     EventManager::Instance()->AddClient(EventType::KeyReleased, this);
@@ -27,7 +29,7 @@ PlayerDodgingState::PlayerDodgingState(PlayerMovementParameters movement)
     EventManager::Instance()->AddClient(EventType::MouseMoved, this);
 }
 
-PlayerDodgingState::~PlayerDodgingState()
+PlayerRollingState::~PlayerRollingState()
 {
     EventManager::Instance()->RemoveClientEvent(EventType::KeyPressed, this);
     EventManager::Instance()->RemoveClientEvent(EventType::KeyReleased, this);
@@ -37,19 +39,30 @@ PlayerDodgingState::~PlayerDodgingState()
 }
 
 /// <summary>
-/// Updates the state and moves the player
+/// Handles events from the Observations
 /// </summary>
-/// <param name="timeDelta">Time between frames</param>
-/// <returns>True means state may remain, False means the state is complete</returns>
-bool PlayerDodgingState::Update(float timeDelta)
+void PlayerRollingState::Handle(Event* e)
+{
+    switch (e->GetEventID())
+    {
+    case EventType::KeyPressed:
+        KeyPressed((KeyPressedEvent*)e);
+        break;
+    case EventType::KeyReleased:
+        KeyReleased((KeyReleasedEvent*)e);
+        break;
+    }
+}
+
+bool PlayerRollingState::Update(float timeDelta)
 {
     m_timeElapsed += timeDelta;
-    if (m_timeElapsed >= *m_timeInSecondsToDodgeFor)
+    if (m_timeElapsed >= *m_timeInSecondsToRollFor)
     {
         m_nextState = EPLAYERMOVEMENTSTATE::Walking;
     }
 
-    bool areCurrentlyRunning = m_nextState == EPLAYERMOVEMENTSTATE::Dodging;
+    bool areCurrentlyRunning = m_nextState == EPLAYERMOVEMENTSTATE::Rolling;
     if (areCurrentlyRunning)
     {
         MovePlayer(timeDelta);
@@ -62,46 +75,40 @@ bool PlayerDodgingState::Update(float timeDelta)
 /// The next state use if this state no longer needed
 /// </summary>
 /// <returns>The next state to use</returns>
-PlayerMovementState* PlayerDodgingState::NextState()
+PlayerMovementState* PlayerRollingState::NextState()
 {
     m_playerMovementParameters.m_lastFirstPressedInputButton = m_firstMovementButton;
     m_playerMovementParameters.m_lastSecondPressedInputButton = m_secondMovementButton;
 
-	return new PlayerWalkingState(m_playerMovementParameters);
-}
-
-/// <summary>
-/// Handles events from the Observations
-/// </summary>
-void PlayerDodgingState::Handle(Event* e)
-{
-    switch (e->GetEventID())
+    switch (m_nextState)
     {
-    case EventType::KeyPressed:
-        m_nextState = KeyPressed((KeyPressedEvent*)e);
-        break;
-    case EventType::KeyReleased:
-        KeyReleased((KeyReleasedEvent*)e);
-        break;
+    case EPLAYERMOVEMENTSTATE::Rolling:
+        return this;
+    case EPLAYERMOVEMENTSTATE::Walking:
+        LOG("Walking");
+        return new PlayerWalkingState(m_playerMovementParameters);
     }
+
+    return this;
 }
 
 /// <summary>
 /// Handles any keypresses when they are pressed (frame whilst pressed)
 /// </summary>
-EPLAYERMOVEMENTSTATE PlayerDodgingState::KeyPressed(KeyPressedEvent* e)
+void PlayerRollingState::KeyPressed(KeyPressedEvent* e)
 {
-    auto returnState = EPLAYERMOVEMENTSTATE::Dodging;
     EGAMEPLAYBUTTONCLASS button = m_gameplayButtons->GetGameplayButtonFromKeyInput(e->GetKeyCode());
-    UpdateButtonOrderOnButtonPressed(button);
 
-    return returnState;
+    if (m_nextState == EPLAYERMOVEMENTSTATE::Rolling)
+    {
+        UpdateButtonOrderOnButtonPressed(button);
+    }
 }
 
 /// <summary>
 /// Handles any keypresses when they are released (first frame).
 /// </summary>
-void PlayerDodgingState::KeyReleased(KeyReleasedEvent* e)
+void PlayerRollingState::KeyReleased(KeyReleasedEvent* e)
 {
     EGAMEPLAYBUTTONCLASS button = m_gameplayButtons->GetGameplayButtonFromKeyInput(e->GetKeyCode());
     if (button != EGAMEPLAYBUTTONCLASS::Nothing)
@@ -114,7 +121,7 @@ void PlayerDodgingState::KeyReleased(KeyReleasedEvent* e)
 /// Updates the button pressed first/second on button pressed
 /// </summary>
 /// <param name="buttons">The gameplay button pressed</param>
-void PlayerDodgingState::UpdateButtonOrderOnButtonPressed(EGAMEPLAYBUTTONCLASS button)
+void PlayerRollingState::UpdateButtonOrderOnButtonPressed(EGAMEPLAYBUTTONCLASS button)
 {
     if (m_firstMovementButton == button || m_secondMovementButton == button)
     {
@@ -144,7 +151,7 @@ void PlayerDodgingState::UpdateButtonOrderOnButtonPressed(EGAMEPLAYBUTTONCLASS b
 /// </summary>
 /// <param name="button">The gameplay button pressed</param>
 /// <return>True, means the button moves a vertical direction</return>
-bool PlayerDodgingState::IsVerticalDirection(EGAMEPLAYBUTTONCLASS button)
+bool PlayerRollingState::IsVerticalDirection(EGAMEPLAYBUTTONCLASS button)
 {
     bool isVertical = false;
     switch (button)
@@ -163,7 +170,7 @@ bool PlayerDodgingState::IsVerticalDirection(EGAMEPLAYBUTTONCLASS button)
 /// </summary>
 /// <param name="button">The gameplay button pressed</param>
 /// <return>True, means the button moves a horizontal direction</return>
-bool PlayerDodgingState::IsHorizontalDirection(EGAMEPLAYBUTTONCLASS button)
+bool PlayerRollingState::IsHorizontalDirection(EGAMEPLAYBUTTONCLASS button)
 {
     bool isVertical = false;
     switch (button)
@@ -183,7 +190,7 @@ bool PlayerDodgingState::IsHorizontalDirection(EGAMEPLAYBUTTONCLASS button)
 /// <param name="current">The button to check</param>
 /// <param name="test">The button to test against</param>
 /// <return>True means the buttons are on the same axis</return>
-bool PlayerDodgingState::ButtonIsOnTheSameAxis(EGAMEPLAYBUTTONCLASS current, EGAMEPLAYBUTTONCLASS test)
+bool PlayerRollingState::ButtonIsOnTheSameAxis(EGAMEPLAYBUTTONCLASS current, EGAMEPLAYBUTTONCLASS test)
 {
     bool sameAxis = IsVerticalDirection(current) && IsVerticalDirection(test);
     if (!sameAxis)
@@ -200,7 +207,7 @@ bool PlayerDodgingState::ButtonIsOnTheSameAxis(EGAMEPLAYBUTTONCLASS current, EGA
 /// <param name="current">The button to check</param>
 /// <param name="test">The button to test against</param>
 /// <return>True means the buttons do not match but the axis match</return>
-bool PlayerDodgingState::ButtonIsNotTheSameButIsInTheSameAxis(EGAMEPLAYBUTTONCLASS current, EGAMEPLAYBUTTONCLASS test)
+bool PlayerRollingState::ButtonIsNotTheSameButIsInTheSameAxis(EGAMEPLAYBUTTONCLASS current, EGAMEPLAYBUTTONCLASS test)
 {
     bool buttonsSameAndOnSameAxis = current != test;
     if (buttonsSameAndOnSameAxis)
@@ -215,7 +222,7 @@ bool PlayerDodgingState::ButtonIsNotTheSameButIsInTheSameAxis(EGAMEPLAYBUTTONCLA
 /// Updates the button pressed first/second on button released
 /// </summary>
 /// <param name="buttons">The gameplay button pressed</param>
-void PlayerDodgingState::UpdateButtonOrderOnButtonReleased(EGAMEPLAYBUTTONCLASS button)
+void PlayerRollingState::UpdateButtonOrderOnButtonReleased(EGAMEPLAYBUTTONCLASS button)
 {
     if (m_firstMovementButton == button)
     {
@@ -239,7 +246,7 @@ void PlayerDodgingState::UpdateButtonOrderOnButtonReleased(EGAMEPLAYBUTTONCLASS 
 /// Handles moving the player
 /// </summary>
 /// <param name="timeDelta">Delta time between frames</param>
-void PlayerDodgingState::MovePlayer(float timeDelta)
+void PlayerRollingState::MovePlayer(float timeDelta)
 {
     XMFLOAT3 vector = XMFLOAT3(0, 0, 0);
     MoveVectorByButton(&vector, m_firstMovementButton);
@@ -254,7 +261,7 @@ void PlayerDodgingState::MovePlayer(float timeDelta)
 /// </summary>
 /// <param name="vector">Vector to move</param>
 /// <param name="button">Button pressed</param>
-void PlayerDodgingState::MoveVectorByButton(XMFLOAT3* vector, EGAMEPLAYBUTTONCLASS button)
+void PlayerRollingState::MoveVectorByButton(XMFLOAT3* vector, EGAMEPLAYBUTTONCLASS button)
 {
     if (button != EGAMEPLAYBUTTONCLASS::Nothing)
     {
@@ -269,7 +276,7 @@ void PlayerDodgingState::MoveVectorByButton(XMFLOAT3* vector, EGAMEPLAYBUTTONCLA
 /// </summary>
 /// <param name="button">The button to test against</param>
 /// <return>The direction change to apply to the transform to apply the force of the button</return>
-XMFLOAT3 PlayerDodgingState::GetVectorChangeForGameplayButton(EGAMEPLAYBUTTONCLASS button)
+XMFLOAT3 PlayerRollingState::GetVectorChangeForGameplayButton(EGAMEPLAYBUTTONCLASS button)
 {
     XMFLOAT3 vector = XMFLOAT3(0, 0, 0);
     switch (button)
@@ -296,7 +303,7 @@ XMFLOAT3 PlayerDodgingState::GetVectorChangeForGameplayButton(EGAMEPLAYBUTTONCLA
 /// </summary>
 /// <param name="timeDelta">Delta time between frames</param>
 /// <param name="direction">Direction to apply force</param>
-void PlayerDodgingState::ApplyForce(float timeDelta, XMFLOAT3 direction)
+void PlayerRollingState::ApplyForce(float timeDelta, XMFLOAT3 direction)
 {
     if (direction.x == 0.0f && direction.y == 0.0f)
     {
@@ -325,7 +332,7 @@ void PlayerDodgingState::ApplyForce(float timeDelta, XMFLOAT3 direction)
 /// </summary>
 /// <param name="axisValue">The value to update</param>
 /// <param name="direction">The intensity to apply</param>
-void PlayerDodgingState::ApplyForceToSingleAxis(float* axisValue, float direction)
+void PlayerRollingState::ApplyForceToSingleAxis(float* axisValue, float direction)
 {
     if (direction != 0)
     {
@@ -350,7 +357,7 @@ void PlayerDodgingState::ApplyForceToSingleAxis(float* axisValue, float directio
 /// <param name="newDirection">The direction the vector is moving now</param>
 /// <param name="drag">The drag amount if direction moves</param>
 /// <param name="movementSpeed">The movement speed to adjust</param>
-void PlayerDodgingState::SlowSpeedIfDirectionChanged(XMFLOAT3 originalDirection, XMFLOAT3 newDirection, float drag, float& movementSpeed)
+void PlayerRollingState::SlowSpeedIfDirectionChanged(XMFLOAT3 originalDirection, XMFLOAT3 newDirection, float drag, float& movementSpeed)
 {
     if ((originalDirection.x > 0 && newDirection.x < 0) || (originalDirection.x < 0 && newDirection.x > 0))
     {
@@ -369,7 +376,7 @@ void PlayerDodgingState::SlowSpeedIfDirectionChanged(XMFLOAT3 originalDirection,
 /// <param name="speed">Current speed to restrict</param>
 /// <param name="maxSpeed">The max speed for the instance</param>
 /// <param name="force">Force which is also restricted if speed is 0</param>
-void PlayerDodgingState::RestrictSpeedAndForceToResonableBounds(float& speed, float maxSpeed, XMFLOAT3& force)
+void PlayerRollingState::RestrictSpeedAndForceToResonableBounds(float& speed, float maxSpeed, XMFLOAT3& force)
 {
     if (speed > maxSpeed)
     {
@@ -387,7 +394,7 @@ void PlayerDodgingState::RestrictSpeedAndForceToResonableBounds(float& speed, fl
 /// Moves the player based on forces applied
 /// </summary>
 /// <param name="timeDelta">Delta time between frames</param>
-void PlayerDodgingState::MoveByForce(float timeDelta)
+void PlayerRollingState::MoveByForce(float timeDelta)
 {
     XMFLOAT3 newForce = m_playerMovingBody->GetForceApplied();
     float bodySpeed = m_playerMovingBody->GetMoveSpeed();
@@ -418,7 +425,7 @@ void PlayerDodgingState::MoveByForce(float timeDelta)
 /// <param name="speed">Speed to move the player</param>
 /// <param name="drag">Drag value to apply</param>
 /// <param name="delta">Time delta to use when slowing the player</param>
-void PlayerDodgingState::SlowPlayerBasedOnDrag(float& speed, float drag, float delta)
+void PlayerRollingState::SlowPlayerBasedOnDrag(float& speed, float drag, float delta)
 {
     speed -= drag * delta;
     if (speed < 0)
@@ -434,7 +441,7 @@ void PlayerDodgingState::SlowPlayerBasedOnDrag(float& speed, float drag, float d
 /// <param name="force">Force to apply</param>
 /// <param name="speed">Speed to use</param>
 /// <param name="distance">Distance to move the player</param>
-void PlayerDodgingState::MoveTransformInDirectionByDistance(Transform* transform, XMFLOAT3 force, float speed, float distance)
+void PlayerRollingState::MoveTransformInDirectionByDistance(Transform* transform, XMFLOAT3 force, float speed, float distance)
 {
     float size = sqrt(force.x * force.x + force.y * force.y);
 
@@ -448,7 +455,7 @@ void PlayerDodgingState::MoveTransformInDirectionByDistance(Transform* transform
 /// </summary>
 /// <param name="value">Value to adjust</param>
 /// <param name="intensity">Intensity to adjust the value by</param>
-void PlayerDodgingState::MoveFloatTowardZero(float* value, float intensity)
+void PlayerRollingState::MoveFloatTowardZero(float* value, float intensity)
 {
     if (*value != 0)
     {

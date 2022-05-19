@@ -11,6 +11,35 @@ RenderableGameObject::RenderableGameObject() : GameObject()
 	m_gameObjectType |= GameObjectType::RENDERABLE;
 }
 
+RenderableGameObject::RenderableGameObject(RenderableGameObject const& other) : GameObject(other)
+{
+	GameObject::Init(other);
+
+	m_palbedoSRV = other.m_palbedoSRV;
+	m_pvertexShader = other.m_pvertexShader;
+	m_ppixelShader = other.m_ppixelShader;
+
+	if (other.m_pmesh)
+	{
+		m_pmesh = new Mesh(*other.m_pmesh);
+	}
+	m_layer = other.m_layer;
+	m_isRenderable = other.m_isRenderable;
+	m_texFilepath = other.m_texFilepath;
+	for (int i = 0; i < ANIM_NAME_SIZE; ++i)
+	{
+		m_createDeleteAnimName[i] = other.m_createDeleteAnimName[i];
+	}
+	m_animations = other.m_animations;
+
+	if (other.m_pcurrentAnimation)
+	{
+		m_pcurrentAnimation = new SpriteAnimation(*other.m_pcurrentAnimation);
+	}
+	m_currentAnimationName = other.m_currentAnimationName;
+
+}
+
 RenderableGameObject::RenderableGameObject(string identifier, CoolUUID uuid) : GameObject(identifier, uuid)
 {
 	InitGraphics();
@@ -82,6 +111,10 @@ void RenderableGameObject::Render(RenderStruct& renderStruct)
 void RenderableGameObject::Update()
 {
 	m_animationStateMachine.Update();
+}
+
+void RenderableGameObject::EditorUpdate()
+{
 }
 
 

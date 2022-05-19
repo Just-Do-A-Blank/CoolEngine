@@ -15,6 +15,12 @@ EditorCameraGameObject::EditorCameraGameObject(const nlohmann::json& data, CoolU
 	m_moveSpeed = data["Movement Speed"];
 }
 
+EditorCameraGameObject::EditorCameraGameObject(EditorCameraGameObject const& other) : CameraGameObject(other)
+{
+	m_moveSpeed = other.m_moveSpeed;
+	m_speedBoost = other.m_speedBoost;
+}
+
 EditorCameraGameObject::~EditorCameraGameObject()
 {
 }

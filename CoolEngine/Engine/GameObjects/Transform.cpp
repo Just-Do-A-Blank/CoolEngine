@@ -3,6 +3,33 @@
 #include "Engine/Includes/IMGUI/imgui.h"
 #include "Engine/EditorUI/EditorUI.h"
 
+Transform::Transform()
+{
+}
+
+Transform::Transform(Transform const& other)
+{
+	m_localPosition = other.m_localPosition;
+	m_localRotation = other.m_localRotation;
+	m_localScale = other.m_localScale;
+
+	m_worldPosition = other.m_worldPosition;
+	m_worldRotation = other.m_worldRotation;
+	m_worldScale = other.m_worldScale;
+
+	m_forwardVector = other.m_forwardVector;
+	m_upVector = other.m_upVector;
+	m_leftVector = other.m_leftVector;
+
+	m_pparentTransform = other.m_pparentTransform;
+	m_childrenTransformList = other.m_childrenTransformList;
+	
+	m_scaleMatrix = other.m_scaleMatrix;
+	m_rotationMatrix = other.m_rotationMatrix;
+	m_translationalMatrix = other.m_translationalMatrix;
+	m_worldMatrix = other.m_worldMatrix;
+}
+
 void Transform::Initialize(const XMFLOAT3& position, const XMFLOAT3& rotation, const XMFLOAT3& scale)
 {
     m_localPosition = position;

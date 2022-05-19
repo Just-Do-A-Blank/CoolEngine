@@ -21,6 +21,7 @@ private:
 	unordered_map<string, TreeNode<T>*> m_sceneTreeNodeMap;
 	unordered_map<string, T*> m_sceneNodeObjectsMap;
 	vector<T*> m_sceneNodeObjectList;
+	vector<TreeNode<T>*> m_sceneNodeList;
 
 public:
 	SceneGraph();
@@ -106,6 +107,7 @@ public:
 
 	//Getters
 	vector<T*>& GetAllNodeObjects();
+	vector<TreeNode<T>*>& GetAllNodes();
 	T* GetNodeObjectUsingIdentifier(string& identifier);
 };
 template class SceneGraph<GameObject>;

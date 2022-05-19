@@ -15,6 +15,7 @@ class RenderableGameObject : virtual public GameObject
 {
 public:
 	RenderableGameObject();
+	RenderableGameObject(RenderableGameObject const& other);
 	RenderableGameObject(string identifier, CoolUUID uuid);
 	RenderableGameObject(const nlohmann::json& data, CoolUUID uuid);
 
@@ -62,6 +63,7 @@ public:
 
 	virtual void Render(RenderStruct& renderStruct);
 	virtual void Update() override;
+	virtual void EditorUpdate() override;
 
 	void PlayAnimation();
 	void PauseAnimation();

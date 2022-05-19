@@ -19,6 +19,20 @@ WeaponGameObject::WeaponGameObject(const nlohmann::json& data, CoolUUID uuid) : 
 	m_statusEffect = (STATUSES)data["WeaponStatus"];
 }
 
+WeaponGameObject::WeaponGameObject(WeaponGameObject const& other) : TriggerableGameObject(other)
+{
+	m_level = other.m_level;
+	m_strength = other.m_strength;
+	m_damage = other.m_damage;
+
+	m_shotCount = other.m_shotCount;
+	m_timeLethal = other.m_timeLethal;
+	m_distanceTravelled = other.m_distanceTravelled;
+
+	ELEMENTS m_element = other.m_element;
+	STATUSES m_statusEffect = other.m_statusEffect;
+}
+
 WeaponGameObject::~WeaponGameObject()
 {
 }
@@ -82,6 +96,11 @@ void WeaponGameObject::SetDistanceTravelled(float dist)
     m_distanceTravelled = dist;
 }
 
+void WeaponGameObject::SetIsPlayerWeapon(bool player)
+{
+    m_isPlayerWeapon = player;
+}
+
 int WeaponGameObject::GetLevel()
 {
     return m_level;
@@ -120,6 +139,11 @@ float WeaponGameObject::GetTimeLethal()
 float WeaponGameObject::GetDistanceTravelled()
 {
     return m_distanceTravelled;
+}
+
+bool WeaponGameObject::GetIsPlayerWeapon()
+{
+    return m_isPlayerWeapon;
 }
 
 bool WeaponGameObject::GetIsDualType()

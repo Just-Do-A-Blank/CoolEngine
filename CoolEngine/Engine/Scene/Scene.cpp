@@ -2,6 +2,7 @@
 #include "Engine/GameObjects/RenderableGameObject.h"
 #include "Engine/Managers/SceneGraph.h"
 #include "Engine/Physics/Collision.h"
+#include "Engine/GameUI/GameUIComponent.h"
 
 Scene::Scene(string identifier)
 {
@@ -25,6 +26,17 @@ void Scene::Update()
 	Collision::Update(gameObjectList);
 }
 
+void Scene::EditorUpdate()
+{
+	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
+	for (int it = 0; it < gameObjectList.size(); ++it)
+	{
+		gameObjectList[it]->EditorUpdate();
+	}
+
+	Collision::Update(gameObjectList);
+}
+
 void Scene::Render(RenderStruct& renderStruct)
 {
 	RenderableGameObject* prenderableGameObject = nullptr;
@@ -32,14 +44,19 @@ void Scene::Render(RenderStruct& renderStruct)
 	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
 	for (int it = 0; it < gameObjectList.size(); ++it)
 	{
-		if (gameObjectList[it]->ContainsType(GameObjectType::RENDERABLE) == false)
+		if (gameObjectList[it]->ContainsType(GameObjectType::RENDERABLE))
 		{
+			prenderableGameObject = dynamic_cast<RenderableGameObject*>(gameObjectList[it]);
+			prenderableGameObject->Render(renderStruct);
+
 			continue;
 		}
 
-		prenderableGameObject = dynamic_cast<RenderableGameObject*>(gameObjectList[it]);
-
-		prenderableGameObject->Render(renderStruct);
+		if (gameObjectList[it]->ContainsType(GameObjectType::GAME_UI_COMPONENT))
+		{
+			dynamic_cast<GameUIComponent*>(gameObjectList[it])->Render(renderStruct);
+			continue;
+		}
 	}
 }
 

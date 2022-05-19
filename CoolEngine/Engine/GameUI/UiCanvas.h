@@ -5,10 +5,13 @@
 class UICanvas : public GameUIComponent
 {
 public:
-	UICanvas(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation);
+	UICanvas(string identifier, CoolUUID uuid);
 	UICanvas(nlohmann::json& data, CoolUUID uuid);
+	UICanvas(UICanvas const& other);
+
 
 	void Render(RenderStruct& renderStruct) override;
 	void Update() override;
+	void EditorUpdate() override;
 };
 

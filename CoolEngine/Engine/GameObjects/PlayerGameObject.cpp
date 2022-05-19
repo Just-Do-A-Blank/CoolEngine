@@ -46,15 +46,24 @@ PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : Character
 	};
 	dash.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_SHIFT);
 
+    GameplayButton roll =
+    {
+        EGAMEPLAYBUTTONCLASS::Roll,
+        list<EVIRTUALKEYCODE>(),
+        list<EVIRTUALKEYCODE>(),
+    };
+    roll.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_CTRL);
+
     list< GameplayButton> gameplayButtons;
     gameplayButtons.push_back(up);
     gameplayButtons.push_back(down);
     gameplayButtons.push_back(left);
     gameplayButtons.push_back(right);
     gameplayButtons.push_back(dash);
+    gameplayButtons.push_back(roll);
 
     InputsAsGameplayButtons* buttons = new InputsAsGameplayButtons(gameplayButtons);
-    m_playerController = new PlayerController(buttons, GetTransform());
+    m_playerController = new PlayerController(buttons, this);
 
     EventManager::Instance()->AddClient(EventType::KeyPressed, this);
     EventManager::Instance()->AddClient(EventType::KeyReleased, this);
@@ -114,7 +123,18 @@ PlayerGameObject::PlayerGameObject(const nlohmann::json& data, CoolUUID uuid) : 
 	gameplayButtons.push_back(dodge);
 
 	InputsAsGameplayButtons* buttons = new InputsAsGameplayButtons(gameplayButtons);
-	m_playerController = new PlayerController(buttons, GetTransform());
+	m_playerController = new PlayerController(buttons, this);
+
+	EventManager::Instance()->AddClient(EventType::KeyPressed, this);
+	EventManager::Instance()->AddClient(EventType::KeyReleased, this);
+	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
+	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
+	EventManager::Instance()->AddClient(EventType::MouseMoved, this);
+}
+
+PlayerGameObject::PlayerGameObject(PlayerGameObject const& other) : CharacterGameObject(other)
+{
+	m_playerController = new PlayerController(*other.m_playerController, this);
 
 	EventManager::Instance()->AddClient(EventType::KeyPressed, this);
 	EventManager::Instance()->AddClient(EventType::KeyReleased, this);
@@ -132,6 +152,7 @@ PlayerGameObject::~PlayerGameObject()
 	EventManager::Instance()->RemoveClientEvent(EventType::MouseMoved, this);
 
     delete m_playerController;
+	m_playerController = nullptr;
 }
 
 
@@ -203,6 +224,10 @@ void PlayerGameObject::Update()
 	{
 		m_invincibilityTime = 0;
 	}
+}
+
+void PlayerGameObject::EditorUpdate()
+{
 }
 
 #if EDITOR

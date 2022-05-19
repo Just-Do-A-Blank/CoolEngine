@@ -13,6 +13,14 @@ RangedWeaponGameObject::RangedWeaponGameObject(const nlohmann::json& data, CoolU
 	m_shotSpeed = data["ShotSpeed"];
 }
 
+RangedWeaponGameObject::RangedWeaponGameObject(RangedWeaponGameObject const& other) : WeaponGameObject(other)
+{
+	m_angleInterval = other.m_angleInterval;
+	m_shotSpeed = other.m_shotSpeed;
+
+	m_isShot = other.m_isShot;
+}
+
 RangedWeaponGameObject::~RangedWeaponGameObject()
 {
 }
@@ -27,6 +35,11 @@ void RangedWeaponGameObject::SetIsShot(bool shot)
 	m_isShot = shot;
 }
 
+void RangedWeaponGameObject::SetSpeed(float speed)
+{
+	m_shotSpeed = speed;
+}
+
 float RangedWeaponGameObject::GetAngleInterval()
 {
 	return m_angleInterval;
@@ -35,6 +48,11 @@ float RangedWeaponGameObject::GetAngleInterval()
 bool RangedWeaponGameObject::GetIsShot()
 {
 	return m_isShot;
+}
+
+float RangedWeaponGameObject::GetSpeed()
+{
+	return m_shotSpeed;
 }
 
 void RangedWeaponGameObject::Serialize(nlohmann::json& data)
