@@ -93,12 +93,17 @@ void EditorUI::DrawPlayButtonWindow(XMFLOAT2 buttonSize, float verticalOffset)
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + verticalOffset);
 	}
 	ImGui::BeginDisabled(GameManager::GetInstance()->GetViewState() == ViewState::GAME_VIEW);
+
+	static bool cameraPresent = true;
 	if (ImGui::ImageButton(m_playButtonTexture, ImVec2(buttonSize.x, buttonSize.y)))
 	{
-		GameManager::GetInstance()->BeginPlay();
+		cameraPresent = GameManager::GetInstance()->BeginPlay();
 
-		m_gameObjectNodeClicked = -1;
-		m_selectedGameObjectNode = nullptr;
+		if (cameraPresent)
+		{
+			m_gameObjectNodeClicked = -1;
+			m_selectedGameObjectNode = nullptr;
+		}
 	}
 	ImGui::EndDisabled();
 
@@ -114,6 +119,24 @@ void EditorUI::DrawPlayButtonWindow(XMFLOAT2 buttonSize, float verticalOffset)
 	}
 	ImGui::EndDisabled();
 	ImGui::End();
+
+	if (!cameraPresent)
+	{
+		ImGui::Begin("No Camera GameObject Present on Scene");
+
+		int clicked = 0;
+		if (ImGui::Button("Close"))
+		{
+			++clicked;
+		}
+		if (clicked & 1)
+		{
+			cameraPresent = true;
+		}
+
+		ImGui::End();
+	}
+
 }
 
 void EditorUI::SetIsViewportHovered(bool bHovered)
@@ -226,6 +249,12 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 					m_createGameObjectClicked = true;
 
 					m_createObjectType = GameObjectType::WEAPON;
+				}
+				if (ImGui::MenuItem("Camera"))
+				{
+					m_createGameObjectClicked = true;
+
+					m_createObjectType = GameObjectType::CAMERA;
 				}
 
 				ImGui::EndMenu();
@@ -396,6 +425,10 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 
 			case GameObjectType::WEAPON:
 				pgameManager->CreateGameObject<WeaponGameObject>(gameObjectName, m_selectedGameObjectNode);
+				break;
+
+			case GameObjectType::CAMERA:
+				pgameManager->CreateGameObject<CameraGameObject>(gameObjectName, m_selectedGameObjectNode);
 				break;
 			}
 

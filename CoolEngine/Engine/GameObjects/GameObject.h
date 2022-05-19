@@ -20,7 +20,8 @@ enum class GameObjectType
 	MELEE_WEAPON = 1024,
 	RANGE_WEAPON = 2048,
 	BULLET = 4096,
-	GAME_UI_COMPONENT = 8192
+	GAME_UI_COMPONENT = 8192,
+	CAMERA = 16384,
 };
 
 DEFINE_ENUM_FLAG_OPERATORS(GameObjectType);
@@ -42,6 +43,7 @@ enum class AccumlateType
 	MELEE_WEAPON = (int)((int)GameObjectType::MELEE_WEAPON | WEAPON),
 	RANGE_WEAPON = (int)((int)GameObjectType::RANGE_WEAPON | WEAPON),
 	BULLET = (int)((int)GameObjectType::BULLET | WEAPON),
+	CAMERA = (int)((int)GameObjectType::CAMERA | BASE),
 	UI_COMPONENT = (int)((int)GameObjectType::GAME_UI_COMPONENT | BASE),
 };
 
