@@ -15,6 +15,15 @@ enum class UIComponentType
 	BUTTON = 16,
 };
 
+enum class AccumulatedUIComponentType
+{
+	BASE = (int)UIComponentType::BASE,
+	IMAGE = (BASE | (int)UIComponentType::IMAGE),
+	TEXT = (BASE | (int)UIComponentType::TEXT),
+	CANVAS = (BASE | (int)UIComponentType::CANVAS),
+	BUTTON = (BASE | (int)UIComponentType::BUTTON),
+};
+
 DEFINE_ENUM_FLAG_OPERATORS(UIComponentType);
 
 class GameUIComponent : public GameObject
@@ -40,7 +49,7 @@ public:
 	virtual void Update()override;
 	virtual void EditorUpdate()override;
 
-	virtual void Serialize(nlohmann::json& data);
+	virtual void Serialize(nlohmann::json& data) override;
 
 	//Getters
 	int& GetLayer();

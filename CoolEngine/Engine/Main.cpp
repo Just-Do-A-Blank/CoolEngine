@@ -28,7 +28,6 @@
 #include "Scene/Scene.h"
 #include "Engine/Managers/GameManager.h"
 #include <Engine/Physics/Box.h>
-#include "Engine/Managers/UIManager.h"
 #include "Engine/GameUI/GameUIComponent.h"
 #include "Engine/GameUI/ImageComponent.h"
 #include "Engine/GameUI/TextComponent.h"
@@ -78,7 +77,6 @@ ID3D11ShaderResourceView* g_pRTTShaderResourceView;
 
 
 
-EditorCameraGameObject* g_pcamera = nullptr;
 PlayerGameObject* g_pplayer = nullptr;
 
 TileMap* g_testMap1;
@@ -144,28 +142,12 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//Debug Manager
 #if _DEBUG
 	DebugDrawManager::GetInstance()->Init(g_pd3dDevice);
-
-
 #endif
 
 	srand(time(0));
 
 	//Create camera
-	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, -5);
-	XMFLOAT3 cameraForward = XMFLOAT3(0, 0, 1);
-	XMFLOAT3 cameraUp = XMFLOAT3(0, 1, 0);
-
-	float windowWidth = GraphicsManager::GetInstance()->GetWindowDimensions().x;
-	float windowHeight = GraphicsManager::GetInstance()->GetWindowDimensions().y;
-
-	float nearDepth = 0.01f;
-	float farDepth = 1000.0f;
-
-	CoolUUID uuid;
-	g_pcamera = new EditorCameraGameObject(std::string("Camera"), uuid);
-	g_pcamera->Initialize(cameraPos, cameraForward, cameraUp, windowWidth, windowHeight, nearDepth, farDepth);
-
-	GameManager::GetInstance()->SetCamera(g_pcamera);
+	
 	FontManager::GetInstance()->LoadFont(L"Resources\\Fonts\\ComicSans", "comicSans");
 
 	//Create scene
@@ -763,7 +745,7 @@ void Render()
 
 	//Update per frame CB
 	PerFrameCB perFrameCB;
-	XMStoreFloat4x4(&perFrameCB.viewProjection, XMMatrixTranspose(XMLoadFloat4x4(&g_pcamera->GetViewProjection())));
+	XMStoreFloat4x4(&perFrameCB.viewProjection, XMMatrixTranspose(XMLoadFloat4x4(&GameManager::GetInstance()->GetCamera()->GetViewProjection())));
 
 	GraphicsManager::GetInstance()->m_pperFrameCB->Update(perFrameCB, g_pImmediateContext);
 
@@ -817,8 +799,6 @@ void Render()
 	{
 		GraphicsManager::GetInstance()->GetSpriteBatches()[i]->End();
 	}
-
-	UIManager::GetInstance()->Render(renderStruct);
 
 	if (g_ptoolBase != nullptr)
 	{
@@ -910,7 +890,6 @@ void Update()
 
 #if EDITOR
 	g_peditorUI->Update();
-	g_pcamera->Update();
 #endif
 
 	if (g_ptoolBase != nullptr)

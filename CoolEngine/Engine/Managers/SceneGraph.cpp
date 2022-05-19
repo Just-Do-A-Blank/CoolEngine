@@ -138,6 +138,7 @@ void SceneGraph<T>::MoveNode(TreeNode<T>* currentNode, TreeNode<T>* parentNode)
 	}
 	else
 	{
+		currentNode->PreviousParent = nullptr;
 
 		TreeNode<T>* siblingNode = m_rootNode->Sibling;
 		if (siblingNode == nullptr)
@@ -268,6 +269,8 @@ void SceneGraph<T>::DeleteNodeObjectUsingNode(TreeNode<T>* currentNode)
 		{
 			currentNode->PreviousParent->Child = nullptr;
 		}
+
+		currentNode->PreviousParent->NodeObject->GetTransform()->RemoveChildTransform(currentNode->NodeObject->GetTransform());
 	}
 	else if (currentNode->PreviousSibling)
 	{
@@ -316,7 +319,7 @@ TreeNode<T>* SceneGraph<T>::GetNodeUsingIdentifier(string identifier)
 	unordered_map<string, TreeNode<T>*>::iterator it;
 	it = m_sceneTreeNodeMap.find(identifier);
 
-	if (!it->second)
+	if (it == m_sceneTreeNodeMap.end() || !it->second)
 	{
 		return nullptr;
 	}
@@ -338,10 +341,10 @@ vector<TreeNode<T>*>& SceneGraph<T>::GetAllNodes()
 template<class T>
 T* SceneGraph<T>::GetNodeObjectUsingIdentifier(string& identifier)
 {
-	unordered_map<string, T*>::iterator it = m_sceneNodeObjectsMap.find(identifier);
-	if (!it->second)
+	if (m_sceneNodeObjectsMap.count(identifier) == 0)
 	{
 		return nullptr;
 	}
-	return it->second;
+	
+	return m_sceneNodeObjectsMap[identifier];
 }

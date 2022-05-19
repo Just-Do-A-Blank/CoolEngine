@@ -6,6 +6,8 @@
 EditorCameraGameObject::EditorCameraGameObject(string identifier, CoolUUID uuid) : CameraGameObject(identifier, uuid)
 {
 	m_areControlledByUser = true;
+
+	Initialize();
 }
 
 EditorCameraGameObject::EditorCameraGameObject(const nlohmann::json& data, CoolUUID uuid) : CameraGameObject(data, uuid)
@@ -25,10 +27,8 @@ EditorCameraGameObject::~EditorCameraGameObject()
 {
 }
 
-void EditorCameraGameObject::Initialize(XMFLOAT3& position, XMFLOAT3& forwardVector, XMFLOAT3& upVector, float& windowWidth, float& windowHeight, float& nearDepth, float& farDepth)
+void EditorCameraGameObject::Initialize()
 {
-	CameraGameObject::Initialize(position, forwardVector, upVector, windowWidth, windowHeight, nearDepth, farDepth);
-
 	EventManager::Instance()->AddClient(EventType::KeyPressed, this);
 	EventManager::Instance()->AddClient(EventType::KeyReleased, this);
 }
@@ -60,30 +60,24 @@ void EditorCameraGameObject::KeyPressed(KeyPressedEvent* e)
 	}
 
 	// Player movement
-	XMFLOAT3 movement = XMFLOAT3(0, 0, 0);
+	m_movement = XMFLOAT3(0, 0, 0);
 
 	if (e->GetKeyCode() == 'W')
 	{
-		movement.y = 1.0f;
+		m_movement.y = 1.0f;
 	}
 	if (e->GetKeyCode() == 'S')
 	{
-		movement.y = -1.0f;
+		m_movement.y = -1.0f;
 	}
 	if (e->GetKeyCode() == 'A')
 	{
-		movement.x = -1.0f;
+		m_movement.x = -1.0f;
 	}
 	if (e->GetKeyCode() == 'D')
 	{
-		movement.x = 1.0f;
-	}
-
-	if (movement.x != 0.0f || movement.y != 0.0f)
-	{
-		XMStoreFloat3(&movement, XMVector3Normalize(XMLoadFloat3(&movement)) * m_moveSpeed * m_speedBoost * GameManager::GetInstance()->GetTimer()->DeltaTime());
-		GetTransform()->Translate(movement);
-	}
+		m_movement.x = 1.0f;
+	}	
 }
 
 void EditorCameraGameObject::KeyReleased(KeyReleasedEvent* e)
@@ -105,6 +99,15 @@ void EditorCameraGameObject::Serialize(nlohmann::json& jsonData)
 
 	jsonData["Speed Boost"] = m_speedBoost;
 	jsonData["Movement Speed"] = m_moveSpeed;
+}
+
+void EditorCameraGameObject::EditorUpdate()
+{
+	if (m_movement.x != 0.0f || m_movement.y != 0.0f)
+	{
+		XMStoreFloat3(&m_movement, XMVector3Normalize(XMLoadFloat3(&m_movement)) * m_moveSpeed * m_speedBoost * GameManager::GetInstance()->GetTimer()->DeltaTime());
+		GetTransform()->Translate(m_movement);
+	}
 }
 
 #if EDITOR
