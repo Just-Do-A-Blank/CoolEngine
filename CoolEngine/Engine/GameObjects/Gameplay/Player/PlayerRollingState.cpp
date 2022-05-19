@@ -369,7 +369,8 @@ void PlayerRollingState::SlowSpeedIfDirectionChanged(XMFLOAT3 originalDirection,
     {
         movementSpeed -= drag;
     }
-    else if ((originalDirection.y > 0 && newDirection.y < 0) || (originalDirection.y < 0 && newDirection.y > 0))
+    
+    if ((originalDirection.y > 0 && newDirection.y < 0) || (originalDirection.y < 0 && newDirection.y > 0))
     {
         movementSpeed -= drag;
     }
