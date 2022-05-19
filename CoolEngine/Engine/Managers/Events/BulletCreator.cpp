@@ -82,8 +82,11 @@ void BulletCreator::CreateBullet(CreateBulletEvent* e)
 
 void BulletCreator::TestFire(MouseButtonPressedEvent* e)
 {
+	// Temporary, uses a weapon object in the scene as a reference. In the final, will probably store weapon data some other way.
 	string name = "Weapon";
 	RangedWeaponGameObject* p_weapon = GameManager::GetInstance()->GetGameObjectUsingIdentifier<RangedWeaponGameObject>(name);
+
+	// Get player location
 	name = "Player";
 	RenderableCollidableGameObject* p_player = GameManager::GetInstance()->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(name);
 

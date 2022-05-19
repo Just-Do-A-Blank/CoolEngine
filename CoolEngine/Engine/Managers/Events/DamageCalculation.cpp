@@ -53,15 +53,12 @@ void DamageCalculation::TriggerHold(TriggerHoldEvent* e)
 		CharacterGameObject* pCharacter = dynamic_cast<CharacterGameObject*>(e->GetGameObject(0));
 		WeaponGameObject* pWeapon = dynamic_cast<WeaponGameObject*>(e->GetGameObject(1));
 
-		if ((!pCharacter->GetInvincibilityTime()) && ((pCharacter->ContainsType(GameObjectType::PLAYER) && pWeapon->GetIsPlayerWeapon() == false) || (pCharacter->ContainsType(GameObjectType::ENEMY) && pWeapon->GetIsPlayerWeapon())))
+		if ((pCharacter->GetInvincibilityTime() <= 0.0f) && ((pCharacter->ContainsType(GameObjectType::PLAYER) && pWeapon->GetIsPlayerWeapon() == false) || (pCharacter->ContainsType(GameObjectType::ENEMY) && pWeapon->GetIsPlayerWeapon())))
 		{
 			pCharacter->TakeDamage(CalculateDamage(pWeapon->GetDamage(), pWeapon->GetElement(), pCharacter->GetElement(), pCharacter->GetElementalStatus()));
 			pCharacter->SetInvincibilityTime(INVINCIBLE_TIME);
+			dynamic_cast<BulletGameObject*>(e->GetGameObject(1))->SetActive(false);
 		}
-	}
-	if (e->GetGameObject(1)->ContainsType(GameObjectType::BULLET) && !(e->GetGameObject(0)->ContainsType(GameObjectType::PLAYER) && dynamic_cast<BulletGameObject*>(e->GetGameObject(1))->GetIsPlayerWeapon()))
-	{
-		dynamic_cast<BulletGameObject*>(e->GetGameObject(1))->SetActive(false);
 	}
 }
 

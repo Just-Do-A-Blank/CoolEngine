@@ -223,7 +223,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//Init enemy object
 	pgameObject = pgameManager->GetGameObjectUsingIdentifier<EnemyGameObject>(enemyName);
 	objectPos = XMFLOAT3(-570, -25.0f, 0);
-	objectScale = XMFLOAT3(0.8f, 0.8f, 0.8f);
+	objectScale = XMFLOAT3(40.0f, 40.0f, 40.0f);
 
 	pgameObject->SetMesh(QUAD_MESH_NAME);
 	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);

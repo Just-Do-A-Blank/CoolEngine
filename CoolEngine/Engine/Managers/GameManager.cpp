@@ -557,7 +557,16 @@ string& GameManager::GetCurrentSceneName()
 
 vector<GameObject*>& GameManager::GetAllGameObjectsInCurrentScene()
 {
-	return m_pcurrentScene->GetAllGameObjects();
+	switch (m_viewState)
+	{
+	case ViewState::EDITOR_VIEW:
+		return m_pcurrentScene->GetAllGameObjects();
+		break;
+
+	case ViewState::GAME_VIEW:
+		return m_pplayScene->GetAllGameObjects();
+		break;
+	}	
 }
 
 void GameManager::Serialize(nlohmann::json& data)
