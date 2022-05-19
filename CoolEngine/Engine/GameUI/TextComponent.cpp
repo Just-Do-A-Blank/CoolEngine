@@ -5,7 +5,7 @@
 #include"Engine/ResourceDefines.h"
 #include "Engine/EditorUI/EditorUI.h"
 
-TextComponent::TextComponent(string identifier, CoolUUID uuid):GameUIComponent(identifier, uuid)
+TextComponent::TextComponent(string identifier, CoolUUID uuid) : GameUIComponent(identifier, uuid)
 {	
 	m_uiComponentType |= UIComponentType::TEXT;
 }
@@ -17,9 +17,9 @@ TextComponent::TextComponent(nlohmann::json& data, CoolUUID uuid, ID3D11Device* 
 	std::string uuidString = to_string(*m_UUID);
 
 	XMFLOAT4 colour;
-	colour = XMFLOAT4( data["GameUI"][(int)m_uiComponentType][uuidString]["Colour"][0], data["GameUI"][(int)m_uiComponentType][uuidString]["Colour"][1], data["GameUI"][(int)m_uiComponentType][uuidString]["Colour"][2], data["GameUI"][(int)m_uiComponentType][uuidString]["Colour"][3] );
+	colour = XMFLOAT4( data["Colour"][0], data["Colour"][1], data["Colour"][2], data["Colour"][3] );
 
-	Init(data["GameUI"][(int)m_uiComponentType][uuidString]["Text"], data["GameUI"][(int)m_uiComponentType][uuidString]["FontName"], data["GameUI"][(int)m_uiComponentType][uuidString]["FontSize"], colour);
+	Init(data["Text"], data["FontName"], data["FontSize"], colour);
 }
 
 void TextComponent::UpdateFont(string fontName, int fontSize)
@@ -34,10 +34,10 @@ void TextComponent::Serialize(nlohmann::json& data)
 
 	std::string uuidString = to_string(*m_UUID);
 
-	data["GameUI"][(int)m_uiComponentType][uuidString]["Text"].push_back(m_text);
-	data["GameUI"][(int)m_uiComponentType][uuidString]["FontName"].push_back(m_fontName);
-	data["GameUI"][(int)m_uiComponentType][uuidString]["FontSize"].push_back(m_fontSize);
-	data["GameUI"][(int)m_uiComponentType][uuidString]["Colour"].push_back({m_colour.x, m_colour.y, m_colour.z, m_colour.w});
+	data["Text"] = m_text;
+	data["FontName"] = m_fontName;
+	data["FontSize"] = m_fontSize;
+	data["Colour"] = {m_colour.x, m_colour.y, m_colour.z, m_colour.w};
 }
 
 #if EDITOR
@@ -72,10 +72,6 @@ void TextComponent::CreateEngineUI()
 	{
 		CreateTextQuads();
 	}
-
-	ImGui::Spacing();
-
-	ImGui::DragFloat("Character Spacing", &m_characterSpacing, 10.0f, 50.0f);
 
 	ImGui::Spacing();
     EditorUIFloatParameters colorParameters = EditorUIFloatParameters();
@@ -122,8 +118,6 @@ TextComponent::TextComponent(TextComponent const& other) : GameUIComponent(other
 {
 	m_characterSourceRects = other.m_characterSourceRects;
 	m_characterDestinationRects = other.m_characterDestinationRects;
-
-	m_characterSpacing = other.m_characterSpacing;
 
 	m_dimensions = other.m_dimensions;
 	m_fontTextureDimension = other.m_fontTextureDimension;

@@ -268,6 +268,8 @@ void SceneGraph<T>::DeleteNodeObjectUsingNode(TreeNode<T>* currentNode)
 		{
 			currentNode->PreviousParent->Child = nullptr;
 		}
+
+		currentNode->PreviousParent->NodeObject->GetTransform()->RemoveChildTransform(currentNode->NodeObject->GetTransform());
 	}
 	else if (currentNode->PreviousSibling)
 	{

@@ -11,7 +11,6 @@ ImageComponent::ImageComponent(string identifier, CoolUUID uuid) : GameUICompone
 
 ImageComponent::ImageComponent(nlohmann::json& data, CoolUUID uuid) : GameUIComponent(data, uuid)
 {
-	m_gameObjectType |= GameObjectType::RENDERABLE;
 	m_uiComponentType |= UIComponentType::IMAGE;
 }
 

@@ -7,10 +7,8 @@ class TextComponent : public GameUIComponent
 {
 	friend FileIO;
 private:
-	vector<SimpleMath::Rectangle> m_characterSourceRects;
-	vector<SimpleMath::Rectangle> m_characterDestinationRects;
-
-	float m_characterSpacing = 10.0f;
+	vector<DirectX::SimpleMath::Rectangle> m_characterSourceRects;
+	vector<DirectX::SimpleMath::Rectangle> m_characterDestinationRects;
 
 	XMFLOAT2 m_dimensions;
 	XMFLOAT2 m_fontTextureDimension;
