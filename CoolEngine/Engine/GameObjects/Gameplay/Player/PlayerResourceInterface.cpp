@@ -14,6 +14,12 @@ PlayerResourceInterface::PlayerResourceInterface(map<string, PlayerResource*>* p
 	/// </summary>
 	void PlayerResourceInterface::CreateEngineUI()
 	{
+		if (m_deleteOnNextLoop != "")
+		{
+			RemoveResourceFromList(m_deleteOnNextLoop);
+			m_deleteOnNextLoop = "";
+		}
+
 		if (EditorUI::CollapsingSection("Player Resources", false))
 		{
 			EditorUINonSpecificParameters parameters = EditorUINonSpecificParameters();
@@ -35,21 +41,38 @@ PlayerResourceInterface::PlayerResourceInterface(map<string, PlayerResource*>* p
 					
 				}
 			}
+
+			for (
+				std::map<string, PlayerResource*>::iterator i = m_playerResources->begin();
+				i != m_playerResources->end(); i++)
+			{
+				ImGui::PushID(i->first.c_str());
+
+				EditorUI::FullTitle(i->first);
+				EditorUI::DragInt("Min Value", i->second->m_minValue);
+				EditorUI::DragInt("Max Value", i->second->m_maxValue);
+
+				if (EditorUI::BasicButton("Delete"))
+				{
+					m_deleteOnNextLoop = i->first;
+				}
+
+				ImGui::PopID();
+			}
 		}
 	}
 #endif
 
 bool PlayerResourceInterface::AddResourceToList(string key)
 {
-	std::map<string, PlayerResource*> m = *m_playerResources;
-
 	for (int i = 0; i < key.length(); ++i)
 	{
 		key[i] = tolower(key[i]);
 	}
 
-	bool found = std::any_of(m.begin(), m.end(),
-		[&key](std::pair<const string, PlayerResource*>& entry) {
+	bool found = std::any_of(m_playerResources->begin(), m_playerResources->end(),
+		[&key](std::pair<const string, PlayerResource*>& entry)
+		{
 			return (entry.first == key);
 		});
 
@@ -60,4 +83,9 @@ bool PlayerResourceInterface::AddResourceToList(string key)
 	}
 
 	return !found;
+}
+
+void PlayerResourceInterface::RemoveResourceFromList(string key)
+{
+	m_playerResources->erase(key);
 }

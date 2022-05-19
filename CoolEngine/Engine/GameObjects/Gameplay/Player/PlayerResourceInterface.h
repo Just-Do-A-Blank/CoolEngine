@@ -25,5 +25,8 @@ private:
     bool m_lastEntryIsError2;
 
     bool AddResourceToList(string key);
+    void RemoveResourceFromList(string key);
+
+    string m_deleteOnNextLoop;
 };
 

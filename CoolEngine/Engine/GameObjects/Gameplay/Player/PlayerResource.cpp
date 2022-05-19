@@ -4,20 +4,21 @@ PlayerResource::PlayerResource(string key)
 {
 	m_value = 0;
 	m_maxValue = 0;
+	m_minValue = 0;
 	m_key = key;
 }
 
-string PlayerResource::GetKey() const
+/*string PlayerResource::GetKey() const
 {
 	return m_key;
 }
 
-int PlayerResource::GetValue()const
+int& PlayerResource::GetValue()
 {
 	return m_value;
 }
 
-int PlayerResource::GetMaxValue()const
+int& PlayerResource::GetMaxValue()
 {
 	return m_maxValue;
 }
@@ -32,7 +33,7 @@ void PlayerResource::SetMaxValue(int value)
 	m_maxValue = value;
 }
 
-int PlayerResource::GetMinValue()const
+int& PlayerResource::GetMinValue()
 {
 	return m_minValue;
 }
@@ -40,4 +41,4 @@ int PlayerResource::GetMinValue()const
 void PlayerResource::SetMinValue(int value)
 {
 	m_minValue = value;
-}
+}*/
