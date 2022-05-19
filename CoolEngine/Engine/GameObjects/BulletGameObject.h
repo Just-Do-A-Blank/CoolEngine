@@ -20,8 +20,6 @@ public:
 	void SetDirection(XMFLOAT3 dir) { m_direction = dir; }
 	void SetSpeed(float speed) { m_speed = speed; }
 
-	void Initialise();
-
 private:
 	XMFLOAT3 m_direction = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	float m_speed = 1.0f;

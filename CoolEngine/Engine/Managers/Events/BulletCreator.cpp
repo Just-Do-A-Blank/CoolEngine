@@ -46,12 +46,6 @@ BulletCreator::~BulletCreator()
 
 void BulletCreator::CreateBullet(CreateBulletEvent* e)
 {
-	//string name = "Bullet" + to_string(m_bulletCounter);
-	//++m_bulletCounter;
-
-	//GameManager::GetInstance()->CreateGameObject<BulletGameObject>(name);
-	//BulletGameObject* p_bullet = GameManager::GetInstance()->GetGameObjectUsingIdentifier<BulletGameObject>(name);
-
 	BulletGameObject* p_bullet =  m_pBulletPool->CreateEntryInPool()->m_pObject;
 
 	XMFLOAT3 objectPos = e->GetStartPos();

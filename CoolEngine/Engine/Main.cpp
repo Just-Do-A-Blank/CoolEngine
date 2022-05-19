@@ -85,6 +85,7 @@ TileMap* g_testMap1;
 
 TileMap* g_testMap2;
 
+// Observer for making attacks
 BulletCreator bulletCreator;
 
 #if EDITOR
@@ -296,9 +297,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	// Observer for taking damage
 	DamageCalculation damageObserver = DamageCalculation();
-
-	// Observer for making attacks
-	//bulletCreator = BulletCreator();
 	
 
 	XMFLOAT3 pos = XMFLOAT3(-400, 250, 5);

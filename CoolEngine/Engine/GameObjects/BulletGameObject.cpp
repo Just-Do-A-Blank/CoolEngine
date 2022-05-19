@@ -33,9 +33,3 @@ void BulletGameObject::Update()
 	XMFLOAT3 translate = XMFLOAT3(m_direction.x * dTime * m_speed, m_direction.y * dTime * m_speed, 0.0f);
 	m_transform->Translate(translate);
 }
-
-void BulletGameObject::Initialise()
-{
-	m_gameObjectType |= GameObjectType::WEAPON;
-	m_gameObjectType |= GameObjectType::BULLET;
-}
