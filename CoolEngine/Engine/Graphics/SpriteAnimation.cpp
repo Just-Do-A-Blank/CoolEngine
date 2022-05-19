@@ -29,7 +29,7 @@ void SpriteAnimation::SetFrames(std::vector<Frame>* pframes)
 	m_pframes = pframes;
 }
 
-std::vector<Frame>* SpriteAnimation::GetFrames()
+const std::vector<Frame>* SpriteAnimation::GetFrames() const
 {
 	return m_pframes;
 }
@@ -39,7 +39,7 @@ const std::wstring& SpriteAnimation::GetAnimPath() const
 	return m_animPath;
 }
 
-bool SpriteAnimation::IsLooping()
+bool SpriteAnimation::IsLooping() const
 {
 	return m_isLooping;
 }
@@ -49,7 +49,7 @@ void SpriteAnimation::SetLooping(bool isLooping)
 	m_isLooping = isLooping;
 }
 
-bool SpriteAnimation::IsPaused()
+bool SpriteAnimation::IsPaused() const
 {
 	return m_isPaused;
 }
@@ -117,7 +117,7 @@ void SpriteAnimation::Restart()
 	m_isPaused = false;
 }
 
-ID3D11ShaderResourceView* SpriteAnimation::GetCurrentFrame()
+ID3D11ShaderResourceView* SpriteAnimation::GetCurrentFrame() const
 {
 	if (m_currentFrameIndex == -1)
 	{

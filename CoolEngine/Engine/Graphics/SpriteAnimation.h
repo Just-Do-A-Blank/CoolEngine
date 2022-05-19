@@ -27,14 +27,14 @@ public:
 	SpriteAnimation(std::vector<Frame>* pframes, std::wstring animPath);
 
 	void SetFrames(std::vector<Frame>* pframes);
-	std::vector<Frame>* GetFrames();
+	const std::vector<Frame>* GetFrames() const;
 
 	const std::wstring& GetAnimPath() const;
 
-	bool IsLooping();
+	bool IsLooping() const;
 	void SetLooping(bool isLooping);
 
-	bool IsPaused();
+	bool IsPaused() const;
 
 	void Update();
 
@@ -43,5 +43,5 @@ public:
 
 	void Restart();
 
-	ID3D11ShaderResourceView* GetCurrentFrame();
+	ID3D11ShaderResourceView* GetCurrentFrame() const;
 };

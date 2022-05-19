@@ -5,6 +5,7 @@
 #include "Engine/ResourceDefines.h"
 #include "Engine/GameObjects/RenderableGameObject.h"
 #include "Engine/Includes/json.hpp"
+#include "Engine/Graphics/AnimationState.h"
 
 #include <direct.h>
 #include <fstream>
@@ -124,12 +125,21 @@ void AnimationTool::Render()
 		}
 
 		anim.SetFrames(&m_frames);
+		AnimationState* pstate = (AnimationState*)m_pgameObject->GetAnimationStateMachine()->GetActiveState();
 
-		m_pgameObject->RemoveAnimation("Anim");
+		if (pstate == nullptr)
+		{
+			AnimationState* pstate = new AnimationState();
+			pstate->SetAnimation(anim);
 
-		m_pgameObject->AddAnimation("Anim", anim);
-
-		m_pgameObject->PlayAnimation("Anim");
+			m_pgameObject->GetAnimationStateMachine()->AddState("default", pstate);
+			m_pgameObject->GetAnimationStateMachine()->SetActiveState("default");
+		}
+		else
+		{
+			pstate->SetAnimation(anim);
+			m_pgameObject->GetAnimationStateMachine()->SetActiveState("default");
+		}
 	}
 }
 

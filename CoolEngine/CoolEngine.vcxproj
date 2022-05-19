@@ -72,6 +72,7 @@
     <ClInclude Include="Engine\GameUI\ButtonComponent.h" />
     <ClInclude Include="Engine\GameUI\TextComponent.h" />
     <ClInclude Include="Engine\Graphics\AnimationState.h" />
+    <ClInclude Include="Engine\Graphics\AnimationStateMachine.h" />
     <ClInclude Include="Engine\Graphics\ConstantBuffer.h" />
     <ClInclude Include="Engine\Graphics\ConstantBuffers.h" />
     <ClInclude Include="Engine\Graphics\DDSTextureLoader.h" />
@@ -219,6 +220,7 @@
     <ClCompile Include="Engine\GameUI\ButtonComponent.cpp" />
     <ClCompile Include="Engine\GameUI\TextComponent.cpp" />
     <ClCompile Include="Engine\Graphics\AnimationState.cpp" />
+    <ClCompile Include="Engine\Graphics\AnimationStateMachine.cpp" />
     <ClCompile Include="Engine\Graphics\DDSTextureLoader.cpp" />
     <ClCompile Include="Engine\Graphics\SpriteAnimation.cpp" />
     <ClCompile Include="Engine\Helpers\Inputs.cpp" />

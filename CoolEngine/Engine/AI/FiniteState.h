@@ -1,5 +1,10 @@
 #pragma once
 #include <unordered_map>
+#include "Engine/Includes/json.hpp"
+#include "Engine/GameObjects/UUID.h"
+
+class FiniteStateMachine;
+class FiniteState;
 
 template<class T>
 struct TransitionInfo
@@ -13,6 +18,7 @@ public:
 class FiniteState
 {
 public:
+
 	virtual void Enter() = 0;
 	virtual void Exit() = 0;
 
@@ -27,6 +33,11 @@ public:
 	bool CreateIntTransition(std::string name, int transitionValue, int initialValue, FiniteState* pnewState);
 
 	virtual bool Transition(FiniteState*& pnewState);
+
+	virtual void CreateEngineUI() = 0;
+
+	virtual void Serialize(nlohmann::json& data, FiniteStateMachine* pstateMachine);
+	virtual void Deserialize(const nlohmann::json& data, FiniteStateMachine* pstateMachine);
 
 protected:
 

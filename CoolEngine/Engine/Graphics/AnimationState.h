@@ -10,6 +10,20 @@ public:
 
 	virtual void Update() override;
 
+	const SpriteAnimation* GetAnimation() const;
+	void SetAnimation(std::wstring filepath);
+	void SetAnimation(SpriteAnimation anim);
+
+	void Play();
+	void Pause();
+
+	void Serialize(nlohmann::json& data, FiniteStateMachine* pstateMachine) override;
+	void Deserialize(const nlohmann::json& data, FiniteStateMachine* pstateMachine) override;
+
+#if EDITOR
+	void CreateEngineUI() override;
+#endif
+
 protected:
 
 private:

@@ -1,5 +1,15 @@
 #include "FiniteStateMachine.h"
 #include "FiniteState.h"
+#include "Engine/EditorUI/EditorUI.h"
+
+FiniteStateMachine::~FiniteStateMachine()
+{
+	for (std::unordered_map<std::string, FiniteState*>::iterator it = m_states.begin(); it != m_states.end(); ++it)
+	{
+		delete it->second;
+		it->second = nullptr;
+	}
+}
 
 FiniteState* FiniteStateMachine::GetState(std::string stateName)
 {
@@ -16,6 +26,24 @@ FiniteState* FiniteStateMachine::GetState(std::string stateName)
 FiniteState* FiniteStateMachine::GetActiveState()
 {
     return m_pstate;
+}
+
+void FiniteStateMachine::SetActiveState(std::string stateName)
+{
+	if (m_states.count(stateName) == 0)
+	{
+		LOG("Tried to set the active state to a state that doesn't exist!");
+
+		return;
+	}
+
+	if (m_pstate != nullptr)
+	{
+		m_pstate->Exit();
+	}
+
+	m_pstate = m_states[stateName];
+	m_pstate->Enter();
 }
 
 bool FiniteStateMachine::AddState(std::string stateName, FiniteState* pstate)
@@ -48,16 +76,37 @@ bool FiniteStateMachine::RemoveState(std::string stateName)
 
 void FiniteStateMachine::Update()
 {
-    m_pstate->Update();
+	if (m_pstate != nullptr)
+	{
+		m_pstate->Update();
 
-    FiniteState* pstate = nullptr;
+		FiniteState* pstate = nullptr;
 
-    if (m_pstate->Transition(pstate) == true)
-    {
-        m_pstate->Exit();
+		if (m_pstate->Transition(pstate) == true)
+		{
+			m_pstate->Exit();
 
-        m_pstate = pstate;
+			m_pstate = pstate;
 
-        m_pstate->Enter();
-    }
+			m_pstate->Enter();
+		}
+	}
+}
+
+std::string FiniteStateMachine::GetStateName(FiniteState* pstate)
+{
+	for (std::unordered_map<std::string, FiniteState*>::iterator it = m_states.begin(); it != m_states.end(); ++it)
+	{
+		if (it->second == pstate)
+		{
+			return it->first;
+		}
+	}
+
+	return "";
+}
+
+const std::unordered_map<std::string, FiniteState*>* FiniteStateMachine::GetStates()
+{
+	return &m_states;
 }

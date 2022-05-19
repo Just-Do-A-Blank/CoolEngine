@@ -1,8 +1,10 @@
 #pragma once
 #include "GameObject.h"
 #include "Engine/Graphics/SpriteAnimation.h"
+#include "Engine/Graphics/AnimationStateMachine.h"
 
 class Mesh;
+class AnimationState;
 
 struct RenderStruct
 {
@@ -24,11 +26,10 @@ public:
 	Mesh* GetMesh() const;
 
 	SpriteAnimation GetAnimation(std::string name);
-	std::unordered_map<std::string, SpriteAnimation>* GetAnimations();
 
 	int GetLayer() const;
 
-	SpriteAnimation* GetCurrentAnimation();
+	const SpriteAnimation* GetCurrentAnimation();
 
 	ID3D11ShaderResourceView* GetAlbedoSRV() const;
 
@@ -54,18 +55,18 @@ public:
 
 	void SetLayer(int layer);
 
-	bool AddAnimation(string animName, SpriteAnimation& anim);
-	bool AddAnimation(string localAnimName, wstring animName);
-	bool RemoveAnimation(string animName);
-	bool OverwriteAnimation(string animName, SpriteAnimation& anim);
-
+	bool AddAnimationState(string stateName, AnimationState* panimState, bool isActive = false);
+	bool RemoveAnimationState(string stateName);
 
 	void InitGraphics();
 
 	virtual void Render(RenderStruct& renderStruct);
 	virtual void Update() override;
 
-	bool PlayAnimation(std::string name);
+	void PlayAnimation();
+	void PauseAnimation();
+
+	AnimationStateMachine* GetAnimationStateMachine();
 
 	virtual void Serialize(nlohmann::json& data) override;
 
@@ -94,9 +95,8 @@ protected:
 	char m_createDeleteAnimName[ANIM_NAME_SIZE];
 #endif
 
-	std::unordered_map<std::string, SpriteAnimation> m_animations;
+	AnimationStateMachine m_animationStateMachine;
 
-	SpriteAnimation* m_pcurrentAnimation = nullptr;
 	string m_currentAnimationName = "";
 
 private:
