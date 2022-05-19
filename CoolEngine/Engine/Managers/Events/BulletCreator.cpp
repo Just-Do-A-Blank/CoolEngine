@@ -31,7 +31,7 @@ void BulletCreator::CreateBullet(CreateBulletEvent* e)
 	p_bullet->SetAlbedo(e->GetTextureName());
 	p_bullet->GetTransform()->SetWorldPosition(objectPos);
 	p_bullet->GetTransform()->SetWorldScale(objectScale);
-	Box* pbox = new Box(p_bullet->GetTransform());
+	Box* pbox = new Box(p_bullet);
 	pbox->SetIsCollidable(isCollision);
 	isCollision = true;
 	pbox->SetIsTrigger(isCollision);

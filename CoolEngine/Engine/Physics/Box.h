@@ -14,34 +14,34 @@ public:
 	Box()
 	{
 		m_scale = XMFLOAT2(1, 1);
-		m_transform = nullptr;
+		m_pgameObject = nullptr;
 		m_halfSize = XMFLOAT2(0, 0);
 
 		m_shapeType = ShapeType::BOX;
 	}
 
-	Box(Transform* trans)
+	Box(GameObject* gameObject)
 	{
 		m_scale = XMFLOAT2(1, 1);
-		m_transform = trans;
-		m_halfSize = XMFLOAT2(m_scale.x * m_transform->GetWorldScale().x, m_scale.y * m_transform->GetWorldScale().y);
+		m_pgameObject = gameObject;
+		m_halfSize = XMFLOAT2(m_scale.x * m_pgameObject->GetTransform()->GetWorldScale().x, m_scale.y * m_pgameObject->GetTransform()->GetWorldScale().y);
 
 		m_shapeType = ShapeType::BOX;
 	}
 
-	Box(Transform* trans, XMFLOAT2 size)
+	Box(GameObject* gameObject, XMFLOAT2 size)
 	{
 		m_scale = XMFLOAT2(1, 1);
-		m_transform = trans;
+		m_pgameObject = gameObject;
 		m_halfSize = size;
 
 		m_shapeType = ShapeType::BOX;
 	}
 
-	Box(const nlohmann::json& data, Transform* trans) : Shape(data)
+	Box(const nlohmann::json& data, GameObject* gameObject) : Shape(data)
 	{
-		m_transform = trans;
-		m_halfSize = XMFLOAT2(m_scale.x * m_transform->GetWorldScale().x, m_scale.y * m_transform->GetWorldScale().y);
+		m_pgameObject = gameObject;
+		m_halfSize = XMFLOAT2(m_scale.x * m_pgameObject->GetTransform()->GetWorldScale().x, m_scale.y * m_pgameObject->GetTransform()->GetWorldScale().y);
 
 		m_scale = XMFLOAT2(data["BoxScale"][0], data["BoxScale"][1]);
 
@@ -50,7 +50,7 @@ public:
 
 	~Box()
 	{
-		m_transform = nullptr;
+		m_pgameObject = nullptr;
 	}
 
 	XMFLOAT2 GetHalfSize()
@@ -68,14 +68,14 @@ public:
 	// Based on gamedev.stackexchange.com/questions/20703/bounding-box-of-a-rotated-rectangle-2d
 	void SetShapeDimensions(XMFLOAT3 scale)
 	{
-		m_halfSize = XMFLOAT2(m_transform->GetWorldScale().x * m_scale.x, m_transform->GetWorldScale().y * m_scale.y);
+		m_halfSize = XMFLOAT2(m_pgameObject->GetTransform()->GetWorldScale().x * m_scale.x, m_pgameObject->GetTransform()->GetWorldScale().y * m_scale.y);
 
 		XMVECTOR topLeft = XMVectorSet(-m_halfSize.x, m_halfSize.y, 0, 1);
 		XMVECTOR topRight = XMVectorSet(m_halfSize.x, m_halfSize.y, 0, 1);
 		XMVECTOR bottomLeft = XMVectorSet(-m_halfSize.x, -m_halfSize.y, 0, 1);
 		XMVECTOR bottomRight = XMVectorSet(m_halfSize.x, -m_halfSize.y, 0, 1);
 
-		XMMATRIX rot = m_transform->GetRotationMatrix();
+		XMMATRIX rot = m_pgameObject->GetTransform()->GetRotationMatrix();
 
 		topLeft = XMVector3Transform(topLeft, rot);
 		topRight = XMVector3Transform(topRight, rot);

@@ -12,16 +12,16 @@ bool Collision::BoxCollision(Box* box1, Box* box2)
 {
 	XMFLOAT2 halfSize1 = XMFLOAT2(box1->m_halfSize.x, box1->m_halfSize.y);
 	XMFLOAT2 halfSize2 = XMFLOAT2(box2->m_halfSize.x, box2->m_halfSize.y);
-	XMFLOAT2 middle1 = XMFLOAT2(box1->m_transform->GetWorldPosition().x, box1->m_transform->GetWorldPosition().y);
-	XMFLOAT2 middle2 = XMFLOAT2(box2->m_transform->GetWorldPosition().x, box2->m_transform->GetWorldPosition().y);
+	XMFLOAT2 middle1 = XMFLOAT2(box1->m_pgameObject->GetTransform()->GetWorldPosition().x, box1->m_pgameObject->GetTransform()->GetWorldPosition().y);
+	XMFLOAT2 middle2 = XMFLOAT2(box2->m_pgameObject->GetTransform()->GetWorldPosition().x, box2->m_pgameObject->GetTransform()->GetWorldPosition().y);
 
 	return (middle1.x + halfSize1.x > middle2.x - halfSize2.x && middle1.x - halfSize1.x < middle2.x + halfSize2.x && middle1.y + halfSize1.y > middle2.y - halfSize2.y && middle1.y - halfSize1.y < middle2.y + halfSize2.y);
 }
 
 bool Collision::CircleCollision(Circle* circle1, Circle* circle2)
 {
-	XMFLOAT2 pos1 = XMFLOAT2(circle1->m_transform->GetWorldPosition().x, circle1->m_transform->GetWorldPosition().y);
-	XMFLOAT2 pos2 = XMFLOAT2(circle2->m_transform->GetWorldPosition().x, circle2->m_transform->GetWorldPosition().y);
+	XMFLOAT2 pos1 = XMFLOAT2(circle1->m_pgameObject->GetTransform()->GetWorldPosition().x, circle1->m_pgameObject->GetTransform()->GetWorldPosition().y);
+	XMFLOAT2 pos2 = XMFLOAT2(circle2->m_pgameObject->GetTransform()->GetWorldPosition().x, circle2->m_pgameObject->GetTransform()->GetWorldPosition().y);
 
 	float m_distanceBetweenCircles = sqrt((pos2.x - pos1.x) * (pos2.x - pos1.x) + (pos2.y - pos1.y) * (pos2.y - pos1.y));
 	if (m_distanceBetweenCircles <= circle1->m_radius + circle2->m_radius)
@@ -34,12 +34,12 @@ bool Collision::CircleCollision(Circle* circle1, Circle* circle2)
 bool Collision::CircleBoxCollision(Circle* circle, Box* box)
 {
 	XMFLOAT2 halfSize = XMFLOAT2(box->m_halfSize.x, box->m_halfSize.y);
-	XMFLOAT2 middle = XMFLOAT2(box->m_transform->GetWorldPosition().x, box->m_transform->GetWorldPosition().y);
+	XMFLOAT2 middle = XMFLOAT2(box->m_pgameObject->GetTransform()->GetWorldPosition().x, box->m_pgameObject->GetTransform()->GetWorldPosition().y);
 
-	float x = max(middle.x - halfSize.x, min(circle->m_transform->GetWorldPosition().x, middle.x + halfSize.x));
-	float y = max(middle.y - halfSize.y, min(circle->m_transform->GetWorldPosition().y, middle.y + halfSize.y));
+	float x = max(middle.x - halfSize.x, min(circle->m_pgameObject->GetTransform()->GetWorldPosition().x, middle.x + halfSize.x));
+	float y = max(middle.y - halfSize.y, min(circle->m_pgameObject->GetTransform()->GetWorldPosition().y, middle.y + halfSize.y));
 
-	XMFLOAT2 distance = XMFLOAT2(x - circle->m_transform->GetWorldPosition().x , y - circle->m_transform->GetWorldPosition().y);
+	XMFLOAT2 distance = XMFLOAT2(x - circle->m_pgameObject->GetTransform()->GetWorldPosition().x , y - circle->m_pgameObject->GetTransform()->GetWorldPosition().y);
 	float distMagnitude = sqrt(distance.x * distance.x + distance.y * distance.y);
 
 	if (distMagnitude < circle->m_radius)
@@ -54,8 +54,8 @@ bool Collision::BoxCollisionAndResponse(Box* player, Box* object)
 {
 	XMFLOAT2 halfSizeP = XMFLOAT2(player->m_halfSize.x, player->m_halfSize.y);
 	XMFLOAT2 halfSizeO = XMFLOAT2(object->m_halfSize.x, object->m_halfSize.y);
-	XMFLOAT2 middleP = XMFLOAT2(player->m_transform->GetWorldPosition().x, player->m_transform->GetWorldPosition().y);
-	XMFLOAT2 middleO = XMFLOAT2(object->m_transform->GetWorldPosition().x, object->m_transform->GetWorldPosition().y);
+	XMFLOAT2 middleP = XMFLOAT2(player->m_pgameObject->GetTransform()->GetWorldPosition().x, player->m_pgameObject->GetTransform()->GetWorldPosition().y);
+	XMFLOAT2 middleO = XMFLOAT2(object->m_pgameObject->GetTransform()->GetWorldPosition().x, object->m_pgameObject->GetTransform()->GetWorldPosition().y);
 
 	if (middleP.x + halfSizeP.x > middleO.x - halfSizeO.x && middleP.x - halfSizeP.x < middleO.x + halfSizeO.x && middleP.y + halfSizeP.y > middleO.y - halfSizeO.y && middleP.y - halfSizeP.y < middleO.y + halfSizeO.y)
 	{
@@ -78,14 +78,14 @@ bool Collision::BoxCollisionAndResponse(Box* player, Box* object)
 			if (penetration.x < 0)
 			{
 				// Left side
-				XMFLOAT3 pos = XMFLOAT3(middleO.x - halfSizeO.x - halfSizeP.x, middleP.y, player->m_transform->GetWorldPosition().z);
-				player->m_transform->SetWorldPosition(pos);
+				XMFLOAT3 pos = XMFLOAT3(middleO.x - halfSizeO.x - halfSizeP.x, middleP.y, player->m_pgameObject->GetTransform()->GetWorldPosition().z);
+				player->m_pgameObject->GetTransform()->SetWorldPosition(pos);
 			}
 			else
 			{
 				// Right side
-				XMFLOAT3 pos = XMFLOAT3(middleO.x + halfSizeO.x + halfSizeP.x, middleP.y, player->m_transform->GetWorldPosition().z);
-				player->m_transform->SetWorldPosition(pos);
+				XMFLOAT3 pos = XMFLOAT3(middleO.x + halfSizeO.x + halfSizeP.x, middleP.y, player->m_pgameObject->GetTransform()->GetWorldPosition().z);
+				player->m_pgameObject->GetTransform()->SetWorldPosition(pos);
 			}
 		}
 		else if (abs(penetration.x) > abs(penetration.y))
@@ -93,14 +93,14 @@ bool Collision::BoxCollisionAndResponse(Box* player, Box* object)
 			if (penetration.y < 0)
 			{
 				// Bottom side
-				XMFLOAT3 pos = XMFLOAT3(middleP.x, middleO.y - halfSizeO.y - halfSizeP.y, player->m_transform->GetWorldPosition().z);
-				player->m_transform->SetWorldPosition(pos);
+				XMFLOAT3 pos = XMFLOAT3(middleP.x, middleO.y - halfSizeO.y - halfSizeP.y, player->m_pgameObject->GetTransform()->GetWorldPosition().z);
+				player->m_pgameObject->GetTransform()->SetWorldPosition(pos);
 			}
 			else
 			{
 				// Top side
-				XMFLOAT3 pos = XMFLOAT3(middleP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_transform->GetWorldPosition().z);
-				player->m_transform->SetWorldPosition(pos);
+				XMFLOAT3 pos = XMFLOAT3(middleP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_pgameObject->GetTransform()->GetWorldPosition().z);
+				player->m_pgameObject->GetTransform()->SetWorldPosition(pos);
 			}
 		}
 		else
@@ -110,14 +110,14 @@ bool Collision::BoxCollisionAndResponse(Box* player, Box* object)
 				if (penetration.y > 0)
 				{
 					// Top right corner
-					XMFLOAT3 pos = XMFLOAT3(middleO.x + halfSizeO.x + halfSizeP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_transform->GetWorldPosition().z);
-					player->m_transform->SetWorldPosition(pos);
+					XMFLOAT3 pos = XMFLOAT3(middleO.x + halfSizeO.x + halfSizeP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_pgameObject->GetTransform()->GetWorldPosition().z);
+					player->m_pgameObject->GetTransform()->SetWorldPosition(pos);
 				}
 				else
 				{
 					// Bottom right corner
-					XMFLOAT3 pos = XMFLOAT3(middleO.x + halfSizeO.x + halfSizeP.x, middleO.y - halfSizeO.y - halfSizeP.y, player->m_transform->GetWorldPosition().z);
-					player->m_transform->SetWorldPosition(pos);
+					XMFLOAT3 pos = XMFLOAT3(middleO.x + halfSizeO.x + halfSizeP.x, middleO.y - halfSizeO.y - halfSizeP.y, player->m_pgameObject->GetTransform()->GetWorldPosition().z);
+					player->m_pgameObject->GetTransform()->SetWorldPosition(pos);
 				}
 			}
 			else if(penetration.x < 0)
@@ -125,14 +125,14 @@ bool Collision::BoxCollisionAndResponse(Box* player, Box* object)
 				if (penetration.y > 0)
 				{
 					// Top left corner
-					XMFLOAT3 pos = XMFLOAT3(middleO.x - halfSizeO.x - halfSizeP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_transform->GetWorldPosition().z);
-					player->m_transform->SetWorldPosition(pos);
+					XMFLOAT3 pos = XMFLOAT3(middleO.x - halfSizeO.x - halfSizeP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_pgameObject->GetTransform()->GetWorldPosition().z);
+					player->m_pgameObject->GetTransform()->SetWorldPosition(pos);
 				}
 				else
 				{
 					// Top right corner
-					XMFLOAT3 pos = XMFLOAT3(middleO.x + halfSizeO.x + halfSizeP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_transform->GetWorldPosition().z);
-					player->m_transform->SetWorldPosition(pos);
+					XMFLOAT3 pos = XMFLOAT3(middleO.x + halfSizeO.x + halfSizeP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_pgameObject->GetTransform()->GetWorldPosition().z);
+					player->m_pgameObject->GetTransform()->SetWorldPosition(pos);
 				}
 			}
 		}
@@ -146,12 +146,12 @@ bool Collision::BoxCollisionAndResponse(Box* player, Box* object)
 bool Collision::CircleBoxCollisionAndResponse(Circle* circle, Box* box)
 {
 	XMFLOAT2 halfSize = XMFLOAT2(box->m_halfSize.x, box->m_halfSize.y);
-	XMFLOAT2 middle = XMFLOAT2(box->m_transform->GetWorldPosition().x, box->m_transform->GetWorldPosition().y);
+	XMFLOAT2 middle = XMFLOAT2(box->m_pgameObject->GetTransform()->GetWorldPosition().x, box->m_pgameObject->GetTransform()->GetWorldPosition().y);
 
-	float x = max(middle.x - halfSize.x, min(circle->m_transform->GetWorldPosition().x, middle.x + halfSize.x));
-	float y = max(middle.y - halfSize.y, min(circle->m_transform->GetWorldPosition().y, middle.y + halfSize.y));
+	float x = max(middle.x - halfSize.x, min(circle->m_pgameObject->GetTransform()->GetWorldPosition().x, middle.x + halfSize.x));
+	float y = max(middle.y - halfSize.y, min(circle->m_pgameObject->GetTransform()->GetWorldPosition().y, middle.y + halfSize.y));
 
-	XMFLOAT2 distance = XMFLOAT2(x - circle->m_transform->GetWorldPosition().x , y - circle->m_transform->GetWorldPosition().y);
+	XMFLOAT2 distance = XMFLOAT2(x - circle->m_pgameObject->GetTransform()->GetWorldPosition().x , y - circle->m_pgameObject->GetTransform()->GetWorldPosition().y);
 	float distMagnitude = sqrt(distance.x * distance.x + distance.y * distance.y);
 
 	if (distMagnitude < circle->m_radius)
@@ -173,13 +173,13 @@ bool Collision::CircleBoxCollisionAndResponse(Circle* circle, Box* box)
 
 		if (abs(penetrationDepth.x) < abs(penetrationDepth.y))
 		{
-			XMFLOAT3 pos = XMFLOAT3(box->m_transform->GetWorldPosition().x + penetration.x, box->m_transform->GetWorldPosition().y + penetration.y, box->m_transform->GetWorldPosition().z);
-			box->m_transform->SetWorldPosition(pos);
+			XMFLOAT3 pos = XMFLOAT3(box->m_pgameObject->GetTransform()->GetWorldPosition().x + penetration.x, box->m_pgameObject->GetTransform()->GetWorldPosition().y + penetration.y, box->m_pgameObject->GetTransform()->GetWorldPosition().z);
+			box->m_pgameObject->GetTransform()->SetWorldPosition(pos);
 		}
 		else if (abs(penetrationDepth.x) > abs(penetrationDepth.y))
 		{
-			XMFLOAT3 pos = XMFLOAT3(box->m_transform->GetWorldPosition().x + penetration.x, box->m_transform->GetWorldPosition().y + penetration.y, box->m_transform->GetWorldPosition().z);
-			box->m_transform->SetWorldPosition(pos);
+			XMFLOAT3 pos = XMFLOAT3(box->m_pgameObject->GetTransform()->GetWorldPosition().x + penetration.x, box->m_pgameObject->GetTransform()->GetWorldPosition().y + penetration.y, box->m_pgameObject->GetTransform()->GetWorldPosition().z);
+			box->m_pgameObject->GetTransform()->SetWorldPosition(pos);
 		}
 
 		return true;
@@ -190,8 +190,8 @@ bool Collision::CircleBoxCollisionAndResponse(Circle* circle, Box* box)
 
 bool Collision::CircleCollisionAndResponse(Circle* circle1, Circle* circle2)
 {
-	XMFLOAT2 pos1 = XMFLOAT2(circle1->m_transform->GetWorldPosition().x, circle1->m_transform->GetWorldPosition().y);
-	XMFLOAT2 pos2 = XMFLOAT2(circle2->m_transform->GetWorldPosition().x, circle2->m_transform->GetWorldPosition().y);
+	XMFLOAT2 pos1 = XMFLOAT2(circle1->m_pgameObject->GetTransform()->GetWorldPosition().x, circle1->m_pgameObject->GetTransform()->GetWorldPosition().y);
+	XMFLOAT2 pos2 = XMFLOAT2(circle2->m_pgameObject->GetTransform()->GetWorldPosition().x, circle2->m_pgameObject->GetTransform()->GetWorldPosition().y);
 
 	float m_distanceBetweenCircles = sqrt((pos2.x - pos1.x) * (pos2.x - pos1.x) + (pos2.y - pos1.y) * (pos2.y - pos1.y));
 	if (m_distanceBetweenCircles <= circle1->m_radius + circle2->m_radius)
@@ -199,8 +199,8 @@ bool Collision::CircleCollisionAndResponse(Circle* circle1, Circle* circle2)
 		XMFLOAT2 vectorToPlayer = XMFLOAT2( pos1.x - pos2.x, pos1.y - pos2.y );
 		float penetration = circle1->m_radius + circle2->m_radius - m_distanceBetweenCircles;
 
-		XMFLOAT3 pos = XMFLOAT3(pos1.x + vectorToPlayer.x / m_distanceBetweenCircles * penetration, pos1.y + vectorToPlayer.y / m_distanceBetweenCircles * penetration, circle1->m_transform->GetWorldPosition().z);
-		circle1->m_transform->SetWorldPosition(pos);
+		XMFLOAT3 pos = XMFLOAT3(pos1.x + vectorToPlayer.x / m_distanceBetweenCircles * penetration, pos1.y + vectorToPlayer.y / m_distanceBetweenCircles * penetration, circle1->m_pgameObject->GetTransform()->GetWorldPosition().z);
+		circle1->m_pgameObject->GetTransform()->SetWorldPosition(pos);
 
 		return true;
 	}
