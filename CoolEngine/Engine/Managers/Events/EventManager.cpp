@@ -116,11 +116,11 @@ void EventManager::ProcessEvents()
 }
 
 //Sends the event to the listener
-void EventManager::SendEvent(Event* event) 
+void EventManager::SendEvent(Event* pevent) 
 {
-	for (auto i = 0; i < m_listenerClients[event->GetEventID()].size(); ++i)
+	for (auto i = 0; i < m_listenerClients[pevent->GetEventID()].size(); ++i)
 	{
-		m_listenerClients[event->GetEventID()][i]->Handle(event);
+		m_listenerClients[pevent->GetEventID()][i]->Handle(pevent);
 	}
 }
 

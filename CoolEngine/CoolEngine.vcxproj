@@ -265,7 +265,6 @@
     <ClCompile Include="Engine\Physics\Particle.cpp" />
     <ClCompile Include="Engine\Physics\ParticleManager.cpp" />
     <ClCompile Include="Engine\Physics\ParticleSystem.cpp" />
-    <ClCompile Include="Engine\Structure\ObjectPool.cpp" />
     <ClCompile Include="Engine\TileMap\TileMap\Tile.cpp" />
     <ClCompile Include="Engine\TileMap\TileMap\TileMap.cpp" />
     <ClCompile Include="Engine\Tools\AnimationTool.cpp" />

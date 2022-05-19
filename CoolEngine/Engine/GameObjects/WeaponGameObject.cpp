@@ -1,5 +1,10 @@
 #include "WeaponGameObject.h"
 
+WeaponGameObject::WeaponGameObject() : TriggerableGameObject()
+{
+    m_gameObjectType |= GameObjectType::WEAPON;
+}
+
 WeaponGameObject::WeaponGameObject(string identifier, CoolUUID uuid) : TriggerableGameObject(identifier, uuid)
 {
     m_gameObjectType |= GameObjectType::WEAPON;
