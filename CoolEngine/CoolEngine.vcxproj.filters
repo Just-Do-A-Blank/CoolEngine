@@ -637,7 +637,7 @@
     </ClInclude>
     <ClInclude Include="Engine\Graphics\AnimationStateMachine.h">
       <Filter>Engine\Graphics</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="Engine\Structure\ObjectPool.h">
       <Filter>Engine\Structure</Filter>
     </ClInclude>
