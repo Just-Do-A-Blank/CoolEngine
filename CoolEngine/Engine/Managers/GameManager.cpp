@@ -13,6 +13,7 @@
 #include "Engine/GameUI/ImageComponent.h"
 #include "Engine/GameUI/UiCanvas.h"
 #include "Engine/GameUI/TextComponent.h"
+#include "Engine/GameObjects/EditorCameraGameObject.h"
 
 #include <direct.h>
 
@@ -24,6 +25,9 @@ void GameManager::Init()
 	m_workingDirectory = string(buffer);
 
 	m_wideWorkingDirectory = wstring(m_workingDirectory.begin(), m_workingDirectory.end());
+
+	CoolUUID uuid;
+	m_peditorCamera = new EditorCameraGameObject(std::string("Camera"), uuid);
 }
 
 Timer* GameManager::GetTimer()
@@ -41,6 +45,7 @@ void GameManager::Update()
 			return;
 		}
 
+		m_peditorCamera->Update();
 		m_pcurrentScene->EditorUpdate();
 		break;
 
@@ -80,21 +85,23 @@ void GameManager::DeleteSelectedScene()
 	m_sceneMap.erase(m_pcurrentScene->GetSceneIdentifier());
 }
 
-void GameManager::BeginPlay()
+bool GameManager::BeginPlay()
 {
-	if (m_pplayScene)
+	if (!m_pcurrentScene->GetActiveCamera())
 	{
-		return;
+		return false;
 	}
 
 	m_pplayScene = new Scene(m_pcurrentScene->m_sceneIdentifier);
 
 	CopyScene();
-
+	m_pplayScene->SetActiveCameraUsingIdentifier(m_pcurrentScene->GetActiveCamera()->GetIdentifier());
 	m_viewState = ViewState::GAME_VIEW;
+
+	return true;
 }
 
-void GameManager::EndPlay()
+bool GameManager::EndPlay()
 {
 	if (m_pplayScene)
 	{
@@ -103,7 +110,10 @@ void GameManager::EndPlay()
 		m_pplayScene = nullptr;
 
 		m_viewState = ViewState::EDITOR_VIEW;
+
+		return true;
 	}
+	return false;
 }
 
 void GameManager::CopyScene()
@@ -317,6 +327,23 @@ void GameManager::CopyScene()
 			}
 			break;
 
+		case AccumlateType::CAMERA:
+			if (gameObjectNodeList[it]->PreviousParent)
+			{
+				TreeNode<GameObject>* parentNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
+				m_pplayScene->CopyGameObject<CameraGameObject>(*(dynamic_cast<CameraGameObject*>(gameObjectNodeList[it]->NodeObject)), parentNode);
+			}
+			else if (gameObjectNodeList[it]->PreviousSibling)
+			{
+				TreeNode<GameObject>* previousSiblingNode = m_pplayScene->GetTreeNode(gameObjectNodeList[it]->PreviousSibling->NodeObject);
+				m_pplayScene->CopyGameObject<CameraGameObject>(*(dynamic_cast<CameraGameObject*>(gameObjectNodeList[it]->NodeObject)), nullptr, previousSiblingNode);
+			}
+			else
+			{
+				m_pplayScene->CopyGameObject<CameraGameObject>(*(dynamic_cast<CameraGameObject*>(gameObjectNodeList[it]->NodeObject)));
+			}
+			break;
+
 		case AccumlateType::UI_COMPONENT:
 			GameUIComponent* uiComponent = dynamic_cast<GameUIComponent*>(gameObjectNodeList[it]->NodeObject);
 			switch (uiComponent->GetComponentType())
@@ -428,7 +455,21 @@ wstring GameManager::GetWideWorkingDirectory()
 
 Scene* GameManager::GetCurrentScene()
 {
-	return m_pcurrentScene;
+	switch (m_viewState)
+	{
+	case ViewState::EDITOR_VIEW:
+		if (m_pcurrentScene)
+		{
+			return m_pcurrentScene;;
+		}
+		break;
+
+	case ViewState::GAME_VIEW:
+		return m_pplayScene;
+		break;
+	}
+
+	return nullptr;
 }
 
 void GameManager::SelectScene(Scene* pscene)
@@ -458,12 +499,21 @@ vector<GameObject*>& GameManager::GetAllGameObjects()
 
 CameraGameObject* GameManager::GetCamera()
 {
-	return m_pcamera;
+	switch (m_viewState)
+	{
+	case ViewState::EDITOR_VIEW:
+		return m_peditorCamera;
+		break;
+
+	case ViewState::GAME_VIEW:
+		m_pplayScene->GetActiveCamera();
+		break;
+	}
 }
 
 void GameManager::SetCamera(CameraGameObject* pcamera)
 {
-	m_pcamera = pcamera;
+	m_peditorCamera = pcamera;
 }
 
 void GameManager::DeleteGameObjectUsingNode(TreeNode<GameObject>* currentNode)
