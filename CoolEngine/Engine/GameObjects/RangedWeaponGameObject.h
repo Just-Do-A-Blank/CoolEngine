@@ -26,6 +26,7 @@ class RangedWeaponGameObject : public WeaponGameObject
 public:
 	RangedWeaponGameObject(string identifier, CoolUUID uuid);
 	RangedWeaponGameObject(const nlohmann::json& data, CoolUUID uuid);
+	RangedWeaponGameObject(RangedWeaponGameObject const& other);
 
 	virtual ~RangedWeaponGameObject()override;
 	

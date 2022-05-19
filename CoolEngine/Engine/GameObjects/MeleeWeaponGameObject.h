@@ -26,6 +26,7 @@ class MeleeWeaponGameObject : public WeaponGameObject
 public:
 	MeleeWeaponGameObject(string identifier, CoolUUID uuid);
 	MeleeWeaponGameObject(const nlohmann::json& data, CoolUUID uuid);
+	MeleeWeaponGameObject(MeleeWeaponGameObject const& other);
 
 	virtual ~MeleeWeaponGameObject()override;
 

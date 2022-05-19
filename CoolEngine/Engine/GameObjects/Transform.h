@@ -19,7 +19,6 @@ class Transform : EditorUIComponent
 	Transform* m_pparentTransform;
 	vector<Transform*> m_childrenTransformList;
 
-
 	//Matrices
 	XMMATRIX m_scaleMatrix;
 	XMMATRIX m_rotationMatrix = XMMatrixIdentity();
@@ -29,6 +28,8 @@ class Transform : EditorUIComponent
 	//flags
 
 public:
+	Transform();
+	Transform(Transform const& other);
 	void Initialize(const XMFLOAT3& position, const XMFLOAT3& rotation, const XMFLOAT3& scale);
 
 	void UpdateMatrix();

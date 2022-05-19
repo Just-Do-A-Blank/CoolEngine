@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <FxCompile Include="Engine\Graphics\Shaders\TextPixel.hlsl">
-      <Filter>Engine\Graphics\Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Engine\Graphics\Shaders\SpriteBatchPixel.hlsl">
       <Filter>Engine\Graphics\Shaders</Filter>
     </FxCompile>
@@ -192,9 +189,6 @@
     <ClCompile Include="Engine\GameUI\TextComponent.cpp">
       <Filter>Engine\GameUI</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Tools\InGameUITool.cpp">
-      <Filter>Engine\Tools</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\EditorUI\ContentBrowser.cpp">
       <Filter>Engine\EditorUI</Filter>
     </ClCompile>
@@ -225,8 +219,11 @@
     <ClCompile Include="Engine\Managers\Events\BulletCreator.cpp">
       <Filter>Engine\Managers\Events</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GameObjects\BulletGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerDodgingState.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Structure\ObjectPool.cpp">
+      <Filter>Engine\Structure</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -485,9 +482,6 @@
     <ClInclude Include="Engine\GameUI\TextComponent.h">
       <Filter>Engine\GameUI</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Tools\InGameUITool.h">
-      <Filter>Engine\Tools</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Includes\DirectXTK\Audio.h">
       <Filter>Engine\Includes\DirectXTK</Filter>
     </ClInclude>
@@ -608,8 +602,14 @@
     <ClInclude Include="Engine\Managers\Events\AttackEvents.h">
       <Filter>Engine\Managers\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\GameObjects\BulletGameObject.h">
-      <Filter>Engine\GameObjects</Filter>
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerDodgingState.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\EVirtualKeyCode.h">
+      <Filter>Engine\GameObjects\Gameplay\GameplayButtons</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Structure\ObjectPool.h">
+      <Filter>Engine\Structure</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

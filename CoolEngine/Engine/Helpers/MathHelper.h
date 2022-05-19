@@ -128,4 +128,16 @@ public:
 		randomNumber *= range;
 		return (randomNumber + rangeLow);
 	}
+
+	static bool Equals(const XMFLOAT3& var1, const XMFLOAT3& var2)
+	{
+		if (var1.x != var2.x || var1.y != var2.y || var1.z != var2.z)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
 };

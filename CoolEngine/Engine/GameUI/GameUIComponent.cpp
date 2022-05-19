@@ -6,93 +6,72 @@
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/EditorUI/EditorUI.h"
 
-GameUIComponent::GameUIComponent(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation)
+GameUIComponent::GameUIComponent(string identifier, CoolUUID uuid):GameObject(identifier, uuid)
 {
-	m_componentType |= UIComponentType::BASE;
+	m_gameObjectType |= GameObjectType::GAME_UI_COMPONENT;
+	m_uiComponentType |= UIComponentType::BASE;
 
-	m_uiElementIdentifier = identifier;
-	m_uuid = uuid;
 	m_transform = new Transform();
-	InitGraphics();
-
-	m_transform->SetLocalScale(scale);
-	m_transform->SetLocalPosition(position);
-	m_transform->SetLocalRotation(rotation);
-
 }
 
 GameUIComponent::GameUIComponent(nlohmann::json& data, CoolUUID uuid)
 {
-	m_componentType |= UIComponentType::BASE;
+	m_gameObjectType |= GameObjectType::GAME_UI_COMPONENT;
+	m_uiComponentType |= UIComponentType::BASE;
 
-	m_uuid = CoolUUID(*uuid);
-	std::string uuidString = to_string(*m_uuid);
+	m_UUID = CoolUUID(*uuid);
+	std::string uuidString = to_string(*uuid);
 
-	m_uiElementIdentifier = data["GameUI"][(int)m_componentType][uuidString]["Identifier"];
+	SetIdentifier(data["GameUI"][(int)m_uiComponentType][uuidString]["Identifier"]);
 	m_transform = new Transform();
-	InitGraphics();
 
-	m_transform->SetLocalPosition(XMFLOAT3(data["GameUI"][(int)m_componentType][uuidString]["Position"][0], data["GameUI"][(int)m_componentType][uuidString]["Position"][1], data["GameUI"][(int)m_componentType][uuidString]["Position"][2]));
-	m_transform->SetLocalRotation(XMFLOAT3(data["GameUI"][(int)m_componentType][uuidString]["rotation"][0], data["GameUI"][(int)m_componentType][uuidString]["rotation"][1], data["GameUI"][(int)m_componentType][uuidString]["rotation"][2]));
-	m_transform->SetLocalScale(XMFLOAT3(data["GameUI"][(int)m_componentType][uuidString]["scale"][0], data["GameUI"][(int)m_componentType][uuidString]["scale"][1], data["GameUI"][(int)m_componentType][uuidString]["scale"][2]));
+	m_transform->SetLocalPosition(XMFLOAT3(data["GameUI"][(int)m_uiComponentType][uuidString]["Position"][0], data["GameUI"][(int)m_uiComponentType][uuidString]["Position"][1], data["GameUI"][(int)m_uiComponentType][uuidString]["Position"][2]));
+	m_transform->SetLocalRotation(XMFLOAT3(data["GameUI"][(int)m_uiComponentType][uuidString]["rotation"][0], data["GameUI"][(int)m_uiComponentType][uuidString]["rotation"][1], data["GameUI"][(int)m_uiComponentType][uuidString]["rotation"][2]));
+	m_transform->SetLocalScale(XMFLOAT3(data["GameUI"][(int)m_uiComponentType][uuidString]["scale"][0], data["GameUI"][(int)m_uiComponentType][uuidString]["scale"][1], data["GameUI"][(int)m_uiComponentType][uuidString]["scale"][2]));
 
-	m_isRenderable = data["GameUI"][(int)m_componentType][uuidString]["IsRendering"];
-	m_layer = data["GameUI"][(int)m_componentType][uuidString]["Layer"];
+	m_isRenderable = data["GameUI"][(int)m_uiComponentType][uuidString]["IsRendering"];
+	m_layer = data["GameUI"][(int)m_uiComponentType][uuidString]["Layer"];
 
-	SetTexture(data["GameUI"][(int)m_componentType][uuidString]["TexturePath"]);
+	SetTexture(data["GameUI"][(int)m_uiComponentType][uuidString]["TexturePath"]);
 }
 
-void GameUIComponent::InitGraphics()
+GameUIComponent::GameUIComponent(GameUIComponent const& other) : GameObject(other)
 {
-	m_pvertexShader = GraphicsManager::GetInstance()->GetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-	m_ppixelShader = GraphicsManager::GetInstance()->GetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+	m_isRenderable = other.m_isRenderable;
+	m_ptexture = other.m_ptexture;
 
-	m_pmesh = GraphicsManager::GetInstance()->GetMesh(QUAD_MESH_NAME);
+	m_uiComponentType = other.m_uiComponentType;
+	m_layer = other.m_layer;
 }
 
 void GameUIComponent::Render(RenderStruct& renderStruct)
 {
-	//Update CB
-	PerInstanceCB cb;
-	XMStoreFloat4x4(&cb.world, XMMatrixTranspose(m_transform->GetWorldMatrix()));
-
-	GraphicsManager::GetInstance()->m_pperInstanceCB->Update(cb, renderStruct.m_pcontext);
-
-	ID3D11Buffer* pcbBuffer = GraphicsManager::GetInstance()->m_pperInstanceCB->GetBuffer();
-
-	//Bind CB and appropriate resources
-	renderStruct.m_pcontext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 1, &pcbBuffer);
-	renderStruct.m_pcontext->VSSetShader(m_pvertexShader, nullptr, 0);
-
-	renderStruct.m_pcontext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 1, &pcbBuffer);
-	renderStruct.m_pcontext->PSSetShader(m_ppixelShader, nullptr, 0);
-
-	renderStruct.m_pcontext->PSSetShaderResources(0, 1, &m_ptexture);
-	
-
-	//Draw object
-	renderStruct.m_pcontext->DrawIndexed(m_pmesh->GetIndexCount(), 0, 0);
-
-	//Unbind resources
-	renderStruct.m_pcontext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 0, nullptr);
-	renderStruct.m_pcontext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 0, nullptr);
+	if (m_ptexture == nullptr)
+	{
+		return;
+	}
+	GraphicsManager::GetInstance()->RenderQuad(m_ptexture, m_transform->GetWorldPosition(), m_transform->GetWorldScale(), m_transform->GetWorldRotation().z, m_layer);
 }
 
 void GameUIComponent::Update()
 {
 }
 
+void GameUIComponent::EditorUpdate()
+{
+}
+
 void GameUIComponent::Serialize(nlohmann::json& data)
 {
-	std::string uuidString = to_string(*m_uuid);
+	std::string uuidString = to_string(*m_UUID);
 
-	data["GameUI"][(int)m_componentType][uuidString]["Identifier"].push_back(m_uiElementIdentifier);
-	data["GameUI"][(int)m_componentType][uuidString]["Position"].push_back({ m_transform->GetLocalPosition().x, m_transform->GetLocalPosition().y, m_transform->GetLocalPosition().z });
-	data["GameUI"][(int)m_componentType][uuidString]["Rotation"].push_back({ m_transform->GetLocalRotation().x, m_transform->GetLocalRotation().y, m_transform->GetLocalRotation().z });
-	data["GameUI"][(int)m_componentType][uuidString]["Scale"].push_back({ m_transform->GetLocalScale().x, m_transform->GetLocalScale().y, m_transform->GetLocalScale().z });
-	data["GameUI"][(int)m_componentType][uuidString]["TexturePath"].push_back(m_texFilepath);
-	data["GameUI"][(int)m_componentType][uuidString]["Layer"].push_back(m_layer);
-	data["GameUI"][(int)m_componentType][uuidString]["IsRendering"].push_back(m_isRenderable);
+	data["GameUI"][(int)m_uiComponentType][uuidString]["Identifier"].push_back(m_identifier);
+	data["GameUI"][(int)m_uiComponentType][uuidString]["Position"].push_back({ m_transform->GetLocalPosition().x, m_transform->GetLocalPosition().y, m_transform->GetLocalPosition().z });
+	data["GameUI"][(int)m_uiComponentType][uuidString]["Rotation"].push_back({ m_transform->GetLocalRotation().x, m_transform->GetLocalRotation().y, m_transform->GetLocalRotation().z });
+	data["GameUI"][(int)m_uiComponentType][uuidString]["Scale"].push_back({ m_transform->GetLocalScale().x, m_transform->GetLocalScale().y, m_transform->GetLocalScale().z });
+	data["GameUI"][(int)m_uiComponentType][uuidString]["TexturePath"].push_back(m_texFilepath);
+	data["GameUI"][(int)m_uiComponentType][uuidString]["Layer"].push_back(m_layer);
+	data["GameUI"][(int)m_uiComponentType][uuidString]["IsRendering"].push_back(m_isRenderable);
 }
 
 void GameUIComponent::SetIsRenderable(bool& condition)
@@ -124,7 +103,7 @@ void GameUIComponent::ShowEngineUI()
 {
 	ImGui::Begin("Properties");
 
-	EditorUI::IdentifierText("Identifier", m_uiElementIdentifier);
+	EditorUI::IdentifierText("Identifier", m_identifier);
 
 	ImGui::Spacing();
 	ImGui::Separator();
@@ -135,9 +114,11 @@ void GameUIComponent::ShowEngineUI()
 }
 void GameUIComponent::CreateEngineUI()
 {
-	ImGui::Spacing();
-
-	m_transform->CreateEngineUI();
+	GameObject::CreateEngineUI();
+}
+UIComponentType GameUIComponent::GetUIComponentType() const
+{
+	return m_uiComponentType;
 }
 #endif
 
@@ -156,17 +137,12 @@ Transform* GameUIComponent::GetTransform()
 	return m_transform;
 }
 
-const string& GameUIComponent::GetIdentifier()
-{
-	return m_uiElementIdentifier;
-}
-
-const CoolUUID& GameUIComponent::GetUUID() const
-{
-	return m_uuid;
-}
-
 const UIComponentType& GameUIComponent::GetComponentType() const
 {
-	return m_componentType;
+	return m_uiComponentType;
+}
+
+bool GameUIComponent::ContainsType(UIComponentType type)
+{
+	return (m_uiComponentType & type) == type;
 }

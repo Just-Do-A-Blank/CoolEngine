@@ -20,6 +20,7 @@ enum class GameObjectType
 	MELEE_WEAPON = 1024,
 	RANGE_WEAPON = 2048,
 	BULLET = 4096,
+	GAME_UI_COMPONENT = 8192
 };
 
 DEFINE_ENUM_FLAG_OPERATORS(GameObjectType);
@@ -41,6 +42,7 @@ enum class AccumlateType
 	MELEE_WEAPON = (int)((int)GameObjectType::MELEE_WEAPON | WEAPON),
 	RANGE_WEAPON = (int)((int)GameObjectType::RANGE_WEAPON | WEAPON),
 	BULLET = (int)((int)GameObjectType::BULLET | WEAPON),
+	UI_COMPONENT = (int)((int)GameObjectType::GAME_UI_COMPONENT | BASE),
 };
 
 
@@ -50,12 +52,13 @@ class GameObject : public EditorUIComponent
 	friend class Scene;
 	friend class FileIO;
 private:
-	string m_identifier;
-	CoolUUID m_UUID;
+
 
 protected:
 
 	Transform* m_transform;
+	string m_identifier;
+	CoolUUID m_UUID;
 
 	GameObject* m_pTest = nullptr;
 
@@ -70,15 +73,18 @@ protected:
 
 public:
 	GameObject();
+	GameObject(GameObject const &other);
 	GameObject(string identifier, CoolUUID uuid);
 	GameObject(const nlohmann::json& data, CoolUUID uuid);
 	virtual ~GameObject();
 
 	virtual void Update();
+	virtual void EditorUpdate();
 
 	virtual void Serialize(nlohmann::json& jsonData);
 
 	void Init(const nlohmann::json& data, CoolUUID uuid);
+	void Init(GameObject const& other);
 
 #if EDITOR
 	virtual void ShowEngineUI();
@@ -88,7 +94,8 @@ public:
 	Transform* GetTransform();
 	const GameObjectType& GetGameObjectType() const;
 
-	const string& GetIdentifier();
+	string& GetIdentifier();
+	const CoolUUID& GetUUID();
 
 	//Setters
 

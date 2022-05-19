@@ -9,6 +9,7 @@ public:
 	CollidableGameObject();
 	CollidableGameObject(string identifier, CoolUUID uuid);
 	CollidableGameObject(const nlohmann::json& data, CoolUUID uuid);
+	CollidableGameObject(CollidableGameObject const& other);
 	virtual ~CollidableGameObject()override;
 
 	//Getters

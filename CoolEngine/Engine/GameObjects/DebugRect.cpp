@@ -18,6 +18,11 @@ DebugRect::DebugRect(wstring albedoName, string identifier, CoolUUID uuid, bool 
 	}
 }
 
+DebugRect::DebugRect(DebugRect const& other) : RenderableGameObject(other)
+{
+	m_colour = other.m_colour;
+}
+
 DebugRect::~DebugRect()
 {
 }
@@ -33,6 +38,10 @@ void DebugRect::Render(RenderStruct& renderStruct)
 }
 
 void DebugRect::Update()
+{
+}
+
+void DebugRect::EditorUpdate()
 {
 }
 

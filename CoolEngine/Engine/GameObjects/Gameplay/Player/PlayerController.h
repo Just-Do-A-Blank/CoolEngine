@@ -16,8 +16,9 @@
 class PlayerController : public Observer, public EditorUIComponent
 {
 public:
-    PlayerController(InputsAsGameplayButtons* gameplayButtons, Transform* transformOfTheGameObject);
-    ~PlayerController();
+    PlayerController(InputsAsGameplayButtons* gameplayButtons, PlayerGameObject* transformOfTheGameObject);
+    PlayerController(PlayerController const& other, PlayerGameObject* newPlayer);
+    virtual ~PlayerController();
 
     /// <summary>
     /// Handles events from the Observations
@@ -97,5 +98,25 @@ private:
     /// Drag speed per frame
     /// </summary>
     int m_dragSpeedPerFrame;
+
+    /// <summary>
+    /// How much to multiply the speed by when actually calulcating the speed when dodging
+    /// </summary>
+    float m_dodgeSpeed;
+
+    /// <summary>
+    /// How long to doge for in seconds
+    /// </summary>
+    float m_timeInSecondsToDodgeFor;
+
+    /// <summary>
+    /// The force currently applied to the player. Shared among states as this is the force on the player as a whole
+    /// </summary>
+    XMFLOAT3* m_forceApplied;
+
+    /// <summary>
+    /// The current speed of the player. Shared among states as this is the force on the player as a whole
+    /// </summary>
+    float m_moveSpeed;
 };
 

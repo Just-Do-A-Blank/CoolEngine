@@ -10,42 +10,51 @@ PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : Character
     GameplayButton up = 
     {
         EGAMEPLAYBUTTONCLASS::MoveUp,
-        list<int>(),
-        list<int>(),
+        list<EVIRTUALKEYCODE>(),
+        list<EVIRTUALKEYCODE>(),
     };
-    up.m_keyCodes.push_back('W');
+    up.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_W);
     GameplayButton down =
     {
         EGAMEPLAYBUTTONCLASS::MoveDown,
-        list<int>(),
-        list<int>(),
+        list<EVIRTUALKEYCODE>(),
+        list<EVIRTUALKEYCODE>(),
     };
-    down.m_keyCodes.push_back('S');
+    down.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_S);
 
     GameplayButton left =
     {
         EGAMEPLAYBUTTONCLASS::MoveLeft,
-        list<int>(),
-        list<int>(),
+        list<EVIRTUALKEYCODE>(),
+        list<EVIRTUALKEYCODE>(),
     };
-    left.m_keyCodes.push_back('A');
+    left.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_A);
 
     GameplayButton right =
     {
         EGAMEPLAYBUTTONCLASS::MoveRight,
-        list<int>(),
-        list<int>(),
+        list<EVIRTUALKEYCODE>(),
+        list<EVIRTUALKEYCODE>(),
     };
-    right.m_keyCodes.push_back('D');
+    right.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_D);
+
+	GameplayButton dash =
+	{
+		EGAMEPLAYBUTTONCLASS::Dodge,
+		list<EVIRTUALKEYCODE>(),
+		list<EVIRTUALKEYCODE>(),
+	};
+	dash.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_SHIFT);
 
     list< GameplayButton> gameplayButtons;
     gameplayButtons.push_back(up);
     gameplayButtons.push_back(down);
     gameplayButtons.push_back(left);
     gameplayButtons.push_back(right);
+    gameplayButtons.push_back(dash);
 
     InputsAsGameplayButtons* buttons = new InputsAsGameplayButtons(gameplayButtons);
-    m_playerController = new PlayerController(buttons, GetTransform());
+    m_playerController = new PlayerController(buttons, this);
 
     EventManager::Instance()->AddClient(EventType::KeyPressed, this);
     EventManager::Instance()->AddClient(EventType::KeyReleased, this);
@@ -61,42 +70,62 @@ PlayerGameObject::PlayerGameObject(const nlohmann::json& data, CoolUUID uuid) : 
 	GameplayButton up =
 	{
 		EGAMEPLAYBUTTONCLASS::MoveUp,
-		list<int>(),
-		list<int>(),
+		list<EVIRTUALKEYCODE>(),
+		list<EVIRTUALKEYCODE>(),
 	};
-	up.m_keyCodes.push_back('W');
+	up.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_W);
 	GameplayButton down =
 	{
 		EGAMEPLAYBUTTONCLASS::MoveDown,
-		list<int>(),
-		list<int>(),
+		list<EVIRTUALKEYCODE>(),
+		list<EVIRTUALKEYCODE>(),
 	};
-	down.m_keyCodes.push_back('S');
+	down.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_S);
 
 	GameplayButton left =
 	{
 		EGAMEPLAYBUTTONCLASS::MoveLeft,
-		list<int>(),
-		list<int>(),
+		list<EVIRTUALKEYCODE>(),
+		list<EVIRTUALKEYCODE>(),
 	};
-	left.m_keyCodes.push_back('A');
+	left.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_A);
 
 	GameplayButton right =
 	{
 		EGAMEPLAYBUTTONCLASS::MoveRight,
-		list<int>(),
-		list<int>(),
+		list<EVIRTUALKEYCODE>(),
+		list<EVIRTUALKEYCODE>(),
 	};
-	right.m_keyCodes.push_back('D');
+	right.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_D);
+
+	GameplayButton dodge =
+	{
+		EGAMEPLAYBUTTONCLASS::Dodge,
+		list<EVIRTUALKEYCODE>(),
+		list<EVIRTUALKEYCODE>(),
+	};
+	dodge.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_SHIFT); //VK_LSHIFT
 
 	list< GameplayButton> gameplayButtons;
 	gameplayButtons.push_back(up);
 	gameplayButtons.push_back(down);
 	gameplayButtons.push_back(left);
 	gameplayButtons.push_back(right);
+	gameplayButtons.push_back(dodge);
 
 	InputsAsGameplayButtons* buttons = new InputsAsGameplayButtons(gameplayButtons);
-	m_playerController = new PlayerController(buttons, GetTransform());
+	m_playerController = new PlayerController(buttons, this);
+
+	EventManager::Instance()->AddClient(EventType::KeyPressed, this);
+	EventManager::Instance()->AddClient(EventType::KeyReleased, this);
+	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
+	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
+	EventManager::Instance()->AddClient(EventType::MouseMoved, this);
+}
+
+PlayerGameObject::PlayerGameObject(PlayerGameObject const& other) : CharacterGameObject(other)
+{
+	m_playerController = new PlayerController(*other.m_playerController, this);
 
 	EventManager::Instance()->AddClient(EventType::KeyPressed, this);
 	EventManager::Instance()->AddClient(EventType::KeyReleased, this);
@@ -114,6 +143,7 @@ PlayerGameObject::~PlayerGameObject()
 	EventManager::Instance()->RemoveClientEvent(EventType::MouseMoved, this);
 
     delete m_playerController;
+	m_playerController = nullptr;
 }
 
 
@@ -185,6 +215,10 @@ void PlayerGameObject::Update()
 	{
 		m_invincibilityTime = 0;
 	}
+}
+
+void PlayerGameObject::EditorUpdate()
+{
 }
 
 #if EDITOR

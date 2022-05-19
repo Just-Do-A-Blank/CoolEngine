@@ -29,9 +29,11 @@ class EnemyGameObject : public CharacterGameObject
 public:
     EnemyGameObject(string identifier, CoolUUID uuid);
     EnemyGameObject(const nlohmann::json& data, CoolUUID uuid);
+	EnemyGameObject(EnemyGameObject const& other);
 	virtual ~EnemyGameObject()override;
 
-    void Update();
+    virtual void Update();
+    virtual void EditorUpdate();
 
     //Setters
     void SetPath(vector<node*> path);

@@ -6,6 +6,7 @@
 class PlayerMovementState
 {
 public:
+	virtual ~PlayerMovementState() {}
 
 	/// <summary>
 	/// Updates the state and moves the player

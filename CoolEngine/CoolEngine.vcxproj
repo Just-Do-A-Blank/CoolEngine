@@ -45,10 +45,12 @@
     <ClInclude Include="Engine\GameObjects\CollidableGameObject.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Character\ECharacterDirectionClass.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\EGameplayButtonClass.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\EVirtualKeyCode.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\GameplayButton.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\EPLAYERMOVEMENTSTATE.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerController.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerDodgingState.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovementParameters.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovementState.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerWalkingState.h" />
@@ -170,12 +172,12 @@
     <ClInclude Include="Engine\Scene\Scene.h" />
     <ClInclude Include="Engine\stdafx.h" />
     <ClInclude Include="Engine\Structure\Manager.h" />
+    <ClInclude Include="Engine\Structure\ObjectPool.h" />
     <ClInclude Include="Engine\Structure\Singleton.h" />
     <ClInclude Include="Engine\Structure\EditorUIComponent.h" />
     <ClInclude Include="Engine\TileMap\TileMap\Tile.h" />
     <ClInclude Include="Engine\TileMap\TileMap\TileMap.h" />
     <ClInclude Include="Engine\Tools\AnimationTool.h" />
-    <ClInclude Include="Engine\Tools\InGameUITool.h" />
     <ClInclude Include="Engine\Tools\TileMapTool.h" />
     <ClInclude Include="Engine\Tools\ToolBase.h" />
     <ClInclude Include="Engine\Managers\UIManager.h" />
@@ -195,6 +197,7 @@
     <ClCompile Include="Engine\GameObjects\CollidableGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.cpp" />
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerController.cpp" />
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerDodgingState.cpp" />
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerWalkingState.cpp" />
     <ClCompile Include="Engine\GameObjects\InteractableGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\MeleeWeaponGameObject.cpp" />
@@ -262,10 +265,10 @@
     <ClCompile Include="Engine\Physics\Particle.cpp" />
     <ClCompile Include="Engine\Physics\ParticleManager.cpp" />
     <ClCompile Include="Engine\Physics\ParticleSystem.cpp" />
+    <ClCompile Include="Engine\Structure\ObjectPool.cpp" />
     <ClCompile Include="Engine\TileMap\TileMap\Tile.cpp" />
     <ClCompile Include="Engine\TileMap\TileMap\TileMap.cpp" />
     <ClCompile Include="Engine\Tools\AnimationTool.cpp" />
-    <ClCompile Include="Engine\Tools\InGameUITool.cpp" />
     <ClCompile Include="Engine\Tools\TileMapTool.cpp" />
     <ClCompile Include="Engine\Tools\ToolBase.cpp" />
     <ClCompile Include="Engine\Managers\UIManager.cpp" />
@@ -334,15 +337,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='InGameUIDebug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="Engine\Graphics\Shaders\TextPixel.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='AnimationDebug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='InGameUIDebug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='TileMapDebug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
     </FxCompile>

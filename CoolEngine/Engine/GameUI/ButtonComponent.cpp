@@ -7,9 +7,9 @@
 #include "Engine/Managers/GameManager.h"
 #include "Engine/GameObjects/CameraGameObject.h"
 
-ButtonComponent::ButtonComponent(string identifier, CoolUUID uuid, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation) : GameUIComponent(identifier, uuid, position, scale, rotation)
+ButtonComponent::ButtonComponent(string identifier, CoolUUID uuid) : GameUIComponent(identifier, uuid)
 {
-	m_componentType |= UIComponentType::BUTTON;
+	m_uiComponentType |= UIComponentType::BUTTON;
 
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
@@ -17,9 +17,23 @@ ButtonComponent::ButtonComponent(string identifier, CoolUUID uuid, XMFLOAT3& pos
 
 ButtonComponent::ButtonComponent(nlohmann::json& data, CoolUUID uuid) : GameUIComponent(data, uuid)
 {
-	m_componentType |= UIComponentType::BUTTON;
+	m_gameObjectType |= GameObjectType::RENDERABLE;
+	m_uiComponentType |= UIComponentType::BUTTON;
 
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
+}
+
+ButtonComponent::ButtonComponent(ButtonComponent const& other) : GameUIComponent(other)
+{
+	for (int i = 0; i < (int)ButtonState::COUNT; ++i)
+	{
+		m_pButtonTextures[i] = other.m_pButtonTextures[i];
+		m_buttonTexFilepath[i] = other.m_buttonTexFilepath[i];
+	}
+	m_currentButtonState = other.m_currentButtonState;
+	m_OnClickFunction = other.m_OnClickFunction;
+	m_OnClickFunctionArg = m_OnClickFunctionArg;
+	
 }
 
 ButtonComponent::~ButtonComponent()
@@ -55,6 +69,10 @@ void ButtonComponent::Update()
 	{
 		SetButtonState(ButtonState::HOVERED);
 	}
+}
+
+void ButtonComponent::EditorUpdate()
+{
 }
 
 void ButtonComponent::SetTexture(std::wstring wsfilepath, ButtonState textureType)

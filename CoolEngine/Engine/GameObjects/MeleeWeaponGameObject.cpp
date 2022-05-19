@@ -15,6 +15,14 @@ MeleeWeaponGameObject::MeleeWeaponGameObject(const nlohmann::json& data, CoolUUI
 	m_isBlunt = data["IsBlunt"];
 }
 
+MeleeWeaponGameObject::MeleeWeaponGameObject(MeleeWeaponGameObject const& other) : WeaponGameObject(other)
+{
+	m_swingAngle = other.m_swingAngle;
+	m_chargeTime = other.m_chargeTime;
+	m_radius = other.m_radius;
+	m_isBlunt = other.m_isBlunt;
+}
+
 MeleeWeaponGameObject::~MeleeWeaponGameObject()
 {
 }
