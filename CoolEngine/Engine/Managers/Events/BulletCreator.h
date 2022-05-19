@@ -11,7 +11,7 @@ public:
 
 	void Handle(Event* e);
 
-	int m_bulletCounter = 0;
+	unsigned int m_bulletCounter = 0;
 
 	BulletCreator();
 };
