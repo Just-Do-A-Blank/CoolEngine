@@ -276,7 +276,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	DamageCalculation damageObserver = DamageCalculation();
 
 	// Observer for making attacks
-	//BulletCreator bulletCreator = BulletCreator();
+	BulletCreator bulletCreator = BulletCreator();
 	
 
 	XMFLOAT3 pos = XMFLOAT3(-400, 250, 5);
