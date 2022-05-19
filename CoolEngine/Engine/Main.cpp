@@ -886,8 +886,6 @@ void Update()
 
 	bulletCreator.Update();
 
-	UIManager::GetInstance()->Update();
-
 #if EDITOR
 	g_peditorUI->Update();
 #endif
