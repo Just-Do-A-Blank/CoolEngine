@@ -5,7 +5,19 @@
 
 CameraGameObject::CameraGameObject(string identifier, CoolUUID uuid) : GameObject(identifier, uuid)
 {
+	m_gameObjectType |= GameObjectType::CAMERA;
 
+	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, -5);
+	XMFLOAT3 cameraForward = XMFLOAT3(0, 0, 1);
+	XMFLOAT3 cameraUp = XMFLOAT3(0, 1, 0);
+
+	float windowWidth = GraphicsManager::GetInstance()->GetWindowDimensions().x;
+	float windowHeight = GraphicsManager::GetInstance()->GetWindowDimensions().y;
+
+	float nearDepth = 0.01f;
+	float farDepth = 1000.0f;
+
+	Initialize(cameraPos, cameraForward, cameraUp, windowWidth, windowHeight, nearDepth, farDepth);
 }
 
 CameraGameObject::CameraGameObject(const nlohmann::json& data, CoolUUID index) : GameObject(data, index)

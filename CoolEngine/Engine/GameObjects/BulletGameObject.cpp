@@ -2,6 +2,11 @@
 #include "Engine/Managers/GameManager.h"
 
 
+BulletGameObject::BulletGameObject() : WeaponGameObject()
+{
+	m_gameObjectType |= GameObjectType::BULLET;
+}
+
 BulletGameObject::BulletGameObject(string identifier, CoolUUID uuid) : WeaponGameObject(identifier, uuid)
 {
     m_gameObjectType |= GameObjectType::BULLET;

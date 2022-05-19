@@ -23,11 +23,11 @@ CollidableGameObject::CollidableGameObject(const nlohmann::json& data, CoolUUID 
 	{
 		if (data["ShapeType"] == "Circle")
 		{
-			m_pcollider = new Circle(data, m_transform);
+			m_pcollider = new Circle(data, this);
 		}
 		else
 		{
-			m_pcollider = new Box(data, m_transform);
+			m_pcollider = new Box(data, this);
 		}
 	}
 }
@@ -39,11 +39,11 @@ CollidableGameObject::CollidableGameObject(CollidableGameObject const& other) : 
 		switch (other.m_pcollider->GetShapeType())
 		{
 		case ShapeType::BOX:
-			m_pcollider = new Box(*dynamic_cast<Box*>(other.m_pcollider));
+			m_pcollider = new Box(this);
 			break;
 
 		case ShapeType::CIRCLE:
-			m_pcollider = new Circle(*dynamic_cast<Circle*>(other.m_pcollider));
+			m_pcollider = new Circle(this);
 			break;
 		}
 	}
@@ -93,12 +93,12 @@ void CollidableGameObject::CreateEngineUI()
 			else if (ImGui::Selectable(Shape::ShapeTypeToString(ShapeType::BOX).c_str(), shapeType == ShapeType::BOX))
 			{
 				delete m_pcollider;
-				m_pcollider = new Box(m_transform);
+				m_pcollider = new Box(this);
 			}
 			else if (ImGui::Selectable(Shape::ShapeTypeToString(ShapeType::CIRCLE).c_str(), shapeType == ShapeType::CIRCLE))
 			{
 				delete m_pcollider;
-				m_pcollider = new Circle(m_transform, 1.0f);
+				m_pcollider = new Circle(this, 1.0f);
 			}
 
 			ImGui::EndCombo();

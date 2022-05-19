@@ -42,7 +42,7 @@ private:
 	string m_workingDirectory = "";
 	wstring m_wideWorkingDirectory = L"";
 
-	CameraGameObject* m_pcamera = nullptr;
+	CameraGameObject* m_peditorCamera = nullptr;
 
 	ViewState m_viewState = ViewState::EDITOR_VIEW;
 
@@ -65,8 +65,8 @@ public:
 	void DeleteSceneUsingIdentifier(string sceneIdentifier);
 	void DeleteSelectedScene();
 
-	void BeginPlay();
-	void EndPlay();
+	bool BeginPlay();
+	bool EndPlay();
 	void CopyScene();
 	ViewState GetViewState()const;
 

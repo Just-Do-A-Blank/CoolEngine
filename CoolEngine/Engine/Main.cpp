@@ -28,7 +28,6 @@
 #include "Scene/Scene.h"
 #include "Engine/Managers/GameManager.h"
 #include <Engine/Physics/Box.h>
-#include "Engine/Managers/UIManager.h"
 #include "Engine/GameUI/GameUIComponent.h"
 #include "Engine/GameUI/ImageComponent.h"
 #include "Engine/GameUI/TextComponent.h"
@@ -44,6 +43,8 @@
 #include "Engine/Managers/Events/EventObserverExamples.h"
 #include "Engine/Managers/Events/DamageCalculation.h"
 #include "Engine/Managers/Events/BulletCreator.h"
+#include "Engine/Structure/ObjectPool.h"
+#include "Engine/GameObjects/BulletGameObject.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
@@ -76,12 +77,14 @@ ID3D11ShaderResourceView* g_pRTTShaderResourceView;
 
 
 
-EditorCameraGameObject* g_pcamera = nullptr;
 PlayerGameObject* g_pplayer = nullptr;
 
 TileMap* g_testMap1;
 
 TileMap* g_testMap2;
+
+// Observer for making attacks
+BulletCreator bulletCreator;
 
 #if EDITOR
 EditorUI* g_peditorUI;
@@ -139,28 +142,12 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//Debug Manager
 #if _DEBUG
 	DebugDrawManager::GetInstance()->Init(g_pd3dDevice);
-
-
 #endif
 
 	srand(time(0));
 
 	//Create camera
-	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, -5);
-	XMFLOAT3 cameraForward = XMFLOAT3(0, 0, 1);
-	XMFLOAT3 cameraUp = XMFLOAT3(0, 1, 0);
-
-	float windowWidth = GraphicsManager::GetInstance()->GetWindowDimensions().x;
-	float windowHeight = GraphicsManager::GetInstance()->GetWindowDimensions().y;
-
-	float nearDepth = 0.01f;
-	float farDepth = 1000.0f;
-
-	CoolUUID uuid;
-	g_pcamera = new EditorCameraGameObject(std::string("Camera"), uuid);
-	g_pcamera->Initialize(cameraPos, cameraForward, cameraUp, windowWidth, windowHeight, nearDepth, farDepth);
-
-	GameManager::GetInstance()->SetCamera(g_pcamera);
+	
 	FontManager::GetInstance()->LoadFont(L"Resources\\Fonts\\ComicSans", "comicSans");
 
 	//Create scene
@@ -210,7 +197,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 	pgameObject->GetTransform()->SetWorldPosition(objectPos);
 	pgameObject->GetTransform()->SetWorldScale(objectScale);
-	Box* pbox = new Box(pgameObject->GetTransform());
+	Box* pbox = new Box(pgameObject);
 	pbox->SetIsCollidable(isCollision);
 	pbox->SetIsTrigger(isCollision);
 	pgameObject->SetShape(pbox);
@@ -228,7 +215,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->GetTransform()->SetWorldPosition(objectPos);
 	pgameObject->GetTransform()->SetWorldScale(objectScale);
 	pgameObject->GetTransform()->SetWorldRotation(objectRot);
-	pbox = new Box(pgameObject->GetTransform());
+	pbox = new Box(pgameObject);
 	pbox->SetIsCollidable(isCollision);
 	pbox->SetIsTrigger(isCollision);
 	pgameObject->SetShape(pbox);
@@ -244,7 +231,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 	pgameObject->GetTransform()->SetWorldPosition(objectPos);
 	pgameObject->GetTransform()->SetWorldScale(objectScale);
-	pbox = new Box(pgameObject->GetTransform());
+	pbox = new Box(pgameObject);
 	pbox->SetIsCollidable(isCollision);
 	pbox->SetIsTrigger(isCollision);
 	pgameObject->SetShape(pbox);
@@ -261,7 +248,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 	pgameObject->GetTransform()->SetWorldPosition(objectPos);
 	pgameObject->GetTransform()->SetWorldScale(objectScale);
-	pbox = new Box(pgameObject->GetTransform());
+	pbox = new Box(pgameObject);
 	pbox->SetIsCollidable(isCollision);
 	pbox->SetIsTrigger(isCollision);
 	pgameObject->SetShape(pbox);
@@ -277,7 +264,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	objectScale = XMFLOAT3(25, 25, 25);
 	pgameObject->GetTransform()->SetWorldPosition(objectPos);
 	pgameObject->GetTransform()->SetWorldScale(objectScale);
-	pbox = new Box(pgameObject->GetTransform());
+	pbox = new Box(pgameObject);
 	pbox->SetIsTrigger(isCollision);
 	isCollision = false;
 	pbox->SetIsCollidable(isCollision);
@@ -292,9 +279,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	// Observer for taking damage
 	DamageCalculation damageObserver = DamageCalculation();
-
-	// Observer for making attacks
-	BulletCreator bulletCreator = BulletCreator();
 	
 
 	XMFLOAT3 pos = XMFLOAT3(-400, 250, 5);
@@ -761,7 +745,7 @@ void Render()
 			
 	//Update per frame CB
 	PerFrameCB perFrameCB;
-	XMStoreFloat4x4(&perFrameCB.viewProjection, XMMatrixTranspose(XMLoadFloat4x4(&g_pcamera->GetViewProjection())));
+	XMStoreFloat4x4(&perFrameCB.viewProjection, XMMatrixTranspose(XMLoadFloat4x4(&GameManager::GetInstance()->GetCamera()->GetViewProjection())));
 
 	GraphicsManager::GetInstance()->m_pperFrameCB->Update(perFrameCB, g_pImmediateContext);
 
@@ -805,6 +789,8 @@ void Render()
 
 	ParticleManager::GetInstance()->Render(renderStruct.m_pcontext);
 
+	bulletCreator.Render(renderStruct);
+
 #if _DEBUG
 	DebugDrawManager::GetInstance()->Render(renderStruct);
 #endif
@@ -813,8 +799,6 @@ void Render()
 	{
 		GraphicsManager::GetInstance()->GetSpriteBatches()[i]->End();
 	}
-
-	UIManager::GetInstance()->Render(renderStruct);
 
 	if (g_ptoolBase != nullptr)
 	{
@@ -900,11 +884,10 @@ void Update()
 	pgamemanager->GetTimer()->Tick();
 	pgamemanager->Update();
 
-	UIManager::GetInstance()->Update();
+	bulletCreator.Update();
 
 #if EDITOR
 	g_peditorUI->Update();
-	g_pcamera->Update();
 #endif
 
 	if (g_ptoolBase != nullptr)

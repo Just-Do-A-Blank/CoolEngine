@@ -35,7 +35,6 @@ void TileMapTool::Init(ID3D11Device* pdevice)
 
 	CoolUUID uuid;
 	m_pcamera = new EditorCameraGameObject(std::string("Camera"), uuid);
-	m_pcamera->Initialize(cameraPos, cameraForward, cameraUp, windowWidth, windowHeight, nearDepth, farDepth);
 
 	GameManager::GetInstance()->SetCamera(m_pcamera);
 }
