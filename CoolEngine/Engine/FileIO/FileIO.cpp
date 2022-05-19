@@ -6,14 +6,7 @@
 
 void SimpleFileIO::LoadScene(std::string location)
 {
-	ifstream fileIn(location);
-	json dataIn;
-	fileIn >> dataIn;
-
-	AudioManager::GetInstance()->Deserialize(dataIn);
-	GraphicsManager::GetInstance()->Deserialize(dataIn);
-	FontManager::GetInstance()->Deserialize(dataIn);
-	GameManager::GetInstance()->Deserialize(dataIn);
+	GameManager::GetInstance()->LoadSceneFromFile(location, true);
 }
 
 void SimpleFileIO::SaveScene(std::string location)

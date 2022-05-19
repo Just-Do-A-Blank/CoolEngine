@@ -308,6 +308,24 @@ void SceneGraph<T>::DeleteNodeObjectUsingNode(TreeNode<T>* currentNode)
 }
 
 template<class T>
+void SceneGraph<T>::DeleteAllGameObjects()
+{
+	TreeNode<T>* currentNode = m_rootNode;
+	while (currentNode)
+	{
+		if (currentNode->Child)
+		{
+			DeleteNode(currentNode->Child);
+		}
+
+		TreeNode<T>* siblingNode = currentNode->Sibling;
+
+		delete currentNode;
+		currentNode = siblingNode;
+	}
+}
+
+template<class T>
 TreeNode<T>* SceneGraph<T>::GetRootNode()
 {
 	return m_rootNode;

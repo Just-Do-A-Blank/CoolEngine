@@ -153,8 +153,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//Create scene
 	GameManager* pgameManager = GameManager::GetInstance();
 	pgameManager->CreateScene("TestScene");
-	pgameManager->SelectSceneUsingIdentifier("TestScene");
-	pgameManager->SelectSceneUsingIdentifier("TestScene");
+	pgameManager->SwitchSceneUsingIdentifier("TestScene");
+	pgameManager->SwitchSceneUsingIdentifier("TestScene");
 
 	//Music
 	AudioManager::GetInstance()->LoadMusic(TEST_MUSIC);

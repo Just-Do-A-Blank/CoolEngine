@@ -12,7 +12,7 @@ void ToolBase::Init(ID3D11Device* pdevice)
 	m_previousSceneIdentifier = GameManager::GetInstance()->GetCurrentSceneName();
 
 	GameManager::GetInstance()->CreateScene("ToolScene");
-	GameManager::GetInstance()->SelectSceneUsingIdentifier("ToolScene");
+	GameManager::GetInstance()->SwitchSceneUsingIdentifier("ToolScene");
 }
 
 void ToolBase::Update()
@@ -27,7 +27,7 @@ void ToolBase::Destroy()
 {
 	m_exitTool = true;
 
-	GameManager::GetInstance()->SelectSceneUsingIdentifier(m_previousSceneIdentifier);
+	GameManager::GetInstance()->SwitchSceneUsingIdentifier(m_previousSceneIdentifier);
 
 	GameManager::GetInstance()->DeleteSceneUsingIdentifier("ToolScene");
 }
