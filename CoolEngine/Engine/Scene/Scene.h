@@ -2,8 +2,17 @@
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/GameObjects/PlayerGameObject.h"
 #include "Engine/Managers/SceneGraph.h"
+#include "Engine/Includes/Quad Tree/include/quadtree.h"
 
 class GameObject;
+
+struct Node
+{
+	GameObject* m_gameObject;
+	GameObjectType m_type;
+	CoolUUID m_id;
+};
+
 
 class Scene
 {
@@ -15,6 +24,10 @@ private:
 	GameObject* m_pselectedGameObject = nullptr;
 	TreeNode<GameObject>* m_prootTreeNode = nullptr;
 	
+	Quadtree* m_tree = nullptr;
+
+	int m_treeSize = 0;
+
 public:
 	Scene(string identifier);
 	~Scene();

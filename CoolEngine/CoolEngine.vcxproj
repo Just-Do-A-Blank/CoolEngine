@@ -141,6 +141,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Engine\Includes\json.hpp" />
+    <ClInclude Include="Engine\Includes\Quad Tree\include\ball.h" />
+    <ClInclude Include="Engine\Includes\Quad Tree\include\config.h" />
+    <ClInclude Include="Engine\Includes\Quad Tree\include\quadtree.h" />
+    <ClInclude Include="Engine\Includes\Quad Tree\include\util.h" />
     <ClInclude Include="Engine\Includes\RapidXML\rapidxml.hpp" />
     <ClInclude Include="Engine\Includes\RapidXML\rapidxml_iterators.hpp" />
     <ClInclude Include="Engine\Includes\RapidXML\rapidxml_print.hpp" />
@@ -184,6 +188,7 @@
     <ClInclude Include="Engine\GameUI\GameUIComponent.h" />
     <ClInclude Include="Engine\GameUI\UICanvas.h" />
     <ClInclude Include="Engine\GameUI\ImageComponent.h" />
+    <ClInclude Include="QuadTree.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\AI\Pathfinding.cpp" />
@@ -247,6 +252,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Engine\Includes\Quad Tree\src\ball.cpp" />
+    <ClCompile Include="Engine\Includes\Quad Tree\src\quadtree.cpp" />
+    <ClCompile Include="Engine\Includes\Quad Tree\src\util.cpp" />
     <ClCompile Include="Engine\Main.cpp" />
     <ClCompile Include="Engine\Managers\DebugDrawManager.cpp" />
     <ClCompile Include="Engine\Managers\Events\BulletCreator.cpp" />
@@ -275,6 +283,7 @@
     <ClCompile Include="Engine\GameUI\GameUIComponent.cpp" />
     <ClCompile Include="Engine\GameUI\UICanvas.cpp" />
     <ClCompile Include="Engine\GameUI\ImageComponent.cpp" />
+    <ClCompile Include="QuadTree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">

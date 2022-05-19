@@ -8,6 +8,9 @@ Scene::Scene(string identifier)
 {
 	m_sceneIdentifier = identifier;
 	m_psceneGraph = new SceneGraph<GameObject>();
+	
+	m_tree = new Quadtree(0,0,0,0, nullptr);
+
 }
 
 Scene::~Scene()
@@ -18,10 +21,35 @@ Scene::~Scene()
 void Scene::Update()
 {
 	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
+
+	if (gameObjectList.size() != m_treeSize)
+	{
+		for (size_t i = 0; i < gameObjectList.size(); i++)
+		{
+			if (gameObjectList[i]->ContainsType(GameObjectType::COLLIDABLE) && gameObjectList[i]->ContainsType(GameObjectType::RENDERABLE))
+			{
+				XMFLOAT3 pos = gameObjectList[i]->GetTransform()->GetWorldPosition();
+				XMFLOAT3 scale = gameObjectList[i]->GetTransform()->GetWorldScale(); 
+				
+
+				m_tree->insert(pos.x, pos.y, (scale.y * 2.0f), (scale.x * 2.0f), gameObjectList[i]);
+				++m_treeSize;
+				m_tree->
+			}
+			else
+			{
+				++m_treeSize;
+			}
+		}
+	}
+
 	for (int it = 0; it < gameObjectList.size(); ++it)
 	{
 		gameObjectList[it]->Update();
 	}
+
+ //			GameObject* node = m_tree->search(pos.x, pos.y)->get_data();
+
 
 	Collision::Update(gameObjectList);
 }

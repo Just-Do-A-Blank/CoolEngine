@@ -53,7 +53,6 @@ class GameObject : public EditorUIComponent
 	friend class FileIO;
 private:
 
-
 protected:
 
 	Transform* m_transform;
@@ -61,6 +60,8 @@ protected:
 	CoolUUID m_UUID;
 
 	GameObject* m_pTest = nullptr;
+
+	bool m_isStatic = false;
 
 #if EDITOR
 	virtual void CreateEngineUI() override;
