@@ -498,11 +498,13 @@ void EditorUI::DrawSceneManagementWindow()
 
 			if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
 			{
-				OpenFileExplorer(L"Scene files\0*.json\0", m_texNameBuffer, _countof(m_texNameBuffer));
+				OpenFileExplorer(L"Scene files\0*.json\0", m_sceneNameBuffer, _countof(m_sceneNameBuffer));
 
-				std::wstring tempString = std::wstring(m_texNameBuffer);
-
-				SimpleFileIO::LoadScene(std::string(tempString.begin(), tempString.end()));
+				std::wstring tempString = std::wstring(m_sceneNameBuffer);
+				if (tempString != L"")
+				{
+					SimpleFileIO::LoadScene(std::string(tempString.begin(), tempString.end()));
+				}
 			}
 
 			if (ImGui::MenuItem("Delete Scene", "Ctrl+D"))

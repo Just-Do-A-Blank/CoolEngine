@@ -51,7 +51,7 @@ private:
 	int m_gameObjectNodeClicked = -1;
 	TreeNode<GameObject>* m_selectedGameObjectNode;
 
-	WCHAR m_texNameBuffer[FILEPATH_BUFFER_SIZE];
+	WCHAR m_sceneNameBuffer[FILEPATH_BUFFER_SIZE];
 
 	int m_animNameUpdateIndex = -1;
 	string m_animUpdateName = "";
