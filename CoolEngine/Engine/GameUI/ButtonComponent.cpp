@@ -17,10 +17,23 @@ ButtonComponent::ButtonComponent(string identifier, CoolUUID uuid) : GameUICompo
 
 ButtonComponent::ButtonComponent(nlohmann::json& data, CoolUUID uuid) : GameUIComponent(data, uuid)
 {
-	m_gameObjectType |= GameObjectType::RENDERABLE;
 	m_uiComponentType |= UIComponentType::BUTTON;
 
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
+
+	std::string tempPath = data["ButtonPressTexPath"];
+	m_buttonTexFilepath[(int)ButtonState::PRESSED] = std::wstring(tempPath.begin(), tempPath.end());
+
+	tempPath = data["ButtonHoveredTexPath"];
+	m_buttonTexFilepath[(int)ButtonState::HOVERED] = std::wstring(tempPath.begin(), tempPath.end());
+
+	tempPath = data["ButtonReleasedTexPath"];
+	m_buttonTexFilepath[(int)ButtonState::RELEASED] = std::wstring(tempPath.begin(), tempPath.end());
+
+	for (int i = 0; i < (int)ButtonState::COUNT; ++i)
+	{
+		m_pButtonTextures[i] = GraphicsManager::GetInstance()->GetShaderResourceView(m_buttonTexFilepath[i]);
+	}
 }
 
 ButtonComponent::ButtonComponent(ButtonComponent const& other) : GameUIComponent(other)
@@ -120,6 +133,20 @@ void ButtonComponent::SetButtonOnClick(void(*onClick)(void*), void* argument)
 {
 	m_OnClickFunction = onClick;
 	m_OnClickFunctionArg = argument;
+}
+
+void ButtonComponent::Serialize(nlohmann::json& data)
+{
+	GameUIComponent::Serialize(data);
+
+	std::string tempPath = std::string(m_buttonTexFilepath[(int)ButtonState::PRESSED].begin(), m_buttonTexFilepath[(int)ButtonState::PRESSED].end());
+	data["ButtonPressTexPath"] = tempPath;
+
+	tempPath = std::string(m_buttonTexFilepath[(int)ButtonState::HOVERED].begin(), m_buttonTexFilepath[(int)ButtonState::HOVERED].end());
+	data["ButtonHoveredTexPath"] = tempPath;
+
+	tempPath = std::string(m_buttonTexFilepath[(int)ButtonState::RELEASED].begin(), m_buttonTexFilepath[(int)ButtonState::RELEASED].end());
+	data["ButtonReleasedTexPath"] = tempPath;
 }
 
 #if EDITOR

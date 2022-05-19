@@ -39,6 +39,8 @@ public:
 	void Handle(Event* e) override;
 	void SetButtonOnClick(void (*onClick)(void*), void* argument);
 
+	void Serialize(nlohmann::json& data) override;
+
 #if EDITOR
 	void CreateEngineUI() override;
 #endif

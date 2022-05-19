@@ -660,6 +660,30 @@ void GameManager::Deserialize(nlohmann::json& data)
 				gameObjects[*uuid]->m_UUID = uuid;
 				break;
 
+			case AccumlateType::UI_COMPONENT:
+			{
+				AccumulatedUIComponentType type = data[typeIt.key()][uuidString]["UIType"];
+				switch (type)
+				{
+				case AccumulatedUIComponentType::BUTTON:
+					gameObjects[*uuid] = new ButtonComponent(data[typeIt.key()][uuidString], uuid);
+					break;
+
+				case AccumulatedUIComponentType::CANVAS:
+					gameObjects[*uuid] = new UICanvas(data[typeIt.key()][uuidString], uuid);
+					break;
+
+				case AccumulatedUIComponentType::IMAGE:
+					gameObjects[*uuid] = new ImageComponent(data[typeIt.key()][uuidString], uuid);
+					break;
+
+				case AccumulatedUIComponentType::TEXT:
+					gameObjects[*uuid] = new TextComponent(data[typeIt.key()][uuidString], uuid);
+					break;
+				}
+			}
+				break;
+
 			default:
 				LOG("Tried to deserialize an object that doesn't have a correct object type!");
 				break;
