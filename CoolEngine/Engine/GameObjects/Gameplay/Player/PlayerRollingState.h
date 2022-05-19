@@ -9,21 +9,18 @@
 #include "Engine/GameObjects/Gameplay/Player/EPLAYERMOVEMENTSTATE.h"
 #include "Engine\GameObjects\Gameplay\Player\PlayerMovingBody.h"
 
-/// <summary>
-/// Allows the player to walk around
-/// </summary>
-class PlayerWalkingState : public PlayerMovementState, public Observer
+class PlayerRollingState : public PlayerMovementState, public Observer
 {
 public:
-	PlayerWalkingState(PlayerMovementParameters movement);
-    virtual ~PlayerWalkingState();
+    PlayerRollingState(PlayerMovementParameters movement);
+    virtual ~PlayerRollingState();
 
     /// <summary>
     /// Updates the state and moves the player
     /// </summary>
     /// <param name="timeDelta">Time between frames</param>
     /// <returns>True means state may remain, False means the state is complete</returns>
-	virtual bool Update(float timeDelta) override;
+    virtual bool Update(float timeDelta) override;
 
     /// <summary>
     /// The next state use if this state no longer needed
@@ -51,7 +48,7 @@ private:
     /// <summary>
     /// The max speed of the player in this state
     /// </summary>
-    int *m_moveSpeedMax;
+    int* m_moveSpeedMax;
 
     /// <summary>
     /// How much to move the player per frame (time delta factors into this)
@@ -70,17 +67,27 @@ private:
     /// <summary>
     /// How much to multiply the speed by when actually calulcating the speed
     /// </summary>
-    float *m_speedMultiplier;
+    float* m_speedMultiplier;
+
+    /// <summary>
+    /// How long to roll for in seconds
+    /// </summary>
+    float* m_timeInSecondsToRollFor;
+
+    /// <summary>
+     /// Amount of time passed in state
+     /// </summary>
+    float m_timeElapsed;
 
     /// <summary>
     /// Indicators on what the player is currently doing
     /// </summary>
     PlayerMovingBody* m_playerMovingBody;
 
-	/// <summary>
-	/// Relates inputs to gameplay buttons
-	/// </summary>
-	PlayerGameObject* m_playerReference;
+    /// <summary>
+    /// Relates inputs to gameplay buttons
+    /// </summary>
+    PlayerGameObject* m_playerReference;
 
     /// <summary>
     /// Relates inputs to gameplay buttons
@@ -230,3 +237,4 @@ private:
     /// <param name="intensity">Intensity to adjust the value by</param>
     void MoveFloatTowardZero(float* value, float intensity);
 };
+

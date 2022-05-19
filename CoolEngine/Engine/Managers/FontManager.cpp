@@ -126,7 +126,9 @@ void FontManager::Serialize(nlohmann::json& data)
 {
 	for (std::unordered_map<string, std::wstring>::iterator it = m_fontTexturePathMap.begin(); it != m_fontTexturePathMap.end(); ++it)
 	{
-		data["FontManager"]["Paths"].push_back(it->first);
+		std::string tempPath = std::string(it->second.begin(), it->second.end());
+
+		data["FontManager"]["Paths"].push_back(tempPath);
 	}
 
 	for (int i = 0; i < m_fontList.size(); ++i)
@@ -139,7 +141,10 @@ void FontManager::Deserialize(nlohmann::json& data)
 {
 	for (int i = 0; i < data["FontManager"]["Paths"].size(); ++i)
 	{
-		LoadFont(data["FontManager"]["Paths"][i], data["FontManager"]["Names"][i]);
+		std::string tempPath = data["FontManager"]["Paths"][i];
+		std::wstring wideTempPath = std::wstring(tempPath.begin(), tempPath.end());
+
+		LoadFont(wideTempPath, data["FontManager"]["Names"][i]);
 	}
 }
 

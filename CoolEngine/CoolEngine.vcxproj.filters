@@ -177,9 +177,6 @@
     <ClCompile Include="Engine\GameUI\UICanvas.cpp">
       <Filter>Engine\GameUI</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Managers\UIManager.cpp">
-      <Filter>Engine\Managers</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\FileIO\FileIO.cpp">
       <Filter>Engine\FileIO</Filter>
     </ClCompile>
@@ -224,6 +221,13 @@
     </ClCompile>
     <ClCompile Include="Engine\Structure\ObjectPool.cpp">
       <Filter>Engine\Structure</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\BulletGameObject.cpp" />
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerMovingBody.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerRollingState.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -458,9 +462,6 @@
     <ClInclude Include="Engine\GameUI\UICanvas.h">
       <Filter>Engine\GameUI</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Managers\UIManager.h">
-      <Filter>Engine\Managers</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\FileIO\FileIO.h">
       <Filter>Engine\FileIO</Filter>
     </ClInclude>
@@ -610,6 +611,13 @@
     </ClInclude>
     <ClInclude Include="Engine\Structure\ObjectPool.h">
       <Filter>Engine\Structure</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\BulletGameObject.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovingBody.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerRollingState.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
