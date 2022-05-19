@@ -187,6 +187,7 @@ bool TileMap::Load(wstring path) // Load data for the map from a given path
 				if (animIndex != -1)
 				{
 					AnimationState* pstate = new AnimationState();
+					pstate->SetName("default");
 					pstate->SetAnimation(m_animPaths[animIndex]);
 
 					m_tiles[i][j]->AddAnimationState("default", pstate, true);

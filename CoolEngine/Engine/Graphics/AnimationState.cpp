@@ -1,6 +1,7 @@
 #include "AnimationState.h"
 #include "Engine/Graphics/SpriteAnimation.h"
 #include "Engine/Managers/GraphicsManager.h"
+#include "Engine/Includes/IMGUI/imgui.h"
 
 void AnimationState::Enter()
 {
@@ -69,5 +70,9 @@ void AnimationState::Deserialize(const nlohmann::json& data, FiniteStateMachine*
 
 void AnimationState::CreateEngineUI()
 {
+	FiniteState::CreateEngineUI();
 
+	m_animation.CreateEngineUI();
+
+	ImGui::Spacing();
 }

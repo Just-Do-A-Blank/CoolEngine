@@ -30,12 +30,14 @@ RenderableGameObject::RenderableGameObject(RenderableGameObject const& other) : 
 	{
 		m_createDeleteAnimName[i] = other.m_createDeleteAnimName[i];
 	}
-	m_animations = other.m_animations;
 
-	if (other.m_pcurrentAnimation)
-	{
-		m_pcurrentAnimation = new SpriteAnimation(*other.m_pcurrentAnimation);
-	}
+	//m_animations = other.m_animations;
+
+	//if (other.m_pcurrentAnimation)
+	//{
+	//	m_pcurrentAnimation = new SpriteAnimation(*other.m_pcurrentAnimation);
+	//}
+
 	m_currentAnimationName = other.m_currentAnimationName;
 
 }
@@ -123,7 +125,7 @@ void RenderableGameObject::CreateEngineUI()
 {
 	GameObject::CreateEngineUI();
 
-	if (EditorUI::CollapsingSection("Renderable", true))
+	if (EditorUI::CollapsingSection("Renderable"))
 	{
 		ImGui::Spacing();
 

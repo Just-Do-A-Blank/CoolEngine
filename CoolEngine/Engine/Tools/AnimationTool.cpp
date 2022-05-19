@@ -130,6 +130,7 @@ void AnimationTool::Render()
 		if (pstate == nullptr)
 		{
 			AnimationState* pstate = new AnimationState();
+			pstate->SetName("default");
 			pstate->SetAnimation(anim);
 
 			m_pgameObject->GetAnimationStateMachine()->AddState("default", pstate);

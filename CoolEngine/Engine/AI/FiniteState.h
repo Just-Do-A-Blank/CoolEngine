@@ -34,10 +34,17 @@ public:
 
 	virtual bool Transition(FiniteState*& pnewState);
 
-	virtual void CreateEngineUI() = 0;
+#if EDITOR
+	virtual void CreateEngineUI();
+#endif
 
 	virtual void Serialize(nlohmann::json& data, FiniteStateMachine* pstateMachine);
 	virtual void Deserialize(const nlohmann::json& data, FiniteStateMachine* pstateMachine);
+
+	void SetName(std::string name);
+	std::string GetName();
+
+	void RemoveTransitions(FiniteState* pstate);
 
 protected:
 
@@ -45,5 +52,19 @@ private:
 	std::unordered_map<std::string, TransitionInfo<int>> m_intTransitionInfo;
 	std::unordered_map<std::string, TransitionInfo<float>> m_floatTransitionInfo;
 	std::unordered_map<std::string, TransitionInfo<bool>> m_boolTransitionInfo;
+
+#if EDITOR
+	std::string m_boolTransitionName = "";
+	std::string m_floatTransitionName = "";
+	std::string m_intTransitionName = "";
+
+	std::string m_selectedTransitionName = "";
+
+	std::string m_name = "";
+
+	void CreateBoolTransitionUI();
+	void CreateFloatTransitionUI();
+	void CreateIntTransitionUI();
+#endif
 };
 

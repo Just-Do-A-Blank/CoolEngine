@@ -31,6 +31,7 @@ Tile::Tile(wstring path, string identifier, CoolUUID uuid) : RenderableGameObjec
 void Tile::InitAnimation(wstring animPath)
 {
 	AnimationState* pstate = new AnimationState();
+	pstate->SetName("default");
 	pstate->SetAnimation(animPath);
 
 	m_animationStateMachine.AddState("default", pstate);
@@ -89,6 +90,7 @@ void Tile::CreateEngineUI()
 			if (anim.GetFrames() != nullptr)
 			{
 				AnimationState* panimState = new AnimationState();
+				panimState->SetName("default");
 				panimState->SetAnimation(m_animPath);
 
 				m_animationStateMachine.AddState("default", panimState);
@@ -139,6 +141,7 @@ void Tile::CopyTile(Tile* ptile)
 	if (pstate != nullptr)
 	{
 		AnimationState* pnewState = new AnimationState();
+		pnewState->SetName("default");
 		pnewState->SetAnimation(pstate->GetAnimation()->GetAnimPath());
 
 		m_animationStateMachine.AddState("default", pnewState);

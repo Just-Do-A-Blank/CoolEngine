@@ -69,6 +69,14 @@ bool FiniteStateMachine::RemoveState(std::string stateName)
         return false;
     }
 
+	for (std::unordered_map<std::string, FiniteState*>::iterator it = m_states.begin(); it != m_states.end(); ++it)
+	{
+		it->second->RemoveTransitions(m_states[stateName]);
+	}
+
+	delete m_states[stateName];
+	m_states[stateName] = nullptr;
+
     m_states.erase(stateName);
 
     return true;

@@ -1,5 +1,5 @@
 #include "SpriteAnimation.h"
-
+#include "Engine/EditorUI/EditorUI.h"
 #include "Engine/Managers/GameManager.h"
 
 SpriteAnimation::SpriteAnimation()
@@ -29,7 +29,7 @@ void SpriteAnimation::SetFrames(std::vector<Frame>* pframes)
 	m_pframes = pframes;
 }
 
-const std::vector<Frame>* SpriteAnimation::GetFrames() const
+std::vector<Frame>* SpriteAnimation::GetFrames() const
 {
 	return m_pframes;
 }
@@ -125,4 +125,21 @@ ID3D11ShaderResourceView* SpriteAnimation::GetCurrentFrame() const
 	}
 
 	return m_pframes->at(m_currentFrameIndex).m_ptexture;
+}
+
+void SpriteAnimation::CreateEngineUI()
+{
+	if (EditorUI::Animation("Animation", m_uiFilePath, GetCurrentFrame()) == true)
+	{
+		SpriteAnimation anim = GraphicsManager::GetInstance()->GetAnimation(m_uiFilePath);
+
+		if (anim.GetFrames() != nullptr)
+		{
+			SetFrames(anim.GetFrames());
+
+			m_animPath = m_uiFilePath;
+
+			Restart();
+		}
+	}
 }
