@@ -197,7 +197,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 	pgameObject->GetTransform()->SetWorldPosition(objectPos);
 	pgameObject->GetTransform()->SetWorldScale(objectScale);
-	Box* pbox = new Box(pgameObject->GetTransform());
+	Box* pbox = new Box(pgameObject);
 	pbox->SetIsCollidable(isCollision);
 	pbox->SetIsTrigger(isCollision);
 	pgameObject->SetShape(pbox);
@@ -215,7 +215,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->GetTransform()->SetWorldPosition(objectPos);
 	pgameObject->GetTransform()->SetWorldScale(objectScale);
 	pgameObject->GetTransform()->SetWorldRotation(objectRot);
-	pbox = new Box(pgameObject->GetTransform());
+	pbox = new Box(pgameObject);
 	pbox->SetIsCollidable(isCollision);
 	pbox->SetIsTrigger(isCollision);
 	pgameObject->SetShape(pbox);
@@ -231,7 +231,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 	pgameObject->GetTransform()->SetWorldPosition(objectPos);
 	pgameObject->GetTransform()->SetWorldScale(objectScale);
-	pbox = new Box(pgameObject->GetTransform());
+	pbox = new Box(pgameObject);
 	pbox->SetIsCollidable(isCollision);
 	pbox->SetIsTrigger(isCollision);
 	pgameObject->SetShape(pbox);
@@ -248,7 +248,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 	pgameObject->GetTransform()->SetWorldPosition(objectPos);
 	pgameObject->GetTransform()->SetWorldScale(objectScale);
-	pbox = new Box(pgameObject->GetTransform());
+	pbox = new Box(pgameObject);
 	pbox->SetIsCollidable(isCollision);
 	pbox->SetIsTrigger(isCollision);
 	pgameObject->SetShape(pbox);
@@ -264,7 +264,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	objectScale = XMFLOAT3(25, 25, 25);
 	pgameObject->GetTransform()->SetWorldPosition(objectPos);
 	pgameObject->GetTransform()->SetWorldScale(objectScale);
-	pbox = new Box(pgameObject->GetTransform());
+	pbox = new Box(pgameObject);
 	pbox->SetIsTrigger(isCollision);
 	isCollision = false;
 	pbox->SetIsCollidable(isCollision);
