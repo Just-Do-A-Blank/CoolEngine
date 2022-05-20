@@ -631,6 +631,9 @@
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerResourceInterface.h">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\EditorUI\EditorButtonCallback.h">
+      <Filter>Engine\EditorUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Engine\Includes\DirectXTK\SimpleMath.inl" />

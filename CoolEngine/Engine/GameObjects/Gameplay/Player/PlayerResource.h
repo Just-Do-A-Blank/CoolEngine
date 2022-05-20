@@ -10,6 +10,8 @@ public:
 
 	int m_minValue;
 
+	int m_defaultValue;
+
 	/*string GetKey() const;
 
 	virtual int& GetValue();

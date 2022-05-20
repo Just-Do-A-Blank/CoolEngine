@@ -6,6 +6,7 @@ PlayerResource::PlayerResource(string key)
 	m_maxValue = 0;
 	m_minValue = 0;
 	m_key = key;
+    m_defaultValue = 0;
 }
 
 /*string PlayerResource::GetKey() const

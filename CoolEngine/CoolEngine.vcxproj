@@ -33,6 +33,7 @@
   <ItemGroup>
     <ClInclude Include="Engine\AI\Pathfinding.h" />
     <ClInclude Include="Engine\EditorUI\ContentBrowser.h" />
+    <ClInclude Include="Engine\EditorUI\EditorButtonCallback.h" />
     <ClInclude Include="Engine\EditorUI\EditorUI.h" />
     <ClInclude Include="Engine\EditorUI\EditorUIFloatParameters.h" />
     <ClInclude Include="Engine\EditorUI\EditorUIIntParameters.h" />

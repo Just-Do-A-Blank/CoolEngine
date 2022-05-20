@@ -7,9 +7,10 @@
 #include "Engine/Managers/SceneGraph.h"
 #include "Engine/EditorUI/ContentBrowser.h"
 #include "Engine/GameUI/GameUIComponent.h"
-#include <Engine\EditorUI\EditorUIFloatParameters.h>
-#include <Engine\EditorUI\EditorUIIntParameters.h>
-#include <Engine\EditorUI\EditorUINonSpecificParameters.h>
+#include "Engine\EditorUI\EditorUIFloatParameters.h"
+#include "Engine\EditorUI\EditorUIIntParameters.h"
+#include "Engine\EditorUI\EditorUINonSpecificParameters.h"
+#include "Engine\EditorUI/EditorButtonCallback.h"
 
 #define IMGUI_LEFT_LABEL(func, label, ...) (ImGui::TextUnformatted(label), ImGui::SameLine(), func("##" label, __VA_ARGS__))
 #define DEFAULT_IMGUI_IMAGE_SIZE ImVec2(256, 256)
@@ -125,7 +126,22 @@ public:
 
 	static void Animations(const string& label, unordered_map<string, SpriteAnimation>& animations, const float& columnWidth = 100.0f);
 
+    /// <summary>
+    /// Displays a single button on the interface
+    /// </summary>
+    /// <param name="label">Label on the button</param>
+    /// <returns>True, means the button is pressed</returns>
 	static bool BasicButton(const string& label);
+
+    /// <summary>
+    /// Displays two buttons on the interface using the coloumn system
+    /// </summary>
+    /// <param name="leftLabel">Label on the left button</param>
+    /// <param name="rightLabel">Label on the right button</param>
+    /// <param name="parameters">Optional parameters - Tooltip is ignored</param>
+    /// <returns>EditorButtonCallback containing callbacks from the buttons</returns>
+	static EditorButtonCallback BasicDuelButtons(
+        const string& leftLabel, const string& rightLabel, EditorUINonSpecificParameters parameters = {});
 
 	/// <summary>
 	/// Stores the state of the error message box.
