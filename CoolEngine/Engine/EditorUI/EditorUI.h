@@ -118,7 +118,7 @@ public:
 
     static void DragInt(const string& label, int& value, EditorUIIntParameters parameters = {});
 
-    static void Checkbox(const string& label, bool& value, EditorUINonSpecificParameters parameters = {});
+    static bool Checkbox(const string& label, bool& value, EditorUINonSpecificParameters parameters = {});
 
 	static bool InputText(const string& label, string& text, EditorUINonSpecificParameters parameters = {});
 	static void IdentifierText(const string& label, string& text, EditorUINonSpecificParameters parameters = {});

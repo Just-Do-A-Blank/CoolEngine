@@ -152,5 +152,11 @@ void SpriteAnimation::CreateEngineUI()
 
 	ImGui::Spacing();
 
-	EditorUI::Checkbox("Is Looping", m_isLooping);
+	if (EditorUI::Checkbox("Is Looping", m_isLooping) == true)
+	{
+		if (m_isLooping == true)
+		{
+			Restart();
+		}
+	}
 }

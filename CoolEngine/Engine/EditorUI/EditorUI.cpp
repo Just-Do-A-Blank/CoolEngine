@@ -819,8 +819,10 @@ void EditorUI::DragInt(const string& label, int& value, EditorUIIntParameters pa
 	ImGui::PopID();
 }
 
-void EditorUI::Checkbox(const string& label, bool& value, EditorUINonSpecificParameters parameters)
+bool EditorUI::Checkbox(const string& label, bool& value, EditorUINonSpecificParameters parameters)
 {
+	bool interacted = false;
+
     SetupDefaultsInParameters(parameters);
 
 	ImGui::PushID(label.c_str());
@@ -836,7 +838,10 @@ void EditorUI::Checkbox(const string& label, bool& value, EditorUINonSpecificPar
 	ImGui::PushItemWidth(ImGui::CalcItemWidth());
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
 
-	ImGui::Checkbox("##Checkbox", &value);
+	if (ImGui::Checkbox("##Checkbox", &value) == true)
+	{
+		interacted = true;
+	}
 
 	ImGui::PopItemWidth();
 
@@ -845,6 +850,8 @@ void EditorUI::Checkbox(const string& label, bool& value, EditorUINonSpecificPar
 	ImGui::Columns(1);
 
 	ImGui::PopID();
+
+	return interacted;
 }
 
 bool EditorUI::Texture(const string& label, wstring& filepath, ID3D11ShaderResourceView*& psrv, const float& columnWidth, ImVec2& imageDimensions)
