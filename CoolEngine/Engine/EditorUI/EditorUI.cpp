@@ -524,7 +524,8 @@ void EditorUI::DrawSceneManagementWindow()
 
 			if (ImGui::MenuItem("Save Scene", "Ctrl+S"))
 			{
-				SimpleFileIO::SaveScene(std::string("Resources\\Levels\\") + GameManager::GetInstance()->GetCurrentSceneName());
+				m_saveSceneClicked = true;
+				m_saveSceneName = GameManager::GetInstance()->GetCurrentSceneName();
 			}
 
 			if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
@@ -579,6 +580,45 @@ void EditorUI::DrawSceneManagementWindow()
 			pgameManager->CreateScene(sceneName, true);
 			m_createSceneClicked = false;
 			sceneName[0] = {};
+		}
+		ImGui::End();
+	}
+	if (m_saveSceneClicked)
+	{
+		ImGui::Begin("Save Scene");
+		
+		InputText("Save Name", m_saveSceneName);
+
+		int saveClicked = 0;
+		int cancelClicked = 0;
+
+		ImGui::Spacing();
+		ImGui::Spacing();
+
+		if (ImGui::Button("Save"))
+		{
+			++saveClicked;
+		}
+
+		ImGui::SameLine();
+		ImGui::Spacing();
+		ImGui::SameLine();
+
+		if (ImGui::Button("Cancel"))
+		{
+			++cancelClicked;
+		}
+
+		if (saveClicked & 1)
+		{
+			SimpleFileIO::SaveScene(std::string("Resources\\Levels\\") + m_saveSceneName);
+			m_saveSceneClicked = false;
+			m_saveSceneName[0] = {};
+		}
+		else if (cancelClicked & 1)
+		{
+			m_saveSceneClicked = false;
+			m_saveSceneName[0] = {};
 		}
 		ImGui::End();
 	}

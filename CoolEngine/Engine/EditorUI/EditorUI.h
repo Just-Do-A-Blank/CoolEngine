@@ -36,12 +36,14 @@ class EditorUI
 private:
 	static HWND* m_phwnd;
 	bool m_createSceneClicked = false;
+	bool m_saveSceneClicked = false;
 	bool m_createGameObjectClicked = false;
 	bool m_createUIObjectClicked = false;
 	bool m_deleteGameObjectClicked = false;
 	static bool s_bisViewportHovered;
 	bool m_cameraPresent = true;
 	int m_sceneNodeSelected = -1;
+	string m_saveSceneName = "";
 
 	static DirectX::XMFLOAT2 s_viewportSize;
 	static DirectX::XMFLOAT2 s_viewportPosition;
