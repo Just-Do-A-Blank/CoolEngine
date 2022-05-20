@@ -5,17 +5,17 @@
 #include "Engine/Physics/Circle.h"
 #include "Engine/EditorUI/EditorUI.h"
 
-CollidableGameObject::CollidableGameObject() : GameObject()
+CollidableGameObject::CollidableGameObject() : PrefabGameObject()
 {
 	m_gameObjectType |= GameObjectType::COLLIDABLE;
 }
 
-CollidableGameObject::CollidableGameObject(string identifier, CoolUUID uuid) : GameObject(identifier, uuid)
+CollidableGameObject::CollidableGameObject(string identifier, CoolUUID uuid) : PrefabGameObject(identifier, uuid)
 {
 	m_gameObjectType |= GameObjectType::COLLIDABLE;
 }
 
-CollidableGameObject::CollidableGameObject(const nlohmann::json& data, CoolUUID uuid) : GameObject(data, uuid)
+CollidableGameObject::CollidableGameObject(const nlohmann::json& data, CoolUUID uuid) : PrefabGameObject(data, uuid)
 {
 	m_gameObjectType |= GameObjectType::COLLIDABLE;
 
@@ -32,7 +32,7 @@ CollidableGameObject::CollidableGameObject(const nlohmann::json& data, CoolUUID 
 	}
 }
 
-CollidableGameObject::CollidableGameObject(CollidableGameObject const& other) : GameObject(other)
+CollidableGameObject::CollidableGameObject(CollidableGameObject const& other) : PrefabGameObject(other)
 {
 	if (other.m_pcollider)
 	{

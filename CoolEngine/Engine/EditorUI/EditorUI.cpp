@@ -1376,6 +1376,8 @@ void EditorUI::ToolTip(const char* desc)
 /// <returns>Use this in the if statement, returns if the area is open or closed</returns>
 bool EditorUI::CollapsingSection(const string& label, bool defaultValue)
 {
+    ImGui::PushID(label.c_str());
+    ImGui::Columns(1);
 	bool returnValue = false;
 	if (defaultValue)
 	{
@@ -1385,6 +1387,8 @@ bool EditorUI::CollapsingSection(const string& label, bool defaultValue)
 	{
 		returnValue = ImGui::CollapsingHeader(label.c_str(), ImGuiTreeNodeFlags_OpenOnArrow);
 	}
+
+    ImGui::PopID();
 
 	return returnValue;
 }
@@ -1490,4 +1494,116 @@ void EditorUI::SetupTooltip(char* tooltipText)
         ImGui::EndTooltip();
     }
 }
+
+/// <summary>
+/// Displays a single button on the interface
+/// </summary>
+/// <param name="label">Label on the button</param>
+/// <returns>True, means the button is pressed</returns>
+bool EditorUI::BasicButton(const string& label)
+{
+    return ImGui::Button(label.c_str());
+}
+
+/// <summary>
+/// Displays two buttons on the interface using the coloumn system
+/// </summary>
+/// <param name="leftLabel">Label on the left button</param>
+/// <param name="rightLabel">Label on the right button</param>
+/// <param name="parameters">Optional parameters - Tooltip is ignored</param>
+/// <returns>EditorButtonCallback containing callbacks from the buttons</returns>
+EditorButtonCallback EditorUI::BasicDuelButtons(const string& leftLabel, const string& rightLabel, EditorUINonSpecificParameters parameters)
+{
+    SetupDefaultsInParameters(parameters);
+
+    EditorButtonCallback callbacks = EditorButtonCallback();
+
+    ImGui::Separator();
+    ImGui::PushID(leftLabel.c_str());
+
+    ImGui::Columns(2);
+    ImGui::SetColumnWidth(0, parameters.m_columnWidth);
+
+    callbacks.m_leftButton = BasicButton(leftLabel);
+
+    ImGui::NextColumn();
+
+    ImGui::SetColumnWidth(0, parameters.m_columnWidth);
+
+    callbacks.m_rightButton = BasicButton(rightLabel);
+
+    ImGui::NextColumn();
+
+    ImGui::PushItemWidth(ImGui::CalcItemWidth());
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+    ImGui::PopItemWidth();
+    ImGui::PopStyleVar();
+    ImGui::PopID();
+
+    ImGui::Separator();
+
+    return callbacks;
+}
+
+/// <summary>
+/// Called to display the error message box in the key
+/// </summary>
+/// <param name="key">A unique key for the error message box. Recommended: [ClassName]_[Something Unique with your class]</param>
+void EditorUI::ShowError(const string& key)
+{
+    ImGui::PushID(key.c_str());
+    ImGui::OpenPopup(key.c_str());
+    ImGui::PopID();
+}
+
+/// <summary>
+/// Stores the state of the error message box.
+/// Store the result of this in a bool used to show if the error box is on screen or not.
+/// </summary>
+/// <param name="key">A unique key for the error message box. Recommended: [ClassName]_[Something Unique with your class]</param>
+/// <param name="body">The error to display</param>
+/// <param name="doPopupInCenter">true means the popup will display near to the center of the screen. Default is false.</param>
+/// <returns>True means popup is still on the screen</returns>
+bool EditorUI::ErrorPopupBox(const string& key, const string& body, bool doPopupInCenter)
+{
+    ImGuiStyle& style = ImGui::GetStyle();
+    ImGui::PushStyleColor(ImGuiCol_MenuBarBg, style.Colors[ImGuiCol_Header]);
+
+    if (doPopupInCenter)
+    {
+        SetNextWindowToCenter();
+    }
+
+    ImGui::PushID(key.c_str());
+    bool popup = ImGui::BeginPopup(key.c_str(), ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize);
+    if (popup)
+    {
+        if (ImGui::BeginMenuBar())
+        {
+            ImGui::Text("Error message");
+
+            ImGui::EndMenuBar();
+        }
+
+        ImGui::Text(body.c_str());
+        ImGui::EndPopup();
+    }
+
+    ImGui::PopStyleColor();
+    ImGui::PopID();
+
+    return popup;
+}
+
+/// <summary>
+/// Pops up the next window in the center
+/// </summary>
+void EditorUI::SetNextWindowToCenter()
+{
+    ImGuiIO& io = ImGui::GetIO();
+    ImVec2 pos(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
+    ImGui::SetNextWindowPos(pos, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+}
+
 #endif

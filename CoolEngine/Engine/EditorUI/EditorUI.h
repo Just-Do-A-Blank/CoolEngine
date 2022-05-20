@@ -7,9 +7,10 @@
 #include "Engine/Managers/SceneGraph.h"
 #include "Engine/EditorUI/ContentBrowser.h"
 #include "Engine/GameUI/GameUIComponent.h"
-#include <Engine\EditorUI\EditorUIFloatParameters.h>
-#include <Engine\EditorUI\EditorUIIntParameters.h>
-#include <Engine\EditorUI\EditorUINonSpecificParameters.h>
+#include "Engine\EditorUI\EditorUIFloatParameters.h"
+#include "Engine\EditorUI\EditorUIIntParameters.h"
+#include "Engine\EditorUI\EditorUINonSpecificParameters.h"
+#include "Engine\EditorUI\EditorButtonCallback.h"
 
 #define IMGUI_LEFT_LABEL(func, label, ...) (ImGui::TextUnformatted(label), ImGui::SameLine(), func("##" label, __VA_ARGS__))
 #define DEFAULT_IMGUI_IMAGE_SIZE ImVec2(256, 256)
@@ -130,6 +131,39 @@ public:
 
 	static void Animations(const string& label, unordered_map<string, SpriteAnimation>& animations, const float& columnWidth = 100.0f);
 
+    /// <summary>
+    /// Displays a single button on the interface
+    /// </summary>
+    /// <param name="label">Label on the button</param>
+    /// <returns>True, means the button is pressed</returns>
+    static bool BasicButton(const string& label);
+
+    /// <summary>
+    /// Displays two buttons on the interface using the coloumn system
+    /// </summary>
+    /// <param name="leftLabel">Label on the left button</param>
+    /// <param name="rightLabel">Label on the right button</param>
+    /// <param name="parameters">Optional parameters - Tooltip is ignored</param>
+    /// <returns>EditorButtonCallback containing callbacks from the buttons</returns>
+    static EditorButtonCallback BasicDuelButtons(
+        const string& leftLabel, const string& rightLabel, EditorUINonSpecificParameters parameters = {});
+
+    /// <summary>
+    /// Stores the state of the error message box.
+    /// Store the result of this in a bool used to show if the error box is on screen or not.
+    /// </summary>
+    /// <param name="key">A unique key for the error message box. Recommended: [ClassName]_[Something Unique with your class]</param>
+    /// <param name="body">The error to display</param>
+    /// <param name="doPopupInCenter">true means the popup will display near to the center of the screen. Default is false.</param>
+    /// <returns>True means popup is still on the screen</returns>
+    static bool ErrorPopupBox(const string& key, const string& body, bool doPopupInCenter = false);
+
+    /// <summary>
+    /// Called to display the error message box in the key
+    /// </summary>
+    /// <param name="key">A unique key for the error message box. Recommended: [ClassName]_[Something Unique with your class]</param>
+    static void ShowError(const string& key);
+
 	template<class T>
 	static void ReferenceField(const string& label, T*& objectPointer, const float& columnWidth = 100.0f)
 	{
@@ -230,6 +264,11 @@ private:
     /// </summary>
     /// <param name="tooltipText">Text to display in the tooltip</param>
     static void SetupTooltip(char* tooltipText);
+
+    /// <summary>
+    /// Pops up the next window in the center
+    /// </summary>
+    static void SetNextWindowToCenter();
 };
 
 #endif

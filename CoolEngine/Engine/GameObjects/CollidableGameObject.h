@@ -1,9 +1,9 @@
 #pragma once
-#include "GameObject.h"
+#include "Engine/GameObjects/PrefabGameObject.h"
 
 class Shape;
 
-class CollidableGameObject : virtual public GameObject
+class CollidableGameObject : public PrefabGameObject
 {
 public:
 	CollidableGameObject();

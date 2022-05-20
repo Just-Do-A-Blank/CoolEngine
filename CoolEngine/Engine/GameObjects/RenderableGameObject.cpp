@@ -4,7 +4,7 @@
 #include "Engine/Graphics/Mesh.h"
 #include "Engine/Graphics/AnimationState.h"
 
-RenderableGameObject::RenderableGameObject() : GameObject()
+RenderableGameObject::RenderableGameObject() : PrefabGameObject()
 {
 	InitGraphics();
 
@@ -13,9 +13,9 @@ RenderableGameObject::RenderableGameObject() : GameObject()
 	m_panimationStateMachine = new AnimationStateMachine();
 }
 
-RenderableGameObject::RenderableGameObject(RenderableGameObject const& other) : GameObject(other)
+RenderableGameObject::RenderableGameObject(RenderableGameObject const& other) : PrefabGameObject(other)
 {
-	GameObject::Init(other);
+	//GameObject::Init(other);
 
 	m_palbedoSRV = other.m_palbedoSRV;
 	m_pvertexShader = other.m_pvertexShader;
@@ -32,7 +32,7 @@ RenderableGameObject::RenderableGameObject(RenderableGameObject const& other) : 
 	m_panimationStateMachine = new AnimationStateMachine(other.m_panimationStateMachine);
 }
 
-RenderableGameObject::RenderableGameObject(string identifier, CoolUUID uuid) : GameObject(identifier, uuid)
+RenderableGameObject::RenderableGameObject(string identifier, CoolUUID uuid) : PrefabGameObject(identifier, uuid)
 {
 	InitGraphics();
 
@@ -41,25 +41,15 @@ RenderableGameObject::RenderableGameObject(string identifier, CoolUUID uuid) : G
 	m_panimationStateMachine = new AnimationStateMachine();
 }
 
-RenderableGameObject::RenderableGameObject(const nlohmann::json& data, CoolUUID uuid) : GameObject(data, uuid)
+RenderableGameObject::RenderableGameObject(const nlohmann::json& data, CoolUUID uuid) : PrefabGameObject(data, uuid)
 {
-	GameObject::Init(data, uuid);
+    //GameObject::Init(data, uuid);
 
-	m_layer = data["Layers"];
-	m_isRenderable = data["IsRenderable"];
-
-	std::string tempPath = data["TexturePath"];
-	m_texFilepath = std::wstring(tempPath.begin(), tempPath.end());
-
-	SetAlbedo(m_texFilepath);
-
-	m_panimationStateMachine = new AnimationStateMachine();
-	m_panimationStateMachine->Deserialize(data);
+    LoadLocalData(data);
 
 	m_gameObjectType |= GameObjectType::RENDERABLE;
 
 	InitGraphics();
-
 }
 
 RenderableGameObject::~RenderableGameObject()
@@ -121,7 +111,7 @@ void RenderableGameObject::EditorUpdate()
 #if EDITOR
 void RenderableGameObject::CreateEngineUI()
 {
-	GameObject::CreateEngineUI();
+    PrefabGameObject::CreateEngineUI();
 
 	if (EditorUI::CollapsingSection("Renderable"))
 	{
@@ -208,15 +198,60 @@ AnimationStateMachine* RenderableGameObject::GetAnimationStateMachine()
 
 void RenderableGameObject::Serialize(nlohmann::json& data)
 {
-	GameObject::Serialize(data);
+    PrefabGameObject::Serialize(data);
 
-	std::string texPath = std::string(m_texFilepath.begin(), m_texFilepath.end());
+    SaveLocalData(data);
+}
 
-	data["Layers"] = m_layer;
-	data["IsRenderable"] = m_isRenderable;
-	data["TexturePath"] = texPath;
+/// <summary>
+/// Handles saving just for this level
+/// </summary>
+void RenderableGameObject::SaveLocalData(nlohmann::json& jsonData)
+{
+    std::string texPath = std::string(m_texFilepath.begin(), m_texFilepath.end());
 
-	m_panimationStateMachine->Serialize(data);
+    jsonData["Layers"] = m_layer;
+    jsonData["IsRenderable"] = m_isRenderable;
+    jsonData["TexturePath"] = texPath;
+
+    m_panimationStateMachine->Serialize(jsonData);
+}
+
+/// <summary>
+/// Handles loading just for this level
+/// </summary>
+void RenderableGameObject::LoadLocalData(const nlohmann::json& jsonData)
+{
+    if (jsonData.contains("Layers"))
+    {
+        m_layer = jsonData["Layers"];
+        m_isRenderable = jsonData["IsRenderable"];
+
+        std::string tempPath = jsonData["TexturePath"];
+        m_texFilepath = std::wstring(tempPath.begin(), tempPath.end());
+
+        SetAlbedo(m_texFilepath);
+
+        if (m_panimationStateMachine != nullptr)
+        {
+            delete m_panimationStateMachine;
+        }
+
+        m_panimationStateMachine = new AnimationStateMachine();
+        m_panimationStateMachine->Deserialize(jsonData);
+    }
+}
+
+void RenderableGameObject::LoadAllPrefabData(const nlohmann::json& jsonData)
+{
+    PrefabGameObject::LoadAllPrefabData(jsonData);
+    LoadLocalData(jsonData);
+}
+
+void RenderableGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
+{
+    SaveLocalData(jsonData);
+    PrefabGameObject::SaveAllPrefabData(jsonData);
 }
 
 const SpriteAnimation* RenderableGameObject::GetCurrentAnimation()

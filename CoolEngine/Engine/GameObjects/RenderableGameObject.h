@@ -1,5 +1,5 @@
 #pragma once
-#include "GameObject.h"
+#include "Engine/GameObjects/PrefabGameObject.h"
 #include "Engine/Graphics/SpriteAnimation.h"
 #include "Engine/Graphics/AnimationStateMachine.h"
 
@@ -11,7 +11,7 @@ struct RenderStruct
 	ID3D11DeviceContext* m_pcontext;
 };
 
-class RenderableGameObject : virtual public GameObject
+class RenderableGameObject : public PrefabGameObject
 {
 public:
 	RenderableGameObject();
@@ -97,7 +97,17 @@ protected:
 
 	AnimationStateMachine* m_panimationStateMachine;
 
+    virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
+    virtual void SaveAllPrefabData(nlohmann::json& jsonData) override;
 private:
+    /// <summary>
+    /// Handles saving just for this level
+    /// </summary>
+    void SaveLocalData(nlohmann::json& jsonData);
 
+    /// <summary>
+    /// Handles loading just for this level
+    /// </summary>
+    void LoadLocalData(const nlohmann::json& jsonData);
 };
 
