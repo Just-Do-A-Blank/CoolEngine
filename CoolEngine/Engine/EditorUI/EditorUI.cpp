@@ -795,7 +795,7 @@ void EditorUI::DragFloat3(const string& label, XMFLOAT3& values, EditorUIFloatPa
 	ImGui::PushID(label.c_str());
 
 	ImGui::Columns(2);
-	ImGui::SetColumnWidth(0, parameters.m_maxValue);
+	ImGui::SetColumnWidth(0, parameters.m_columnWidth);
 	ImGui::Text(label.c_str());
     SetupTooltip(parameters.m_tooltipText);
 
