@@ -258,6 +258,16 @@ void RenderableGameObject::Serialize(nlohmann::json& data)
 	}
 }
 
+void RenderableGameObject::LoadPrefabData(const nlohmann::json& jsonData)
+{
+    PrefabGameObject::LoadPrefabData(jsonData);
+}
+
+void RenderableGameObject::SavePrefabData(nlohmann::json& jsonData)
+{
+    PrefabGameObject::SavePrefabData(jsonData);
+}
+
 SpriteAnimation* RenderableGameObject::GetCurrentAnimation()
 {
 	return m_pcurrentAnimation;

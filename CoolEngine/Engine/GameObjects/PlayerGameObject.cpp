@@ -162,6 +162,18 @@ void PlayerGameObject::Serialize(nlohmann::json& jsonData)
 	CharacterGameObject::Serialize(jsonData);
 }
 
+void PlayerGameObject::LoadPrefabData(const nlohmann::json& jsonData)
+{
+    CharacterGameObject::LoadPrefabData(jsonData);
+    m_playerController->LoadPrefabData(jsonData);
+}
+
+void PlayerGameObject::SavePrefabData(nlohmann::json& jsonData)
+{
+    CharacterGameObject::SavePrefabData(jsonData);
+    m_playerController->SavePrefabData(jsonData);
+}
+
 /// <summary>
 /// Handles events from the Observations
 /// </summary>

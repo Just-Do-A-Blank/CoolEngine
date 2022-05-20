@@ -100,3 +100,13 @@ void RenderableCollidableGameObject::Serialize(nlohmann::json& jsonData)
 }
 
 #endif
+
+void RenderableCollidableGameObject::LoadPrefabData(const nlohmann::json& jsonData)
+{
+    RenderableGameObject::LoadPrefabData(jsonData);
+}
+
+void RenderableCollidableGameObject::SavePrefabData(nlohmann::json& jsonData)
+{
+    RenderableGameObject::SavePrefabData(jsonData);
+}

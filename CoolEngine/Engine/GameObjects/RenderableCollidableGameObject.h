@@ -19,6 +19,9 @@ public:
 
 protected:
 
+    virtual void LoadPrefabData(const nlohmann::json& jsonData) override;
+    virtual void SavePrefabData(nlohmann::json& jsonData) override;
+
 private:
 
 };

@@ -16,6 +16,9 @@ protected:
 
 	XMFLOAT3 m_direction = XMFLOAT3{0, 0, 0};
 
+    virtual void LoadPrefabData(const nlohmann::json& jsonData) override;
+    virtual void SavePrefabData(nlohmann::json& jsonData) override;
+
 public:
 
 	CharacterGameObject();

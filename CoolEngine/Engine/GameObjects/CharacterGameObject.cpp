@@ -54,3 +54,13 @@ void CharacterGameObject::Serialize(nlohmann::json& jsonData)
 	jsonData["Health"] = m_health;
 	jsonData["Movement Speed"] = m_moveSpeed;
 }
+
+void CharacterGameObject::LoadPrefabData(const nlohmann::json& jsonData)
+{
+    TriggerableGameObject::LoadPrefabData(jsonData);
+}
+
+void CharacterGameObject::SavePrefabData(nlohmann::json& jsonData)
+{
+    TriggerableGameObject::SavePrefabData(jsonData);
+}

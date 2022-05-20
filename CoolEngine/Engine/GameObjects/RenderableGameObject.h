@@ -101,6 +101,9 @@ protected:
 	SpriteAnimation* m_pcurrentAnimation = nullptr;
 	string m_currentAnimationName = "";
 
+    virtual void LoadPrefabData(const nlohmann::json& jsonData) override;
+    virtual void SavePrefabData(nlohmann::json& jsonData) override;
+
 private:
 
 #if EDITOR
