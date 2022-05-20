@@ -738,6 +738,11 @@ void GameManager::Deserialize(nlohmann::json& data)
 				gameObjects[*uuid]->m_UUID = uuid;
 				break;
 
+			case AccumlateType::CAMERA:
+				gameObjects[*uuid] = new CameraGameObject(data[typeIt.key()][uuidString], uuid);
+				gameObjects[*uuid]->m_UUID = uuid;
+				break;
+
 			case AccumlateType::UI_COMPONENT:
 			{
 				AccumulatedUIComponentType type = data[typeIt.key()][uuidString]["UIType"];
@@ -864,22 +869,27 @@ void GameManager::CreateScene(string sceneIdentifier, bool unloadCurrentScene)
 	pcurrentScene = newScene;
 }
 
-void GameManager::LoadSceneFromFile(std::string fileLocation, bool unloadCurrentScene)
+bool GameManager::LoadSceneFromFile(std::string fileLocation, bool unloadCurrentScene)
 {
 	ifstream fileIn(fileLocation);
-	nlohmann::json dataIn;
-	fileIn >> dataIn;
-
-	AudioManager::GetInstance()->Deserialize(dataIn);
-	GraphicsManager::GetInstance()->Deserialize(dataIn);
-	FontManager::GetInstance()->Deserialize(dataIn);
-
-	if (unloadCurrentScene && GetCurrentViewStateScene())
+	if (fileIn.is_open())
 	{
-		DeleteSelectedScene();
-	}
+		nlohmann::json dataIn;
+		fileIn >> dataIn;
 
-	Deserialize(dataIn);
+		AudioManager::GetInstance()->Deserialize(dataIn);
+		GraphicsManager::GetInstance()->Deserialize(dataIn);
+		FontManager::GetInstance()->Deserialize(dataIn);
+
+		if (unloadCurrentScene && GetCurrentViewStateScene())
+		{
+			DeleteSelectedScene();
+		}
+
+		Deserialize(dataIn);
+		return true;
+	}
+	return false;
 }
 
 GameObject* GameManager::GetSelectedGameObject()
