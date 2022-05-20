@@ -231,9 +231,6 @@
     <ClCompile Include="Engine\Graphics\AnimationStateMachine.cpp">
       <Filter>Engine\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Structure\ObjectPool.cpp">
-      <Filter>Engine\Structure</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\GameObjects\BulletGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
@@ -242,6 +239,12 @@
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerRollingState.cpp">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\FuzzyStateMachine.cpp">
+      <Filter>Engine\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\FuzzyState.cpp">
+      <Filter>Engine\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -646,6 +649,12 @@
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerRollingState.h">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\FuzzyStateMachine.h">
+      <Filter>Engine\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\FuzzyState.h">
+      <Filter>Engine\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
