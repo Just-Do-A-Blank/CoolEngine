@@ -35,13 +35,16 @@ enum class SceneManagementState
 class EditorUI
 {
 private:
-    static HWND* m_phwnd;
-    bool m_createSceneClicked = false;
-    bool m_createGameObjectClicked = false;
-    bool m_createUIObjectClicked = false;
-    bool m_deleteGameObjectClicked = false;
-    static bool s_bisViewportHovered;
-    bool m_cameraPresent = true;
+	static HWND* m_phwnd;
+	bool m_createSceneClicked = false;
+	bool m_saveSceneClicked = false;
+	bool m_createGameObjectClicked = false;
+	bool m_createUIObjectClicked = false;
+	bool m_deleteGameObjectClicked = false;
+	static bool s_bisViewportHovered;
+	bool m_cameraPresent = true;
+	int m_sceneNodeSelected = -1;
+	string m_saveSceneName = "";
 
     static DirectX::XMFLOAT2 s_viewportSize;
     static DirectX::XMFLOAT2 s_viewportPosition;
@@ -58,17 +61,19 @@ private:
     int m_animNameUpdateIndex = -1;
     string m_animUpdateName = "";
 
-    GameObjectType m_createObjectType;
-    UIComponentType m_createUIComponentType;
-    ContentBrowser m_contentBrowser;
+	std::string m_SelectedNodeIdentifier = "";
+
+	GameObjectType m_createObjectType;
+	UIComponentType m_createUIComponentType;
+	ContentBrowser m_contentBrowser;
 
     ID3D11ShaderResourceView* m_playButtonTexture;
     ID3D11ShaderResourceView* m_stopButtonTexture;
 
 
-    void DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice);
-    void DrawSceneManagementWindow();
-    void TraverseTree(TreeNode<GameObject>* pcurrentNode, int& count);
+	void DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice);
+	void DrawSceneManagementWindow();
+	void TraverseTree(TreeNode<GameObject>* pcurrentNode, std::string& selectedIdentifier);
 public:
     EditorUI(ID3D11Device* pdevice);
 
@@ -116,7 +121,7 @@ public:
 
     static void DragInt(const string& label, int& value, EditorUIIntParameters parameters = {});
 
-    static void Checkbox(const string& label, bool& value, EditorUINonSpecificParameters parameters = {});
+    static bool Checkbox(const string& label, bool& value, EditorUINonSpecificParameters parameters = {});
 
     static bool InputText(const string& label, string& text, EditorUINonSpecificParameters parameters = {});
     static void IdentifierText(const string& label, string& text, EditorUINonSpecificParameters parameters = {});

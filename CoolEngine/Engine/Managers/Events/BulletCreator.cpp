@@ -87,7 +87,10 @@ void BulletCreator::TestFire(MouseButtonPressedEvent* e)
 	name = "Player";
 	RenderableCollidableGameObject* p_player = GameManager::GetInstance()->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(name);
 
-	EventManager::Instance()->AddEvent(new CreateBulletEvent(p_weapon, XMFLOAT3(1, 0, 0), p_player->GetTransform()->GetWorldPosition(), DEFAULT_IMGUI_IMAGE));
+	if (p_player != nullptr)
+	{
+		EventManager::Instance()->AddEvent(new CreateBulletEvent(p_weapon, XMFLOAT3(1, 0, 0), p_player->GetTransform()->GetWorldPosition(), DEFAULT_IMGUI_IMAGE));
+	}
 }
 
 void BulletCreator::Handle(Event* e)

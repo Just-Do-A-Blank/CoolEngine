@@ -136,7 +136,7 @@ bool GraphicsManager::LoadTextureFromFile(wstring filename, size_t maxSize, DDS_
 	{
 		LOG("That texture has already been loaded!");
 
-		return false;
+		return true;
 	}
 
 	ID3D11ShaderResourceView* psRV;
@@ -162,13 +162,12 @@ bool GraphicsManager::LoadAnimationFromFile(wstring animName, size_t maxSize, DD
 {
 	if (m_animationFrames.count(animName) != 0)
 	{
-		LOG("Tried to load an animation but one with that name already exists!");
+		LOG("Tried to load an already loaded animation!");
 
-		return false;
+		return true;
 	}
 
-	//Get information txt file and parse in
-	ifstream file(GameManager::GetInstance()->GetWideWorkingDirectory() + L"\\Resources\\Animations\\" + animName + L"\\" + animName + L".txt", std::ios::in);
+	std::ifstream file(GameManager::GetInstance()->GetWideWorkingDirectory() + L"\\Resources\\" + animName);
 
 	if (file.is_open() == false)
 	{
@@ -177,31 +176,26 @@ bool GraphicsManager::LoadAnimationFromFile(wstring animName, size_t maxSize, DD
 		return false;
 	}
 
-	//Get num frames and pre allocate vector memory
-	int numFrames;
-	file >> numFrames;
+	nlohmann::json data;
+	file >> data;
 
 	std::vector<Frame>* pframes = new std::vector<Frame>();
-	pframes->resize(numFrames);
-
-	//Read in frame times and textures
-
-	wstring frameName;
+	pframes->resize(data["FrameTimes"].size());
 
 	for(int i = 0; i < pframes->size(); ++i)
 	{
-		file >> pframes->at(i).m_frameTime;
+		std::string tempPath = data["FramePaths"][i];
+		std::wstring framePath = std::wstring(tempPath.begin(), tempPath.end());
 
-		frameName = L"Resources\\Animations\\" + animName + L"\\" + animName + to_wstring(i) + L".dds";
-
-		if (LoadTextureFromFile(frameName, maxSize, alphaMode) == false)
+		if (LoadTextureFromFile(framePath, maxSize, alphaMode) == false)
 		{
 			LOG("Failed to load animation from file as failed to load animation frame!");
 
 			return false;
 		}
 
-		pframes->at(i).m_ptexture = m_textureSRVs[frameName];
+		pframes->at(i).m_ptexture = m_textureSRVs[framePath];
+		pframes->at(i).m_frameTime = data["FrameTimes"][i];
 	}
 
 	m_animationFrames[animName] = pframes;
