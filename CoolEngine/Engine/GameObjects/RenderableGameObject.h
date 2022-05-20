@@ -1,5 +1,5 @@
 #pragma once
-#include "GameObject.h"
+#include "Engine/GameObjects/PrefabGameObject.h"
 #include "Engine/Graphics/SpriteAnimation.h"
 
 class Mesh;
@@ -9,7 +9,7 @@ struct RenderStruct
 	ID3D11DeviceContext* m_pcontext;
 };
 
-class RenderableGameObject : virtual public GameObject
+class RenderableGameObject : public PrefabGameObject
 {
 public:
 	RenderableGameObject();
