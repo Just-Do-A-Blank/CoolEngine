@@ -19,7 +19,6 @@ PrefabGameObject::PrefabGameObject(PrefabGameObject const& other) : GameObject(o
 {
     m_prefabKey = other.m_prefabKey;
     m_prefabType = other.m_prefabType;
-    ValidateKeyAndType();
 
     if (m_prefabKey != "")
     {
@@ -34,13 +33,15 @@ PrefabGameObject::PrefabGameObject(string identifier, CoolUUID uuid) : GameObjec
 
 PrefabGameObject::PrefabGameObject(const nlohmann::json& data, CoolUUID uuid) : GameObject(data, uuid)
 {
-    m_prefabKey = data["PrefabKey"];
-    m_prefabType = data["PrefabType"];
-    ValidateKeyAndType();
-
-    if (m_prefabKey != "")
+    if (data.contains("PrefabKey"))
     {
-        LoadPrefabData(data);
+        m_prefabKey = data["PrefabKey"];
+        m_prefabType = data["PrefabType"];
+
+        if (m_prefabKey != "")
+        {
+            CachePrefabData(m_prefabKey);
+        }
     }
 }
 
@@ -59,7 +60,7 @@ void PrefabGameObject::Serialize(nlohmann::json& jsonData)
 
 void PrefabGameObject::ValidateKeyAndType()
 {
-    if (m_prefabType != m_gameObjectType)
+    if (!ContainsType(m_prefabType))
     {
         LOG("Prefab is not of correct type");
         m_prefabKey = "";
@@ -125,4 +126,20 @@ void PrefabGameObject::LoadPrefab(string key)
     fileIn >> dataIn;
 
     LoadPrefabData(dataIn);
+}
+
+void PrefabGameObject::CachePrefabData(string key)
+{
+    key.append(".json");
+    std::string path = GameManager::GetInstance()->GetWorkingDirectory() + "\\" + key;
+    ifstream fileIn(path);
+    nlohmann::json dataIn;
+    fileIn >> dataIn;
+
+    m_prefabFileData = dataIn;
+}
+
+nlohmann::json PrefabGameObject::GetDataLoadedAtCreation()
+{
+    return m_prefabFileData;
 }

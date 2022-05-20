@@ -19,8 +19,12 @@ public:
 
 protected:
 
+    virtual void CachePrefabData(string key);
     virtual void LoadPrefabData(const nlohmann::json& jsonData) {};
     virtual void SavePrefabData(nlohmann::json& jsonData);
+
+    virtual void InitialPrefabLoad() {}
+    nlohmann::json GetDataLoadedAtCreation();
 
 private:
 
@@ -35,6 +39,8 @@ private:
     /// The identifier for the prefab
     /// </summary>
     GameObjectType m_prefabType;
+
+    nlohmann::json m_prefabFileData;
 
     void LoadPrefab(string key);
 

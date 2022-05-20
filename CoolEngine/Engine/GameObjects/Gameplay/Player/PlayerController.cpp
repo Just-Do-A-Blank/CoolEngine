@@ -69,14 +69,17 @@ PlayerController::~PlayerController()
 
 void PlayerController::LoadPrefabData(const nlohmann::json& jsonData)
 {
-    m_moveSpeedMax = jsonData["PlayerController_SpeedMax"];
-    m_speedMultiplierWalking = jsonData["PlayerController_SpeedMultiplier"];
-    m_moveSpeedPerFrame = jsonData["PlayerController_WalkingSpeed"];
-    m_dragSpeedPerFrame = jsonData["PlayerController_Drag"];
-    m_dodgeSpeed = jsonData["PlayerController_DragSpeed"];
-    m_timeInSecondsToDodgeFor = jsonData["PlayerController_DragTime"];
-    m_rollSpeed = jsonData["PlayerController_RollSpeed"];
-    m_timeInSecondsToRollFor = jsonData["PlayerController_RollTime"];
+    if (jsonData.contains("PlayerController_SpeedMax"))
+    {
+        m_moveSpeedMax = jsonData["PlayerController_SpeedMax"];
+        m_speedMultiplierWalking = jsonData["PlayerController_SpeedMultiplier"];
+        m_moveSpeedPerFrame = jsonData["PlayerController_WalkingSpeed"];
+        m_dragSpeedPerFrame = jsonData["PlayerController_Drag"];
+        m_dodgeSpeed = jsonData["PlayerController_DragSpeed"];
+        m_timeInSecondsToDodgeFor = jsonData["PlayerController_DragTime"];
+        m_rollSpeed = jsonData["PlayerController_RollSpeed"];
+        m_timeInSecondsToRollFor = jsonData["PlayerController_RollTime"];
+    }
 }
 
 void PlayerController::SavePrefabData(nlohmann::json& jsonData)

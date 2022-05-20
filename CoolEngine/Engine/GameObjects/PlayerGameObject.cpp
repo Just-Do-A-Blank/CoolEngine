@@ -130,6 +130,8 @@ PlayerGameObject::PlayerGameObject(const nlohmann::json& data, CoolUUID uuid) : 
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
 	EventManager::Instance()->AddClient(EventType::MouseMoved, this);
+
+    m_playerController->LoadPrefabData(PrefabGameObject::GetDataLoadedAtCreation());
 }
 
 PlayerGameObject::PlayerGameObject(PlayerGameObject const& other) : CharacterGameObject(other)

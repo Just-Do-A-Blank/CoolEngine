@@ -192,8 +192,6 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 
 	TraverseTree(prootNode, m_SelectedNodeIdentifier);
 
-    TraverseTree(prootNode, nodeCount);
-
     if (ImGui::BeginMenuBar())
     {
         if (ImGui::BeginMenu("Create"))
@@ -513,15 +511,19 @@ void EditorUI::DrawSceneManagementWindow()
         ++sceneCount;
     }
 
-			if (ImGui::MenuItem("Save Scene", "Ctrl+S"))
-			{
-				m_saveSceneClicked = true;
-				m_saveSceneName = GameManager::GetInstance()->GetCurrentSceneName();
-			}
+    if (ImGui::BeginMenuBar())
+    {
+        if (ImGui::BeginMenu("File"))
+        {
+            if (ImGui::MenuItem("Create Scene", "Ctrl+C"))
+            {
+                m_createSceneClicked = true;
+            }
 
             if (ImGui::MenuItem("Save Scene", "Ctrl+S"))
             {
-                SimpleFileIO::SaveScene(std::string("Resources\\Levels\\") + GameManager::GetInstance()->GetCurrentSceneName());
+                m_saveSceneClicked = true;
+                m_saveSceneName = GameManager::GetInstance()->GetCurrentSceneName();
             }
 
             if (ImGui::MenuItem("Open Scene", "Ctrl+O"))

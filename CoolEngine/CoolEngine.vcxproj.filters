@@ -231,9 +231,6 @@
     <ClCompile Include="Engine\Graphics\AnimationStateMachine.cpp">
       <Filter>Engine\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Structure\ObjectPool.cpp">
-      <Filter>Engine\Structure</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\GameObjects\BulletGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
@@ -244,7 +241,7 @@
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\PrefabGameObject.cpp">
-      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+      <Filter>Engine\GameObjects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
