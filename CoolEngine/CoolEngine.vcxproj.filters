@@ -210,6 +210,15 @@
     <ClCompile Include="Engine\GameUI\ButtonComponent.cpp">
       <Filter>Engine\GameUI</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\AI\FiniteStateMachine.cpp">
+      <Filter>Engine\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\FiniteState.cpp">
+      <Filter>Engine\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\AnimationState.cpp">
+      <Filter>Engine\Graphics</Filter>
+    </ClCompile>
     <ClCompile Include="Engine\Managers\Events\DamageCalculation.cpp">
       <Filter>Engine\Managers\Events</Filter>
     </ClCompile>
@@ -218,6 +227,12 @@
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerDodgingState.cpp">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\AnimationStateMachine.cpp">
+      <Filter>Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Structure\ObjectPool.cpp">
+      <Filter>Engine\Structure</Filter>
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\BulletGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
@@ -596,6 +611,15 @@
     <ClInclude Include="Engine\EditorUI\EditorUINonSpecificParameters.h">
       <Filter>Engine\EditorUI</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\AI\FiniteStateMachine.h">
+      <Filter>Engine\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\FiniteState.h">
+      <Filter>Engine\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\AnimationState.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Engine\Managers\Events\BulletCreator.h">
       <Filter>Engine\Managers\Events</Filter>
     </ClInclude>
@@ -607,6 +631,9 @@
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\EVirtualKeyCode.h">
       <Filter>Engine\GameObjects\Gameplay\GameplayButtons</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\AnimationStateMachine.h">
+      <Filter>Engine\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Structure\ObjectPool.h">
       <Filter>Engine\Structure</Filter>
