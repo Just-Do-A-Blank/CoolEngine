@@ -9,6 +9,8 @@ RenderableGameObject::RenderableGameObject() : GameObject()
 	InitGraphics();
 
 	m_gameObjectType |= GameObjectType::RENDERABLE;
+
+	m_panimationStateMachine = new AnimationStateMachine();
 }
 
 RenderableGameObject::RenderableGameObject(RenderableGameObject const& other) : GameObject(other)
@@ -26,20 +28,8 @@ RenderableGameObject::RenderableGameObject(RenderableGameObject const& other) : 
 	m_layer = other.m_layer;
 	m_isRenderable = other.m_isRenderable;
 	m_texFilepath = other.m_texFilepath;
-	for (int i = 0; i < ANIM_NAME_SIZE; ++i)
-	{
-		m_createDeleteAnimName[i] = other.m_createDeleteAnimName[i];
-	}
 
-	//m_animations = other.m_animations;
-
-	//if (other.m_pcurrentAnimation)
-	//{
-	//	m_pcurrentAnimation = new SpriteAnimation(*other.m_pcurrentAnimation);
-	//}
-
-	m_currentAnimationName = other.m_currentAnimationName;
-
+	m_panimationStateMachine = new AnimationStateMachine(other.m_panimationStateMachine);
 }
 
 RenderableGameObject::RenderableGameObject(string identifier, CoolUUID uuid) : GameObject(identifier, uuid)
@@ -47,6 +37,8 @@ RenderableGameObject::RenderableGameObject(string identifier, CoolUUID uuid) : G
 	InitGraphics();
 
 	m_gameObjectType |= GameObjectType::RENDERABLE;
+
+	m_panimationStateMachine = new AnimationStateMachine();
 }
 
 RenderableGameObject::RenderableGameObject(const nlohmann::json& data, CoolUUID uuid) : GameObject(data, uuid)
@@ -61,7 +53,8 @@ RenderableGameObject::RenderableGameObject(const nlohmann::json& data, CoolUUID 
 
 	SetAlbedo(m_texFilepath);
 
-	m_animationStateMachine.Deserialize(data);
+	m_panimationStateMachine = new AnimationStateMachine();
+	m_panimationStateMachine->Deserialize(data);
 
 	m_gameObjectType |= GameObjectType::RENDERABLE;
 
@@ -71,6 +64,11 @@ RenderableGameObject::RenderableGameObject(const nlohmann::json& data, CoolUUID 
 
 RenderableGameObject::~RenderableGameObject()
 {
+	if (m_panimationStateMachine != nullptr)
+	{
+		delete m_panimationStateMachine;
+		m_panimationStateMachine = nullptr;
+	}
 }
 
 void RenderableGameObject::InitGraphics()
@@ -93,9 +91,9 @@ void RenderableGameObject::Render(RenderStruct& renderStruct)
 		return;
 	}
 
-	AnimationState* pstate = (AnimationState*)m_animationStateMachine.GetActiveState();
+	AnimationState* pstate = (AnimationState*)m_panimationStateMachine->GetActiveState();
 
-	if (m_animationStateMachine.GetActiveState() && pstate->GetAnimation() != nullptr)
+	if (m_panimationStateMachine->GetActiveState() && pstate->GetAnimation() != nullptr)
 	{
 		GraphicsManager::GetInstance()->RenderQuad(pstate->GetAnimation()->GetCurrentFrame(), m_transform->GetWorldPosition(), m_transform->GetWorldScale(), m_transform->GetWorldRotation().z, m_layer);
 	}
@@ -112,7 +110,7 @@ void RenderableGameObject::Render(RenderStruct& renderStruct)
 
 void RenderableGameObject::Update()
 {
-	m_animationStateMachine.Update();
+	m_panimationStateMachine->Update();
 }
 
 void RenderableGameObject::EditorUpdate()
@@ -147,7 +145,7 @@ void RenderableGameObject::CreateEngineUI()
 		ImGui::Separator();
 		ImGui::Spacing();
 
-		m_animationStateMachine.CreateEngineUI();
+		m_panimationStateMachine->CreateEngineUI();
 	}
 
 }
@@ -160,7 +158,7 @@ Mesh* RenderableGameObject::GetMesh() const
 
 SpriteAnimation RenderableGameObject::GetAnimation(std::string name)
 {
-	AnimationState* pstate = (AnimationState*)m_animationStateMachine.GetState(name);
+	AnimationState* pstate = (AnimationState*)m_panimationStateMachine->GetState(name);
 
 	if (pstate == nullptr)
 	{
@@ -177,7 +175,7 @@ int RenderableGameObject::GetLayer() const
 
 void RenderableGameObject::PlayAnimation()
 {
-	AnimationState* pstate = (AnimationState*)m_animationStateMachine.GetActiveState();
+	AnimationState* pstate = (AnimationState*)m_panimationStateMachine->GetActiveState();
 
 	if (pstate == nullptr)
 	{
@@ -191,7 +189,7 @@ void RenderableGameObject::PlayAnimation()
 
 void RenderableGameObject::PauseAnimation()
 {
-	AnimationState* pstate = (AnimationState*)m_animationStateMachine.GetActiveState();
+	AnimationState* pstate = (AnimationState*)m_panimationStateMachine->GetActiveState();
 
 	if (pstate == nullptr)
 	{
@@ -205,7 +203,7 @@ void RenderableGameObject::PauseAnimation()
 
 AnimationStateMachine* RenderableGameObject::GetAnimationStateMachine()
 {
-	return &m_animationStateMachine;
+	return m_panimationStateMachine;
 }
 
 void RenderableGameObject::Serialize(nlohmann::json& data)
@@ -218,12 +216,12 @@ void RenderableGameObject::Serialize(nlohmann::json& data)
 	data["IsRenderable"] = m_isRenderable;
 	data["TexturePath"] = texPath;
 
-	m_animationStateMachine.Serialize(data);
+	m_panimationStateMachine->Serialize(data);
 }
 
 const SpriteAnimation* RenderableGameObject::GetCurrentAnimation()
 {
-	const AnimationState* pstate = (const AnimationState*)m_animationStateMachine.GetActiveState();
+	const AnimationState* pstate = (const AnimationState*)m_panimationStateMachine->GetActiveState();
 
 	if (pstate == nullptr)
 	{
@@ -355,14 +353,14 @@ void RenderableGameObject::SetLayer(int layer)
 
 bool RenderableGameObject::AddAnimationState(string stateName, AnimationState* panimState, bool isActive)
 {
-	if (m_animationStateMachine.AddState(stateName, panimState) == false)
+	if (m_panimationStateMachine->AddState(stateName, panimState) == false)
 	{
 		return false;
 	}
 
 	if (isActive == true)
 	{
-		m_animationStateMachine.SetActiveState(stateName);
+		m_panimationStateMachine->SetActiveState(stateName);
 	}
 
 	return true;
@@ -370,12 +368,12 @@ bool RenderableGameObject::AddAnimationState(string stateName, AnimationState* p
 
 bool RenderableGameObject::RemoveAnimationState(string stateName)
 {
-	return m_animationStateMachine.RemoveState(stateName);
+	return m_panimationStateMachine->RemoveState(stateName);
 }
 
 bool RenderableGameObject::IsAnimated()
 {
-	AnimationState* pstate = (AnimationState*)m_animationStateMachine.GetActiveState();
+	AnimationState* pstate = (AnimationState*)m_panimationStateMachine->GetActiveState();
 
 	if (pstate == nullptr)
 	{

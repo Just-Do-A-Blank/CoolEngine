@@ -2,6 +2,33 @@
 #include "Engine/AI/FiniteStateMachine.h"
 #include "Engine/EditorUI/EditorUI.h"
 
+FiniteState::FiniteState()
+{
+}
+
+FiniteState::FiniteState(const FiniteState* pother)
+{
+	m_name = pother->m_name;
+}
+
+void FiniteState::Enter()
+{
+	for (std::unordered_map<std::string, TransitionInfo<bool>>::iterator it = m_boolTransitionInfo.begin(); it != m_boolTransitionInfo.end(); ++it)
+	{
+		it->second.CurrentValue = it->second.ResetValue;
+	}
+
+	for (std::unordered_map<std::string, TransitionInfo<int>>::iterator it = m_intTransitionInfo.begin(); it != m_intTransitionInfo.end(); ++it)
+	{
+		it->second.CurrentValue = it->second.ResetValue;
+	}
+
+	for (std::unordered_map<std::string, TransitionInfo<float>>::iterator it = m_floatTransitionInfo.begin(); it != m_floatTransitionInfo.end(); ++it)
+	{
+		it->second.CurrentValue = it->second.ResetValue;
+	}
+}
+
 bool FiniteState::SetBool(std::string name, bool value)
 {
     if (m_boolTransitionInfo.count(name) == 0)
@@ -193,6 +220,7 @@ void FiniteState::Deserialize(const nlohmann::json& data, FiniteStateMachine* ps
 	{
 		TransitionInfo<bool> info;
 		info.CurrentValue = data[m_name]["BoolTransitions"][it.key()][0][0];
+		info.ResetValue = info.CurrentValue;
 		info.TransitionValue = data[m_name]["BoolTransitions"][it.key()][0][1];
 		info.NewState = pstateMachine->GetState(data[m_name]["BoolTransitions"][it.key()][0][2]);
 
@@ -203,6 +231,7 @@ void FiniteState::Deserialize(const nlohmann::json& data, FiniteStateMachine* ps
 	{
 		TransitionInfo<int> info;
 		info.CurrentValue = data[m_name]["IntTransitions"][it.key()][0][0];
+		info.ResetValue = info.CurrentValue;
 		info.TransitionValue = data[m_name]["IntTransitions"][it.key()][0][1];
 		info.NewState = pstateMachine->GetState(data[m_name]["IntTransitions"][it.key()][0][2]);
 
@@ -213,6 +242,7 @@ void FiniteState::Deserialize(const nlohmann::json& data, FiniteStateMachine* ps
 	{
 		TransitionInfo<float> info;
 		info.CurrentValue = data[m_name]["FloatTransitions"][it.key()][0][0];
+		info.ResetValue = info.CurrentValue;
 		info.TransitionValue = data[m_name]["FloatTransitions"][it.key()][0][1];
 		info.NewState = pstateMachine->GetState(data[m_name]["FloatTransitions"][it.key()][0][2]);
 
@@ -255,6 +285,69 @@ void FiniteState::RemoveTransitions(FiniteState* pstate)
             it->second.NewState = nullptr;
         }
     }
+}
+
+void FiniteState::InitTransitions(FiniteState const* other, FiniteStateMachine* pmachine)
+{
+	for (std::unordered_map<std::string, TransitionInfo<bool>>::const_iterator it = other->m_boolTransitionInfo.begin(); it != other->m_boolTransitionInfo.end(); ++it)
+	{
+		TransitionInfo<bool> info;
+		info.CurrentValue = it->second.CurrentValue;
+		info.ResetValue = it->second.ResetValue;
+		info.TransitionValue = it->second.TransitionValue;
+
+		if (it->second.NewState == nullptr)
+		{
+			info.NewState = nullptr;
+		}
+		else
+		{
+			info.NewState = pmachine->GetState(it->second.NewState->GetName());
+		}
+
+
+		m_boolTransitionInfo[it->first] = info;
+	}
+
+	for (std::unordered_map<std::string, TransitionInfo<int>>::const_iterator it = other->m_intTransitionInfo.begin(); it != other->m_intTransitionInfo.end(); ++it)
+	{
+		TransitionInfo<int> info;
+		info.CurrentValue = it->second.CurrentValue;
+		info.ResetValue = it->second.ResetValue;
+		info.TransitionValue = it->second.TransitionValue;
+
+		if (it->second.NewState == nullptr)
+		{
+			info.NewState = nullptr;
+		}
+		else
+		{
+			info.NewState = pmachine->GetState(it->second.NewState->GetName());
+		}
+
+
+		m_intTransitionInfo[it->first] = info;
+	}
+
+	for (std::unordered_map<std::string, TransitionInfo<float>>::const_iterator it = other->m_floatTransitionInfo.begin(); it != other->m_floatTransitionInfo.end(); ++it)
+	{
+		TransitionInfo<float> info;
+		info.CurrentValue = it->second.CurrentValue;
+		info.ResetValue = it->second.ResetValue;
+		info.TransitionValue = it->second.TransitionValue;
+
+		if (it->second.NewState == nullptr)
+		{
+			info.NewState = nullptr;
+		}
+		else
+		{
+			info.NewState = pmachine->GetState(it->second.NewState->GetName());
+		}
+
+
+		m_floatTransitionInfo[it->first] = info;
+	}
 }
 
 void FiniteState::CreateBoolTransitionUI()

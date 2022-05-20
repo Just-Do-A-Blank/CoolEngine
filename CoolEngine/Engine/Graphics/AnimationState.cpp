@@ -3,8 +3,19 @@
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/Includes/IMGUI/imgui.h"
 
+AnimationState::AnimationState() : FiniteState()
+{
+}
+
+AnimationState::AnimationState(const AnimationState* pother) : FiniteState(pother)
+{
+	m_animation = pother->m_animation;
+}
+
 void AnimationState::Enter()
 {
+	FiniteState::Enter();
+
 	m_animation.Play();
 }
 

@@ -11,6 +11,7 @@ struct TransitionInfo
 {
 public:
 	T CurrentValue;
+	T ResetValue;
 	T TransitionValue;
 	FiniteState* NewState;
 };
@@ -18,8 +19,10 @@ public:
 class FiniteState
 {
 public:
+	FiniteState();
+	FiniteState(const FiniteState* pother);
 
-	virtual void Enter() = 0;
+	virtual void Enter();
 	virtual void Exit() = 0;
 
 	virtual void Update() = 0;
@@ -45,6 +48,8 @@ public:
 	std::string GetName();
 
 	void RemoveTransitions(FiniteState* pstate);
+
+	void InitTransitions(FiniteState const* other, FiniteStateMachine* pmachine);
 
 protected:
 

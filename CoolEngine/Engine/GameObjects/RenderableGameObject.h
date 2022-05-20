@@ -93,21 +93,11 @@ protected:
 #if EDITOR
 	//ImGui variables
 	wstring m_texFilepath;
-
-	char m_createDeleteAnimName[ANIM_NAME_SIZE];
 #endif
 
-	AnimationStateMachine m_animationStateMachine;
-
-	string m_currentAnimationName = "";
+	AnimationStateMachine* m_panimationStateMachine;
 
 private:
 
-#if EDITOR
-	/// <summary>
-	/// Creates the animation editor section of the renderable UI
-	/// </summary>
-	void CreateAnimationEditorUI();
-#endif
 };
 

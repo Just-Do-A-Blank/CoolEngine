@@ -2,6 +2,32 @@
 #include "Engine/Graphics/AnimationState.h"
 #include "Engine/EditorUI/EditorUI.h"
 
+AnimationStateMachine::AnimationStateMachine()
+{
+}
+
+AnimationStateMachine::AnimationStateMachine(AnimationStateMachine const* other)
+{
+	for (std::unordered_map<std::string, FiniteState*>::const_iterator it = other->m_states.begin(); it != other->m_states.end(); ++it)
+	{
+		m_states[it->first] = new AnimationState((const AnimationState*)it->second);
+	}
+
+	for (std::unordered_map<std::string, FiniteState*>::const_iterator it = other->m_states.begin(); it != other->m_states.end(); ++it)
+	{
+		m_states[it->first]->InitTransitions(it->second, this);
+	}
+
+	if (other->m_pstate != nullptr)
+	{
+		m_pstate = m_states[other->m_pstate->GetName()];
+	}
+	else
+	{
+		m_pstate = nullptr;
+	}
+}
+
 void AnimationStateMachine::Serialize(nlohmann::json& data)
 {
 	data["AnimationStateMachine"]["ActiveState"] = GetStateName(m_pstate);
@@ -57,20 +83,40 @@ void AnimationStateMachine::CreateEngineUI()
 				flags |= ImGuiTreeNodeFlags_Selected;
 			}
 
-			if (ImGui::TreeNodeEx(it->first.c_str(), flags) == true)
+			bool treeNodeOpen = ImGui::TreeNodeEx(it->first.c_str(), flags);
+
+			if (treeNodeOpen == true)
 			{
+				if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID) == true)
+				{
+					ImGui::SetDragDropPayload("AnimationState", &it->second, sizeof(it->second), ImGuiCond_Once);
+					ImGui::EndDragDropSource();
+				}
+
+				if (ImGui::IsItemClicked() == true)
+				{
+					if (m_selectedState == it->first)
+					{
+						m_selectedState = "";
+					}
+					else
+					{
+						m_selectedState = it->first;
+					}
+				}
+
 				it->second->CreateEngineUI();
 
 				ImGui::TreePop();
 			}
 
-			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID) == true)
+			if (treeNodeOpen == false && ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID) == true)
 			{
 				ImGui::SetDragDropPayload("AnimationState", &it->second, sizeof(it->second), ImGuiCond_Once);
 				ImGui::EndDragDropSource();
 			}
 
-			if (ImGui::IsItemClicked() == true)
+			if (treeNodeOpen == false && ImGui::IsItemClicked() == true)
 			{
 				if (m_selectedState == it->first)
 				{

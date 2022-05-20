@@ -5,6 +5,9 @@
 class AnimationState : public FiniteState
 {
 public:
+	AnimationState();
+	AnimationState(const AnimationState* pother);
+
 	virtual void Enter() override;
 	virtual void Exit() override;
 

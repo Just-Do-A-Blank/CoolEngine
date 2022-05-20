@@ -34,8 +34,8 @@ void Tile::InitAnimation(wstring animPath)
 	pstate->SetName("default");
 	pstate->SetAnimation(animPath);
 
-	m_animationStateMachine.AddState("default", pstate);
-	m_animationStateMachine.SetActiveState("default");
+	m_panimationStateMachine->AddState("default", pstate);
+	m_panimationStateMachine->SetActiveState("default");
 }
 
 const bool& Tile::GetIsPassable() const
@@ -81,7 +81,7 @@ void Tile::CreateEngineUI()
 
 	ImGui::Spacing();
 
-	if (m_animationStateMachine.GetActiveState() == nullptr)
+	if (m_panimationStateMachine->GetActiveState() == nullptr)
 	{
 		if (EditorUI::Animation("Animation", m_animPath, nullptr) == true)
 		{
@@ -93,14 +93,14 @@ void Tile::CreateEngineUI()
 				panimState->SetName("default");
 				panimState->SetAnimation(m_animPath);
 
-				m_animationStateMachine.AddState("default", panimState);
-				m_animationStateMachine.SetActiveState("default");
+				m_panimationStateMachine->AddState("default", panimState);
+				m_panimationStateMachine->SetActiveState("default");
 			}
 		}
 	}
 	else
 	{
-		AnimationState* pstate = (AnimationState*)m_animationStateMachine.GetActiveState();
+		AnimationState* pstate = (AnimationState*)m_panimationStateMachine->GetActiveState();
 
 		if (EditorUI::Animation("Animation", m_animPath, pstate->GetAnimation()->GetCurrentFrame()) == true)
 		{
@@ -134,18 +134,7 @@ void Tile::CopyTile(Tile* ptile)
 
 	SetAlbedo(ptile->m_palbedoSRV);
 
-	m_animationStateMachine = AnimationStateMachine();
-
-	AnimationState* pstate = (AnimationState*)ptile->m_animationStateMachine.GetActiveState();
-
-	if (pstate != nullptr)
-	{
-		AnimationState* pnewState = new AnimationState();
-		pnewState->SetName("default");
-		pnewState->SetAnimation(pstate->GetAnimation()->GetAnimPath());
-
-		m_animationStateMachine.AddState("default", pnewState);
-		m_animationStateMachine.SetActiveState("default");
-	}
+	delete m_panimationStateMachine;
+	m_panimationStateMachine = new AnimationStateMachine(ptile->m_panimationStateMachine);
 }
 #endif

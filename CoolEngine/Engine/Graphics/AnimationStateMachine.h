@@ -4,6 +4,8 @@
 class AnimationStateMachine : public FiniteStateMachine
 {
 public:
+	AnimationStateMachine();
+	AnimationStateMachine(AnimationStateMachine const* other);
 
 	virtual void Serialize(nlohmann::json& data);
 	virtual void Deserialize(const nlohmann::json& data);
