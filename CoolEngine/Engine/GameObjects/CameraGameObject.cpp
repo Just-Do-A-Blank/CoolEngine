@@ -29,6 +29,8 @@ CameraGameObject::CameraGameObject(const nlohmann::json& data, CoolUUID index) :
 	m_nearDepth = data["Near Depth"];
 	m_farDepth = data["Far Depth"];
 
+	Initialize(m_transform->GetWorldPosition(), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), m_windowWidth, m_windowHeight, m_nearDepth, m_farDepth);
+
 	CreateViewMatrix();
 	CreateProjectionMatrix();
 }
@@ -41,14 +43,14 @@ CameraGameObject::CameraGameObject(CameraGameObject const& other):GameObject(oth
 	m_windowHeight = other.m_windowHeight;
 	m_windowWidth = other.m_windowWidth;
 	m_nearDepth = other.m_nearDepth;
-	m_farDepth = other.m_nearDepth;
+	m_farDepth = other.m_farDepth;
 }
 
 CameraGameObject::~CameraGameObject()
 {
 }
 
-void CameraGameObject::Initialize(XMFLOAT3& position, XMFLOAT3& forwardVector, XMFLOAT3& upVector,
+void CameraGameObject::Initialize(const XMFLOAT3& position, XMFLOAT3& forwardVector, XMFLOAT3& upVector,
 	float& windowWidth, float& windowHeight, float& nearDepth, float& farDepth)
 {
 	m_windowHeight = windowHeight;
@@ -57,7 +59,6 @@ void CameraGameObject::Initialize(XMFLOAT3& position, XMFLOAT3& forwardVector, X
 	m_nearDepth = nearDepth;
 	m_farDepth = farDepth;
 
-	m_transform->Initialize(position, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f));
 	m_transform->SetForwardVector(forwardVector);
 	m_transform->SetUpVector(upVector);
 
@@ -93,6 +94,7 @@ void CameraGameObject::ReshapeCamera(float newWindowWidth, float newWindowHeight
 void CameraGameObject::Update()
 {
 	CreateViewMatrix();
+	CreateProjectionMatrix();
 }
 
 void CameraGameObject::EditorUpdate()

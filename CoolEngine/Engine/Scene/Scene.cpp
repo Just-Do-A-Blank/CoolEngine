@@ -24,11 +24,6 @@ void Scene::Update()
 		gameObjectList[it]->Update();
 	}
 
-	if (m_pactiveCamera)
-	{
-		m_pactiveCamera->Update();
-	}
-
 	Collision::Update(gameObjectList);
 }
 

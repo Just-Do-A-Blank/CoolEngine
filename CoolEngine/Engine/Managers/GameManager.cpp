@@ -664,6 +664,11 @@ void GameManager::Deserialize(nlohmann::json& data)
 {
 	std::unordered_map<uint64_t, GameObject*> gameObjects;
 
+	string mainCameraIdentifier;
+
+	string sceneName = data["SceneName"];
+	Scene* pnewScene = new Scene(sceneName);
+
 	for (nlohmann::json::const_iterator typeIt = data.begin(); typeIt != data.end(); ++typeIt)
 	{
 		if (typeIt.key() == "RootNode" || typeIt.key() == "AudioManager" || typeIt.key() == "GraphicsManager" || typeIt.key() == "GameUI" || typeIt.key() == "FontManager" || typeIt.key() == "SceneName")
@@ -741,6 +746,13 @@ void GameManager::Deserialize(nlohmann::json& data)
 			case AccumlateType::CAMERA:
 				gameObjects[*uuid] = new CameraGameObject(data[typeIt.key()][uuidString], uuid);
 				gameObjects[*uuid]->m_UUID = uuid;
+
+				pnewScene->m_cameraGameObjectMap[gameObjects[*uuid]->m_identifier] = dynamic_cast<CameraGameObject*>(gameObjects[*uuid]);
+				
+				if (pnewScene->GetActiveCamera() == nullptr)
+				{
+					mainCameraIdentifier = gameObjects[*uuid]->GetIdentifier();
+				}
 				break;
 
 			case AccumlateType::UI_COMPONENT:
@@ -779,8 +791,7 @@ void GameManager::Deserialize(nlohmann::json& data)
 
 	pcomponent = gameObjects[data["RootNode"]];
 
-	string sceneName = data["SceneName"];
-	Scene* pnewScene = new Scene(sceneName);
+	
 	 
 	pnode = pnewScene->m_psceneGraph->NewNode(pcomponent);
 
@@ -806,6 +817,8 @@ void GameManager::Deserialize(nlohmann::json& data)
 			toPush.push(pnewScene->m_psceneGraph->AddChild(pnode, pcomponent));
 		}
 	}
+
+	pnewScene->SetActiveCameraUsingIdentifier(mainCameraIdentifier);
 
 	pnode = pnewScene->m_psceneGraph->GetRootNode();
 

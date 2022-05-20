@@ -599,9 +599,10 @@ void Render()
 
 	//Update per frame CB
 	PerFrameCB perFrameCB;
-	if (GameManager::GetInstance()->GetCamera())
+	CameraGameObject* activeCamera = GameManager::GetInstance()->GetCamera();
+	if (activeCamera)
 	{
-		XMStoreFloat4x4(&perFrameCB.viewProjection, XMMatrixTranspose(XMLoadFloat4x4(&GameManager::GetInstance()->GetCamera()->GetViewProjection())));
+		XMStoreFloat4x4(&perFrameCB.viewProjection, XMMatrixTranspose(XMLoadFloat4x4(&activeCamera->GetViewProjection())));
 	}
 
 	GraphicsManager::GetInstance()->m_pperFrameCB->Update(perFrameCB, g_pImmediateContext);
