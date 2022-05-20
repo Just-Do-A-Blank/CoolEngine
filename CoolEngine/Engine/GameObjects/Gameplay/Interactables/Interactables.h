@@ -13,6 +13,9 @@ public:
 	/// </summary>
 	/// <param name="interactableGameObj"></param>
 	/// <param name="interactableTransform"></param>
+
+	Interactables(GameObjectType interactableObjType, EINTERACTABLETYPE interactableType);
+
 	Interactables(GameObject* m_playerObjTrans, GameObject* m_interactableGameObjTrans);
 
 	~Interactables();
@@ -58,18 +61,18 @@ private:
 	/// </summary>
 	/// <param name="type"></param>
 	/// <returns></returns>
-	bool InteractableType(EINTERACTABLETYPE type);
+	EINTERACTABLETYPE GetInteractableType();
 
 	/// <summary>
-	/// Removes the Interactable Type from the Scene and applies a direct affect to the player
+	/// Handles the Collision based on the EINTERACTABLETYPE type
 	/// </summary>
-	virtual void HandleInteractableEvent(GameObject* objToDestory);
+	virtual void HandleInteractableEvent(EINTERACTABLETYPE& type, CharacterGameObject* player);
 
 	/// <summary>
 	/// Adds the Interactable Type to the Inventory System
 	/// </summary>
 	
-	virtual void AddToInventory(GameObject objToAdd);
+	virtual void AddToInventory(EINTERACTABLETYPE& objToAdd);
 
 
 	/// <summary>
@@ -78,8 +81,17 @@ private:
 	virtual void OnTriggerEnter(XMFLOAT3* obj1, XMFLOAT3* obj2);
 
 	//Create an override of OnTriggerHold
-
+	
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="pObject"></param>
+	/// <param name="pObject2"></param>
 	virtual void OnTriggerHold(GameObject* pObject, GameObject* pObject2) override;
+
+	void TriggerHold(TriggerHoldEvent* e);
+
+	void Handle(Event* e) override;
 };
 
 

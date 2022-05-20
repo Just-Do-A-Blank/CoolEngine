@@ -22,6 +22,7 @@ enum class GameObjectType
 	BULLET = 4096,
 	GAME_UI_COMPONENT = 8192,
 	CAMERA = 16384,
+	PICKUP = 32768,
 };
 
 DEFINE_ENUM_FLAG_OPERATORS(GameObjectType);

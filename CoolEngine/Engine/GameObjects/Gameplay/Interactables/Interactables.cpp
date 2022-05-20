@@ -3,101 +3,80 @@
 #include <Engine/GameObjects/TriggerableGameObject.h>
 #include <Engine/GameObjects/InteractableGameObject.h>
 #include <Engine/GameObjects/PlayerGameObject.h>
+#include "Engine/Managers/Events/EventManager.h"
+#include "HealthConsum.h"
 
 /// <summary>
-/// Interactable Object Constructor
+/// interactableObjType -> INTERACTABLE && interactableType -> Consumable (For testing purposes)
 /// </summary>
-/// <param name="interactableGameObj"></param>
-/// <param name="interactableTransform"></param>
-void Interactables(PlayerGameObject* playerGameObject, Transform* interactableTransform)
+/// <param name="interactableType"></param>
+Interactables::Interactables(GameObjectType interactableObjType, EINTERACTABLETYPE interactableType)
 {
-	/*m_playerGa
-	m_playerGameObj = GetGameObjectUsingIdentifier<CharacterGameObject*>(string("Player"));*/
-
-	
-}
+	//Sets the Object type to PICKUP
+	m_gameObjectType |= GameObjectType::PICKUP;
 
 
-
-Interactables::Interactables(GameObject* m_playerObjTrans, GameObject* m_interactableGameObjTrans)
-{
-	interactableCollision = false;
-	triggerRadius = 5.0f;
-	// Sets the Player to an Interactable Game Object which will be passed into the OnTriggerEnter() Class
 	m_pPlayerGameObj = m_GameManager.GetGameObjectUsingIdentifier<CharacterGameObject>(string("Player"));
 
-
-	/*Update(playerObjPos, interactableObjPos);*/
 }
 
-/// <summary>
-/// Interactable Object Destructor
-/// </summary>
-/// <param name="obj1"></param>
-/// <param name="obj2"></param>
-
-//void Interactables::Update(XMFLOAT3* playerObj, XMFLOAT3* interactableObj)
-//{
-//	if (interactableCollision)
-//		OnTriggerEnter(playerObj, interactableObj);
-//}
-void Interactables::OnTriggerEnter(XMFLOAT3* obj1, XMFLOAT3* obj2)
-{
-}
 void Interactables::OnTriggerHold(GameObject* pObject, GameObject* pObject2)
 {
-	//Checks if GameObj 1 is a TRIGGERABLE Object Type
-	pObject->ContainsType(GameObjectType::TRIGGERABLE);
-	//Checks if GameObj 2 is a PLAYER Object Type
-	pObject2->ContainsType(GameObjectType::PLAYER);
+	if (pObject->ContainsType(GameObjectType::PLAYER) && pObject2->ContainsType(GameObjectType::PICKUP))
+	{
+		//Casts the Pickup Obj to an Interactable
+		Interactables* pInteractables = dynamic_cast<Interactables*>(pObject2);
+		//Returns the Item Type
+		EINTERACTABLETYPE itemType = pInteractables->GetInteractableType();
+		//Casts the GameObject to the CharacterGameObject
+		CharacterGameObject* pCharacter = dynamic_cast<CharacterGameObject*>(pObject);
 
-	//If these GameObjects Match -> Then the TRIGGERABLE Object Type is handled
+		//Passes the Interactable Type and the Character
+		HandleInteractableEvent(itemType, pCharacter);
 
-	HandleInteractableEvent(pObject);
+	}
+
 }
+
+void Interactables::Handle(Event* e)
+{
+	TriggerableGameObject::Handle(e);
+}
+
+
 Interactables::~Interactables()
 {
 
 }
 
-
-/// <summary>
-/// Checks if a Collision has been Triggered of the Player GameObject and the Interactable GameObject
-/// </summary>
-/// <param name="obj1"></param>
-/// <param name="obj2"></param>
-//void Interactables::OnTriggerEnter(GameObject* player, GameObject* interactable)
-//{
-//	float distance = MathHelper::Distance(player, interactable);
-//	
-//}
-
-/// <summary>
-/// If there has been a collision
-/// </summary>
-void Interactables::InteractableItemCollision()
+EINTERACTABLETYPE Interactables::GetInteractableType()
 {
-	interactableCollision = false;
-}
-
-
-bool Interactables::InteractableType(EINTERACTABLETYPE type)
-{
-	/*return (interactableType & type) == type;*/
-	return false;
+	HealthConsum consumable;
+	return consumable.GetType();
 }
 
 /// <summary>
 /// Collision is handled based on the type of Interactable Object -> This function will be called by each Interactable
 /// </summary>
-void Interactables::HandleInteractableEvent(GameObject* triggerableObj)
-{
-	LOG("Triggerable Works");
-	/*if(m_pInteractableObj->ContainsType(EINTERACTABLETYPE::Consumable)*/
-}
-
-void Interactables::AddToInventory(GameObject objToAdd)
+void Interactables::HandleInteractableEvent(EINTERACTABLETYPE& type, CharacterGameObject* player)
 {
 
+	if (type == EINTERACTABLETYPE::Consumable)
+	{
+		//Remove Object from Scene
+		//Have the Interactable Affect the Player
+	}
+	else if (type == EINTERACTABLETYPE::NonConsumable)
+	{
+		AddToInventory(type);
+	}
+	
 }
+
+void Interactables::AddToInventory(EINTERACTABLETYPE& objToAdd)
+{
+	//Inventory Functionality
+}
+
+
 
