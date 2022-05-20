@@ -18,7 +18,6 @@ PrefabGameObject::PrefabGameObject() : GameObject()
 PrefabGameObject::PrefabGameObject(PrefabGameObject const& other) : GameObject(other)
 {
     m_prefabKey = other.m_prefabKey;
-    m_prefabType = other.m_prefabType;
 
     if (m_prefabKey != "")
     {
@@ -36,7 +35,6 @@ PrefabGameObject::PrefabGameObject(const nlohmann::json& data, CoolUUID uuid) : 
     if (data.contains("PrefabKey"))
     {
         m_prefabKey = data["PrefabKey"];
-        m_prefabType = data["PrefabType"];
 
         if (m_prefabKey != "")
         {
@@ -54,26 +52,25 @@ void PrefabGameObject::Serialize(nlohmann::json& jsonData)
 {
     GameObject::Serialize(jsonData);
 
-    jsonData["PrefabKey"] = m_prefabKey;
-    jsonData["PrefabType"] = m_gameObjectType;
+    SaveAllLocalData(jsonData);
 }
 
-void PrefabGameObject::ValidateKeyAndType()
+void PrefabGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
 {
-    if (!ContainsType(m_prefabType))
-    {
-        LOG("Prefab is not of correct type");
-        m_prefabKey = "";
-        m_prefabType = GameObjectType::BASE;
-    }
+    SaveAllLocalData(jsonData);
 }
 
-void PrefabGameObject::SavePrefabData(nlohmann::json& jsonData)
+void PrefabGameObject::SaveAllLocalData(nlohmann::json& jsonData)
 {
     jsonData["PrefabKey"] = m_prefabKey;
+}
 
-    m_prefabType = m_gameObjectType;
-    jsonData["PrefabType"] = m_gameObjectType;
+/// <summary>
+/// True, means this is a prefab
+/// </summary>
+bool PrefabGameObject::IsPrefab()
+{
+    return m_prefabKey != "";
 }
 
 #if EDITOR
@@ -110,7 +107,7 @@ void PrefabGameObject::SavePrefab(string key)
 
     nlohmann::json outData;
 
-    SavePrefabData(outData);
+    SaveAllPrefabData(outData);
 
     fileOut << outData;
 
@@ -125,7 +122,7 @@ void PrefabGameObject::LoadPrefab(string key)
     nlohmann::json dataIn;
     fileIn >> dataIn;
 
-    LoadPrefabData(dataIn);
+    LoadAllPrefabData(dataIn);
 }
 
 void PrefabGameObject::CachePrefabData(string key)
@@ -139,7 +136,7 @@ void PrefabGameObject::CachePrefabData(string key)
     m_prefabFileData = dataIn;
 }
 
-nlohmann::json PrefabGameObject::GetDataLoadedAtCreation()
+nlohmann::json PrefabGameObject::GetPrefabDataLoadedAtCreation()
 {
     return m_prefabFileData;
 }

@@ -120,13 +120,13 @@ void TriggerableGameObject::TriggerCollisionEvents(CollisionEvent* collisionEven
     }
 }
 
-void TriggerableGameObject::LoadPrefabData(const nlohmann::json& jsonData)
+void TriggerableGameObject::LoadAllPrefabData(const nlohmann::json& jsonData)
 {
-    RenderableCollidableGameObject::LoadPrefabData(jsonData);
+    RenderableCollidableGameObject::LoadAllPrefabData(jsonData);
 }
 
-void TriggerableGameObject::SavePrefabData(nlohmann::json& jsonData)
+void TriggerableGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
 {
-    RenderableCollidableGameObject::SavePrefabData(jsonData);
+    RenderableCollidableGameObject::SaveAllPrefabData(jsonData);
 
 }

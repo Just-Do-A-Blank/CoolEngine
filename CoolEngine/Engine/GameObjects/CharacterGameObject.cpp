@@ -55,12 +55,12 @@ void CharacterGameObject::Serialize(nlohmann::json& jsonData)
 	jsonData["Movement Speed"] = m_moveSpeed;
 }
 
-void CharacterGameObject::LoadPrefabData(const nlohmann::json& jsonData)
+void CharacterGameObject::LoadAllPrefabData(const nlohmann::json& jsonData)
 {
-    TriggerableGameObject::LoadPrefabData(jsonData);
+    TriggerableGameObject::LoadAllPrefabData(jsonData);
 }
 
-void CharacterGameObject::SavePrefabData(nlohmann::json& jsonData)
+void CharacterGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
 {
-    TriggerableGameObject::SavePrefabData(jsonData);
+    TriggerableGameObject::SaveAllPrefabData(jsonData);
 }

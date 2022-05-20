@@ -19,17 +19,14 @@ CollidableGameObject::CollidableGameObject(const nlohmann::json& data, CoolUUID 
 {
 	m_gameObjectType |= GameObjectType::COLLIDABLE;
 
-	if (data["ShapeType"] != -1)
-	{
-		if (data["ShapeType"] == "Circle")
-		{
-			m_pcollider = new Circle(data, this);
-		}
-		else
-		{
-			m_pcollider = new Box(data, this);
-		}
-	}
+    if (IsPrefab())
+    {
+        LoadLocalData(GetPrefabDataLoadedAtCreation());
+    }
+    else
+    {
+        LoadLocalData(data);
+    }
 }
 
 CollidableGameObject::CollidableGameObject(CollidableGameObject const& other) : PrefabGameObject(other)
@@ -116,16 +113,48 @@ void CollidableGameObject::Serialize(nlohmann::json& jsonData)
 {
     PrefabGameObject::Serialize(jsonData);
 
-	if (m_pcollider == nullptr)
-	{
-		jsonData["ShapeType"] = -1;
-	}
-	else
-	{
-		m_pcollider->Serialize(jsonData);
-	}
+    SaveAllPrefabData(jsonData);
 }
 #endif
+
+void CollidableGameObject::LoadAllPrefabData(const nlohmann::json& jsonData)
+{
+    PrefabGameObject::LoadAllPrefabData(jsonData);
+    LoadLocalData(jsonData);
+}
+
+void CollidableGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
+{
+    SaveLocalData(jsonData);
+    PrefabGameObject::SaveAllPrefabData(jsonData);
+}
+
+void CollidableGameObject::LoadLocalData(const nlohmann::json& jsonData)
+{
+    if (jsonData["ShapeType"] != -1)
+    {
+        if (jsonData["ShapeType"] == "Circle")
+        {
+            m_pcollider = new Circle(jsonData, this);
+        }
+        else
+        {
+            m_pcollider = new Box(jsonData, this);
+        }
+    }
+}
+
+void CollidableGameObject::SaveLocalData(nlohmann::json& jsonData)
+{
+    if (m_pcollider == nullptr)
+    {
+        jsonData["ShapeType"] = -1;
+    }
+    else
+    {
+        m_pcollider->Serialize(jsonData);
+    }
+}
 
 Shape* CollidableGameObject::GetShape()
 {

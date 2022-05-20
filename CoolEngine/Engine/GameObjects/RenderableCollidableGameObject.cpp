@@ -89,24 +89,31 @@ void RenderableCollidableGameObject::Serialize(nlohmann::json& jsonData)
 {
 	RenderableGameObject::Serialize(jsonData);
 	
-	if (m_pcollider == nullptr)
-	{
-		jsonData["ShapeType"] = -1;
-	}
-	else
-	{
-		m_pcollider->Serialize(jsonData);
-	}
+    SaveLocalData(jsonData);
 }
 
 #endif
 
-void RenderableCollidableGameObject::LoadPrefabData(const nlohmann::json& jsonData)
+void RenderableCollidableGameObject::LoadAllPrefabData(const nlohmann::json& jsonData)
 {
-    RenderableGameObject::LoadPrefabData(jsonData);
+    RenderableGameObject::LoadAllPrefabData(jsonData);
+    CollidableGameObject::LoadLocalData(jsonData);
 }
 
-void RenderableCollidableGameObject::SavePrefabData(nlohmann::json& jsonData)
+void RenderableCollidableGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
 {
-    RenderableGameObject::SavePrefabData(jsonData);
+    SaveLocalData(jsonData);
+    RenderableGameObject::SaveAllPrefabData(jsonData);
+}
+
+void RenderableCollidableGameObject::SaveLocalData(nlohmann::json& jsonData)
+{
+    if (m_pcollider == nullptr)
+    {
+        jsonData["ShapeType"] = -1;
+    }
+    else
+    {
+        m_pcollider->Serialize(jsonData);
+    }
 }

@@ -45,16 +45,14 @@ RenderableGameObject::RenderableGameObject(const nlohmann::json& data, CoolUUID 
 {
     PrefabGameObject::Init(data, uuid);
 
-	m_layer = data["Layers"];
-	m_isRenderable = data["IsRenderable"];
-
-	std::string tempPath = data["TexturePath"];
-	m_texFilepath = std::wstring(tempPath.begin(), tempPath.end());
-
-	SetAlbedo(m_texFilepath);
-
-	m_panimationStateMachine = new AnimationStateMachine();
-	m_panimationStateMachine->Deserialize(data);
+    if (IsPrefab())
+    {
+        LoadLocalData(GetPrefabDataLoadedAtCreation());
+    }
+    else
+    {
+        LoadLocalData(data);
+    }
 
 	m_gameObjectType |= GameObjectType::RENDERABLE;
 
@@ -210,23 +208,49 @@ void RenderableGameObject::Serialize(nlohmann::json& data)
 {
     PrefabGameObject::Serialize(data);
 
-	std::string texPath = std::string(m_texFilepath.begin(), m_texFilepath.end());
-
-	data["Layers"] = m_layer;
-	data["IsRenderable"] = m_isRenderable;
-	data["TexturePath"] = texPath;
-
-	m_panimationStateMachine->Serialize(data);
+    SaveLocalData(data);
 }
 
-void RenderableGameObject::LoadPrefabData(const nlohmann::json& jsonData)
+void RenderableGameObject::LoadLocalData(const nlohmann::json& jsonData)
 {
-    PrefabGameObject::LoadPrefabData(jsonData);
+    m_layer = jsonData["Layers"];
+    m_isRenderable = jsonData["IsRenderable"];
+
+    std::string tempPath = jsonData["TexturePath"];
+    m_texFilepath = std::wstring(tempPath.begin(), tempPath.end());
+
+    SetAlbedo(m_texFilepath);
+
+    if (m_panimationStateMachine == nullptr)
+    {
+        delete m_panimationStateMachine;
+    }
+
+    m_panimationStateMachine = new AnimationStateMachine();
+    m_panimationStateMachine->Deserialize(jsonData);
 }
 
-void RenderableGameObject::SavePrefabData(nlohmann::json& jsonData)
+void RenderableGameObject::SaveLocalData(nlohmann::json& jsonData)
 {
-    PrefabGameObject::SavePrefabData(jsonData);
+    std::string texPath = std::string(m_texFilepath.begin(), m_texFilepath.end());
+
+    jsonData["Layers"] = m_layer;
+    jsonData["IsRenderable"] = m_isRenderable;
+    jsonData["TexturePath"] = texPath;
+
+    m_panimationStateMachine->Serialize(jsonData);
+}
+
+void RenderableGameObject::LoadAllPrefabData(const nlohmann::json& jsonData)
+{
+    PrefabGameObject::LoadAllPrefabData(jsonData);
+    LoadLocalData(jsonData);
+}
+
+void RenderableGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
+{
+    SaveLocalData(jsonData);
+    PrefabGameObject::SaveAllPrefabData(jsonData);
 }
 
 const SpriteAnimation* RenderableGameObject::GetCurrentAnimation()

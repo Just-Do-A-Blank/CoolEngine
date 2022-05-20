@@ -67,7 +67,7 @@ PlayerController::~PlayerController()
     EventManager::Instance()->RemoveClientEvent(EventType::MouseMoved, this);
 }
 
-void PlayerController::LoadPrefabData(const nlohmann::json& jsonData)
+void PlayerController::LoadAllPrefabData(const nlohmann::json& jsonData)
 {
     if (jsonData.contains("PlayerController_SpeedMax"))
     {
@@ -82,7 +82,7 @@ void PlayerController::LoadPrefabData(const nlohmann::json& jsonData)
     }
 }
 
-void PlayerController::SavePrefabData(nlohmann::json& jsonData)
+void PlayerController::SaveAllPrefabData(nlohmann::json& jsonData)
 {
     jsonData["PlayerController_SpeedMax"] = m_moveSpeedMax;
     jsonData["PlayerController_SpeedMultiplier"] = m_speedMultiplierWalking;

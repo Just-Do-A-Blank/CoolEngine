@@ -18,32 +18,31 @@ public:
 #endif
 
 protected:
+    virtual void LoadAllPrefabData(const nlohmann::json& jsonData) {};
+    virtual void SaveAllPrefabData(nlohmann::json& jsonData);
 
-    virtual void CachePrefabData(string key);
-    virtual void LoadPrefabData(const nlohmann::json& jsonData) {};
-    virtual void SavePrefabData(nlohmann::json& jsonData);
+    nlohmann::json GetPrefabDataLoadedAtCreation();
 
-    virtual void InitialPrefabLoad() {}
-    nlohmann::json GetDataLoadedAtCreation();
+    /// <summary>
+    /// True, means this is a prefab
+    /// </summary>
+    bool IsPrefab();
 
 private:
-
-    void ValidateKeyAndType();
-
     /// <summary>
     /// The identifier for the prefab
     /// </summary>
     string m_prefabKey;
-
-    /// <summary>
-    /// The identifier for the prefab
-    /// </summary>
-    GameObjectType m_prefabType;
 
     nlohmann::json m_prefabFileData;
 
     void LoadPrefab(string key);
 
     void SavePrefab(string key);
+
+    virtual void CachePrefabData(string key);
+
+    //void LoadAllLocalData(const nlohmann::json& jsonData);
+    void SaveAllLocalData(nlohmann::json& jsonData);
 };
 
