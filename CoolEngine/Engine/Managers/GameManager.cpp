@@ -30,7 +30,7 @@ void GameManager::Init()
 	m_wideWorkingDirectory = wstring(m_workingDirectory.begin(), m_workingDirectory.end());
 
 	CoolUUID uuid;
-	m_peditorCamera = new EditorCameraGameObject(std::string("Camera"), uuid);
+	m_peditorCamera = new EditorCameraGameObject(std::string("EditorCamera"), uuid);
 }
 
 Timer* GameManager::GetTimer()
