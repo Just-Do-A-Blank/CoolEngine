@@ -5,10 +5,11 @@
 void AnimationStateMachine::Serialize(nlohmann::json& data)
 {
 	data["AnimationStateMachine"]["ActiveState"] = GetStateName(m_pstate);
+	data["AnimationStateMachine"]["States"] = {};
 
 	for (std::unordered_map<std::string, FiniteState*>::iterator it = m_states.begin(); it != m_states.end(); ++it)
 	{
-		it->second->Serialize(data["AnimationStateMachine"], this);
+		it->second->Serialize(data["AnimationStateMachine"]["States"], this);
 	}
 }
 
@@ -16,15 +17,18 @@ void AnimationStateMachine::Deserialize(const nlohmann::json& data)
 {
 	m_states.clear();
 
-	for (nlohmann::json::const_iterator it = data["AnimationStateMachine"].begin(); it != data["AnimationStateMachine"].end(); ++it)
+	if (data["AnimationStateMachine"]["States"] != NULL)
 	{
-		m_states[it.key()] = new AnimationState();
-		m_states[it.key()]->SetName(it.key());
-	}
+		for (nlohmann::json::const_iterator it = data["AnimationStateMachine"]["States"].begin(); it != data["AnimationStateMachine"]["States"].end(); ++it)
+		{
+			m_states[it.key()] = new AnimationState();
+			m_states[it.key()]->SetName(it.key());
+		}
 
-	for (nlohmann::json::const_iterator it = data["AnimationStateMachine"].begin(); it != data["AnimationStateMachine"].end(); ++it)
-	{
-		m_states[it.key()]->Deserialize(data["AnimationStateMachine"], this);
+		for (nlohmann::json::const_iterator it = data["AnimationStateMachine"]["States"].begin(); it != data["AnimationStateMachine"]["States"].end(); ++it)
+		{
+			m_states[it.key()]->Deserialize(data["AnimationStateMachine"]["States"], this);
+		}
 	}
 }
 

@@ -129,7 +129,14 @@ ID3D11ShaderResourceView* SpriteAnimation::GetCurrentFrame() const
 
 void SpriteAnimation::CreateEngineUI()
 {
-	if (EditorUI::Animation("Animation", m_uiFilePath, GetCurrentFrame()) == true)
+	ID3D11ShaderResourceView* psrv = nullptr;
+
+	if (m_pframes != nullptr)
+	{
+		psrv = GetCurrentFrame();
+	}
+
+	if (EditorUI::Animation("Animation", m_uiFilePath, psrv) == true)
 	{
 		SpriteAnimation anim = GraphicsManager::GetInstance()->GetAnimation(m_uiFilePath);
 

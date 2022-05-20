@@ -56,14 +56,14 @@ void AnimationState::Serialize(nlohmann::json& data, FiniteStateMachine* pstateM
 
 	std::string tempAnimPath = std::string(m_animation.GetAnimPath().begin(), m_animation.GetAnimPath().end());
 
-	data["Anim"] = tempAnimPath;
+	data[GetName()]["Anim"] = tempAnimPath;
 }
 
 void AnimationState::Deserialize(const nlohmann::json& data, FiniteStateMachine* pstateMachine)
 {
 	FiniteState::Deserialize(data, pstateMachine);
 
-	std::string tempAnimPath = data["Anim"];
+	std::string tempAnimPath = data[GetName()]["Anim"];
 
 	m_animation = GraphicsManager::GetInstance()->GetAnimation(std::wstring(tempAnimPath.begin(), tempAnimPath.end()));
 }
