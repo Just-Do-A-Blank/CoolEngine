@@ -22,6 +22,7 @@ CameraGameObject::CameraGameObject(string identifier, CoolUUID uuid) : GameObjec
 
 CameraGameObject::CameraGameObject(const nlohmann::json& data, CoolUUID index) : GameObject(data, index)
 {
+	m_gameObjectType |= GameObjectType::CAMERA;
 
 	m_windowHeight = data["Window Height"];
 	m_windowWidth = data["Window Width"];
@@ -102,10 +103,10 @@ void CameraGameObject::Serialize(nlohmann::json& jsonData)
 {
 	GameObject::Serialize(jsonData);
 
-	jsonData["Window Height"].push_back(m_windowHeight);
-	jsonData["Window Width"].push_back(m_windowWidth);
-	jsonData["Near Depth"].push_back(m_nearDepth);
-	jsonData["Far Depth"].push_back(m_farDepth);
+	jsonData["Window Height"] = m_windowHeight;
+	jsonData["Window Width"] = m_windowWidth;
+	jsonData["Near Depth"] = m_nearDepth;
+	jsonData["Far Depth"] = m_farDepth;
 }
 
 XMFLOAT4X4 CameraGameObject::GetView() const
