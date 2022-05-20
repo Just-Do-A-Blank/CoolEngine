@@ -228,9 +228,6 @@
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerRollingState.cpp">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClCompile>
-    <ClCompile Include="PrefabGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\GameObjects\PrefabGameObject.cpp">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClCompile>

@@ -279,7 +279,6 @@
     <ClCompile Include="Engine\GameUI\GameUIComponent.cpp" />
     <ClCompile Include="Engine\GameUI\UICanvas.cpp" />
     <ClCompile Include="Engine\GameUI\ImageComponent.cpp" />
-    <ClCompile Include="PrefabGameObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">

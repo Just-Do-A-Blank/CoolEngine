@@ -118,6 +118,7 @@ void PrefabGameObject::SavePrefab(string key)
 
 void PrefabGameObject::LoadPrefab(string key)
 {
+    key.append(".json");
     std::string path = GameManager::GetInstance()->GetWorkingDirectory() + "\\" + key;
     ifstream fileIn(path);
     nlohmann::json dataIn;
