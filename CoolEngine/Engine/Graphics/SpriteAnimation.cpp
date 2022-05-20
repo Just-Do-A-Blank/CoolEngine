@@ -1,5 +1,5 @@
 #include "SpriteAnimation.h"
-
+#include "Engine/EditorUI/EditorUI.h"
 #include "Engine/Managers/GameManager.h"
 
 SpriteAnimation::SpriteAnimation()
@@ -29,7 +29,7 @@ void SpriteAnimation::SetFrames(std::vector<Frame>* pframes)
 	m_pframes = pframes;
 }
 
-std::vector<Frame>* SpriteAnimation::GetFrames()
+std::vector<Frame>* SpriteAnimation::GetFrames() const
 {
 	return m_pframes;
 }
@@ -39,7 +39,7 @@ const std::wstring& SpriteAnimation::GetAnimPath() const
 	return m_animPath;
 }
 
-bool SpriteAnimation::IsLooping()
+bool SpriteAnimation::IsLooping() const
 {
 	return m_isLooping;
 }
@@ -49,7 +49,7 @@ void SpriteAnimation::SetLooping(bool isLooping)
 	m_isLooping = isLooping;
 }
 
-bool SpriteAnimation::IsPaused()
+bool SpriteAnimation::IsPaused() const
 {
 	return m_isPaused;
 }
@@ -117,7 +117,7 @@ void SpriteAnimation::Restart()
 	m_isPaused = false;
 }
 
-ID3D11ShaderResourceView* SpriteAnimation::GetCurrentFrame()
+ID3D11ShaderResourceView* SpriteAnimation::GetCurrentFrame() const
 {
 	if (m_currentFrameIndex == -1)
 	{
@@ -125,4 +125,38 @@ ID3D11ShaderResourceView* SpriteAnimation::GetCurrentFrame()
 	}
 
 	return m_pframes->at(m_currentFrameIndex).m_ptexture;
+}
+
+void SpriteAnimation::CreateEngineUI()
+{
+	ID3D11ShaderResourceView* psrv = nullptr;
+
+	if (m_pframes != nullptr)
+	{
+		psrv = GetCurrentFrame();
+	}
+
+	if (EditorUI::Animation("Animation", m_uiFilePath, psrv) == true)
+	{
+		SpriteAnimation anim = GraphicsManager::GetInstance()->GetAnimation(m_uiFilePath);
+
+		if (anim.GetFrames() != nullptr)
+		{
+			SetFrames(anim.GetFrames());
+
+			m_animPath = m_uiFilePath;
+
+			Restart();
+		}
+	}
+
+	ImGui::Spacing();
+
+	if (EditorUI::Checkbox("Is Looping", m_isLooping) == true)
+	{
+		if (m_isLooping == true)
+		{
+			Restart();
+		}
+	}
 }

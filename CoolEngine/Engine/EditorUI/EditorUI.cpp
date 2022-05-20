@@ -193,7 +193,7 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 	m_base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
 	int nodeCount = -1;
 
-	TraverseTree(prootNode, nodeCount);
+	TraverseTree(prootNode, m_SelectedNodeIdentifier);
 
 	if (ImGui::BeginMenuBar())
 	{
@@ -584,7 +584,7 @@ void EditorUI::DrawSceneManagementWindow()
 	}
 }
 
-void EditorUI::TraverseTree(TreeNode<GameObject>* pcurrentNode, int& nodeCount)
+void EditorUI::TraverseTree(TreeNode<GameObject>* pcurrentNode, std::string& selectedIdentifier)
 {
 	if (!pcurrentNode)
 	{
@@ -593,17 +593,28 @@ void EditorUI::TraverseTree(TreeNode<GameObject>* pcurrentNode, int& nodeCount)
 
 	GameManager* pgameManager = GameManager::GetInstance();
 
-	++nodeCount;
 	ImGuiTreeNodeFlags node_flags = m_base_flags;
-	const bool is_selected = (m_selectionMask & (1 << nodeCount)) != 0;
 
-
-	if (is_selected)
+	if (selectedIdentifier == pcurrentNode->NodeObject->GetIdentifier())
 	{
 		node_flags |= ImGuiTreeNodeFlags_Selected;
 	}
 
-	bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)nodeCount, node_flags, pcurrentNode->NodeObject->GetIdentifier().c_str(), nodeCount);
+	bool node_open = ImGui::TreeNodeEx(pcurrentNode->NodeObject->GetIdentifier().c_str(), node_flags);
+
+	if (ImGui::IsItemClicked(ImGuiMouseButton_Left) == true && ImGui::IsItemHovered() == true)
+	{
+		if (selectedIdentifier == pcurrentNode->NodeObject->GetIdentifier())
+		{
+			m_selectedGameObjectNode = nullptr;
+			selectedIdentifier = "";
+		}
+		else
+		{
+			m_selectedGameObjectNode = pcurrentNode;
+			selectedIdentifier = pcurrentNode->NodeObject->GetIdentifier();
+		}
+	}
 
 	if (ImGui::BeginDragDropTarget())
 	{
@@ -625,24 +636,18 @@ void EditorUI::TraverseTree(TreeNode<GameObject>* pcurrentNode, int& nodeCount)
 		ImGui::EndDragDropSource();
 	}
 
-	if (ImGui::IsMouseReleased(0) && ImGui::IsItemHovered())
-	{
-		m_gameObjectNodeClicked = nodeCount;
-		m_selectedGameObjectNode = pcurrentNode;
-	}
-
 	if (node_open)
 	{
 		if (pcurrentNode->Child)
 		{
-			TraverseTree(pcurrentNode->Child, nodeCount);
+			TraverseTree(pcurrentNode->Child, selectedIdentifier);
 		}
 		ImGui::TreePop();
 	}
 
 	if (pcurrentNode->Sibling)
 	{
-		TraverseTree(pcurrentNode->Sibling, nodeCount);
+		TraverseTree(pcurrentNode->Sibling, selectedIdentifier);
 	}
 
 
@@ -814,8 +819,10 @@ void EditorUI::DragInt(const string& label, int& value, EditorUIIntParameters pa
 	ImGui::PopID();
 }
 
-void EditorUI::Checkbox(const string& label, bool& value, EditorUINonSpecificParameters parameters)
+bool EditorUI::Checkbox(const string& label, bool& value, EditorUINonSpecificParameters parameters)
 {
+	bool interacted = false;
+
     SetupDefaultsInParameters(parameters);
 
 	ImGui::PushID(label.c_str());
@@ -831,7 +838,10 @@ void EditorUI::Checkbox(const string& label, bool& value, EditorUINonSpecificPar
 	ImGui::PushItemWidth(ImGui::CalcItemWidth());
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
 
-	ImGui::Checkbox("##Checkbox", &value);
+	if (ImGui::Checkbox("##Checkbox", &value) == true)
+	{
+		interacted = true;
+	}
 
 	ImGui::PopItemWidth();
 
@@ -840,6 +850,8 @@ void EditorUI::Checkbox(const string& label, bool& value, EditorUINonSpecificPar
 	ImGui::Columns(1);
 
 	ImGui::PopID();
+
+	return interacted;
 }
 
 bool EditorUI::Texture(const string& label, wstring& filepath, ID3D11ShaderResourceView*& psrv, const float& columnWidth, ImVec2& imageDimensions)
@@ -1035,11 +1047,20 @@ bool EditorUI::Animation(const string& label, wstring& filepath, ID3D11ShaderRes
 		{
 			WCHAR buffer[FILEPATH_BUFFER_SIZE];
 
-			EditorUI::OpenFolderExplorer(buffer, FILEPATH_BUFFER_SIZE);
+			EditorUI::OpenFileExplorer(L"Animation Files\0*.json\0", buffer, FILEPATH_BUFFER_SIZE);
 
-			if (buffer[0] != '\0')
+			std::wstring tempPath = wstring(buffer);
+
+			int index = tempPath.find(L"Animations");
+
+			if (index == -1)
 			{
-				filepath = wstring(buffer);
+				LOG("The resource specified isn't stored in a animation folder!");
+			}
+			else
+			{
+				//Get relative file path
+				filepath = tempPath.substr(index);
 
 				interacted = true;
 			}
@@ -1047,14 +1068,26 @@ bool EditorUI::Animation(const string& label, wstring& filepath, ID3D11ShaderRes
 
 		if (ImGui::BeginDragDropTarget())
 		{
-			const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowserDirectory", ImGuiDragDropFlags_SourceAllowNullID);
+			const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowserFile", ImGuiDragDropFlags_SourceAllowNullID);
 
 			if (ppayload != nullptr)
 			{
 				std::string tempString = std::string((char*)ppayload->Data, ppayload->DataSize / sizeof(char));
-				filepath = wstring(tempString.begin(), tempString.end());
+				std::wstring tempPath = wstring(tempString.begin(), tempString.end());
 
-				interacted = true;
+				int index = tempPath.find(L"Animations");
+
+				if (index == -1)
+				{
+					LOG("The resource specified isn't stored in a animation folder!");
+				}
+				else
+				{
+					//Get relative file path
+					filepath = tempPath.substr(index);
+
+					interacted = true;
+				}
 			}
 
 			ImGui::EndDragDropTarget();
@@ -1119,28 +1152,55 @@ void EditorUI::Animations(const string& label, unordered_map<string, SpriteAnima
 			{
 				WCHAR buffer[FILEPATH_BUFFER_SIZE];
 
-				EditorUI::OpenFolderExplorer(buffer, FILEPATH_BUFFER_SIZE);
+				EditorUI::OpenFileExplorer(L"Animation Files\0*.json\0", buffer, FILEPATH_BUFFER_SIZE);
 
-				filepath = wstring(buffer);
+				std::wstring tempPath = wstring(buffer);
 
-				animOldName = it->first;
+				int index = tempPath.find(L"Animations");
 
-				updateAnim = filepath != L"";
+				if (index == -1)
+				{
+					LOG("The resource specified isn't stored in a animation folder!");
+				}
+				else
+				{
+					//Get relative file path
+					filepath = tempPath.substr(index);
 
-				nameToUpdate = it->first;
+					animOldName = it->first;
+
+					updateAnim = filepath != L"";
+
+					nameToUpdate = it->first;
+				}
 			}
 
 			if (ImGui::BeginDragDropTarget())
 			{
-				const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowserDirectory", ImGuiDragDropFlags_SourceAllowNullID);
+				const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowserFile", ImGuiDragDropFlags_SourceAllowNullID);
 
 				if (ppayload != nullptr)
 				{
 					std::string tempString = std::string((char*)ppayload->Data, ppayload->DataSize / sizeof(char));
-					filepath = wstring(tempString.begin(), tempString.end());
+					std::wstring tempPath = wstring(tempString.begin(), tempString.end());
 
-					updateAnim = true;
-					nameToUpdate = it->first;
+					int index = tempPath.find(L"Animations");
+
+					if (index == -1)
+					{
+						LOG("The resource specified isn't stored in a animation folder!");
+					}
+					else
+					{
+						//Get relative file path
+						filepath = tempPath.substr(index);
+
+						animOldName = it->first;
+
+						updateAnim = filepath != L"";
+
+						nameToUpdate = it->first;
+					}
 				}
 
 				ImGui::EndDragDropTarget();

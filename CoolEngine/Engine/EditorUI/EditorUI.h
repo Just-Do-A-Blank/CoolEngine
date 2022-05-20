@@ -58,6 +58,8 @@ private:
 	int m_animNameUpdateIndex = -1;
 	string m_animUpdateName = "";
 
+	std::string m_SelectedNodeIdentifier = "";
+
 	GameObjectType m_createObjectType;
 	UIComponentType m_createUIComponentType;
 	ContentBrowser m_contentBrowser;
@@ -68,7 +70,7 @@ private:
 
 	void DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice);
 	void DrawSceneManagementWindow();
-	void TraverseTree(TreeNode<GameObject>* pcurrentNode, int& count);
+	void TraverseTree(TreeNode<GameObject>* pcurrentNode, std::string& selectedIdentifier);
 public:
 	EditorUI(ID3D11Device* pdevice);
 
@@ -116,7 +118,7 @@ public:
 
     static void DragInt(const string& label, int& value, EditorUIIntParameters parameters = {});
 
-    static void Checkbox(const string& label, bool& value, EditorUINonSpecificParameters parameters = {});
+    static bool Checkbox(const string& label, bool& value, EditorUINonSpecificParameters parameters = {});
 
 	static bool InputText(const string& label, string& text, EditorUINonSpecificParameters parameters = {});
 	static void IdentifierText(const string& label, string& text, EditorUINonSpecificParameters parameters = {});
