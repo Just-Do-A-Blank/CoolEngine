@@ -626,6 +626,9 @@
     <ClInclude Include="Engine\GameObjects\PrefabGameObject.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\EditorUI\EditorButtonCallback.h">
+      <Filter>Engine\EditorUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Engine\Includes\DirectXTK\SimpleMath.inl" />

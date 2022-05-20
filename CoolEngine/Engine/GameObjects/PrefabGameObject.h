@@ -14,12 +14,13 @@ public:
     virtual void Serialize(nlohmann::json& jsonData) override;
 
 #if EDITOR
-    virtual void ShowEngineUI();
+    virtual void CreateEngineUI() override;
 #endif
 
 protected:
 
     virtual void LoadPrefabData(const nlohmann::json& jsonData) {};
+    virtual void SavePrefabData(nlohmann::json& jsonData);
 
 private:
 
@@ -34,5 +35,9 @@ private:
     /// The identifier for the prefab
     /// </summary>
     GameObjectType m_prefabType;
+
+    void LoadPrefab(string key);
+
+    void SavePrefab(string key);
 };
 

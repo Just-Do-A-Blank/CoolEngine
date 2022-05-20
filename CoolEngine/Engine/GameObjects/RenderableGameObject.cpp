@@ -3,14 +3,14 @@
 #include "Engine/EditorUI/EditorUI.h"
 #include "Engine/Graphics/Mesh.h"
 
-RenderableGameObject::RenderableGameObject() : GameObject()
+RenderableGameObject::RenderableGameObject() : PrefabGameObject()
 {
 	InitGraphics();
 
 	m_gameObjectType |= GameObjectType::RENDERABLE;
 }
 
-RenderableGameObject::RenderableGameObject(RenderableGameObject const& other) : GameObject(other)
+RenderableGameObject::RenderableGameObject(RenderableGameObject const& other) : PrefabGameObject(other)
 {
 	GameObject::Init(other);
 
@@ -39,16 +39,16 @@ RenderableGameObject::RenderableGameObject(RenderableGameObject const& other) : 
 
 }
 
-RenderableGameObject::RenderableGameObject(string identifier, CoolUUID uuid) : GameObject(identifier, uuid)
+RenderableGameObject::RenderableGameObject(string identifier, CoolUUID uuid) : PrefabGameObject(identifier, uuid)
 {
 	InitGraphics();
 
 	m_gameObjectType |= GameObjectType::RENDERABLE;
 }
 
-RenderableGameObject::RenderableGameObject(const nlohmann::json& data, CoolUUID uuid) : GameObject(data, uuid)
+RenderableGameObject::RenderableGameObject(const nlohmann::json& data, CoolUUID uuid) : PrefabGameObject(data, uuid)
 {
-	GameObject::Init(data, uuid);
+    PrefabGameObject::Init(data, uuid);
 
 	m_layer = data["Layers"];
 	m_isRenderable = data["IsRenderable"];
@@ -126,7 +126,7 @@ void RenderableGameObject::EditorUpdate()
 #if EDITOR
 void RenderableGameObject::CreateEngineUI()
 {
-	GameObject::CreateEngineUI();
+    PrefabGameObject::CreateEngineUI();
 
 	if (EditorUI::CollapsingSection("Renderable", true))
 	{
@@ -236,7 +236,7 @@ bool RenderableGameObject::PlayAnimation(std::string name)
 
 void RenderableGameObject::Serialize(nlohmann::json& data)
 {
-	GameObject::Serialize(data);
+    PrefabGameObject::Serialize(data);
 
 	std::string texPath = std::string(m_texFilepath.begin(), m_texFilepath.end());
 
