@@ -74,6 +74,11 @@ bool FiniteStateMachine::RemoveState(std::string stateName)
 		it->second->RemoveTransitions(m_states[stateName]);
 	}
 
+	if (m_pstate == m_states[stateName])
+	{
+		m_pstate = nullptr;
+	}
+
 	delete m_states[stateName];
 	m_states[stateName] = nullptr;
 

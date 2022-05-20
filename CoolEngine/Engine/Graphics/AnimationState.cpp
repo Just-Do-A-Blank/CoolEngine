@@ -57,6 +57,7 @@ void AnimationState::Serialize(nlohmann::json& data, FiniteStateMachine* pstateM
 	std::string tempAnimPath = std::string(m_animation.GetAnimPath().begin(), m_animation.GetAnimPath().end());
 
 	data[GetName()]["Anim"] = tempAnimPath;
+	data[GetName()]["AnimIsLooping"] = m_animation.IsLooping();
 }
 
 void AnimationState::Deserialize(const nlohmann::json& data, FiniteStateMachine* pstateMachine)
@@ -66,6 +67,7 @@ void AnimationState::Deserialize(const nlohmann::json& data, FiniteStateMachine*
 	std::string tempAnimPath = data[GetName()]["Anim"];
 
 	m_animation = GraphicsManager::GetInstance()->GetAnimation(std::wstring(tempAnimPath.begin(), tempAnimPath.end()));
+	m_animation.SetLooping(data[GetName()]["AnimIsLooping"]);
 }
 
 void AnimationState::CreateEngineUI()

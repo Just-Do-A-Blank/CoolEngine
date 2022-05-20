@@ -30,6 +30,17 @@ void AnimationStateMachine::Deserialize(const nlohmann::json& data)
 			m_states[it.key()]->Deserialize(data["AnimationStateMachine"]["States"], this);
 		}
 	}
+
+	std::string activeStateName = data["AnimationStateMachine"]["ActiveState"];
+
+	if (activeStateName == "")
+	{
+		m_pstate = nullptr;
+	}
+	else
+	{
+		m_pstate = m_states[activeStateName];
+	}
 }
 
 #if EDITOR
@@ -70,6 +81,32 @@ void AnimationStateMachine::CreateEngineUI()
 					m_selectedState = it->first;
 				}
 			}
+		}
+
+		ImGui::Text("Active State: ");
+		ImGui::SameLine();
+
+		if (m_pstate == nullptr)
+		{
+			ImGui::Text("Null");
+		}
+		else
+		{
+			ImGui::Text(m_pstate->GetName().c_str());
+		}
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("AnimationState");
+
+			if (ppayload != nullptr)
+			{
+				FiniteState* pstate = *((FiniteState**)ppayload->Data);
+
+				m_pstate = pstate;
+			}
+
+			ImGui::EndDragDropTarget();
 		}
 
 		float windowWidth = ImGui::GetWindowWidth();
