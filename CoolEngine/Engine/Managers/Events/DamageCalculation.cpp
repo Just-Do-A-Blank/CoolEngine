@@ -2,6 +2,7 @@
 #include "Engine/GameObjects/CharacterGameObject.h"
 #include "Engine/GameObjects/WeaponGameObject.h"
 #include "Engine/Managers/Events/EventManager.h"
+#include "Engine/Managers/GameManager.h"
 
 
 DamageCalculation::DamageCalculation()
@@ -53,6 +54,13 @@ void DamageCalculation::TriggerEnter(TriggerEnterEvent* e)
 
 void DamageCalculation::TriggerHold(TriggerHoldEvent* e)
 {
+#if EDITOR
+	if (GameManager::GetInstance()->GetViewState() == ViewState::EDITOR_VIEW)
+	{
+		return;
+	}
+#endif
+
 	if (e->GetGameObject(0)->ContainsType(GameObjectType::CHARACTER) && e->GetGameObject(1)->ContainsType(GameObjectType::WEAPON))
 	{
 		CharacterGameObject* pCharacter = dynamic_cast<CharacterGameObject*>(e->GetGameObject(0));
