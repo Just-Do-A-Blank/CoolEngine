@@ -58,6 +58,7 @@
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerWalkingState.h" />
     <ClInclude Include="Engine\GameObjects\InteractableGameObject.h" />
     <ClInclude Include="Engine\GameObjects\MeleeWeaponGameObject.h" />
+    <ClInclude Include="Engine\GameObjects\PrefabGameObject.h" />
     <ClInclude Include="Engine\GameObjects\RangedWeaponGameObject.h" />
     <ClInclude Include="Engine\GameObjects\RenderableCollidableGameObject.h" />
     <ClInclude Include="Engine\GameObjects\DebugRect.h" />
@@ -276,6 +277,7 @@
     <ClCompile Include="Engine\GameUI\GameUIComponent.cpp" />
     <ClCompile Include="Engine\GameUI\UICanvas.cpp" />
     <ClCompile Include="Engine\GameUI\ImageComponent.cpp" />
+    <ClCompile Include="PrefabGameObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">
