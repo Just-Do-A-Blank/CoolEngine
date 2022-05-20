@@ -63,7 +63,7 @@ public:
 	void Render(RenderStruct& renderStruct);
 
 	void CreateScene(string, bool unloadCurrentScene = false);
-	void LoadSceneFromFile(std::string fileLocation, bool unloadCurrentScene = false);
+	bool LoadSceneFromFile(std::string fileLocation, bool unloadCurrentScene = false);
 	void SwitchScene(Scene* psnene);
 	bool SwitchSceneUsingIdentifier(string sceneIdentifier);
 	void DeleteScene(Scene* pscene);
