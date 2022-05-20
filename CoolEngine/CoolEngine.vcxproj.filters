@@ -227,13 +227,7 @@
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\BulletGameObject.cpp" />
     <ClCompile Include="QuadTree.cpp" />
-    <ClCompile Include="Engine\Includes\Quad Tree\src\ball.cpp">
-      <Filter>Engine\Includes\Quad Tree</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Includes\Quad Tree\src\quadtree.cpp">
-      <Filter>Engine\Includes\Quad Tree</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Includes\Quad Tree\src\util.cpp">
       <Filter>Engine\Includes\Quad Tree</Filter>
     </ClCompile>
   </ItemGroup>
@@ -624,16 +618,7 @@
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\BulletGameObject.h" />
     <ClInclude Include="QuadTree.h" />
-    <ClInclude Include="Engine\Includes\Quad Tree\include\ball.h">
-      <Filter>Engine\Includes\Quad Tree</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Includes\Quad Tree\include\config.h">
-      <Filter>Engine\Includes\Quad Tree</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Includes\Quad Tree\include\quadtree.h">
-      <Filter>Engine\Includes\Quad Tree</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Includes\Quad Tree\include\util.h">
       <Filter>Engine\Includes\Quad Tree</Filter>
     </ClInclude>
   </ItemGroup>

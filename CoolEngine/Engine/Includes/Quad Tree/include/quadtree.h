@@ -1,9 +1,10 @@
 #ifndef QUADTREE_H_
 #define QUADTREE_H_
 
-#include "ball.h"
 #include "Engine/Physics/Box.h"
 #include "Engine/Physics/Circle.h"
+#include "Engine/GameObjects/RenderableCollidableGameObject.h"
+#include "Engine/GameObjects/PlayerGameObject.h"
 #include <vector>
 
 struct RectValues
@@ -16,8 +17,9 @@ struct RectValues
 
 class Quadtree {
 public:
-    Quadtree(int left, int top, int width, int height, Shape* shape);
-    bool InsertElement(Shape*b);
+    Quadtree(float objectRadius);
+    void Init(int left, int top, int width, int height, PlayerGameObject* obj);
+    bool InsertElement(GameObject* shape);
     void Subdivide(Quadtree *root);
     int GetSize() const {
         return children_.size();
@@ -38,19 +40,20 @@ public:
     {
         return m_rectValues;
     }
-    std::vector<Shape *> GetChildren() const {
-        return children_;
+    std::vector<GameObject*> GetChildren() const {
+        return m_children;
     }
     void QtreeCheckCollisions(int &num_collisions);
     void QtreeFreeMemory();
 private:
-    std::vector<Shape *> children_;
+    std::vector<GameObject*> m_children;
     Quadtree *NW_ = nullptr;
     Quadtree *NE_ = nullptr;
     Quadtree *SW_ = nullptr;
     Quadtree *SE_ = nullptr;
     RectValues m_rectValues;
-    Shape* m_shape;
+    PlayerGameObject* m_player;
+    Circle* collider;
 };
 
 #endif // QUADTREE_H_

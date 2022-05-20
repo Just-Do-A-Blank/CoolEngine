@@ -9,7 +9,7 @@ Scene::Scene(string identifier)
 	m_sceneIdentifier = identifier;
 	m_psceneGraph = new SceneGraph<GameObject>();
 	
-	m_tree = new Quadtree(0,0,0,0, nullptr);
+	m_quadtree = new Quadtree(0, 0, 0, 0, nullptr);
 
 }
 
@@ -22,23 +22,39 @@ void Scene::Update()
 {
 	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
 
-	if (gameObjectList.size() != m_treeSize)
+	if (gameObjectList.size() != m_quadtree->GetSize() + m_treeSizeOffset)
 	{
 		for (size_t i = 0; i < gameObjectList.size(); i++)
 		{
 			if (gameObjectList[i]->ContainsType(GameObjectType::COLLIDABLE) && gameObjectList[i]->ContainsType(GameObjectType::RENDERABLE))
 			{
-				XMFLOAT3 pos = gameObjectList[i]->GetTransform()->GetWorldPosition();
-				XMFLOAT3 scale = gameObjectList[i]->GetTransform()->GetWorldScale(); 
-				
+				switch ((AccumlateType)gameObjectList[i]->GetGameObjectType())
+				{
+				case AccumlateType::RENDERABLE:
+					//RenderableGameObject* obj = dynamic_cast<RenderableGameObject*>(gameObjectList[i]);
+					//m_quadtree->InsertElement()
+					break;
 
-				m_tree->insert(pos.x, pos.y, (scale.y * 2.0f), (scale.x * 2.0f), gameObjectList[i]);
-				++m_treeSize;
-				m_tree->
+				case AccumlateType::COLLIDABLE:
+					m_quadtree->InsertElement((dynamic_cast<CollidableGameObject*>(gameObjectList[i])->GetShape()));
+					break;
+
+				case AccumlateType::COLLIDABLE_RENDERERABLE:
+					m_quadtree->InsertElement((dynamic_cast<RenderableCollidableGameObject*>(gameObjectList[i])->GetShape()));
+					break;
+
+				default:
+					continue;
+				}
+
+
+
+				//XMFLOAT3 pos = gameObjectList[i]->GetTransform()->GetWorldPosition();
+				//XMFLOAT3 scale = gameObjectList[i]->GetTransform()->GetWorldScale(); 
 			}
 			else
 			{
-				++m_treeSize;
+				++m_treeSizeOffset;
 			}
 		}
 	}
@@ -86,6 +102,10 @@ void Scene::Render(RenderStruct& renderStruct)
 			continue;
 		}
 	}
+}
+
+void Scene::InitializeQuadTree()
+{
 }
 
 vector<GameObject*>& Scene::GetAllGameObjects()

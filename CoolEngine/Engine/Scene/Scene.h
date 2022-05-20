@@ -24,9 +24,9 @@ private:
 	GameObject* m_pselectedGameObject = nullptr;
 	TreeNode<GameObject>* m_prootTreeNode = nullptr;
 	
-	Quadtree* m_tree = nullptr;
+	Quadtree* m_quadtree = nullptr;
 
-	int m_treeSize = 0;
+	int m_treeSizeOffset = 0;
 
 public:
 	Scene(string identifier);
@@ -37,6 +37,8 @@ public:
 	virtual void Render(RenderStruct& renderStruct);
 
 	SceneGraph<GameObject>* GetSceneGraph();
+
+	void InitializeQuadTree();
 
 private:
 
