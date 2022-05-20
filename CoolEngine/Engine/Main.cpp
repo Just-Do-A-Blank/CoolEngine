@@ -153,8 +153,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//Create scene
 	GameManager* pgameManager = GameManager::GetInstance();
 	pgameManager->CreateScene("TestScene");
-	pgameManager->SelectSceneUsingIdentifier("TestScene");
-	pgameManager->SelectSceneUsingIdentifier("TestScene");
+	pgameManager->SwitchSceneUsingIdentifier("TestScene");
+	pgameManager->CreateGameObject<CameraGameObject>("SceneCamera");
 
 	//Music
 	AudioManager::GetInstance()->LoadMusic(TEST_MUSIC);
@@ -745,7 +745,10 @@ void Render()
 			
 	//Update per frame CB
 	PerFrameCB perFrameCB;
-	XMStoreFloat4x4(&perFrameCB.viewProjection, XMMatrixTranspose(XMLoadFloat4x4(&GameManager::GetInstance()->GetCamera()->GetViewProjection())));
+	if (GameManager::GetInstance()->GetCamera())
+	{
+		XMStoreFloat4x4(&perFrameCB.viewProjection, XMMatrixTranspose(XMLoadFloat4x4(&GameManager::GetInstance()->GetCamera()->GetViewProjection())));
+	}
 
 	GraphicsManager::GetInstance()->m_pperFrameCB->Update(perFrameCB, g_pImmediateContext);
 

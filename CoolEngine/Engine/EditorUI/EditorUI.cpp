@@ -490,25 +490,24 @@ void EditorUI::DrawSceneManagementWindow()
 
 	ImGui::Begin("Scene Manager", nullptr, ImGuiWindowFlags_MenuBar);
 	bool flag = false;
-
-	static int selected = -1;
+	
 	unordered_map<string, Scene*> sceneList = pgameManager->GetSceneList();
 	int sceneCount = 0;
 	for (unordered_map<string, Scene*>::iterator it = sceneList.begin(); it != sceneList.end(); ++it)
 	{
 		string sceneName = it->first;
-		if (ImGui::Selectable(sceneName.c_str(), selected == sceneCount))
+		if (ImGui::Selectable(sceneName.c_str(), m_sceneNodeSelected == sceneCount))
 		{
-			if (selected != sceneCount)
+			if (m_sceneNodeSelected != sceneCount)
 			{
-				selected = sceneCount;
-				pgameManager->SelectScene(it->second);
+				m_sceneNodeSelected = sceneCount;
+				pgameManager->SwitchScene(it->second);
 			}
 
 			else
 			{
-				selected = -1;
-				pgameManager->SelectScene(nullptr);
+				m_sceneNodeSelected = -1;
+				pgameManager->SwitchScene(nullptr);
 			}
 		}
 		++sceneCount;
@@ -531,19 +530,27 @@ void EditorUI::DrawSceneManagementWindow()
 			if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
 			{
 				OpenFileExplorer(L"Scene files\0*.json\0", m_sceneNameBuffer, _countof(m_sceneNameBuffer));
-
+				
 				std::wstring tempString = std::wstring(m_sceneNameBuffer);
-				if (tempString != L"")
+				std::string trueString = std::string(tempString.begin(), tempString.end());
+				int indexOfSlash = tempString.find_last_of('\\');
+
+				std::string sceneName = trueString.substr(indexOfSlash + 1, trueString.length() - indexOfSlash - 6);
+
+				if (tempString != L"" && !GameManager::GetInstance()->SwitchSceneUsingIdentifier(sceneName))
 				{
 					SimpleFileIO::LoadScene(std::string(tempString.begin(), tempString.end()));
+					if (m_sceneNodeSelected != -1)
+					{
+						m_sceneNodeSelected += 1;
+					}
 				}
 			}
 
-			if (ImGui::MenuItem("Delete Scene", "Ctrl+D"))
+			if (ImGui::MenuItem("Delete Scene"))
 			{
 				pgameManager->DeleteSelectedScene();
-				selected = -1;
-				pgameManager->SelectScene(nullptr);
+				m_sceneNodeSelected = 0;
 			}
 
 			ImGui::EndMenu();
@@ -569,7 +576,7 @@ void EditorUI::DrawSceneManagementWindow()
 
 		if (clicked & 1)
 		{
-			pgameManager->CreateScene(sceneName);
+			pgameManager->CreateScene(sceneName, true);
 			m_createSceneClicked = false;
 			sceneName[0] = {};
 		}

@@ -308,6 +308,36 @@ void SceneGraph<T>::DeleteNodeObjectUsingNode(TreeNode<T>* currentNode)
 }
 
 template<class T>
+void SceneGraph<T>::DeleteAllGameObjects()
+{
+	while (m_rootNode)
+	{
+		if (m_rootNode->Child)
+		{
+			DeleteNode(m_rootNode->Child);
+		}
+
+		TreeNode<T>* siblingNode = m_rootNode->Sibling;
+
+		string gameObjectName = m_rootNode->NodeObject->GetIdentifier();
+		m_sceneTreeNodeMap.erase(gameObjectName);
+		m_sceneNodeObjectsMap.erase(gameObjectName);
+		m_sceneNodeObjectList.erase(remove(m_sceneNodeObjectList.begin(), m_sceneNodeObjectList.end(), m_rootNode->NodeObject));
+		m_sceneNodeList.erase(remove(m_sceneNodeList.begin(), m_sceneNodeList.end(), m_rootNode));
+
+		delete m_rootNode->NodeObject;
+		m_rootNode->NodeObject = nullptr;
+		m_rootNode->Sibling = nullptr;
+		m_rootNode->PreviousParent = nullptr;
+		m_rootNode->Child = nullptr;
+		m_rootNode->PreviousSibling = nullptr;
+		delete m_rootNode;
+
+		m_rootNode = siblingNode;
+	}
+}
+
+template<class T>
 TreeNode<T>* SceneGraph<T>::GetRootNode()
 {
 	return m_rootNode;

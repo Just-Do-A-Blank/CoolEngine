@@ -41,6 +41,7 @@ private:
 	bool m_deleteGameObjectClicked = false;
 	static bool s_bisViewportHovered;
 	bool m_cameraPresent = true;
+	int m_sceneNodeSelected = -1;
 
 	static DirectX::XMFLOAT2 s_viewportSize;
 	static DirectX::XMFLOAT2 s_viewportPosition;

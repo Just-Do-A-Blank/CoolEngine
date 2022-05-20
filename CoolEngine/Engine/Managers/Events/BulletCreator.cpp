@@ -36,7 +36,11 @@ void BulletCreator::Update()
 		}
 	}
 
-	Collision::Update(GameManager::GetInstance()->GetAllGameObjectsInCurrentScene(), m_pBulletPool->ReturnPool());
+	Scene* currentScene = GameManager::GetInstance()->GetCurrentScene();
+	if (currentScene)
+	{
+		Collision::Update(currentScene->GetSceneGraph()->GetAllNodeObjects(), m_pBulletPool->ReturnPool());
+	}
 }
 
 BulletCreator::~BulletCreator()
