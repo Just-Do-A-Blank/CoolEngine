@@ -18,6 +18,8 @@ public:
     virtual void CreateEngineUI() override;
 #endif
 
+    const string m_prefabFolder = "//Resources//Prefabs";
+
 protected:
     virtual void LoadAllPrefabData(const nlohmann::json& jsonData) {};
     virtual void SaveAllPrefabData(nlohmann::json& jsonData);

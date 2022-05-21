@@ -81,7 +81,11 @@ bool PrefabGameObject::IsPrefab()
         if (EditorUI::CollapsingSection("Prefab", true))
         {
             ImGui::Spacing();
-            EditorUI::InputText("Key", m_prefabKey);
+
+            EditorUINonSpecificParameters parameters = EditorUINonSpecificParameters();
+            parameters.m_tooltipText = "Unique key which becomes the name of the prefab";
+
+            EditorUI::InputText("Key", m_prefabKey, parameters);
             EditorButtonCallback callbacks = EditorUI::BasicDuelButtons("Save", "Load");
 
             m_basicErrorBox = EditorUI::ErrorPopupBox("PrefabBox", "Could not load Prefab. Ensure it exists and is valid.");
@@ -145,7 +149,7 @@ void PrefabGameObject::SavePrefab(string key)
 {
     key.append(".json");
 
-    std::string path = GameManager::GetInstance()->GetWorkingDirectory() + "\\" + key;
+    std::string path = GameManager::GetInstance()->GetWorkingDirectory() + m_prefabFolder + "\\" + key;
 
     ofstream fileOut(path);
 
@@ -161,7 +165,7 @@ void PrefabGameObject::SavePrefab(string key)
 void PrefabGameObject::LoadPrefab(string key)
 {
     key.append(".json");
-    std::string path = GameManager::GetInstance()->GetWorkingDirectory() + "\\" + key;
+    std::string path = GameManager::GetInstance()->GetWorkingDirectory() + m_prefabFolder + "\\" + key;
 
     if (IsPrefabFileValid(path))
     {
@@ -182,7 +186,7 @@ void PrefabGameObject::LoadPrefab(string key)
 void PrefabGameObject::CachePrefabData(string key)
 {
     key.append(".json");
-    std::string path = GameManager::GetInstance()->GetWorkingDirectory() + "\\" + key;
+    std::string path = GameManager::GetInstance()->GetWorkingDirectory() + m_prefabFolder + "\\" + key;
 
     if (IsPrefabFileValid(path))
     {
@@ -210,7 +214,7 @@ nlohmann::json PrefabGameObject::GetPrefabDataLoadedAtCreation()
 bool PrefabGameObject::CanLoadPrefab(string key)
 {
     key.append(".json");
-    std::string path = GameManager::GetInstance()->GetWorkingDirectory() + "\\" + key;
+    std::string path = GameManager::GetInstance()->GetWorkingDirectory() + m_prefabFolder + "\\" + key;
     return IsPrefabFileValid(path);
 }
 
