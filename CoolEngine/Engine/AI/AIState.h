@@ -3,8 +3,7 @@
 #include <string>
 #include <map>
 
-using namespace std;
-
+class PlayerGameObject;
 class EnemyGameObject;
 struct node;
 
@@ -53,46 +52,48 @@ struct StateTrigger
 class StateBase
 {
 public:
-	StateBase(EnemyGameObject* enemy);
+	StateBase(EnemyGameObject* enemy, PlayerGameObject* player);
 	~StateBase();
 
 	bool CheckStateTrigger(StateTriggers triggerType, float value);
 
 
 
-	enemyState GetState() { return curState; }
+	enemyState GetState() { return m_curState; }
 	void OnStateEntry();
 	void OnStateExit();
 	void ExecuteState();
 
 protected:
 
-	enemyState curState;
-	vector<StateTrigger*> triggers;
+	enemyState m_curState;
+	vector<StateTrigger*> m_pTriggers;
 
 
 	//Pointer to the enemy this state system is part of
-	EnemyGameObject* pEnemy;
+	EnemyGameObject* m_pEnemy;
+	PlayerGameObject* m_pPlayer;
 };
 
 class StateController
 {
 public:
-	StateController(EnemyGameObject* enemy);
+	StateController(EnemyGameObject* enemy, PlayerGameObject* player);
 	~StateController();
 	void Update();
 
 
-	map<enemyState, StateBase*> GetAllStates() { return allStates; }
-	map<enemyState, StateBase*> GetAllActiveStates() { return activeStates; }
+	map<enemyState, StateBase*> GetAllStates() { return m_pAllStates; }
+	map<enemyState, StateBase*> GetAllActiveStates() { return m_pActiveStates; }
 
 	void AddState(StateBase* state);
 
 private:
-	map<enemyState,StateBase*> allStates;
-	map<enemyState,StateBase*> activeStates;
+	map<enemyState,StateBase*> m_pAllStates;
+	map<enemyState,StateBase*> m_pActiveStates;
 
-	EnemyGameObject* pEnemy;
+	EnemyGameObject* m_pEnemy;
+	PlayerGameObject* m_pPlayer;
 
 };
 
@@ -111,15 +112,15 @@ public:
 	void OnStateExit();
 
 protected:
-	StateAttackBase(EnemyGameObject* enemy);
-	bool isAttacking;
+	StateAttackBase(EnemyGameObject* enemy, PlayerGameObject* player);
+	bool m_isAttacking;
 };
 
 class StateAttackMelee : public StateAttackBase
 {
 public:
 
-	StateAttackMelee(EnemyGameObject* enemy);
+	StateAttackMelee(EnemyGameObject* enemy, PlayerGameObject* player);
 
 	void ExecuteState();
 	void OnStateEntry();
@@ -132,7 +133,7 @@ class StateAttackRanged : public StateAttackBase
 {
 public:
 
-	StateAttackRanged(EnemyGameObject* enemy);
+	StateAttackRanged(EnemyGameObject* enemy, PlayerGameObject* player);
 
 	void ExecuteState();
 	void OnStateEntry();
@@ -143,7 +144,7 @@ public:
 
 class StateAbility : public StateAttackBase
 {
-	StateAbility(EnemyGameObject* enemy);
+	StateAbility(EnemyGameObject* enemy, PlayerGameObject* player);
 
 	void ExecuteState();
 	void OnStateEntry();
@@ -159,7 +160,7 @@ class StateAbility : public StateAttackBase
 class StateMovementBase : public StateBase
 {
 protected:
-	StateMovementBase(EnemyGameObject* enemy);
+	StateMovementBase(EnemyGameObject* enemy, PlayerGameObject* player);
 
 	vector<node*> newPath;
 
@@ -175,7 +176,7 @@ protected:
 class StateAdvance : public StateMovementBase
 {
 public:
-	StateAdvance(EnemyGameObject* enemy);
+	StateAdvance(EnemyGameObject* enemy, PlayerGameObject* player);
 
 	void ExecuteState();
 	void OnStateEntry();
@@ -187,7 +188,7 @@ public:
 class StateFlee : public StateMovementBase
 {
 public: 
-	StateFlee(EnemyGameObject* enemy);
+	StateFlee(EnemyGameObject* enemy, PlayerGameObject* player);
 
 	void ExecuteState();
 	void OnStateEntry();
@@ -199,7 +200,7 @@ public:
 class StateStationary : public StateMovementBase
 {
 public:
-	StateStationary(EnemyGameObject* enemy);
+	StateStationary(EnemyGameObject* enemy, PlayerGameObject* player);
 
 	void ExecuteState();
 	void OnStateEntry();
@@ -210,7 +211,7 @@ public:
 class StateWander : public StateMovementBase
 {
 public:
-	StateWander(EnemyGameObject* enemy);
+	StateWander(EnemyGameObject* enemy, PlayerGameObject* player);
 
 	void ExecuteState();
 	void OnStateEntry();
