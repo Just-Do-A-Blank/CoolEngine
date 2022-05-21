@@ -34,6 +34,8 @@ private:
     /// </summary>
     string m_prefabKey;
 
+    bool m_basicErrorBox;
+
     nlohmann::json m_prefabFileData;
 
     void LoadPrefab(string key);
@@ -42,7 +44,9 @@ private:
 
     virtual void CachePrefabData(string key);
 
-    //void LoadAllLocalData(const nlohmann::json& jsonData);
     void SaveAllLocalData(nlohmann::json& jsonData);
+
+    bool CanLoadPrefab(string key);
+    bool IsPrefabFileValid(string location);
 };
 

@@ -84,6 +84,8 @@ bool PrefabGameObject::IsPrefab()
             EditorUI::InputText("Key", m_prefabKey);
             EditorButtonCallback callbacks = EditorUI::BasicDuelButtons("Save", "Load");
 
+            m_basicErrorBox = EditorUI::ErrorPopupBox("PrefabBox", "Could not load Prefab. Ensure it exists and is valid.");
+
             if (callbacks.m_leftButton)
             {
                 SavePrefab(m_prefabKey);
@@ -91,7 +93,15 @@ bool PrefabGameObject::IsPrefab()
 
             if (callbacks.m_rightButton)
             {
-                LoadPrefab(m_prefabKey);
+                if (CanLoadPrefab(m_prefabKey))
+                {
+                    LoadPrefab(m_prefabKey);
+                }
+                else
+                {
+                    EditorUI::ShowError("PrefabBox");
+                    m_basicErrorBox = true;
+                }
             }
         }
     }
@@ -118,25 +128,65 @@ void PrefabGameObject::LoadPrefab(string key)
 {
     key.append(".json");
     std::string path = GameManager::GetInstance()->GetWorkingDirectory() + "\\" + key;
-    ifstream fileIn(path);
-    nlohmann::json dataIn;
-    fileIn >> dataIn;
 
-    LoadAllPrefabData(dataIn);
+    if (IsPrefabFileValid(path))
+    {
+        ifstream fileIn(path);
+        nlohmann::json dataIn;
+        fileIn >> dataIn;
+
+        LoadAllPrefabData(dataIn);
+    }
+    else
+    {
+        m_prefabKey = "";
+    }
 }
 
 void PrefabGameObject::CachePrefabData(string key)
 {
     key.append(".json");
     std::string path = GameManager::GetInstance()->GetWorkingDirectory() + "\\" + key;
-    ifstream fileIn(path);
-    nlohmann::json dataIn;
-    fileIn >> dataIn;
 
-    m_prefabFileData = dataIn;
+    if (IsPrefabFileValid(path))
+    {
+        ifstream fileIn(path);
+        nlohmann::json dataIn;
+        fileIn >> dataIn;
+
+        m_prefabFileData = dataIn;
+    }
+    else
+    {
+        m_prefabFileData = nlohmann::json();
+        m_prefabKey = "";
+    }
+
 }
 
 nlohmann::json PrefabGameObject::GetPrefabDataLoadedAtCreation()
 {
     return m_prefabFileData;
+}
+
+bool PrefabGameObject::CanLoadPrefab(string key)
+{
+    key.append(".json");
+    std::string path = GameManager::GetInstance()->GetWorkingDirectory() + "\\" + key;
+    return IsPrefabFileValid(path);
+}
+
+bool PrefabGameObject::IsPrefabFileValid(string location)
+{
+    ifstream ifile;
+    ifile.open(location);
+
+    bool doesFileExist = false;
+    if (ifile)
+    {
+        doesFileExist = true;
+    }
+    ifile.close();
+
+    return doesFileExist;
 }
