@@ -169,6 +169,7 @@ PlayerGameObject::~PlayerGameObject()
 void PlayerGameObject::Serialize(nlohmann::json& jsonData)
 {
 	CharacterGameObject::Serialize(jsonData);
+    SaveLocalData(jsonData);
 }
 
 void PlayerGameObject::LoadAllPrefabData(const nlohmann::json& jsonData)

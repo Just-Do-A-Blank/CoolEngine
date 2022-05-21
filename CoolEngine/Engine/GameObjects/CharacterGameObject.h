@@ -44,4 +44,8 @@ public:
 	void TakeDamage(float damage);
 
 	virtual void Serialize(nlohmann::json& jsonData) override;
+
+private:
+    void LoadLocalData(const nlohmann::json& jsonData);
+    void SaveLocalData(nlohmann::json& jsonData);
 };
