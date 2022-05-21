@@ -6,6 +6,7 @@
 using namespace std;
 
 class EnemyGameObject;
+struct node;
 
 enum class enemyState
 {
@@ -49,6 +50,30 @@ struct StateTrigger
 
 };
 
+class StateBase
+{
+public:
+	StateBase(EnemyGameObject* enemy);
+	~StateBase();
+
+	bool CheckStateTrigger(StateTriggers triggerType, float value);
+
+
+
+	enemyState GetState() { return curState; }
+	void OnStateEntry();
+	void OnStateExit();
+	void ExecuteState();
+
+protected:
+
+	enemyState curState;
+	vector<StateTrigger*> triggers;
+
+
+	//Pointer to the enemy this state system is part of
+	EnemyGameObject* pEnemy;
+};
 
 class StateController
 {
@@ -71,31 +96,7 @@ private:
 
 };
 
-class StateBase
-{
-public:
-	StateBase(EnemyGameObject* enemy);
-	~StateBase();
 
-	bool CheckStateTrigger(StateTriggers triggerType, float value);
-
-
-
-	enemyState GetState() { return curState; }
-	void OnStateEntry();
-	void OnStateExit();
-	void ExecuteState();
-
-protected:
-
-	enemyState curState;
-	XMFLOAT3 GetPlayerPos();
-	vector<StateTrigger*> triggers;
-
-
-	//Pointer to the enemy this state system is part of
-	EnemyGameObject* pEnemy;
-};
 
 
 

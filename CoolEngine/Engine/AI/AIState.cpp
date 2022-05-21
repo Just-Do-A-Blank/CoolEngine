@@ -3,6 +3,18 @@
 #include "Engine/Managers/GameManager.h"
 #include "Pathfinding.h"
 
+//Local Getter needed by some systems
+
+XMFLOAT3 GetPlayerPos()
+{
+
+	string playerName = "Player";
+	RenderableCollidableGameObject* pgameObject = GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName);
+	//Gets the player's position from the GameManager, for usage within the states for movement / attacking
+	return (GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject>(string("Player")))->GetTransform()->GetPosition();
+}
+
+
 //---------------------------------------------------------------------------//
 //
 // State Controller
@@ -23,7 +35,8 @@ StateController::~StateController()
 
 void StateController::Update()
 {
-	XMFLOAT3 playerPos = (*GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject*>(string("Player")))->GetTransform()->GetPosition();
+
+	XMFLOAT3 playerPos = GetPlayerPos();
 	float distFromPlayer = MathHelper::Distance(playerPos, pEnemy->GetTransform()->GetPosition());
 
 
@@ -131,11 +144,7 @@ void StateBase::OnStateExit()
 {
 }
 
-XMFLOAT3 StateBase::GetPlayerPos()
-{
-	//Gets the player's position from the GameManager, for usage within the states for movement / attacking
-	return (*GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject*>(string("Player")))->GetTransform()->GetPosition();
-}
+
 
 //---------------------------------------------------------------------------//
 // 
@@ -255,7 +264,7 @@ StateAdvance::StateAdvance(EnemyGameObject* enemy) : StateMovementBase(enemy)
 
 void StateAdvance::ExecuteState()
 {
-	XMFLOAT3 playerPos = StateBase::GetPlayerPos();
+	XMFLOAT3 playerPos = GetPlayerPos();
 	XMFLOAT3 enemyPos = pEnemy->GetTransform()->GetPosition();
 
 	//Generating a new path towards the player with each update loop
@@ -288,12 +297,12 @@ StateFlee::StateFlee(EnemyGameObject* enemy) : StateMovementBase(enemy)
 
 void StateFlee::ExecuteState()
 {
-	XMFLOAT3 playerPos = StateBase::GetPlayerPos();
+	XMFLOAT3 playerPos = GetPlayerPos();
 	XMFLOAT3 enemyPos = pEnemy->GetTransform()->GetPosition();
 
 	//Set path to be the furthest node from the player
 	node* closestNode = Pathfinding::GetInstance()->FindClosestNode(enemyPos);
-	node* nodeToPath;
+	node* nodeToPath = nullptr;
 	float distToFurthest = INT64_MIN;
 
 	for (int i = 0; closestNode->m_pNeighbours.size(); i++)
