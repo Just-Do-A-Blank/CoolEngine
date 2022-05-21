@@ -213,21 +213,24 @@ void RenderableGameObject::Serialize(nlohmann::json& data)
 
 void RenderableGameObject::LoadLocalData(const nlohmann::json& jsonData)
 {
-    m_layer = jsonData["Layers"];
-    m_isRenderable = jsonData["IsRenderable"];
-
-    std::string tempPath = jsonData["TexturePath"];
-    m_texFilepath = std::wstring(tempPath.begin(), tempPath.end());
-
-    SetAlbedo(m_texFilepath);
-
-    if (m_panimationStateMachine == nullptr)
+    if (jsonData.contains("Layers"))
     {
-        delete m_panimationStateMachine;
-    }
+        m_layer = jsonData["Layers"];
+        m_isRenderable = jsonData["IsRenderable"];
 
-    m_panimationStateMachine = new AnimationStateMachine();
-    m_panimationStateMachine->Deserialize(jsonData);
+        std::string tempPath = jsonData["TexturePath"];
+        m_texFilepath = std::wstring(tempPath.begin(), tempPath.end());
+
+        SetAlbedo(m_texFilepath);
+
+        if (m_panimationStateMachine == nullptr)
+        {
+            delete m_panimationStateMachine;
+        }
+
+        m_panimationStateMachine = new AnimationStateMachine();
+        m_panimationStateMachine->Deserialize(jsonData);
+    }
 }
 
 void RenderableGameObject::SaveLocalData(nlohmann::json& jsonData)

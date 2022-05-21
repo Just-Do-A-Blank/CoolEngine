@@ -18,6 +18,14 @@ RenderableCollidableGameObject::RenderableCollidableGameObject(string identifier
 
 RenderableCollidableGameObject::RenderableCollidableGameObject(const nlohmann::json& data, CoolUUID uuid) : CollidableGameObject(data, uuid), RenderableGameObject(data, uuid)
 {
+    if (PrefabGameObject::IsPrefab())
+    {
+        CollidableGameObject::LoadLocalData(PrefabGameObject::GetPrefabDataLoadedAtCreation());
+    }
+    else
+    {
+        CollidableGameObject::LoadLocalData(data);
+    }
 }
 
 RenderableCollidableGameObject::RenderableCollidableGameObject(RenderableCollidableGameObject const& other) : RenderableGameObject(other), CollidableGameObject(other)
