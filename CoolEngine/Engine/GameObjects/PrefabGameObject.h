@@ -2,6 +2,9 @@
 #include "Engine/GameObjects/GameObject.h"
 #include "Engine/EditorUI/EditorButtonCallback.h"
 
+/// <summary>
+/// A basic prefab system which allows a single object to be serialized and loaded.
+/// </summary>
 class PrefabGameObject : virtual public GameObject
 {
 public:
@@ -18,12 +21,29 @@ public:
     virtual void CreateEngineUI() override;
 #endif
 
+    /// <summary>
+    /// Which subfolder the prefabs live, releative to the working directory.
+    /// </summary>
     const string m_prefabFolder = "//Resources//Prefabs";
 
 protected:
+
+    /// <summary>
+    /// Load all prefab data - this should be overriden and passed up the chain to save the whole prefab.
+    /// </summary>
+    /// <param name="jsonData">Data to use</param>
     virtual void LoadAllPrefabData(const nlohmann::json& jsonData) {};
+
+    /// <summary>
+    /// Save all prefab data - this should be overriden and passed up the chain to save the whole prefab.
+    /// </summary>
+    /// <param name="jsonData">Data to add to</param>
     virtual void SaveAllPrefabData(nlohmann::json& jsonData);
 
+    /// <summary>
+    /// If this is a prefab, this gets the data to use 
+    /// as opposed to the data saved by the scene which maybe out of date.
+    /// </summary>
     nlohmann::json GetPrefabDataLoadedAtCreation();
 
     /// <summary>
@@ -42,23 +62,63 @@ private:
     /// </summary>
     string m_prefabLoadedKey;
 
+    /// <summary>
+    /// True, means the none button error box is shown
+    /// </summary>
     bool m_basicErrorBox;
 
+    /// <summary>
+    /// True, means the button error box is shown
+    /// </summary>
     bool m_buttonErrorBox;
 
+    /// <summary>
+    /// When using the two button error box, this gives the callbacks from the buttons
+    /// </summary>
     EditorButtonCallback m_buttonMessageBoxCallback;
 
+    /// <summary>
+    /// The data gathered on creation if any
+    /// </summary>
     nlohmann::json m_prefabFileData;
 
+    /// <summary>
+    /// Load the prefab file.
+    /// Note this will not work on consutrction as construction is top down.
+    /// </summary>
+    /// <param name="key">The prefab file</param>
     void LoadPrefab(string key);
 
+    /// <summary>
+    /// Save the prefab to file
+    /// </summary>
+    /// <param name="key">The prefab key</param>
     void SavePrefab(string key);
 
-    virtual void CachePrefabData(string key);
+    /// <summary>
+    /// Stores the data given at launch. Used to allow polymorph children to grab prefab data.
+    /// </summary>
+    /// <param name="key">The prefab key</param>
+    void CachePrefabData(string key);
 
+    /// <summary>
+    /// Saves all local data within this class
+    /// </summary>
+    /// <param name="jsonData">Data to be added to</param>
     void SaveAllLocalData(nlohmann::json& jsonData);
 
+    /// <summary>
+    /// Detirmines if the given key could be loaded if attempted - in theory
+    /// </summary>
+    /// <param name="key">The key (file name no extention)</param>
+    /// <returns>True, means it could be</returns>
     bool CanLoadPrefab(string key);
+
+    /// <summary>
+    /// Detirmines if the prefab file at the location looks acceptable
+    /// </summary>
+    /// <param name="location">The actual location of the prefab file</param>
+    /// <returns>True means valid</returns>
     bool IsPrefabFileValid(string location);
 
     /// <summary>

@@ -55,11 +55,19 @@ void PrefabGameObject::Serialize(nlohmann::json& jsonData)
     SaveAllLocalData(jsonData);
 }
 
+/// <summary>
+/// Save all prefab data - this should be overriden and passed up the chain to save the whole prefab.
+/// </summary>
+/// <param name="jsonData">Data to add to</param>
 void PrefabGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
 {
     SaveAllLocalData(jsonData);
 }
 
+/// <summary>
+/// Saves all local data within this class
+/// </summary>
+/// <param name="jsonData">Data to be added to</param>
 void PrefabGameObject::SaveAllLocalData(nlohmann::json& jsonData)
 {
     jsonData["PrefabKey"] = m_prefabKey;
@@ -149,6 +157,10 @@ bool PrefabGameObject::IsPrefab()
     }
 #endif
 
+/// <summary>
+/// Save the prefab to file
+/// </summary>
+/// <param name="key">The prefab key</param>
 void PrefabGameObject::SavePrefab(string key)
 {
     key.append(".json");
@@ -166,6 +178,11 @@ void PrefabGameObject::SavePrefab(string key)
     fileOut.close();
 }
 
+/// <summary>
+/// Load the prefab file.
+/// Note this will not work on consutrction as construction is top down.
+/// </summary>
+/// <param name="key">The prefab file</param>
 void PrefabGameObject::LoadPrefab(string key)
 {
     key.append(".json");
@@ -187,6 +204,10 @@ void PrefabGameObject::LoadPrefab(string key)
     }
 }
 
+/// <summary>
+/// Stores the data given at launch. Used to allow polymorph children to grab prefab data.
+/// </summary>
+/// <param name="key">The prefab key</param>
 void PrefabGameObject::CachePrefabData(string key)
 {
     key.append(".json");
@@ -210,11 +231,20 @@ void PrefabGameObject::CachePrefabData(string key)
 
 }
 
+/// <summary>
+/// If this is a prefab, this gets the data to use 
+/// as opposed to the data saved by the scene which maybe out of date.
+/// </summary>
 nlohmann::json PrefabGameObject::GetPrefabDataLoadedAtCreation()
 {
     return m_prefabFileData;
 }
 
+/// <summary>
+/// Detirmines if the given key could be loaded if attempted - in theory
+/// </summary>
+/// <param name="key">The key (file name no extention)</param>
+/// <returns>True, means it could be</returns>
 bool PrefabGameObject::CanLoadPrefab(string key)
 {
     key.append(".json");
@@ -222,6 +252,11 @@ bool PrefabGameObject::CanLoadPrefab(string key)
     return IsPrefabFileValid(path);
 }
 
+/// <summary>
+/// Detirmines if the prefab file at the location looks acceptable
+/// </summary>
+/// <param name="location">The actual location of the prefab file</param>
+/// <returns>True means valid</returns>
 bool PrefabGameObject::IsPrefabFileValid(string location)
 {
     ifstream ifile;
