@@ -60,5 +60,23 @@ private:
 
     bool CanLoadPrefab(string key);
     bool IsPrefabFileValid(string location);
+
+    /// <summary>
+    /// Ensures the given string is a valid file name for a prefab (no extention)
+    /// </summary>
+    /// <param name="text">Text to alter</param>
+    void PrepareUserInputAsPrefabFileName(std::string& s);
+
+    /// <summary>
+    /// Trims any space characters on either side of the string
+    /// </summary>
+    /// <param name="text">Text to trim</param>
+    void TrimSpacesEitherSideOfText(std::string& s);
+
+    /// <summary>
+    /// Converts string to lowercase
+    /// </summary>
+    /// <param name="text">Text to alter</param>
+    void TextToLower(string& text);
 };
 

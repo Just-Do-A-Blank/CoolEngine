@@ -114,6 +114,8 @@ bool PrefabGameObject::IsPrefab()
 
             if (callbacks.m_leftButton)
             {
+                PrepareUserInputAsPrefabFileName(m_prefabKey);
+
                 if (m_prefabKey != m_prefabLoadedKey)
                 {
                     if (CanLoadPrefab(m_prefabKey))
@@ -131,6 +133,8 @@ bool PrefabGameObject::IsPrefab()
 
             if (callbacks.m_rightButton)
             {
+                PrepareUserInputAsPrefabFileName(m_prefabKey);
+
                 if (CanLoadPrefab(m_prefabKey))
                 {
                     LoadPrefab(m_prefabKey);
@@ -231,4 +235,41 @@ bool PrefabGameObject::IsPrefabFileValid(string location)
     ifile.close();
 
     return doesFileExist;
+}
+
+/// <summary>
+/// Ensures the given string is a valid file name for a prefab (no extention)
+/// </summary>
+/// <param name="text">Text to alter</param>
+void PrefabGameObject::PrepareUserInputAsPrefabFileName(std::string& s)
+{
+    if (s == "")
+    {
+        return;
+    }
+
+    TrimSpacesEitherSideOfText(s);
+    TextToLower(s);
+}
+
+/// <summary>
+/// Trims any space characters on either side of the string
+/// </summary>
+/// <param name="text">Text to trim</param>
+void PrefabGameObject::TrimSpacesEitherSideOfText(std::string& s)
+{
+    s.erase(0, s.find_first_not_of(' '));
+    s.erase(s.find_last_not_of(' ') + 1);
+}
+
+/// <summary>
+/// Converts string to lowercase
+/// </summary>
+/// <param name="text">Text to alter</param>
+void PrefabGameObject::TextToLower(string& text)
+{
+    for (int i = 0; i < text.length(); ++i)
+    {
+        text[i] = tolower(text[i]);
+    }
 }
