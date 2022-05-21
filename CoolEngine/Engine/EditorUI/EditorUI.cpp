@@ -1563,11 +1563,11 @@ bool EditorUI::ErrorPopupBox(const string& key, const string& body, bool doPopup
         if (ImGui::BeginMenuBar())
         {
             ImGui::Text("Error message");
-
             ImGui::EndMenuBar();
         }
 
         ImGui::Text(body.c_str());
+
         ImGui::EndPopup();
     }
 
@@ -1575,6 +1575,56 @@ bool EditorUI::ErrorPopupBox(const string& key, const string& body, bool doPopup
     ImGui::PopID();
 
     return popup;
+}
+
+/// <summary>
+/// Stores the state of the error message box.
+/// Store the result of this in a bool used to show if the error box is on screen or not.
+/// </summary>
+/// <param name="key">A unique key for the error message box. Recommended: [ClassName]_[Something Unique with your class]</param>
+/// <param name="body">The error to display</param>
+/// <param name="doPopupInCenter">true means the popup will display near to the center of the screen. Default is false.</param>
+/// <returns>True means popup is still on the screen</returns>
+EditorButtonCallback EditorUI::ErrorPopupBoxWithOptions(
+    const string& key,
+    const string& body,
+    const string& leftButton,
+    const string& rightButton,
+    bool doPopupInCenter
+)
+{
+    ImGuiStyle& style = ImGui::GetStyle();
+    ImGui::PushStyleColor(ImGuiCol_MenuBarBg, style.Colors[ImGuiCol_Header]);
+
+    if (doPopupInCenter)
+    {
+        SetNextWindowToCenter();
+    }
+
+    EditorButtonCallback callback = EditorButtonCallback();
+
+    ImGui::PushID(key.c_str());
+    bool popup = ImGui::BeginPopup(key.c_str(), ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize);
+    if (popup)
+    {
+        if (ImGui::BeginMenuBar())
+        {
+            ImGui::Text("Error message");
+
+            ImGui::EndMenuBar();
+        }
+
+        ImGui::Text(body.c_str());
+
+        callback = BasicDuelButtons(leftButton, rightButton);
+
+        ImGui::EndPopup();
+    }
+
+    ImGui::PopStyleColor();
+    ImGui::PopID();
+
+    return callback;
 }
 
 /// <summary>

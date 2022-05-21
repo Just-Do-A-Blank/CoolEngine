@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/GameObjects/GameObject.h"
+#include "Engine/EditorUI/EditorButtonCallback.h"
 
 class PrefabGameObject : virtual public GameObject
 {
@@ -34,7 +35,16 @@ private:
     /// </summary>
     string m_prefabKey;
 
+    /// <summary>
+    /// The prefab key which was last loaded
+    /// </summary>
+    string m_prefabLoadedKey;
+
     bool m_basicErrorBox;
+
+    bool m_buttonErrorBox;
+
+    EditorButtonCallback m_buttonMessageBoxCallback;
 
     nlohmann::json m_prefabFileData;
 

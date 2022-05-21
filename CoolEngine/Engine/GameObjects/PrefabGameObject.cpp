@@ -86,9 +86,43 @@ bool PrefabGameObject::IsPrefab()
 
             m_basicErrorBox = EditorUI::ErrorPopupBox("PrefabBox", "Could not load Prefab. Ensure it exists and is valid.");
 
+            if (m_buttonErrorBox)
+            {
+                m_buttonMessageBoxCallback = EditorUI::ErrorPopupBoxWithOptions
+                    ("PrefabBoxButtons", 
+                    "This is already a valid prefab and you haven't loaded as this prefab.\n Are you sure you want to overrite this?"
+                        ,"Cancel", "Save Anyway");
+
+                if (m_buttonMessageBoxCallback.m_leftButton || m_buttonMessageBoxCallback.m_rightButton)
+                {
+                    m_buttonErrorBox = false;
+
+                    if (m_buttonMessageBoxCallback.m_leftButton)
+                    {
+                        m_prefabKey = m_prefabLoadedKey;
+                    }
+                    else if(m_buttonMessageBoxCallback.m_rightButton)
+                    {
+                        SavePrefab(m_prefabKey);
+                    }
+                }
+            }
+
             if (callbacks.m_leftButton)
             {
-                SavePrefab(m_prefabKey);
+                if (m_prefabKey != m_prefabLoadedKey)
+                {
+                    if (CanLoadPrefab(m_prefabKey))
+                    {
+                        EditorUI::ShowError("PrefabBoxButtons");
+                        m_buttonErrorBox = true;
+                    }
+                }
+
+                if (!m_buttonErrorBox)
+                {
+                    SavePrefab(m_prefabKey);
+                }
             }
 
             if (callbacks.m_rightButton)
@@ -136,6 +170,8 @@ void PrefabGameObject::LoadPrefab(string key)
         fileIn >> dataIn;
 
         LoadAllPrefabData(dataIn);
+
+        m_prefabLoadedKey = m_prefabKey;
     }
     else
     {
@@ -155,6 +191,8 @@ void PrefabGameObject::CachePrefabData(string key)
         fileIn >> dataIn;
 
         m_prefabFileData = dataIn;
+
+        m_prefabLoadedKey = m_prefabKey;
     }
     else
     {

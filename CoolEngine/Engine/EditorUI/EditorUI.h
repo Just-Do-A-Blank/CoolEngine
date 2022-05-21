@@ -159,6 +159,22 @@ public:
     static bool ErrorPopupBox(const string& key, const string& body, bool doPopupInCenter = false);
 
     /// <summary>
+    /// Stores the state of the error message box.
+    /// Store the result of this in a bool used to show if the error box is on screen or not.
+    /// </summary>
+    /// <param name="key">A unique key for the error message box. Recommended: [ClassName]_[Something Unique with your class]</param>
+    /// <param name="body">The error to display</param>
+    /// <param name="doPopupInCenter">true means the popup will display near to the center of the screen. Default is false.</param>
+    /// <returns>True means popup is still on the screen</returns>
+    static EditorButtonCallback ErrorPopupBoxWithOptions(
+        const string& key, 
+        const string& body, 
+        const string& leftButton, 
+        const string& rightButton, 
+        bool doPopupInCenter = false
+    );
+
+    /// <summary>
     /// Called to display the error message box in the key
     /// </summary>
     /// <param name="key">A unique key for the error message box. Recommended: [ClassName]_[Something Unique with your class]</param>
