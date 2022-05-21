@@ -59,6 +59,9 @@ private:
     /// </summary>
     PlayerController* m_playerController;
 
+    void LoadLocalData(const nlohmann::json& jsonData);
+    void SaveLocalData(nlohmann::json& jsonData);
+
     /// <summary>
     /// Handles any keypresses when they are pressed (frame whilst pressed)
     /// </summary>

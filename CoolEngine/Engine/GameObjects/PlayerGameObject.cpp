@@ -131,7 +131,14 @@ PlayerGameObject::PlayerGameObject(const nlohmann::json& data, CoolUUID uuid) : 
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
 	EventManager::Instance()->AddClient(EventType::MouseMoved, this);
 
-    m_playerController->LoadAllPrefabData(PrefabGameObject::GetPrefabDataLoadedAtCreation());
+    if (PrefabGameObject::IsPrefab())
+    {
+        LoadLocalData(PrefabGameObject::GetPrefabDataLoadedAtCreation());
+    }
+    else
+    {
+        LoadLocalData(data);
+    }
 }
 
 PlayerGameObject::PlayerGameObject(PlayerGameObject const& other) : CharacterGameObject(other)
@@ -167,12 +174,22 @@ void PlayerGameObject::Serialize(nlohmann::json& jsonData)
 void PlayerGameObject::LoadAllPrefabData(const nlohmann::json& jsonData)
 {
     CharacterGameObject::LoadAllPrefabData(jsonData);
-    m_playerController->LoadAllPrefabData(jsonData);
+    LoadLocalData(jsonData);
 }
 
 void PlayerGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
 {
+    SaveLocalData(jsonData);
     CharacterGameObject::SaveAllPrefabData(jsonData);
+}
+
+void PlayerGameObject::LoadLocalData(const nlohmann::json& jsonData)
+{
+    m_playerController->LoadAllPrefabData(jsonData);
+}
+
+void PlayerGameObject::SaveLocalData(nlohmann::json& jsonData)
+{
     m_playerController->SaveAllPrefabData(jsonData);
 }
 
