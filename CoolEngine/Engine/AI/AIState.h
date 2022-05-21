@@ -34,16 +34,14 @@ enum class StateTriggers
 struct StateTrigger 
 {
 	StateTriggers reactionVariable;
-	float checkValue;
 	float triggerValue;
 	StateTriggerValueAt triggerWhen;
 
 
-	StateTrigger(StateTriggers ReactionVariable, float valueToTrigger,float TriggerValueWhen, StateTriggerValueAt TriggerWhen)
+	StateTrigger(StateTriggers ReactionVariable,float TriggerValue, StateTriggerValueAt TriggerWhen)
 	{
 		reactionVariable = ReactionVariable;
-		checkValue = valueToTrigger;
-		triggerValue = TriggerValueWhen;
+		triggerValue = TriggerValue;
 		triggerWhen = TriggerWhen;
 	}
 

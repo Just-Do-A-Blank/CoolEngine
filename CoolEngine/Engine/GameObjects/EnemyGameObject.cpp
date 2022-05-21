@@ -8,14 +8,25 @@ EnemyGameObject::EnemyGameObject(string identifier, CoolUUID uuid) : CharacterGa
 
 	string playerName = "Player";
 	PlayerGameObject* pPlayer = GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName);
-
 	m_pUnitStateController = new StateController(this, pPlayer);
 
 
-	StateAttackMelee* melee = new StateAttackMelee(this, pPlayer);
-	melee->AddTrigger(StateTriggers::DistanceFromPlayer, 10, 15, StateTriggerValueAt::Above);
 
-	m_pUnitStateController->AddState(melee);
+
+	//
+	// Example trigger 2 versions of adding to the controller
+	// 
+
+
+	//Example setup of a State. Need to add triggers to the state otherwise the state will never trigger on. This would be an example of "Trigger when distance from player is below 15 units.
+	//StateAttackMelee* melee = new StateAttackMelee(this, pPlayer);
+	//melee->AddTrigger(StateTriggers::DistanceFromPlayer, 15, StateTriggerValueAt::Below);
+	//m_pUnitStateController->AddState(melee);
+
+	//Can also add the trigger post init with below lines (results in the same trigger as above)
+	//StateTrigger* trig = new StateTrigger(StateTriggers::DistanceFromPlayer, 15, StateTriggerValueAt::Below);
+	//m_pUnitStateController->GetAllStates()[enemyState::AttackMelee]->AddTrigger(trig);
+
 
 }
 
