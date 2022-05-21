@@ -73,8 +73,11 @@ void CharacterGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
 
 void CharacterGameObject::LoadLocalData(const nlohmann::json& jsonData)
 {
-    m_moveSpeed = jsonData["Movement Speed"];
-    m_health = jsonData["Health"];
+    if (jsonData.contains("Movement Speed"))
+    {
+        m_moveSpeed = jsonData["Movement Speed"];
+        m_health = jsonData["Health"];
+    }
 }
 
 void CharacterGameObject::SaveLocalData(nlohmann::json& jsonData)
