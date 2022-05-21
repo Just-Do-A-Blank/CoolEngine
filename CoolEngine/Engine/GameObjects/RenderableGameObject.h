@@ -97,8 +97,8 @@ protected:
 
 	AnimationStateMachine* m_panimationStateMachine;
 
-    virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
-    virtual void SaveAllPrefabData(nlohmann::json& jsonData) override;
+    virtual void LoadAllPrefabData(const nlohmann::json& jsonData);// override;
+    virtual void SaveAllPrefabData(nlohmann::json& jsonData);// override;
 
 private:
 

@@ -43,7 +43,7 @@ RenderableGameObject::RenderableGameObject(string identifier, CoolUUID uuid) : P
 
 RenderableGameObject::RenderableGameObject(const nlohmann::json& data, CoolUUID uuid) : PrefabGameObject(data, uuid)
 {
-    PrefabGameObject::Init(data, uuid);
+    GameObject::Init(data, uuid);
 
     if (IsPrefab())
     {

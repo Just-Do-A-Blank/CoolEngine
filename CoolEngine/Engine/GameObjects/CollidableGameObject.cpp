@@ -111,7 +111,7 @@ void CollidableGameObject::CreateEngineUI()
 //Due to diamond pattern code here needs to be updated in RenderableCollidable as well
 void CollidableGameObject::Serialize(nlohmann::json& jsonData)
 {
-    PrefabGameObject::Serialize(jsonData);
+    GameObject::Serialize(jsonData);
 
     SaveAllPrefabData(jsonData);
 }

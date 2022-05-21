@@ -100,8 +100,7 @@ void EditorUI::DrawPlayButtonWindow(XMFLOAT2 buttonSize, float verticalOffset)
 
         if (m_cameraPresent)
         {
-            m_gameObjectNodeClicked = -1;
-            m_selectedGameObjectNode = nullptr;
+            DeselectObjectInScene();
         }
     }
     ImGui::EndDisabled();
@@ -533,12 +532,14 @@ void EditorUI::DrawSceneManagementWindow()
                 std::wstring tempString = std::wstring(m_texNameBuffer);
 
                 SimpleFileIO::LoadScene(std::string(tempString.begin(), tempString.end()));
+                DeselectObjectInScene();
             }
 
             if (ImGui::MenuItem("Delete Scene", "Ctrl+D"))
             {
                 pgameManager->DeleteSelectedScene();
                 selected = -1;
+                DeselectObjectInScene();
                 //pgameManager->SelectScene(nullptr);
             }
 
@@ -684,6 +685,12 @@ void EditorUI::TraverseTree(TreeNode<GameObject>* pcurrentNode, std::string& sel
         m_selectionMask = 0;
     }
 
+}
+
+void EditorUI::DeselectObjectInScene()
+{
+    m_gameObjectNodeClicked = -1;
+    m_selectedGameObjectNode = nullptr;
 }
 
 void EditorUI::ShutdownIMGUI()

@@ -15,14 +15,14 @@ CharacterGameObject::CharacterGameObject(const nlohmann::json& data, CoolUUID uu
 {
 	m_gameObjectType |= GameObjectType::CHARACTER;
 
-    if (PrefabGameObject::IsPrefab())
+    /*if (PrefabGameObject::IsPrefab())
     {
         LoadLocalData(PrefabGameObject::GetPrefabDataLoadedAtCreation());
     }
     else
-    {
+    {*/
         LoadLocalData(data);
-    }
+    //}
 }
 
 CharacterGameObject::CharacterGameObject(CharacterGameObject const& other) : TriggerableGameObject(other)

@@ -74,6 +74,8 @@ private:
 	void DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice);
 	void DrawSceneManagementWindow();
 	void TraverseTree(TreeNode<GameObject>* pcurrentNode, std::string& selectedIdentifier);
+
+    void DeselectObjectInScene();
 public:
     EditorUI(ID3D11Device* pdevice);
 
