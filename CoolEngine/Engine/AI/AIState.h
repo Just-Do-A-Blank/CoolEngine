@@ -52,19 +52,21 @@ struct StateTrigger
 class StateBase
 {
 public:
-	StateBase(EnemyGameObject* enemy, PlayerGameObject* player);
-	~StateBase();
+
 
 	bool CheckStateTrigger(StateTriggers triggerType, float value);
 
-
+	void AddTrigger(StateTrigger* trigger);
+	void AddTrigger(StateTriggers ReactionVariable, float valueToTrigger, float TriggerValueWhen, StateTriggerValueAt TriggerWhen);
 
 	enemyState GetState() { return m_curState; }
-	void OnStateEntry();
-	void OnStateExit();
-	void ExecuteState();
+	virtual void OnStateEntry();
+	virtual void OnStateExit();
+	virtual void ExecuteState();
 
 protected:
+	StateBase(EnemyGameObject* enemy, PlayerGameObject* player);
+	~StateBase();
 
 	enemyState m_curState;
 	vector<StateTrigger*> m_pTriggers;
@@ -107,9 +109,9 @@ class StateAttackBase : public StateBase
 public:
 
 
-	void ExecuteState();
-	void OnStateEntry();
-	void OnStateExit();
+	virtual void ExecuteState();
+	virtual void OnStateEntry();
+	virtual void OnStateExit();
 
 protected:
 	StateAttackBase(EnemyGameObject* enemy, PlayerGameObject* player);
@@ -142,6 +144,7 @@ public:
 
 };
 
+//Not setup, unknown what to do with this yet since abilities arent implimented
 class StateAbility : public StateAttackBase
 {
 	StateAbility(EnemyGameObject* enemy, PlayerGameObject* player);
@@ -164,9 +167,9 @@ protected:
 
 	vector<node*> newPath;
 
-	void ExecuteState();
-	void OnStateEntry();
-	void OnStateExit();
+	virtual void ExecuteState();
+	virtual void OnStateEntry();
+	virtual void OnStateExit();
 
 
 

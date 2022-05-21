@@ -6,18 +6,25 @@ EnemyGameObject::EnemyGameObject(string identifier, CoolUUID uuid) : CharacterGa
 {
     m_gameObjectType = GameObjectType::ENEMY;
 
+	string playerName = "Player";
+	PlayerGameObject* pPlayer = GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName);
+
+	m_pUnitStateController = new StateController(this, pPlayer);
+
+
+	StateAttackMelee* melee = new StateAttackMelee(this, pPlayer);
+	melee->AddTrigger(StateTriggers::DistanceFromPlayer, 10, 15, StateTriggerValueAt::Above);
+
+	m_pUnitStateController->AddState(melee);
+
 }
 
 
 void EnemyGameObject::Update()
 {	
-	if (m_pUnitAIType != nullptr)
+	if (m_pUnitStateController != nullptr)
 	{
-		m_pUnitAIType->Update();
-	}
-	else
-	{
-		LOG("MISSING AI")
+		m_pUnitStateController->Update();
 	}
 
 	if (!m_curPath.empty())
@@ -50,6 +57,10 @@ void EnemyGameObject::Update()
 		//LOG("NO PATH");
 		//Pathfinding::GetInstance()->FindPath(m_transform->GetPosition(), XMFLOAT3(1000, 200, 0), m_curPath); //test function
 	}
+
+
+
+
 
 }
 

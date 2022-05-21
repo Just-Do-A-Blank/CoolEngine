@@ -126,6 +126,16 @@ bool StateBase::CheckStateTrigger(StateTriggers triggerType, float value)
 
 }
 
+void StateBase::AddTrigger(StateTrigger* trigger)
+{
+	m_pTriggers.push_back(trigger);
+}
+
+void StateBase::AddTrigger(StateTriggers ReactionVariable, float valueToTrigger, float TriggerValueWhen, StateTriggerValueAt TriggerWhen)
+{
+	m_pTriggers.push_back(new StateTrigger(ReactionVariable, valueToTrigger, TriggerValueWhen, TriggerWhen));
+}
+
 void StateBase::ExecuteState()
 {
 }

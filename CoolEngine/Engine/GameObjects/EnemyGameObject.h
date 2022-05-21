@@ -29,7 +29,7 @@ private:
 
     vector<node*> m_curPath;
 
-    StateController* m_pUnitAIType;
+    StateController* m_pUnitStateController;
     
 
 };
