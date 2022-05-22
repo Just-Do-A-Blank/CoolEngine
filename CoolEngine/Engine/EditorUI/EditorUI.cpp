@@ -559,13 +559,18 @@ void EditorUI::DrawSceneManagementWindow()
 
         int clicked = 0;
 
-		if (clicked & 1)
-		{
-			pgameManager->CreateScene(sceneName, true);
-			m_createSceneClicked = false;
-			sceneName[0] = {};
-		}
-		ImGui::End();
+        if (ImGui::Button("Create"))
+        {
+            ++clicked;
+        }
+
+        if (clicked & 1)
+        {
+            pgameManager->CreateScene(sceneName, true);
+            m_createSceneClicked = false;
+            sceneName[0] = {};
+        }
+        ImGui::End();
 	}
 	if (m_saveSceneClicked)
 	{
