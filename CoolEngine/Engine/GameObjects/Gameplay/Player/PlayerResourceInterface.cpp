@@ -55,8 +55,7 @@ void PlayerResourceInterface::RemoveResourceFromList(string key)
 
         m_lastEntryIsError = EditorUI::ErrorPopupBox(m_popupKeyResourceKeyFound, m_errorMessage);
 
-        EditorButtonCallback buttonCallbacks = EditorUI::BasicDuelButtons("Save", "Add");
-        if (buttonCallbacks.m_rightButton)
+        if (EditorUI::BasicButton("Add"))
         {
             TrimSpacesEitherSideOfText(m_entryKey);
             TextToLower(m_entryKey);
@@ -77,13 +76,6 @@ void PlayerResourceInterface::RemoveResourceFromList(string key)
                 m_errorMessage = "Key needs to be unique!";
                 EditorUI::ShowError(m_popupKeyResourceKeyFound);
             }
-        }
-
-        if (buttonCallbacks.m_leftButton)
-        {
-            m_lastEntryIsError = true;
-            m_errorMessage = "Not Implemented!";
-            EditorUI::ShowError(m_popupKeyResourceKeyFound);
         }
     }
 

@@ -204,11 +204,62 @@ void PlayerGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
 void PlayerGameObject::LoadLocalData(const nlohmann::json& jsonData)
 {
     m_playerController->LoadAllPrefabData(jsonData);
+    LoadPlayerResources(jsonData);
 }
 
 void PlayerGameObject::SaveLocalData(nlohmann::json& jsonData)
 {
     m_playerController->SaveAllPrefabData(jsonData);
+    SavePlayerResources(jsonData);
+}
+
+/// <summary>
+/// Saves the player resources
+/// </summary>
+/// <param name="name">Data to add to</param>
+void PlayerGameObject::SavePlayerResources(nlohmann::json& jsonData)
+{
+    int i = 0;
+    for (
+        std::map<string, PlayerResource*>::iterator itt = m_resources.begin();
+        itt != m_resources.end(); itt++)
+    {
+        string s = "PlayerResource_" + i++;
+        jsonData[s + "_key"] = itt->second->GetKey();
+        jsonData[s + "_minValue"] = itt->second->GetMinValue();
+        jsonData[s + "_maxValue"] = itt->second->GetMaxValue();
+        jsonData[s + "_defaultValue"] = itt->second->GetDefaultValue();
+    }
+}
+
+/// <summary>
+/// Loads the player resources
+/// </summary>
+/// <param name="name">Data to load from</param>
+void PlayerGameObject::LoadPlayerResources(const nlohmann::json& jsonData)
+{
+    for (
+        std::map<string, PlayerResource*>::iterator itt = m_resources.begin();
+        itt != m_resources.end(); itt++)
+    {
+        delete itt->second;
+    }
+
+    m_resources = map<string, PlayerResource*>();
+
+    int i = 0;
+    string s = "PlayerResource_" + i;
+    while (jsonData.contains(s + "_key"))
+    {
+        PlayerResource* newResource = new PlayerResource(jsonData[s + "_key"]);
+        newResource->SetMinValue(jsonData[s + "_minValue"]);
+        newResource->SetMaxValue(jsonData[s + "_maxValue"]);
+        newResource->SetDefaultValue(jsonData[s + "_defaultValue"]);
+
+        m_resources[jsonData[s + "_key"]] = newResource;
+
+        s = "PlayerResource_" + ++i;
+    }
 }
 
 /// <summary>

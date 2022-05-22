@@ -92,4 +92,16 @@ private:
     /// Handles the mouse moving across the window
     /// </summary>
 	//void MouseMoved(MouseMovedEvent* e);
+
+    /// <summary>
+    /// Saves the player resources
+    /// </summary>
+    /// <param name="name">Data to add to</param>
+    void SavePlayerResources(nlohmann::json& jsonData);
+
+    /// <summary>
+    /// Loads the player resources
+    /// </summary>
+    /// <param name="name">Data to load from</param>
+    void LoadPlayerResources(const nlohmann::json& jsonData);
 };
