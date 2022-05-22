@@ -229,6 +229,8 @@ void PlayerGameObject::SavePlayerResources(nlohmann::json& jsonData)
         jsonData[s + "_minValue"] = itt->second->GetMinValue();
         jsonData[s + "_maxValue"] = itt->second->GetMaxValue();
         jsonData[s + "_defaultValue"] = itt->second->GetDefaultValue();
+        jsonData[s + "_attachToWeaponDamage"] = itt->second->GetAttachesToWeaponDamage();
+        jsonData[s + "_killOnDrain"] = itt->second->GetKillsOnDrain();
     }
 }
 
@@ -255,6 +257,8 @@ void PlayerGameObject::LoadPlayerResources(const nlohmann::json& jsonData)
         newResource->SetMinValue(jsonData[s + "_minValue"]);
         newResource->SetMaxValue(jsonData[s + "_maxValue"]);
         newResource->SetDefaultValue(jsonData[s + "_defaultValue"]);
+        newResource->SetAttachesToWeaponDamage(jsonData[s + "_attachToWeaponDamage"]);
+        newResource->SetKillsOnDrain(jsonData[s + "_killOnDrain"]);
 
         m_resources[jsonData[s + "_key"]] = newResource;
 
@@ -324,6 +328,49 @@ void PlayerGameObject::Update()
 	{
 		m_invincibilityTime = 0;
 	}
+}
+
+void PlayerGameObject::TakeDamage(float damage)
+{
+    CharacterGameObject::TakeDamage(damage);
+
+    for (
+        std::map<string, PlayerResource*>::iterator itt = m_resources.begin();
+        itt != m_resources.end(); itt++)
+    {
+        if (itt->second->GetAttachesToWeaponDamage())
+        {
+            int value = itt->second->GetValue();
+            int newValue = value - damage;
+            if (newValue < itt->second->GetMinValue())
+            {
+                newValue = itt->second->GetMinValue();
+            }
+
+            itt->second->SetValue(newValue);
+        }
+    }
+}
+
+void PlayerGameObject::CheckForPlayerDeath()
+{
+    for (
+        std::map<string, PlayerResource*>::iterator itt = m_resources.begin();
+        itt != m_resources.end(); itt++)
+    {
+        if (itt->second->GetKillsOnDrain())
+        {
+            int value = itt->second->GetValue();
+            int minValue = itt->second->GetMinValue();
+            RunPlayerDeadSequence();
+            return;
+        }
+    }
+}
+
+void PlayerGameObject::RunPlayerDeadSequence()
+{
+    LOG("PLAYER IS DEAD");
 }
 
 void PlayerGameObject::EditorUpdate()

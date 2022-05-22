@@ -108,6 +108,13 @@ void PlayerResourceInterface::RemoveResourceFromList(string key)
             intParameters.m_tooltipText = "On a new game the value of the resource";
             EditorUI::DragInt("Default Value", i->second->m_defaultValue, intParameters);
 
+            EditorUINonSpecificParameters nonSpecificParameters = EditorUINonSpecificParameters();
+            nonSpecificParameters.m_tooltipText = "If ticked then the damage from weapons will be taken by this.";
+            EditorUI::Checkbox("Is Weapon Damage", i->second->m_attachToWeaponDamage, nonSpecificParameters);
+
+            nonSpecificParameters.m_tooltipText = "If ticked then this will kill when active value equals min value";
+            EditorUI::Checkbox("Will Kill", i->second->m_resourceKillOnDrain, nonSpecificParameters);
+
             if (EditorUI::BasicButton("Delete"))
             {
                 m_deleteOnNextLoop = i->first;

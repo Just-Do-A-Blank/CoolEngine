@@ -16,6 +16,10 @@ public:
 
     virtual int GetMinValue();
 
+    virtual bool GetAttachesToWeaponDamage();
+
+    virtual bool GetKillsOnDrain();
+
     virtual void SetValue(int value);
 
     virtual void SetMaxValue(int value);
@@ -23,6 +27,10 @@ public:
     virtual void SetMinValue(int value);
 
     virtual void SetDefaultValue(int value);
+
+    virtual void SetAttachesToWeaponDamage(bool value);
+
+    virtual void SetKillsOnDrain(bool value);
 
 private:
 	int m_value;
@@ -35,5 +43,14 @@ private:
 
 	string m_key;
 	
+    /// <summary>
+    /// True means this attaches to weapon damage
+    /// </summary>
+    bool m_attachToWeaponDamage;
+
+    /// <summary>
+    /// True means if this is min value then it kill the character
+    /// </summary>
+    bool m_resourceKillOnDrain;
 };
 

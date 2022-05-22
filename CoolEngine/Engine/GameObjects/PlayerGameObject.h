@@ -35,6 +35,7 @@ public:
     virtual void CreateEngineUI() override;
 #endif
 
+    virtual void TakeDamage(float damage);
 protected:
 
     virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
@@ -104,4 +105,14 @@ private:
     /// </summary>
     /// <param name="name">Data to load from</param>
     void LoadPlayerResources(const nlohmann::json& jsonData);
+
+    /// <summary>
+    /// Checks to see if the player is dead
+    /// </summary>
+    void CheckForPlayerDeath();
+
+    /// <summary>
+    /// Ends the session as the player is dead
+    /// </summary>
+    void RunPlayerDeadSequence();
 };
