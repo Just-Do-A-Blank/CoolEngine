@@ -423,9 +423,6 @@
     <ClInclude Include="Engine\Managers\Events\KeyEvents.h">
       <Filter>Engine\Managers\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\AI\AIState.h">
-      <Filter>Engine\AI</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\AI\AIState_Controller.h">
       <Filter>Engine\AI\AIState</Filter>
     </ClInclude>
@@ -631,9 +628,6 @@
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\WeaponGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\AI\AIState.cpp">
-      <Filter>Engine\AI</Filter>
     </ClCompile>
     <ClCompile Include="Engine\AI\AIState_Controller.cpp">
       <Filter>Engine\AI\AIState</Filter>

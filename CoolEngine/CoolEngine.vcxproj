@@ -31,7 +31,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine\AI\AIState.h" />
     <ClInclude Include="Engine\AI\AIState_Attack_Base.h" />
     <ClInclude Include="Engine\AI\AIState_Attack_Melee.h" />
     <ClInclude Include="Engine\AI\AIState_Attack_Ranged.h" />
@@ -176,7 +175,6 @@
     <ClInclude Include="Engine\GameUI\ImageComponent.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Engine\AI\AIState.cpp" />
     <ClCompile Include="Engine\AI\AIState_Attack_Base.cpp" />
     <ClCompile Include="Engine\AI\AIState_Attack_Melee.cpp" />
     <ClCompile Include="Engine\AI\AIState_Attack_Ranged.cpp" />
