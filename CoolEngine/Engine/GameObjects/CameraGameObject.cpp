@@ -24,15 +24,7 @@ CameraGameObject::CameraGameObject(const nlohmann::json& data, CoolUUID index) :
 {
 	m_gameObjectType |= GameObjectType::CAMERA;
 
-	m_windowHeight = data["Window Height"];
-	m_windowWidth = data["Window Width"];
-	m_nearDepth = data["Near Depth"];
-	m_farDepth = data["Far Depth"];
-
-	Initialize(m_transform->GetWorldPosition(), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), m_windowWidth, m_windowHeight, m_nearDepth, m_farDepth);
-
-	CreateViewMatrix();
-	CreateProjectionMatrix();
+    LoadLocalData(data);
 }
 
 CameraGameObject::CameraGameObject(CameraGameObject const& other):GameObject(other)
@@ -105,10 +97,31 @@ void CameraGameObject::Serialize(nlohmann::json& jsonData)
 {
 	GameObject::Serialize(jsonData);
 
-	jsonData["Window Height"] = m_windowHeight;
-	jsonData["Window Width"] = m_windowWidth;
-	jsonData["Near Depth"] = m_nearDepth;
-	jsonData["Far Depth"] = m_farDepth;
+    SaveLocalData(jsonData);
+}
+
+void CameraGameObject::LoadLocalData(const nlohmann::json& jsonData)
+{
+    if (jsonData.contains("Window Height"))
+    {
+        m_windowHeight = jsonData["Window Height"];
+        m_windowWidth = jsonData["Window Width"];
+        m_nearDepth = jsonData["Near Depth"];
+        m_farDepth = jsonData["Far Depth"];
+
+        Initialize(m_transform->GetWorldPosition(), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), m_windowWidth, m_windowHeight, m_nearDepth, m_farDepth);
+
+        CreateViewMatrix();
+        CreateProjectionMatrix();
+    }
+}
+
+void CameraGameObject::SaveLocalData(nlohmann::json& jsonData)
+{
+    jsonData["Window Height"] = m_windowHeight;
+    jsonData["Window Width"] = m_windowWidth;
+    jsonData["Near Depth"] = m_nearDepth;
+    jsonData["Far Depth"] = m_farDepth;
 }
 
 XMFLOAT4X4 CameraGameObject::GetView() const
