@@ -498,13 +498,13 @@ void EditorUI::DrawSceneManagementWindow()
             if (selected != sceneCount)
             {
                 selected = sceneCount;
-                //pgameManager->SelectScene(it->second);
+                pgameManager->SwitchScene(it->second);
             }
 
             else
             {
                 selected = -1;
-                //pgameManager->SelectScene(nullptr);
+                pgameManager->SwitchScene(nullptr);
             }
         }
         ++sceneCount;
