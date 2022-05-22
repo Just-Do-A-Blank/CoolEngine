@@ -1,7 +1,9 @@
 #pragma once
 #include "Engine/GameObjects/CharacterGameObject.h"
 #include "Engine/AI/Pathfinding.h"
-#include "Engine/AI/AIState.h"
+//#include "Engine/AI/AIState.h"
+
+class StateController;
 
 
 class EnemyGameObject :

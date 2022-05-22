@@ -1,5 +1,6 @@
 #include "EnemyGameObject.h"
 #include "Engine/Managers/GameManager.h"
+#include "Engine/AI/AIState_Controller.h"
 
 
 EnemyGameObject::EnemyGameObject(string identifier, CoolUUID uuid) : CharacterGameObject(identifier, uuid)
@@ -14,19 +15,28 @@ EnemyGameObject::EnemyGameObject(string identifier, CoolUUID uuid) : CharacterGa
 
 
 	//
-	// Example trigger 2 versions of adding to the controller
+	// Example trigger 4 versions of adding to the controller
 	// 
 
 
-	//Example setup of a State. Need to add triggers to the state otherwise the state will never trigger on. This would be an example of "Trigger when distance from player is below 15 units.
+	//Example setup of a State. Need to add triggers to the state otherwise the state will never trigger on. This would be an example of "Trigger when distance from player is above 0 and below 15"
 	//StateAttackMelee* melee = new StateAttackMelee(this, pPlayer);
-	//melee->AddTrigger(StateTriggers::DistanceFromPlayer, 15, StateTriggerValueAt::Below);
+	//melee->AddTrigger(StateTriggers::DistanceFromPlayer, 0, 15);
 	//m_pUnitStateController->AddState(melee);
 
 	//Can also add the trigger post init with below lines (results in the same trigger as above)
-	//StateTrigger* trig = new StateTrigger(StateTriggers::DistanceFromPlayer, 15, StateTriggerValueAt::Below);
+	//StateTrigger* trig = new StateTrigger(StateTriggers::DistanceFromPlayer, 0,15);
 	//m_pUnitStateController->GetAllStates()[enemyState::AttackMelee]->AddTrigger(trig);
 
+	//This would be an example of "trigger when above 15" - We use int64_max to be "infinite" trigger distance above 15
+	//StateAttackMelee* melee = new StateAttackMelee(this, pPlayer);
+	//melee->AddTrigger(StateTriggers::DistanceFromPlayer, 15, INT64_MAX);
+	//m_pUnitStateController->AddState(melee);
+
+	//This is an example of an infinite trigger. Trigger when above INT64_MIN and below INT64_MIN
+	//StateAttackMelee* melee = new StateAttackMelee(this, pPlayer);
+	//melee->AddTrigger(StateTriggers::DistanceFromPlayer, INT64_MIN, INT64_MAX);
+	//m_pUnitStateController->AddState(melee);
 
 }
 

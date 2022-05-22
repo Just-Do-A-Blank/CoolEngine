@@ -94,6 +94,9 @@
     <Filter Include="Engine\Includes\json">
       <UniqueIdentifier>{6237882f-9709-4e52-95ee-e1af0c58904f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\AI\AIState">
+      <UniqueIdentifier>{88718242-a5e7-46a7-b846-33cad57a65b5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -423,6 +426,36 @@
     <ClInclude Include="Engine\AI\AIState.h">
       <Filter>Engine\AI</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\AI\AIState_Controller.h">
+      <Filter>Engine\AI\AIState</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\AIState_Movement_Advance.h">
+      <Filter>Engine\AI\AIState</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\AIState_Movement_Base.h">
+      <Filter>Engine\AI\AIState</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\AIState_Movement_Flee.h">
+      <Filter>Engine\AI\AIState</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\AIState_Movement_Stationary.h">
+      <Filter>Engine\AI\AIState</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\AIState_Movement_Wander.h">
+      <Filter>Engine\AI\AIState</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\AIState_Attack_Base.h">
+      <Filter>Engine\AI\AIState</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\AIState_Attack_Melee.h">
+      <Filter>Engine\AI\AIState</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\AIState_Attack_Ranged.h">
+      <Filter>Engine\AI\AIState</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\AIState_Base.h">
+      <Filter>Engine\AI\AIState</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Main.cpp">
@@ -601,6 +634,36 @@
     </ClCompile>
     <ClCompile Include="Engine\AI\AIState.cpp">
       <Filter>Engine\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\AIState_Controller.cpp">
+      <Filter>Engine\AI\AIState</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\AIState_Movement_Advance.cpp">
+      <Filter>Engine\AI\AIState</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\AIState_Movement_Base.cpp">
+      <Filter>Engine\AI\AIState</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\AIState_Movement_Flee.cpp">
+      <Filter>Engine\AI\AIState</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\AIState_Movement_Stationary.cpp">
+      <Filter>Engine\AI\AIState</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\AIState_Movement_Wander.cpp">
+      <Filter>Engine\AI\AIState</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\AIState_Attack_Base.cpp">
+      <Filter>Engine\AI\AIState</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\AIState_Attack_Melee.cpp">
+      <Filter>Engine\AI\AIState</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\AIState_Attack_Ranged.cpp">
+      <Filter>Engine\AI\AIState</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\AIState_Base.cpp">
+      <Filter>Engine\AI\AIState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

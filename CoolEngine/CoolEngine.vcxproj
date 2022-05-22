@@ -32,6 +32,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\AI\AIState.h" />
+    <ClInclude Include="Engine\AI\AIState_Attack_Base.h" />
+    <ClInclude Include="Engine\AI\AIState_Attack_Melee.h" />
+    <ClInclude Include="Engine\AI\AIState_Attack_Ranged.h" />
+    <ClInclude Include="Engine\AI\AIState_Base.h" />
+    <ClInclude Include="Engine\AI\AIState_Controller.h" />
+    <ClInclude Include="Engine\AI\AIState_Movement_Advance.h" />
+    <ClInclude Include="Engine\AI\AIState_Movement_Base.h" />
+    <ClInclude Include="Engine\AI\AIState_Movement_Flee.h" />
+    <ClInclude Include="Engine\AI\AIState_Movement_Stationary.h" />
+    <ClInclude Include="Engine\AI\AIState_Movement_Wander.h" />
     <ClInclude Include="Engine\AI\Pathfinding.h" />
     <ClInclude Include="Engine\EditorUI\ContentBrowser.h" />
     <ClInclude Include="Engine\EditorUI\EditorUI.h" />
@@ -167,6 +177,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\AI\AIState.cpp" />
+    <ClCompile Include="Engine\AI\AIState_Attack_Base.cpp" />
+    <ClCompile Include="Engine\AI\AIState_Attack_Melee.cpp" />
+    <ClCompile Include="Engine\AI\AIState_Attack_Ranged.cpp" />
+    <ClCompile Include="Engine\AI\AIState_Base.cpp" />
+    <ClCompile Include="Engine\AI\AIState_Controller.cpp" />
+    <ClCompile Include="Engine\AI\AIState_Movement_Advance.cpp" />
+    <ClCompile Include="Engine\AI\AIState_Movement_Base.cpp" />
+    <ClCompile Include="Engine\AI\AIState_Movement_Flee.cpp" />
+    <ClCompile Include="Engine\AI\AIState_Movement_Stationary.cpp" />
+    <ClCompile Include="Engine\AI\AIState_Movement_Wander.cpp" />
     <ClCompile Include="Engine\AI\Pathfinding.cpp" />
     <ClCompile Include="Engine\EditorUI\ContentBrowser.cpp" />
     <ClCompile Include="Engine\EditorUI\EditorUI.cpp" />
