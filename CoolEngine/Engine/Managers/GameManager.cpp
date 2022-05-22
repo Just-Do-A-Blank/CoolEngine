@@ -38,6 +38,25 @@ Timer* GameManager::GetTimer()
 	return &m_timer;
 }
 
+void GameManager::Start()
+{
+    switch (m_viewState)
+    {
+    case ViewState::EDITOR_VIEW:
+        if (!m_pcurrentEditorScene)
+        {
+            return;
+        }
+
+        m_pcurrentEditorScene->Start();
+        break;
+
+    case ViewState::GAME_VIEW:
+        m_pcurrentGameScene->Start();
+        break;
+    }
+}
+
 void GameManager::Update()
 {
 	switch (m_viewState)
