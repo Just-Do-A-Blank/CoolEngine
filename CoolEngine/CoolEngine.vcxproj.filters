@@ -240,13 +240,14 @@
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerRollingState.cpp">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GameObjects\PrefabGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerResource.cpp">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerResourceInterface.cpp">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
-    <ClCompile Include="Engine\GameObjects\PrefabGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -652,16 +653,17 @@
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerRollingState.h">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerResource.h">
-      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerResourceInterface.h">
-      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     <ClInclude Include="Engine\GameObjects\PrefabGameObject.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="Engine\EditorUI\EditorButtonCallback.h">
       <Filter>Engine\EditorUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerResource.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerResourceInterface.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
