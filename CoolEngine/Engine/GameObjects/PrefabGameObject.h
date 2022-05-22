@@ -23,6 +23,11 @@ public:
     virtual void CreateEngineUI() override;
 #endif
 
+    /// <summary>
+    /// Called after construction, before first Update.
+    /// </summary>
+    virtual void Start() override;
+
 protected:
 
     /// <summary>
@@ -40,6 +45,7 @@ protected:
     /// <summary>
     /// If this is a prefab, this gets the data to use 
     /// as opposed to the data saved by the scene which maybe out of date.
+    /// Only used on CONSTRUCTION and is removed on START.
     /// </summary>
     nlohmann::json GetPrefabDataLoadedAtCreation();
 

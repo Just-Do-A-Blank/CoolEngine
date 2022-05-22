@@ -50,6 +50,12 @@ PrefabGameObject::~PrefabGameObject()
 
 }
 
+void PrefabGameObject::Start()
+{
+    GameObject::Start();
+    m_prefabFileData = nlohmann::json();
+}
+
 void PrefabGameObject::Serialize(nlohmann::json& jsonData)
 {
     GameObject::Serialize(jsonData);
