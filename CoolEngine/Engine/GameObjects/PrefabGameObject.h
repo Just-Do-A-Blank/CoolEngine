@@ -65,7 +65,12 @@ private:
     /// <summary>
     /// True, means the none button error box is shown
     /// </summary>
-    bool m_basicErrorBox;
+    bool m_basicLoadErrorBox;
+
+    /// <summary>
+    /// True, means the none button error box is shown
+    /// </summary>
+    bool m_basicSaveErrorBox;
 
     /// <summary>
     /// True, means the button error box is shown
@@ -138,5 +143,12 @@ private:
     /// </summary>
     /// <param name="text">Text to alter</param>
     void TextToLower(string& text);
+
+    /// <summary>
+    /// Detirmines if this were saved if the prefab is overriden or not
+    /// </summary>
+    /// <param name="key">Key which would be used when saving (the new key)</param>
+    /// <returns>True, means the prefab key is new to this gameobject.</returns>
+    bool IsThisKeyCurrentKeyOrNewKey(string key);
 };
 

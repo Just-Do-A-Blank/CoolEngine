@@ -12,11 +12,12 @@
 
 PrefabGameObject::PrefabGameObject() : GameObject()
 {
-
+    m_prefabLoadedKey = "";
 }
 
 PrefabGameObject::PrefabGameObject(PrefabGameObject const& other) : GameObject(other)
 {
+    m_prefabLoadedKey = "";
     m_prefabKey = other.m_prefabKey;
 
     if (m_prefabKey != "")
@@ -27,11 +28,12 @@ PrefabGameObject::PrefabGameObject(PrefabGameObject const& other) : GameObject(o
 
 PrefabGameObject::PrefabGameObject(string identifier, CoolUUID uuid) : GameObject(identifier, uuid)
 {
-
+    m_prefabLoadedKey = "";
 }
 
 PrefabGameObject::PrefabGameObject(const nlohmann::json& data, CoolUUID uuid) : GameObject(data, uuid)
 {
+    m_prefabLoadedKey = "";
     if (data.contains("PrefabKey"))
     {
         m_prefabKey = data["PrefabKey"];
@@ -96,7 +98,9 @@ bool PrefabGameObject::IsPrefab()
             EditorUI::InputText("Key", m_prefabKey, parameters);
             EditorButtonCallback callbacks = EditorUI::BasicDuelButtons("Save", "Load");
 
-            m_basicErrorBox = EditorUI::ErrorPopupBox("PrefabBox", "Could not load Prefab. Ensure it exists and is valid.");
+            m_basicLoadErrorBox = EditorUI::ErrorPopupBox("PrefabBox", "Could not load Prefab. Ensure it exists and is valid.");
+            m_basicSaveErrorBox = EditorUI::ErrorPopupBox("PrefabBox2", 
+                "Please enter a valid prefab key.\nIf you want this to no longer be a prefab, leave it blank and save the scene.");
 
             if (m_buttonErrorBox)
             {
@@ -124,7 +128,7 @@ bool PrefabGameObject::IsPrefab()
             {
                 PrepareUserInputAsPrefabFileName(m_prefabKey);
 
-                if (m_prefabKey != m_prefabLoadedKey)
+                if (IsThisKeyCurrentKeyOrNewKey(m_prefabKey))
                 {
                     if (CanLoadPrefab(m_prefabKey))
                     {
@@ -133,9 +137,17 @@ bool PrefabGameObject::IsPrefab()
                     }
                 }
 
-                if (!m_buttonErrorBox)
+                if (!m_buttonErrorBox && !m_basicSaveErrorBox)
                 {
-                    SavePrefab(m_prefabKey);
+                    if (m_prefabKey == "")
+                    {
+                        EditorUI::ShowError("PrefabBox2");
+                        m_basicSaveErrorBox = true;
+                    }
+                    else
+                    {
+                        SavePrefab(m_prefabKey);
+                    }
                 }
             }
 
@@ -150,7 +162,7 @@ bool PrefabGameObject::IsPrefab()
                 else
                 {
                     EditorUI::ShowError("PrefabBox");
-                    m_basicErrorBox = true;
+                    m_basicLoadErrorBox = true;
                 }
             }
         }
@@ -307,4 +319,14 @@ void PrefabGameObject::TextToLower(string& text)
     {
         text[i] = tolower(text[i]);
     }
+}
+
+bool PrefabGameObject::IsThisKeyCurrentKeyOrNewKey(string key)
+{
+    if (m_prefabLoadedKey == "")
+    {
+        return false;
+    }
+
+    return key != m_prefabLoadedKey;
 }
