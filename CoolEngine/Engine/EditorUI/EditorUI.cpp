@@ -540,7 +540,7 @@ void EditorUI::DrawSceneManagementWindow()
                 pgameManager->DeleteSelectedScene();
                 selected = -1;
                 DeselectObjectInScene();
-                //pgameManager->SelectScene(nullptr);
+                pgameManager->SwitchScene(nullptr);
             }
 
             ImGui::EndMenu();
