@@ -112,8 +112,7 @@ void EditorUI::DrawPlayButtonWindow(XMFLOAT2 buttonSize, float verticalOffset)
     {
         GameManager::GetInstance()->EndPlay();
 
-        m_gameObjectNodeClicked = -1;
-        m_selectedGameObjectNode = nullptr;
+        DeselectObjectInScene();
     }
     ImGui::EndDisabled();
     ImGui::End();
@@ -531,8 +530,8 @@ void EditorUI::DrawSceneManagementWindow()
 
                 std::wstring tempString = std::wstring(m_texNameBuffer);
 
-                SimpleFileIO::LoadScene(std::string(tempString.begin(), tempString.end()));
                 DeselectObjectInScene();
+                SimpleFileIO::LoadScene(std::string(tempString.begin(), tempString.end()));
             }
 
             if (ImGui::MenuItem("Delete Scene", "Ctrl+D"))
@@ -566,6 +565,7 @@ void EditorUI::DrawSceneManagementWindow()
 
         if (clicked & 1)
         {
+            DeselectObjectInScene();
             pgameManager->CreateScene(sceneName, true);
             m_createSceneClicked = false;
             sceneName[0] = {};
