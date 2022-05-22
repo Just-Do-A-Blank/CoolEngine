@@ -177,7 +177,7 @@ void PrefabGameObject::SavePrefab(string key)
 {
     key.append(".json");
 
-    std::string path = GameManager::GetInstance()->GetWorkingDirectory() + m_prefabFolder + "\\" + key;
+    std::string path = GameManager::GetInstance()->GetWorkingDirectory() + FOLDERLOCATIONPREFAB + "\\" + key;
 
     ofstream fileOut(path);
 
@@ -198,7 +198,7 @@ void PrefabGameObject::SavePrefab(string key)
 void PrefabGameObject::LoadPrefab(string key)
 {
     key.append(".json");
-    std::string path = GameManager::GetInstance()->GetWorkingDirectory() + m_prefabFolder + "\\" + key;
+    std::string path = GameManager::GetInstance()->GetWorkingDirectory() + FOLDERLOCATIONPREFAB + "\\" + key;
 
     if (IsPrefabFileValid(path))
     {
@@ -223,7 +223,7 @@ void PrefabGameObject::LoadPrefab(string key)
 void PrefabGameObject::CachePrefabData(string key)
 {
     key.append(".json");
-    std::string path = GameManager::GetInstance()->GetWorkingDirectory() + m_prefabFolder + "\\" + key;
+    std::string path = GameManager::GetInstance()->GetWorkingDirectory() + FOLDERLOCATIONPREFAB + "\\" + key;
 
     if (IsPrefabFileValid(path))
     {
@@ -260,7 +260,7 @@ nlohmann::json PrefabGameObject::GetPrefabDataLoadedAtCreation()
 bool PrefabGameObject::CanLoadPrefab(string key)
 {
     key.append(".json");
-    std::string path = GameManager::GetInstance()->GetWorkingDirectory() + m_prefabFolder + "\\" + key;
+    std::string path = GameManager::GetInstance()->GetWorkingDirectory() + FOLDERLOCATIONPREFAB + "\\" + key;
     return IsPrefabFileValid(path);
 }
 

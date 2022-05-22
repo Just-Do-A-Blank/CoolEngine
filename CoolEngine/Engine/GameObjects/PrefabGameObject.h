@@ -2,6 +2,8 @@
 #include "Engine/GameObjects/GameObject.h"
 #include "Engine/EditorUI/EditorButtonCallback.h"
 
+#define FOLDERLOCATIONPREFAB "//Resources//Prefabs"
+
 /// <summary>
 /// A basic prefab system which allows a single object to be serialized and loaded.
 /// </summary>
@@ -20,11 +22,6 @@ public:
 #if EDITOR
     virtual void CreateEngineUI() override;
 #endif
-
-    /// <summary>
-    /// Which subfolder the prefabs live, releative to the working directory.
-    /// </summary>
-    const string m_prefabFolder = "//Resources//Prefabs";
 
 protected:
 
