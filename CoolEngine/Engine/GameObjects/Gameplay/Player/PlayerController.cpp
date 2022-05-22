@@ -67,6 +67,33 @@ PlayerController::~PlayerController()
     EventManager::Instance()->RemoveClientEvent(EventType::MouseMoved, this);
 }
 
+void PlayerController::LoadAllPrefabData(const nlohmann::json& jsonData)
+{
+    if (jsonData.contains("PlayerController_SpeedMax"))
+    {
+        m_moveSpeedMax = jsonData["PlayerController_SpeedMax"];
+        m_speedMultiplierWalking = jsonData["PlayerController_SpeedMultiplier"];
+        m_moveSpeedPerFrame = jsonData["PlayerController_WalkingSpeed"];
+        m_dragSpeedPerFrame = jsonData["PlayerController_Drag"];
+        m_dodgeSpeed = jsonData["PlayerController_DragSpeed"];
+        m_timeInSecondsToDodgeFor = jsonData["PlayerController_DragTime"];
+        m_rollSpeed = jsonData["PlayerController_RollSpeed"];
+        m_timeInSecondsToRollFor = jsonData["PlayerController_RollTime"];
+    }
+}
+
+void PlayerController::SaveAllPrefabData(nlohmann::json& jsonData)
+{
+    jsonData["PlayerController_SpeedMax"] = m_moveSpeedMax;
+    jsonData["PlayerController_SpeedMultiplier"] = m_speedMultiplierWalking;
+    jsonData["PlayerController_WalkingSpeed"] = m_moveSpeedPerFrame;
+    jsonData["PlayerController_Drag"] = m_dragSpeedPerFrame;
+    jsonData["PlayerController_DragSpeed"] = m_dodgeSpeed;
+    jsonData["PlayerController_DragTime"] = m_timeInSecondsToDodgeFor;
+    jsonData["PlayerController_RollSpeed"] = m_rollSpeed;
+    jsonData["PlayerController_RollTime"] = m_timeInSecondsToRollFor;
+}
+
 /// <summary>
 /// Handles events from the Observations
 /// </summary>

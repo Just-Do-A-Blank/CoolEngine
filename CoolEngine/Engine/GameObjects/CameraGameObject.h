@@ -33,6 +33,9 @@ public:
 
     virtual void Serialize(nlohmann::json& jsonData) override;
 
+    void LoadLocalData(const nlohmann::json& jsonData);
+    void SaveLocalData(nlohmann::json& jsonData);
+
 	//Getters
 	XMFLOAT4X4 GetView() const;
 	XMFLOAT4X4 GetProjection() const;
