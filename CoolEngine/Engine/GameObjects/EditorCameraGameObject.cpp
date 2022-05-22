@@ -60,8 +60,6 @@ void EditorCameraGameObject::KeyPressed(KeyPressedEvent* e)
 	}
 
 	// Player movement
-	m_movement = XMFLOAT3(0, 0, 0);
-
 	if (e->GetKeyCode() == 'W')
 	{
 		m_movement.y = 1.0f;
@@ -82,14 +80,26 @@ void EditorCameraGameObject::KeyPressed(KeyPressedEvent* e)
 
 void EditorCameraGameObject::KeyReleased(KeyReleasedEvent* e)
 {
-	if (!m_areControlledByUser)
-	{
-
-	}
-
 	if (e->GetKeyCode() == VK_SHIFT)
 	{
 		m_speedBoost = 1.0f;
+	}
+
+	if (e->GetKeyCode() == 'W')
+	{
+		m_movement.y = 0.0f;
+	}
+	if (e->GetKeyCode() == 'S')
+	{
+		m_movement.y = 0.0f;
+	}
+	if (e->GetKeyCode() == 'A')
+	{
+		m_movement.x = 0.0f;
+	}
+	if (e->GetKeyCode() == 'D')
+	{
+		m_movement.x = 0.0f;
 	}
 }
 
@@ -107,6 +117,8 @@ void EditorCameraGameObject::EditorUpdate()
 	{
 		XMStoreFloat3(&m_movement, XMVector3Normalize(XMLoadFloat3(&m_movement)) * m_moveSpeed * m_speedBoost * GameManager::GetInstance()->GetTimer()->DeltaTime());
 		GetTransform()->Translate(m_movement);
+
+		CreateViewMatrix();
 	}
 }
 

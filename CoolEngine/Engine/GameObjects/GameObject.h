@@ -55,7 +55,10 @@ class GameObject : public EditorUIComponent
 	friend class FileIO;
 private:
 
-
+    /// <summary>
+    /// True means start has occured 
+    /// </summary>
+    bool m_bHaveUpdated;
 protected:
 
 	Transform* m_transform;
@@ -79,6 +82,11 @@ public:
 	GameObject(string identifier, CoolUUID uuid);
 	GameObject(const nlohmann::json& data, CoolUUID uuid);
 	virtual ~GameObject();
+
+    /// <summary>
+    /// Called after construction, before first Update.
+    /// </summary>
+	virtual void Start();
 
 	virtual void Update();
 	virtual void EditorUpdate();

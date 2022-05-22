@@ -19,7 +19,7 @@ public:
   
 	virtual ~CameraGameObject()override;
 
-    virtual void Initialize(XMFLOAT3& position, XMFLOAT3& forwardVector, XMFLOAT3& upVector,
+    virtual void Initialize(const XMFLOAT3& position, XMFLOAT3& forwardVector, XMFLOAT3& upVector,
         float& windowWidth, float& windowHeight, float& nearDepth, float& farDepth);
 
     void CreateViewMatrix();
@@ -32,6 +32,9 @@ public:
     virtual void EditorUpdate()override;
 
     virtual void Serialize(nlohmann::json& jsonData) override;
+
+    void LoadLocalData(const nlohmann::json& jsonData);
+    void SaveLocalData(nlohmann::json& jsonData);
 
 	//Getters
 	XMFLOAT4X4 GetView() const;

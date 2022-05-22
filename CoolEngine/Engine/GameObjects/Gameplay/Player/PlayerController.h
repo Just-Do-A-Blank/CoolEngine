@@ -38,6 +38,9 @@ public:
     virtual void CreateEngineUI() override;
 #endif
 
+    virtual void LoadAllPrefabData(const nlohmann::json& jsonData);
+    virtual void SaveAllPrefabData(nlohmann::json& jsonData);
+
 private:
 
     /// <summary>

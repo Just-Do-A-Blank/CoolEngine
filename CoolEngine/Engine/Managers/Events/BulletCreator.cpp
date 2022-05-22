@@ -3,22 +3,54 @@
 #include "Engine/Physics/Box.h"
 #include "Engine/Physics/Circle.h"
 #include "Engine/Managers/Events/EventManager.h"
-#include "Engine/GameObjects/BulletGameObject.h"
+#include "Engine/Physics/Collision.h"
+
 
 
 BulletCreator::BulletCreator()
 {
 	EventManager::Instance()->AddClient(EventType::CreateBullet, this);
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
+
+	m_pBulletPool = new ObjectPool<BulletGameObject>(32);
+}
+
+void BulletCreator::Render(RenderStruct& renderStruct)
+{
+	for (size_t i = 0; i < m_pBulletPool->ReturnPool().size(); ++i)
+	{
+		if (m_pBulletPool->ReturnPool()[i]->m_Active)
+		{
+			m_pBulletPool->ReturnPool()[i]->m_pObject->Render(renderStruct);
+		}
+	}
+}
+
+void BulletCreator::Update()
+{
+	for (size_t i = 0; i < m_pBulletPool->ReturnPool().size(); ++i)
+	{
+		if (m_pBulletPool->ReturnPool()[i]->m_Active)
+		{
+			m_pBulletPool->ReturnPool()[i]->m_pObject->Update();
+		}
+	}
+
+	Scene* currentScene = GameManager::GetInstance()->GetCurrentScene();
+	if (currentScene)
+	{
+		Collision::Update(currentScene->GetSceneGraph()->GetAllNodeObjects(), m_pBulletPool->ReturnPool());
+	}
+}
+
+BulletCreator::~BulletCreator()
+{
+	EventManager::Instance()->RemoveClientEvent(EventType::MouseButtonPressed, this);
 }
 
 void BulletCreator::CreateBullet(CreateBulletEvent* e)
 {
-	string name = "Bullet" + to_string(m_bulletCounter);
-	++m_bulletCounter;
-
-	GameManager::GetInstance()->CreateGameObject<BulletGameObject>(name);
-	BulletGameObject* p_bullet = GameManager::GetInstance()->GetGameObjectUsingIdentifier<BulletGameObject>(name);
+	BulletGameObject* p_bullet =  m_pBulletPool->CreateEntryInPool()->m_pObject;
 
 	XMFLOAT3 objectPos = e->GetStartPos();
 	XMFLOAT3 objectScale = e->GetObj()->GetTransform()->GetWorldScale();
@@ -31,7 +63,7 @@ void BulletCreator::CreateBullet(CreateBulletEvent* e)
 	p_bullet->SetAlbedo(e->GetTextureName());
 	p_bullet->GetTransform()->SetWorldPosition(objectPos);
 	p_bullet->GetTransform()->SetWorldScale(objectScale);
-	Box* pbox = new Box(p_bullet->GetTransform());
+	Box* pbox = new Box(p_bullet);
 	pbox->SetIsCollidable(isCollision);
 	isCollision = true;
 	pbox->SetIsTrigger(isCollision);
@@ -55,7 +87,10 @@ void BulletCreator::TestFire(MouseButtonPressedEvent* e)
 	name = "Player";
 	RenderableCollidableGameObject* p_player = GameManager::GetInstance()->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(name);
 
-	EventManager::Instance()->AddEvent(new CreateBulletEvent(p_weapon, XMFLOAT3(1, 0, 0), p_player->GetTransform()->GetWorldPosition(), DEFAULT_IMGUI_IMAGE));
+	if (p_player != nullptr)
+	{
+		EventManager::Instance()->AddEvent(new CreateBulletEvent(p_weapon, XMFLOAT3(1, 0, 0), p_player->GetTransform()->GetWorldPosition(), DEFAULT_IMGUI_IMAGE));
+	}
 }
 
 void BulletCreator::Handle(Event* e)

@@ -50,7 +50,7 @@ public:
 
     virtual XMFLOAT2 GetShapeDimensions() = 0;
 
-    Transform* m_transform;
+    GameObject* m_pgameObject;
 
 protected:
     ShapeType m_shapeType;

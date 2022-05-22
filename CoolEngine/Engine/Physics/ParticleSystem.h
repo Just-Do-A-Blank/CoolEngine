@@ -32,6 +32,10 @@ private:
 
 	int m_layer = 0;
 
+    void LoadLocalData(const nlohmann::json& jsonData);
+    void SaveLocalData(nlohmann::json& jsonData);
+    void SetLocalDataDefaults();
+
 public:
 	ParticleSystem(string identifier, CoolUUID uuid);
 	ParticleSystem(const nlohmann::json& data, CoolUUID uuid);

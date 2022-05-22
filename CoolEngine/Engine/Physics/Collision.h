@@ -1,9 +1,11 @@
 #pragma once
 #include <math.h>
 #include "Engine/GameObjects/GameObject.h"
+#include "Engine/Structure/ObjectPool.h"
 
 class Box;
 class Circle;
+class BulletGameObject;
 
 class Collision
 {
@@ -65,4 +67,10 @@ public:
 	/// </summary>
 	/// <param name="gameObjectMap"></param>
 	static void Update(vector<GameObject*> gameObjectMap);
+
+	/// <summary>
+	/// Check for collisions between all objects in scene
+	/// </summary>
+	/// <param name="gameObjectMap"></param>
+	static void Update(vector<GameObject*> gameObjectMap, vector<ObjectEntry<BulletGameObject>*> bulletMap);
 };

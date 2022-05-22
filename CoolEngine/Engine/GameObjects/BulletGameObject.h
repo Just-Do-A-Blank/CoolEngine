@@ -5,6 +5,7 @@
 class BulletGameObject : public WeaponGameObject
 {
 public:
+	BulletGameObject();
 	BulletGameObject(string identifier, CoolUUID uuid);
 	BulletGameObject(const nlohmann::json& data, CoolUUID uuid);
 	virtual ~BulletGameObject()override;
@@ -19,7 +20,14 @@ public:
 	void SetDirection(XMFLOAT3 dir) { m_direction = dir; }
 	void SetSpeed(float speed) { m_speed = speed; }
 
+protected:
+    virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
+    virtual void SaveAllPrefabData(nlohmann::json& jsonData) override;
+
 private:
 	XMFLOAT3 m_direction = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	float m_speed = 1.0f;
+
+    void LoadLocalData(const nlohmann::json& jsonData);
+    void SaveLocalData(nlohmann::json& jsonData);
 };

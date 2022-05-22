@@ -1,9 +1,9 @@
 #pragma once
-#include "GameObject.h"
+#include "Engine/GameObjects/PrefabGameObject.h"
 
 class Shape;
 
-class CollidableGameObject : virtual public GameObject
+class CollidableGameObject : public PrefabGameObject
 {
 public:
 	CollidableGameObject();
@@ -25,10 +25,15 @@ public:
 
 	virtual void Serialize(nlohmann::json& jsonData) override;
 
+    virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
+    virtual void SaveAllPrefabData(nlohmann::json& jsonData) override;
+
 protected:
 	Shape* m_pcollider = nullptr;
 
+    void LoadLocalData(const nlohmann::json& jsonData);
 private:
 
+    void SaveLocalData(nlohmann::json& jsonData);
 };
 

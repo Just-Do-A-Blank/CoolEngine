@@ -37,6 +37,9 @@ public:
 
 protected:
 
+    virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
+    virtual void SaveAllPrefabData(nlohmann::json& jsonData) override;
+
     /// <summary>
     /// Occurs when two objects collide without collision on. Fired on enter.
     /// </summary>
@@ -61,6 +64,9 @@ private:
     map<string, PlayerResource*> m_resources;
 
     PlayerResourceInterface* m_resourceInterface;
+	
+    void LoadLocalData(const nlohmann::json& jsonData);
+    void SaveLocalData(nlohmann::json& jsonData);
 
     /// <summary>
     /// Handles any keypresses when they are pressed (frame whilst pressed)
