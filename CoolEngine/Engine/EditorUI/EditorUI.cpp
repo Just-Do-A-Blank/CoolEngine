@@ -1675,4 +1675,130 @@ void EditorUI::SetNextWindowToCenter()
     ImVec2 pos(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
     ImGui::SetNextWindowPos(pos, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 }
+
+/// <summary>
+/// Standard combo box with strings as inputs
+/// </summary>
+/// <param name="label">The label to use</param>
+/// <param name="values">A list of values as string</param>
+/// <param name="selected">The selected value (updated as selected)</param>
+/// <param name="parameters">The non-spesfic parametres</param>
+/// <returns>True means the selection has changed</returns>
+bool EditorUI::ComboBox(const string& label, list<string>& values, string& selected, EditorUINonSpecificParameters parameters)
+{
+    SetupDefaultsInParameters(parameters);
+
+    ImGui::PushID(label.c_str());
+
+    ImGui::Columns(2);
+
+    ImGui::SetColumnWidth(0, parameters.m_columnWidth);
+    ImGui::Text(label.c_str());
+    SetupTooltip(parameters.m_tooltipText);
+
+    ImGui::NextColumn();
+
+    ImGui::PushItemWidth(ImGui::CalcItemWidth());
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+    if (selected == "")
+    {
+        selected = values.front();
+    }
+
+    string originalSelection = selected;
+
+    if (ImGui::BeginCombo("", selected.c_str()))
+    {
+        std::list<string>::iterator it;
+        for (it = values.begin(); it != values.end(); it++)
+        {
+            const bool is_selected = it->c_str() == selected;
+            if (ImGui::Selectable(it->c_str(), is_selected))
+            {
+                selected = it->c_str();
+            }
+
+            if (is_selected)
+            {
+                ImGui::SetItemDefaultFocus();
+            }
+        }
+
+        ImGui::EndCombo();
+    }
+
+    ImGui::PopItemWidth();
+
+    ImGui::PopStyleVar();
+
+    ImGui::Columns(1);
+
+    ImGui::PopID();
+
+    return selected != originalSelection;
+}
+
+/// <summary>
+/// Standard combo box with strings as inputs
+/// </summary>
+/// <param name="label">The label to use</param>
+/// <param name="values">A list of values as string</param>
+/// <param name="selected">The selected value (updated as selected)</param>
+/// <param name="parameters">The non-spesfic parametres</param>
+/// <returns>True means the selection has changed</returns>
+bool EditorUI::ComboBox(const string& label, list<pair<int, string>>& values, pair<int, string>& selected, EditorUINonSpecificParameters parameters)
+{
+    SetupDefaultsInParameters(parameters);
+
+    ImGui::PushID(label.c_str());
+
+    ImGui::Columns(2);
+
+    ImGui::SetColumnWidth(0, parameters.m_columnWidth);
+    ImGui::Text(label.c_str());
+    SetupTooltip(parameters.m_tooltipText);
+
+    ImGui::NextColumn();
+
+    ImGui::PushItemWidth(ImGui::CalcItemWidth());
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+    if (selected.second == "")
+    {
+        selected = values.front();
+    }
+
+    pair<int, string> originalSelection = selected;
+
+    if (ImGui::BeginCombo("", selected.second.c_str()))
+    {
+        std::list<pair<int, string>>::iterator it;
+        for (it = values.begin(); it != values.end(); it++)
+        {
+            const bool is_selected = *it == selected;
+            if (ImGui::Selectable(it->second.c_str(), is_selected))
+            {
+                selected = *it;
+            }
+
+            if (is_selected)
+            {
+                ImGui::SetItemDefaultFocus();
+            }
+        }
+
+        ImGui::EndCombo();
+    }
+
+    ImGui::PopItemWidth();
+
+    ImGui::PopStyleVar();
+
+    ImGui::Columns(1);
+
+    ImGui::PopID();
+
+    return selected != originalSelection;
+}
 #endif

@@ -117,3 +117,8 @@ void BulletCreator::Handle(Event* e)
 		break;
 	}
 }
+
+void BulletCreator::DeleteBullets()
+{
+	m_pBulletPool->ClearPool();
+}
