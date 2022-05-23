@@ -325,6 +325,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	GameManager::GetInstance()->GetTimer()->Tick();
 	GameManager::GetInstance()->GetTimer()->Tick();
 
+
+
 	// Main message loop
 	MSG msg = { 0 };
 	while (WM_QUIT != msg.message)

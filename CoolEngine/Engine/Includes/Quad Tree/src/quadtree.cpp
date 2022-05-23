@@ -2,39 +2,75 @@
 
 
 
-Quadtree::Quadtree(Box* collider)
+Quadtree::Quadtree(XMFLOAT2 pos , int childrenSize, CompassFacing direction, int distantOffset)
 {
-    m_BoxCollider = collider;
+    m_angle = pos;
+    m_children.reserve(childrenSize);
+    m_maxNodeSize = childrenSize;
+    m_direction = direction;
+    m_objectOffset = distantOffset;
 }
+
+Quadtree::Quadtree(XMFLOAT2 pos, int childrenSize, int distantOffset)
+{
+    m_angle = pos;
+    m_children.reserve(childrenSize);
+    m_maxNodeSize = childrenSize;
+    m_direction = CompassFacing::Centre;
+    m_objectOffset = distantOffset;
+
+    NW_ = new Quadtree(XMFLOAT2(-1.f + pos.x, pos.y), childrenSize, CompassFacing::NorthWest, distantOffset);
+    NE_ = new Quadtree(XMFLOAT2(1.f + pos.x, pos.y), childrenSize, CompassFacing::NorthEast, distantOffset);
+    SW_ = new Quadtree(XMFLOAT2(-1.f + pos.x, pos.y), childrenSize, CompassFacing::SouthWest, distantOffset);
+    SE_ = new Quadtree(XMFLOAT2(1.f + pos.x, pos.y), childrenSize, CompassFacing::SouthEast, distantOffset);
+}
+
+
 
 Quadtree::~Quadtree()
 {
 }
 
-void Quadtree::Init(int left, int top, int width, int height, PlayerGameObject* obj)
-{
-    
-    m_player = obj;
-}
-
-
 bool Quadtree::InsertElement(GameObject* obj)
 {
-    if (m_children == nullptr)
+    if (m_children.size() < m_maxNodeSize)
     {
-        m_Child = obj;
+        m_children.push_back(obj);
         return true;
     }
     if(NW_ == nullptr) {
         Subdivide(this);
     }
-    bool insert_NW = NW_->InsertElement(obj);
-    bool insert_NE = NE_->InsertElement(obj);
-    bool insert_SW = SW_->InsertElement(obj);
-    bool insert_SE = SE_->InsertElement(obj);
-    if(insert_NW || insert_NE || insert_SW || insert_SE) {
-        return true;
+
+    XMFLOAT3 pos = obj->GetTransform()->GetWorldPosition();
+
+    bool insert_NW = false;
+    bool insert_NE = false;
+    bool insert_SE = false;
+    bool insert_SW = false;
+
+    if (pos.x <= NW_->m_angle.x && pos.y >= NW_->m_angle.y)
+    {
+        insert_NW = NW_->InsertElement(obj);
+        return insert_NW;
     }
+    if (pos.x >= NE_->m_angle.y && pos.y >= NE_->m_angle.y)
+    {
+        insert_NE = NE_->InsertElement(obj);
+        return insert_NE;
+    }
+    if (pos.x <= SW_->m_angle.x && pos.y <= SW_->m_angle.y)
+    {
+        insert_SE = SW_->InsertElement(obj);
+        return insert_SE;
+    }
+    if (pos.x >= SE_->m_angle.x && pos.y <= SE_->m_angle.y)
+    {
+        insert_SW = SE_->InsertElement(obj);
+        return insert_SW;
+    }
+
+
     std::cout << "In Insert element(), this should never happen." << std::endl;
     //assert(false);
     return false;
@@ -45,63 +81,54 @@ void Quadtree::Subdivide(Quadtree * root) {
 
     if (NW_ != nullptr)
     {
-
+        delete NW_;
     }
     if (NE_ != nullptr)
     {
-
+        delete NE_;
     }
     if (SW_ != nullptr)
     {
-
+        delete SW_;
     }
     if (SE_ != nullptr)
     {
-
+        delete SE_;
     }
 
-
-    int new_width = GetRect().m_width / 2;
-    int new_height = GetRect().m_height/ 2;
-    NW_ = new Quadtree(m_maxNodeSize);
-    NE_ = new Quadtree(m_maxNodeSize);
-    SW_ = new Quadtree(m_maxNodeSize);
-    SE_ = new Quadtree(m_collider->m_transform, m_collider->GetRadius());
-    for (auto &node: root->m_tr) 
-    {
-        NW_->InsertElement(node);
-        NE_->InsertElement(node);
-        SW_->InsertElement(node);
-        SE_->InsertElement(node);
-    }
+    NW_ = new Quadtree(XMFLOAT2(m_angle.x + -1.f, m_angle.y + 1.f), m_maxNodeSize, CompassFacing::NorthWest, m_objectOffset);
+    NE_ = new Quadtree(XMFLOAT2(m_angle.x + 1.f, m_angle.y + 1.f), m_maxNodeSize, CompassFacing::NorthEast, m_objectOffset);
+    SW_ = new Quadtree(XMFLOAT2(m_angle.x + -1.f, m_angle.y + -1.f), m_maxNodeSize, CompassFacing::SouthWest, m_objectOffset);
+    SE_ = new Quadtree(XMFLOAT2(m_angle.x + 1.f, m_angle.y + -1.f), m_maxNodeSize, CompassFacing::SouthEast, m_objectOffset);
 }
 
-void Quadtree::QtreeCheckCollisions(int &cnt) {
+void Quadtree::QtreeCheckCollisions(XMFLOAT2 playerPosition) {
     Quadtree *NW = GetNW();
     Quadtree *NE = GetNE();
     Quadtree *SW = GetSW();
     Quadtree *SE = GetSE();
 
-    if (NW != nullptr) {
-        NW->QtreeCheckCollisions(cnt);
-        NE->QtreeCheckCollisions(cnt);
-        SW->QtreeCheckCollisions(cnt);
-        SE->QtreeCheckCollisions(cnt);
-        return;
+    XMFLOAT2 playerPositionOffset = { playerPosition.x + m_objectOffset, playerPosition.y + m_objectOffset };
+
+    if (NW != nullptr)
+    {
+        NW->QtreeCheckCollisions(playerPosition);
+        NE->QtreeCheckCollisions(playerPosition);
+        SW->QtreeCheckCollisions(playerPosition);
+        SE->QtreeCheckCollisions(playerPosition);
     }
-
-    std::vector<GameObject*> children_vec = GetChildren();
-
+    
     CollidableGameObject* pcollidable1 = nullptr;
     CollidableGameObject* pcollidable2 = nullptr;
 
-    for (int it1 = 0; it1 < children_vec.size(); ++it1)
+    for (int it1 = 0; it1 < m_children.size(); ++it1)
     {
-        if (children_vec[it1]->ContainsType(GameObjectType::COLLIDABLE) == false)
+        m_children[it1]->Update();
+        if (m_children[it1]->ContainsType(GameObjectType::COLLIDABLE) == false)
         {
             continue;
         }
-        pcollidable1 = dynamic_cast<CollidableGameObject*>(children_vec[it1]);
+        pcollidable1 = dynamic_cast<CollidableGameObject*>(m_children[it1]);
         pcollidable1->SetShapeDimensions(pcollidable1->GetTransform()->GetWorldScale());
 
         if (pcollidable1->GetShape() != nullptr && pcollidable1->GetShape()->IsRendered())
@@ -113,19 +140,19 @@ void Quadtree::QtreeCheckCollisions(int &cnt) {
     }
 
 
-    for (int it1 = 0; it1 < children_vec.size(); ++it1)
+    for (int it1 = 0; it1 < m_children.size(); ++it1)
     {
-        for (int it2 = 0; it2 < children_vec.size(); ++it2)
+        for (int it2 = 0; it2 < m_children.size(); ++it2)
         {
             if (it1 != it2)
             {
-                if (children_vec[it1]->ContainsType(GameObjectType::COLLIDABLE) == false || children_vec[it2]->ContainsType(GameObjectType::COLLIDABLE) == false)
+                if (m_children[it1]->ContainsType(GameObjectType::COLLIDABLE) == false || m_children[it2]->ContainsType(GameObjectType::COLLIDABLE) == false)
                 {
                     continue;
                 }
 
-                pcollidable1 = dynamic_cast<CollidableGameObject*>(children_vec[it1]);
-                pcollidable2 = dynamic_cast<CollidableGameObject*>(children_vec[it2]);
+                pcollidable1 = dynamic_cast<CollidableGameObject*>(m_children[it1]);
+                pcollidable2 = dynamic_cast<CollidableGameObject*>(m_children[it2]);
 
                 if (pcollidable1->GetShape() == nullptr || pcollidable2->GetShape() == nullptr)
                 {
@@ -152,6 +179,7 @@ void Quadtree::QtreeCheckCollisions(int &cnt) {
             }
         }
     }
+
 }
 
 
@@ -165,81 +193,49 @@ void Quadtree::QtreeFreeMemory() {
     delete this;
 }
 
-void Quadtree::UpdateScene(bool updateCollidingTreeOnly)
+void Quadtree::UpdateScene(XMFLOAT2 updatePoint)
 {
-    if (updateCollidingTreeOnly)
+    QtreeCheckCollisions(updatePoint);
+}
+
+bool Quadtree::RemoveObject(GameObject* pgameObjectAddress)
+{
+    return LoacteObjectAndOverwrite(pgameObjectAddress, nullptr);
+}
+
+void Quadtree::UpdateQuadTreeStucture()
+{
+
+}
+
+bool Quadtree::LoacteObjectAndOverwrite(GameObject* dest, GameObject* value)
+{
+    for (size_t i = 0; i < m_children.size(); i++)
     {
-        Quadtree* collisionQuadtree = CollisionCheck();
-
-        for (size_t i = 0; i < collisionQuadtree->m_children.size(); i++)
+        if (m_children[i] == dest)
         {
-            std::vector<GameObject*> childrenVec = collisionQuadtree->GetChildren();
-
-            childrenVec.push_back(m_player);
-
-            for (GameObject* node_one : childrenVec)
-            {
-                for (GameObject* node_two : childrenVec)
-                {
-                    //if (node_one == node_two) {
-                    //    continue;
-                    //}
-                    //if ()
-                    //{
-
-                    //}
-
-                    //->CollideResponse(node_two);
-                    //++cnt;
-                }
-            }
+            m_children[i] = value;
+            return true;
         }
+    }
+
+    if (GetNW() == nullptr)
+    {
+        return false;
+    }
+
+    bool overwriteObjNW = GetNW()-> LoacteObjectAndOverwrite(dest, value);
+    bool overwriteObjNE = GetNE()->LoacteObjectAndOverwrite(dest, value);
+    bool overwriteObjSW = GetSW()->LoacteObjectAndOverwrite(dest, value);
+    bool overwriteObjSE = GetSE()->LoacteObjectAndOverwrite(dest, value);
+
+
+    if (overwriteObjNW || overwriteObjNE || overwriteObjSW || overwriteObjSE) {
+        return true;
     }
     else
     {
-        for (size_t i = 0; i < m_children.size(); i++)
-        {
-            m_children[i]->Update();
-        }
-
-        int legacyCodeCompliance = 0;
-        
-        QtreeCheckCollisions(legacyCodeCompliance);
-
+        return false;
     }
 }
 
-Quadtree* Quadtree::CollisionCheck()
-{
-    if (NW_ != nullptr) {
-
-        Quadtree* Collision = NW_->CollisionCheck();
-        if (Collision != nullptr)
-        {
-            return Collision;
-        }
-        Collision = NE_->CollisionCheck();
-        if (Collision != nullptr)
-        {
-            return Collision;
-        }
-        Collision = SW_->CollisionCheck();
-        if (Collision != nullptr)
-        {
-            return Collision;
-        }
-        Collision = SE_->CollisionCheck();
-        if (Collision != nullptr)
-        {
-            return Collision;
-        }
-    }
-    else if (m_player->GetShape()->Collide(m_collider))
-    {
-        return this;
-    }
-    else
-    {
-        return nullptr;
-    }
-}

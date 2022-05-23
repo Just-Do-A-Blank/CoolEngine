@@ -88,9 +88,8 @@ void GameManager::BeginPlay()
 	}
 
 	m_pplayScene = new Scene(m_pcurrentScene->m_sceneIdentifier);
-
 	CopyScene();
-
+	m_pplayScene->InitializeQuadTree();
 	m_viewState = ViewState::GAME_VIEW;
 }
 

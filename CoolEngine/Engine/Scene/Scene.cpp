@@ -14,7 +14,7 @@ Scene::Scene(string identifier)
 	const XMFLOAT3 scal = XMFLOAT3(1, 1, 1);
 
 	Transform* trans = new Transform();
-	m_quadtree = new Quadtree(trans, 10.f);
+	m_quadtree = new Quadtree(XMFLOAT2(0,0), 4, 10);
 
 }
 
@@ -25,17 +25,20 @@ Scene::~Scene()
 
 void Scene::Update()
 {
-	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
+	//vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
 
 	
 
 
-	for (int it = 0; it < gameObjectList.size(); ++it)
-	{
-		gameObjectList[it]->Update();
-	}
+	m_quadtree->UpdateScene(XMFLOAT2(0,0));
 
-	Collision::Update(gameObjectList);
+
+	//for (int it = 0; it < gameObjectList.size(); ++it)
+	//{
+	//	gameObjectList[it]->Update();
+	//}
+
+	//Collision::Update(gameObjectList);
 }
 
 void Scene::EditorUpdate()
@@ -86,11 +89,11 @@ void Scene::InitializeQuadTree()
 		return;
 	}
 
-	m_quadtree->Init(playerGameObject->GetTransform()->GetWorldPosition().x, playerGameObject->GetTransform()->GetWorldPosition().y, playerGameObject->GetShape()->GetShapeDimensions().x, playerGameObject->GetShape()->GetShapeDimensions().y, playerGameObject);
 	for (size_t i = 0; i < gameObjectList.size(); i++)
 	{
 		m_quadtree->InsertElement(gameObjectList[i]);
 	}
+	int i = 0;
 }
 
 vector<GameObject*>& Scene::GetAllGameObjects()

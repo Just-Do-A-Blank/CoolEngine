@@ -13,19 +13,20 @@
 #include <cmath>
 #include <cassert>
 
-struct RectValues
+enum class CompassFacing
 {
-    float m_left = 0;
-    float m_top = 0;
-    float m_width = 0;
-    float m_height = 0;
+    NorthWest = 0,
+    NorthEast = 1,
+    SouthWest = 2,
+    SouthEast = 3,
+    Centre = 4
 };
 
 class Quadtree {
 public:
-    Quadtree(Box* collider);
+    Quadtree(XMFLOAT2 pos, int childrenSize, CompassFacing direction, int distantOffset);
+    Quadtree(XMFLOAT2 pos, int childrenSize, int distantOffset);
     ~Quadtree();
-    void Init(int left, int top, int width, int height, PlayerGameObject* obj);
     bool InsertElement(GameObject* shape);
     void Subdivide(Quadtree *root);
 
@@ -42,30 +43,29 @@ public:
         return SE_;
     }
 
-    std::vector<GameObject*> GetChildren();
+    void QtreeCheckCollisions(XMFLOAT2 PlayerPosition);
 
-    void QtreeCheckCollisions(int &num_collisions);
     void QtreeFreeMemory();
 
-    void UpdateScene(bool updateCollidingTreeOnly);
+    void UpdateScene(XMFLOAT2 updatePoint);
+
+    bool RemoveObject(GameObject* pgameObjectAddress);
+
+    void UpdateQuadTreeStucture();
 
 private:
-    
-    void Update();
 
-    Quadtree* CollisionCheck();
-
-
-
+    bool LoacteObjectAndOverwrite(GameObject* dest,  GameObject* value);
 
     std::vector<GameObject*> m_children;
     Quadtree *NW_ = nullptr;
     Quadtree *NE_ = nullptr;
     Quadtree *SW_ = nullptr;
     Quadtree *SE_ = nullptr;
-    Box* m_BoxCollider = nullptr;
-    PlayerGameObject* m_player;
+    XMFLOAT2 m_angle;
+    CompassFacing m_direction;
     int m_maxNodeSize = 0;
+    int m_objectOffset;
 };
 
 #endif // QUADTREE_H_
