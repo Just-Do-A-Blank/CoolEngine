@@ -249,7 +249,12 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
                 ImGui::EndMenu();
             }
 
+			if (ImGui::MenuItem("TileMap"))
+			{
+				m_createGameObjectClicked = true;
 
+				m_createObjectType = GameObjectType::TILE_MAP;
+			}
 
             if (ImGui::MenuItem("ParticleSystem"))
             {
@@ -429,6 +434,10 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
                     pgameManager->CreateGameObject<CameraGameObject>(gameObjectName, m_selectedGameObjectNode);
                     break;
 
+        				case GameObjectType::TILE_MAP:
+        					pgameManager->CreateGameObject<TileMap>(gameObjectName, m_selectedGameObjectNode);
+        					break;
+                  
                 case GameObjectType::LEVEL_CHANGE:
                     pgameManager->CreateGameObject<LevelChangeGameObject>(gameObjectName, m_selectedGameObjectNode);
                     break;
@@ -492,7 +501,7 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
                 m_createUIObjectClicked = false;
                 uiObjectName[0] = {};
             }
-            
+
         }
 
         ImGui::End();
@@ -818,8 +827,8 @@ void EditorUI::DragFloat3(const string& label, XMFLOAT3& values, EditorUIFloatPa
 
     ImGui::PushID(label.c_str());
 
-    ImGui::Columns(2);
-    ImGui::SetColumnWidth(0, parameters.m_maxValue);
+	  ImGui::Columns(2);
+    ImGui::SetColumnWidth(0, parameters.m_columnWidth);
     ImGui::Text(label.c_str());
     SetupTooltip(parameters.m_tooltipText);
 

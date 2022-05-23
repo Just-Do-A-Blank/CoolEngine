@@ -213,9 +213,6 @@
     <ClCompile Include="Engine\AI\FiniteStateMachine.cpp">
       <Filter>Engine\AI</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\AI\FiniteState.cpp">
-      <Filter>Engine\AI</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Graphics\AnimationState.cpp">
       <Filter>Engine\Graphics</Filter>
     </ClCompile>
@@ -240,8 +237,29 @@
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerRollingState.cpp">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\AI\FuzzyStateMachine.cpp">
+      <Filter>Engine\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\States\FiniteState.cpp">
+      <Filter>Engine\AI\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\States\FuzzyState.cpp">
+      <Filter>Engine\AI\States</Filter>
+    </ClCompile>
     <ClCompile Include="Engine\GameObjects\PrefabGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\EnemyStateMachine.cpp">
+      <Filter>Engine\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\States\MeleeMovementState.cpp">
+      <Filter>Engine\AI\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\States\MeleeAttackState.cpp">
+      <Filter>Engine\AI\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\States\RangeAttackState.cpp">
+      <Filter>Engine\AI\States</Filter>
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\LevelChangeGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
@@ -617,9 +635,6 @@
     <ClInclude Include="Engine\AI\FiniteStateMachine.h">
       <Filter>Engine\AI</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\AI\FiniteState.h">
-      <Filter>Engine\AI</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Graphics\AnimationState.h">
       <Filter>Engine\Graphics</Filter>
     </ClInclude>
@@ -650,11 +665,32 @@
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerRollingState.h">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\AI\FuzzyStateMachine.h">
+      <Filter>Engine\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\FiniteState.h">
+      <Filter>Engine\AI\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\FuzzyState.h">
+      <Filter>Engine\AI\States</Filter>
+    </ClInclude>
     <ClInclude Include="Engine\GameObjects\PrefabGameObject.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="Engine\EditorUI\EditorButtonCallback.h">
       <Filter>Engine\EditorUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\EnemyStateMachine.h">
+      <Filter>Engine\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\MeleeMovementState.h">
+      <Filter>Engine\AI\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\MeleeAttackState.h">
+      <Filter>Engine\AI\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\RangeAttackState.h">
+      <Filter>Engine\AI\States</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\LevelChangeGameObject.h">
       <Filter>Engine\GameObjects</Filter>
@@ -772,6 +808,9 @@
     </Filter>
     <Filter Include="Engine\Tilemap\Tilemap">
       <UniqueIdentifier>{2511a5c3-13d3-4be5-8a1c-4a99b0fb512a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\AI\States">
+      <UniqueIdentifier>{eb254e0a-a23d-4071-9fc8-c9fa39695892}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
