@@ -43,8 +43,6 @@ TileMap::TileMap(const nlohmann::json& data, CoolUUID uuid) : RenderableGameObje
 
 TileMap::TileMap(TileMap const& other) : RenderableGameObject(other)
 {
-	m_gameObjectType |= GameObjectType::TILE_MAP;
-
 #if EDITOR
 	Tile::s_ptileMap = this;
 #endif
