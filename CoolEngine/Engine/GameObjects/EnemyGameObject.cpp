@@ -88,7 +88,7 @@ void EnemyGameObject::Start()
 
 void EnemyGameObject::SetWeaponPosition()
 {
-	if (m_pweapon == nullptr)
+	if (m_pweapon == nullptr || m_pplayer == nullptr)
 	{
 		return;
 	}
