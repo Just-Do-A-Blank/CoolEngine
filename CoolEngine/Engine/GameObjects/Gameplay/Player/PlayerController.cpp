@@ -39,6 +39,7 @@ PlayerController::PlayerController(InputsAsGameplayButtons* gameplayButtons, Pla
     EventManager::Instance()->AddClient(EventType::MouseMoved, this);
 
     m_selected = "";
+    m_selected2 = pair<int, string>(0, "");
 }
 
 PlayerController::PlayerController(PlayerController const& other, PlayerGameObject* newPlayer)
@@ -152,11 +153,14 @@ void PlayerController::CreateEngineUI()
         EditorUI::FullTitle("Walking", titleParameters);
 
         std::list<string> listofPlayers = { "first", "second", "third", "fourth", "fifth"};
-        //m_selected = EditorUI::ComboBox("something", listofPlayers, m_selected);
-
-        ImGui::Combo("combo 2 (one-liner)", &m_selected, "aaaa\0bbbb\0cccc\0dddd\0eeee\0\0");
+        std::list<pair<int, string>> listOfPlayers2{ pair<int, string>(0, "first"), pair<int, string>(1, "second"), pair<int, string>(3, "fourth") };
         
 
+        if (EditorUI::ComboBox("something", listOfPlayers2, m_selected2) && m_selected2.first == 3)
+        {
+            LOG("3");
+        }
+        
         EditorUI::DragFloat("Walking Speed", m_speedMultiplierWalking, speedParameters);
 
         speedParameters.m_tooltipText = "When dodging this is the main multiplier - sensitive to big changes!";

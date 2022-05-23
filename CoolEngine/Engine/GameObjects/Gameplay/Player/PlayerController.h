@@ -139,5 +139,6 @@ private:
     PlayerMovingBody* m_playerMovingBody;
 
     string m_selected;
+    pair<int, string> m_selected2;
 };
 
