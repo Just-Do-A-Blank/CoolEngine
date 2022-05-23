@@ -9,8 +9,7 @@ enum class EventType
 	MouseButtonPressed, MouseButtonReleased, MouseMoved,
 	TriggerEnter, TriggerHold, TriggerExit,
 	CollisionEnter, CollisionHold, CollisionExit,
-    CreateBullet, 
-    Pickup
+    CreateBullet, Pickup
 };
 
 /// <summary>

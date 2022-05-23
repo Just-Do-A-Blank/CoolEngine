@@ -14,6 +14,7 @@
 #include "Engine/GameUI/UiCanvas.h"
 #include "Engine/GameUI/TextComponent.h"
 #include "Engine/GameObjects/EditorCameraGameObject.h"
+#include "Engine/GameObjects/PickupGameObject.h"
 
 #include <fstream>
 
@@ -386,6 +387,22 @@ void GameManager::CopyScene()
 			else
 			{
 				m_pcurrentGameScene->CopyGameObject<RangedWeaponGameObject>(*(dynamic_cast<RangedWeaponGameObject*>(gameObjectNodeList[it]->NodeObject)));
+			}
+			break;
+		case AccumlateType::PICKUP:
+			if (gameObjectNodeList[it]->PreviousParent)
+			{
+				TreeNode<GameObject>* parentNode = m_pcurrentGameScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
+				m_pcurrentGameScene->CopyGameObject<PickupGameObject>(*(dynamic_cast<PickupGameObject*>(gameObjectNodeList[it]->NodeObject)), parentNode);
+			}
+			else if (gameObjectNodeList[it]->PreviousSibling)
+			{
+				TreeNode<GameObject>* previousSiblingNode = m_pcurrentGameScene->GetTreeNode(gameObjectNodeList[it]->PreviousSibling->NodeObject);
+				m_pcurrentGameScene->CopyGameObject<PickupGameObject>(*(dynamic_cast<PickupGameObject*>(gameObjectNodeList[it]->NodeObject)), nullptr, previousSiblingNode);
+			}
+			else
+			{
+				m_pcurrentGameScene->CopyGameObject<PickupGameObject>(*(dynamic_cast<PickupGameObject*>(gameObjectNodeList[it]->NodeObject)));
 			}
 			break;
 
@@ -770,7 +787,10 @@ void GameManager::Deserialize(nlohmann::json& data)
 				gameObjects[*uuid] = new RangedWeaponGameObject(data[typeIt.key()][uuidString], uuid);
 				gameObjects[*uuid]->m_UUID = uuid;
 				break;
-
+			case AccumlateType::PICKUP:
+				gameObjects[*uuid] = new PickupGameObject(data[typeIt.key()][uuidString], uuid);
+				gameObjects[*uuid]->m_UUID = uuid;
+				break;
 			case AccumlateType::CAMERA:
 				gameObjects[*uuid] = new CameraGameObject(data[typeIt.key()][uuidString], uuid);
 				gameObjects[*uuid]->m_UUID = uuid;

@@ -7,6 +7,7 @@
 #include "Engine/GameObjects/InteractableGameObject.h"
 #include "Engine/GameObjects/WeaponGameObject.h"
 #include "Engine\GameObjects\EnemyGameObject.h"
+#include "Engine/GameObjects/PickupGameObject.h"
 #include "Engine/Tools/ToolBase.h"
 #include "Engine/Tools/AnimationTool.h"
 #include "Engine//Tools/TileMapTool.h"
@@ -16,6 +17,7 @@
 #include "Engine/GameUI/ImageComponent.h"
 #include "Engine/GameUI/TextComponent.h"
 #include "Engine/GameUI/ButtonComponent.h"
+
 
 #include <ShlObj_core.h>
 
@@ -238,6 +240,12 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 
                     m_createObjectType = GameObjectType::CAMERA;
                 }
+                if (ImGui::MenuItem("Pickup"))
+                {
+                    m_createGameObjectClicked = true;
+
+                    m_createObjectType = GameObjectType::PICKUP;
+                }
 
                 ImGui::EndMenu();
             }
@@ -420,6 +428,9 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 
                 case GameObjectType::CAMERA:
                     pgameManager->CreateGameObject<CameraGameObject>(gameObjectName, m_selectedGameObjectNode);
+                    break;
+                case GameObjectType::PICKUP:
+                    pgameManager->CreateGameObject<PickupGameObject>(gameObjectName, m_selectedGameObjectNode);
                     break;
                 }
 

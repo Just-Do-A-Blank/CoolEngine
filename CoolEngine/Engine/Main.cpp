@@ -45,6 +45,7 @@
 #include "Engine/Managers/Events/BulletCreator.h"
 #include "Engine/Structure/ObjectPool.h"
 #include "Engine/GameObjects/BulletGameObject.h"
+#include "Engine/GameObjects/PickupGameObject.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
@@ -176,12 +177,15 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	string playerName = "Player";
 	string enemyName = "Enemy";
 	string weaponName = "Weapon";
+	string pickupName = "Pickup";
 
 	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj0Name);
 	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj1Name);
 	pgameManager->CreateGameObject<PlayerGameObject>(playerName);
 	pgameManager->CreateGameObject<EnemyGameObject>(enemyName);
+	pgameManager->CreateGameObject<PickupGameObject>(pickupName);
 	RangedWeaponGameObject* weapon = dynamic_cast<RangedWeaponGameObject*>(pgameManager->CreateGameObject<RangedWeaponGameObject>(weaponName));
+
 
 	RenderableCollidableGameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj0Name);
 
@@ -268,6 +272,25 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	isCollision = false;
 	pbox->SetIsCollidable(isCollision);
 	prangedObject->SetShape(pbox);
+
+
+
+	// Init pickup object
+	pgameObject = pgameManager->GetGameObjectUsingIdentifier<PickupGameObject>(pickupName);
+
+	objectPos = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	objectScale = XMFLOAT3(400, 400, 400);
+
+	pgameObject->SetMesh(QUAD_MESH_NAME);
+	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
+	pgameObject->GetTransform()->SetWorldPosition(objectPos);
+	pgameObject->GetTransform()->SetWorldScale(objectScale);
+	pbox = new Box(pgameObject);
+	pbox->SetIsCollidable(isCollision);
+	pbox->SetIsTrigger(isCollision);
+	pgameObject->SetShape(pbox);
 
 	//g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, -200, 0), "TestMap");
 

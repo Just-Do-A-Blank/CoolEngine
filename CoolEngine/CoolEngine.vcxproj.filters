@@ -243,7 +243,9 @@
     <ClCompile Include="Engine\GameObjects\PrefabGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
-    <ClCompile Include="Pickups.cpp" />
+    <ClCompile Include="Engine\GameObjects\PickupGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -654,7 +656,12 @@
     <ClInclude Include="Engine\EditorUI\EditorButtonCallback.h">
       <Filter>Engine\EditorUI</Filter>
     </ClInclude>
-    <ClInclude Include="Pickups.h" />
+    <ClInclude Include="Engine\GameObjects\PickupGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\PickupEvent.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Engine\Includes\DirectXTK\SimpleMath.inl" />

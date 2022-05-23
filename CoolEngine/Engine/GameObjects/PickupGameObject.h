@@ -11,49 +11,43 @@ enum class CONSUMABLETYPE
 	NONE
 };
 
-enum class PICKUPTYPE
-{
-	CONSUMABLE,
-	NONCONSUMABLE,
-	NONE
-};
-
 struct ConsumableData
 {
 	CONSUMABLETYPE consumType;
-	PICKUPTYPE pickupType;
+	bool isConsumedOnPickup;
 	float strength;
 
-	ConsumableData(CONSUMABLETYPE ConsumeType,PICKUPTYPE PickupType, float Strength)
+	ConsumableData(CONSUMABLETYPE ConsumeType,bool isConsumed, float Strength)
 	{
 		consumType = ConsumeType;
-		pickupType = PickupType;
+		isConsumedOnPickup = isConsumed;
 		strength = Strength;
 	}
 
 	ConsumableData()
 	{
 		consumType = CONSUMABLETYPE::NONE;
-		pickupType = PICKUPTYPE::NONE;
+		isConsumedOnPickup = false;
 		strength = 0;
 	}
 
 };
 
-class Pickups : public InteractableGameObject
+class PickupGameObject : public InteractableGameObject
 {
 public:
-	Pickups(string identifier, CoolUUID uuid);
-	Pickups(const nlohmann::json& data, CoolUUID index);
-	Pickups(Pickups const& other);
-	~Pickups();
-
+	PickupGameObject(string identifier, CoolUUID uuid);
+	PickupGameObject(const nlohmann::json& data, CoolUUID index);
+	PickupGameObject(PickupGameObject const& other);
+	~PickupGameObject();
+	virtual void Serialize(nlohmann::json& data) override;
+	const ConsumableData GetConsumableData() const { return m_ConsumableData; }
 
 #if EDITOR
 	/// <summary>
 	/// Shows engine UI
 	/// </summary>
-	virtual void CreateEngineUI() override;
+	virtual void CreateEngineUI();
 #endif
 
 
@@ -61,11 +55,12 @@ private:
 	//Expose this to editor
 	ConsumableData m_ConsumableData;
 	
-	//Checking for collision with player and itself
-	void OnTriggerHold(GameObject* obj1, GameObject* obj2);
 
 	virtual void LoadLocalData(const nlohmann::json& jsonData);
 	virtual void SaveLocalData(nlohmann::json& jsonData);
+
+
+	string GetConsumableTypeString(CONSUMABLETYPE type);
 
 };
 
