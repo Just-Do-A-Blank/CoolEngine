@@ -14,6 +14,7 @@
 #include "Engine/GameUI/UiCanvas.h"
 #include "Engine/GameUI/TextComponent.h"
 #include "Engine/GameObjects/EditorCameraGameObject.h"
+#include "Engine/TileMap/TileMap/TileMap.h"
 
 #include <fstream>
 
@@ -154,6 +155,8 @@ bool GameManager::BeginPlay()
 	m_viewState = ViewState::GAME_VIEW;
 
 	GetCurrentViewStateSceneMap().insert(pair<string, Scene*>(m_pcurrentEditorScene->m_sceneIdentifier, m_pcurrentGameScene));
+
+	Start();
 
 	return true;
 }
@@ -403,6 +406,23 @@ void GameManager::CopyScene()
 			else
 			{
 				m_pcurrentGameScene->CopyGameObject<CameraGameObject>(*(dynamic_cast<CameraGameObject*>(gameObjectNodeList[it]->NodeObject)));
+			}
+			break;
+
+		case AccumlateType::TILE_MAP:
+			if (gameObjectNodeList[it]->PreviousParent)
+			{
+				TreeNode<GameObject>* parentNode = m_pcurrentGameScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
+				m_pcurrentGameScene->CopyGameObject<TileMap>(*(dynamic_cast<TileMap*>(gameObjectNodeList[it]->NodeObject)), parentNode);
+			}
+			else if (gameObjectNodeList[it]->PreviousSibling)
+			{
+				TreeNode<GameObject>* previousSiblingNode = m_pcurrentGameScene->GetTreeNode(gameObjectNodeList[it]->PreviousSibling->NodeObject);
+				m_pcurrentGameScene->CopyGameObject<TileMap>(*(dynamic_cast<TileMap*>(gameObjectNodeList[it]->NodeObject)), nullptr, previousSiblingNode);
+			}
+			else
+			{
+				m_pcurrentGameScene->CopyGameObject<TileMap>(*(dynamic_cast<TileMap*>(gameObjectNodeList[it]->NodeObject)));
 			}
 			break;
 
@@ -781,6 +801,12 @@ void GameManager::Deserialize(nlohmann::json& data)
 				{
 					mainCameraIdentifier = gameObjects[*uuid]->GetIdentifier();
 				}
+				break;
+
+			case AccumlateType::TILE_MAP:
+				gameObjects[*uuid] = new TileMap(data[typeIt.key()][uuidString], uuid);
+				gameObjects[*uuid]->m_UUID = uuid;
+
 				break;
 
 			case AccumlateType::UI_COMPONENT:
