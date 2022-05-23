@@ -95,11 +95,11 @@ public:
 		switch (m_viewState)
 		{
 		case ViewState::EDITOR_VIEW:
-			return m_pcurrentScene->GetGameObjectUsingIdentifier<T>(identifier);
+			return m_pcurrentEditorScene->GetGameObjectUsingIdentifier<T>(identifier);
 			break;
 
 		case ViewState::GAME_VIEW:
-			return m_pplayScene->GetGameObjectUsingIdentifier<T>(identifier);
+			return m_pcurrentGameScene->GetGameObjectUsingIdentifier<T>(identifier);
 			break;
 		}
 		

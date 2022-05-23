@@ -608,11 +608,11 @@ vector<GameObject*>& GameManager::GetAllGameObjectsInCurrentScene()
 	switch (m_viewState)
 	{
 	case ViewState::EDITOR_VIEW:
-		return m_pcurrentScene->GetAllGameObjects();
+		return m_pcurrentEditorScene->GetAllGameObjects();
 		break;
 
 	case ViewState::GAME_VIEW:
-		return m_pplayScene->GetAllGameObjects();
+		return m_pcurrentGameScene->GetAllGameObjects();
 		break;
 	}	
 }

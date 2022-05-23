@@ -153,8 +153,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//Create scene
 	GameManager* pgameManager = GameManager::GetInstance();
 	pgameManager->CreateScene("TestScene");
-	pgameManager->SelectSceneUsingIdentifier("TestScene");
-	pgameManager->SelectSceneUsingIdentifier("TestScene");
+	//pgameManager->SelectSceneUsingIdentifier("TestScene");
 
 	//Music
 	AudioManager::GetInstance()->LoadMusic(TEST_MUSIC);
@@ -182,7 +181,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj1Name);
 	pgameManager->CreateGameObject<PlayerGameObject>(playerName);
 	pgameManager->CreateGameObject<EnemyGameObject>(enemyName);
-	pgameManager->CreateGameObject<RangedWeaponGameObject>(weaponName);
+	RangedWeaponGameObject* weapon = dynamic_cast<RangedWeaponGameObject*>(pgameManager->CreateGameObject<RangedWeaponGameObject>(weaponName));
 
 	RenderableCollidableGameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj0Name);
 
@@ -255,20 +254,20 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 
 	// Weapon test
-	pgameObject = pgameManager->GetGameObjectUsingIdentifier<RangedWeaponGameObject>(weaponName);
-	pgameObject->SetMesh(QUAD_MESH_NAME);
-	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
+	RangedWeaponGameObject* prangedObject = pgameManager->GetGameObjectUsingIdentifier<RangedWeaponGameObject>(weaponName);
+	prangedObject->SetMesh(QUAD_MESH_NAME);
+	prangedObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
+	prangedObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+	prangedObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
 	objectPos = XMFLOAT3(200.0f, 0.0f, 5.0f);
 	objectScale = XMFLOAT3(25, 25, 25);
-	pgameObject->GetTransform()->SetWorldPosition(objectPos);
-	pgameObject->GetTransform()->SetWorldScale(objectScale);
-	pbox = new Box(pgameObject);
+	prangedObject->GetTransform()->SetWorldPosition(objectPos);
+	prangedObject->GetTransform()->SetWorldScale(objectScale);
+	pbox = new Box(prangedObject);
 	pbox->SetIsTrigger(isCollision);
 	isCollision = false;
 	pbox->SetIsCollidable(isCollision);
-	pgameObject->SetShape(pbox);
+	prangedObject->SetShape(pbox);
 
 	//g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, -200, 0), "TestMap");
 
