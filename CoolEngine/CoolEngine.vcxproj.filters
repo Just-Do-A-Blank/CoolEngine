@@ -249,6 +249,12 @@
     <ClCompile Include="Engine\GameObjects\PrefabGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\AI\EnemyStateMachine.cpp">
+      <Filter>Engine\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\States\MeleeMovementState.cpp">
+      <Filter>Engine\AI\States</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -664,6 +670,12 @@
     </ClInclude>
     <ClInclude Include="Engine\EditorUI\EditorButtonCallback.h">
       <Filter>Engine\EditorUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\EnemyStateMachine.h">
+      <Filter>Engine\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\MeleeMovementState.h">
+      <Filter>Engine\AI\States</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
