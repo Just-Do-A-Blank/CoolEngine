@@ -73,9 +73,8 @@ public:
 	// Damage calculation when attack connects
 	static float CalculateDamage(float weaponDamage, ELEMENTS weaponElement, ELEMENTS characterElement, ELEMENTALSTATUSES characterStatus);
 
-	void TriggerEnter(TriggerEnterEvent* e);
 	void TriggerHold(TriggerHoldEvent* e);
-	void TriggerExit(TriggerExitEvent* e);
+	void CollisionHold(CollisionHoldEvent* e);
 	
 	void Handle(Event* e) override;
 
