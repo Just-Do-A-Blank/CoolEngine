@@ -10,6 +10,7 @@
 #include "Engine/Graphics/SpriteAnimation.h"
 #include "Engine/GameObjects/CameraGameObject.h"
 #include "Engine/GameObjects/EnemyGameObject.h"
+#include "Engine/GameObjects/WeaponGameObject.h"
 
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/Managers/Events/EventObserver.h"
@@ -27,7 +28,6 @@
 #include "Scene/Scene.h"
 #include "Engine/Managers/GameManager.h"
 #include <Engine/Physics/Box.h>
-#include "Engine/Managers/UIManager.h"
 #include "Engine/GameUI/GameUIComponent.h"
 #include "Engine/GameUI/ImageComponent.h"
 #include "Engine/GameUI/TextComponent.h"
@@ -38,10 +38,13 @@
 #include "Engine/Tools/ToolBase.h"
 #include "Engine/Tools/TileMapTool.h"
 #include "Engine/Tools/AnimationTool.h"
-#include "Engine/Tools/InGameUITool.h"
 #include "Engine/GameObjects/EditorCameraGameObject.h"
 
 #include "Engine/Managers/Events/EventObserverExamples.h"
+#include "Engine/Managers/Events/DamageCalculation.h"
+#include "Engine/Managers/Events/BulletCreator.h"
+#include "Engine/Structure/ObjectPool.h"
+#include "Engine/GameObjects/BulletGameObject.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
@@ -74,12 +77,14 @@ ID3D11ShaderResourceView* g_pRTTShaderResourceView;
 
 
 
-EditorCameraGameObject* g_pcamera = nullptr;
 PlayerGameObject* g_pplayer = nullptr;
 
 TileMap* g_testMap1;
 
 TileMap* g_testMap2;
+
+// Observer for making attacks
+BulletCreator bulletCreator;
 
 #if EDITOR
 EditorUI* g_peditorUI;
@@ -118,10 +123,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	GameManager::GetInstance()->Init();
 
-#if EDITOR
-	g_peditorUI = new EditorUI(g_pd3dDevice);
-	g_peditorUI->InitIMGUI(g_pImmediateContext, g_pd3dDevice, &g_hWnd);
-#endif
 
 	//Setup audio stuff
 	AudioManager::GetInstance()->Init();
@@ -131,173 +132,33 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	GraphicsManager::GetInstance()->Init(g_pd3dDevice, g_pImmediateContext);
 	GraphicsManager::GetInstance()->SetHWND(&g_hWnd);
 
+#if EDITOR
+	g_peditorUI = new EditorUI(g_pd3dDevice);
+	g_peditorUI->InitIMGUI(g_pImmediateContext, g_pd3dDevice, &g_hWnd);
+#endif
+
 	Inputs::GetInstance();
 
 	//Debug Manager
 #if _DEBUG
 	DebugDrawManager::GetInstance()->Init(g_pd3dDevice);
-
-
 #endif
 
 	srand(time(0));
 
 	//Create camera
-	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, -5);
-	XMFLOAT3 cameraForward = XMFLOAT3(0, 0, 1);
-	XMFLOAT3 cameraUp = XMFLOAT3(0, 1, 0);
-
-	float windowWidth = GraphicsManager::GetInstance()->GetWindowDimensions().x;
-	float windowHeight = GraphicsManager::GetInstance()->GetWindowDimensions().y;
-
-	float nearDepth = 0.01f;
-	float farDepth = 1000.0f;
-
-	CoolUUID uuid;
-	g_pcamera = new EditorCameraGameObject("Camera", uuid);
-	g_pcamera->Initialize(cameraPos, cameraForward, cameraUp, windowWidth, windowHeight, nearDepth, farDepth);
-
-	GameManager::GetInstance()->SetCamera(g_pcamera);
+	
+	FontManager::GetInstance()->LoadFont(L"Resources\\Fonts\\ComicSans", "comicSans");
 
 	//Create scene
-	GameManager* pgameManager = GameManager::GetInstance();
-	pgameManager->CreateScene("TestScene");
-	pgameManager->SelectSceneUsingIdentifier("TestScene");
-	pgameManager->SelectSceneUsingIdentifier("TestScene");
-
-	//Music
-	AudioManager::GetInstance()->LoadMusic(TEST_MUSIC);
-
-	AudioManager::GetInstance()->PlayMusic(TEST_MUSIC, 0.001f, true);
-
-	//Sound
-	AudioManager::GetInstance()->Load(TEST_SOUND);
-
-	AudioManager::GetInstance()->Play(TEST_SOUND, 0.01f);
-
-	GraphicsManager::GetInstance()->LoadTextureFromFile(DEFAULT_IMGUI_IMAGE);
-	GraphicsManager::GetInstance()->LoadTextureFromFile(TEST2);
-
-	//Load animations
-
-	//Create test gameobject
-	string obj0Name = "TestObject0";
-	string obj1Name = "TestObject1";
-	string playerName = "Player";
-	string enemyName = "Enemy";
-
-	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj0Name);
-	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj1Name);
-	pgameManager->CreateGameObject<PlayerGameObject>(playerName);
-	pgameManager->CreateGameObject<EnemyGameObject>(enemyName);
-
-	RenderableCollidableGameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj0Name);
-
-	XMFLOAT3 objectPos = XMFLOAT3(0, -200.0f, 0.0f);
-	XMFLOAT3 objectScale = XMFLOAT3(2, 2, 2);
-	XMFLOAT3 objectRot = XMFLOAT3(0, 0, 0);
-	bool isCollision = true;
-
-	pgameObject->SetMesh(QUAD_MESH_NAME);
-	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
-	pgameObject->GetTransform()->SetPosition(objectPos);
-	pgameObject->GetTransform()->SetScale(objectScale);
-	Box* pbox = new Box(pgameObject->GetTransform());
-	pbox->SetIsCollidable(isCollision);
-	pbox->SetIsTrigger(isCollision);
-	pgameObject->SetShape(pbox);
-
-	////Init second gameObject
-	pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj1Name);
-
-	objectPos = XMFLOAT3(10.0f, -200.0f, 0.0f);
-	objectScale = XMFLOAT3(2, 2, 2);
-
-	pgameObject->SetMesh(QUAD_MESH_NAME);
-	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	pgameObject->SetAlbedo(TEST2);
-	pgameObject->GetTransform()->SetPosition(objectPos);
-	pgameObject->GetTransform()->SetScale(objectScale);
-	pgameObject->GetTransform()->SetRotation(objectRot);
-	pbox = new Box(pgameObject->GetTransform());
-	pbox->SetIsCollidable(isCollision);
-	pbox->SetIsTrigger(isCollision);
-	pgameObject->SetShape(pbox);
-
-	//Init enemy object
-	pgameObject = pgameManager->GetGameObjectUsingIdentifier<EnemyGameObject>(enemyName);
-	objectPos = XMFLOAT3(-570, -25.0f, 0);
-	objectScale = XMFLOAT3(0.8f, 0.8f, 0.8f);
-
-	pgameObject->SetMesh(QUAD_MESH_NAME);
-	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
-	pgameObject->GetTransform()->SetPosition(objectPos);
-	pgameObject->GetTransform()->SetScale(objectScale);
-	pbox = new Box(pgameObject->GetTransform());
-	pbox->SetIsCollidable(isCollision);
-	pbox->SetIsTrigger(isCollision);
-	pgameObject->SetShape(pbox);
-
-	// Init player object
-	pgameObject = pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName);
-
-	objectPos = XMFLOAT3(200.0f, -200.0f, 5.0f);
-	objectScale = XMFLOAT3(1, 1, 1);
-
-	pgameObject->SetMesh(QUAD_MESH_NAME);
-	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
-	pgameObject->GetTransform()->SetPosition(objectPos);
-	pgameObject->GetTransform()->SetScale(objectScale);
-	pbox = new Box(pgameObject->GetTransform());
-	pbox->SetIsCollidable(isCollision);
-	pbox->SetIsTrigger(isCollision);
-	pgameObject->SetShape(pbox);
-
-
-	//g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, -200, 0), "TestMap");
-
-	//Pathfinding::GetInstance()->Initialize(g_testMap1);
-
-	// Observer for collision detection
-	CollisionObserver collisionObserver;
-	EventManager::Instance()->AddClient(EventType::TriggerEnter, &collisionObserver);
-	EventManager::Instance()->AddClient(EventType::TriggerHold, &collisionObserver);
-	EventManager::Instance()->AddClient(EventType::TriggerExit, &collisionObserver);
-	EventManager::Instance()->AddClient(EventType::CollisionEnter, &collisionObserver);
-	EventManager::Instance()->AddClient(EventType::CollisionHold, &collisionObserver);
-	EventManager::Instance()->AddClient(EventType::CollisionExit, &collisionObserver);
-
-	XMFLOAT3 pos = XMFLOAT3(-400, 250, 5);
-	XMFLOAT3 rot = XMFLOAT3(0, 0, 0);
-	XMFLOAT3 scale = XMFLOAT3(0.5f, 0.5f, 0.5f);
-	Transform trans = Transform();
-	trans.SetPosition(pos);
-	trans.SetRotation(rot);
-	trans.SetScale(scale);
-	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 1.0f, 0.2f, 3, 20, 90.0f, 0.0f, 0.2f, 0);
-
-	pos = XMFLOAT3(0, 250, 5);
-	rot = XMFLOAT3(0, 0, 0);
-	scale = XMFLOAT3(0.5f, 0.5f, 0.5f);
-	trans.SetPosition(pos);
-	trans.SetRotation(rot);
-	trans.SetScale(scale);
-	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 0.5f, 1.0f, 16, 100.0f, 0.0f, 0.0f, 0.2f, 2);
-
-	pos = XMFLOAT3(400, 250, 5);
-	rot = XMFLOAT3(0, 0, 0);
-	scale = XMFLOAT3(0.5f, 0.5f, 0.5f);
-	trans.SetPosition(pos);
-	trans.SetRotation(rot);
-	trans.SetScale(scale);
-	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { -100,150 }, { 300,-75 }, 2.0f, 0.25f, 3, 100.0f, 25.0f, 25.0f, 0.1f, 1);
+	string testSceneFilePath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Levels\\TestScene.json";
+	if (!GameManager::GetInstance()->LoadSceneFromFile(testSceneFilePath))
+	{
+		GameManager* pgameManager = GameManager::GetInstance();
+		pgameManager->CreateScene("EmptyScene");
+		pgameManager->SwitchSceneUsingIdentifier("EmptyScene");
+		pgameManager->CreateGameObject<CameraGameObject>("SceneCamera");
+	}
 
 	GameManager::GetInstance()->GetTimer()->Tick();
 	GameManager::GetInstance()->GetTimer()->Tick();
@@ -735,10 +596,14 @@ void Render()
 	ID3D11SamplerState* psampler = GraphicsManager::GetInstance()->GetSampler(GraphicsManager::Samplers::LINEAR_WRAP);
 
 	g_pImmediateContext->PSSetSamplers(0, 1, &psampler);
-
+			
 	//Update per frame CB
 	PerFrameCB perFrameCB;
-	XMStoreFloat4x4(&perFrameCB.viewProjection, XMMatrixTranspose(XMLoadFloat4x4(&g_pcamera->GetViewProjection())));
+	CameraGameObject* activeCamera = GameManager::GetInstance()->GetCamera();
+	if (activeCamera)
+	{
+		XMStoreFloat4x4(&perFrameCB.viewProjection, XMMatrixTranspose(XMLoadFloat4x4(&activeCamera->GetViewProjection())));
+	}
 
 	GraphicsManager::GetInstance()->m_pperFrameCB->Update(perFrameCB, g_pImmediateContext);
 
@@ -753,13 +618,36 @@ void Render()
 
 	for (int i = 0; i < GraphicsManager::GetInstance()->GetNumLayers(); ++i)
 	{
-		GraphicsManager::GetInstance()->GetSpriteBatches()[i]->Begin();
+		GraphicsManager::GetInstance()->GetSpriteBatches()[i]->Begin(SpriteSortMode_Deferred, nullptr, nullptr, nullptr, nullptr, [=]
+		{
+				ID3D11Buffer* pbuffer = GraphicsManager::GetInstance()->m_pperFrameCB->GetBuffer();
+
+				D3D11_VIEWPORT viewport;
+				viewport.TopLeftX = 0;
+				viewport.TopLeftY = 0;
+				viewport.Width = EditorUI::GetViewportSize().x;
+				viewport.Height = EditorUI::GetViewportSize().y;
+				viewport.MinDepth = 0.01f;
+				viewport.MaxDepth = 1.0f;
+
+				g_pImmediateContext->RSSetViewports(1, &viewport);
+				g_pImmediateContext->RSSetState(g_prasterState);
+				g_pImmediateContext->IASetInputLayout(GraphicsManager::GetInstance()->GetInputLayout(GraphicsManager::InputLayouts::POS_TEX_COLOR));
+
+				g_pImmediateContext->VSSetShader(GraphicsManager::GetInstance()->GetVertexShader(SPRITE_BATCH_VERTEX_SHADER_NAME), nullptr, 0);
+				g_pImmediateContext->PSSetShader(GraphicsManager::GetInstance()->GetPixelShader(SPRITE_BATCH_PIXEL_SHADER_NAME), nullptr, 0);
+
+				g_pImmediateContext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pbuffer);
+				g_pImmediateContext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pbuffer);
+		});
 	}
 
 	GameManager* pgamemanager = GameManager::GetInstance();
 	pgamemanager->Render(renderStruct);
 
 	ParticleManager::GetInstance()->Render(renderStruct.m_pcontext);
+
+	bulletCreator.Render(renderStruct);
 
 #if _DEBUG
 	DebugDrawManager::GetInstance()->Render(renderStruct);
@@ -769,8 +657,6 @@ void Render()
 	{
 		GraphicsManager::GetInstance()->GetSpriteBatches()[i]->End();
 	}
-
-	UIManager::GetInstance()->Render(renderStruct);
 
 	if (g_ptoolBase != nullptr)
 	{
@@ -801,9 +687,6 @@ void Render()
 		RecreateFrameResources(viewportSize);
 
 		EditorUI::SetViewportSize(viewportSize);
-
-		CameraGameObject* pcamera = GameManager::GetInstance()->GetCamera();
-		pcamera->ReshapeCamera(viewportSize.x, viewportSize.y, 0.01f, 1000.0f);
 	}
 
 	//Pass everything rendered till this point into ImGuiImage
@@ -857,11 +740,13 @@ void Update()
 	GameManager* pgamemanager = GameManager::GetInstance();
 
 	pgamemanager->GetTimer()->Tick();
+	pgamemanager->Start();
 	pgamemanager->Update();
+
+	bulletCreator.Update();
 
 #if EDITOR
 	g_peditorUI->Update();
-	g_pcamera->Update();
 #endif
 
 	if (g_ptoolBase != nullptr)

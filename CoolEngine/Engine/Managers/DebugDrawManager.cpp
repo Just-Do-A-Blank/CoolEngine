@@ -20,24 +20,30 @@ void DebugDrawManager::Init(ID3D11Device* pd3dDevice)
 	}	
 }
 
-void DebugDrawManager::CreateWorldSpaceDebugRect(string identifier, XMFLOAT3& position, XMFLOAT3& dimension, DebugColour colour)
+void DebugDrawManager::CreateWorldSpaceDebugRect(XMFLOAT3& position, XMFLOAT3& dimension, DebugColour colour)
 {
-	CoolUUID uuid;
-	DebugRect* debugRect = new DebugRect(m_albedoMap.find(colour)->second, identifier, uuid, false);
-	debugRect->GetTransform()->SetPosition(position);
-	debugRect->GetTransform()->SetScale(dimension);
+	string name = "DebugRect";
+	name += to_string(m_debugRectMap.size());
 
-	m_debugRectMap.insert(pair<string, DebugRect*>(identifier, debugRect));
+	CoolUUID uuid;
+	DebugRect* debugRect = new DebugRect(m_albedoMap.find(colour)->second, name, uuid, false);
+	debugRect->GetTransform()->SetWorldPosition(position);
+	debugRect->GetTransform()->SetWorldScale(dimension);
+
+	m_debugRectMap.insert(pair<string, DebugRect*>(name, debugRect));
 }
 
-void DebugDrawManager::CreateScreenSpaceDebugRect(string identifier, XMFLOAT3& position, XMFLOAT3& dimension, DebugColour colour)
+void DebugDrawManager::CreateScreenSpaceDebugRect(XMFLOAT3& position, XMFLOAT3& dimension, DebugColour colour)
 {
-	CoolUUID uuid;
-	DebugRect* debugRect = new DebugRect(m_albedoMap.find(colour)->second, identifier, uuid, true);
-	debugRect->GetTransform()->SetPosition(position);
-	debugRect->GetTransform()->SetScale(dimension);
+	string name = "DebugRect";
+	name += to_string(m_debugRectMap.size());
 
-	m_debugRectMap.insert(pair<string, DebugRect*>(identifier, debugRect));
+	CoolUUID uuid;
+	DebugRect* debugRect = new DebugRect(m_albedoMap.find(colour)->second, name, uuid, true);
+	debugRect->GetTransform()->SetWorldPosition(position);
+	debugRect->GetTransform()->SetWorldScale(dimension);
+
+	m_debugRectMap.insert(pair<string, DebugRect*>(name, debugRect));
 }
 
 void DebugDrawManager::Render(RenderStruct& renderStruct)

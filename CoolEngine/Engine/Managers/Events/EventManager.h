@@ -37,7 +37,7 @@ public:
 	void SendEvent(Event* event);
 
 	void AddEvent(EventType eventid, void* data = 0);
-	void AddEvent(Event* event);
+	void AddEvent(Event* pevent);
 
 	//Process All events
 	void ProcessEvents();

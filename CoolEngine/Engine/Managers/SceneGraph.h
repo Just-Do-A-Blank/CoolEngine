@@ -19,8 +19,9 @@ class SceneGraph
 private:
 	TreeNode<T>* m_rootNode = nullptr;
 	unordered_map<string, TreeNode<T>*> m_sceneTreeNodeMap;
-	unordered_map<string, T*> m_sceneGameObjectsMap;
-	vector<T*> m_sceneGameObjectList;
+	unordered_map<string, T*> m_sceneNodeObjectsMap;
+	vector<T*> m_sceneNodeObjectList;
+	vector<TreeNode<T>*> m_sceneNodeList;
 
 public:
 	SceneGraph();
@@ -33,11 +34,12 @@ public:
 	TreeNode<T>* TraverseTree(TreeNode<T>* currentNode);
 	void DeleteNode(TreeNode<T>* currenNode, bool deleteData = true);
 
-	void DeleteGameObjectUsingIdentifier(string identifier);
-	void DeleteGameObjectUsingNode(TreeNode<T>* currenNode);
+	void DeleteNodeObjectUsingIdentifier(string identifier);
+	void DeleteNodeObjectUsingNode(TreeNode<T>* currenNode);
+	void DeleteAllGameObjects();
 
 	template <typename K>
-	void DeleteGameObjectUsingNode(TreeNode<T>* currentNode, K* pgameObject)
+	void DeleteNodeObjectUsingNode(TreeNode<T>* currentNode, K* pgameObject)
 	{
 		if (currentNode->Child)
 		{
@@ -82,8 +84,8 @@ public:
 
 		string gameObjectName = currentNode->NodeObject->GetIdentifier();
 		m_sceneTreeNodeMap.erase(gameObjectName);
-		m_sceneGameObjectsMap.erase(gameObjectName);
-		m_sceneGameObjectList.erase(std::find(m_sceneGameObjectList.begin(), m_sceneGameObjectList.end(), currentNode->NodeObject));
+		m_sceneNodeObjectsMap.erase(gameObjectName);
+		m_sceneNodeObjectList.erase(std::find(m_sceneNodeObjectList.begin(), m_sceneNodeObjectList.end(), currentNode->NodeObject));
 
 		delete pgameObject;
 		currentNode->NodeObject = nullptr;
@@ -97,7 +99,7 @@ public:
 		unordered_map<string, TreeNode<T>*>::iterator it = m_sceneTreeNodeMap.find(identifier);
 		if (it->second)
 		{
-			DeleteGameObjectUsingNode(it->second, pgameObject);
+			DeleteNodeObjectUsingNode(it->second, pgameObject);
 		}
 	}
 
@@ -105,8 +107,9 @@ public:
 	TreeNode<T>* GetNodeUsingIdentifier(string identifier);
 
 	//Getters
-	vector<T*>& GetAllGameObjects();
-	T* GetGameObjectUsingIdentifier(string& identifier);
+	vector<T*>& GetAllNodeObjects();
+	vector<TreeNode<T>*>& GetAllNodes();
+	T* GetNodeObjectUsingIdentifier(string& identifier);
 };
 template class SceneGraph<GameObject>;
 template class SceneGraph<GameUIComponent>;

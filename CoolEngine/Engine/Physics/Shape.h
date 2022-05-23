@@ -17,6 +17,8 @@ enum class ShapeType
 class Shape : EditorUIComponent
 {
 public:
+	Shape(const nlohmann::json& data);
+	Shape();
 
     virtual bool Collide(Shape* shape) = 0;
     virtual bool Collide(Circle* circle) = 0;
@@ -36,17 +38,24 @@ public:
     virtual void CreateEngineUI() override;
 #endif
 
+	virtual void Serialize(nlohmann::json& data);
+
     void SetIsTrigger(bool value);
     void SetIsCollidable(bool value);
+    void SetIsRendered(bool value);
 
     bool IsTrigger() const;
     bool IsCollidable() const;
+    bool IsRendered() const;
 
-    Transform* m_transform;
+    virtual XMFLOAT2 GetShapeDimensions() = 0;
+
+    GameObject* m_pgameObject;
 
 protected:
     ShapeType m_shapeType;
 
     bool m_isTrigger = false;
     bool m_isCollidable = true;
+    bool m_isRendered = false;
 };

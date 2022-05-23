@@ -19,7 +19,6 @@ class Transform : EditorUIComponent
 	Transform* m_pparentTransform;
 	vector<Transform*> m_childrenTransformList;
 
-
 	//Matrices
 	XMMATRIX m_scaleMatrix;
 	XMMATRIX m_rotationMatrix = XMMatrixIdentity();
@@ -29,6 +28,8 @@ class Transform : EditorUIComponent
 	//flags
 
 public:
+	Transform();
+	Transform(Transform const& other);
 	void Initialize(const XMFLOAT3& position, const XMFLOAT3& rotation, const XMFLOAT3& scale);
 
 	void UpdateMatrix();
@@ -53,10 +54,16 @@ public:
 	const XMFLOAT3& GetLeftVector()const;
 
 	//Setters
-	void SetPosition(XMFLOAT3& position);
-	void SetRotation(XMFLOAT3& rotation);
+	void SetWorldPosition(XMFLOAT3& position);
+	void SetLocalPosition(XMFLOAT3& position);
+
+	void SetWorldRotation(XMFLOAT3& rotation);
+	void SetLocalRotation(XMFLOAT3& rotation);
+
 	void SetRotationMatrix(XMMATRIX& rotationMatrix);
-	void SetScale(XMFLOAT3& scale);
+
+	void SetWorldScale(XMFLOAT3& scale);
+	void SetLocalScale(XMFLOAT3& scale);
 
 	void SetForwardVector(XMFLOAT3& forwardVector);
 	void SetUpVector(XMFLOAT3& upVector);

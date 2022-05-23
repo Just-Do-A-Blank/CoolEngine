@@ -1,14 +1,25 @@
 #pragma once
+
+#include <stack>
 #include "Engine/Helpers/Timer.h"
 #include "Engine/Structure/Manager.h"
 #include "Engine/Scene/Scene.h"
+#include "Engine/GameObjects/EnemyGameObject.h"
+#include "Engine/Physics/ParticleSystem.h"
+#include "Engine/Managers/AudioManager.h"
+#include "Engine/Managers/FontManager.h"
+
+
+#include <sstream>
+#include <cstdint> 
 
 class GameObject;
 class Scene;
 template<class T>class TreeNode;
 class RenderStruct;
 class CameraGameObject;
-
+class ParticleSystem;
+class EnemyGameObject;
 
 enum class SceneDesc
 {
@@ -16,6 +27,12 @@ enum class SceneDesc
 	SCENE_2,
 	TEST_SCENE,
 	SIZE
+};
+
+enum class ViewState
+{
+	EDITOR_VIEW,
+	GAME_VIEW,
 };
 
 class GameManager : public Manager<GameManager>
@@ -28,25 +45,37 @@ private:
 	string m_workingDirectory = "";
 	wstring m_wideWorkingDirectory = L"";
 
-	CameraGameObject* m_pcamera = nullptr;
+	CameraGameObject* m_peditorCamera = nullptr;
+
+	ViewState m_viewState = ViewState::EDITOR_VIEW;
 
 public:
 	void Init();
 
 	Timer* GetTimer();
 
-	unordered_map<string, Scene*> m_sceneMap;
-	Scene* m_pcurrentScene;
+	unordered_map<string, Scene*> m_editorSceneMap;
+	unordered_map<string, Scene*> m_gameSceneMap;
+	Scene* m_pcurrentEditorScene;
+	Scene* m_pcurrentGameScene;
 
+	void Start();
 	void Update();
 	void Render(RenderStruct& renderStruct);
 
-	void CreateScene(string sceneIdentifier);
-	void SelectScene(Scene* psnene);
-	void SelectSceneUsingIdentifier(string sceneIdentifier);
+	void CreateScene(string, bool unloadCurrentScene = false);
+	bool LoadSceneFromFile(std::string fileLocation, bool unloadCurrentScene = false);
+	void SwitchScene(Scene* psnene);
+	bool SwitchSceneUsingIdentifier(string sceneIdentifier);
 	void DeleteScene(Scene* pscene);
 	void DeleteSceneUsingIdentifier(string sceneIdentifier);
 	void DeleteSelectedScene();
+	void SwitchAndDeleteScene(string sceneIdentifier);
+
+	bool BeginPlay();
+	bool EndPlay();
+	void CopyScene();
+	ViewState GetViewState()const;
 
 	string GetWorkingDirectory();
 	wstring GetWideWorkingDirectory();
@@ -58,39 +87,41 @@ public:
 	vector<GameObject*>& GetAllGameObjects();
 
 	CameraGameObject* GetCamera();
-	void SetCamera(CameraGameObject* pcamera);
+	void SetActiveCameraUsingIdentifier(string identifier);
 
 	template<typename T>
 	T* GetGameObjectUsingIdentifier(string& identifier)
 	{
-		return m_pcurrentScene->GetGameObjectUsingIdentifier<T>(identifier);
+		return m_pcurrentEditorScene->GetGameObjectUsingIdentifier<T>(identifier);
 	}
 
 	template<typename T>
 	T* CreateGameObject(string identifier, TreeNode<GameObject>* nodeParent = nullptr)
 	{
-		return m_pcurrentScene->CreateGameObject<T>(identifier, nodeParent);
+		return m_pcurrentEditorScene->CreateGameObject<T>(identifier, nodeParent);
 	}
 
-	void DeleteSelectedGameObject();
+	void DeleteGameObjectUsingNode(TreeNode<GameObject>* currentNode);
 	void DeleteGameObjectUsingIdentifier(string identifier);
 
 	template<typename T>
-	void DeleteGameObject(T* pgameObject, std::string identifier)
+	void DeleteGameObjectUsingNode(T* pgameObject, std::string identifier)
 	{
-		m_pcurrentScene->DeleteGameObject(pgameObject, identifier);
+		m_pcurrentEditorScene->DeleteGameObjectUsingNode(pgameObject, identifier);
 	}
 
 	TreeNode<GameObject>* GetRootTreeNode();
 	TreeNode<GameObject>* GetTreeNode(GameObject* pgameObject);
 	string& GetCurrentSceneName();
 
-
 	//Getters
 	unordered_map<string, Scene*> GetSceneList();
 	vector<GameObject*>& GetAllGameObjectsInCurrentScene();
 
 	void Serialize(nlohmann::json& data) override;
-	void Deserialize(nlohmann::json& data) override;
+	void Deserialize(nlohmann::json& data)override;
+
+	unordered_map<string, Scene*>& GetCurrentViewStateSceneMap();
+	Scene*& GetCurrentViewStateScene();
 };
 

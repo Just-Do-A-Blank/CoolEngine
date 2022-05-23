@@ -3,6 +3,33 @@
 #include "Engine/Includes/IMGUI/imgui.h"
 #include "Engine/EditorUI/EditorUI.h"
 
+Transform::Transform()
+{
+}
+
+Transform::Transform(Transform const& other)
+{
+	m_localPosition = other.m_localPosition;
+	m_localRotation = other.m_localRotation;
+	m_localScale = other.m_localScale;
+
+	m_worldPosition = other.m_worldPosition;
+	m_worldRotation = other.m_worldRotation;
+	m_worldScale = other.m_worldScale;
+
+	m_forwardVector = other.m_forwardVector;
+	m_upVector = other.m_upVector;
+	m_leftVector = other.m_leftVector;
+
+	m_pparentTransform = other.m_pparentTransform;
+	m_childrenTransformList = other.m_childrenTransformList;
+	
+	m_scaleMatrix = other.m_scaleMatrix;
+	m_rotationMatrix = other.m_rotationMatrix;
+	m_translationalMatrix = other.m_translationalMatrix;
+	m_worldMatrix = other.m_worldMatrix;
+}
+
 void Transform::Initialize(const XMFLOAT3& position, const XMFLOAT3& rotation, const XMFLOAT3& scale)
 {
     m_localPosition = position;
@@ -12,7 +39,7 @@ void Transform::Initialize(const XMFLOAT3& position, const XMFLOAT3& rotation, c
 
 void Transform::UpdateMatrix()
 {
-	m_rotationMatrix = XMMatrixRotationRollPitchYaw((-m_localRotation.x/180.0f)*XM_PI, (-m_localRotation.y / 180.0f) * XM_PI, (-m_localRotation.z / 180.0f) * XM_PI);
+	m_rotationMatrix = XMMatrixRotationRollPitchYaw((m_localRotation.x/180.0f)*XM_PI, (m_localRotation.y / 180.0f) * XM_PI, (m_localRotation.z / 180.0f) * XM_PI);
 	m_scaleMatrix = XMMatrixScaling(m_localScale.x, m_localScale.y, m_localScale.z);
 	m_translationalMatrix = XMMatrixTranslation(m_localPosition.x, m_localPosition.y, m_localPosition.z);
 
@@ -125,18 +152,42 @@ const XMFLOAT3& Transform::GetLeftVector() const
     return m_leftVector;
 }
 
-void Transform::SetPosition(XMFLOAT3& position)
+void Transform::SetWorldPosition(XMFLOAT3& position)
 {
-    m_localPosition = position;
+	if (m_pparentTransform == nullptr)
+	{
+		m_localPosition = position;
+	}
+	else
+	{
+		m_localPosition = MathHelper::Minus(position, m_pparentTransform->GetWorldPosition());
+	}
 
 	UpdateMatrix();
 }
 
-void Transform::SetRotation(XMFLOAT3& rotation)
+void Transform::SetLocalPosition(XMFLOAT3& position)
 {
-    m_localRotation = rotation;
+	m_localPosition = position;
+}
+
+void Transform::SetWorldRotation(XMFLOAT3& rotation)
+{
+	if (m_pparentTransform == nullptr)
+	{
+		m_localRotation = rotation;
+	}
+	else
+	{
+		m_localPosition = MathHelper::Minus(rotation, m_pparentTransform->GetWorldRotation());
+	}
 
 	UpdateMatrix();
+}
+
+void Transform::SetLocalRotation(XMFLOAT3& rotation)
+{
+	m_localRotation = rotation;
 }
 
 void Transform::SetRotationMatrix(XMMATRIX& rotationMatrix)
@@ -146,11 +197,23 @@ void Transform::SetRotationMatrix(XMMATRIX& rotationMatrix)
 	UpdateMatrix();
 }
 
-void Transform::SetScale(XMFLOAT3& scale)
+void Transform::SetWorldScale(XMFLOAT3& scale)
 {
-    m_localScale = scale;
+	if (m_pparentTransform == nullptr)
+	{
+		m_localScale = scale;
+	}
+	else
+	{
+		m_localPosition = MathHelper::Minus(scale, m_pparentTransform->GetWorldScale());
+	}
 
 	UpdateMatrix();
+}
+
+void Transform::SetLocalScale(XMFLOAT3& scale)
+{
+	m_localScale = scale;
 }
 
 void Transform::SetForwardVector(XMFLOAT3& forwardVector)

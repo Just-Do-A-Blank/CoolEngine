@@ -1,13 +1,15 @@
 #pragma once
-#include "GameObject.h"
+#include "Engine/GameObjects/PrefabGameObject.h"
 
 class Shape;
 
-class CollidableGameObject : virtual public GameObject
+class CollidableGameObject : public PrefabGameObject
 {
 public:
 	CollidableGameObject();
 	CollidableGameObject(string identifier, CoolUUID uuid);
+	CollidableGameObject(const nlohmann::json& data, CoolUUID uuid);
+	CollidableGameObject(CollidableGameObject const& other);
 	virtual ~CollidableGameObject()override;
 
 	//Getters
@@ -21,10 +23,17 @@ public:
 	virtual void CreateEngineUI() override;
 #endif
 
+	virtual void Serialize(nlohmann::json& jsonData) override;
+
+    virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
+    virtual void SaveAllPrefabData(nlohmann::json& jsonData) override;
+
 protected:
 	Shape* m_pcollider = nullptr;
 
+    void LoadLocalData(const nlohmann::json& jsonData);
 private:
 
+    void SaveLocalData(nlohmann::json& jsonData);
 };
 

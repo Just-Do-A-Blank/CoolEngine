@@ -55,9 +55,6 @@ void ParticleManager::Update(const float dTime)
 
 void ParticleManager::Render(ID3D11DeviceContext* pContext)
 {
-	pContext->VSSetShader(m_pVertexShader, nullptr, 0);
-	pContext->PSSetShader(m_pPixelShader, nullptr, 0);
-
 	for (unsigned int i = 0; i < PARTICLE_SIZE; ++i)
 	{
 		if (m_pParticles[i]->GetActive())
@@ -65,10 +62,6 @@ void ParticleManager::Render(ID3D11DeviceContext* pContext)
 			m_pParticles[i]->Render(pContext, m_pMesh);
 		}
 	}
-
-	// Unbind resources
-	pContext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 0, nullptr);
-	pContext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 0, nullptr);
 }
 
 void ParticleManager::AddSystem(Transform trans, float life, wstring albedoName, XMFLOAT2 vel, XMFLOAT2 accel, float partLife, float interval, float number, float randPos, float randVel, float randAccel, float randLife, int layer)
@@ -76,13 +69,7 @@ void ParticleManager::AddSystem(Transform trans, float life, wstring albedoName,
 	string systemName = "particleSystem" + to_string(m_pParticleSystems.size());
 	m_pParticleSystems.push_back( GameManager::GetInstance()->CreateGameObject<ParticleSystem>(systemName) );
 
-	ID3D11ShaderResourceView* psRV = GraphicsManager::GetInstance()->GetShaderResourceView(albedoName);
-	if (psRV == nullptr)
-	{
-		LOG("Failed to set the albedo SRV as one with that name doesn't exist!");
-		return;
-	}
-	m_pParticleSystems.at(m_pParticleSystems.size() - 1)->Initialise(trans, life, psRV, vel, accel, partLife, interval, number, randPos, randVel, randAccel, randLife, layer);
+	m_pParticleSystems.at(m_pParticleSystems.size() - 1)->Initialise(trans, life, albedoName, vel, accel, partLife, interval, number, randPos, randVel, randAccel, randLife, layer);
 }
 
 void ParticleManager::AddSystem(ParticleSystem* system)
@@ -90,7 +77,7 @@ void ParticleManager::AddSystem(ParticleSystem* system)
 	string systemName = "particleSystem" + to_string(m_pParticleSystems.size());
 	m_pParticleSystems.push_back(GameManager::GetInstance()->CreateGameObject<ParticleSystem>(systemName));
 
-	m_pParticleSystems.at(m_pParticleSystems.size() - 1)->Initialise(	*system->GetTrans(), system->GetLife(), system->GetTexture(),
+	m_pParticleSystems.at(m_pParticleSystems.size() - 1)->Initialise(	*system->GetTrans(), system->GetLife(), system->GetTexturePath(),
 																		system->GetVelocity(), system->GetAccel(), system->GetParticleLife(), system->GetSpawnInterval(), system->GetSpawnNumber(),
 																		system->GetRandomPos(), system->GetRandomVelocity(), system->GetRandomAccel(), system->GetRandomLife(), system->GetLayer());
 }
@@ -109,7 +96,7 @@ void ParticleManager::AddParticle(Transform trans, float life, ID3D11ShaderResou
 				pos.x += rand;
 				rand = MathHelper::RandomNumber(-abs(randPos), abs(randPos));
 				pos.y += rand;
-				trans.SetPosition(pos);
+				trans.SetWorldPosition(pos);
 			}
 			if (randVel != 0.0f)
 			{

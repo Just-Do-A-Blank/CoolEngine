@@ -1,7 +1,9 @@
 #include "TileMap.h"
 
 #include "Engine/EditorUI/EditorUI.h"
-#include  "Engine/Includes/json.hpp"
+#include "Engine/Includes/json.hpp"
+#include "Engine/Graphics/AnimationStateMachine.h"
+#include "Engine/Graphics/AnimationState.h"
 
 using namespace nlohmann;
 
@@ -25,9 +27,7 @@ TileMap::TileMap(wstring mapPath, XMFLOAT3 position, string identifier, CoolUUID
 	Tile::s_ptileMap = this;
 #endif
 
-	m_transform->SetPosition(position);
-
-	Load(mapPath);
+	Init(mapPath, position);
 }
 
 TileMap::TileMap(int width, int height, string identifier, CoolUUID uuid, XMFLOAT3 position, float tileDimensions) : RenderableGameObject(identifier, uuid)
@@ -36,18 +36,7 @@ TileMap::TileMap(int width, int height, string identifier, CoolUUID uuid, XMFLOA
 	Tile::s_ptileMap = this;
 #endif
 
-	m_width = width;
-	m_height = height;
-
-	m_totalTiles = m_width * m_height;
-
-	XMFLOAT3 scale = XMFLOAT3(tileDimensions, tileDimensions, tileDimensions);
-
-	m_transform->SetScale(scale);
-
-	m_transform->SetPosition(position);
-
-	InitMap();
+	Init(width, height, position, tileDimensions);
 }
 
 TileMap::~TileMap()
@@ -59,13 +48,30 @@ TileMap::~TileMap()
 	m_animPaths.resize(0);
 }
 
-void TileMap::Update(float d)
+void TileMap::Update()
 {
 	for (int i = 0; i < m_height; i++)
 	{
 		for (int j = 0; j < m_width; j++)
 		{
-			m_tiles[i][j]->Update();
+			if (m_tiles[i][j] != nullptr)
+			{
+				m_tiles[i][j]->Update();
+			}
+		}
+	}
+}
+
+void TileMap::Render(RenderStruct& renderStruct)
+{
+	for (int i = 0; i < m_height; i++)
+	{
+		for (int j = 0; j < m_width; j++)
+		{
+			if (m_tiles[i][j] != nullptr)
+			{
+				m_tiles[i][j]->Render(renderStruct);
+			}
 		}
 	}
 }
@@ -103,7 +109,7 @@ void TileMap::InitTilePosition(Tile* tile, int row, int column) // Give tiles po
 	pos = MathHelper::Plus(pos, XMFLOAT2(tileScale.x * 0.5f, tileScale.y * 0.5f));
 	pos = MathHelper::Plus(pos, XMFLOAT2(row * tileScale.x, column * tileScale.y));
 
-	tile->GetTransform()->SetPosition(XMFLOAT3(pos.x, pos.y, 0));
+	tile->GetTransform()->SetWorldPosition(XMFLOAT3(pos.x, pos.y, 0));
 }
 
 bool TileMap::Load(wstring path) // Load data for the map from a given path
@@ -124,7 +130,7 @@ bool TileMap::Load(wstring path) // Load data for the map from a given path
 	inFile.close();
 
 	XMFLOAT3 scale = XMFLOAT3(jsonData["TileMapScale"][0][0], jsonData["TileMapScale"][0][1], jsonData["TileMapScale"][0][2]);
-	m_transform->SetScale(scale);
+	m_transform->SetWorldScale(scale);
 
 	m_width = jsonData["Dimensions"][0];
 	m_height = jsonData["Dimensions"][1];
@@ -167,10 +173,8 @@ bool TileMap::Load(wstring path) // Load data for the map from a given path
 			{
 				CreateTile(i, j, ptile);
 
-#if TILE_MAP_TOOL
 				m_tiles[i][j]->SetSpriteIndex(spriteIndex);
 				m_tiles[i][j]->SetAnimIndex(animIndex);
-#endif
 
 				m_tiles[i][j]->SetLayer(tileLayer);
 				m_tiles[i][j]->SetIsPassable(tilePassable);
@@ -182,8 +186,11 @@ bool TileMap::Load(wstring path) // Load data for the map from a given path
 
 				if (animIndex != -1)
 				{
-					m_tiles[i][j]->AddAnimation("default", m_animPaths[animIndex]);
-					m_tiles[i][j]->PlayAnimation("default");
+					AnimationState* pstate = new AnimationState();
+					pstate->SetName("default");
+					pstate->SetAnimation(m_animPaths[animIndex]);
+
+					m_tiles[i][j]->AddAnimationState("default", pstate, true);
 				}
 			}
 		}
@@ -230,10 +237,8 @@ bool TileMap::Save(wstring path)
 			}
 			else
 			{
-#if TILE_MAP_TOOL
 				jsonOutput["TileSpriteIndexes"].push_back({ m_tiles[i][j]->GetSpriteIndex() });
 				jsonOutput["TileAnimIndexes"].push_back({ m_tiles[i][j]->GetAnimIndex() });
-#endif
 
 				jsonOutput["TileLayer"].push_back({ m_tiles[i][j]->GetLayer() });
 				jsonOutput["TilePassable"].push_back({ m_tiles[i][j]->GetIsPassable() });
@@ -259,8 +264,17 @@ bool TileMap::GetCoordsFromWorldPos(int* prow, int* pcolumn, const XMFLOAT2& pos
 
 	relativePos = MathHelper::Plus(relativePos, XMFLOAT2(m_width * tileScale.x * 0.5f, m_height * tileScale.y * 0.5f));
 
-	*prow = (relativePos.x / (int)tileScale.x);
-	*pcolumn = ((int)relativePos.y / (int)tileScale.y);
+	if (relativePos.x < 0 || relativePos.y < 0)
+	{
+		*prow = -1;
+		*pcolumn = -1;
+	}
+	else
+	{
+		*prow = (relativePos.x / (int)tileScale.x);
+		*pcolumn = ((int)relativePos.y / (int)tileScale.y);
+	}
+
 
 	if (*prow >= m_width || *pcolumn >= m_height || *prow < 0 || *pcolumn < 0)
 	{
@@ -281,11 +295,12 @@ bool TileMap::CreateTile(int row, int column, Tile*& ptile)
 		return false;
 	}
 
-	m_tiles[row][column] = GameManager::GetInstance()->CreateGameObject<Tile>("Tile_" + to_string(row) + "_" + to_string(column));
+	m_tiles[row][column] = new Tile("", CoolUUID());
+	m_tiles[row][column]->Init("Tile_" + to_string(row) + "_" + to_string(column), CoolUUID());
 
 	XMFLOAT3 scale = GetTransform()->GetWorldScale();
 
-	m_tiles[row][column]->GetTransform()->SetScale(scale);
+	m_tiles[row][column]->GetTransform()->SetWorldScale(scale);
 
 	InitTilePosition(m_tiles[row][column], row, column);
 
@@ -300,9 +315,7 @@ void TileMap::AddSpritePath(Tile* ptile, wstring& path)
 	{
 		if (m_spritePaths[i] == path)
 		{
-#if TILE_MAP_TOOL
 			ptile->SetSpriteIndex(i);
-#endif
 
 			return;
 		}
@@ -310,9 +323,7 @@ void TileMap::AddSpritePath(Tile* ptile, wstring& path)
 
 	m_spritePaths.push_back(path);
 
-#if TILE_MAP_TOOL
 	ptile->SetSpriteIndex(m_spritePaths.size() - 1);
-#endif
 }
 
 void TileMap::AddAnimPath(Tile* ptile, wstring& path)
@@ -321,9 +332,7 @@ void TileMap::AddAnimPath(Tile* ptile, wstring& path)
 	{
 		if (m_animPaths[i] == path)
 		{
-#if TILE_MAP_TOOL
 			ptile->SetAnimIndex(i);
-#endif
 
 			return;
 		}
@@ -331,9 +340,18 @@ void TileMap::AddAnimPath(Tile* ptile, wstring& path)
 
 	m_animPaths.push_back(path);
 
-#if TILE_MAP_TOOL
 	ptile->SetAnimIndex(m_animPaths.size() - 1);
-#endif
+}
+
+void TileMap::DeleteTile(int row, int column)
+{
+	if (m_tiles[row][column] == nullptr)
+	{
+		return;
+	}
+
+	delete m_tiles[row][column];
+	m_tiles[row][column] = nullptr;
 }
 
 #if EDITOR
@@ -385,7 +403,7 @@ void TileMap::CreateEngineUI()
 				{
 					if (m_tiles[i][j] != nullptr)
 					{
-						GameManager::GetInstance()->DeleteGameObject(m_tiles[i][j], m_tiles[i][j]->GetIdentifier());
+						GameManager::GetInstance()->DeleteGameObjectUsingNode(m_tiles[i][j], m_tiles[i][j]->GetIdentifier());
 					}
 				}
 
@@ -408,6 +426,29 @@ void TileMap::CreateEngineUI()
 
 	ImGui::Spacing();
 	ImGui::Separator();
+}
+
+void TileMap::Init(int width, int height, XMFLOAT3 position, float tileDimensions)
+{
+	m_width = width;
+	m_height = height;
+
+	m_totalTiles = m_width * m_height;
+
+	XMFLOAT3 scale = XMFLOAT3(tileDimensions, tileDimensions, tileDimensions);
+
+	m_transform->SetWorldScale(scale);
+
+	m_transform->SetWorldPosition(position);
+
+	InitMap();
+}
+
+void TileMap::Init(wstring mapPath, XMFLOAT3 position)
+{
+	m_transform->SetWorldPosition(position);
+
+	Load(mapPath);
 }
 #endif
 
@@ -489,7 +530,7 @@ XMFLOAT3 TileMap::GetTileScale()
 
 void TileMap::SetTileScale(XMFLOAT3 newScale)
 {
-	m_transform->SetScale(newScale);
+	m_transform->SetWorldScale(newScale);
 }
 
 void TileMap::SetPassable(int x, int y, bool passable)

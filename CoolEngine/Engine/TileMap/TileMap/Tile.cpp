@@ -3,6 +3,7 @@
 #include "Engine/EditorUI/EditorUI.h"
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/TileMap/TileMap/TileMap.h"
+#include "Engine/Graphics/AnimationState.h"
 
 #if EDITOR
 TileMap* Tile::s_ptileMap = nullptr;
@@ -16,6 +17,12 @@ Tile::Tile(string identifier, CoolUUID uuid) : RenderableGameObject(identifier, 
 {
 }
 
+void Tile::Init(string identifier, CoolUUID uuid)
+{
+	SetIdentifier(identifier);
+	SetUUID(uuid);
+}
+
 Tile::Tile(wstring path, string identifier, CoolUUID uuid) : RenderableGameObject(identifier, uuid)
 {
 	InitAnimation(path);
@@ -23,8 +30,12 @@ Tile::Tile(wstring path, string identifier, CoolUUID uuid) : RenderableGameObjec
 
 void Tile::InitAnimation(wstring animPath)
 {
-	AddAnimation("default", animPath);
-	return;
+	AnimationState* pstate = new AnimationState();
+	pstate->SetName("default");
+	pstate->SetAnimation(animPath);
+
+	m_panimationStateMachine->AddState("default", pstate);
+	m_panimationStateMachine->SetActiveState("default");
 }
 
 const bool& Tile::GetIsPassable() const
@@ -32,7 +43,6 @@ const bool& Tile::GetIsPassable() const
 	return m_isPassable;
 }
 
-#if TILE_MAP_TOOL
 int Tile::GetSpriteIndex() const
 {
 	return m_spriteIndex;
@@ -42,14 +52,12 @@ int Tile::GetAnimIndex() const
 {
 	return m_animIndex;
 }
-#endif
 
 void Tile::SetIsPassable(bool passable)
 {
 	m_isPassable = passable;
 }
 
-#if TILE_MAP_TOOL
 void Tile::SetSpriteIndex(int index)
 {
 	m_spriteIndex = index;
@@ -59,7 +67,6 @@ void Tile::SetAnimIndex(int index)
 {
 	m_animIndex = index;
 }
-#endif
 
 #if EDITOR
 void Tile::CreateEngineUI()
@@ -74,32 +81,40 @@ void Tile::CreateEngineUI()
 
 	ImGui::Spacing();
 
-	if (m_pcurrentAnimation == nullptr)
+	if (m_panimationStateMachine->GetActiveState() == nullptr)
 	{
 		if (EditorUI::Animation("Animation", m_animPath, nullptr) == true)
 		{
-			if (AddAnimation("default", m_animPath) == true)
+			SpriteAnimation anim = GraphicsManager::GetInstance()->GetAnimation(m_animPath);
+
+			if (anim.GetFrames() != nullptr)
 			{
-				PlayAnimation("default");
-				s_ptileMap->AddAnimPath(this, m_animPath);
+				AnimationState* panimState = new AnimationState();
+				panimState->SetName("default");
+				panimState->SetAnimation(m_animPath);
+
+				m_panimationStateMachine->AddState("default", panimState);
+				m_panimationStateMachine->SetActiveState("default");
 			}
 		}
 	}
 	else
 	{
-		if (EditorUI::Animation("Animation", m_animPath, m_pcurrentAnimation->GetCurrentFrame()) == true)
+		AnimationState* pstate = (AnimationState*)m_panimationStateMachine->GetActiveState();
+
+		if (EditorUI::Animation("Animation", m_animPath, pstate->GetAnimation()->GetCurrentFrame()) == true)
 		{
-			if (AddAnimation("default", m_animPath) == true)
-			{
-				PlayAnimation("default");
-				s_ptileMap->AddAnimPath(this, m_animPath);
-			}
+			pstate->SetAnimation(m_animPath);
 		}
 	}
 
 	ImGui::Spacing();
 
-	EditorUI::DragInt("Layer", m_layer, 100.0f, 0.1f, 0, GraphicsManager::GetInstance()->GetNumLayers() - 1);
+    auto layerParameters = EditorUIIntParameters();
+    layerParameters.m_minValue = 0;
+    layerParameters.m_maxValue = GraphicsManager::GetInstance()->GetNumLayers() - 1;
+
+	EditorUI::DragInt("Layer", m_layer, layerParameters);
 
 	ImGui::Spacing();
 
@@ -108,28 +123,18 @@ void Tile::CreateEngineUI()
 	ImGui::Spacing();
 	ImGui::Separator();
 }
+
 void Tile::CopyTile(Tile* ptile)
 {
-#if TILE_MAP_TOOL
 	SetSpriteIndex(ptile->m_spriteIndex);
 	SetAnimIndex(ptile->m_animIndex);
-#endif
 
 	SetLayer(ptile->m_layer);
 	SetIsPassable(ptile->m_isPassable);
 
 	SetAlbedo(ptile->m_palbedoSRV);
 
-	m_animations.clear();
-
-	for (std::unordered_map<std::string, SpriteAnimation>::iterator it = ptile->m_animations.begin(); it != ptile->m_animations.end(); ++it)
-	{
-		AddAnimation(it->first, it->second);
-	}
-
-	if (ptile->m_currentAnimationName != "")
-	{
-		PlayAnimation(ptile->m_currentAnimationName);
-	}
+	delete m_panimationStateMachine;
+	m_panimationStateMachine = new AnimationStateMachine(ptile->m_panimationStateMachine);
 }
 #endif

@@ -28,9 +28,12 @@ class EnemyGameObject : public CharacterGameObject
 {
 public:
     EnemyGameObject(string identifier, CoolUUID uuid);
+    EnemyGameObject(const nlohmann::json& data, CoolUUID uuid);
+	EnemyGameObject(EnemyGameObject const& other);
 	virtual ~EnemyGameObject()override;
 
-    void Update();
+    virtual void Update();
+    virtual void EditorUpdate();
 
     //Setters
     void SetPath(vector<node*> path);
@@ -46,6 +49,7 @@ public:
     const XMFLOAT3 GetDirection() const;
     const EnemyState GetEnemyState() const; //will be changed to FsSM states in the future
 
+    virtual void Serialize(nlohmann::json& jsonData) override;
 
 private:
 

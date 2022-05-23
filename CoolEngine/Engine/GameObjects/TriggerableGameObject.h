@@ -9,7 +9,11 @@ class TriggerableGameObject : public RenderableCollidableGameObject, public Obse
 public:
 	TriggerableGameObject();
 	TriggerableGameObject(string identifier, CoolUUID uuid);
+	TriggerableGameObject(const nlohmann::json& data, CoolUUID uuid);
+	TriggerableGameObject(TriggerableGameObject const& other);
     virtual ~TriggerableGameObject()override;
+
+	virtual void Serialize(nlohmann::json& data) override;
 
     /// <summary>
     /// Handles events from the Observations
@@ -28,6 +32,9 @@ private:
     void TriggerCollisionEvents(CollisionEvent*);
 
 protected:
+
+    virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
+    virtual void SaveAllPrefabData(nlohmann::json& jsonData) override;
 
     /// <summary>
     /// Occurs when two objects collide without collision on. Fired on enter.

@@ -7,6 +7,17 @@ EnemyGameObject::EnemyGameObject(string identifier, CoolUUID uuid) : CharacterGa
     m_gameObjectType |= GameObjectType::ENEMY;
 }
 
+EnemyGameObject::EnemyGameObject(const nlohmann::json& data, CoolUUID uuid) : CharacterGameObject(data, uuid)
+{
+	m_gameObjectType |= GameObjectType::ENEMY;
+}
+
+EnemyGameObject::EnemyGameObject(EnemyGameObject const& other) : CharacterGameObject(other)
+{
+	m_curPath = other.m_curPath;
+	m_enemyState = other.m_enemyState;
+}
+
 EnemyGameObject::~EnemyGameObject()
 {
 }
@@ -36,8 +47,16 @@ void EnemyGameObject::Update()
 
 		XMFLOAT3 stepPos = MathHelper::Multiply(m_direction, step);
 		stepPos = MathHelper::Plus(stepPos, m_transform->GetWorldPosition());
-		m_transform->SetPosition(stepPos);
+		m_transform->SetWorldPosition(stepPos);
 
+		if (m_invincibilityTime > 0.0f)
+		{
+			m_invincibilityTime -= GameManager::GetInstance()->GetTimer()->DeltaTime();
+		}
+		else
+		{
+			m_invincibilityTime = 0;
+		}
 	}
 	else
 	{
@@ -45,6 +64,10 @@ void EnemyGameObject::Update()
 		//Pathfinding::GetInstance()->FindPath(m_transform->GetPosition(), XMFLOAT3(1000, 200, 0), m_curPath); //test function
 	}
 
+}
+
+void EnemyGameObject::EditorUpdate()
+{
 }
 
 void EnemyGameObject::SetPath(vector<node*> path)
@@ -55,4 +78,9 @@ void EnemyGameObject::SetPath(vector<node*> path)
 const vector<node*> EnemyGameObject::GetPath() const
 {
 	return m_curPath;
+}
+
+void EnemyGameObject::Serialize(nlohmann::json& jsonData)
+{
+	CharacterGameObject::Serialize(jsonData);
 }

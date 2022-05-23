@@ -2,6 +2,8 @@
 #include "Engine/GameObjects/RenderableGameObject.h"
 #include "Engine/Managers/SceneGraph.h"
 #include "Engine/Physics/Collision.h"
+#include "Engine/GameUI/GameUIComponent.h"
+#include "Engine/GameObjects/CameraGameObject.h"
 
 Scene::Scene(string identifier)
 {
@@ -14,12 +16,35 @@ Scene::~Scene()
 
 }
 
+void Scene::Start()
+{
+    vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
+    for (int it = 0; it < gameObjectList.size(); ++it)
+    {
+        if (!gameObjectList[it]->m_bHaveUpdated)
+        {
+            gameObjectList[it]->Start();
+        }
+    }
+}
+
 void Scene::Update()
 {
-	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllGameObjects();
+	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
 	for (int it = 0; it < gameObjectList.size(); ++it)
 	{
 		gameObjectList[it]->Update();
+	}
+
+	Collision::Update(gameObjectList);
+}
+
+void Scene::EditorUpdate()
+{
+	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
+	for (int it = 0; it < gameObjectList.size(); ++it)
+	{
+		gameObjectList[it]->EditorUpdate();
 	}
 
 	Collision::Update(gameObjectList);
@@ -29,70 +54,72 @@ void Scene::Render(RenderStruct& renderStruct)
 {
 	RenderableGameObject* prenderableGameObject = nullptr;
 
-	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllGameObjects();
+	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
 	for (int it = 0; it < gameObjectList.size(); ++it)
 	{
-		if (gameObjectList[it]->ContainsType(GameObjectType::RENDERABLE) == false)
+		if (gameObjectList[it]->ContainsType(GameObjectType::RENDERABLE))
 		{
+			prenderableGameObject = dynamic_cast<RenderableGameObject*>(gameObjectList[it]);
+			prenderableGameObject->Render(renderStruct);
+
 			continue;
 		}
 
-		prenderableGameObject = dynamic_cast<RenderableGameObject*>(gameObjectList[it]);
-
-		prenderableGameObject->Render(renderStruct);
+		if (gameObjectList[it]->ContainsType(GameObjectType::GAME_UI_COMPONENT))
+		{
+			dynamic_cast<GameUIComponent*>(gameObjectList[it])->Render(renderStruct);
+			continue;
+		}
 	}
 }
 
 vector<GameObject*>& Scene::GetAllGameObjects()
 {
-	return m_psceneGraph->GetAllGameObjects();
+	return m_psceneGraph->GetAllNodeObjects();
 }
 
-void Scene::SelectGameObjectUsingIdentifier(string identifier)
+CameraGameObject* Scene::GetActiveCamera()
 {
-	m_pselectedNode = m_psceneGraph->GetNodeUsingIdentifier(identifier);
-	m_pselectedGameObject = m_pselectedNode->NodeObject;
+	return m_pactiveCamera;
 }
 
-void Scene::SelectGameObject(GameObject* pgameObject)
+unordered_map<string, CameraGameObject*> Scene::GetCameraGameObjectMap()
 {
-	if (pgameObject)
-	{
-		SelectGameObjectUsingIdentifier(pgameObject->GetIdentifier());
-	}
-	else
-	{
-		m_pselectedNode = nullptr;
-		m_pselectedGameObject = nullptr;
-	}
+	return m_cameraGameObjectMap;
 }
 
-void Scene::SelectGameObjectUsingTreeNode(TreeNode<GameObject>* pnode)
+bool Scene::SetActiveCameraUsingIdentifier(string identifier)
 {
-	if (!pnode)
+	if (m_cameraGameObjectMap.count(identifier) == 0)
 	{
-		m_pselectedNode = nullptr;
-		m_pselectedGameObject = nullptr;
-		return;
+		return false;
 	}
-
-	m_pselectedNode = pnode;
-	m_pselectedGameObject = pnode->NodeObject;
+	m_pactiveCamera = m_cameraGameObjectMap[identifier];
 }
 
-
-void Scene::DeleteSelectedGameObject()
+void Scene::DeleteGameObjectUsingNode(TreeNode<GameObject>* currentNode)
 {
-	if (!m_pselectedNode)
+	if (currentNode->NodeObject->ContainsType(GameObjectType::CAMERA))
 	{
-		return;
+		m_cameraGameObjectMap.erase(currentNode->NodeObject->m_identifier);
+		if (m_pactiveCamera == dynamic_cast<CameraGameObject*>(currentNode->NodeObject))
+		{
+			for (unordered_map<string, CameraGameObject*>::iterator it = m_cameraGameObjectMap.begin(); it != m_cameraGameObjectMap.end(); ++it)
+			{
+				m_pactiveCamera = it->second;
+				return;
+			}
+			m_pactiveCamera = nullptr;
+		}
 	}
-	m_psceneGraph->DeleteGameObjectUsingNode(m_pselectedNode);
+
+	m_psceneGraph->DeleteNodeObjectUsingNode(currentNode);
+	
 }
 
 void Scene::DeleteGameObjectUsingIdentifier(string identifier)
 {
-	m_psceneGraph->DeleteGameObjectUsingIdentifier(identifier);
+	m_psceneGraph->DeleteNodeObjectUsingIdentifier(identifier);
 }
 
 TreeNode<GameObject>* Scene::GetRootTreeNode()
