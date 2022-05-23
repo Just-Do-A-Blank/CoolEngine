@@ -264,15 +264,6 @@
     <ClCompile Include="Engine\GameObjects\LevelChangeGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerResource.cpp">
-      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerResourceInterface.cpp">
-      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerResourceManager.cpp">
-      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -703,16 +694,6 @@
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\LevelChangeGameObject.h">
       <Filter>Engine\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObjects\Gameplay\Player\EResourceModificationResult.h" />
-    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerResource.h">
-      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerResourceInterface.h">
-      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerResourceManager.h">
-      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
