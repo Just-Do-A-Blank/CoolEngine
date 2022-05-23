@@ -5,17 +5,17 @@
 
 LevelChangeGameObject::LevelChangeGameObject() : TriggerableGameObject()
 {
-    
+    m_gameObjectType |= GameObjectType::LEVEL_CHANGE;
 }
 
 LevelChangeGameObject::LevelChangeGameObject(string identifier, CoolUUID uuid) : TriggerableGameObject(identifier, uuid)
 {
-    
+    m_gameObjectType |= GameObjectType::LEVEL_CHANGE;
 }
 
 LevelChangeGameObject::LevelChangeGameObject(const nlohmann::json& data, CoolUUID uuid) : TriggerableGameObject(data, uuid)
 {
-    
+    m_gameObjectType |= GameObjectType::LEVEL_CHANGE;
 }
 
 LevelChangeGameObject::LevelChangeGameObject(LevelChangeGameObject const& other) : TriggerableGameObject(other)
@@ -30,17 +30,17 @@ LevelChangeGameObject::~LevelChangeGameObject()
 
 void LevelChangeGameObject::Serialize(nlohmann::json& jsonData)
 {
-    LevelChangeGameObject::Serialize(jsonData);
+    TriggerableGameObject::Serialize(jsonData);
 }
 
 void LevelChangeGameObject::LoadAllPrefabData(const nlohmann::json& jsonData)
 {
-    LevelChangeGameObject::LoadAllPrefabData(jsonData);
+    TriggerableGameObject::LoadAllPrefabData(jsonData);
 }
 
 void LevelChangeGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
 {
-    LevelChangeGameObject::SaveAllPrefabData(jsonData);
+    TriggerableGameObject::SaveAllPrefabData(jsonData);
 }
 
 bool LevelChangeGameObject::IsEventCollision(Event* e)
