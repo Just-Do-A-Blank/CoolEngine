@@ -251,6 +251,8 @@
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerResourceManager.cpp">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    <ClCompile Include="Engine\GameObjects\LevelChangeGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -673,6 +675,8 @@
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\EResourceModificationResult.h">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    <ClInclude Include="Engine\GameObjects\LevelChangeGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

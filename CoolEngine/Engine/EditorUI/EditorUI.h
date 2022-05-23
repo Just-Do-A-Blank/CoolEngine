@@ -182,6 +182,26 @@ public:
     /// <param name="key">A unique key for the error message box. Recommended: [ClassName]_[Something Unique with your class]</param>
     static void ShowError(const string& key);
 
+    /// <summary>
+    /// Standard combo box with strings as inputs
+    /// </summary>
+    /// <param name="label">The label to use</param>
+    /// <param name="values">A list of values as string</param>
+    /// <param name="selected">The selected value (updated as selected)</param>
+    /// <param name="parameters">The non-spesfic parametres</param>
+    /// <returns>True means the selection has changed</returns>
+    static bool ComboBox(const string& label, list<string>& values, string& selected, EditorUINonSpecificParameters parameters = {});
+
+    /// <summary>
+    /// Standard combo box with strings as inputs
+    /// </summary>
+    /// <param name="label">The label to use</param>
+    /// <param name="values">A list of values as string</param>
+    /// <param name="selected">The selected value (updated as selected)</param>
+    /// <param name="parameters">The non-spesfic parametres</param>
+    /// <returns>True means the selection has changed</returns>
+    static bool ComboBox(const string& label, list<pair<int, string>>& values, pair<int, string>& selected, EditorUINonSpecificParameters parameters = {});
+
     template<class T>
     static void ReferenceField(const string& label, T*& objectPointer, const float& columnWidth = 100.0f)
     {
@@ -234,6 +254,15 @@ public:
     }
 
 private:
+    /// <summary>
+    /// When entering a name this is the error message box for this.
+    /// </summary>
+    bool m_blankErrorMessageBoxShown;
+
+    /// <summary>
+    /// When pressing play this is the error message for no camera in scene
+    /// </summary>
+    bool m_cameraErrorMessageOnPlay;
 
     /// <summary>
     /// Default width of a coloumn

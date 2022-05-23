@@ -7,6 +7,7 @@
 #include "Engine/GameObjects/InteractableGameObject.h"
 #include "Engine/GameObjects/WeaponGameObject.h"
 #include "Engine\GameObjects\EnemyGameObject.h"
+#include "Engine/GameObjects/LevelChangeGameObject.h"
 #include "Engine/Tools/ToolBase.h"
 #include "Engine/Tools/AnimationTool.h"
 #include "Engine//Tools/TileMapTool.h"
@@ -94,6 +95,7 @@ void EditorUI::DrawPlayButtonWindow(XMFLOAT2 buttonSize, float verticalOffset)
     }
     ImGui::BeginDisabled(GameManager::GetInstance()->GetViewState() == ViewState::GAME_VIEW);
 
+    m_cameraErrorMessageOnPlay = ErrorPopupBox("PlayButtonCameraError", "There is no camera in the scene.\nPlease add one");
     if (ImGui::ImageButton(m_playButtonTexture, ImVec2(buttonSize.x, buttonSize.y)))
     {
         m_cameraPresent = GameManager::GetInstance()->BeginPlay();
@@ -101,6 +103,11 @@ void EditorUI::DrawPlayButtonWindow(XMFLOAT2 buttonSize, float verticalOffset)
         if (m_cameraPresent)
         {
             DeselectObjectInScene();
+        }
+        else
+        {
+            ShowError("PlayButtonCameraError");
+            m_cameraErrorMessageOnPlay = true;
         }
     }
     ImGui::EndDisabled();
@@ -116,24 +123,6 @@ void EditorUI::DrawPlayButtonWindow(XMFLOAT2 buttonSize, float verticalOffset)
     }
     ImGui::EndDisabled();
     ImGui::End();
-
-    if (!m_cameraPresent)
-    {
-        ImGui::Begin("No Camera GameObject Present on Scene");
-
-        int clicked = 0;
-        if (ImGui::Button("Close"))
-        {
-            ++clicked;
-        }
-        if (clicked & 1)
-        {
-            m_cameraPresent = true;
-        }
-
-        ImGui::End();
-    }
-
 }
 
 void EditorUI::SetIsViewportHovered(bool bHovered)
@@ -249,6 +238,12 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
                     m_createGameObjectClicked = true;
 
                     m_createObjectType = GameObjectType::CAMERA;
+                }
+                if (ImGui::MenuItem("Level Change"))
+                {
+                    m_createGameObjectClicked = true;
+
+                    m_createObjectType = GameObjectType::LEVEL_CHANGE;
                 }
 
                 ImGui::EndMenu();
@@ -373,8 +368,10 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
     if (m_createGameObjectClicked)
     {
         ImGui::Begin("New Object");
-        static char gameObjectName[64] = "";
-        IMGUI_LEFT_LABEL(ImGui::InputText, "Object Name", gameObjectName, 64);
+        static string gameObjectName;
+        InputText("Object Name", gameObjectName);
+
+        m_blankErrorMessageBoxShown = ErrorPopupBox("ObjectBlankErrorMessage", "Please enter an object name");
 
         int clicked = 0;
         if (ImGui::Button("Create"))
@@ -383,54 +380,66 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
         }
         if (clicked & 1)
         {
-            switch (m_createObjectType)
+            if (gameObjectName == "")
             {
-            case GameObjectType::RENDERABLE | GameObjectType::COLLIDABLE:
-                pgameManager->CreateGameObject<RenderableCollidableGameObject>(gameObjectName, m_selectedGameObjectNode);
-                break;
-
-            case GameObjectType::RENDERABLE:
-                pgameManager->CreateGameObject<RenderableGameObject>(gameObjectName, m_selectedGameObjectNode);
-                break;
-
-            case GameObjectType::COLLIDABLE:
-                pgameManager->CreateGameObject<CollidableGameObject>(gameObjectName, m_selectedGameObjectNode);
-                break;
-
-            case GameObjectType::BASE:
-                pgameManager->CreateGameObject<GameObject>(gameObjectName, m_selectedGameObjectNode);
-                break;
-
-            case GameObjectType::PARTICLE_SYSTEM:
-                pgameManager->CreateGameObject<ParticleSystem>(gameObjectName, m_selectedGameObjectNode);
-                break;
-
-            case GameObjectType::PLAYER:
-                pgameManager->CreateGameObject<PlayerGameObject>(gameObjectName, m_selectedGameObjectNode);
-                break;
-
-            case GameObjectType::ENEMY:
-                pgameManager->CreateGameObject<EnemyGameObject>(gameObjectName, m_selectedGameObjectNode);
-                break;
-
-            case GameObjectType::INTERACTABLE:
-                pgameManager->CreateGameObject<InteractableGameObject>(gameObjectName, m_selectedGameObjectNode);
-                break;
-
-            case GameObjectType::WEAPON:
-                pgameManager->CreateGameObject<WeaponGameObject>(gameObjectName, m_selectedGameObjectNode);
-                break;
-
-            case GameObjectType::CAMERA:
-                pgameManager->CreateGameObject<CameraGameObject>(gameObjectName, m_selectedGameObjectNode);
-                break;
+                ShowError("ObjectBlankErrorMessage");
+                m_blankErrorMessageBoxShown = true;
             }
+            else
+            {
+                switch (m_createObjectType)
+                {
+                case GameObjectType::RENDERABLE | GameObjectType::COLLIDABLE:
+                    pgameManager->CreateGameObject<RenderableCollidableGameObject>(gameObjectName, m_selectedGameObjectNode);
+                    break;
+
+                case GameObjectType::RENDERABLE:
+                    pgameManager->CreateGameObject<RenderableGameObject>(gameObjectName, m_selectedGameObjectNode);
+                    break;
+
+                case GameObjectType::COLLIDABLE:
+                    pgameManager->CreateGameObject<CollidableGameObject>(gameObjectName, m_selectedGameObjectNode);
+                    break;
+
+                case GameObjectType::BASE:
+                    pgameManager->CreateGameObject<GameObject>(gameObjectName, m_selectedGameObjectNode);
+                    break;
+
+                case GameObjectType::PARTICLE_SYSTEM:
+                    pgameManager->CreateGameObject<ParticleSystem>(gameObjectName, m_selectedGameObjectNode);
+                    break;
+
+                case GameObjectType::PLAYER:
+                    pgameManager->CreateGameObject<PlayerGameObject>(gameObjectName, m_selectedGameObjectNode);
+                    break;
+
+                case GameObjectType::ENEMY:
+                    pgameManager->CreateGameObject<EnemyGameObject>(gameObjectName, m_selectedGameObjectNode);
+                    break;
+
+                case GameObjectType::INTERACTABLE:
+                    pgameManager->CreateGameObject<InteractableGameObject>(gameObjectName, m_selectedGameObjectNode);
+                    break;
+
+                case GameObjectType::WEAPON:
+                    pgameManager->CreateGameObject<WeaponGameObject>(gameObjectName, m_selectedGameObjectNode);
+                    break;
+
+                case GameObjectType::CAMERA:
+                    pgameManager->CreateGameObject<CameraGameObject>(gameObjectName, m_selectedGameObjectNode);
+                    break;
+
+                case GameObjectType::LEVEL_CHANGE:
+                    pgameManager->CreateGameObject<LevelChangeGameObject>(gameObjectName, m_selectedGameObjectNode);
+                    break;
+                }
 
 
-            m_createObjectType = (GameObjectType)0;
+                m_createObjectType = (GameObjectType)0;
 
-            m_createGameObjectClicked = false;
-            gameObjectName[0] = {};
+                m_createGameObjectClicked = false;
+                gameObjectName[0] = {};
+            }
         }
 
         ImGui::End();
@@ -438,8 +447,10 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
     else if (m_createUIObjectClicked)
     {
         ImGui::Begin("New UI Component");
-        static char uiObjectName[64] = "";
-        IMGUI_LEFT_LABEL(ImGui::InputText, "UI Component Name", uiObjectName, 64);
+
+        m_blankErrorMessageBoxShown = ErrorPopupBox("ObjectBlankErrorMessage", "Please enter a component name");
+        static string uiObjectName;
+        InputText("UI Component Name", uiObjectName);
 
         int clicked = 0;
         if (ImGui::Button("Create"))
@@ -448,31 +459,40 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
         }
         if (clicked & 1)
         {
-            switch (m_createUIComponentType)
+            if (uiObjectName == "")
             {
-            case UIComponentType::CANVAS:
-                pgameManager->CreateGameObject<UICanvas>(uiObjectName, m_selectedGameObjectNode);
-                break;
-
-            case UIComponentType::IMAGE:
-                pgameManager->CreateGameObject<ImageComponent>(uiObjectName, m_selectedGameObjectNode);
-                break;
-
-            case UIComponentType::TEXT:
-                pgameManager->CreateGameObject<TextComponent>(uiObjectName, m_selectedGameObjectNode)->Init(uiObjectName, "comicSans", 20, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
-                break;
-
-            case UIComponentType::BUTTON:
-                pgameManager->CreateGameObject<ButtonComponent>(uiObjectName, m_selectedGameObjectNode);
-                break;
-
+                ShowError("ObjectBlankErrorMessage");
+                m_blankErrorMessageBoxShown = true;
             }
+            else
+            {
+                switch (m_createUIComponentType)
+                {
+                case UIComponentType::CANVAS:
+                    pgameManager->CreateGameObject<UICanvas>(uiObjectName, m_selectedGameObjectNode);
+                    break;
+
+                case UIComponentType::IMAGE:
+                    pgameManager->CreateGameObject<ImageComponent>(uiObjectName, m_selectedGameObjectNode);
+                    break;
+
+                case UIComponentType::TEXT:
+                    pgameManager->CreateGameObject<TextComponent>(uiObjectName, m_selectedGameObjectNode)->Init(uiObjectName, "comicSans", 20, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+                    break;
+
+                case UIComponentType::BUTTON:
+                    pgameManager->CreateGameObject<ButtonComponent>(uiObjectName, m_selectedGameObjectNode);
+                    break;
+
+                }
 
 
-            m_createUIComponentType = (UIComponentType)0;
+                m_createUIComponentType = (UIComponentType)0;
 
-            m_createUIObjectClicked = false;
-            uiObjectName[0] = {};
+                m_createUIObjectClicked = false;
+                uiObjectName[0] = {};
+            }
+            
         }
 
         ImGui::End();
@@ -553,11 +573,12 @@ void EditorUI::DrawSceneManagementWindow()
     if (m_createSceneClicked)
     {
         ImGui::Begin("New Scene");
-        static char sceneName[64] = "";
-        IMGUI_LEFT_LABEL(ImGui::InputText, "Scene Name", sceneName, 64);
+        static string sceneName;
+        InputText("Scene Name", sceneName);
+
+        m_blankErrorMessageBoxShown = ErrorPopupBox("SceneBlankErrorMessage", "Please enter a scene name");
 
         int clicked = 0;
-
         if (ImGui::Button("Create"))
         {
             ++clicked;
@@ -565,10 +586,18 @@ void EditorUI::DrawSceneManagementWindow()
 
         if (clicked & 1)
         {
-            DeselectObjectInScene();
-            pgameManager->CreateScene(sceneName, true);
-            m_createSceneClicked = false;
-            sceneName[0] = {};
+            if (sceneName == "")
+            {
+                ShowError("SceneBlankErrorMessage");
+                m_blankErrorMessageBoxShown = true;
+            }
+            else
+            {
+                DeselectObjectInScene();
+                pgameManager->CreateScene(sceneName, true);
+                m_createSceneClicked = false;
+                sceneName[0] = {};
+            }
         }
         ImGui::End();
 	}
@@ -1647,5 +1676,131 @@ void EditorUI::SetNextWindowToCenter()
     ImGuiIO& io = ImGui::GetIO();
     ImVec2 pos(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
     ImGui::SetNextWindowPos(pos, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+}
+
+/// <summary>
+/// Standard combo box with strings as inputs
+/// </summary>
+/// <param name="label">The label to use</param>
+/// <param name="values">A list of values as string</param>
+/// <param name="selected">The selected value (updated as selected)</param>
+/// <param name="parameters">The non-spesfic parametres</param>
+/// <returns>True means the selection has changed</returns>
+bool EditorUI::ComboBox(const string& label, list<string>& values, string& selected, EditorUINonSpecificParameters parameters)
+{
+    SetupDefaultsInParameters(parameters);
+
+    ImGui::PushID(label.c_str());
+
+    ImGui::Columns(2);
+
+    ImGui::SetColumnWidth(0, parameters.m_columnWidth);
+    ImGui::Text(label.c_str());
+    SetupTooltip(parameters.m_tooltipText);
+
+    ImGui::NextColumn();
+
+    ImGui::PushItemWidth(ImGui::CalcItemWidth());
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+    if (selected == "")
+    {
+        selected = values.front();
+    }
+
+    string originalSelection = selected;
+
+    if (ImGui::BeginCombo("", selected.c_str()))
+    {
+        std::list<string>::iterator it;
+        for (it = values.begin(); it != values.end(); it++)
+        {
+            const bool is_selected = it->c_str() == selected;
+            if (ImGui::Selectable(it->c_str(), is_selected))
+            {
+                selected = it->c_str();
+            }
+
+            if (is_selected)
+            {
+                ImGui::SetItemDefaultFocus();
+            }
+        }
+
+        ImGui::EndCombo();
+    }
+
+    ImGui::PopItemWidth();
+
+    ImGui::PopStyleVar();
+
+    ImGui::Columns(1);
+
+    ImGui::PopID();
+
+    return selected != originalSelection;
+}
+
+/// <summary>
+/// Standard combo box with strings as inputs
+/// </summary>
+/// <param name="label">The label to use</param>
+/// <param name="values">A list of values as string</param>
+/// <param name="selected">The selected value (updated as selected)</param>
+/// <param name="parameters">The non-spesfic parametres</param>
+/// <returns>True means the selection has changed</returns>
+bool EditorUI::ComboBox(const string& label, list<pair<int, string>>& values, pair<int, string>& selected, EditorUINonSpecificParameters parameters)
+{
+    SetupDefaultsInParameters(parameters);
+
+    ImGui::PushID(label.c_str());
+
+    ImGui::Columns(2);
+
+    ImGui::SetColumnWidth(0, parameters.m_columnWidth);
+    ImGui::Text(label.c_str());
+    SetupTooltip(parameters.m_tooltipText);
+
+    ImGui::NextColumn();
+
+    ImGui::PushItemWidth(ImGui::CalcItemWidth());
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+    if (selected.second == "")
+    {
+        selected = values.front();
+    }
+
+    pair<int, string> originalSelection = selected;
+
+    if (ImGui::BeginCombo("", selected.second.c_str()))
+    {
+        std::list<pair<int, string>>::iterator it;
+        for (it = values.begin(); it != values.end(); it++)
+        {
+            const bool is_selected = *it == selected;
+            if (ImGui::Selectable(it->second.c_str(), is_selected))
+            {
+                selected = *it;
+            }
+
+            if (is_selected)
+            {
+                ImGui::SetItemDefaultFocus();
+            }
+        }
+
+        ImGui::EndCombo();
+    }
+
+    ImGui::PopItemWidth();
+
+    ImGui::PopStyleVar();
+
+    ImGui::Columns(1);
+
+    ImGui::PopID();
+
+    return selected != originalSelection;
 }
 #endif

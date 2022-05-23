@@ -291,7 +291,7 @@ void Collision::Update(vector<GameObject*> gameObjectMap, vector<ObjectEntry<Bul
 				pcollidable = dynamic_cast<CollidableGameObject*>(gameObjectMap[itObj]);
 				pbullet = bulletMap[itBullet]->m_pObject;
 
-				if (pcollidable->GetShape() == nullptr || pbullet->GetShape() == nullptr)
+				if (pcollidable->GetShape() == nullptr || pbullet->GetShape() == nullptr || !bulletMap[itBullet]->m_Active)
 				{
 					continue;
 				}

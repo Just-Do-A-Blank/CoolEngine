@@ -21,7 +21,7 @@ public:
 	ObjectPool(int objectCount)
 	{
 		m_pObjects.reserve(objectCount);
-		for (size_t i = 0; i < objectCount; i++)
+		for (size_t i = 0; i < objectCount; ++i)
 		{
 			ObjectEntry<T>* entry = new ObjectEntry<T>();
 			entry->m_Active = false;
@@ -32,7 +32,7 @@ public:
 
 	~ObjectPool()
 	{
-		for (size_t i = 0; i < m_pObjects.size(); i++)
+		for (size_t i = 0; i < m_pObjects.size(); ++i)
 		{
 			delete m_pObjects[i];
 		}
@@ -40,7 +40,7 @@ public:
 
 	ObjectEntry<T>* CreateEntryInPool()
 	{
-		for (size_t i = 0; i < m_pObjects.size(); i++)
+		for (size_t i = 0; i < m_pObjects.size(); ++i)
 		{
 			if (!m_pObjects[i]->m_Active)
 			{
@@ -53,7 +53,7 @@ public:
 
 	bool ReleaseEntryInPool(ObjectEntry<T>* entry)
 	{
-		for (size_t i = 0; i < m_pObjects.size(); i++)
+		for (size_t i = 0; i < m_pObjects.size(); ++i)
 		{
 			if (m_pObjects[i] == entry)
 			{
@@ -62,6 +62,14 @@ public:
 			}
 		}
 		return false;
+	}
+
+	void ClearPool()
+	{
+		for (size_t i = 0; i < m_pObjects.size(); ++i)
+		{
+			m_pObjects[i]->m_Active = false;
+		}
 	}
 
 	const std::vector<ObjectEntry<T>*> ReturnPool() { return m_pObjects; }

@@ -14,6 +14,8 @@
 #include "Engine/GameUI/UiCanvas.h"
 #include "Engine/GameUI/TextComponent.h"
 #include "Engine/GameObjects/EditorCameraGameObject.h"
+#include "Engine/Managers/Events/BulletCreator.h"
+#include "Engine/GameObjects/LevelChangeGameObject.h"
 
 #include <fstream>
 
@@ -31,6 +33,7 @@ void GameManager::Init()
 
 	CoolUUID uuid;
 	m_peditorCamera = new EditorCameraGameObject(std::string("EditorCamera"), uuid);
+	m_pbulletCreator = new BulletCreator();
 }
 
 Timer* GameManager::GetTimer()
@@ -73,6 +76,7 @@ void GameManager::Update()
 
 	case ViewState::GAME_VIEW:
 		m_pcurrentGameScene->Update();
+		m_pbulletCreator->Update();
 		break;
 	}
 	
@@ -93,6 +97,7 @@ void GameManager::Render(RenderStruct& renderStruct)
 
 	case ViewState::GAME_VIEW:
 		m_pcurrentGameScene->Render(renderStruct);
+		m_pbulletCreator->Render(renderStruct);
 		break;
 	}	
 }
@@ -106,6 +111,7 @@ void GameManager::DeleteSelectedScene()
 {
 	Scene*& pcurrentScene = GetCurrentViewStateScene();
 	pcurrentScene->m_psceneGraph->DeleteAllGameObjects();
+	m_pbulletCreator->DeleteBullets();
 
 	unordered_map<string, Scene*>& sceneMap = GetCurrentViewStateSceneMap();
 	sceneMap.erase(pcurrentScene->GetSceneIdentifier());
@@ -125,6 +131,7 @@ void GameManager::SwitchAndDeleteScene(string sceneIdentifier)
 	{
 	case ViewState::EDITOR_VIEW:
 		m_pcurrentEditorScene->m_psceneGraph->DeleteAllGameObjects();
+		m_pbulletCreator->DeleteBullets();
 
 		m_editorSceneMap.erase(m_pcurrentEditorScene->GetSceneIdentifier());
 		for (unordered_map<string, Scene*>::iterator it = m_editorSceneMap.begin(); it != m_editorSceneMap.end(); ++it)
@@ -167,6 +174,7 @@ bool GameManager::EndPlay()
 			it->second->m_psceneGraph->DeleteAllGameObjects();
 			delete it->second;
 			it->second = nullptr;
+			m_pbulletCreator->DeleteBullets();
 		}
 		m_gameSceneMap.clear();
 		m_pcurrentGameScene = nullptr;
@@ -406,6 +414,23 @@ void GameManager::CopyScene()
 			}
 			break;
 
+		case AccumlateType::LEVEL_CHANGE:
+			if (gameObjectNodeList[it]->PreviousParent)
+			{
+				TreeNode<GameObject>* parentNode = m_pcurrentGameScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
+				m_pcurrentGameScene->CopyGameObject<LevelChangeGameObject>(*(dynamic_cast<LevelChangeGameObject*>(gameObjectNodeList[it]->NodeObject)), parentNode);
+			}
+			else if (gameObjectNodeList[it]->PreviousSibling)
+			{
+				TreeNode<GameObject>* previousSiblingNode = m_pcurrentGameScene->GetTreeNode(gameObjectNodeList[it]->PreviousSibling->NodeObject);
+				m_pcurrentGameScene->CopyGameObject<LevelChangeGameObject>(*(dynamic_cast<LevelChangeGameObject*>(gameObjectNodeList[it]->NodeObject)), nullptr, previousSiblingNode);
+			}
+			else
+			{
+				m_pcurrentGameScene->CopyGameObject<LevelChangeGameObject>(*(dynamic_cast<LevelChangeGameObject*>(gameObjectNodeList[it]->NodeObject)));
+			}
+			break;
+
 		case AccumlateType::UI_COMPONENT:
 			GameUIComponent* uiComponent = dynamic_cast<GameUIComponent*>(gameObjectNodeList[it]->NodeObject);
 			switch ((AccumulatedUIComponentType)uiComponent->GetComponentType())
@@ -548,6 +573,7 @@ bool GameManager::SwitchSceneUsingIdentifier(string sceneIdentifier)
 void GameManager::DeleteScene(Scene* pscene)
 {
 	pscene->m_psceneGraph->DeleteAllGameObjects();
+	m_pbulletCreator->DeleteBullets();
 	GetCurrentViewStateSceneMap().erase(pscene->GetSceneIdentifier());
 }
 
@@ -605,7 +631,16 @@ string& GameManager::GetCurrentSceneName()
 
 vector<GameObject*>& GameManager::GetAllGameObjectsInCurrentScene()
 {
-	return GetCurrentViewStateScene()->GetAllGameObjects();
+	switch (m_viewState)
+	{
+	case ViewState::EDITOR_VIEW:
+		return m_pcurrentEditorScene->GetAllGameObjects();
+		break;
+
+	case ViewState::GAME_VIEW:
+		return m_pcurrentGameScene->GetAllGameObjects();
+		break;
+	}	
 }
 
 void GameManager::Serialize(nlohmann::json& data)
