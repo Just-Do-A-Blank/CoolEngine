@@ -265,15 +265,6 @@ void PlayerGameObject::Update()
 		m_invincibilityTime = 0;
 	}
 
-	if (m_myInventory)
-	{
-		m_myInventory->UpdateMoney(1 * GameManager::GetInstance()->GetTimer()->DeltaTime()); // test add 1 coin every second
-		if (m_myInventory->m_money > 10)
-		{
-			m_transform->SetLocalScale(XMFLOAT3(10, 10, 10));
-		}
-	}
-	m_invincibilityTime -= GameManager::GetInstance()->GetTimer()->DeltaTime();
 }
 
 void PlayerGameObject::EditorUpdate()
