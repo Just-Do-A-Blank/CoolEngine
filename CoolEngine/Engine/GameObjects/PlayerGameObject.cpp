@@ -301,3 +301,12 @@ void PlayerGameObject::CreateEngineUI()
 }
 
 #endif
+
+/// <summary>
+/// Gets the player resource (such as health)
+/// </summary>
+/// <returns>The resource manager</returns>
+PlayerResourceManager* PlayerGameObject::GetPlayerResources()
+{
+	return m_resourceManager;
+}

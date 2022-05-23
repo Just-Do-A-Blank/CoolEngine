@@ -37,6 +37,12 @@ public:
 #endif
 
     virtual void TakeDamage(float damage);
+
+    /// <summary>
+    /// Gets the player resource (such as health)
+    /// </summary>
+    /// <returns>The resource manager</returns>
+    PlayerResourceManager* GetPlayerResources();
 protected:
 
     virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;

@@ -10,6 +10,7 @@
 #include "Engine/GameObjects/Gameplay/Player/PlayerMovementState.h"
 #include "Engine\GameObjects\Gameplay\Player\PlayerMovementParameters.h"
 #include "Engine\GameObjects\Gameplay\Player\PlayerMovingBody.h"
+#include "Engine/GameObjects/Gameplay/Player/PlayerResourceManager.h"
 
 /// <summary>
 /// Handles movement around the scene for the player
@@ -108,6 +109,8 @@ private:
     /// </summary>
     float m_dodgeSpeed;
 
+    string m_dodgeResource;
+
     /// <summary>
     /// How long to doge for in seconds
     /// </summary>
@@ -138,7 +141,9 @@ private:
     /// </summary>
     PlayerMovingBody* m_playerMovingBody;
 
-    string m_selected;
-    pair<int, string> m_selected2;
+    /// <summary>
+    /// The player we are on
+    /// </summary>
+    PlayerGameObject* m_playerGameObject;
 };
 

@@ -134,26 +134,6 @@ public:
     static void Animations(const string& label, unordered_map<string, SpriteAnimation>& animations, const float& columnWidth = 100.0f);
 
     /// <summary>
-    /// Standard combo box with strings as inputs
-    /// </summary>
-    /// <param name="label">The label to use</param>
-    /// <param name="values">A list of values as string</param>
-    /// <param name="selected">The selected value (updated as selected)</param>
-    /// <param name="parameters">The non-spesfic parametres</param>
-    /// <returns>True means the selection has changed</returns>
-    static bool ComboBox(const string& label, list<string>& values, string& selected, EditorUIFloatParameters parameters = {});
-
-    /// <summary>
-    /// Standard combo box with strings as inputs
-    /// </summary>
-    /// <param name="label">The label to use</param>
-    /// <param name="values">A list of values as string</param>
-    /// <param name="selected">The selected value (updated as selected)</param>
-    /// <param name="parameters">The non-spesfic parametres</param>
-    /// <returns>True means the selection has changed</returns>
-    static bool ComboBox(const string& label, list<pair<int, string>>& values, pair<int, string>& selected, EditorUIFloatParameters parameters = {});
-
-    /// <summary>
     /// Displays a single button on the interface
     /// </summary>
     /// <param name="label">Label on the button</param>

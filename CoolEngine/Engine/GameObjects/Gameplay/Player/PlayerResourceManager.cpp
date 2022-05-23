@@ -7,11 +7,17 @@ PlayerResourceManager::PlayerResourceManager()
 #if EDITOR
 	m_resourceInterface = new PlayerResourceInterface(&m_resources);
 #endif
+
+    m_resourceKeys = list<string>();
+    UpdateAllKeys();
 }
 
 PlayerResourceManager::PlayerResourceManager(const nlohmann::json& data)
 {
     LoadData(data);
+
+    m_resourceKeys = list<string>();
+    UpdateAllKeys();
 }
 
 PlayerResourceManager::PlayerResourceManager(PlayerResourceManager const& other)
@@ -20,6 +26,9 @@ PlayerResourceManager::PlayerResourceManager(PlayerResourceManager const& other)
 #if EDITOR
     m_resourceInterface = other.m_resourceInterface;
 #endif
+
+    m_resourceKeys = list<string>();
+    UpdateAllKeys();
 }
 
 PlayerResourceManager::~PlayerResourceManager()
@@ -162,7 +171,7 @@ void PlayerResourceManager::UpdateAllKeys()
 /// Gets all the keys in the resource list
 /// </summary>
 /// <returns>All the keys for resources</returns>
-const list<string> PlayerResourceManager::GetResourceKeys()
+list<string> PlayerResourceManager::GetResourceKeys()
 {
     return m_resourceKeys;
 }

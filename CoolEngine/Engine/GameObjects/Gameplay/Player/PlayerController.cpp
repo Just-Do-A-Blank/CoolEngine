@@ -38,8 +38,7 @@ PlayerController::PlayerController(InputsAsGameplayButtons* gameplayButtons, Pla
     EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
     EventManager::Instance()->AddClient(EventType::MouseMoved, this);
 
-    m_selected = "";
-    m_selected2 = pair<int, string>(0, "");
+    m_playerGameObject = playerReference;
 }
 
 PlayerController::PlayerController(PlayerController const& other, PlayerGameObject* newPlayer)
@@ -51,6 +50,8 @@ PlayerController::PlayerController(PlayerController const& other, PlayerGameObje
 	m_speedMultiplierWalking = other.m_speedMultiplierWalking;
 	m_moveSpeedPerFrame = other.m_moveSpeedPerFrame;
 	m_dragSpeedPerFrame = other.m_dragSpeedPerFrame;
+
+    m_playerGameObject = newPlayer;
 }
 
 PlayerController::~PlayerController()
@@ -151,15 +152,6 @@ void PlayerController::CreateEngineUI()
         speedParameters.m_speed = 0.01f;
 
         EditorUI::FullTitle("Walking", titleParameters);
-
-        std::list<string> listofPlayers = { "first", "second", "third", "fourth", "fifth"};
-        std::list<pair<int, string>> listOfPlayers2{ pair<int, string>(0, "first"), pair<int, string>(1, "second"), pair<int, string>(3, "fourth") };
-        
-
-        if (EditorUI::ComboBox("something", listOfPlayers2, m_selected2) && m_selected2.first == 3)
-        {
-            LOG("3");
-        }
         
         EditorUI::DragFloat("Walking Speed", m_speedMultiplierWalking, speedParameters);
 
@@ -172,6 +164,8 @@ void PlayerController::CreateEngineUI()
         speedParameters.m_tooltipText = "The time in seconds to dodge for before returning to walking!";
 
         EditorUI::DragFloat("Dodge Time in Seconds ", m_timeInSecondsToDodgeFor, speedParameters);
+
+        EditorUI::ComboBox("Resource", m_playerGameObject->GetPlayerResources()->GetResourceKeys(), m_dodgeResource);
 
         speedParameters.m_tooltipText = "When rolling this is the main multiplier - sensitive to big changes!";
 

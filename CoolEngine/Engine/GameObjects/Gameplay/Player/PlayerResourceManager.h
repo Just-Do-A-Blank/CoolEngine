@@ -36,7 +36,7 @@ public:
     /// Gets all the keys in the resource list
     /// </summary>
     /// <returns>All the keys for resources</returns>
-    const list<string> GetResourceKeys();
+    list<string> GetResourceKeys();
 #endif
 
     /// <summary>
