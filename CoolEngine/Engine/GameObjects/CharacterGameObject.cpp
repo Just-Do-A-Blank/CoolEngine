@@ -15,8 +15,14 @@ CharacterGameObject::CharacterGameObject(const nlohmann::json& data, CoolUUID uu
 {
 	m_gameObjectType |= GameObjectType::CHARACTER;
 
-	m_moveSpeed = data["Movement Speed"];
-	m_health = data["Health"];
+    if (PrefabGameObject::IsPrefab())
+    {
+        LoadLocalData(PrefabGameObject::GetPrefabDataLoadedAtCreation());
+    }
+    else
+    {
+        LoadLocalData(data);
+    }
 }
 
 CharacterGameObject::CharacterGameObject(CharacterGameObject const& other) : TriggerableGameObject(other)
@@ -50,7 +56,32 @@ void CharacterGameObject::TakeDamage(float damage)
 void CharacterGameObject::Serialize(nlohmann::json& jsonData)
 {
 	TriggerableGameObject::Serialize(jsonData);
+    SaveLocalData(jsonData);
+}
 
-	jsonData["Health"] = m_health;
-	jsonData["Movement Speed"] = m_moveSpeed;
+void CharacterGameObject::LoadAllPrefabData(const nlohmann::json& jsonData)
+{
+    TriggerableGameObject::LoadAllPrefabData(jsonData);
+    LoadLocalData(jsonData);
+}
+
+void CharacterGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
+{
+    SaveLocalData(jsonData);
+    TriggerableGameObject::SaveAllPrefabData(jsonData);
+}
+
+void CharacterGameObject::LoadLocalData(const nlohmann::json& jsonData)
+{
+    if (jsonData.contains("Movement Speed"))
+    {
+        m_moveSpeed = jsonData["Movement Speed"];
+        m_health = jsonData["Health"];
+    }
+}
+
+void CharacterGameObject::SaveLocalData(nlohmann::json& jsonData)
+{
+    jsonData["Health"] = m_health;
+    jsonData["Movement Speed"] = m_moveSpeed;
 }

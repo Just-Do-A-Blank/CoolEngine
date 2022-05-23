@@ -37,7 +37,11 @@ void BulletCreator::Update()
 		}
 	}
 
-	Collision::Update(GameManager::GetInstance()->GetAllGameObjectsInCurrentScene(), m_pBulletPool->ReturnPool());
+	Scene* currentScene = GameManager::GetInstance()->GetCurrentScene();
+	if (currentScene)
+	{
+		Collision::Update(currentScene->GetSceneGraph()->GetAllNodeObjects(), m_pBulletPool->ReturnPool());
+	}
 }
 
 BulletCreator::~BulletCreator()
@@ -90,7 +94,10 @@ void BulletCreator::TestFire(MouseButtonPressedEvent* e)
 	name = "Player";
 	RenderableCollidableGameObject* p_player = GameManager::GetInstance()->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(name);
 
-	EventManager::Instance()->AddEvent(new CreateBulletEvent(p_weapon, XMFLOAT3(1, 0, 0), p_player->GetTransform()->GetWorldPosition(), DEFAULT_IMGUI_IMAGE));
+	if (p_player != nullptr)
+	{
+		EventManager::Instance()->AddEvent(new CreateBulletEvent(p_weapon, XMFLOAT3(1, 0, 0), p_player->GetTransform()->GetWorldPosition(), DEFAULT_IMGUI_IMAGE));
+	}
 }
 
 void BulletCreator::Handle(Event* e)

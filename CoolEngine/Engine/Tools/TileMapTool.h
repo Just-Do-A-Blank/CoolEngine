@@ -42,7 +42,6 @@ private:
 	void CreateSelectDimensionsUI();
 
 	TileMap* m_ptileMap = nullptr;
-	EditorCameraGameObject* m_pcamera = nullptr;
 
 	bool m_selectingDimensions = true;
 	bool m_lmbPressed = false;

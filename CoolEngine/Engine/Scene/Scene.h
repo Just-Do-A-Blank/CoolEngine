@@ -22,6 +22,7 @@ public:
 	Scene(string identifier);
 	~Scene();
 
+	virtual void Start();
 	virtual void Update();
 	virtual void EditorUpdate();
 	virtual void Render(RenderStruct& renderStruct);

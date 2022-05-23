@@ -1,7 +1,9 @@
 #include "TileMap.h"
 
 #include "Engine/EditorUI/EditorUI.h"
-#include  "Engine/Includes/json.hpp"
+#include "Engine/Includes/json.hpp"
+#include "Engine/Graphics/AnimationStateMachine.h"
+#include "Engine/Graphics/AnimationState.h"
 
 using namespace nlohmann;
 
@@ -184,8 +186,11 @@ bool TileMap::Load(wstring path) // Load data for the map from a given path
 
 				if (animIndex != -1)
 				{
-					m_tiles[i][j]->AddAnimation("default", m_animPaths[animIndex]);
-					m_tiles[i][j]->PlayAnimation("default");
+					AnimationState* pstate = new AnimationState();
+					pstate->SetName("default");
+					pstate->SetAnimation(m_animPaths[animIndex]);
+
+					m_tiles[i][j]->AddAnimationState("default", pstate, true);
 				}
 			}
 		}

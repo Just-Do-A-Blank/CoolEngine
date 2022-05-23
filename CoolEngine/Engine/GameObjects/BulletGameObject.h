@@ -24,6 +24,10 @@ public:
 	void SetCurrentTime(float time) { m_currentTravelTime = time; }
 	void SetTotalTime(float time) { m_totalTravelTime = time; }
 
+protected:
+    virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
+    virtual void SaveAllPrefabData(nlohmann::json& jsonData) override;
+
 private:
 	XMFLOAT3 m_direction = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	float m_speed = 50.0f;
@@ -31,4 +35,7 @@ private:
 	float m_totalTravelTime = 1.0f;
 	float m_currentTravelTime = 0.0f;
 	bool m_isActive = false;
+
+    void LoadLocalData(const nlohmann::json& jsonData);
+    void SaveLocalData(nlohmann::json& jsonData);
 };

@@ -2,15 +2,18 @@
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/EditorUI/EditorUI.h"
 #include "Engine/Graphics/Mesh.h"
+#include "Engine/Graphics/AnimationState.h"
 
-RenderableGameObject::RenderableGameObject() : GameObject()
+RenderableGameObject::RenderableGameObject() : PrefabGameObject()
 {
 	InitGraphics();
 
 	m_gameObjectType |= GameObjectType::RENDERABLE;
+
+	m_panimationStateMachine = new AnimationStateMachine();
 }
 
-RenderableGameObject::RenderableGameObject(RenderableGameObject const& other) : GameObject(other)
+RenderableGameObject::RenderableGameObject(RenderableGameObject const& other) : PrefabGameObject(other)
 {
 	GameObject::Init(other);
 
@@ -25,45 +28,31 @@ RenderableGameObject::RenderableGameObject(RenderableGameObject const& other) : 
 	m_layer = other.m_layer;
 	m_isRenderable = other.m_isRenderable;
 	m_texFilepath = other.m_texFilepath;
-	for (int i = 0; i < ANIM_NAME_SIZE; ++i)
-	{
-		m_createDeleteAnimName[i] = other.m_createDeleteAnimName[i];
-	}
-	m_animations = other.m_animations;
 
-	if (other.m_pcurrentAnimation)
-	{
-		m_pcurrentAnimation = new SpriteAnimation(*other.m_pcurrentAnimation);
-	}
-	m_currentAnimationName = other.m_currentAnimationName;
-
+	m_panimationStateMachine = new AnimationStateMachine(other.m_panimationStateMachine);
 }
 
-RenderableGameObject::RenderableGameObject(string identifier, CoolUUID uuid) : GameObject(identifier, uuid)
+RenderableGameObject::RenderableGameObject(string identifier, CoolUUID uuid) : PrefabGameObject(identifier, uuid)
 {
 	InitGraphics();
 
 	m_gameObjectType |= GameObjectType::RENDERABLE;
+
+	m_panimationStateMachine = new AnimationStateMachine();
 }
 
-RenderableGameObject::RenderableGameObject(const nlohmann::json& data, CoolUUID uuid) : GameObject(data, uuid)
+RenderableGameObject::RenderableGameObject(const nlohmann::json& data, CoolUUID uuid) : PrefabGameObject(data, uuid)
 {
-	GameObject::Init(data, uuid);
+    GameObject::Init(data, uuid);
 
-	m_layer = data["Layers"];
-	m_isRenderable = data["IsRenderable"];
-
-	std::string tempPath = data["TexturePath"];
-	m_texFilepath = std::wstring(tempPath.begin(), tempPath.end());
-
-	SetAlbedo(m_texFilepath);
-
-	for (int i = 0; i < data["AnimNames"].size(); ++i)
-	{
-		std::string tempAnimPath = data["AnimPaths"][i];
-
-		AddAnimation(data["AnimNames"][i], std::wstring(tempAnimPath.begin(), tempAnimPath.end()));
-	}
+    if (IsPrefab())
+    {
+        LoadLocalData(GetPrefabDataLoadedAtCreation());
+    }
+    else
+    {
+        LoadLocalData(data);
+    }
 
 	m_gameObjectType |= GameObjectType::RENDERABLE;
 
@@ -73,6 +62,11 @@ RenderableGameObject::RenderableGameObject(const nlohmann::json& data, CoolUUID 
 
 RenderableGameObject::~RenderableGameObject()
 {
+	if (m_panimationStateMachine != nullptr)
+	{
+		delete m_panimationStateMachine;
+		m_panimationStateMachine = nullptr;
+	}
 }
 
 void RenderableGameObject::InitGraphics()
@@ -95,9 +89,11 @@ void RenderableGameObject::Render(RenderStruct& renderStruct)
 		return;
 	}
 
-	if (m_pcurrentAnimation != nullptr)
+	AnimationState* pstate = (AnimationState*)m_panimationStateMachine->GetActiveState();
+
+	if (m_panimationStateMachine->GetActiveState() && pstate->GetAnimation() != nullptr)
 	{
-		GraphicsManager::GetInstance()->RenderQuad(m_pcurrentAnimation->GetCurrentFrame(), m_transform->GetWorldPosition(), m_transform->GetWorldScale(), m_transform->GetWorldRotation().z, m_layer);
+		GraphicsManager::GetInstance()->RenderQuad(pstate->GetAnimation()->GetCurrentFrame(), m_transform->GetWorldPosition(), m_transform->GetWorldScale(), m_transform->GetWorldRotation().z, m_layer);
 	}
 	else
 	{
@@ -112,10 +108,7 @@ void RenderableGameObject::Render(RenderStruct& renderStruct)
 
 void RenderableGameObject::Update()
 {
-	if (m_pcurrentAnimation != nullptr && m_pcurrentAnimation->GetFrames() != nullptr)
-	{
-		m_pcurrentAnimation->Update();
-	}
+	m_panimationStateMachine->Update();
 }
 
 void RenderableGameObject::EditorUpdate()
@@ -126,9 +119,9 @@ void RenderableGameObject::EditorUpdate()
 #if EDITOR
 void RenderableGameObject::CreateEngineUI()
 {
-	GameObject::CreateEngineUI();
+    PrefabGameObject::CreateEngineUI();
 
-	if (EditorUI::CollapsingSection("Renderable", true))
+	if (EditorUI::CollapsingSection("Renderable"))
 	{
 		ImGui::Spacing();
 
@@ -136,7 +129,7 @@ void RenderableGameObject::CreateEngineUI()
 
 		ImGui::Spacing();
 
-		auto layerParameters = EditorUIIntParameters();
+		EditorUIIntParameters layerParameters = EditorUIIntParameters();
 		layerParameters.m_minValue = 0;
 		layerParameters.m_maxValue = GraphicsManager::GetInstance()->GetNumLayers() - 1;
 
@@ -150,49 +143,9 @@ void RenderableGameObject::CreateEngineUI()
 		ImGui::Separator();
 		ImGui::Spacing();
 
-		CreateAnimationEditorUI();
+		m_panimationStateMachine->CreateEngineUI();
 	}
 
-	
-}
-
-/// <summary>
-/// Creates the animation editor section of the renderable UI
-/// </summary>
-void RenderableGameObject::CreateAnimationEditorUI()
-{
-	if (EditorUI::CollapsingSection("Animations", false))
-	{
-		EditorUI::Animations("Animation", m_animations);
-
-		ImGui::Spacing();
-
-		//Create button for adding animations to object
-		IMGUI_LEFT_LABEL(ImGui::InputText, "Name", m_createDeleteAnimName, ANIM_NAME_SIZE);
-
-		ImGui::SameLine();
-
-		if (ImGui::Button("New") == true && m_animations.count(m_createDeleteAnimName) == 0)
-		{
-			if (AddAnimation(m_createDeleteAnimName, SpriteAnimation()) == true)
-			{
-				//Add string terminator so it appears the field has been wiped
-				m_createDeleteAnimName[0] = '\0';
-			}
-		}
-
-		//Create button for deleting animations from object
-		ImGui::SameLine();
-
-		if (ImGui::Button("Delete") == true)
-		{
-			if (RemoveAnimation(m_createDeleteAnimName) == true)
-			{
-				//Add string terminator so it appears the field has been wiped
-				m_createDeleteAnimName[0] = '\0';
-			}
-		}
-	}
 }
 #endif
 
@@ -203,12 +156,14 @@ Mesh* RenderableGameObject::GetMesh() const
 
 SpriteAnimation RenderableGameObject::GetAnimation(std::string name)
 {
-	return m_animations[name];
-}
+	AnimationState* pstate = (AnimationState*)m_panimationStateMachine->GetState(name);
 
-unordered_map<std::string, SpriteAnimation>* RenderableGameObject::GetAnimations()
-{
-	return &m_animations;
+	if (pstate == nullptr)
+	{
+		return SpriteAnimation(nullptr, L"");
+	}
+
+	return *pstate->GetAnimation();
 }
 
 int RenderableGameObject::GetLayer() const
@@ -216,51 +171,103 @@ int RenderableGameObject::GetLayer() const
 	return m_layer;
 }
 
-bool RenderableGameObject::PlayAnimation(std::string name)
+void RenderableGameObject::PlayAnimation()
 {
-	m_pcurrentAnimation = &m_animations[name];
+	AnimationState* pstate = (AnimationState*)m_panimationStateMachine->GetActiveState();
 
-	if (m_pcurrentAnimation == nullptr)
+	if (pstate == nullptr)
 	{
-		LOG("Couldn't find an animation with that name!");
+		LOG("Tried to play an animation when the object doesn't have any!");
 
-		return false;
+		return;
 	}
 
-	m_currentAnimationName = name;
+	pstate->Play();
+}
 
-	m_pcurrentAnimation->Play();
+void RenderableGameObject::PauseAnimation()
+{
+	AnimationState* pstate = (AnimationState*)m_panimationStateMachine->GetActiveState();
 
-	return true;
+	if (pstate == nullptr)
+	{
+		LOG("Tried to pause an animation when the object doesn't have any!");
+
+		return;
+	}
+
+	pstate->Pause();
+}
+
+AnimationStateMachine* RenderableGameObject::GetAnimationStateMachine()
+{
+	return m_panimationStateMachine;
 }
 
 void RenderableGameObject::Serialize(nlohmann::json& data)
 {
-	GameObject::Serialize(data);
+    PrefabGameObject::Serialize(data);
 
-	std::string texPath = std::string(m_texFilepath.begin(), m_texFilepath.end());
-
-	data["Layers"] = m_layer;
-	data["IsRenderable"] = m_isRenderable;
-	data["TexturePath"] = texPath;
-
-	data["AnimNames"] = {};
-	data["AnimPaths"] = {};
-
-	for (std::unordered_map<std::string, SpriteAnimation>::iterator it = m_animations.begin(); it != m_animations.end(); ++it)
-	{
-		data["AnimNames"].push_back(it->first);
-
-		std::wstring animPath = it->second.GetAnimPath();
-		std::string tempAnimPath = std::string(animPath.begin(), animPath.end());
-
-		data["AnimPaths"].push_back(tempAnimPath);
-	}
+    SaveLocalData(data);
 }
 
-SpriteAnimation* RenderableGameObject::GetCurrentAnimation()
+void RenderableGameObject::LoadLocalData(const nlohmann::json& jsonData)
 {
-	return m_pcurrentAnimation;
+    if (jsonData.contains("Layers"))
+    {
+        m_layer = jsonData["Layers"];
+        m_isRenderable = jsonData["IsRenderable"];
+
+        std::string tempPath = jsonData["TexturePath"];
+        m_texFilepath = std::wstring(tempPath.begin(), tempPath.end());
+
+        SetAlbedo(m_texFilepath);
+
+        if (m_panimationStateMachine == nullptr)
+        {
+            delete m_panimationStateMachine;
+        }
+
+        m_panimationStateMachine = new AnimationStateMachine();
+        m_panimationStateMachine->Deserialize(jsonData);
+    }
+}
+
+void RenderableGameObject::SaveLocalData(nlohmann::json& jsonData)
+{
+    std::string texPath = std::string(m_texFilepath.begin(), m_texFilepath.end());
+
+    jsonData["Layers"] = m_layer;
+    jsonData["IsRenderable"] = m_isRenderable;
+    jsonData["TexturePath"] = texPath;
+
+    m_panimationStateMachine->Serialize(jsonData);
+}
+
+void RenderableGameObject::LoadAllPrefabData(const nlohmann::json& jsonData)
+{
+    PrefabGameObject::LoadAllPrefabData(jsonData);
+    LoadLocalData(jsonData);
+}
+
+void RenderableGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
+{
+    SaveLocalData(jsonData);
+    PrefabGameObject::SaveAllPrefabData(jsonData);
+}
+
+const SpriteAnimation* RenderableGameObject::GetCurrentAnimation()
+{
+	const AnimationState* pstate = (const AnimationState*)m_panimationStateMachine->GetActiveState();
+
+	if (pstate == nullptr)
+	{
+		LOG("Tried to get the current animation of an object that doesn't have one!");
+
+		return nullptr;
+	}
+
+	return pstate->GetAnimation();
 }
 
 ID3D11ShaderResourceView* RenderableGameObject::GetAlbedoSRV() const
@@ -381,71 +388,34 @@ void RenderableGameObject::SetLayer(int layer)
 	m_layer = layer;
 }
 
-bool RenderableGameObject::AddAnimation(string animName, SpriteAnimation& anim)
+bool RenderableGameObject::AddAnimationState(string stateName, AnimationState* panimState, bool isActive)
 {
-	if (m_animations.count(animName) != 0)
+	if (m_panimationStateMachine->AddState(stateName, panimState) == false)
 	{
-		LOG("Tried to add an animation but one with that name already exists!");
-
 		return false;
 	}
 
-	m_animations[animName] = anim;
+	if (isActive == true)
+	{
+		m_panimationStateMachine->SetActiveState(stateName);
+	}
 
 	return true;
 }
 
-bool RenderableGameObject::AddAnimation(string localAnimName, wstring animName)
+bool RenderableGameObject::RemoveAnimationState(string stateName)
 {
-	SpriteAnimation anim = GraphicsManager::GetInstance()->GetAnimation(animName);
-
-	if (anim.GetFrames() == nullptr)
-	{
-		std::cout << "Failed to find animation with that name!" << std::endl;
-
-		return false;
-	}
-
-	if (m_animations.count(localAnimName) != 0)
-	{
-		LOG("Tried to add an animation but one with that name already exists!");
-
-		return false;
-	}
-
-	m_animations[localAnimName] = anim;
-
-	return true;
-}
-
-bool RenderableGameObject::RemoveAnimation(string animName)
-{
-	if (m_animations.count(animName) == 0)
-	{
-		LOG("Tried to remove an animation but one with that name doesn't exist!");
-
-		return false;
-	}
-
-	if (m_currentAnimationName == animName)
-	{
-		m_pcurrentAnimation = nullptr;
-		m_currentAnimationName = "";
-	}
-
-	m_animations.erase(animName);
-
-	return true;
-}
-
-bool RenderableGameObject::OverwriteAnimation(string animName, SpriteAnimation& anim)
-{
-	m_animations[animName] = anim;
-
-	return true;
+	return m_panimationStateMachine->RemoveState(stateName);
 }
 
 bool RenderableGameObject::IsAnimated()
 {
-	return m_pcurrentAnimation == nullptr;
+	AnimationState* pstate = (AnimationState*)m_panimationStateMachine->GetActiveState();
+
+	if (pstate == nullptr)
+	{
+		return false;
+	}
+
+	return pstate->GetAnimation()->IsPaused() == false;
 }

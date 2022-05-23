@@ -305,6 +305,14 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	trans.SetWorldRotation(rot);
 	trans.SetWorldScale(scale);
 	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { -100,150 }, { 300,-75 }, 2.0f, 0.25f, 3, 100.0f, 25.0f, 25.0f, 0.1f, 1);
+	string testSceneFilePath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Levels\\TestScene.json";
+	if (!GameManager::GetInstance()->LoadSceneFromFile(testSceneFilePath))
+	{
+		GameManager* pgameManager = GameManager::GetInstance();
+		pgameManager->CreateScene("EmptyScene");
+		pgameManager->SwitchSceneUsingIdentifier("EmptyScene");
+		pgameManager->CreateGameObject<CameraGameObject>("SceneCamera");
+	}
 
 	GameManager::GetInstance()->GetTimer()->Tick();
 	GameManager::GetInstance()->GetTimer()->Tick();
@@ -742,10 +750,14 @@ void Render()
 	ID3D11SamplerState* psampler = GraphicsManager::GetInstance()->GetSampler(GraphicsManager::Samplers::LINEAR_WRAP);
 
 	g_pImmediateContext->PSSetSamplers(0, 1, &psampler);
-
+			
 	//Update per frame CB
 	PerFrameCB perFrameCB;
-	XMStoreFloat4x4(&perFrameCB.viewProjection, XMMatrixTranspose(XMLoadFloat4x4(&GameManager::GetInstance()->GetCamera()->GetViewProjection())));
+	CameraGameObject* activeCamera = GameManager::GetInstance()->GetCamera();
+	if (activeCamera)
+	{
+		XMStoreFloat4x4(&perFrameCB.viewProjection, XMMatrixTranspose(XMLoadFloat4x4(&activeCamera->GetViewProjection())));
+	}
 
 	GraphicsManager::GetInstance()->m_pperFrameCB->Update(perFrameCB, g_pImmediateContext);
 
@@ -882,6 +894,7 @@ void Update()
 	GameManager* pgamemanager = GameManager::GetInstance();
 
 	pgamemanager->GetTimer()->Tick();
+	pgamemanager->Start();
 	pgamemanager->Update();
 
 	bulletCreator.Update();

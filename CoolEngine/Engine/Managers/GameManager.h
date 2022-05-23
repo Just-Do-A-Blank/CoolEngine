@@ -6,6 +6,10 @@
 #include "Engine/Scene/Scene.h"
 #include "Engine/GameObjects/EnemyGameObject.h"
 #include "Engine/Physics/ParticleSystem.h"
+#include "Engine/Managers/AudioManager.h"
+#include "Engine/Managers/FontManager.h"
+
+
 #include <sstream>
 #include <cstdint> 
 
@@ -16,7 +20,6 @@ class RenderStruct;
 class CameraGameObject;
 class ParticleSystem;
 class EnemyGameObject;
-
 
 enum class SceneDesc
 {
@@ -51,19 +54,23 @@ public:
 
 	Timer* GetTimer();
 
-	unordered_map<string, Scene*> m_sceneMap;
-	Scene* m_pcurrentScene;
-	Scene* m_pplayScene;
+	unordered_map<string, Scene*> m_editorSceneMap;
+	unordered_map<string, Scene*> m_gameSceneMap;
+	Scene* m_pcurrentEditorScene;
+	Scene* m_pcurrentGameScene;
 
+	void Start();
 	void Update();
 	void Render(RenderStruct& renderStruct);
 
-	void CreateScene(string sceneIdentifier);
-	void SelectScene(Scene* psnene);
-	void SelectSceneUsingIdentifier(string sceneIdentifier);
+	void CreateScene(string, bool unloadCurrentScene = false);
+	bool LoadSceneFromFile(std::string fileLocation, bool unloadCurrentScene = false);
+	void SwitchScene(Scene* psnene);
+	bool SwitchSceneUsingIdentifier(string sceneIdentifier);
 	void DeleteScene(Scene* pscene);
 	void DeleteSceneUsingIdentifier(string sceneIdentifier);
 	void DeleteSelectedScene();
+	void SwitchAndDeleteScene(string sceneIdentifier);
 
 	bool BeginPlay();
 	bool EndPlay();
@@ -80,7 +87,7 @@ public:
 	vector<GameObject*>& GetAllGameObjects();
 
 	CameraGameObject* GetCamera();
-	void SetCamera(CameraGameObject* pcamera);
+	void SetActiveCameraUsingIdentifier(string identifier);
 
 	template<typename T>
 	T* GetGameObjectUsingIdentifier(string& identifier)
@@ -101,7 +108,7 @@ public:
 	template<typename T>
 	T* CreateGameObject(string identifier, TreeNode<GameObject>* nodeParent = nullptr)
 	{
-		return m_pcurrentScene->CreateGameObject<T>(identifier, nodeParent);
+		return m_pcurrentEditorScene->CreateGameObject<T>(identifier, nodeParent);
 	}
 
 	void DeleteGameObjectUsingNode(TreeNode<GameObject>* currentNode);
@@ -110,19 +117,21 @@ public:
 	template<typename T>
 	void DeleteGameObjectUsingNode(T* pgameObject, std::string identifier)
 	{
-		m_pcurrentScene->DeleteGameObjectUsingNode(pgameObject, identifier);
+		m_pcurrentEditorScene->DeleteGameObjectUsingNode(pgameObject, identifier);
 	}
 
 	TreeNode<GameObject>* GetRootTreeNode();
 	TreeNode<GameObject>* GetTreeNode(GameObject* pgameObject);
 	string& GetCurrentSceneName();
 
-
 	//Getters
 	unordered_map<string, Scene*> GetSceneList();
 	vector<GameObject*>& GetAllGameObjectsInCurrentScene();
 
 	void Serialize(nlohmann::json& data) override;
-	void Deserialize(nlohmann::json& data) override;
+	void Deserialize(nlohmann::json& data)override;
+
+	unordered_map<string, Scene*>& GetCurrentViewStateSceneMap();
+	Scene*& GetCurrentViewStateScene();
 };
 

@@ -39,6 +39,10 @@ public:
 	bool GetIsDualType();
 	int RoundUp(float value);
 
+protected:
+    virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
+    virtual void SaveAllPrefabData(nlohmann::json& jsonData) override;
+
 private:
 	int m_level = 0;
 	int m_strength = 0;
@@ -52,4 +56,7 @@ private:
 	STATUSES m_statusEffect = STATUSES::NONE;
 
 	bool m_isPlayerWeapon = true;
+
+    void LoadLocalData(const nlohmann::json& jsonData);
+    void SaveLocalData(nlohmann::json& jsonData);
 };
