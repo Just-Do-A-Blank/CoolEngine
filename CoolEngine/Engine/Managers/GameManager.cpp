@@ -15,6 +15,7 @@
 #include "Engine/GameUI/TextComponent.h"
 #include "Engine/GameObjects/EditorCameraGameObject.h"
 #include "Engine/Managers/Events/BulletCreator.h"
+#include "Engine/GameObjects/LevelChangeGameObject.h"
 
 #include <fstream>
 
@@ -410,6 +411,23 @@ void GameManager::CopyScene()
 			else
 			{
 				m_pcurrentGameScene->CopyGameObject<CameraGameObject>(*(dynamic_cast<CameraGameObject*>(gameObjectNodeList[it]->NodeObject)));
+			}
+			break;
+
+		case AccumlateType::LEVEL_CHANGE:
+			if (gameObjectNodeList[it]->PreviousParent)
+			{
+				TreeNode<GameObject>* parentNode = m_pcurrentGameScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
+				m_pcurrentGameScene->CopyGameObject<LevelChangeGameObject>(*(dynamic_cast<LevelChangeGameObject*>(gameObjectNodeList[it]->NodeObject)), parentNode);
+			}
+			else if (gameObjectNodeList[it]->PreviousSibling)
+			{
+				TreeNode<GameObject>* previousSiblingNode = m_pcurrentGameScene->GetTreeNode(gameObjectNodeList[it]->PreviousSibling->NodeObject);
+				m_pcurrentGameScene->CopyGameObject<LevelChangeGameObject>(*(dynamic_cast<LevelChangeGameObject*>(gameObjectNodeList[it]->NodeObject)), nullptr, previousSiblingNode);
+			}
+			else
+			{
+				m_pcurrentGameScene->CopyGameObject<LevelChangeGameObject>(*(dynamic_cast<LevelChangeGameObject*>(gameObjectNodeList[it]->NodeObject)));
 			}
 			break;
 

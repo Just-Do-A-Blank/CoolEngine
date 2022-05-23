@@ -60,6 +60,7 @@
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerRollingState.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerWalkingState.h" />
     <ClInclude Include="Engine\GameObjects\InteractableGameObject.h" />
+    <ClInclude Include="Engine\GameObjects\LevelChangeGameObject.h" />
     <ClInclude Include="Engine\GameObjects\MeleeWeaponGameObject.h" />
     <ClInclude Include="Engine\GameObjects\PrefabGameObject.h" />
     <ClInclude Include="Engine\GameObjects\RangedWeaponGameObject.h" />
@@ -211,6 +212,7 @@
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerRollingState.cpp" />
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerWalkingState.cpp" />
     <ClCompile Include="Engine\GameObjects\InteractableGameObject.cpp" />
+    <ClCompile Include="Engine\GameObjects\LevelChangeGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\MeleeWeaponGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\PrefabGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\RangedWeaponGameObject.cpp" />
