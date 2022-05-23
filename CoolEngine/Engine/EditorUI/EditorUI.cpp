@@ -7,6 +7,7 @@
 #include "Engine/GameObjects/InteractableGameObject.h"
 #include "Engine/GameObjects/WeaponGameObject.h"
 #include "Engine\GameObjects\EnemyGameObject.h"
+#include "Engine/GameObjects/LevelChangeGameObject.h"
 #include "Engine/Tools/ToolBase.h"
 #include "Engine/Tools/AnimationTool.h"
 #include "Engine//Tools/TileMapTool.h"
@@ -238,11 +239,22 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 
                     m_createObjectType = GameObjectType::CAMERA;
                 }
+                if (ImGui::MenuItem("Level Change"))
+                {
+                    m_createGameObjectClicked = true;
+
+                    m_createObjectType = GameObjectType::LEVEL_CHANGE;
+                }
 
                 ImGui::EndMenu();
             }
 
+			if (ImGui::MenuItem("TileMap"))
+			{
+				m_createGameObjectClicked = true;
 
+				m_createObjectType = GameObjectType::TILE_MAP;
+			}
 
             if (ImGui::MenuItem("ParticleSystem"))
             {
@@ -421,6 +433,14 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
                 case GameObjectType::CAMERA:
                     pgameManager->CreateGameObject<CameraGameObject>(gameObjectName, m_selectedGameObjectNode);
                     break;
+
+        				case GameObjectType::TILE_MAP:
+        					pgameManager->CreateGameObject<TileMap>(gameObjectName, m_selectedGameObjectNode);
+        					break;
+                  
+                case GameObjectType::LEVEL_CHANGE:
+                    pgameManager->CreateGameObject<LevelChangeGameObject>(gameObjectName, m_selectedGameObjectNode);
+                    break;
                 }
 
 
@@ -481,7 +501,7 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
                 m_createUIObjectClicked = false;
                 uiObjectName[0] = {};
             }
-            
+
         }
 
         ImGui::End();
@@ -807,8 +827,8 @@ void EditorUI::DragFloat3(const string& label, XMFLOAT3& values, EditorUIFloatPa
 
     ImGui::PushID(label.c_str());
 
-    ImGui::Columns(2);
-    ImGui::SetColumnWidth(0, parameters.m_maxValue);
+	  ImGui::Columns(2);
+    ImGui::SetColumnWidth(0, parameters.m_columnWidth);
     ImGui::Text(label.c_str());
     SetupTooltip(parameters.m_tooltipText);
 
@@ -1665,5 +1685,131 @@ void EditorUI::SetNextWindowToCenter()
     ImGuiIO& io = ImGui::GetIO();
     ImVec2 pos(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
     ImGui::SetNextWindowPos(pos, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+}
+
+/// <summary>
+/// Standard combo box with strings as inputs
+/// </summary>
+/// <param name="label">The label to use</param>
+/// <param name="values">A list of values as string</param>
+/// <param name="selected">The selected value (updated as selected)</param>
+/// <param name="parameters">The non-spesfic parametres</param>
+/// <returns>True means the selection has changed</returns>
+bool EditorUI::ComboBox(const string& label, list<string>& values, string& selected, EditorUINonSpecificParameters parameters)
+{
+    SetupDefaultsInParameters(parameters);
+
+    ImGui::PushID(label.c_str());
+
+    ImGui::Columns(2);
+
+    ImGui::SetColumnWidth(0, parameters.m_columnWidth);
+    ImGui::Text(label.c_str());
+    SetupTooltip(parameters.m_tooltipText);
+
+    ImGui::NextColumn();
+
+    ImGui::PushItemWidth(ImGui::CalcItemWidth());
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+    if (selected == "")
+    {
+        selected = values.front();
+    }
+
+    string originalSelection = selected;
+
+    if (ImGui::BeginCombo("", selected.c_str()))
+    {
+        std::list<string>::iterator it;
+        for (it = values.begin(); it != values.end(); it++)
+        {
+            const bool is_selected = it->c_str() == selected;
+            if (ImGui::Selectable(it->c_str(), is_selected))
+            {
+                selected = it->c_str();
+            }
+
+            if (is_selected)
+            {
+                ImGui::SetItemDefaultFocus();
+            }
+        }
+
+        ImGui::EndCombo();
+    }
+
+    ImGui::PopItemWidth();
+
+    ImGui::PopStyleVar();
+
+    ImGui::Columns(1);
+
+    ImGui::PopID();
+
+    return selected != originalSelection;
+}
+
+/// <summary>
+/// Standard combo box with strings as inputs
+/// </summary>
+/// <param name="label">The label to use</param>
+/// <param name="values">A list of values as string</param>
+/// <param name="selected">The selected value (updated as selected)</param>
+/// <param name="parameters">The non-spesfic parametres</param>
+/// <returns>True means the selection has changed</returns>
+bool EditorUI::ComboBox(const string& label, list<pair<int, string>>& values, pair<int, string>& selected, EditorUINonSpecificParameters parameters)
+{
+    SetupDefaultsInParameters(parameters);
+
+    ImGui::PushID(label.c_str());
+
+    ImGui::Columns(2);
+
+    ImGui::SetColumnWidth(0, parameters.m_columnWidth);
+    ImGui::Text(label.c_str());
+    SetupTooltip(parameters.m_tooltipText);
+
+    ImGui::NextColumn();
+
+    ImGui::PushItemWidth(ImGui::CalcItemWidth());
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+    if (selected.second == "")
+    {
+        selected = values.front();
+    }
+
+    pair<int, string> originalSelection = selected;
+
+    if (ImGui::BeginCombo("", selected.second.c_str()))
+    {
+        std::list<pair<int, string>>::iterator it;
+        for (it = values.begin(); it != values.end(); it++)
+        {
+            const bool is_selected = *it == selected;
+            if (ImGui::Selectable(it->second.c_str(), is_selected))
+            {
+                selected = *it;
+            }
+
+            if (is_selected)
+            {
+                ImGui::SetItemDefaultFocus();
+            }
+        }
+
+        ImGui::EndCombo();
+    }
+
+    ImGui::PopItemWidth();
+
+    ImGui::PopStyleVar();
+
+    ImGui::Columns(1);
+
+    ImGui::PopID();
+
+    return selected != originalSelection;
 }
 #endif
