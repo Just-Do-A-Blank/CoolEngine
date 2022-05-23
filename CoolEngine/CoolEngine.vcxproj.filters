@@ -24,6 +24,24 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\CharacterGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\CollidableGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\PlayerGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\GameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\Transform.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
     <ClCompile Include="Engine\Managers\GameManager.cpp">
       <Filter>Engine\Managers</Filter>
     </ClCompile>
@@ -111,8 +129,17 @@
     <ClCompile Include="Engine\Managers\DebugDrawManager.cpp">
       <Filter>Engine\Managers</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GameObjects\DebugRect.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
     <ClCompile Include="Engine\Tools\AnimationTool.cpp">
       <Filter>Engine\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\RenderableCollidableGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\RenderableGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerController.cpp">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
@@ -122,6 +149,21 @@
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.cpp">
       <Filter>Engine\GameObjects\Gameplay\GameplayButtons</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\InteractableGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\MeleeWeaponGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\TriggerableGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\WeaponGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\EnemyGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="Engine\AI\Pathfinding.cpp">
       <Filter>Engine\AI</Filter>
@@ -135,6 +177,9 @@
     <ClCompile Include="Engine\GameUI\UICanvas.cpp">
       <Filter>Engine\GameUI</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Managers\UIManager.cpp">
+      <Filter>Engine\Managers</Filter>
+    </ClCompile>
     <ClCompile Include="Engine\FileIO\FileIO.cpp">
       <Filter>Engine\FileIO</Filter>
     </ClCompile>
@@ -147,8 +192,17 @@
     <ClCompile Include="Engine\EditorUI\ContentBrowser.cpp">
       <Filter>Engine\EditorUI</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GameObjects\UUID.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\EditorCameraGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
     <ClCompile Include="Engine\Managers\SceneGraph.cpp">
       <Filter>Engine\Structure</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\RangedWeaponGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Main.cpp">
       <Filter>Engine</Filter>
@@ -168,11 +222,12 @@
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerDodgingState.cpp">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerMovingBody.cpp">
-      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    <ClCompile Include="Engine\Structure\ObjectPool.cpp">
+      <Filter>Engine\Structure</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerRollingState.cpp">
-      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    <ClCompile Include="Engine\GameObjects\BulletGameObject.cpp" />
+    <ClCompile Include="ItemTypes.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Interactables</Filter>
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\Gameplay\Interactables\EInteractableType.cpp">
       <Filter>Engine\GameObjects\Gameplay\Interactables</Filter>
@@ -183,64 +238,28 @@
     <ClCompile Include="Engine\GameObjects\Gameplay\Interactables\Interactables.cpp">
       <Filter>Engine\GameObjects\Gameplay\Interactables</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GameObjects\BulletGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\CharacterGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\CollidableGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\DebugRect.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\EditorCameraGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\EnemyGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\GameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\InteractableGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\MeleeWeaponGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\PlayerGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\RangedWeaponGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\RenderableCollidableGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\RenderableGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\Transform.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\TriggerableGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\UUID.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\WeaponGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\CameraGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\CharacterGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\CollidableGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\PlayerGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\GameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Transform.h">
+      <Filter>Engine\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Managers\GameManager.h">
       <Filter>Engine\Managers</Filter>
@@ -389,11 +408,20 @@
     <ClInclude Include="Engine\Managers\DebugDrawManager.h">
       <Filter>Engine\Managers</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\GameObjects\DebugRect.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
     <ClInclude Include="Engine\Tools\AnimationTool.h">
       <Filter>Engine\Tools</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Structure\EditorUIComponent.h">
       <Filter>Engine\Structure</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\RenderableCollidableGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\RenderableGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerController.h">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
@@ -410,11 +438,26 @@
     <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.h">
       <Filter>Engine\GameObjects\Gameplay\GameplayButtons</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\GameObjects\InteractableGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
     <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\GameplayButton.h">
       <Filter>Engine\GameObjects\Gameplay\GameplayButtons</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\EGameplayButtonClass.h">
       <Filter>Engine\GameObjects\Gameplay\GameplayButtons</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\MeleeWeaponGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\TriggerableGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\WeaponGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\EnemyGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="Engine\AI\Pathfinding.h">
       <Filter>Engine\AI</Filter>
@@ -427,6 +470,9 @@
     </ClInclude>
     <ClInclude Include="Engine\GameUI\UICanvas.h">
       <Filter>Engine\GameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\UIManager.h">
+      <Filter>Engine\Managers</Filter>
     </ClInclude>
     <ClInclude Include="Engine\FileIO\FileIO.h">
       <Filter>Engine\FileIO</Filter>
@@ -509,6 +555,12 @@
     <ClInclude Include="Engine\EditorUI\ContentBrowser.h">
       <Filter>Engine\EditorUI</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\GameObjects\UUID.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\EditorCameraGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
     <ClInclude Include="Engine\Includes\json.hpp">
       <Filter>Engine\Includes</Filter>
     </ClInclude>
@@ -526,6 +578,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Managers\Events\KeyEvents.h">
       <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\RangedWeaponGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\Gameplay\Character\ECharacterDirectionClass.h">
       <Filter>Engine\GameObjects\Gameplay\Character</Filter>
@@ -569,11 +624,9 @@
     <ClInclude Include="Engine\Structure\ObjectPool.h">
       <Filter>Engine\Structure</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovingBody.h">
-      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerRollingState.h">
-      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    <ClInclude Include="Engine\GameObjects\BulletGameObject.h" />
+    <ClInclude Include="ItemTypes.h">
+      <Filter>Engine\GameObjects\Gameplay\Interactables</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\Gameplay\Interactables\EInteractableType.h">
       <Filter>Engine\GameObjects\Gameplay\Interactables</Filter>
@@ -583,60 +636,6 @@
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\Gameplay\Interactables\Interactables.h">
       <Filter>Engine\GameObjects\Gameplay\Interactables</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObjects\BulletGameObject.h">
-      <Filter>Engine\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObjects\CameraGameObject.h">
-      <Filter>Engine\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObjects\CharacterGameObject.h">
-      <Filter>Engine\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObjects\CollidableGameObject.h">
-      <Filter>Engine\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObjects\DebugRect.h">
-      <Filter>Engine\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObjects\EditorCameraGameObject.h">
-      <Filter>Engine\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObjects\EnemyGameObject.h">
-      <Filter>Engine\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObjects\GameObject.h">
-      <Filter>Engine\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObjects\InteractableGameObject.h">
-      <Filter>Engine\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObjects\MeleeWeaponGameObject.h">
-      <Filter>Engine\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObjects\PlayerGameObject.h">
-      <Filter>Engine\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObjects\RangedWeaponGameObject.h">
-      <Filter>Engine\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObjects\RenderableCollidableGameObject.h">
-      <Filter>Engine\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObjects\RenderableGameObject.h">
-      <Filter>Engine\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObjects\Transform.h">
-      <Filter>Engine\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObjects\TriggerableGameObject.h">
-      <Filter>Engine\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObjects\UUID.h">
-      <Filter>Engine\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObjects\WeaponGameObject.h">
-      <Filter>Engine\GameObjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -753,7 +752,7 @@
       <UniqueIdentifier>{2511a5c3-13d3-4be5-8a1c-4a99b0fb512a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\GameObjects\Gameplay\Interactables">
-      <UniqueIdentifier>{5a5ab1f8-b11b-4587-9c1d-66225a359ea4}</UniqueIdentifier>
+      <UniqueIdentifier>{eb13adaa-b991-454a-aa1f-a1baf7e4716d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

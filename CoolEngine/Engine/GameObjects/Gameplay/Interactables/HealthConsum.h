@@ -10,6 +10,7 @@ protected:
 	/// Health is a Consumable Interactable
 	/// </summary>
 	EINTERACTABLETYPE interactableType = EINTERACTABLETYPE::Consumable;
+	CONSUMABLES consumableItem = CONSUMABLES::HEALTH;
 
 public:
 

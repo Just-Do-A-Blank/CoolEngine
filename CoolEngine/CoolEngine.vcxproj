@@ -56,8 +56,6 @@
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerDodgingState.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovementParameters.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovementState.h" />
-    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovingBody.h" />
-    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerRollingState.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerWalkingState.h" />
     <ClInclude Include="Engine\GameObjects\InteractableGameObject.h" />
     <ClInclude Include="Engine\GameObjects\MeleeWeaponGameObject.h" />
@@ -185,9 +183,11 @@
     <ClInclude Include="Engine\Tools\AnimationTool.h" />
     <ClInclude Include="Engine\Tools\TileMapTool.h" />
     <ClInclude Include="Engine\Tools\ToolBase.h" />
+    <ClInclude Include="Engine\Managers\UIManager.h" />
     <ClInclude Include="Engine\GameUI\GameUIComponent.h" />
     <ClInclude Include="Engine\GameUI\UICanvas.h" />
     <ClInclude Include="Engine\GameUI\ImageComponent.h" />
+    <ClInclude Include="ItemTypes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\AI\Pathfinding.cpp" />
@@ -205,8 +205,6 @@
     <ClCompile Include="Engine\GameObjects\Gameplay\Interactables\Interactables.cpp" />
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerController.cpp" />
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerDodgingState.cpp" />
-    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerMovingBody.cpp" />
-    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerRollingState.cpp" />
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerWalkingState.cpp" />
     <ClCompile Include="Engine\GameObjects\InteractableGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\MeleeWeaponGameObject.cpp" />
@@ -274,14 +272,17 @@
     <ClCompile Include="Engine\Physics\Particle.cpp" />
     <ClCompile Include="Engine\Physics\ParticleManager.cpp" />
     <ClCompile Include="Engine\Physics\ParticleSystem.cpp" />
+    <ClCompile Include="Engine\Structure\ObjectPool.cpp" />
     <ClCompile Include="Engine\TileMap\TileMap\Tile.cpp" />
     <ClCompile Include="Engine\TileMap\TileMap\TileMap.cpp" />
     <ClCompile Include="Engine\Tools\AnimationTool.cpp" />
     <ClCompile Include="Engine\Tools\TileMapTool.cpp" />
     <ClCompile Include="Engine\Tools\ToolBase.cpp" />
+    <ClCompile Include="Engine\Managers\UIManager.cpp" />
     <ClCompile Include="Engine\GameUI\GameUIComponent.cpp" />
     <ClCompile Include="Engine\GameUI\UICanvas.cpp" />
     <ClCompile Include="Engine\GameUI\ImageComponent.cpp" />
+    <ClCompile Include="ItemTypes.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">

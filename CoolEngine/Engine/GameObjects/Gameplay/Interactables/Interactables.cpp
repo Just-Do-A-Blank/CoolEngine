@@ -5,6 +5,7 @@
 #include <Engine/GameObjects/PlayerGameObject.h>
 #include "Engine/Managers/Events/EventManager.h"
 #include "HealthConsum.h"
+#include "ItemTypes.h
 
 /// <summary>
 /// interactableObjType -> INTERACTABLE && interactableType -> Consumable (For testing purposes)
@@ -27,12 +28,12 @@ void Interactables::OnTriggerHold(GameObject* pObject, GameObject* pObject2)
 		//Casts the Pickup Obj to an Interactable
 		Interactables* pInteractables = dynamic_cast<Interactables*>(pObject2);
 		//Returns the Item Type
-		EINTERACTABLETYPE itemType = pInteractables->GetInteractableType();
+		EINTERACTABLETYPE interactableType = pInteractables->GetInteractableType();
 		//Casts the GameObject to the CharacterGameObject
 		CharacterGameObject* pCharacter = dynamic_cast<CharacterGameObject*>(pObject);
 
 		//Passes the Interactable Type and the Character
-		HandleInteractableEvent(itemType, pCharacter);
+		HandleInteractableEvent(interactableType, pCharacter);
 
 	}
 
@@ -51,8 +52,17 @@ Interactables::~Interactables()
 
 EINTERACTABLETYPE Interactables::GetInteractableType()
 {
-	HealthConsum consumable;
-	return consumable.GetType();
+	ItemTypes itemType;
+	return itemType.GetType();
+
+	//Find out whether it is consumable or nonconsumable
+	/*HealthConsum consumable;
+	return consumable.GetType();*/
+}
+
+CONSUMABLES Interactables::GetConsumableType()
+{
+
 }
 
 /// <summary>

@@ -22,8 +22,10 @@ class ItemTypes : Interactables
 public:
 	EINTERACTABLETYPE interactableType;
 
-	void AddEffect();
-protected:
+	ItemTypes();
+	~ItemTypes();
+	virtual void AddEffect();
+
 	/// <summary>
 	/// Setter and Getter for the Type of Interactable Object
 	/// </summary>

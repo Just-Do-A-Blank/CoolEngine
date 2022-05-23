@@ -4,6 +4,7 @@
 #include <Engine/GameObjects/PlayerGameObject.h>
 #include <Engine/Managers/GameManager.h>
 #include "EInteractableType.h"
+#include "ItemTypes.h"
 
 class Interactables : public TriggerableGameObject
 {
@@ -62,6 +63,8 @@ private:
 	/// <param name="type"></param>
 	/// <returns></returns>
 	EINTERACTABLETYPE GetInteractableType();
+
+	CONSUMABLES GetConsumableType();
 
 	/// <summary>
 	/// Handles the Collision based on the EINTERACTABLETYPE type
