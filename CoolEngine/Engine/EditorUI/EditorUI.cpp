@@ -1712,13 +1712,21 @@ bool EditorUI::ComboBox(const string& label, list<string>& values, string& selec
     ImGui::PushItemWidth(ImGui::CalcItemWidth());
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
 
-    if (selected == "")
+    if (values.size() > 0)
     {
-        selected = values.front();
+        if (selected == "")
+        {
+            selected = values.front();
+        }
+        else if (std::find(values.begin(), values.end(), selected) == values.end())
+        {
+            selected = values.front();
+        }
     }
 
-    string originalSelection = selected;
 
+    string originalSelection = selected;
+    
     if (ImGui::BeginCombo("", selected.c_str()))
     {
         std::list<string>::iterator it;
@@ -1775,9 +1783,16 @@ bool EditorUI::ComboBox(const string& label, list<pair<int, string>>& values, pa
     ImGui::PushItemWidth(ImGui::CalcItemWidth());
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
 
-    if (selected.second == "")
+    if (values.size() > 0)
     {
-        selected = values.front();
+        if (selected.second == "")
+        {
+            selected = values.front();
+        }
+        else if (std::find(values.begin(), values.end(), selected) == values.end())
+        {
+            selected = values.front();
+        }
     }
 
     pair<int, string> originalSelection = selected;

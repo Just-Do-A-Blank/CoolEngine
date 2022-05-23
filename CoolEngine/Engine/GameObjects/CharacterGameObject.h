@@ -47,7 +47,7 @@ public:
 	void SetStatus(STATUSES stat) { m_status = stat; }
 	void SetElementalStatus(ELEMENTALSTATUSES elemStat) { m_elementalStatus = elemStat; }
 
-	void TakeDamage(float damage);
+    virtual void TakeDamage(float damage);
 
 	virtual void Serialize(nlohmann::json& jsonData) override;
 
