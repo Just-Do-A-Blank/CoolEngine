@@ -70,6 +70,7 @@ PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : Character
     EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
     EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
     EventManager::Instance()->AddClient(EventType::MouseMoved, this);
+	EventManager::Instance()->AddClient(EventType::PickupObtained, this);
 }
 
 PlayerGameObject::PlayerGameObject(const nlohmann::json& data, CoolUUID uuid) : CharacterGameObject(data, uuid)
@@ -150,6 +151,7 @@ PlayerGameObject::PlayerGameObject(PlayerGameObject const& other) : CharacterGam
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
 	EventManager::Instance()->AddClient(EventType::MouseMoved, this);
+	EventManager::Instance()->AddClient(EventType::PickupObtained, this);
 }
 
 PlayerGameObject::~PlayerGameObject()
@@ -159,6 +161,7 @@ PlayerGameObject::~PlayerGameObject()
 	EventManager::Instance()->RemoveClientEvent(EventType::MouseButtonPressed, this);
 	EventManager::Instance()->RemoveClientEvent(EventType::MouseButtonReleased, this);
 	EventManager::Instance()->RemoveClientEvent(EventType::MouseMoved, this);
+	EventManager::Instance()->AddClient(EventType::PickupObtained, this);
 
     delete m_playerController;
 	m_playerController = nullptr;
@@ -237,7 +240,9 @@ void PlayerGameObject::Handle(Event* e)
 	case EventType::MouseMoved:
 		//MouseMoved((MouseMovedEvent*)e);
 		break;
-
+	case EventType::PickupObtained://///////////////////////////////////////////////////////////////
+		//DO SOMETHING WITH PICKUP
+		break;
 	}
 }
 

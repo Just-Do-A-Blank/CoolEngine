@@ -243,6 +243,7 @@
     <ClCompile Include="Engine\GameObjects\PrefabGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
+    <ClCompile Include="Pickups.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -653,6 +654,7 @@
     <ClInclude Include="Engine\EditorUI\EditorButtonCallback.h">
       <Filter>Engine\EditorUI</Filter>
     </ClInclude>
+    <ClInclude Include="Pickups.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Engine\Includes\DirectXTK\SimpleMath.inl" />
@@ -766,6 +768,9 @@
     </Filter>
     <Filter Include="Engine\Tilemap\Tilemap">
       <UniqueIdentifier>{2511a5c3-13d3-4be5-8a1c-4a99b0fb512a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GameObjects\Gameplay\Pickups">
+      <UniqueIdentifier>{b0a65578-ba38-4340-9527-16621976357e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
