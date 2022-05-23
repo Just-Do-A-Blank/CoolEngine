@@ -1,92 +1,29 @@
 #include "Engine/Includes/Quad Tree/include/quadtree.h"
-#include <iostream>
-#include <cmath>
-#include <cassert>
 
 
 
-Quadtree::Quadtree(float objectRadius)
+Quadtree::Quadtree(Box* collider)
 {
-    colliderSize = objectRadius;
+    m_BoxCollider = collider;
+}
+
+Quadtree::~Quadtree()
+{
 }
 
 void Quadtree::Init(int left, int top, int width, int height, PlayerGameObject* obj)
 {
-    m_rectValues.m_height = height;
-    m_rectValues.m_width = width;
-    m_rectValues.m_top = top;
-    m_rectValues.m_left = left;
+    
     m_player = obj;
 }
 
 
 bool Quadtree::InsertElement(GameObject* obj)
 {
-    if (obj->ContainsType(GameObjectType::COLLIDABLE))
+    if (m_children == nullptr)
     {
-        bool intersects = true;
-        Shape* shape;
-        switch ((AccumlateType)obj->GetGameObjectType())
-        {
-        case AccumlateType::COLLIDABLE:
-                switch (collider->GetShapeType())
-                {
-                case ShapeType::BOX:
-                    intersects = (dynamic_cast<CollidableGameObject*>(obj))->GetShape()->Collide(dynamic_cast<Box*>(collider));
-                    if (!intersects) {
-                        return false;
-                    }
-                    break;
-                case ShapeType::CIRCLE:
-                    intersects = (dynamic_cast<CollidableGameObject*>(obj))->GetShape()->Collide(dynamic_cast<Circle*>(collider));
-                    if (!intersects) {
-                        return false;
-                    }
-                case ShapeType::COUNT:
-                    break;
-                default:
-                    break;
-                }
-            break;
-        case AccumlateType::COLLIDABLE_RENDERERABLE:
-                switch (m_player->GetShape()->GetShapeType())
-                {
-                case ShapeType::BOX:
-                    intersects = (dynamic_cast<RenderableCollidableGameObject*>(obj))->GetShape()->Collide(dynamic_cast<Box*>(m_player->GetShape()));
-                    if (!intersects) {
-                        return false;
-                    }
-                    break;
-                case ShapeType::CIRCLE:
-                    intersects = (dynamic_cast<RenderableCollidableGameObject*>(obj))->GetShape()->Collide(dynamic_cast<Circle*>(m_player->GetShape()));
-                    if (!intersects) {
-                        return false;
-                    }
-                    break;
-                case ShapeType::COUNT:
-                    break;
-                default:
-                    break;
-                }
-                break;
-
-            default:
-                break;
-        }
-        if (collider->Collide(shape))
-        {
-            m_children.push_back(obj);
-            return true;
-        }
-    }
-    else
-    {
-        Box renderableTempCollider = Box(obj->GetTransform());
-        if (collider->Collide(&renderableTempCollider))
-        {
-            m_children.push_back(obj);
-            return true;
-        }
+        m_Child = obj;
+        return true;
     }
     if(NW_ == nullptr) {
         Subdivide(this);
@@ -105,13 +42,32 @@ bool Quadtree::InsertElement(GameObject* obj)
 
 
 void Quadtree::Subdivide(Quadtree * root) {
+
+    if (NW_ != nullptr)
+    {
+
+    }
+    if (NE_ != nullptr)
+    {
+
+    }
+    if (SW_ != nullptr)
+    {
+
+    }
+    if (SE_ != nullptr)
+    {
+
+    }
+
+
     int new_width = GetRect().m_width / 2;
     int new_height = GetRect().m_height/ 2;
-    NW_ = new Quadtree(collider->GetRadius());
-    NE_ = new Quadtree(collider->GetRadius());
-    SW_ = new Quadtree(collider->GetRadius());
-    SE_ = new Quadtree(collider->GetRadius());
-    for (auto &node: root->m_children) 
+    NW_ = new Quadtree(m_maxNodeSize);
+    NE_ = new Quadtree(m_maxNodeSize);
+    SW_ = new Quadtree(m_maxNodeSize);
+    SE_ = new Quadtree(m_collider->m_transform, m_collider->GetRadius());
+    for (auto &node: root->m_tr) 
     {
         NW_->InsertElement(node);
         NE_->InsertElement(node);
@@ -119,7 +75,6 @@ void Quadtree::Subdivide(Quadtree * root) {
         SE_->InsertElement(node);
     }
 }
-
 
 void Quadtree::QtreeCheckCollisions(int &cnt) {
     Quadtree *NW = GetNW();
@@ -136,13 +91,65 @@ void Quadtree::QtreeCheckCollisions(int &cnt) {
     }
 
     std::vector<GameObject*> children_vec = GetChildren();
-    for (auto node_one: children_vec) {
-        for (auto node_two: children_vec) {
-            if (node_one == node_two) {
-                continue;
+
+    CollidableGameObject* pcollidable1 = nullptr;
+    CollidableGameObject* pcollidable2 = nullptr;
+
+    for (int it1 = 0; it1 < children_vec.size(); ++it1)
+    {
+        if (children_vec[it1]->ContainsType(GameObjectType::COLLIDABLE) == false)
+        {
+            continue;
+        }
+        pcollidable1 = dynamic_cast<CollidableGameObject*>(children_vec[it1]);
+        pcollidable1->SetShapeDimensions(pcollidable1->GetTransform()->GetWorldScale());
+
+        if (pcollidable1->GetShape() != nullptr && pcollidable1->GetShape()->IsRendered())
+        {
+            XMFLOAT3 p = pcollidable1->GetTransform()->GetWorldPosition();
+            XMFLOAT2 d = pcollidable1->GetShape()->GetShapeDimensions();
+            DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect(p, XMFLOAT3(d.x, d.y, 1), DebugDrawManager::DebugColour::PURPLE);
+        }
+    }
+
+
+    for (int it1 = 0; it1 < children_vec.size(); ++it1)
+    {
+        for (int it2 = 0; it2 < children_vec.size(); ++it2)
+        {
+            if (it1 != it2)
+            {
+                if (children_vec[it1]->ContainsType(GameObjectType::COLLIDABLE) == false || children_vec[it2]->ContainsType(GameObjectType::COLLIDABLE) == false)
+                {
+                    continue;
+                }
+
+                pcollidable1 = dynamic_cast<CollidableGameObject*>(children_vec[it1]);
+                pcollidable2 = dynamic_cast<CollidableGameObject*>(children_vec[it2]);
+
+                if (pcollidable1->GetShape() == nullptr || pcollidable2->GetShape() == nullptr)
+                {
+                    continue;
+                }
+
+                // Whether to just collide or collide with response
+                if (pcollidable1->GetShape()->IsCollidable() && pcollidable2->GetShape()->IsCollidable())
+                {
+                    bool hasCollided = pcollidable1->GetShape()->CollideResponse(pcollidable2->GetShape());
+                    if (hasCollided)
+                    {
+                        EventManager::Instance()->AddEvent(new CollisionHoldEvent(pcollidable1, pcollidable2));
+                    }
+                }
+                else if (pcollidable1->GetShape()->IsTrigger() && pcollidable2->GetShape()->IsTrigger() || pcollidable1->GetShape()->IsCollidable() && pcollidable2->GetShape()->IsTrigger() || pcollidable2->GetShape()->IsCollidable() && pcollidable1->GetShape()->IsTrigger())
+                {
+                    bool hasCollided = pcollidable1->GetShape()->Collide(pcollidable2->GetShape());
+                    if (hasCollided)
+                    {
+                        EventManager::Instance()->AddEvent(new TriggerHoldEvent(pcollidable1, pcollidable2));
+                    }
+                }
             }
-            node_one->CollideResponse(node_two);
-            ++cnt;
         }
     }
 }
@@ -156,4 +163,83 @@ void Quadtree::QtreeFreeMemory() {
         GetSE()->QtreeFreeMemory();
     }
     delete this;
+}
+
+void Quadtree::UpdateScene(bool updateCollidingTreeOnly)
+{
+    if (updateCollidingTreeOnly)
+    {
+        Quadtree* collisionQuadtree = CollisionCheck();
+
+        for (size_t i = 0; i < collisionQuadtree->m_children.size(); i++)
+        {
+            std::vector<GameObject*> childrenVec = collisionQuadtree->GetChildren();
+
+            childrenVec.push_back(m_player);
+
+            for (GameObject* node_one : childrenVec)
+            {
+                for (GameObject* node_two : childrenVec)
+                {
+                    //if (node_one == node_two) {
+                    //    continue;
+                    //}
+                    //if ()
+                    //{
+
+                    //}
+
+                    //->CollideResponse(node_two);
+                    //++cnt;
+                }
+            }
+        }
+    }
+    else
+    {
+        for (size_t i = 0; i < m_children.size(); i++)
+        {
+            m_children[i]->Update();
+        }
+
+        int legacyCodeCompliance = 0;
+        
+        QtreeCheckCollisions(legacyCodeCompliance);
+
+    }
+}
+
+Quadtree* Quadtree::CollisionCheck()
+{
+    if (NW_ != nullptr) {
+
+        Quadtree* Collision = NW_->CollisionCheck();
+        if (Collision != nullptr)
+        {
+            return Collision;
+        }
+        Collision = NE_->CollisionCheck();
+        if (Collision != nullptr)
+        {
+            return Collision;
+        }
+        Collision = SW_->CollisionCheck();
+        if (Collision != nullptr)
+        {
+            return Collision;
+        }
+        Collision = SE_->CollisionCheck();
+        if (Collision != nullptr)
+        {
+            return Collision;
+        }
+    }
+    else if (m_player->GetShape()->Collide(m_collider))
+    {
+        return this;
+    }
+    else
+    {
+        return nullptr;
+    }
 }

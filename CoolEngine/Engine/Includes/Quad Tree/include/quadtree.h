@@ -5,7 +5,13 @@
 #include "Engine/Physics/Circle.h"
 #include "Engine/GameObjects/RenderableCollidableGameObject.h"
 #include "Engine/GameObjects/PlayerGameObject.h"
+#include "Engine/Managers/Events/EventManager.h"
+#include "Engine/Managers/DebugDrawManager.h"
+#include "Engine/Physics/Collision.h"
 #include <vector>
+#include <iostream>
+#include <cmath>
+#include <cassert>
 
 struct RectValues
 {
@@ -17,13 +23,12 @@ struct RectValues
 
 class Quadtree {
 public:
-    Quadtree(float objectRadius);
+    Quadtree(Box* collider);
+    ~Quadtree();
     void Init(int left, int top, int width, int height, PlayerGameObject* obj);
     bool InsertElement(GameObject* shape);
     void Subdivide(Quadtree *root);
-    int GetSize() const {
-        return children_.size();
-    }
+
     Quadtree *GetNW() const {
         return NW_;
     }
@@ -36,24 +41,31 @@ public:
     Quadtree *GetSE() const {
         return SE_;
     }
-    RectValues GetRect() const
-    {
-        return m_rectValues;
-    }
-    std::vector<GameObject*> GetChildren() const {
-        return m_children;
-    }
+
+    std::vector<GameObject*> GetChildren();
+
     void QtreeCheckCollisions(int &num_collisions);
     void QtreeFreeMemory();
+
+    void UpdateScene(bool updateCollidingTreeOnly);
+
 private:
+    
+    void Update();
+
+    Quadtree* CollisionCheck();
+
+
+
+
     std::vector<GameObject*> m_children;
     Quadtree *NW_ = nullptr;
     Quadtree *NE_ = nullptr;
     Quadtree *SW_ = nullptr;
     Quadtree *SE_ = nullptr;
-    RectValues m_rectValues;
+    Box* m_BoxCollider = nullptr;
     PlayerGameObject* m_player;
-    Circle* collider;
+    int m_maxNodeSize = 0;
 };
 
 #endif // QUADTREE_H_

@@ -9,7 +9,12 @@ Scene::Scene(string identifier)
 	m_sceneIdentifier = identifier;
 	m_psceneGraph = new SceneGraph<GameObject>();
 	
-	m_quadtree = new Quadtree(0, 0, 0, 0, nullptr);
+	const XMFLOAT3 pos = XMFLOAT3(0, 0, 0);
+	const XMFLOAT3 rot = XMFLOAT3(0, 0, 0);
+	const XMFLOAT3 scal = XMFLOAT3(1, 1, 1);
+
+	Transform* trans = new Transform();
+	m_quadtree = new Quadtree(trans, 10.f);
 
 }
 
@@ -22,50 +27,13 @@ void Scene::Update()
 {
 	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
 
-	if (gameObjectList.size() != m_quadtree->GetSize() + m_treeSizeOffset)
-	{
-		for (size_t i = 0; i < gameObjectList.size(); i++)
-		{
-			if (gameObjectList[i]->ContainsType(GameObjectType::COLLIDABLE) && gameObjectList[i]->ContainsType(GameObjectType::RENDERABLE))
-			{
-				switch ((AccumlateType)gameObjectList[i]->GetGameObjectType())
-				{
-				case AccumlateType::RENDERABLE:
-					//RenderableGameObject* obj = dynamic_cast<RenderableGameObject*>(gameObjectList[i]);
-					//m_quadtree->InsertElement()
-					break;
+	
 
-				case AccumlateType::COLLIDABLE:
-					m_quadtree->InsertElement((dynamic_cast<CollidableGameObject*>(gameObjectList[i])->GetShape()));
-					break;
-
-				case AccumlateType::COLLIDABLE_RENDERERABLE:
-					m_quadtree->InsertElement((dynamic_cast<RenderableCollidableGameObject*>(gameObjectList[i])->GetShape()));
-					break;
-
-				default:
-					continue;
-				}
-
-
-
-				//XMFLOAT3 pos = gameObjectList[i]->GetTransform()->GetWorldPosition();
-				//XMFLOAT3 scale = gameObjectList[i]->GetTransform()->GetWorldScale(); 
-			}
-			else
-			{
-				++m_treeSizeOffset;
-			}
-		}
-	}
 
 	for (int it = 0; it < gameObjectList.size(); ++it)
 	{
 		gameObjectList[it]->Update();
 	}
-
- //			GameObject* node = m_tree->search(pos.x, pos.y)->get_data();
-
 
 	Collision::Update(gameObjectList);
 }
@@ -73,6 +41,9 @@ void Scene::Update()
 void Scene::EditorUpdate()
 {
 	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
+
+
+
 	for (int it = 0; it < gameObjectList.size(); ++it)
 	{
 		gameObjectList[it]->EditorUpdate();
@@ -106,6 +77,20 @@ void Scene::Render(RenderStruct& renderStruct)
 
 void Scene::InitializeQuadTree()
 {
+	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
+	PlayerGameObject* playerGameObject = dynamic_cast<PlayerGameObject*>(m_psceneGraph->GetNodeObjectUsingIdentifier((std::string)"Player"));
+	
+	if (playerGameObject == NULL || playerGameObject == nullptr)
+	{
+		LOG("Could not find PlayerGameObject");
+		return;
+	}
+
+	m_quadtree->Init(playerGameObject->GetTransform()->GetWorldPosition().x, playerGameObject->GetTransform()->GetWorldPosition().y, playerGameObject->GetShape()->GetShapeDimensions().x, playerGameObject->GetShape()->GetShapeDimensions().y, playerGameObject);
+	for (size_t i = 0; i < gameObjectList.size(); i++)
+	{
+		m_quadtree->InsertElement(gameObjectList[i]);
+	}
 }
 
 vector<GameObject*>& Scene::GetAllGameObjects()
