@@ -153,6 +153,8 @@ bool Pathfinding::GeneratePath(XMFLOAT3 tarPos, vector<node*>& path)
 		}
 	}
 
+	m_nodesToTest = priority_queue<node*, vector<node*>, NodeCompare>();
+
 	return true;
 }
 

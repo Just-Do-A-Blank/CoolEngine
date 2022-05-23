@@ -57,8 +57,6 @@ private:
 	void CalculatePath();
 	bool GeneratePath(XMFLOAT3 tarPos, vector<node*>& path);
 
-
-	//vector<node*> m_nodesToTest;
 	priority_queue<node*,vector<node*>,NodeCompare> m_nodesToTest;
 
 
