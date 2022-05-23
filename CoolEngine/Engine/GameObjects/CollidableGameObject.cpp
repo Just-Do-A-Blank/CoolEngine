@@ -5,34 +5,31 @@
 #include "Engine/Physics/Circle.h"
 #include "Engine/EditorUI/EditorUI.h"
 
-CollidableGameObject::CollidableGameObject() : GameObject()
+CollidableGameObject::CollidableGameObject() : PrefabGameObject()
 {
 	m_gameObjectType |= GameObjectType::COLLIDABLE;
 }
 
-CollidableGameObject::CollidableGameObject(string identifier, CoolUUID uuid) : GameObject(identifier, uuid)
+CollidableGameObject::CollidableGameObject(string identifier, CoolUUID uuid) : PrefabGameObject(identifier, uuid)
 {
 	m_gameObjectType |= GameObjectType::COLLIDABLE;
 }
 
-CollidableGameObject::CollidableGameObject(const nlohmann::json& data, CoolUUID uuid) : GameObject(data, uuid)
+CollidableGameObject::CollidableGameObject(const nlohmann::json& data, CoolUUID uuid) : PrefabGameObject(data, uuid)
 {
 	m_gameObjectType |= GameObjectType::COLLIDABLE;
 
-	if (data["ShapeType"] != -1)
-	{
-		if (data["ShapeType"] == "Circle")
-		{
-			m_pcollider = new Circle(data, this);
-		}
-		else
-		{
-			m_pcollider = new Box(data, this);
-		}
-	}
+    if (IsPrefab())
+    {
+        LoadLocalData(GetPrefabDataLoadedAtCreation());
+    }
+    else
+    {
+        LoadLocalData(data);
+    }
 }
 
-CollidableGameObject::CollidableGameObject(CollidableGameObject const& other) : GameObject(other)
+CollidableGameObject::CollidableGameObject(CollidableGameObject const& other) : PrefabGameObject(other)
 {
 	if (other.m_pcollider)
 	{
@@ -57,7 +54,7 @@ CollidableGameObject::~CollidableGameObject()
 #if EDITOR
 void CollidableGameObject::CreateEngineUI()
 {
-	GameObject::CreateEngineUI();
+    PrefabGameObject::CreateEngineUI();
 
 	if (EditorUI::CollapsingSection("Collider", true))
 	{
@@ -114,18 +111,50 @@ void CollidableGameObject::CreateEngineUI()
 //Due to diamond pattern code here needs to be updated in RenderableCollidable as well
 void CollidableGameObject::Serialize(nlohmann::json& jsonData)
 {
-	GameObject::Serialize(jsonData);
+    GameObject::Serialize(jsonData);
 
-	if (m_pcollider == nullptr)
-	{
-		jsonData["ShapeType"] = -1;
-	}
-	else
-	{
-		m_pcollider->Serialize(jsonData);
-	}
+    SaveAllPrefabData(jsonData);
 }
 #endif
+
+void CollidableGameObject::LoadAllPrefabData(const nlohmann::json& jsonData)
+{
+    PrefabGameObject::LoadAllPrefabData(jsonData);
+    LoadLocalData(jsonData);
+}
+
+void CollidableGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
+{
+    SaveLocalData(jsonData);
+    PrefabGameObject::SaveAllPrefabData(jsonData);
+}
+
+void CollidableGameObject::LoadLocalData(const nlohmann::json& jsonData)
+{
+    if (jsonData["ShapeType"] != -1)
+    {
+        if (jsonData["ShapeType"] == "Circle")
+        {
+            m_pcollider = new Circle(jsonData, this);
+        }
+        else
+        {
+            m_pcollider = new Box(jsonData, this);
+        }
+    }
+}
+
+void CollidableGameObject::SaveLocalData(nlohmann::json& jsonData)
+{
+    if (m_pcollider == nullptr)
+    {
+        jsonData["ShapeType"] = -1;
+    }
+    else
+    {
+        m_pcollider->Serialize(jsonData);
+    }
+}
 
 Shape* CollidableGameObject::GetShape()
 {

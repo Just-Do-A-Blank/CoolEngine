@@ -37,6 +37,7 @@
     <ClInclude Include="Engine\AI\States\FiniteState.h" />
     <ClInclude Include="Engine\AI\States\FuzzyState.h" />
     <ClInclude Include="Engine\EditorUI\ContentBrowser.h" />
+    <ClInclude Include="Engine\EditorUI\EditorButtonCallback.h" />
     <ClInclude Include="Engine\EditorUI\EditorUI.h" />
     <ClInclude Include="Engine\EditorUI\EditorUIFloatParameters.h" />
     <ClInclude Include="Engine\EditorUI\EditorUIIntParameters.h" />
@@ -62,6 +63,7 @@
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerWalkingState.h" />
     <ClInclude Include="Engine\GameObjects\InteractableGameObject.h" />
     <ClInclude Include="Engine\GameObjects\MeleeWeaponGameObject.h" />
+    <ClInclude Include="Engine\GameObjects\PrefabGameObject.h" />
     <ClInclude Include="Engine\GameObjects\RangedWeaponGameObject.h" />
     <ClInclude Include="Engine\GameObjects\RenderableCollidableGameObject.h" />
     <ClInclude Include="Engine\GameObjects\DebugRect.h" />
@@ -214,6 +216,7 @@
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerWalkingState.cpp" />
     <ClCompile Include="Engine\GameObjects\InteractableGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\MeleeWeaponGameObject.cpp" />
+    <ClCompile Include="Engine\GameObjects\PrefabGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\RangedWeaponGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\RenderableCollidableGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\DebugRect.cpp" />

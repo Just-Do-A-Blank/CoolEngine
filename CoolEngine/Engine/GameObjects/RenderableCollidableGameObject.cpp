@@ -18,6 +18,14 @@ RenderableCollidableGameObject::RenderableCollidableGameObject(string identifier
 
 RenderableCollidableGameObject::RenderableCollidableGameObject(const nlohmann::json& data, CoolUUID uuid) : CollidableGameObject(data, uuid), RenderableGameObject(data, uuid)
 {
+    if (PrefabGameObject::IsPrefab())
+    {
+        CollidableGameObject::LoadLocalData(PrefabGameObject::GetPrefabDataLoadedAtCreation());
+    }
+    else
+    {
+        CollidableGameObject::LoadLocalData(data);
+    }
 }
 
 RenderableCollidableGameObject::RenderableCollidableGameObject(RenderableCollidableGameObject const& other) : RenderableGameObject(other), CollidableGameObject(other)
@@ -89,14 +97,31 @@ void RenderableCollidableGameObject::Serialize(nlohmann::json& jsonData)
 {
 	RenderableGameObject::Serialize(jsonData);
 	
-	if (m_pcollider == nullptr)
-	{
-		jsonData["ShapeType"] = -1;
-	}
-	else
-	{
-		m_pcollider->Serialize(jsonData);
-	}
+    SaveLocalData(jsonData);
 }
 
 #endif
+
+void RenderableCollidableGameObject::LoadAllPrefabData(const nlohmann::json& jsonData)
+{
+    RenderableGameObject::LoadAllPrefabData(jsonData);
+    CollidableGameObject::LoadLocalData(jsonData);
+}
+
+void RenderableCollidableGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
+{
+    SaveLocalData(jsonData);
+    RenderableGameObject::SaveAllPrefabData(jsonData);
+}
+
+void RenderableCollidableGameObject::SaveLocalData(nlohmann::json& jsonData)
+{
+    if (m_pcollider == nullptr)
+    {
+        jsonData["ShapeType"] = -1;
+    }
+    else
+    {
+        m_pcollider->Serialize(jsonData);
+    }
+}

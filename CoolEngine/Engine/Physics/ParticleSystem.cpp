@@ -8,63 +8,14 @@ ParticleSystem::ParticleSystem(string identifier, CoolUUID uuid) : GameObject(id
 {
 	m_gameObjectType |= GameObjectType::PARTICLE_SYSTEM;
 
-	m_systemLife = 0.0f;
-	m_timer = 0.0f;
-	m_isActive = false;
-
-	// Particle properties
-	m_velocity = { 0, 0 };
-	m_accel = { 0, 0 };
-	m_particleLife = 1.0f;
-	m_spawnInterval = 1.0f;
-	m_spawnNumber = 1;
-
-	// Randomness
-	m_positionRand = 0;
-	m_velocityRand = 0;
-	m_accelRand = 0;
-	m_lifeRand = 0;
-
-	ID3D11ShaderResourceView* psRV = GraphicsManager::GetInstance()->GetShaderResourceView(DEFAULT_TILE);
-	if (psRV == nullptr)
-	{
-		LOG("Failed to set the albedo SRV as one with that name doesn't exist!");
-		return;
-	}
-	m_pTexture = psRV;
+    SetLocalDataDefaults();
 }
 
 ParticleSystem::ParticleSystem(const nlohmann::json& data, CoolUUID uuid) : GameObject(data, uuid)
 {
 	m_gameObjectType |= GameObjectType::PARTICLE_SYSTEM;
 
-	m_systemLife = data["SystemLife"];
-	m_timer = data["Timer"];
-	m_isActive = data["IsActive"];
-	m_velocity = XMFLOAT2(data["ParticleVelocity"][0], data["ParticleVelocity"][1]);
-	m_accel = XMFLOAT2(data["ParticleAcceleration"][0], data["ParticleAcceleration"][1]);
-	m_particleLife = data["ParticleLife"];
-	m_spawnInterval = data["SpawnInterval"];
-	m_spawnNumber = data["SpawnNumber"];
-
-	std::string tempPath = data["TexturePath"];
-
-	m_texFilepath = std::wstring(tempPath.begin(), tempPath.end());
-	m_positionRand = data["PositionRandom"];
-	m_velocityRand = data["VelocityRandom"];
-	m_accelRand = data["AccelerationRandom"];
-	m_lifeRand = data["LifeRandom"];
-	m_layer = data["ParticleLayer"];
-
-	ID3D11ShaderResourceView* psRV = GraphicsManager::GetInstance()->GetShaderResourceView(m_texFilepath);
-
-	if (psRV == nullptr)
-	{
-		LOG("Failed to set the albedo SRV as one with that name doesn't exist!");
-		return;
-	}
-
-	m_pTexture = psRV;
+    LoadLocalData(data);
 }
 
 ParticleSystem::ParticleSystem(ParticleSystem const& other) : GameObject(other)
@@ -98,21 +49,91 @@ ParticleSystem::~ParticleSystem()
 void ParticleSystem::Serialize(nlohmann::json& data)
 {
 	GameObject::Serialize(data);
+    SaveLocalData(data);
+}
 
-	data["SystemLife"] = m_systemLife;
-	data["Timer"] = m_timer;
-	data["IsActive"] = m_isActive;
-	data["ParticleVelocity"] = { m_velocity.x, m_velocity.y };
-	data["ParticleAcceleration"] = { m_accel.x, m_accel.y };
-	data["ParticleLife"] = m_particleLife;
-	data["SpawnInterval"] = m_spawnInterval;
-	data["SpawnNumber"] = m_spawnNumber;
-	data["TexturePath"] = std::string(m_texFilepath.begin(), m_texFilepath.end());
-	data["PositionRandom"] = m_positionRand;
-	data["VelocityRandom"] = m_velocityRand;
-	data["AccelerationRandom"] = m_accelRand;
-	data["LifeRandom"] = m_lifeRand;
-	data["ParticleLayer"] = m_layer;
+void ParticleSystem::LoadLocalData(const nlohmann::json& jsonData)
+{
+    if (jsonData.contains("SystemLife"))
+    {
+        m_systemLife = jsonData["SystemLife"];
+        m_timer = jsonData["Timer"];
+        m_isActive = jsonData["IsActive"];
+        m_velocity = XMFLOAT2(jsonData["ParticleVelocity"][0], jsonData["ParticleVelocity"][1]);
+        m_accel = XMFLOAT2(jsonData["ParticleAcceleration"][0], jsonData["ParticleAcceleration"][1]);
+        m_particleLife = jsonData["ParticleLife"];
+        m_spawnInterval = jsonData["SpawnInterval"];
+        m_spawnNumber = jsonData["SpawnNumber"];
+
+        std::string tempPath = jsonData["TexturePath"];
+
+        m_texFilepath = std::wstring(tempPath.begin(), tempPath.end());
+        m_positionRand = jsonData["PositionRandom"];
+        m_velocityRand = jsonData["VelocityRandom"];
+        m_accelRand = jsonData["AccelerationRandom"];
+        m_lifeRand = jsonData["LifeRandom"];
+        m_layer = jsonData["ParticleLayer"];
+
+        ID3D11ShaderResourceView* psRV = GraphicsManager::GetInstance()->GetShaderResourceView(m_texFilepath);
+
+        if (psRV == nullptr)
+        {
+            LOG("Failed to set the albedo SRV as one with that name doesn't exist!");
+            return;
+        }
+
+        m_pTexture = psRV;
+    }
+    else
+    {
+        SetLocalDataDefaults();
+    }
+}
+
+void ParticleSystem::SaveLocalData(nlohmann::json& jsonData)
+{
+    jsonData["SystemLife"] = m_systemLife;
+    jsonData["Timer"] = m_timer;
+    jsonData["IsActive"] = m_isActive;
+    jsonData["ParticleVelocity"] = { m_velocity.x, m_velocity.y };
+    jsonData["ParticleAcceleration"] = { m_accel.x, m_accel.y };
+    jsonData["ParticleLife"] = m_particleLife;
+    jsonData["SpawnInterval"] = m_spawnInterval;
+    jsonData["SpawnNumber"] = m_spawnNumber;
+    jsonData["TexturePath"] = std::string(m_texFilepath.begin(), m_texFilepath.end());
+    jsonData["PositionRandom"] = m_positionRand;
+    jsonData["VelocityRandom"] = m_velocityRand;
+    jsonData["AccelerationRandom"] = m_accelRand;
+    jsonData["LifeRandom"] = m_lifeRand;
+    jsonData["ParticleLayer"] = m_layer;
+}
+
+void ParticleSystem::SetLocalDataDefaults()
+{
+    m_systemLife = 0.0f;
+    m_timer = 0.0f;
+    m_isActive = false;
+
+    // Particle properties
+    m_velocity = { 0, 0 };
+    m_accel = { 0, 0 };
+    m_particleLife = 1.0f;
+    m_spawnInterval = 1.0f;
+    m_spawnNumber = 1;
+
+    // Randomness
+    m_positionRand = 0;
+    m_velocityRand = 0;
+    m_accelRand = 0;
+    m_lifeRand = 0;
+
+    ID3D11ShaderResourceView* psRV = GraphicsManager::GetInstance()->GetShaderResourceView(DEFAULT_TILE);
+    if (psRV == nullptr)
+    {
+        LOG("Failed to set the albedo SRV as one with that name doesn't exist!");
+        return;
+    }
+    m_pTexture = psRV;
 }
 
 void ParticleSystem::Initialise(Transform trans, float life, std::wstring texPath, int layer)

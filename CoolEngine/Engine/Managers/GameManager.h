@@ -59,6 +59,7 @@ public:
 	Scene* m_pcurrentEditorScene;
 	Scene* m_pcurrentGameScene;
 
+	void Start();
 	void Update();
 	void Render(RenderStruct& renderStruct);
 

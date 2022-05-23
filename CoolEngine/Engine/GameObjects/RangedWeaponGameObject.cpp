@@ -9,8 +9,14 @@ RangedWeaponGameObject::RangedWeaponGameObject(const nlohmann::json& data, CoolU
 {
 	m_gameObjectType |= GameObjectType::RANGE_WEAPON;
 
-	m_angleInterval = data["AngleInterval"];
-	m_shotSpeed = data["ShotSpeed"];
+    if (PrefabGameObject::IsPrefab())
+    {
+        LoadLocalData(PrefabGameObject::GetPrefabDataLoadedAtCreation());
+    }
+    else
+    {
+        LoadLocalData(data);
+    }
 }
 
 RangedWeaponGameObject::RangedWeaponGameObject(RangedWeaponGameObject const& other) : WeaponGameObject(other)
@@ -59,6 +65,31 @@ void RangedWeaponGameObject::Serialize(nlohmann::json& data)
 {
 	WeaponGameObject::Serialize(data);
 
-	data["AngleInterval"] = m_angleInterval;
-	data["ShotSpeed"] = m_shotSpeed;
+    SaveLocalData(data);
+}
+
+void RangedWeaponGameObject::LoadLocalData(const nlohmann::json& jsonData)
+{
+    if (jsonData.contains("AngleInterval"))
+    {
+        m_angleInterval = jsonData["AngleInterval"];
+        m_shotSpeed = jsonData["ShotSpeed"];
+    }
+}
+void RangedWeaponGameObject::SaveLocalData(nlohmann::json& jsonData)
+{
+    jsonData["AngleInterval"] = m_angleInterval;
+    jsonData["ShotSpeed"] = m_shotSpeed;
+}
+
+void RangedWeaponGameObject::LoadAllPrefabData(const nlohmann::json& jsonData)
+{
+    LoadLocalData(jsonData);
+    WeaponGameObject::LoadAllPrefabData(jsonData);
+}
+
+void RangedWeaponGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
+{
+    SaveLocalData(jsonData);
+    WeaponGameObject::SaveAllPrefabData(jsonData);
 }

@@ -16,6 +16,18 @@ Scene::~Scene()
 
 }
 
+void Scene::Start()
+{
+    vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
+    for (int it = 0; it < gameObjectList.size(); ++it)
+    {
+        if (!gameObjectList[it]->m_bHaveUpdated)
+        {
+            gameObjectList[it]->Start();
+        }
+    }
+}
+
 void Scene::Update()
 {
 	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();

@@ -33,6 +33,9 @@ private:
 
 protected:
 
+    virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
+    virtual void SaveAllPrefabData(nlohmann::json& jsonData) override;
+
     /// <summary>
     /// Occurs when two objects collide without collision on. Fired on enter.
     /// </summary>

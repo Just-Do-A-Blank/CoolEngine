@@ -38,6 +38,25 @@ Timer* GameManager::GetTimer()
 	return &m_timer;
 }
 
+void GameManager::Start()
+{
+    switch (m_viewState)
+    {
+    case ViewState::EDITOR_VIEW:
+        if (!m_pcurrentEditorScene)
+        {
+            return;
+        }
+
+        m_pcurrentEditorScene->Start();
+        break;
+
+    case ViewState::GAME_VIEW:
+        m_pcurrentGameScene->Start();
+        break;
+    }
+}
+
 void GameManager::Update()
 {
 	switch (m_viewState)
@@ -389,9 +408,9 @@ void GameManager::CopyScene()
 
 		case AccumlateType::UI_COMPONENT:
 			GameUIComponent* uiComponent = dynamic_cast<GameUIComponent*>(gameObjectNodeList[it]->NodeObject);
-			switch (uiComponent->GetComponentType())
+			switch ((AccumulatedUIComponentType)uiComponent->GetComponentType())
 			{
-			case UIComponentType::BASE:
+			case AccumulatedUIComponentType::BASE:
 				if (gameObjectNodeList[it]->PreviousParent)
 				{
 					TreeNode<GameObject>* parentNode = m_pcurrentGameScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
@@ -408,7 +427,7 @@ void GameManager::CopyScene()
 				}
 				break;
 
-			case UIComponentType::BUTTON:
+			case AccumulatedUIComponentType::BUTTON:
 				if (gameObjectNodeList[it]->PreviousParent)
 				{
 					TreeNode<GameObject>* parentNode = m_pcurrentGameScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
@@ -425,7 +444,7 @@ void GameManager::CopyScene()
 				}
 				break;
 
-			case UIComponentType::CANVAS:
+			case AccumulatedUIComponentType::CANVAS:
 				if (gameObjectNodeList[it]->PreviousParent)
 				{
 					TreeNode<GameObject>* parentNode = m_pcurrentGameScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
@@ -442,7 +461,7 @@ void GameManager::CopyScene()
 				}
 				break;
 
-			case UIComponentType::IMAGE:
+			case AccumulatedUIComponentType::IMAGE:
 				if (gameObjectNodeList[it]->PreviousParent)
 				{
 					TreeNode<GameObject>* parentNode = m_pcurrentGameScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
@@ -459,7 +478,7 @@ void GameManager::CopyScene()
 				}
 				break;
 
-			case UIComponentType::TEXT:
+			case AccumulatedUIComponentType::TEXT:
 				if (gameObjectNodeList[it]->PreviousParent)
 				{
 					TreeNode<GameObject>* parentNode = m_pcurrentGameScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);

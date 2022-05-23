@@ -246,6 +246,9 @@
     <ClCompile Include="Engine\AI\States\FuzzyState.cpp">
       <Filter>Engine\AI\States</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GameObjects\PrefabGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -655,6 +658,12 @@
     </ClInclude>
     <ClInclude Include="Engine\AI\States\FuzzyState.h">
       <Filter>Engine\AI\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\PrefabGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\EditorUI\EditorButtonCallback.h">
+      <Filter>Engine\EditorUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

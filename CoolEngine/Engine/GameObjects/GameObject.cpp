@@ -58,6 +58,15 @@ GameObject::~GameObject()
 	delete m_transform;
 }
 
+void GameObject::Start()
+{
+    m_bHaveUpdated = true;
+    if (m_pTest != nullptr)
+    {
+        LOG(m_pTest->GetIdentifier());
+    }
+}
+
 void GameObject::Update()
 {
 	if (m_pTest != nullptr)

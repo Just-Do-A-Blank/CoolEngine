@@ -46,12 +46,17 @@ ButtonComponent::ButtonComponent(ButtonComponent const& other) : GameUIComponent
 	m_currentButtonState = other.m_currentButtonState;
 	m_OnClickFunction = other.m_OnClickFunction;
 	m_OnClickFunctionArg = m_OnClickFunctionArg;
-	
+
+	m_uiComponentType |= UIComponentType::BUTTON;
+
+	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
+	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
 }
 
 ButtonComponent::~ButtonComponent()
 {
-	EventManager::Instance()->RemoveClientAllEvents(this);
+	EventManager::Instance()->RemoveClientEvent(EventType::MouseButtonPressed, this);
+	EventManager::Instance()->RemoveClientEvent(EventType::MouseButtonReleased, this);
 }
 
 void ButtonComponent::Update()
