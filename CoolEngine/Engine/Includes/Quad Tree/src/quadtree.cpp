@@ -208,6 +208,49 @@ void Quadtree::UpdateQuadTreeStucture()
 
 }
 
+void Quadtree::GetUpdateList(XMFLOAT2 updatePoint, std::vector<GameObject*>& listToUpdate)
+{
+    if (m_direction == CompassFacing::Centre)
+    {
+        CheckForObjectUpdate(listToUpdate);
+    }
+    if (NW_ == nullptr)
+    {
+        return;
+    }
+
+    float difference = std::abs(NW_->m_angle.x - updatePoint.x);
+
+    if ((std::abs(NW_->m_angle.x - updatePoint.x) < m_objectOffset && std::abs(NW_->m_angle.y - updatePoint.y) < m_objectOffset) && (updatePoint.x <= NW_->m_angle.x && updatePoint.y >= NW_->m_angle.y))
+    {
+        NW_->CheckForObjectUpdate(listToUpdate);
+        NW_->GetUpdateList(updatePoint, listToUpdate);
+    }
+    if ((std::abs(NE_->m_angle.x - updatePoint.x) < m_objectOffset && std::abs(NE_->m_angle.y - updatePoint.y) < m_objectOffset) && updatePoint.x >= NE_->m_angle.y && updatePoint.y >= NE_->m_angle.y)
+    {
+          NE_->CheckForObjectUpdate(listToUpdate);
+          NE_->GetUpdateList(updatePoint, listToUpdate);
+    }
+    if ((std::abs(SW_->m_angle.x - updatePoint.x) < m_objectOffset && std::abs(SW_->m_angle.y - updatePoint.y) < m_objectOffset) && updatePoint.x <= SW_->m_angle.x && updatePoint.y <= SW_->m_angle.y)
+    {
+        SW_->CheckForObjectUpdate(listToUpdate);
+        SW_->GetUpdateList(updatePoint, listToUpdate);
+    }
+    if ((std::abs(SE_->m_angle.x - updatePoint.x) < m_objectOffset && std::abs(SE_->m_angle.y - updatePoint.y) < m_objectOffset) && updatePoint.x >= SE_->m_angle.x && updatePoint.y <= SE_->m_angle.y)
+    {
+       SE_->CheckForObjectUpdate(listToUpdate);
+       SE_->GetUpdateList(updatePoint, listToUpdate);
+    }
+}
+
+void Quadtree::CheckForObjectUpdate(std::vector<GameObject*>& list)
+{
+    for (size_t i = 0; i < m_children.size(); i++)
+    {
+        list.push_back(m_children[i]);
+    }
+}
+
 bool Quadtree::LoacteObjectAndOverwrite(GameObject* dest, GameObject* value)
 {
     for (size_t i = 0; i < m_children.size(); i++)

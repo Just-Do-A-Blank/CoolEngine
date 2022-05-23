@@ -192,7 +192,6 @@
     <ClInclude Include="Engine\GameUI\GameUIComponent.h" />
     <ClInclude Include="Engine\GameUI\UICanvas.h" />
     <ClInclude Include="Engine\GameUI\ImageComponent.h" />
-    <ClInclude Include="QuadTree.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\AI\FiniteState.cpp" />

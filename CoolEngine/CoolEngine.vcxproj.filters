@@ -658,6 +658,9 @@
     <ClInclude Include="Engine\EditorUI\EditorButtonCallback.h">
       <Filter>Engine\EditorUI</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Includes\Quad Tree\include\quadtree.h">
+      <Filter>Engine\Includes\Quad Tree</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Engine\Includes\DirectXTK\SimpleMath.inl" />

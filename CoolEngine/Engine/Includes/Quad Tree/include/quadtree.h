@@ -12,6 +12,7 @@
 #include <iostream>
 #include <cmath>
 #include <cassert>
+#include <cstdlib>
 
 enum class CompassFacing
 {
@@ -53,7 +54,11 @@ public:
 
     void UpdateQuadTreeStucture();
 
+    void GetUpdateList(XMFLOAT2 updatePoint, std::vector<GameObject*>& list);
+
 private:
+
+    void CheckForObjectUpdate(std::vector<GameObject*>& list);
 
     bool LoacteObjectAndOverwrite(GameObject* dest,  GameObject* value);
 

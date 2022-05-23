@@ -38,20 +38,21 @@ void Scene::Start()
 
 void Scene::Update()
 {
-	//vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
+	vector<GameObject*> gameObjectList;
+	gameObjectList.reserve(m_psceneGraph->GetAllNodeObjects().size());
 
-	
+	PlayerGameObject* pGO = dynamic_cast<PlayerGameObject*>(m_psceneGraph->GetNodeObjectUsingIdentifier((std::string)"Player"));
 
+	Transform* t = pGO->GetTransform();
 
-	m_quadtree->UpdateScene(XMFLOAT2(0,0));
+	m_quadtree->GetUpdateList(XMFLOAT2(t->GetWorldPosition().x, t->GetWorldPosition().y), gameObjectList);
 
+	for (int it = 0; it < gameObjectList.size(); ++it)
+	{
+		gameObjectList[it]->Update();
+	}
 
-	//for (int it = 0; it < gameObjectList.size(); ++it)
-	//{
-	//	gameObjectList[it]->Update();
-	//}
-
-	//Collision::Update(gameObjectList);
+	Collision::Update(gameObjectList);
 }
 
 void Scene::EditorUpdate()
