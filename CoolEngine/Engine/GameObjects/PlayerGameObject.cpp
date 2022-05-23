@@ -73,6 +73,7 @@ PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : Character
     EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
     EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
     EventManager::Instance()->AddClient(EventType::MouseMoved, this);
+
 }
 
 PlayerGameObject::PlayerGameObject(const nlohmann::json& data, CoolUUID uuid) : CharacterGameObject(data, uuid)
@@ -143,6 +144,11 @@ PlayerGameObject::PlayerGameObject(const nlohmann::json& data, CoolUUID uuid) : 
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
 	EventManager::Instance()->AddClient(EventType::MouseMoved, this);
 
+	m_gameObjectType |= GameObjectType::PLAYER;
+
+	//GameManager* pgameManager = GameManager::GetInstance();
+	//pgameManager->CreateGameObject<CameraGameObject>("Camera"); //  use - GameManager::GetInstance()->GetCamera(); - to set camera to editor camera
+	//GameManager::GetInstance()->SetCamera(m_cameraRef);
     m_resourceManager = new PlayerResourceManager();
     if (PrefabGameObject::IsPrefab())
     {
@@ -164,6 +170,7 @@ PlayerGameObject::PlayerGameObject(PlayerGameObject const& other) : CharacterGam
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
 	EventManager::Instance()->AddClient(EventType::MouseMoved, this);
 
+	m_myInventory = new Inventory(); // creates the inventory object
     m_resourceManager = new PlayerResourceManager(*other.m_resourceManager);
 }
 
@@ -308,7 +315,14 @@ void PlayerGameObject::Update()
 
     m_playerController->Update();
 
-	m_invincibilityTime -= GameManager::GetInstance()->GetTimer()->DeltaTime();
+	if (m_invincibilityTime > 0.0f)
+	{
+		m_invincibilityTime -= GameManager::GetInstance()->GetTimer()->DeltaTime();
+	}
+	else
+	{
+		m_invincibilityTime = 0;
+	}
 
 	SetWeaponPosition();
 }

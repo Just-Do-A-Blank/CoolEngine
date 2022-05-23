@@ -1,8 +1,10 @@
 #pragma once
 #include "Engine/GameObjects/CharacterGameObject.h"
 #include "Engine/Managers/Events/MouseEvents.h"
-#include "Engine/Managers/Events/KeyEvents.h"
+#include "Engine/Managers/Events/KeyEvents.h" 
+#include "CameraGameObject.h"
 #include "Engine/GameObjects/Gameplay/Player/PlayerController.h"
+#include "Inventory.h"
 #include "Engine/GameObjects/Gameplay/Player/PlayerResource.h"
 #include "Engine/GameObjects/Gameplay/Player/PlayerResourceInterface.h"
 #include "Engine/GameObjects/Gameplay/Player/PlayerResourceManager.h"
@@ -23,6 +25,8 @@ public:
     /// </summary>
 	void Handle(Event* e) override;
 
+    //CameraGameObject* m_cameraRef;
+
     /// <summary>
     /// Called after construction, before first Update.
     /// </summary>
@@ -33,6 +37,7 @@ public:
     /// </summary>
     virtual void Update() override;
     virtual void EditorUpdate() override;
+
 
 #if EDITOR
     /// <summary>
@@ -68,11 +73,16 @@ protected:
     /// </summary>
     virtual void OnTriggerExit(GameObject* obj1, GameObject* obj2) override { }
 
+    //virtual void Update() override {}  /// commented out due to error: "Error	C2535	'void PlayerGameObject::Update(void)': member function already defined or declared	CoolEngine	C : \Users\s019135i\Documents\GitHub\CoolEngine\CoolEngine\Engine\GameObjects\PlayerGameObject.h	59
+    Inventory* m_myInventory;
+
 private:
     /// <summary>
     /// Handles movement around the scene for the player
     /// </summary>
+    /// 
     PlayerController* m_playerController;
+  
 
     /// <summary>
     /// Manages the Player Resources (Health and Stamina for example)
