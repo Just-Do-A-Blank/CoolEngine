@@ -8,17 +8,17 @@
 class BulletCreator : public Observer
 {
 public:
+	BulletCreator();
 	~BulletCreator();
-
-	void CreateBullet(CreateBulletEvent* e);
-	void TestFire(MouseButtonPressedEvent* e);
-
-	void Handle(Event* e);
 
 	unsigned int m_bulletCounter = 0;
 	ObjectPool<BulletGameObject>* m_pBulletPool = nullptr;
 
-	BulletCreator();
+	void CreateBullet(CreateBulletEvent* e);
+	void TestFire(MouseButtonPressedEvent* e);
+	void Handle(Event* e);
+
+	void DeleteBullets();
 
 	void Render(RenderStruct& renderStruct);
 	void Update();

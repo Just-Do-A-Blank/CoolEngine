@@ -42,9 +42,9 @@
 
 #include "Engine/Managers/Events/EventObserverExamples.h"
 #include "Engine/Managers/Events/DamageCalculation.h"
-#include "Engine/Managers/Events/BulletCreator.h"
 #include "Engine/Structure/ObjectPool.h"
 #include "Engine/GameObjects/BulletGameObject.h"
+#include "Engine/GameObjects/RangedWeaponGameObject.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
@@ -82,9 +82,6 @@ PlayerGameObject* g_pplayer = nullptr;
 TileMap* g_testMap1;
 
 TileMap* g_testMap2;
-
-// Observer for making attacks
-BulletCreator bulletCreator;
 
 #if EDITOR
 EditorUI* g_peditorUI;
@@ -153,7 +150,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//Create scene
 	GameManager* pgameManager = GameManager::GetInstance();
 	pgameManager->CreateScene("TestScene");
-	//pgameManager->SelectSceneUsingIdentifier("TestScene");
 
 	//Music
 	AudioManager::GetInstance()->LoadMusic(TEST_MUSIC);
@@ -800,8 +796,6 @@ void Render()
 
 	ParticleManager::GetInstance()->Render(renderStruct.m_pcontext);
 
-	bulletCreator.Render(renderStruct);
-
 #if _DEBUG
 	DebugDrawManager::GetInstance()->Render(renderStruct);
 #endif
@@ -895,8 +889,6 @@ void Update()
 	pgamemanager->GetTimer()->Tick();
 	pgamemanager->Start();
 	pgamemanager->Update();
-
-	bulletCreator.Update();
 
 #if EDITOR
 	g_peditorUI->Update();
