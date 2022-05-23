@@ -169,10 +169,10 @@ public:
     /// <param name="doPopupInCenter">true means the popup will display near to the center of the screen. Default is false.</param>
     /// <returns>True means popup is still on the screen</returns>
     static EditorButtonCallback ErrorPopupBoxWithOptions(
-        const string& key, 
-        const string& body, 
-        const string& leftButton, 
-        const string& rightButton, 
+        const string& key,
+        const string& body,
+        const string& leftButton,
+        const string& rightButton,
         bool doPopupInCenter = false
     );
 
