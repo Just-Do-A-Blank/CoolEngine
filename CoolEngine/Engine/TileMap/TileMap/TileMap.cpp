@@ -41,7 +41,7 @@ TileMap::TileMap(const nlohmann::json& data, CoolUUID uuid) : RenderableGameObje
 	Init(m_mapPath, position);
 }
 
-TileMap::TileMap(TileMap const& other)
+TileMap::TileMap(TileMap const& other) : RenderableGameObject(other)
 {
 	m_gameObjectType |= GameObjectType::TILE_MAP;
 
@@ -526,7 +526,10 @@ void TileMap::Init(wstring mapPath, XMFLOAT3 position)
 {
 	m_transform->SetLocalPosition(position);
 
-	Load(mapPath);
+	if (Load(mapPath) == true)
+	{
+		Pathfinding::GetInstance()->Initialize(this);
+	}
 }
 
 void TileMap::Serialize(nlohmann::json& data)

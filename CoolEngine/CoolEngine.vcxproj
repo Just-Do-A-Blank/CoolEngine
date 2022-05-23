@@ -31,11 +31,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\AI\EnemyStateMachine.h" />
     <ClInclude Include="Engine\AI\FiniteStateMachine.h" />
     <ClInclude Include="Engine\AI\FuzzyStateMachine.h" />
     <ClInclude Include="Engine\AI\Pathfinding.h" />
     <ClInclude Include="Engine\AI\States\FiniteState.h" />
     <ClInclude Include="Engine\AI\States\FuzzyState.h" />
+    <ClInclude Include="Engine\AI\States\MeleeMovementState.h" />
     <ClInclude Include="Engine\EditorUI\ContentBrowser.h" />
     <ClInclude Include="Engine\EditorUI\EditorButtonCallback.h" />
     <ClInclude Include="Engine\EditorUI\EditorUI.h" />
@@ -195,11 +197,13 @@
     <ClInclude Include="Engine\GameUI\ImageComponent.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\AI\EnemyStateMachine.cpp" />
     <ClCompile Include="Engine\AI\FiniteStateMachine.cpp" />
     <ClCompile Include="Engine\AI\FuzzyStateMachine.cpp" />
     <ClCompile Include="Engine\AI\Pathfinding.cpp" />
     <ClCompile Include="Engine\AI\States\FiniteState.cpp" />
     <ClCompile Include="Engine\AI\States\FuzzyState.cpp" />
+    <ClCompile Include="Engine\AI\States\MeleeMovementState.cpp" />
     <ClCompile Include="Engine\EditorUI\ContentBrowser.cpp" />
     <ClCompile Include="Engine\EditorUI\EditorUI.cpp" />
     <ClCompile Include="Engine\EditorUI\TileMapContentBrowser.cpp" />

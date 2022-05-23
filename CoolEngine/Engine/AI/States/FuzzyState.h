@@ -3,7 +3,12 @@
 
 enum class FuzzyStateType
 {
+	MELEE_MOVEMENT = 0,
+	RANGE_MOVEMENT,
+	MELEE_ATTACK,
+	RANGE_ATTACK,
 
+	COUNT
 };
 
 class FuzzyState
@@ -26,9 +31,9 @@ public:
 	virtual void Deserialize(const nlohmann::json& data) = 0;
 
 protected:
-	FuzzyStateType m_stateType;
+	FuzzyStateType m_stateType = FuzzyStateType::COUNT;
 
 private:
-	float m_activationLevel = 0.0f;
+	float m_activationLevel = 0.5f;
 };
 

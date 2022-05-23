@@ -242,7 +242,12 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
                 ImGui::EndMenu();
             }
 
+			if (ImGui::MenuItem("TileMap"))
+			{
+				m_createGameObjectClicked = true;
 
+				m_createObjectType = GameObjectType::TILE_MAP;
+			}
 
             if (ImGui::MenuItem("ParticleSystem"))
             {
@@ -421,6 +426,10 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
                 case GameObjectType::CAMERA:
                     pgameManager->CreateGameObject<CameraGameObject>(gameObjectName, m_selectedGameObjectNode);
                     break;
+
+				case GameObjectType::TILE_MAP:
+					pgameManager->CreateGameObject<TileMap>(gameObjectName, m_selectedGameObjectNode);
+					break;
                 }
 
 

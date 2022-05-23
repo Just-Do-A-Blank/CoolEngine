@@ -24,6 +24,8 @@ EnemyGameObject::~EnemyGameObject()
 
 void EnemyGameObject::Update()
 {
+	m_stateMachine.Update();
+
 	if (m_invincibilityTime > 0.0f)
 	{
 		m_invincibilityTime -= GameManager::GetInstance()->GetTimer()->DeltaTime();
@@ -62,7 +64,7 @@ void EnemyGameObject::Start()
 {
 	PrefabGameObject::Start();
 
-	MeleeMovementState* pstate = new MeleeMovementState();
+	MeleeMovementState* pstate = new MeleeMovementState(this);
 
 	m_stateMachine.AddState(pstate);
 }

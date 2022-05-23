@@ -60,7 +60,6 @@ GameObject::~GameObject()
 
 void GameObject::Start()
 {
-    m_bHaveUpdated = true;
     if (m_pTest != nullptr)
     {
         LOG(m_pTest->GetIdentifier());
@@ -149,7 +148,7 @@ void GameObject::CreateEngineUI()
 }
 #endif
 
-Transform* GameObject::GetTransform()
+Transform* GameObject::GetTransform() const
 {
 	return m_transform;
 }
