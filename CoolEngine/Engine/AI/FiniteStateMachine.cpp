@@ -1,5 +1,5 @@
 #include "FiniteStateMachine.h"
-#include "FiniteState.h"
+#include "Engine/AI/States/FiniteState.h"
 #include "Engine/EditorUI/EditorUI.h"
 
 FiniteStateMachine::~FiniteStateMachine()

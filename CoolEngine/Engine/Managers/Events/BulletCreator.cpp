@@ -53,6 +53,11 @@ void BulletCreator::CreateBullet(CreateBulletEvent* e)
 {
 	BulletGameObject* p_bullet =  m_pBulletPool->CreateEntryInPool()->m_pObject;
 
+	if (e->GetObj() == nullptr)
+	{
+		return;
+	}
+
 	XMFLOAT3 objectPos = e->GetStartPos();
 	XMFLOAT3 objectScale = e->GetObj()->GetTransform()->GetWorldScale();
 	bool isCollision = false;
