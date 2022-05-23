@@ -28,19 +28,18 @@ void MeleeAttackState::Exit()
 
 float MeleeAttackState::CalculateActivation()
 {
-	//if (m_penemy->GetWeapon() == nullptr || m_penemy->GetWeapon()->ContainsType(GameObjectType::MELEE_WEAPON) == false)
-	//{
-	//	return 0.0f;
-	//}
+	if (m_penemy->GetWeapon() == nullptr || m_penemy->GetWeapon()->ContainsType(GameObjectType::MELEE_WEAPON) == false)
+	{
+		return 0.0f;
+	}
 
-	//MeleeWeaponGameObject* pmeleeWeapon = (MeleeWeaponGameObject*)m_penemy->GetWeapon();
+	MeleeWeaponGameObject* pmeleeWeapon = (MeleeWeaponGameObject*)m_penemy->GetWeapon();
 
 	float distanceSq = MathHelper::DistanceSquared(m_penemy->GetTransform()->GetWorldPosition(), m_pplayer->GetTransform()->GetWorldPosition());
 
 	float variance = MathHelper::RandomNumber(0.0f, m_attackRangeVariance) - (m_attackRangeVariance * 0.5f);
 
-	//if (distanceSq + variance <= pmeleeWeapon->GetRadius() * pmeleeWeapon->GetRadius())
-	if (distanceSq + variance <= 400.0f)
+	if (distanceSq + variance <= pmeleeWeapon->GetRadius() * pmeleeWeapon->GetRadius())
 	{
 		return 1.0f;
 	}
