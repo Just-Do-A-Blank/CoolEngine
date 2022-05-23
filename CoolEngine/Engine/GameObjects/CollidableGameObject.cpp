@@ -8,11 +8,13 @@
 CollidableGameObject::CollidableGameObject() : PrefabGameObject()
 {
 	m_gameObjectType |= GameObjectType::COLLIDABLE;
+	m_pcollider = new Box(this);
 }
 
 CollidableGameObject::CollidableGameObject(string identifier, CoolUUID uuid) : PrefabGameObject(identifier, uuid)
 {
 	m_gameObjectType |= GameObjectType::COLLIDABLE;
+	m_pcollider = new Box(this);
 }
 
 CollidableGameObject::CollidableGameObject(const nlohmann::json& data, CoolUUID uuid) : PrefabGameObject(data, uuid)

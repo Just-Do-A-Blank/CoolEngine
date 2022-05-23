@@ -7,6 +7,7 @@
 #include "Engine/GameObjects/InteractableGameObject.h"
 #include "Engine/GameObjects/WeaponGameObject.h"
 #include "Engine\GameObjects\EnemyGameObject.h"
+#include "Engine/GameObjects/LevelChangeGameObject.h"
 #include "Engine/Tools/ToolBase.h"
 #include "Engine/Tools/AnimationTool.h"
 #include "Engine//Tools/TileMapTool.h"
@@ -238,6 +239,12 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 
                     m_createObjectType = GameObjectType::CAMERA;
                 }
+                if (ImGui::MenuItem("Level Change"))
+                {
+                    m_createGameObjectClicked = true;
+
+                    m_createObjectType = GameObjectType::LEVEL_CHANGE;
+                }
 
                 ImGui::EndMenu();
             }
@@ -427,9 +434,13 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
                     pgameManager->CreateGameObject<CameraGameObject>(gameObjectName, m_selectedGameObjectNode);
                     break;
 
-				case GameObjectType::TILE_MAP:
-					pgameManager->CreateGameObject<TileMap>(gameObjectName, m_selectedGameObjectNode);
-					break;
+        				case GameObjectType::TILE_MAP:
+        					pgameManager->CreateGameObject<TileMap>(gameObjectName, m_selectedGameObjectNode);
+        					break;
+                  
+                case GameObjectType::LEVEL_CHANGE:
+                    pgameManager->CreateGameObject<LevelChangeGameObject>(gameObjectName, m_selectedGameObjectNode);
+                    break;
                 }
 
 
