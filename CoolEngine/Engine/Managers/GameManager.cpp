@@ -434,7 +434,7 @@ void GameManager::CopyScene()
 			}
 			break;
 
-		case AccumlateType::LEVEL_CHANGE:
+		case AccumlateType::TILE_MAP:
 			if (gameObjectNodeList[it]->PreviousParent)
 			{
 				TreeNode<GameObject>* parentNode = m_pcurrentGameScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
