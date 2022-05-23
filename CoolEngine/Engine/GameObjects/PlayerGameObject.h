@@ -3,6 +3,9 @@
 #include "Engine/Managers/Events/MouseEvents.h"
 #include "Engine/Managers/Events/KeyEvents.h"
 #include "Engine/GameObjects/Gameplay/Player/PlayerController.h"
+#include "Engine/GameObjects/Gameplay/Player/PlayerResource.h"
+#include "Engine/GameObjects/Gameplay/Player/PlayerResourceInterface.h"
+#include "Engine/GameObjects/Gameplay/Player/PlayerResourceManager.h"
 
 class PlayerGameObject : public CharacterGameObject
 {
@@ -21,6 +24,11 @@ public:
 	void Handle(Event* e) override;
 
     /// <summary>
+    /// Called after construction, before first Update.
+    /// </summary>
+    virtual void Start() override;
+
+    /// <summary>
     /// Update loop for the gameobject
     /// </summary>
     virtual void Update() override;
@@ -35,6 +43,13 @@ public:
 
 	void Start() override;
 
+    virtual void TakeDamage(float damage);
+
+    /// <summary>
+    /// Gets the player resource (such as health)
+    /// </summary>
+    /// <returns>The resource manager</returns>
+    PlayerResourceManager* GetPlayerResources();
 protected:
 
     virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
@@ -60,6 +75,11 @@ private:
     /// Handles movement around the scene for the player
     /// </summary>
     PlayerController* m_playerController;
+
+    /// <summary>
+    /// Manages the Player Resources (Health and Stamina for example)
+    /// </summary>
+    PlayerResourceManager* m_resourceManager;
 
     void LoadLocalData(const nlohmann::json& jsonData);
     void SaveLocalData(nlohmann::json& jsonData);
@@ -90,4 +110,9 @@ private:
 	//void MouseMoved(MouseMovedEvent* e);
 
 	void SetWeaponPosition();
+	
+    /// <summary>
+    /// Ends the session as the player is dead
+    /// </summary>
+    void RunPlayerDeadSequence();
 };

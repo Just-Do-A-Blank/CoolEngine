@@ -229,4 +229,16 @@ private:
     /// <param name="value">Value to adjust</param>
     /// <param name="intensity">Intensity to adjust the value by</param>
     void MoveFloatTowardZero(float* value, float intensity);
+
+    /// <summary>
+    /// Uses the dodge resource
+    /// </summary>
+    /// <returns>True means this was successful</returns>
+    bool UseDodgeResource();
+
+    /// <summary>
+    /// Uses the roll resource
+    /// </summary>
+    /// <returns>True means this was successful</returns>
+    bool UseRollResource();
 };

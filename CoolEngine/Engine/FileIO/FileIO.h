@@ -44,7 +44,6 @@ public:
 	/// <param name="location"></param>
 	static void SaveScene(std::string location);
 
-
 private:
 
 	/// <summary>

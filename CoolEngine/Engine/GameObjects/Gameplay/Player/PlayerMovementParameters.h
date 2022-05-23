@@ -45,6 +45,16 @@ struct PlayerMovementParameters
     float* m_dodgeSpeed;
 
     /// <summary>
+    /// The resource to use for dodging
+    /// </summary>
+    string* m_dodgeResource;
+
+    /// <summary>
+    /// How much the resource changes on use
+    /// </summary>
+    int* m_dodgeResourceChange;
+
+    /// <summary>
     /// How long to doge for in seconds
     /// </summary>
     float* m_timeInSecondsToDodgeFor;
@@ -53,6 +63,16 @@ struct PlayerMovementParameters
     /// How much to multiply the speed by when actually calulcating the speed when rolling
     /// </summary>
     float* m_rollingSpeed;
+
+    /// <summary>
+    /// The resource to use for rolling
+    /// </summary>
+    string* m_rollResource;
+
+    /// <summary>
+    /// How much the resource changes on use
+    /// </summary>
+    int* m_rollResourceChange;
 
     /// <summary>
     /// How long to roll for in seconds
