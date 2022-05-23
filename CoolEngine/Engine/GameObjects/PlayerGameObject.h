@@ -111,6 +111,4 @@ private:
     /// Ends the session as the player is dead
     /// </summary>
     void RunPlayerDeadSequence();
-
-    void GiveStam(Event* e);
 };

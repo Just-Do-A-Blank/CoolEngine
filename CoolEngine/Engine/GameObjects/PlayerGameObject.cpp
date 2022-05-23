@@ -1,8 +1,7 @@
 #include "PlayerGameObject.h"
 #include "Engine/Managers/GameManager.h"
-#include <Engine/Managers/Events/EventManager.h>
-#include <Engine/EditorUI/EditorUI.h>
-#include "Engine/Managers/Events/KeyEvents.h"
+#include "Engine/Managers/Events/EventManager.h"
+#include "Engine/EditorUI/EditorUI.h"
 
 PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : CharacterGameObject(identifier, uuid)
 {
@@ -116,7 +115,7 @@ PlayerGameObject::PlayerGameObject(const nlohmann::json& data, CoolUUID uuid) : 
 		list<EVIRTUALKEYCODE>(),
 		list<EVIRTUALKEYCODE>(),
 	};
-	dodge.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_SHIFT); //VK_LSHIFT
+	dodge.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_SHIFT);
 
 	GameplayButton roll =
 	{
@@ -124,7 +123,7 @@ PlayerGameObject::PlayerGameObject(const nlohmann::json& data, CoolUUID uuid) : 
 		list<EVIRTUALKEYCODE>(),
 		list<EVIRTUALKEYCODE>(),
 	};
-	roll.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_CTRL); //VK_LSHIFT
+	roll.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_CTRL);
 
 	list< GameplayButton> gameplayButtons;
 	gameplayButtons.push_back(up);
@@ -252,8 +251,6 @@ void PlayerGameObject::Handle(Event* e)
 		//KeyPressed((KeyPressedEvent*)e);
 		break;
 	case EventType::KeyReleased:
-		
-		GiveStam(e);
 		//KeyReleased((KeyReleasedEvent*)e);
 		break;
 	case EventType::MouseButtonPressed:
@@ -290,16 +287,6 @@ void PlayerGameObject::TakeDamage(float damage)
 void PlayerGameObject::RunPlayerDeadSequence()
 {
     LOG("PLAYER IS DEAD");
-}
-
-void PlayerGameObject::GiveStam(Event* e)
-{
-	KeyReleasedEvent* w = (KeyReleasedEvent*)e;
-	if (w->GetKeyCode() == 'Y')
-	{
-		m_resourceManager->GiveResource("stamina", 1);
-		LOG("Stamina " + to_string(m_resourceManager->GetResourceValue("stamina")));
-	}
 }
 
 void PlayerGameObject::EditorUpdate()
