@@ -1,5 +1,5 @@
 #include "TriggerableGameObject.h"
-#include <Engine\Managers\Events\EventManager.h>
+#include "Engine\Managers\Events\EventManager.h"
 
 TriggerableGameObject::TriggerableGameObject() : RenderableCollidableGameObject()
 {
@@ -39,6 +39,13 @@ TriggerableGameObject::TriggerableGameObject(const nlohmann::json& data, CoolUUI
 
 TriggerableGameObject::TriggerableGameObject(TriggerableGameObject const& other) : RenderableCollidableGameObject(other)
 {
+    EventManager::Instance()->AddClient(EventType::CollisionEnter, this);
+    EventManager::Instance()->AddClient(EventType::CollisionExit, this);
+    EventManager::Instance()->AddClient(EventType::CollisionHold, this);
+    EventManager::Instance()->AddClient(EventType::TriggerEnter, this);
+    EventManager::Instance()->AddClient(EventType::TriggerExit, this);
+    EventManager::Instance()->AddClient(EventType::TriggerHold, this);
+
 }
 
 TriggerableGameObject::~TriggerableGameObject()
