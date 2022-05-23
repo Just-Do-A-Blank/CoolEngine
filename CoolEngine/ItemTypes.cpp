@@ -8,6 +8,7 @@
 ItemTypes::ItemTypes() : Interactables(m_gameObjectType, GetType())
 {
 	m_gameObjectType |= GameObjectType::INTERACTABLE;
+
 }
 
 ItemTypes::~ItemTypes()

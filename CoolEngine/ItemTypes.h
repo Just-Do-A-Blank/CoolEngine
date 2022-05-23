@@ -8,7 +8,7 @@ enum class CONSUMABLES
 	STAMINA = 1,
 	SE_BOOSTER = 2,
 	KEY = 3,
-	POTION = 4
+	POTION = 4,
 
 };
 
