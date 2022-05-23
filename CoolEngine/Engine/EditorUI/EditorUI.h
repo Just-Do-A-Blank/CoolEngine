@@ -234,6 +234,15 @@ public:
     }
 
 private:
+    /// <summary>
+    /// When entering a name this is the error message box for this.
+    /// </summary>
+    bool m_blankErrorMessageBoxShown;
+
+    /// <summary>
+    /// When pressing play this is the error message for no camera in scene
+    /// </summary>
+    bool m_cameraErrorMessageOnPlay;
 
     /// <summary>
     /// Default width of a coloumn

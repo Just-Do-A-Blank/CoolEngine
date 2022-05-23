@@ -2,12 +2,14 @@
 
 RangedWeaponGameObject::RangedWeaponGameObject(string identifier, CoolUUID uuid) : WeaponGameObject(identifier, uuid)
 {
-	m_gameObjectType |= GameObjectType::RANGE_WEAPON;
+    m_gameObjectType |= GameObjectType::RANGE_WEAPON;
+    m_shotSpeed = 50.0f;
 }
 
 RangedWeaponGameObject::RangedWeaponGameObject(const nlohmann::json& data, CoolUUID uuid) : WeaponGameObject(data, uuid)
 {
 	m_gameObjectType |= GameObjectType::RANGE_WEAPON;
+    m_shotSpeed = 50.0f;
 
     if (PrefabGameObject::IsPrefab())
     {

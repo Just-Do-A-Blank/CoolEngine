@@ -273,6 +273,7 @@ void PlayerGameObject::Update()
 			m_transform->SetLocalScale(XMFLOAT3(10, 10, 10));
 		}
 	}
+	m_invincibilityTime -= GameManager::GetInstance()->GetTimer()->DeltaTime();
 }
 
 void PlayerGameObject::EditorUpdate()

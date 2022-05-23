@@ -20,6 +20,7 @@ class RenderStruct;
 class CameraGameObject;
 class ParticleSystem;
 class EnemyGameObject;
+class BulletCreator;
 
 enum class SceneDesc
 {
@@ -46,6 +47,9 @@ private:
 	wstring m_wideWorkingDirectory = L"";
 
 	CameraGameObject* m_peditorCamera = nullptr;
+
+	// Observer for making attacks
+	BulletCreator* m_pbulletCreator = nullptr;
 
 	ViewState m_viewState = ViewState::EDITOR_VIEW;
 
@@ -92,7 +96,17 @@ public:
 	template<typename T>
 	T* GetGameObjectUsingIdentifier(string& identifier)
 	{
-		return m_pcurrentEditorScene->GetGameObjectUsingIdentifier<T>(identifier);
+		switch (m_viewState)
+		{
+		case ViewState::EDITOR_VIEW:
+			return m_pcurrentEditorScene->GetGameObjectUsingIdentifier<T>(identifier);
+			break;
+
+		case ViewState::GAME_VIEW:
+			return m_pcurrentGameScene->GetGameObjectUsingIdentifier<T>(identifier);
+			break;
+		}
+		
 	}
 
 	template<typename T>

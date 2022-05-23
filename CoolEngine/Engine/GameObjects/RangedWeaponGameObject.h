@@ -46,7 +46,7 @@ protected:
 
 private:
 	float m_angleInterval = 0.0f;
-	float m_shotSpeed = 1.0f;
+	float m_shotSpeed = 50.0f;
 
 	bool m_isShot = false;
 
