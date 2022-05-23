@@ -1,7 +1,8 @@
 #include "PlayerGameObject.h"
 #include "Engine/Managers/GameManager.h"
-#include <Engine/Managers/Events/EventManager.h>
-#include <Engine/EditorUI/EditorUI.h>
+#include "Engine/Managers/Events/EventManager.h"
+#include "Engine/EditorUI/EditorUI.h"
+#include "Engine/GameObjects/MeleeWeaponGameObject.h"
 
 PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : CharacterGameObject(identifier, uuid)
 {
@@ -194,6 +195,33 @@ void PlayerGameObject::SaveLocalData(nlohmann::json& jsonData)
     m_playerController->SaveAllPrefabData(jsonData);
 }
 
+void PlayerGameObject::SetWeaponPosition()
+{
+	if (m_pweapon == nullptr)
+	{
+		return;
+	}
+
+	XMFLOAT2 playerPosWorld = XMFLOAT2(GetTransform()->GetWorldPosition().x, GetTransform()->GetWorldPosition().y);
+	XMFLOAT2 toWeapon = MathHelper::Minus(GameManager::GetInstance()->GetCamera()->GetMousePositionInWorldSpace(), playerPosWorld);
+	toWeapon = MathHelper::Normalize(toWeapon);
+	float weaponOffsetDistance = 50.0f;
+
+	XMFLOAT2 weaponPosition = MathHelper::Multiply(toWeapon, weaponOffsetDistance);
+	weaponPosition = MathHelper::Plus(playerPosWorld, weaponPosition);
+
+	float angle = MathHelper::DotProduct(toWeapon, XMFLOAT2(0, 1));
+	angle = (std::acosf(angle) * 180.0f) / XM_PI;
+
+	if (toWeapon.x > 0.0f)
+	{
+		angle *= -1.0f;
+	}
+
+	m_pweapon->GetTransform()->SetWorldPosition(XMFLOAT3(weaponPosition.x, weaponPosition.y, 0.0f));
+	m_pweapon->GetTransform()->SetWorldRotation(XMFLOAT3(0, 0, angle));
+}
+
 /// <summary>
 /// Handles events from the Observations
 /// </summary>
@@ -246,9 +274,13 @@ void PlayerGameObject::Handle(Event* e)
 /// </summary>
 void PlayerGameObject::Update()
 {
+	CharacterGameObject::Update();
+
     m_playerController->Update();
 
 	m_invincibilityTime -= GameManager::GetInstance()->GetTimer()->DeltaTime();
+
+	SetWeaponPosition();
 }
 
 void PlayerGameObject::EditorUpdate()
@@ -267,6 +299,16 @@ void PlayerGameObject::CreateEngineUI()
 	{
 		m_playerController->CreateEngineUI();
 	}
+}
+
+void PlayerGameObject::Start()
+{
+	PrefabGameObject::Start();
+
+	m_pweapon = GameManager::GetInstance()->CreateGameObject<MeleeWeaponGameObject>("TestWeapon");
+	m_pweapon->SetAlbedo(TEST2);
+	m_pweapon->GetTransform()->SetLocalScale(XMFLOAT3(20, 20, 20));
+	m_pweapon->SetLayer(3);
 }
 
 #endif

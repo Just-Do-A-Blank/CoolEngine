@@ -33,6 +33,8 @@ public:
     virtual void CreateEngineUI() override;
 #endif
 
+	void Start() override;
+
 protected:
 
     virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
@@ -86,4 +88,6 @@ private:
     /// Handles the mouse moving across the window
     /// </summary>
 	//void MouseMoved(MouseMovedEvent* e);
+
+	void SetWeaponPosition();
 };
