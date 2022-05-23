@@ -255,6 +255,12 @@
     <ClCompile Include="Engine\AI\States\MeleeMovementState.cpp">
       <Filter>Engine\AI\States</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\AI\States\MeleeAttackState.cpp">
+      <Filter>Engine\AI\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\States\RangeAttackState.cpp">
+      <Filter>Engine\AI\States</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -675,6 +681,12 @@
       <Filter>Engine\AI</Filter>
     </ClInclude>
     <ClInclude Include="Engine\AI\States\MeleeMovementState.h">
+      <Filter>Engine\AI\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\MeleeAttackState.h">
+      <Filter>Engine\AI\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\RangeAttackState.h">
       <Filter>Engine\AI\States</Filter>
     </ClInclude>
   </ItemGroup>

@@ -4,12 +4,10 @@
 class PlayerGameObject;
 class EnemyGameObject;
 
-struct node;
-
-class MeleeMovementState : public FuzzyState
+class MeleeAttackState : public FuzzyState
 {
 public:
-	MeleeMovementState(EnemyGameObject* penemy);
+	MeleeAttackState(EnemyGameObject* penemy);
 
 	void SetEnemy(EnemyGameObject* penemy);
 
@@ -29,11 +27,6 @@ private:
 	PlayerGameObject* m_pplayer = nullptr;
 	EnemyGameObject* m_penemy = nullptr;
 
-	std::vector<node*> m_path;
-
-	float m_activationDistanceSq = 100.0f;
-	float m_nodePopDistanceSq = 10.0f;
-	float m_replanPathTime = 1.0f;
-	float m_replanPathTimeStamp = 0;
+	float m_attackRangeVariance = 900.0f;
 };
 

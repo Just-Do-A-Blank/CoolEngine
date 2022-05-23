@@ -1,6 +1,7 @@
 #include "EnemyGameObject.h"
 #include "Engine/Managers/GameManager.h"
 #include "Engine/AI/States/MeleeMovementState.h"
+#include "Engine/AI/States/MeleeAttackState.h"
 
 EnemyGameObject::EnemyGameObject(string identifier, CoolUUID uuid) : CharacterGameObject(identifier, uuid)
 {
@@ -67,4 +68,8 @@ void EnemyGameObject::Start()
 	MeleeMovementState* pstate = new MeleeMovementState(this);
 
 	m_stateMachine.AddState(pstate);
+
+	MeleeAttackState* pattackState = new MeleeAttackState(this);
+
+	m_stateMachine.AddState(pattackState);
 }
