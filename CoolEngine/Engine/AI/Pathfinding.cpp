@@ -45,6 +45,11 @@ void Pathfinding::SetupPath(XMFLOAT3 curPos, XMFLOAT3 tarPos)
 /// <returns></returns>
 bool Pathfinding::FindPath(XMFLOAT3 curPos, XMFLOAT3 tarPos, vector<node*> &path)
 {
+	if (m_mapWidth == 0 || m_mapHeight == 0)
+	{
+		return false;
+	}
+
 	SetupPath(curPos, tarPos);
 
 	while (!m_nodesToTest.empty() && m_nodesToTest.top() != m_pNodeEnd)
