@@ -9,6 +9,8 @@ using namespace nlohmann;
 
 TileMap::TileMap() : RenderableGameObject()
 {
+	m_gameObjectType |= GameObjectType::TILE_MAP;
+
 #if EDITOR
 	Tile::s_ptileMap = this;
 #endif
@@ -16,13 +18,32 @@ TileMap::TileMap() : RenderableGameObject()
 
 TileMap::TileMap(string identifier, CoolUUID uuid) : RenderableGameObject(identifier, uuid)
 {
+	m_gameObjectType |= GameObjectType::TILE_MAP;
+
 #if EDITOR
 	Tile::s_ptileMap = this;
 #endif
 }
 
+TileMap::TileMap(const nlohmann::json& data, CoolUUID uuid)
+{
+	m_gameObjectType |= GameObjectType::TILE_MAP;
+
+#if EDITOR
+	Tile::s_ptileMap = this;
+#endif
+
+	//WHERE I WAS
+	std::string mapPath = data["MapPath"];
+	XMFLOAT3 position = XMFLOAT3();
+
+	Init(std::wstring(mapPath.begin(), mapPath.end()), position);
+}
+
 TileMap::TileMap(wstring mapPath, XMFLOAT3 position, string identifier, CoolUUID uuid) : RenderableGameObject(identifier, uuid)
 {
+	m_gameObjectType |= GameObjectType::TILE_MAP;
+
 #if EDITOR
 	Tile::s_ptileMap = this;
 #endif
@@ -32,6 +53,8 @@ TileMap::TileMap(wstring mapPath, XMFLOAT3 position, string identifier, CoolUUID
 
 TileMap::TileMap(int width, int height, string identifier, CoolUUID uuid, XMFLOAT3 position, float tileDimensions) : RenderableGameObject(identifier, uuid)
 {
+	m_gameObjectType |= GameObjectType::TILE_MAP;
+
 #if EDITOR
 	Tile::s_ptileMap = this;
 #endif
@@ -41,6 +64,18 @@ TileMap::TileMap(int width, int height, string identifier, CoolUUID uuid, XMFLOA
 
 TileMap::~TileMap()
 {
+	for (int i = 0; i < m_height; i++)
+	{
+		for (int j = 0; j < m_width; j++)
+		{
+			if (m_tiles[i][j] != nullptr)
+			{
+				delete m_tiles[i][j];
+				m_tiles[i][j] = nullptr;
+			}
+		}
+	}
+
 	m_tiles.clear(); // Run first to allow each tile to release its memory, but this does not release the memory for the vector
 	m_tiles.resize(0);
 
@@ -366,7 +401,7 @@ void TileMap::CreateEngineUI()
 
 	if (ImGui::Button("Save") == true)
 	{
-		if (m_tileMapName == "") 
+		if (m_tileMapName == "")
 		{
 			LOG("Tried to save the tile map but didn't enter a name!");
 		}
@@ -399,6 +434,15 @@ void TileMap::CreateEngineUI()
 
 			for (int i = 0; i < m_width; ++i)
 			{
+				for (int j = 0; j < m_height; ++j)
+				{
+					if (m_tiles[i][j] != nullptr)
+					{
+						delete m_tiles[i][j];
+						m_tiles[i][j] = nullptr;
+					}
+				}
+
 				m_tiles[i].clear();
 			}
 
