@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/GameObjects/TriggerableGameObject.h"
 #include "Engine/Managers/Events/DamageCalculation.h"
+#include "Engine/ResourceDefines.h"
 
 class WeaponGameObject : public TriggerableGameObject
 {
@@ -25,6 +26,9 @@ public:
 	void SetTimeLethal(float time);
 	void SetDistanceTravelled(float dist);
 	void SetIsPlayerWeapon(bool player);
+	void SetWeaponTexturePath(wstring path);
+	void SetWeaponScale(XMFLOAT3 scale);
+	void SetCollisionScale(XMFLOAT2 scale);
 
 	int GetLevel();
 	int GetStrength();
@@ -35,6 +39,9 @@ public:
 	float GetTimeLethal();
 	float GetDistanceTravelled();
 	bool GetIsPlayerWeapon();
+	wstring GetWeaponTexturePath();
+	XMFLOAT3 GetWeaponScale();
+	XMFLOAT2 GetCollisionScale();
 
 	bool GetIsDualType();
 	int RoundUp(float value);
@@ -51,6 +58,10 @@ private:
 	int m_shotCount = 1;
 	float m_timeLethal = 1;
 	float m_distanceTravelled = 100.0f;
+
+	wstring m_weaponTexturePath = DEFAULT_IMGUI_IMAGE;
+	XMFLOAT3 m_weaponScale = XMFLOAT3(25, 25, 25);
+	XMFLOAT2 m_collisionScale = XMFLOAT2(1, 1);
 
 	ELEMENTS m_element = ELEMENTS::NONE;
 	STATUSES m_statusEffect = STATUSES::NONE;
