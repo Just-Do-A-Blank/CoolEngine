@@ -24,6 +24,11 @@ public:
 	void Handle(Event* e) override;
 
     /// <summary>
+    /// Called after construction, before first Update.
+    /// </summary>
+    virtual void Start() override;
+
+    /// <summary>
     /// Update loop for the gameobject
     /// </summary>
     virtual void Update() override;
@@ -106,4 +111,6 @@ private:
     /// Ends the session as the player is dead
     /// </summary>
     void RunPlayerDeadSequence();
+
+    void GiveStam(Event* e);
 };

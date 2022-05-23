@@ -2,6 +2,7 @@
 #include "Engine/Managers/GameManager.h"
 #include <Engine/Managers/Events/EventManager.h>
 #include <Engine/EditorUI/EditorUI.h>
+#include "Engine/Managers/Events/KeyEvents.h"
 
 PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : CharacterGameObject(identifier, uuid)
 {
@@ -117,12 +118,21 @@ PlayerGameObject::PlayerGameObject(const nlohmann::json& data, CoolUUID uuid) : 
 	};
 	dodge.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_SHIFT); //VK_LSHIFT
 
+	GameplayButton roll =
+	{
+		EGAMEPLAYBUTTONCLASS::Roll,
+		list<EVIRTUALKEYCODE>(),
+		list<EVIRTUALKEYCODE>(),
+	};
+	roll.m_keyCodes.push_back(EVIRTUALKEYCODE::KC_CTRL); //VK_LSHIFT
+
 	list< GameplayButton> gameplayButtons;
 	gameplayButtons.push_back(up);
 	gameplayButtons.push_back(down);
 	gameplayButtons.push_back(left);
 	gameplayButtons.push_back(right);
 	gameplayButtons.push_back(dodge);
+	gameplayButtons.push_back(roll);
 
 	InputsAsGameplayButtons* buttons = new InputsAsGameplayButtons(gameplayButtons);
 	m_playerController = new PlayerController(buttons, this);
@@ -171,6 +181,13 @@ PlayerGameObject::~PlayerGameObject()
 	delete m_resourceManager;
 }
 
+
+void PlayerGameObject::Start()
+{
+	PrefabGameObject::Start();
+
+	m_resourceManager->Start();
+}
 
 
 void PlayerGameObject::Serialize(nlohmann::json& jsonData)
@@ -231,10 +248,12 @@ void PlayerGameObject::Handle(Event* e)
         m_playerController->Handle(e);
         break;
 	case EventType::KeyPressed:
-
+		
 		//KeyPressed((KeyPressedEvent*)e);
 		break;
 	case EventType::KeyReleased:
+		
+		GiveStam(e);
 		//KeyReleased((KeyReleasedEvent*)e);
 		break;
 	case EventType::MouseButtonPressed:
@@ -271,6 +290,16 @@ void PlayerGameObject::TakeDamage(float damage)
 void PlayerGameObject::RunPlayerDeadSequence()
 {
     LOG("PLAYER IS DEAD");
+}
+
+void PlayerGameObject::GiveStam(Event* e)
+{
+	KeyReleasedEvent* w = (KeyReleasedEvent*)e;
+	if (w->GetKeyCode() == 'Y')
+	{
+		m_resourceManager->GiveResource("stamina", 1);
+		LOG("Stamina " + to_string(m_resourceManager->GetResourceValue("stamina")));
+	}
 }
 
 void PlayerGameObject::EditorUpdate()

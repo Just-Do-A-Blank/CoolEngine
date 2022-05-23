@@ -15,6 +15,11 @@ public:
 	virtual ~PlayerResourceManager();
 
     /// <summary>
+    /// Run at the start of the game to set default values
+    /// </summary>
+    virtual void Start();
+
+    /// <summary>
     /// Saves the player resources
     /// </summary>
     /// <param name="name">Data to add to</param>
@@ -50,6 +55,29 @@ public:
     /// </summary>
     /// <param name="damage">Damage amount</param>
     void TakeWeaponDamage(float damage);
+
+    /// <summary>
+    /// Uses a resource
+    /// </summary>
+    /// <param name="key">Resource to use</param>
+    /// <param name="value">Amount to use</param>
+    /// <returns>True means it was used, False means it could not be used</returns>
+    bool UseResource(string key, int value);
+
+    /// <summary>
+    /// Gives a resource
+    /// </summary>
+    /// <param name="key">Resource to give</param>
+    /// <param name="value">Amount to give</param>
+    /// <returns>True means it was given, False means it could not be given</returns>
+    bool GiveResource(string key, int value);
+
+    /// <summary>
+    /// Gets the value of a resource
+    /// </summary>
+    /// <param name="key">Keyt of the resource</param>
+    /// <returns>The value or -1 if not found</returns>
+    int GetResourceValue(string key);
 
 private:
     map<string, PlayerResource*> m_resources;

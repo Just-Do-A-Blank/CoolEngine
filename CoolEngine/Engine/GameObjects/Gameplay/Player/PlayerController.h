@@ -109,7 +109,15 @@ private:
     /// </summary>
     float m_dodgeSpeed;
 
+    /// <summary>
+    /// The resource to use for dodging
+    /// </summary>
     string m_dodgeResource;
+
+    /// <summary>
+    /// How much the resource changes on use
+    /// </summary>
+    int m_dodgeResourceChange;
 
     /// <summary>
     /// How long to doge for in seconds
@@ -125,6 +133,16 @@ private:
     /// How long to roll for in seconds
     /// </summary>
     float m_timeInSecondsToRollFor;
+
+    /// <summary>
+    /// The resource to use for rolling
+    /// </summary>
+    string m_rollResource;
+
+    /// <summary>
+    /// How much the resource changes on use
+    /// </summary>
+    int m_rollResourceChange;
 
     /// <summary>
     /// The force currently applied to the player. Shared among states as this is the force on the player as a whole
@@ -145,5 +163,11 @@ private:
     /// The player we are on
     /// </summary>
     PlayerGameObject* m_playerGameObject;
+
+    /// <summary>
+    /// Gets a list of player resources
+    /// </summary>
+    /// <returns>All the player resources for the drop down</returns>
+    list<string> GetListOfPlayerResourcesForDropDown();
 };
 

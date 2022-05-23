@@ -68,6 +68,12 @@ void PlayerResourceInterface::RemoveResourceFromList(string key)
                 m_errorMessage = "Please enter a key!";
                 EditorUI::ShowError(m_popupKeyResourceKeyFound);
             }
+            else if (m_entryKey == "none")
+            {
+                m_lastEntryIsError = true;
+                m_errorMessage = "Resources cannot be called none... sorry about that.";
+                EditorUI::ShowError(m_popupKeyResourceKeyFound);
+            }
             else if (AddResourceToList(m_entryKey))
             {
                 m_modificationResult = ERESOURCEMODIFICATIONRESULT::Added;

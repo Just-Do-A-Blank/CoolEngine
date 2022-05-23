@@ -36,6 +36,19 @@ PlayerResourceManager::~PlayerResourceManager()
 
 }
 
+/// <summary>
+/// Run at the start of the game to set default values
+/// </summary>
+void PlayerResourceManager::Start()
+{
+    for (
+        std::map<string, PlayerResource*>::iterator itt = m_resources.begin();
+        itt != m_resources.end(); itt++)
+    {
+        itt->second->SetValue(itt->second->GetDefaultValue());
+    }
+}
+
 #if EDITOR
 /// <summary>
 /// Shows engine UI
@@ -174,4 +187,84 @@ void PlayerResourceManager::UpdateAllKeys()
 list<string> PlayerResourceManager::GetResourceKeys()
 {
     return m_resourceKeys;
+}
+
+/// <summary>
+/// Uses a resource
+/// </summary>
+/// <param name="key">Resource to use</param>
+/// <param name="value">Amount to use</param>
+/// <returns>True means it was used, False means it could not be used</returns>
+bool PlayerResourceManager::UseResource(string key, int value)
+{
+    bool found = std::any_of(m_resources.begin(), m_resources.end(),
+        [&key](std::pair<const string, PlayerResource*>& entry)
+        {
+            return (entry.first == key);
+        });
+
+    bool didUseResource = false;
+    if (found)
+    {
+        int min = m_resources[key]->GetMinValue();
+        int newValue = m_resources[key]->GetValue() - value;
+        if (newValue >= min)
+        {
+            m_resources[key]->SetValue(newValue);
+            didUseResource = true;
+        }
+    }
+
+    return didUseResource;
+}
+
+/// <summary>
+/// Gives a resource
+/// </summary>
+/// <param name="key">Resource to give</param>
+/// <param name="value">Amount to give</param>
+/// <returns>True means it was given, False means it could not be given</returns>
+bool PlayerResourceManager::GiveResource(string key, int value)
+{
+    bool found = std::any_of(m_resources.begin(), m_resources.end(),
+        [&key](std::pair<const string, PlayerResource*>& entry)
+        {
+            return (entry.first == key);
+        });
+
+    bool didUseResource = false;
+    if (found)
+    {
+        int max = m_resources[key]->GetMaxValue();
+        int newValue = m_resources[key]->GetValue() + value;
+        if (newValue <= max)
+        {
+            m_resources[key]->SetValue(newValue);
+            didUseResource = true;
+        }
+    }
+
+    return didUseResource;
+}
+
+/// <summary>
+/// Gets the value of a resource
+/// </summary>
+/// <param name="key">Keyt of the resource</param>
+/// <returns>The value or -1 if not found</returns>
+int PlayerResourceManager::GetResourceValue(string key)
+{
+    bool found = std::any_of(m_resources.begin(), m_resources.end(),
+        [&key](std::pair<const string, PlayerResource*>& entry)
+        {
+            return (entry.first == key);
+        });
+
+    int resourceValue = -1;
+    if (found)
+    {
+        resourceValue = m_resources[key]->GetValue();
+    }
+
+    return resourceValue;
 }
