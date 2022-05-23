@@ -41,8 +41,6 @@ public:
     virtual void CreateEngineUI() override;
 #endif
 
-	void Start() override;
-
     virtual void TakeDamage(float damage);
 
     /// <summary>

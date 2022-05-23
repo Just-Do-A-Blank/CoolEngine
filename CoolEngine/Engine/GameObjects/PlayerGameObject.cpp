@@ -187,6 +187,11 @@ void PlayerGameObject::Start()
 	PrefabGameObject::Start();
 
 	m_resourceManager->Start();
+
+	m_pweapon = GameManager::GetInstance()->CreateGameObject<MeleeWeaponGameObject>("TestWeapon");
+	m_pweapon->SetAlbedo(TEST2);
+	m_pweapon->GetTransform()->SetLocalScale(XMFLOAT3(20, 20, 20));
+	m_pweapon->SetLayer(3);
 }
 
 
@@ -342,16 +347,6 @@ void PlayerGameObject::CreateEngineUI()
 }
 
 #endif
-
-void PlayerGameObject::Start()
-{
-	PrefabGameObject::Start();
-
-	m_pweapon = GameManager::GetInstance()->CreateGameObject<MeleeWeaponGameObject>("TestWeapon");
-	m_pweapon->SetAlbedo(TEST2);
-	m_pweapon->GetTransform()->SetLocalScale(XMFLOAT3(20, 20, 20));
-	m_pweapon->SetLayer(3);
-}
 
 /// <summary>
 /// Gets the player resource (such as health)

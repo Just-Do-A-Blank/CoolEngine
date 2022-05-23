@@ -112,7 +112,7 @@ public:
 	template<typename T>
 	T* CreateGameObject(string identifier, TreeNode<GameObject>* nodeParent = nullptr)
 	{
-		return GetCurrentViewStateScene()->CreateGameObject<T>(identifier, nodeParent)
+		return GetCurrentViewStateScene()->CreateGameObject<T>(identifier, nodeParent);
 	}
 
 	void DeleteGameObjectUsingNode(TreeNode<GameObject>* currentNode);
