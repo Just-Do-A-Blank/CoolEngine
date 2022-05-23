@@ -18,6 +18,14 @@ RenderableCollidableGameObject::RenderableCollidableGameObject(string identifier
 
 RenderableCollidableGameObject::RenderableCollidableGameObject(const nlohmann::json& data, CoolUUID uuid) : CollidableGameObject(data, uuid), RenderableGameObject(data, uuid)
 {
+    if (PrefabGameObject::IsPrefab())
+    {
+        CollidableGameObject::LoadLocalData(PrefabGameObject::GetPrefabDataLoadedAtCreation());
+    }
+    else
+    {
+        CollidableGameObject::LoadLocalData(data);
+    }
 }
 
 RenderableCollidableGameObject::RenderableCollidableGameObject(RenderableCollidableGameObject const& other) : RenderableGameObject(other), CollidableGameObject(other)
@@ -67,12 +75,12 @@ void RenderableCollidableGameObject::CreateEngineUI()
 			else if (ImGui::Selectable(Shape::ShapeTypeToString(ShapeType::BOX).c_str(), shapeType == ShapeType::BOX))
 			{
 				delete m_pcollider;
-				m_pcollider = new Box(m_transform);
+				m_pcollider = new Box(this);
 			}
 			else if (ImGui::Selectable(Shape::ShapeTypeToString(ShapeType::CIRCLE).c_str(), shapeType == ShapeType::CIRCLE))
 			{
 				delete m_pcollider;
-				m_pcollider = new Circle(m_transform, 1.0f);
+				m_pcollider = new Circle(this, 1.0f);
 			}
 
 			ImGui::EndCombo();
@@ -89,14 +97,31 @@ void RenderableCollidableGameObject::Serialize(nlohmann::json& jsonData)
 {
 	RenderableGameObject::Serialize(jsonData);
 	
-	if (m_pcollider == nullptr)
-	{
-		jsonData["ShapeType"] = -1;
-	}
-	else
-	{
-		m_pcollider->Serialize(jsonData);
-	}
+    SaveLocalData(jsonData);
 }
 
 #endif
+
+void RenderableCollidableGameObject::LoadAllPrefabData(const nlohmann::json& jsonData)
+{
+    RenderableGameObject::LoadAllPrefabData(jsonData);
+    CollidableGameObject::LoadLocalData(jsonData);
+}
+
+void RenderableCollidableGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
+{
+    SaveLocalData(jsonData);
+    RenderableGameObject::SaveAllPrefabData(jsonData);
+}
+
+void RenderableCollidableGameObject::SaveLocalData(nlohmann::json& jsonData)
+{
+    if (m_pcollider == nullptr)
+    {
+        jsonData["ShapeType"] = -1;
+    }
+    else
+    {
+        m_pcollider->Serialize(jsonData);
+    }
+}

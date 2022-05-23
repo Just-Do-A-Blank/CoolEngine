@@ -36,6 +36,7 @@ public:
 
 	void DeleteNodeObjectUsingIdentifier(string identifier);
 	void DeleteNodeObjectUsingNode(TreeNode<T>* currenNode);
+	void DeleteAllGameObjects();
 
 	template <typename K>
 	void DeleteNodeObjectUsingNode(TreeNode<T>* currentNode, K* pgameObject)

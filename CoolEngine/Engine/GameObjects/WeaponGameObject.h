@@ -5,6 +5,7 @@
 class WeaponGameObject : public TriggerableGameObject
 {
 public:
+	WeaponGameObject();
 	WeaponGameObject(string identifier, CoolUUID uuid);
 	WeaponGameObject(const nlohmann::json& data, CoolUUID uuid);
 	WeaponGameObject(WeaponGameObject const& other);
@@ -38,6 +39,10 @@ public:
 	bool GetIsDualType();
 	int RoundUp(float value);
 
+protected:
+    virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
+    virtual void SaveAllPrefabData(nlohmann::json& jsonData) override;
+
 private:
 	int m_level = 0;
 	int m_strength = 0;
@@ -45,10 +50,13 @@ private:
 
 	int m_shotCount = 1;
 	float m_timeLethal = 1;
-	float m_distanceTravelled = 1;
+	float m_distanceTravelled = 100.0f;
 
 	ELEMENTS m_element = ELEMENTS::NONE;
 	STATUSES m_statusEffect = STATUSES::NONE;
 
 	bool m_isPlayerWeapon = true;
+
+    void LoadLocalData(const nlohmann::json& jsonData);
+    void SaveLocalData(nlohmann::json& jsonData);
 };

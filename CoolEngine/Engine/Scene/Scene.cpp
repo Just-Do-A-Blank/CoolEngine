@@ -3,6 +3,7 @@
 #include "Engine/Managers/SceneGraph.h"
 #include "Engine/Physics/Collision.h"
 #include "Engine/GameUI/GameUIComponent.h"
+#include "Engine/GameObjects/CameraGameObject.h"
 
 Scene::Scene(string identifier)
 {
@@ -21,6 +22,18 @@ Scene::Scene(string identifier)
 Scene::~Scene()
 {
 
+}
+
+void Scene::Start()
+{
+    vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
+    for (int it = 0; it < gameObjectList.size(); ++it)
+    {
+        if (!gameObjectList[it]->m_bHaveUpdated)
+        {
+            gameObjectList[it]->Start();
+        }
+    }
 }
 
 void Scene::Update()
@@ -101,9 +114,43 @@ vector<GameObject*>& Scene::GetAllGameObjects()
 	return m_psceneGraph->GetAllNodeObjects();
 }
 
+CameraGameObject* Scene::GetActiveCamera()
+{
+	return m_pactiveCamera;
+}
+
+unordered_map<string, CameraGameObject*> Scene::GetCameraGameObjectMap()
+{
+	return m_cameraGameObjectMap;
+}
+
+bool Scene::SetActiveCameraUsingIdentifier(string identifier)
+{
+	if (m_cameraGameObjectMap.count(identifier) == 0)
+	{
+		return false;
+	}
+	m_pactiveCamera = m_cameraGameObjectMap[identifier];
+}
+
 void Scene::DeleteGameObjectUsingNode(TreeNode<GameObject>* currentNode)
 {
+	if (currentNode->NodeObject->ContainsType(GameObjectType::CAMERA))
+	{
+		m_cameraGameObjectMap.erase(currentNode->NodeObject->m_identifier);
+		if (m_pactiveCamera == dynamic_cast<CameraGameObject*>(currentNode->NodeObject))
+		{
+			for (unordered_map<string, CameraGameObject*>::iterator it = m_cameraGameObjectMap.begin(); it != m_cameraGameObjectMap.end(); ++it)
+			{
+				m_pactiveCamera = it->second;
+				return;
+			}
+			m_pactiveCamera = nullptr;
+		}
+	}
+
 	m_psceneGraph->DeleteNodeObjectUsingNode(currentNode);
+	
 }
 
 void Scene::DeleteGameObjectUsingIdentifier(string identifier)

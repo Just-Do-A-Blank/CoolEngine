@@ -21,23 +21,6 @@ void TileMapTool::Init(ID3D11Device* pdevice)
 
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
-
-	//Create camera
-	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, -5);
-	XMFLOAT3 cameraForward = XMFLOAT3(0, 0, 1);
-	XMFLOAT3 cameraUp = XMFLOAT3(0, 1, 0);
-
-	float windowWidth = GraphicsManager::GetInstance()->GetWindowDimensions().x;
-	float windowHeight = GraphicsManager::GetInstance()->GetWindowDimensions().y;
-
-	float nearDepth = 0.01f;
-	float farDepth = 1000.0f;
-
-	CoolUUID uuid;
-	m_pcamera = new EditorCameraGameObject(std::string("Camera"), uuid);
-	m_pcamera->Initialize(cameraPos, cameraForward, cameraUp, windowWidth, windowHeight, nearDepth, farDepth);
-
-	GameManager::GetInstance()->SetCamera(m_pcamera);
 }
 
 void TileMapTool::Render()
@@ -137,8 +120,6 @@ void TileMapTool::Update()
 	{
 		return;
 	}
-
-	m_pcamera->Update();
 
 	if (Inputs::GetInstance()->IsKeyPressed(VK_CONTROL) && Inputs::GetInstance()->IsKeyPressed('C'))
 	{

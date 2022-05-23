@@ -138,6 +138,7 @@ void SceneGraph<T>::MoveNode(TreeNode<T>* currentNode, TreeNode<T>* parentNode)
 	}
 	else
 	{
+		currentNode->PreviousParent = nullptr;
 
 		TreeNode<T>* siblingNode = m_rootNode->Sibling;
 		if (siblingNode == nullptr)
@@ -268,6 +269,8 @@ void SceneGraph<T>::DeleteNodeObjectUsingNode(TreeNode<T>* currentNode)
 		{
 			currentNode->PreviousParent->Child = nullptr;
 		}
+
+		currentNode->PreviousParent->NodeObject->GetTransform()->RemoveChildTransform(currentNode->NodeObject->GetTransform());
 	}
 	else if (currentNode->PreviousSibling)
 	{
@@ -305,6 +308,36 @@ void SceneGraph<T>::DeleteNodeObjectUsingNode(TreeNode<T>* currentNode)
 }
 
 template<class T>
+void SceneGraph<T>::DeleteAllGameObjects()
+{
+	while (m_rootNode)
+	{
+		if (m_rootNode->Child)
+		{
+			DeleteNode(m_rootNode->Child);
+		}
+
+		TreeNode<T>* siblingNode = m_rootNode->Sibling;
+
+		string gameObjectName = m_rootNode->NodeObject->GetIdentifier();
+		m_sceneTreeNodeMap.erase(gameObjectName);
+		m_sceneNodeObjectsMap.erase(gameObjectName);
+		m_sceneNodeObjectList.erase(remove(m_sceneNodeObjectList.begin(), m_sceneNodeObjectList.end(), m_rootNode->NodeObject));
+		m_sceneNodeList.erase(remove(m_sceneNodeList.begin(), m_sceneNodeList.end(), m_rootNode));
+
+		delete m_rootNode->NodeObject;
+		m_rootNode->NodeObject = nullptr;
+		m_rootNode->Sibling = nullptr;
+		m_rootNode->PreviousParent = nullptr;
+		m_rootNode->Child = nullptr;
+		m_rootNode->PreviousSibling = nullptr;
+		delete m_rootNode;
+
+		m_rootNode = siblingNode;
+	}
+}
+
+template<class T>
 TreeNode<T>* SceneGraph<T>::GetRootNode()
 {
 	return m_rootNode;
@@ -316,7 +349,7 @@ TreeNode<T>* SceneGraph<T>::GetNodeUsingIdentifier(string identifier)
 	unordered_map<string, TreeNode<T>*>::iterator it;
 	it = m_sceneTreeNodeMap.find(identifier);
 
-	if (!it->second)
+	if (it == m_sceneTreeNodeMap.end() || !it->second)
 	{
 		return nullptr;
 	}
@@ -338,10 +371,10 @@ vector<TreeNode<T>*>& SceneGraph<T>::GetAllNodes()
 template<class T>
 T* SceneGraph<T>::GetNodeObjectUsingIdentifier(string& identifier)
 {
-	unordered_map<string, T*>::iterator it = m_sceneNodeObjectsMap.find(identifier);
-	if (!it->second)
+	if (m_sceneNodeObjectsMap.count(identifier) == 0)
 	{
 		return nullptr;
 	}
-	return it->second;
+	
+	return m_sceneNodeObjectsMap[identifier];
 }

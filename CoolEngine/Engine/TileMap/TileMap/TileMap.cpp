@@ -1,7 +1,9 @@
 #include "TileMap.h"
 
 #include "Engine/EditorUI/EditorUI.h"
-#include  "Engine/Includes/json.hpp"
+#include "Engine/Includes/json.hpp"
+#include "Engine/Graphics/AnimationStateMachine.h"
+#include "Engine/Graphics/AnimationState.h"
 
 using namespace nlohmann;
 
@@ -48,9 +50,9 @@ TileMap::~TileMap()
 
 void TileMap::Update()
 {
-	for (int i = 0; i < m_height; i++)
+	for (int i = 0; i < m_width; i++)
 	{
-		for (int j = 0; j < m_width; j++)
+		for (int j = 0; j < m_height; j++)
 		{
 			if (m_tiles[i][j] != nullptr)
 			{
@@ -62,9 +64,9 @@ void TileMap::Update()
 
 void TileMap::Render(RenderStruct& renderStruct)
 {
-	for (int i = 0; i < m_height; i++)
+	for (int i = 0; i < m_width; i++)
 	{
-		for (int j = 0; j < m_width; j++)
+		for (int j = 0; j < m_height; j++)
 		{
 			if (m_tiles[i][j] != nullptr)
 			{
@@ -80,16 +82,16 @@ void TileMap::InitMap() // Create and store tiles in m_Tiles
 
 	XMFLOAT3 scale = GetTransform()->GetWorldScale();
 
-	m_tiles.resize(m_height);
+	m_tiles.resize(m_width);
 
 	int ID = 0;
-	for (int i = 0; i < m_height; ++i)
+	for (int i = 0; i < m_width; ++i)
 	{
-		for (int j = 0; j < m_width; ++j)
+		for (int j = 0; j < m_height; ++j)
 		{
 			if (j == 0)
 			{
-				m_tiles[i].resize(m_width);
+				m_tiles[i].resize(m_height);
 			}
 
 			m_tiles[i][j] = nullptr;
@@ -154,7 +156,7 @@ bool TileMap::Load(wstring path) // Load data for the map from a given path
 
 	for (int i = 0; i < m_width; ++i)
 	{
-		m_tiles[i].resize(m_width);
+		m_tiles[i].resize(m_height);
 
 		for (int j = 0; j < m_height; ++j)
 		{
@@ -184,8 +186,11 @@ bool TileMap::Load(wstring path) // Load data for the map from a given path
 
 				if (animIndex != -1)
 				{
-					m_tiles[i][j]->AddAnimation("default", m_animPaths[animIndex]);
-					m_tiles[i][j]->PlayAnimation("default");
+					AnimationState* pstate = new AnimationState();
+					pstate->SetName("default");
+					pstate->SetAnimation(m_animPaths[animIndex]);
+
+					m_tiles[i][j]->AddAnimationState("default", pstate, true);
 				}
 			}
 		}
@@ -259,19 +264,24 @@ bool TileMap::GetCoordsFromWorldPos(int* prow, int* pcolumn, const XMFLOAT2& pos
 
 	relativePos = MathHelper::Plus(relativePos, XMFLOAT2(m_width * tileScale.x * 0.5f, m_height * tileScale.y * 0.5f));
 
+	float row;
+	float column;
+
 	if (relativePos.x < 0 || relativePos.y < 0)
 	{
-		*prow = -1;
-		*pcolumn = -1;
+		row = -1;
+		column = -1;
 	}
 	else
 	{
-		*prow = (relativePos.x / (int)tileScale.x);
-		*pcolumn = ((int)relativePos.y / (int)tileScale.y);
+		row = (relativePos.x / tileScale.x);
+		column = (relativePos.y / tileScale.y);
 	}
 
+	*prow = row;
+	*pcolumn = column;
 
-	if (*prow >= m_width || *pcolumn >= m_height || *prow < 0 || *pcolumn < 0)
+	if (row >= (float)m_width || column >= (float)m_height || row < 0 || column < 0)
 	{
 		LOG("Tried to create tile but the indexes passed in are out of range!");
 
@@ -394,14 +404,6 @@ void TileMap::CreateEngineUI()
 
 			for (int i = 0; i < m_width; ++i)
 			{
-				for (int j = 0; j < m_height; ++j)
-				{
-					if (m_tiles[i][j] != nullptr)
-					{
-						GameManager::GetInstance()->DeleteGameObjectUsingNode(m_tiles[i][j], m_tiles[i][j]->GetIdentifier());
-					}
-				}
-
 				m_tiles[i].clear();
 			}
 

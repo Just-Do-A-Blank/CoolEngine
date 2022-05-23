@@ -1,5 +1,10 @@
 #include "WeaponGameObject.h"
 
+WeaponGameObject::WeaponGameObject() : TriggerableGameObject()
+{
+    m_gameObjectType |= GameObjectType::WEAPON;
+}
+
 WeaponGameObject::WeaponGameObject(string identifier, CoolUUID uuid) : TriggerableGameObject(identifier, uuid)
 {
     m_gameObjectType |= GameObjectType::WEAPON;
@@ -9,14 +14,14 @@ WeaponGameObject::WeaponGameObject(const nlohmann::json& data, CoolUUID uuid) : 
 {
     m_gameObjectType |= GameObjectType::WEAPON;
 
-	m_level = data["WeaponLevel"];
-	m_strength = data["WeaponStrength"];
-	m_damage = data["WeaponDamage"];
-	m_shotCount = data["WeaponShotCount"];
-	m_timeLethal = data["WeaponTimeLethal"];
-	m_distanceTravelled = data["WeaponDistanceTravelled"];
-	m_element = (ELEMENTS)data["WeaponElement"];
-	m_statusEffect = (STATUSES)data["WeaponStatus"];
+    if (PrefabGameObject::IsPrefab())
+    {
+        LoadLocalData(PrefabGameObject::GetPrefabDataLoadedAtCreation());
+    }
+    else
+    {
+        LoadLocalData(data);
+    }
 }
 
 WeaponGameObject::WeaponGameObject(WeaponGameObject const& other) : TriggerableGameObject(other)
@@ -41,14 +46,46 @@ void WeaponGameObject::Serialize(nlohmann::json& data)
 {
 	TriggerableGameObject::Serialize(data);
 
-	data["WeaponLevel"] = m_level;
-	data["WeaponStrength"] = m_strength;
-	data["WeaponDamage"] = m_damage;
-	data["WeaponShotCount"] = m_shotCount;
-	data["WeaponTimeLethal"] = m_timeLethal;
-	data["WeaponDistanceTravelled"] = m_distanceTravelled;
-	data["WeaponElement"] = (int)m_element;
-	data["WeaponStatus"] = (int)m_statusEffect;
+    SaveLocalData(data);
+}
+
+void WeaponGameObject::LoadLocalData(const nlohmann::json& jsonData)
+{
+    if (jsonData.contains("WeaponLevel"))
+    {
+        m_level = jsonData["WeaponLevel"];
+        m_strength = jsonData["WeaponStrength"];
+        m_damage = jsonData["WeaponDamage"];
+        m_shotCount = jsonData["WeaponShotCount"];
+        m_timeLethal = jsonData["WeaponTimeLethal"];
+        m_distanceTravelled = jsonData["WeaponDistanceTravelled"];
+        m_element = (ELEMENTS)jsonData["WeaponElement"];
+        m_statusEffect = (STATUSES)jsonData["WeaponStatus"];
+    }
+}
+
+void WeaponGameObject::SaveLocalData(nlohmann::json& jsonData)
+{
+    jsonData["WeaponLevel"] = m_level;
+    jsonData["WeaponStrength"] = m_strength;
+    jsonData["WeaponDamage"] = m_damage;
+    jsonData["WeaponShotCount"] = m_shotCount;
+    jsonData["WeaponTimeLethal"] = m_timeLethal;
+    jsonData["WeaponDistanceTravelled"] = m_distanceTravelled;
+    jsonData["WeaponElement"] = (int)m_element;
+    jsonData["WeaponStatus"] = (int)m_statusEffect;
+}
+
+void WeaponGameObject::LoadAllPrefabData(const nlohmann::json& jsonData)
+{
+    LoadLocalData(jsonData);
+    TriggerableGameObject::LoadAllPrefabData(jsonData);
+}
+
+void WeaponGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
+{
+    SaveLocalData(jsonData);
+    TriggerableGameObject::SaveAllPrefabData(jsonData);
 }
 
 void WeaponGameObject::CalculateWeaponStrength()

@@ -7,14 +7,16 @@
 
 PlayerController::PlayerController(InputsAsGameplayButtons* gameplayButtons, PlayerGameObject* playerReference)
 {
+    m_playerMovingBody = new PlayerMovingBody();
+
     m_moveSpeedMax = 250;
     m_speedMultiplierWalking = 0.8f;
     m_dodgeSpeed = 1.6f;
     m_moveSpeedPerFrame = 500;
     m_dragSpeedPerFrame = 250;
     m_timeInSecondsToDodgeFor = 0.4f;
-    m_forceApplied = new XMFLOAT3(0, 0, 0);
-    m_moveSpeed = 0;
+    m_rollSpeed = 1.6f;
+    m_timeInSecondsToRollFor = 2;
 
     m_movementParameters.m_playerReference = playerReference;
     m_movementParameters.m_gameplayButtons = gameplayButtons;
@@ -23,11 +25,12 @@ PlayerController::PlayerController(InputsAsGameplayButtons* gameplayButtons, Pla
     m_movementParameters.m_moveSpeedPerFrame = &m_moveSpeedPerFrame;
     m_movementParameters.m_dragSpeedPerFrame = &m_dragSpeedPerFrame;
     m_movementParameters.m_dodgeSpeed = &m_dodgeSpeed;
+    m_movementParameters.m_rollingSpeed = &m_rollSpeed;
     m_movementParameters.m_timeInSecondsToDodgeFor = &m_timeInSecondsToDodgeFor;
+    m_movementParameters.m_timeInSecondsToRollFor = &m_timeInSecondsToRollFor;
     m_movementParameters.m_lastFirstPressedInputButton = EGAMEPLAYBUTTONCLASS::Nothing;
     m_movementParameters.m_lastSecondPressedInputButton = EGAMEPLAYBUTTONCLASS::Nothing;
-    m_movementParameters.m_forceApplied = m_forceApplied;
-    m_movementParameters.m_moveSpeed = &m_moveSpeed;
+    m_movementParameters.m_playerMovingBody = m_playerMovingBody;
 
     EventManager::Instance()->AddClient(EventType::KeyPressed, this);
     EventManager::Instance()->AddClient(EventType::KeyReleased, this);
@@ -55,11 +58,40 @@ PlayerController::~PlayerController()
         delete m_currentState;
     }
 
+    delete m_playerMovingBody;
+
     EventManager::Instance()->RemoveClientEvent(EventType::KeyPressed, this);
     EventManager::Instance()->RemoveClientEvent(EventType::KeyReleased, this);
     EventManager::Instance()->RemoveClientEvent(EventType::MouseButtonPressed, this);
     EventManager::Instance()->RemoveClientEvent(EventType::MouseButtonReleased, this);
     EventManager::Instance()->RemoveClientEvent(EventType::MouseMoved, this);
+}
+
+void PlayerController::LoadAllPrefabData(const nlohmann::json& jsonData)
+{
+    if (jsonData.contains("PlayerController_SpeedMax"))
+    {
+        m_moveSpeedMax = jsonData["PlayerController_SpeedMax"];
+        m_speedMultiplierWalking = jsonData["PlayerController_SpeedMultiplier"];
+        m_moveSpeedPerFrame = jsonData["PlayerController_WalkingSpeed"];
+        m_dragSpeedPerFrame = jsonData["PlayerController_Drag"];
+        m_dodgeSpeed = jsonData["PlayerController_DragSpeed"];
+        m_timeInSecondsToDodgeFor = jsonData["PlayerController_DragTime"];
+        m_rollSpeed = jsonData["PlayerController_RollSpeed"];
+        m_timeInSecondsToRollFor = jsonData["PlayerController_RollTime"];
+    }
+}
+
+void PlayerController::SaveAllPrefabData(nlohmann::json& jsonData)
+{
+    jsonData["PlayerController_SpeedMax"] = m_moveSpeedMax;
+    jsonData["PlayerController_SpeedMultiplier"] = m_speedMultiplierWalking;
+    jsonData["PlayerController_WalkingSpeed"] = m_moveSpeedPerFrame;
+    jsonData["PlayerController_Drag"] = m_dragSpeedPerFrame;
+    jsonData["PlayerController_DragSpeed"] = m_dodgeSpeed;
+    jsonData["PlayerController_DragTime"] = m_timeInSecondsToDodgeFor;
+    jsonData["PlayerController_RollSpeed"] = m_rollSpeed;
+    jsonData["PlayerController_RollTime"] = m_timeInSecondsToRollFor;
 }
 
 /// <summary>
@@ -110,14 +142,18 @@ void PlayerController::CreateEngineUI()
     
     if (EditorUI::CollapsingSection("Player Controller", false))
     {
-        auto speedParameters = EditorUIFloatParameters();
+        EditorUIFloatParameters speedParameters = EditorUIFloatParameters();
         speedParameters.m_columnWidth = 150;
         speedParameters.m_tooltipText = "When walking this is the main multiplier - sensitive to big changes!";
         speedParameters.m_speed = 0.01f;
 
+        EditorUI::FullTitle("Walking", titleParameters);
+
         EditorUI::DragFloat("Walking Speed", m_speedMultiplierWalking, speedParameters);
 
         speedParameters.m_tooltipText = "When dodging this is the main multiplier - sensitive to big changes!";
+
+        EditorUI::FullTitle("Dodge", titleParameters);
 
         EditorUI::DragFloat("Dodge Speed", m_dodgeSpeed, speedParameters);
 
@@ -125,8 +161,19 @@ void PlayerController::CreateEngineUI()
 
         EditorUI::DragFloat("Dodge Time in Seconds ", m_timeInSecondsToDodgeFor, speedParameters);
 
+        speedParameters.m_tooltipText = "When rolling this is the main multiplier - sensitive to big changes!";
 
-        auto numberParameters = EditorUIIntParameters();
+        EditorUI::FullTitle("Roll", titleParameters);
+
+        EditorUI::DragFloat("Roll Speed", m_rollSpeed, speedParameters);
+
+        speedParameters.m_tooltipText = "The time in seconds to roll for before returning to walking!";
+
+        EditorUI::DragFloat("Roll Time in Seconds ", m_timeInSecondsToRollFor, speedParameters);
+
+        EditorUI::FullTitle("All Speed Stats", titleParameters);
+
+        EditorUIIntParameters numberParameters = EditorUIIntParameters();
         numberParameters.m_columnWidth = 150;
         numberParameters.m_minValue = 0;
         numberParameters.m_maxValue = 1000;

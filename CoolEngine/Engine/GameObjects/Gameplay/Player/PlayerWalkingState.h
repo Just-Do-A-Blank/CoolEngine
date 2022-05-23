@@ -1,12 +1,13 @@
 #pragma once
 #include "Engine/GameObjects/Gameplay/Player/PlayerMovementState.h"
-#include <Engine/GameObjects/Transform.h>
+#include "Engine/GameObjects/Transform.h"
 #include "Engine/Managers/Events/EventObserver.h"
 #include "Engine/Managers/Events/MouseEvents.h"
 #include "Engine/Managers/Events/KeyEvents.h"
 #include "Engine/GameObjects/Gameplay/GameplayButtons/InputsAsGameplayButtons.h"
 #include "Engine\GameObjects\Gameplay\Player\PlayerMovementParameters.h"
 #include "Engine/GameObjects/Gameplay/Player/EPLAYERMOVEMENTSTATE.h"
+#include "Engine\GameObjects\Gameplay\Player\PlayerMovingBody.h"
 
 /// <summary>
 /// Allows the player to walk around
@@ -72,14 +73,9 @@ private:
     float *m_speedMultiplier;
 
     /// <summary>
-    /// The current speed of the player
+    /// Indicators on what the player is currently doing
     /// </summary>
-    float* m_moveSpeed;
-
-    /// <summary>
-    /// The force currently applied to the player
-    /// </summary>
-    XMFLOAT3* m_forceApplied;
+    PlayerMovingBody* m_playerMovingBody;
 
 	/// <summary>
 	/// Relates inputs to gameplay buttons
@@ -200,7 +196,7 @@ private:
     /// <param name="newDirection">The direction the vector is moving now</param>
     /// <param name="drag">The drag amount if direction moves</param>
     /// <param name="movementSpeed">The movement speed to adjust</param>
-    void SlowSpeedIfDirectionChanged(XMFLOAT3 originalDirection, XMFLOAT3 newDirection, float drag, float* movementSpeed);
+    void SlowSpeedIfDirectionChanged(XMFLOAT3 originalDirection, XMFLOAT3 newDirection, float drag, float& movementSpeed);
 
     /// <summary>
     /// Restrict speed based on max speed and force
@@ -208,7 +204,7 @@ private:
     /// <param name="speed">Current speed to restrict</param>
     /// <param name="maxSpeed">The max speed for the instance</param>
     /// <param name="force">Force which is also restricted if speed is 0</param>
-    void RestrictSpeedAndForceToResonableBounds(float* speed, float maxSpeed, XMFLOAT3* force);
+    void RestrictSpeedAndForceToResonableBounds(float& speed, float maxSpeed, XMFLOAT3& force);
 
     /// <summary>
     /// Move the given transform in a direction based on speed and direction
@@ -225,7 +221,7 @@ private:
     /// <param name="speed">Speed to move the player</param>
     /// <param name="drag">Drag value to apply</param>
     /// <param name="delta">Time delta to use when slowing the player</param>
-    void SlowPlayerBasedOnDrag(float* speed, float drag, float delta);
+    void SlowPlayerBasedOnDrag(float& speed, float drag, float delta);
 
     /// <summary>
     /// Move the given float toward zero by the given amount

@@ -1,7 +1,8 @@
 #include "Engine/Managers/Events/DamageCalculation.h"
 #include "Engine/GameObjects/CharacterGameObject.h"
-#include "Engine/GameObjects/WeaponGameObject.h"
+#include "Engine/GameObjects/BulletGameObject.h"
 #include "Engine/Managers/Events/EventManager.h"
+#include "Engine/Managers/GameManager.h"
 
 
 DamageCalculation::DamageCalculation()
@@ -46,43 +47,52 @@ float DamageCalculation::CalculateDamage(float weaponDamage, ELEMENTS weaponElem
 	return (weaponDamage * multiplier);
 }
 
-void DamageCalculation::TriggerEnter(TriggerEnterEvent* e)
-{
-	
-}
-
 void DamageCalculation::TriggerHold(TriggerHoldEvent* e)
 {
-	if (e->GetGameObject(0)->ContainsType(GameObjectType::CHARACTER) && e->GetGameObject(1)->ContainsType(GameObjectType::WEAPON))
+#if EDITOR
+	if (GameManager::GetInstance()->GetViewState() == ViewState::EDITOR_VIEW)
 	{
-		CharacterGameObject* pCharacter = dynamic_cast<CharacterGameObject*>(e->GetGameObject(0));
+		return;
+	}
+#endif
+
+	if (e->GetGameObject(1)->ContainsType(GameObjectType::WEAPON))
+	{
 		WeaponGameObject* pWeapon = dynamic_cast<WeaponGameObject*>(e->GetGameObject(1));
 
-		if (!pCharacter->GetInvincibilityTime())
+		if (e->GetGameObject(0)->ContainsType(GameObjectType::CHARACTER))
 		{
-			pCharacter->TakeDamage(CalculateDamage(pWeapon->GetDamage(), pWeapon->GetElement(), pCharacter->GetElement(), pCharacter->GetElementalStatus()));
-			pCharacter->SetInvincibilityTime(INVINCIBLE_TIME);
+			// If character, only hit bullet if not invincible
+			CharacterGameObject* pCharacter = dynamic_cast<CharacterGameObject*>(e->GetGameObject(0));
+			if ((pCharacter->GetInvincibilityTime() <= 0.0f) && ((pCharacter->ContainsType(GameObjectType::PLAYER) && pWeapon->GetIsPlayerWeapon() == false) || (pCharacter->ContainsType(GameObjectType::ENEMY) && pWeapon->GetIsPlayerWeapon())))
+			{
+				pCharacter->TakeDamage(CalculateDamage(pWeapon->GetDamage(), pWeapon->GetElement(), pCharacter->GetElement(), pCharacter->GetElementalStatus()));
+				pCharacter->SetInvincibilityTime(INVINCIBLE_TIME);
+				dynamic_cast<BulletGameObject*>(e->GetGameObject(1))->SetActive(false);
+			}
+		}
+		else
+		{
+			// If not a character, just delete bullet
+			dynamic_cast<BulletGameObject*>(e->GetGameObject(1))->SetActive(false);
 		}
 	}
 }
 
-void DamageCalculation::TriggerExit(TriggerExitEvent* e)
+void DamageCalculation::CollisionHold(CollisionHoldEvent* e)
 {
-	
+
 }
 
 void DamageCalculation::Handle(Event* e)
 {
 	switch (e->GetEventID())
 	{
-	case EventType::TriggerEnter:
-		TriggerEnter((TriggerEnterEvent*)e);
-		break;
 	case EventType::TriggerHold:
 		TriggerHold((TriggerHoldEvent*)e);
 		break;
-	case EventType::TriggerExit:
-		TriggerExit((TriggerExitEvent*)e);
+	case EventType::CollisionHold:
+		CollisionHold((CollisionHoldEvent*)e);
 		break;
 	}
 }

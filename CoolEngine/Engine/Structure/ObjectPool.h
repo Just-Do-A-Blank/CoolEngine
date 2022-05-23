@@ -13,14 +13,66 @@ template<class T>
 class ObjectPool
 {
 public:
-	ObjectPool(int objectCount);
-	~ObjectPool();
-	
-	ObjectEntry<T>* CreateEntryInPool();
+	ObjectPool()
+	{
 
-	bool ReleaseEntryInPool(ObjectEntry<T>* entry);
+	}
 
-	const std::vector<ObjectEntry<T>*> ReturnPool() { return &m_pObjects; }
+	ObjectPool(int objectCount)
+	{
+		m_pObjects.reserve(objectCount);
+		for (size_t i = 0; i < objectCount; ++i)
+		{
+			ObjectEntry<T>* entry = new ObjectEntry<T>();
+			entry->m_Active = false;
+			entry->m_pObject = new T();
+			m_pObjects.push_back(entry);
+		}
+	}
+
+	~ObjectPool()
+	{
+		for (size_t i = 0; i < m_pObjects.size(); ++i)
+		{
+			delete m_pObjects[i];
+		}
+	}
+
+	ObjectEntry<T>* CreateEntryInPool()
+	{
+		for (size_t i = 0; i < m_pObjects.size(); ++i)
+		{
+			if (!m_pObjects[i]->m_Active)
+			{
+				m_pObjects[i]->m_Active = true;
+				return m_pObjects[i];
+			}
+		}
+	}
+
+
+	bool ReleaseEntryInPool(ObjectEntry<T>* entry)
+	{
+		for (size_t i = 0; i < m_pObjects.size(); ++i)
+		{
+			if (m_pObjects[i] == entry)
+			{
+				m_pObjects[i]->m_Active = false;
+				return true;
+			}
+		}
+		return false;
+	}
+
+	void ClearPool()
+	{
+		for (size_t i = 0; i < m_pObjects.size(); ++i)
+		{
+			m_pObjects[i]->m_Active = false;
+		}
+	}
+
+	const std::vector<ObjectEntry<T>*> ReturnPool() { return m_pObjects; }
 
 private:
 
