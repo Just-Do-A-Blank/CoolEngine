@@ -243,6 +243,9 @@
     <ClCompile Include="Engine\GameObjects\PrefabGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
+    <ClCompile Include="Inventory.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Inventory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -653,6 +656,9 @@
     <ClInclude Include="Engine\EditorUI\EditorButtonCallback.h">
       <Filter>Engine\EditorUI</Filter>
     </ClInclude>
+    <ClInclude Include="Inventory.h">
+      <Filter>Engine\GameObjects\Gameplay\Inventory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Engine\Includes\DirectXTK\SimpleMath.inl" />
@@ -766,6 +772,9 @@
     </Filter>
     <Filter Include="Engine\Tilemap\Tilemap">
       <UniqueIdentifier>{2511a5c3-13d3-4be5-8a1c-4a99b0fb512a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GameObjects\Gameplay\Inventory">
+      <UniqueIdentifier>{81686caf-18bc-42f0-9d12-d80b412a5a52}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

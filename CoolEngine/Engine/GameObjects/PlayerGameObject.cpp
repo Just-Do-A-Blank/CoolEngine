@@ -70,6 +70,7 @@ PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : Character
     EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
     EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
     EventManager::Instance()->AddClient(EventType::MouseMoved, this);
+
 }
 
 PlayerGameObject::PlayerGameObject(const nlohmann::json& data, CoolUUID uuid) : CharacterGameObject(data, uuid)
@@ -155,6 +156,8 @@ PlayerGameObject::PlayerGameObject(PlayerGameObject const& other) : CharacterGam
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
 	EventManager::Instance()->AddClient(EventType::MouseMoved, this);
+
+	m_myInventory = new Inventory(); // creates the inventory object
 }
 
 PlayerGameObject::~PlayerGameObject()
@@ -260,6 +263,15 @@ void PlayerGameObject::Update()
 	else
 	{
 		m_invincibilityTime = 0;
+	}
+
+	if (m_myInventory)
+	{
+		m_myInventory->UpdateMoney(1 * GameManager::GetInstance()->GetTimer()->DeltaTime()); // test add 1 coin every second
+		if (m_myInventory->m_money > 10)
+		{
+			m_transform->SetLocalScale(XMFLOAT3(10, 10, 10));
+		}
 	}
 }
 

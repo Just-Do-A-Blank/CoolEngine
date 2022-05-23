@@ -4,6 +4,7 @@
 #include "Engine/Managers/Events/KeyEvents.h" 
 #include "CameraGameObject.h"
 #include "Engine/GameObjects/Gameplay/Player/PlayerController.h"
+#include "Inventory.h"
 
 class PlayerGameObject : public CharacterGameObject
 {
@@ -28,6 +29,7 @@ public:
     /// </summary>
     virtual void Update() override;
     virtual void EditorUpdate() override;
+
 
 #if EDITOR
     /// <summary>
@@ -56,13 +58,16 @@ protected:
     /// </summary>
     virtual void OnTriggerExit(GameObject* obj1, GameObject* obj2) override { }
 
-    virtual void Update() override {}
+    //virtual void Update() override {}  /// commented out due to error: "Error	C2535	'void PlayerGameObject::Update(void)': member function already defined or declared	CoolEngine	C : \Users\s019135i\Documents\GitHub\CoolEngine\CoolEngine\Engine\GameObjects\PlayerGameObject.h	59
+    Inventory* m_myInventory;
 
 private:
     /// <summary>
     /// Handles movement around the scene for the player
     /// </summary>
+    /// 
     PlayerController* m_playerController;
+  
 
     void LoadLocalData(const nlohmann::json& jsonData);
     void SaveLocalData(nlohmann::json& jsonData);
