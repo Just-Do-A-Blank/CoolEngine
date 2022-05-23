@@ -37,6 +37,8 @@ PlayerController::PlayerController(InputsAsGameplayButtons* gameplayButtons, Pla
     EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
     EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
     EventManager::Instance()->AddClient(EventType::MouseMoved, this);
+
+    m_selected = "";
 }
 
 PlayerController::PlayerController(PlayerController const& other, PlayerGameObject* newPlayer)
@@ -148,6 +150,12 @@ void PlayerController::CreateEngineUI()
         speedParameters.m_speed = 0.01f;
 
         EditorUI::FullTitle("Walking", titleParameters);
+
+        std::list<string> listofPlayers = { "first", "second", "third", "fourth", "fifth"};
+        //m_selected = EditorUI::ComboBox("something", listofPlayers, m_selected);
+
+        ImGui::Combo("combo 2 (one-liner)", &m_selected, "aaaa\0bbbb\0cccc\0dddd\0eeee\0\0");
+        
 
         EditorUI::DragFloat("Walking Speed", m_speedMultiplierWalking, speedParameters);
 

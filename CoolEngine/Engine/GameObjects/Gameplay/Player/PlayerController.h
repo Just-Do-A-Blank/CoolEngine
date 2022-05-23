@@ -137,5 +137,7 @@ private:
     /// Indicators on what the player is currently doing
     /// </summary>
     PlayerMovingBody* m_playerMovingBody;
+
+    string m_selected;
 };
 

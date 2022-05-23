@@ -133,6 +133,8 @@ public:
 
     static void Animations(const string& label, unordered_map<string, SpriteAnimation>& animations, const float& columnWidth = 100.0f);
 
+    static string ComboBox(const string& label, list<string>& values, string& selected, EditorUIFloatParameters parameters = {});
+
     /// <summary>
     /// Displays a single button on the interface
     /// </summary>

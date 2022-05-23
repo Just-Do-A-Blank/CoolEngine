@@ -1,6 +1,7 @@
 #pragma once
-#include "Engine/GameObjects/Gameplay/Player/PlayerResource.h"
 #include <map>
+#include "Engine/GameObjects/Gameplay/Player/PlayerResource.h"
+#include "Engine/GameObjects/Gameplay/Player/EResourceModificationResult.h"
 
 class PlayerResourceInterface
 {
@@ -14,12 +15,25 @@ public:
     virtual void CreateEngineUI();
 
     /// <summary>
+    /// Gets the result of any modification to resources from the last UI loop
+    /// </summary>
+    /// <returns>The modification result</returns>
+    virtual ERESOURCEMODIFICATIONRESULT GetLastUpdateResult();
+
+    /// <summary>
     /// The name of the error message popup box
     /// </summary>
     const string m_popupKeyResourceKeyFound = "PlayerResourceInterface_ResourceErrorKey";
 #endif
 
 private:
+#if EDITOR
+    /// <summary>
+    /// The result of any modification to resources from the last UI loop
+    /// </summary>
+    ERESOURCEMODIFICATIONRESULT m_modificationResult;
+#endif
+
     /// <summary>
     /// Current resources from the player
     /// </summary>

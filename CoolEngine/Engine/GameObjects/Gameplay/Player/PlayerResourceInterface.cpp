@@ -7,6 +7,7 @@ PlayerResourceInterface::PlayerResourceInterface(map<string, PlayerResource*>* p
 	m_playerResources = playerResources;
 	m_lastEntryIsError = false;
     m_errorMessage = "";
+    m_modificationResult = ERESOURCEMODIFICATIONRESULT::NoListModification;
 }
 
 #if EDITOR
@@ -15,6 +16,7 @@ PlayerResourceInterface::PlayerResourceInterface(map<string, PlayerResource*>* p
 	/// </summary>
 	void PlayerResourceInterface::CreateEngineUI()
 	{
+        m_modificationResult = ERESOURCEMODIFICATIONRESULT::NoListModification;
 		if (EditorUI::CollapsingSection("Player Resources", false))
 		{
             CreateNewResourceInterface();
@@ -68,6 +70,7 @@ void PlayerResourceInterface::RemoveResourceFromList(string key)
             }
             else if (AddResourceToList(m_entryKey))
             {
+                m_modificationResult = ERESOURCEMODIFICATIONRESULT::Added;
                 m_entryKey = "";
             }
             else
@@ -86,6 +89,7 @@ void PlayerResourceInterface::RemoveResourceFromList(string key)
     {
         if (m_deleteOnNextLoop != "")
         {
+            m_modificationResult = ERESOURCEMODIFICATIONRESULT::Removed;
             RemoveResourceFromList(m_deleteOnNextLoop);
             m_deleteOnNextLoop = "";
         }
@@ -122,6 +126,15 @@ void PlayerResourceInterface::RemoveResourceFromList(string key)
 
             ImGui::PopID();
         }
+    }
+
+    /// <summary>
+    /// Gets the result of any modification to resources from the last UI loop
+    /// </summary>
+    /// <returns>The modification result</returns>
+    ERESOURCEMODIFICATIONRESULT PlayerResourceInterface::GetLastUpdateResult()
+    {
+        return m_modificationResult;
     }
 #endif
 

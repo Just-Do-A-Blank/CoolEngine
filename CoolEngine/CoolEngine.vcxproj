@@ -52,6 +52,7 @@
     <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\GameplayButton.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\EPLAYERMOVEMENTSTATE.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\EResourceModificationResult.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerController.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerDodgingState.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovementParameters.h" />
@@ -59,6 +60,7 @@
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovingBody.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerResource.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerResourceInterface.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerResourceManager.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerRollingState.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerWalkingState.h" />
     <ClInclude Include="Engine\GameObjects\InteractableGameObject.h" />
@@ -212,6 +214,7 @@
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerMovingBody.cpp" />
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerResource.cpp" />
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerResourceInterface.cpp" />
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerResourceManager.cpp" />
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerRollingState.cpp" />
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerWalkingState.cpp" />
     <ClCompile Include="Engine\GameObjects\InteractableGameObject.cpp" />

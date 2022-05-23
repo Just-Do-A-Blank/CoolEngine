@@ -1648,4 +1648,44 @@ void EditorUI::SetNextWindowToCenter()
     ImVec2 pos(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
     ImGui::SetNextWindowPos(pos, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 }
+
+string EditorUI::ComboBox(const string& label, list<string>& values, string& selected, EditorUIFloatParameters parameters)
+{
+    /*string selectedReturn = "";
+    if (selected == "")
+    {
+        selected = values.front();
+    }
+    if (IMGUI_LEFT_LABEL(ImGui::BeginCombo, "Collider", selected.c_str()) == true)
+    {
+        std::list<string>::iterator it;
+        for (it = values.begin(); it != values.end(); it++)
+        {
+            if (ImGui::Selectable(it->c_str(), it->c_str() == selected))
+            {
+                selectedReturn = it->c_str();
+            }
+        }
+
+        ImGui::EndCombo();
+    }*/
+
+    if (ImGui::BeginCombo("combo 1", combo_preview_value, flags))
+    {
+        for (int n = 0; n < IM_ARRAYSIZE(items); n++)
+        {
+            const bool is_selected = (item_current_idx == n);
+            if (ImGui::Selectable(items[n], is_selected))
+                item_current_idx = n;
+
+            // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();
+        }
+        ImGui::EndCombo();
+    }
+
+
+    return selectedReturn;
+}
 #endif
