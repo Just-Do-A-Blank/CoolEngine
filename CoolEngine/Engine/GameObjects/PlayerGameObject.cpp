@@ -248,14 +248,7 @@ void PlayerGameObject::Update()
 {
     m_playerController->Update();
 
-	if (m_invincibilityTime > 0.0f)
-	{
-		m_invincibilityTime -= GameManager::GetInstance()->GetTimer()->DeltaTime();
-	}
-	else
-	{
-		m_invincibilityTime = 0;
-	}
+	m_invincibilityTime -= GameManager::GetInstance()->GetTimer()->DeltaTime();
 }
 
 void PlayerGameObject::EditorUpdate()

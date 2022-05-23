@@ -48,15 +48,6 @@ void EnemyGameObject::Update()
 		XMFLOAT3 stepPos = MathHelper::Multiply(m_direction, step);
 		stepPos = MathHelper::Plus(stepPos, m_transform->GetWorldPosition());
 		m_transform->SetWorldPosition(stepPos);
-
-		if (m_invincibilityTime > 0.0f)
-		{
-			m_invincibilityTime -= GameManager::GetInstance()->GetTimer()->DeltaTime();
-		}
-		else
-		{
-			m_invincibilityTime = 0;
-		}
 	}
 	else
 	{
@@ -64,6 +55,7 @@ void EnemyGameObject::Update()
 		//Pathfinding::GetInstance()->FindPath(m_transform->GetPosition(), XMFLOAT3(1000, 200, 0), m_curPath); //test function
 	}
 
+	m_invincibilityTime -= GameManager::GetInstance()->GetTimer()->DeltaTime();
 }
 
 void EnemyGameObject::EditorUpdate()

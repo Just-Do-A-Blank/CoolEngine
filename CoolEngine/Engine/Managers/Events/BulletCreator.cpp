@@ -33,6 +33,7 @@ void BulletCreator::Update()
 		if (m_pBulletPool->ReturnPool()[i]->m_Active)
 		{
 			m_pBulletPool->ReturnPool()[i]->m_pObject->Update();
+			m_pBulletPool->ReturnPool()[i]->m_Active = m_pBulletPool->ReturnPool()[i]->m_pObject->GetActive();
 		}
 	}
 
@@ -78,12 +79,18 @@ void BulletCreator::CreateBullet(CreateBulletEvent* e)
 	p_bullet->SetStatusEffect(e->GetObj()->GetStatusEffect());
 	p_bullet->SetTimeLethal(e->GetObj()->GetTimeLethal());
 	p_bullet->SetIsPlayerWeapon(e->GetObj()->GetIsPlayerWeapon());
+	p_bullet->SetActive(true);
+	p_bullet->SetCurrentTime(0.0f);
+	p_bullet->SetTotalTime(e->GetObj()->GetDistanceTravelled() / e->GetObj()->GetSpeed());
 }
 
 void BulletCreator::TestFire(MouseButtonPressedEvent* e)
 {
+	// Temporary, uses a weapon object in the scene as a reference. In the final, will probably store weapon data some other way.
 	string name = "Weapon";
 	RangedWeaponGameObject* p_weapon = GameManager::GetInstance()->GetGameObjectUsingIdentifier<RangedWeaponGameObject>(name);
+
+	// Get player location
 	name = "Player";
 	RenderableCollidableGameObject* p_player = GameManager::GetInstance()->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(name);
 

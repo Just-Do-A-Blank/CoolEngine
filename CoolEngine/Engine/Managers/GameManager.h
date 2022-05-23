@@ -92,7 +92,17 @@ public:
 	template<typename T>
 	T* GetGameObjectUsingIdentifier(string& identifier)
 	{
-		return m_pcurrentEditorScene->GetGameObjectUsingIdentifier<T>(identifier);
+		switch (m_viewState)
+		{
+		case ViewState::EDITOR_VIEW:
+			return m_pcurrentEditorScene->GetGameObjectUsingIdentifier<T>(identifier);
+			break;
+
+		case ViewState::GAME_VIEW:
+			return m_pcurrentGameScene->GetGameObjectUsingIdentifier<T>(identifier);
+			break;
+		}
+		
 	}
 
 	template<typename T>
