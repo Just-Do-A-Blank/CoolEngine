@@ -112,7 +112,7 @@ public:
 	template<typename T>
 	T* CreateGameObject(string identifier, TreeNode<GameObject>* nodeParent = nullptr)
 	{
-		return m_pcurrentEditorScene->CreateGameObject<T>(identifier, nodeParent);
+		return GetCurrentViewStateScene()->CreateGameObject<T>(identifier, nodeParent);
 	}
 
 	void DeleteGameObjectUsingNode(TreeNode<GameObject>* currentNode);
@@ -121,7 +121,7 @@ public:
 	template<typename T>
 	void DeleteGameObjectUsingNode(T* pgameObject, std::string identifier)
 	{
-		m_pcurrentEditorScene->DeleteGameObjectUsingNode(pgameObject, identifier);
+		return GetCurrentViewStateScene()->DeleteGameObjectUsingNode(pgameObject, identifier);
 	}
 
 	TreeNode<GameObject>* GetRootTreeNode();

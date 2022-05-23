@@ -54,7 +54,7 @@ public:
 	const XMFLOAT3& GetLeftVector()const;
 
 	//Setters
-	void SetWorldPosition(XMFLOAT3& position);
+	void SetWorldPosition(const XMFLOAT3& position);
 	void SetLocalPosition(XMFLOAT3& position);
 
 	void SetWorldRotation(XMFLOAT3& rotation);

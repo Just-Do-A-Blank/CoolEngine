@@ -3,6 +3,8 @@
 #include "Engine/AI/Pathfinding.h"
 #include  "Engine/AI/EnemyStateMachine.h"
 
+class PlayerGameObject;
+
 class EnemyGameObject : public CharacterGameObject
 {
 public:
@@ -20,6 +22,10 @@ public:
 
 	void Start() override;
 
+	void SetWeaponPosition();
+
 private:
     EnemyStateMachine m_stateMachine;
+
+	PlayerGameObject* m_pplayer = nullptr;
 };

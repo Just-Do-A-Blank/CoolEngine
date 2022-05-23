@@ -117,6 +117,8 @@ private:
     /// </summary>
 	//void MouseMoved(MouseMovedEvent* e);
 
+	void SetWeaponPosition();
+	
     /// <summary>
     /// Ends the session as the player is dead
     /// </summary>

@@ -152,7 +152,7 @@ const XMFLOAT3& Transform::GetLeftVector() const
     return m_leftVector;
 }
 
-void Transform::SetWorldPosition(XMFLOAT3& position)
+void Transform::SetWorldPosition(const XMFLOAT3& position)
 {
 	if (m_pparentTransform == nullptr)
 	{
