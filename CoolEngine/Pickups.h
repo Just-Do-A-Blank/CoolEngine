@@ -40,23 +40,32 @@ struct ConsumableData
 
 };
 
-class PlayerGameObject;
-
 class Pickups : public InteractableGameObject
 {
 public:
-	Pickups(PlayerGameObject* player);
+	Pickups(string identifier, CoolUUID uuid);
+	Pickups(const nlohmann::json& data, CoolUUID index);
+	Pickups(Pickups const& other);
 	~Pickups();
 
-	
+
+#if EDITOR
+	/// <summary>
+	/// Shows engine UI
+	/// </summary>
+	virtual void CreateEngineUI() override;
+#endif
+
 
 private:
 	//Expose this to editor
 	ConsumableData m_ConsumableData;
 	
-	//Collison with player
-	//Add item to the player's inventory
+	//Checking for collision with player and itself
 	void OnTriggerHold(GameObject* obj1, GameObject* obj2);
+
+	virtual void LoadLocalData(const nlohmann::json& jsonData);
+	virtual void SaveLocalData(nlohmann::json& jsonData);
 
 };
 

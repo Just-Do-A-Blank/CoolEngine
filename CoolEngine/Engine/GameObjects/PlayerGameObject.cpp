@@ -240,7 +240,7 @@ void PlayerGameObject::Handle(Event* e)
 	case EventType::MouseMoved:
 		//MouseMoved((MouseMovedEvent*)e);
 		break;
-	case EventType::PickupObtained://///////////////////////////////////////////////////////////////
+	case EventType::Pickup://///////////////////////////////////////////////////////////////
 		//DO SOMETHING WITH PICKUP
 		break;
 	}
