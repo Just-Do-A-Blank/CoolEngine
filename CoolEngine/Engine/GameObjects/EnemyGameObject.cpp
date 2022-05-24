@@ -5,6 +5,7 @@
 #include "Engine/GameObjects/MeleeWeaponGameObject.h"
 #include "Engine/ResourceDefines.h"
 #include "Engine/GameObjects/PlayerGameObject.h"
+#include "Engine/Physics/Shape.h"
 
 EnemyGameObject::EnemyGameObject(string identifier, CoolUUID uuid) : CharacterGameObject(identifier, uuid)
 {
@@ -82,6 +83,8 @@ void EnemyGameObject::Start()
 	m_pweapon->SetAlbedo(TEST2);
 	m_pweapon->GetTransform()->SetLocalScale(XMFLOAT3(20, 20, 20));
 	m_pweapon->SetLayer(3);
+	m_pweapon->GetShape()->SetIsTrigger(true);
+	m_pweapon->GetShape()->SetIsCollidable(false);
 
 	m_pplayer = GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject>(std::string("Player"));
 }
