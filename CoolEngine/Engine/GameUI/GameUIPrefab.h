@@ -31,7 +31,7 @@ protected:
     /// Load all prefab data - this should be overriden and passed up the chain to save the whole prefab.
     /// </summary>
     /// <param name="jsonData">Data to use</param>
-    virtual void LoadAllPrefabData(const nlohmann::json& jsonData) {};
+    virtual void LoadAllPrefabData(const nlohmann::json& jsonData);
 
     /// <summary>
     /// Save all prefab data - this should be overriden and passed up the chain to save the whole prefab.
@@ -111,6 +111,12 @@ private:
     /// </summary>
     /// <param name="jsonData">Data to be added to</param>
     void SaveAllLocalData(nlohmann::json& jsonData);
+
+    /// <summary>
+    /// Loads all local data within this class
+    /// </summary>
+    /// <param name="jsonData">Data to be loaded</param>
+    void LoadAllLocalData(const nlohmann::json& jsonData);
 
     /// <summary>
     /// Detirmines if the given key could be loaded if attempted - in theory

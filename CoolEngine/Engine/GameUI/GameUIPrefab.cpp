@@ -80,6 +80,51 @@ void GameUIPrefab::SaveAllPrefabData(nlohmann::json& jsonData)
 void GameUIPrefab::SaveAllLocalData(nlohmann::json& jsonData)
 {
     jsonData["PrefabKey"] = m_prefabKey;
+    jsonData["Prefab_Transform_LCL_Position_x"] = GetTransform()->GetLocalPosition().x;
+    jsonData["Prefab_Transform_LCL_Position_y"] = GetTransform()->GetLocalPosition().y;
+    jsonData["Prefab_Transform_LCL_Position_z"] = GetTransform()->GetLocalPosition().z;
+
+    jsonData["Prefab_Transform_LCL_Rotation_x"] = GetTransform()->GetLocalRotation().x;
+    jsonData["Prefab_Transform_LCL_Rotation_y"] = GetTransform()->GetLocalRotation().y;
+    jsonData["Prefab_Transform_LCL_Rotation_z"] = GetTransform()->GetLocalRotation().y;
+
+    jsonData["Prefab_Transform_LCL_Scale_x"] = GetTransform()->GetLocalScale().x;
+    jsonData["Prefab_Transform_LCL_Scale_y"] = GetTransform()->GetLocalScale().y;
+    jsonData["Prefab_Transform_LCL_Scale_z"] = GetTransform()->GetLocalScale().z;
+}
+
+/// <summary>
+/// Loads all local data within this class
+/// </summary>
+/// <param name="jsonData">Data to be loaded</param>
+void GameUIPrefab::LoadAllLocalData(const nlohmann::json& jsonData)
+{
+    if (jsonData.contains("Prefab_Transform_LCL_Position_x"))
+    {
+        float lclPositionX = jsonData["Prefab_Transform_LCL_Position_x"];
+        float lclPositionY = jsonData["Prefab_Transform_LCL_Position_y"];
+        float lclPositionZ = jsonData["Prefab_Transform_LCL_Position_z"];
+        XMFLOAT3 lclPosition = XMFLOAT3(lclPositionX, lclPositionY, lclPositionZ);
+        GetTransform()->SetLocalPosition(lclPosition);
+    }
+
+    if (jsonData.contains("Prefab_Transform_LCL_Rotation_x"))
+    {
+        float lclRotationX = jsonData["Prefab_Transform_LCL_Rotation_x"];
+        float lclRotationY = jsonData["Prefab_Transform_LCL_Rotation_y"];
+        float lclRotationZ = jsonData["Prefab_Transform_LCL_Rotation_z"];
+        XMFLOAT3 lclRotation = XMFLOAT3(lclRotationX, lclRotationY, lclRotationZ);
+        GetTransform()->SetLocalRotation(lclRotation);
+    }
+
+    if (jsonData.contains("Prefab_Transform_LCL_Scale_x"))
+    {
+        float lclScaleX = jsonData["Prefab_Transform_LCL_Scale_x"];
+        float lclScaleY = jsonData["Prefab_Transform_LCL_Scale_y"];
+        float lclScaleZ = jsonData["Prefab_Transform_LCL_Scale_z"];
+        XMFLOAT3 lclScale = XMFLOAT3(lclScaleX, lclScaleY, lclScaleZ);
+        GetTransform()->SetLocalScale(lclScale);
+    }
 }
 
 /// <summary>
@@ -221,6 +266,15 @@ void GameUIPrefab::LoadPrefab(string key)
     {
         m_prefabKey = "";
     }
+}
+
+/// <summary>
+ /// Load all prefab data - this should be overriden and passed up the chain to save the whole prefab.
+ /// </summary>
+ /// <param name="jsonData">Data to use</param>
+void GameUIPrefab::LoadAllPrefabData(const nlohmann::json& jsonData)
+{
+    LoadAllLocalData(jsonData);
 }
 
 /// <summary>
