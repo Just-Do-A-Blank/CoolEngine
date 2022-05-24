@@ -77,6 +77,7 @@ public:
 
 	void SetParentTransform(Transform* pparentTransform);
 	void AddChildTransform(Transform* pchildTransform);
+	bool HasChildTransform(Transform* pchildTransform);
 	void RemoveChildTransform(Transform* pchildTransform);
 };
 

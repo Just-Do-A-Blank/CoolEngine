@@ -268,6 +268,18 @@ void Transform::AddChildTransform(Transform* pchildTransform)
 
 }
 
+bool Transform::HasChildTransform(Transform* pchildTransform)
+{
+	for (int i = 0; i < m_childrenTransformList.size(); ++i)
+	{
+		if (m_childrenTransformList[i] == pchildTransform)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void Transform::RemoveChildTransform(Transform* pchildTransform)
 {
     for (vector<Transform*>::iterator it = m_childrenTransformList.begin(); it != m_childrenTransformList.end(); ++it)
