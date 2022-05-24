@@ -66,7 +66,7 @@ protected:
     /// <summary>
     /// Occurs when two objects collide without collision on. Fired every frame.
     /// </summary>
-    virtual void OnTriggerHold(GameObject* obj1, GameObject* obj2) override {  }
+    virtual void OnTriggerHold(GameObject* obj1, GameObject* obj2) override;
 
     /// <summary>
     /// Occurs when two objects collide without collision on. Fired the frame the two stop colliding.

@@ -44,6 +44,7 @@
 #include "Engine/Managers/Events/DamageCalculation.h"
 #include "Engine/Structure/ObjectPool.h"
 #include "Engine/GameObjects/BulletGameObject.h"
+#include "Engine/GameObjects/PickupGameObject.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);

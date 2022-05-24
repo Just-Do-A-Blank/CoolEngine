@@ -12,6 +12,13 @@ DamageCalculation::DamageCalculation()
 	EventManager::Instance()->AddClient(EventType::TriggerExit, this);
 }
 
+DamageCalculation::~DamageCalculation()
+{
+	EventManager::Instance()->RemoveClientEvent(EventType::TriggerEnter, this);
+	EventManager::Instance()->RemoveClientEvent(EventType::TriggerHold, this);
+	EventManager::Instance()->RemoveClientEvent(EventType::TriggerExit, this);
+}
+
 float DamageCalculation::CalculateDamage(float weaponDamage, ELEMENTS weaponElement, ELEMENTS characterElement, ELEMENTALSTATUSES characterStatus)
 {
 	float multiplier = 1.0f;
