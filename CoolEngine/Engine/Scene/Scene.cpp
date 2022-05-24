@@ -16,7 +16,6 @@ Scene::Scene(string identifier)
 
 	Transform* trans = new Transform();
 	m_quadtree = new Quadtree(XMFLOAT2(300,0), 4, 600);
-
 }
 
 Scene::~Scene()
@@ -38,16 +37,7 @@ void Scene::Start()
 
 void Scene::Update()
 {
-	vector<GameObject*> gameObjectList;
-	gameObjectList.reserve(m_psceneGraph->GetAllNodeObjects().size());
-
-	PlayerGameObject* pGO = dynamic_cast<PlayerGameObject*>(m_psceneGraph->GetNodeObjectUsingIdentifier((std::string)"Player"));
-
-	Transform* t = pGO->GetTransform();
-
-	m_quadtree->GetUpdateList(XMFLOAT2(t->GetWorldPosition().x, t->GetWorldPosition().y), gameObjectList);
-
-	LOG(std::to_string(gameObjectList.size()));
+	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
 
 	for (int it = 0; it < gameObjectList.size(); ++it)
 	{

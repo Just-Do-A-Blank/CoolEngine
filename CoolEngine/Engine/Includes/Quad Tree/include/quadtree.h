@@ -56,7 +56,13 @@ public:
 
     void GetUpdateList(XMFLOAT2 updatePoint, std::vector<GameObject*>& list);
 
+    GameObject* SimpleQueryByIdentifier(std::string identifier);
+
+    GameObject* QueryByIdentifier(std::string identifier, XMFLOAT2 point);
+
 private:
+
+    GameObject* SearchQuadTree(std::string identifier);
 
     void CheckForObjectUpdate(std::vector<GameObject*>& list);
 
