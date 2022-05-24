@@ -3,6 +3,7 @@
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/EditorUI/EditorUI.h"
 #include "Engine/GameObjects/MeleeWeaponGameObject.h"
+#include "Engine/GameObjects/RangedWeaponGameObject.h"
 #include "Engine/Physics/Shape.h"
 #include "Engine/GameObjects/PickupGameObject.h"
 #include "Engine/Managers/Events/PickupEvent.h"
@@ -200,7 +201,8 @@ void PlayerGameObject::Start()
 
 	m_resourceManager->Start();
 
-	m_pweapon = GameManager::GetInstance()->CreateGameObject<MeleeWeaponGameObject>("TestWeapon");
+	// If this is meant to be a melee weapon then yell at me, but I was told to make it shoot bullets!
+	m_pweapon = GameManager::GetInstance()->CreateGameObject<RangedWeaponGameObject>("TestWeapon");
 	m_pweapon->SetAlbedo(TEST2);
 	m_pweapon->GetTransform()->SetLocalScale(XMFLOAT3(20, 20, 20));
 	m_pweapon->SetLayer(3);

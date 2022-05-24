@@ -90,3 +90,16 @@ void CharacterGameObject::SaveLocalData(nlohmann::json& jsonData)
     jsonData["Health"] = m_health;
     jsonData["Movement Speed"] = m_moveSpeed;
 }
+
+XMFLOAT3 CharacterGameObject::GetWeaponPosition()
+{
+    return m_pweapon->GetTransform()->GetWorldPosition();
+}
+
+XMFLOAT3 CharacterGameObject::GetWeaponDirection()
+{
+    // From character to weapon = weapon pos - character pos
+    XMFLOAT3 weaponPos = m_pweapon->GetTransform()->GetWorldPosition();
+    XMFLOAT3 characterPos = GetTransform()->GetWorldPosition();
+    return XMFLOAT3(weaponPos.x - characterPos.x, weaponPos.y - characterPos.y, 0.0f);
+}
