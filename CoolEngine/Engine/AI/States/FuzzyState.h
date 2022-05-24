@@ -7,6 +7,7 @@ enum class FuzzyStateType
 	RANGE_MOVEMENT,
 	MELEE_ATTACK,
 	RANGE_ATTACK,
+	WANDER,
 
 	COUNT
 };

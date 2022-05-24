@@ -40,6 +40,7 @@
     <ClInclude Include="Engine\AI\States\MeleeAttackState.h" />
     <ClInclude Include="Engine\AI\States\MeleeMovementState.h" />
     <ClInclude Include="Engine\AI\States\RangeAttackState.h" />
+    <ClInclude Include="Engine\AI\States\WanderState.h" />
     <ClInclude Include="Engine\EditorUI\ContentBrowser.h" />
     <ClInclude Include="Engine\EditorUI\EditorButtonCallback.h" />
     <ClInclude Include="Engine\EditorUI\EditorUI.h" />
@@ -86,6 +87,7 @@
     <ClInclude Include="Engine\GameObjects\WeaponGameObject.h" />
     <ClInclude Include="Engine\GameObjects\UUID.h" />
     <ClInclude Include="Engine\GameUI\ButtonComponent.h" />
+    <ClInclude Include="Engine\GameUI\GameUIPrefab.h" />
     <ClInclude Include="Engine\GameUI\TextComponent.h" />
     <ClInclude Include="Engine\Graphics\AnimationState.h" />
     <ClInclude Include="Engine\Graphics\AnimationStateMachine.h" />
@@ -214,6 +216,7 @@
     <ClCompile Include="Engine\AI\States\MeleeAttackState.cpp" />
     <ClCompile Include="Engine\AI\States\MeleeMovementState.cpp" />
     <ClCompile Include="Engine\AI\States\RangeAttackState.cpp" />
+    <ClCompile Include="Engine\AI\States\WanderState.cpp" />
     <ClCompile Include="Engine\EditorUI\ContentBrowser.cpp" />
     <ClCompile Include="Engine\EditorUI\EditorUI.cpp" />
     <ClCompile Include="Engine\EditorUI\TileMapContentBrowser.cpp" />
@@ -248,6 +251,7 @@
     <ClCompile Include="Engine\GameObjects\WeaponGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\UUID.cpp" />
     <ClCompile Include="Engine\GameUI\ButtonComponent.cpp" />
+    <ClCompile Include="Engine\GameUI\GameUIPrefab.cpp" />
     <ClCompile Include="Engine\GameUI\TextComponent.cpp" />
     <ClCompile Include="Engine\Graphics\AnimationState.cpp" />
     <ClCompile Include="Engine\Graphics\AnimationStateMachine.cpp" />

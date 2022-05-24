@@ -2,9 +2,11 @@
 #include "Engine/Managers/GameManager.h"
 #include "Engine/AI/States/MeleeMovementState.h"
 #include "Engine/AI/States/MeleeAttackState.h"
+#include "Engine/AI/States/WanderState.h"
 #include "Engine/GameObjects/MeleeWeaponGameObject.h"
 #include "Engine/ResourceDefines.h"
 #include "Engine/GameObjects/PlayerGameObject.h"
+#include "Engine/Physics/Shape.h"
 
 EnemyGameObject::EnemyGameObject(string identifier, CoolUUID uuid) : CharacterGameObject(identifier, uuid)
 {
@@ -78,10 +80,16 @@ void EnemyGameObject::Start()
 
 	m_stateMachine.AddState(pattackState);
 
+	WanderState* pwanderState = new WanderState(this);
+
+	m_stateMachine.AddState(pwanderState);
+
 	m_pweapon = GameManager::GetInstance()->CreateGameObject<MeleeWeaponGameObject>("TestWeapon");
 	m_pweapon->SetAlbedo(TEST2);
 	m_pweapon->GetTransform()->SetLocalScale(XMFLOAT3(20, 20, 20));
 	m_pweapon->SetLayer(3);
+	m_pweapon->GetShape()->SetIsTrigger(true);
+	m_pweapon->GetShape()->SetIsCollidable(false);
 
 	m_pplayer = GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject>(std::string("Player"));
 }

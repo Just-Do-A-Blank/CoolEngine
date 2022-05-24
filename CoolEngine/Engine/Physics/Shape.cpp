@@ -85,6 +85,16 @@ bool Shape::IsRendered() const
     return m_isRendered;
 }
 
+XMFLOAT2 Shape::GetScale()
+{
+    return m_scale;
+}
+
+void Shape::SetScale(XMFLOAT2 scale)
+{
+    m_scale = scale;
+}
+
 Shape::Shape(const nlohmann::json& data)
 {
 	if (data["ShapeType"] == "Box")
