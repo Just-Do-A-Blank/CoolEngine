@@ -15,7 +15,7 @@ Scene::Scene(string identifier)
 	const XMFLOAT3 scal = XMFLOAT3(1, 1, 1);
 
 	Transform* trans = new Transform();
-	m_quadtree = new Quadtree(XMFLOAT2(0,0), 4, 10);
+	m_quadtree = new Quadtree(XMFLOAT2(300,0), 4, 600);
 
 }
 
@@ -46,6 +46,8 @@ void Scene::Update()
 	Transform* t = pGO->GetTransform();
 
 	m_quadtree->GetUpdateList(XMFLOAT2(t->GetWorldPosition().x, t->GetWorldPosition().y), gameObjectList);
+
+	LOG(std::to_string(gameObjectList.size()));
 
 	for (int it = 0; it < gameObjectList.size(); ++it)
 	{

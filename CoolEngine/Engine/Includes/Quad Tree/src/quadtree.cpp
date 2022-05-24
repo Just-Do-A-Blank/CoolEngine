@@ -220,23 +220,35 @@ void Quadtree::GetUpdateList(XMFLOAT2 updatePoint, std::vector<GameObject*>& lis
     }
 
     float difference = std::abs(NW_->m_angle.x - updatePoint.x);
+    float difference2 = std::abs(NW_->m_angle.y - updatePoint.y);
 
-    if ((std::abs(NW_->m_angle.x - updatePoint.x) < m_objectOffset && std::abs(NW_->m_angle.y - updatePoint.y) < m_objectOffset) && (updatePoint.x <= NW_->m_angle.x && updatePoint.y >= NW_->m_angle.y))
+    if (difference < m_objectOffset && difference2 < m_objectOffset && updatePoint.x <= NW_->m_angle.x && updatePoint.y >= NW_->m_angle.y)
     {
         NW_->CheckForObjectUpdate(listToUpdate);
         NW_->GetUpdateList(updatePoint, listToUpdate);
     }
-    if ((std::abs(NE_->m_angle.x - updatePoint.x) < m_objectOffset && std::abs(NE_->m_angle.y - updatePoint.y) < m_objectOffset) && updatePoint.x >= NE_->m_angle.y && updatePoint.y >= NE_->m_angle.y)
+     difference = std::abs(NE_->m_angle.x - updatePoint.x);
+      difference2 = std::abs(NE_->m_angle.y - updatePoint.y);
+
+    if (difference < m_objectOffset && difference2 < m_objectOffset && updatePoint.x >= NE_->m_angle.y && updatePoint.y >= NE_->m_angle.y)
     {
           NE_->CheckForObjectUpdate(listToUpdate);
           NE_->GetUpdateList(updatePoint, listToUpdate);
     }
-    if ((std::abs(SW_->m_angle.x - updatePoint.x) < m_objectOffset && std::abs(SW_->m_angle.y - updatePoint.y) < m_objectOffset) && updatePoint.x <= SW_->m_angle.x && updatePoint.y <= SW_->m_angle.y)
+
+     difference = std::abs(SW_->m_angle.x - updatePoint.x);
+      difference2 = std::abs(SW_->m_angle.y - updatePoint.y);
+
+    if (difference < m_objectOffset && difference2 < m_objectOffset && updatePoint.x <= SW_->m_angle.x && updatePoint.y <= SW_->m_angle.y)
     {
         SW_->CheckForObjectUpdate(listToUpdate);
         SW_->GetUpdateList(updatePoint, listToUpdate);
     }
-    if ((std::abs(SE_->m_angle.x - updatePoint.x) < m_objectOffset && std::abs(SE_->m_angle.y - updatePoint.y) < m_objectOffset) && updatePoint.x >= SE_->m_angle.x && updatePoint.y <= SE_->m_angle.y)
+
+     difference = std::abs(SE_->m_angle.x - updatePoint.x);
+      difference2 = std::abs(SE_->m_angle.y - updatePoint.y);
+
+    if (difference < m_objectOffset && difference2 < m_objectOffset && updatePoint.x >= SE_->m_angle.x && updatePoint.y <= SE_->m_angle.y)
     {
        SE_->CheckForObjectUpdate(listToUpdate);
        SE_->GetUpdateList(updatePoint, listToUpdate);
