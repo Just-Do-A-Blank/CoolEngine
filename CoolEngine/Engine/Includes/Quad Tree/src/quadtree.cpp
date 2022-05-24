@@ -129,7 +129,7 @@ void Quadtree::QtreeCheckCollisions(XMFLOAT2 playerPosition) {
             continue;
         }
         pcollidable1 = dynamic_cast<CollidableGameObject*>(m_children[it1]);
-        pcollidable1->SetShapeDimensions(pcollidable1->GetTransform()->GetWorldScale());
+        pcollidable1->UpdateShapeDimensions();
 
         if (pcollidable1->GetShape() != nullptr && pcollidable1->GetShape()->IsRendered())
         {

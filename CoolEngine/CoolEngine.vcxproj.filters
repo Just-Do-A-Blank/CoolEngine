@@ -249,7 +249,6 @@
     <ClCompile Include="Engine\GameObjects\PrefabGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
-    </ClCompile>
     <ClCompile Include="Engine\GameObjects\BulletGameObject.cpp" />
     <ClCompile Include="Engine\Includes\Quad Tree\src\quadtree.cpp">
       <Filter>Engine\Includes\Quad Tree</Filter>

@@ -15,7 +15,7 @@ Scene::Scene(string identifier)
 	const XMFLOAT3 scal = XMFLOAT3(1, 1, 1);
 
 	Transform* trans = new Transform();
-	m_quadtree = new Quadtree(XMFLOAT2(300,0), 4, 600);
+	//m_quadtree = new Quadtree(XMFLOAT2(300,0), 4, 600);
 }
 
 Scene::~Scene()
@@ -84,19 +84,10 @@ void Scene::Render(RenderStruct& renderStruct)
 void Scene::InitializeQuadTree()
 {
 	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
-	PlayerGameObject* playerGameObject = dynamic_cast<PlayerGameObject*>(m_psceneGraph->GetNodeObjectUsingIdentifier((std::string)"Player"));
-	
-	if (playerGameObject == NULL || playerGameObject == nullptr)
-	{
-		LOG("Could not find PlayerGameObject");
-		return;
-	}
-
 	for (size_t i = 0; i < gameObjectList.size(); i++)
 	{
 		m_quadtree->InsertElement(gameObjectList[i]);
 	}
-	int i = 0;
 }
 
 vector<GameObject*>& Scene::GetAllGameObjects()
