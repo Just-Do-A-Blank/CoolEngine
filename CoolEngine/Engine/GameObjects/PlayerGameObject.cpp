@@ -3,6 +3,7 @@
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/EditorUI/EditorUI.h"
 #include "Engine/GameObjects/MeleeWeaponGameObject.h"
+#include "Engine/Physics/Shape.h"
 
 PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : CharacterGameObject(identifier, uuid)
 {
@@ -199,6 +200,8 @@ void PlayerGameObject::Start()
 	m_pweapon->SetAlbedo(TEST2);
 	m_pweapon->GetTransform()->SetLocalScale(XMFLOAT3(20, 20, 20));
 	m_pweapon->SetLayer(3);
+	m_pweapon->GetShape()->SetIsTrigger(true);
+	m_pweapon->GetShape()->SetIsCollidable(false);
 }
 
 

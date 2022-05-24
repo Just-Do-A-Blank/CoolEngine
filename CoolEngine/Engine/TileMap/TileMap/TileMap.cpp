@@ -4,6 +4,7 @@
 #include "Engine/Includes/json.hpp"
 #include "Engine/Graphics/AnimationStateMachine.h"
 #include "Engine/Graphics/AnimationState.h"
+#include "Engine/Physics/Collision.h"
 
 using namespace nlohmann;
 
@@ -109,6 +110,15 @@ void TileMap::Update()
 				m_tiles[i][j]->Update();
 				m_tiles[i][j]->GetTransform()->UpdateMatrix();
 			}
+		}
+	}
+
+	Scene* currentScene = GameManager::GetInstance()->GetCurrentScene();
+	if (currentScene)
+	{
+		for (int i = 0; i < m_width; ++i)
+		{
+			Collision::Update(currentScene->GetSceneGraph()->GetAllNodeObjects(), m_tiles[i]);
 		}
 	}
 }
@@ -380,6 +390,8 @@ bool TileMap::CreateTile(int row, int column, Tile*& ptile)
 	InitTilePosition(m_tiles[row][column], row, column);
 
 	ptile = m_tiles[row][column];
+
+	ptile->GetTransform()->UpdateMatrix();
 
 	return true;
 }

@@ -6,6 +6,7 @@
 class Box;
 class Circle;
 class BulletGameObject;
+class Tile;
 
 class Collision
 {
@@ -73,4 +74,10 @@ public:
 	/// </summary>
 	/// <param name="gameObjectMap"></param>
 	static void Update(vector<GameObject*> gameObjectMap, vector<ObjectEntry<BulletGameObject>*> bulletMap);
+
+	/// <summary>
+	/// Check for collisions between all objects in scene
+	/// </summary>
+	/// <param name="gameObjectMap"></param>
+	static void Update(vector<GameObject*>& gameObjectMap, vector<Tile*>& bulletMap);
 };

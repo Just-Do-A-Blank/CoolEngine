@@ -8,6 +8,7 @@
 
 #include "Engine/Managers/DebugDrawManager.h"
 #include "Engine/Managers/Events/BulletCreator.h"
+#include "Engine/TileMap/TileMap/Tile.h"
 
 bool Collision::BoxCollision(Box* box1, Box* box2)
 {
@@ -303,6 +304,39 @@ void Collision::Update(vector<GameObject*> gameObjectMap, vector<ObjectEntry<Bul
 					{
 						EventManager::Instance()->AddEvent(new TriggerHoldEvent(pcollidable, pbullet));
 					}
+				}
+			}
+		}
+	}
+}
+
+void Collision::Update(vector<GameObject*>& gameObjectMap, vector<Tile*>& tiles)
+{
+	CollidableGameObject* pcollidable = nullptr;
+
+	for (int i = 0; i < gameObjectMap.size(); ++i)
+	{
+		for (int j = 0; j < tiles.size(); ++j)
+		{
+			if (gameObjectMap[i]->ContainsType(GameObjectType::COLLIDABLE) == false || tiles[j] == nullptr)
+			{
+				continue;
+			}
+
+			pcollidable = dynamic_cast<CollidableGameObject*>(gameObjectMap[i]);
+
+			if (pcollidable->GetShape() == nullptr || tiles[j]->GetShape() == nullptr)
+			{
+				continue;
+			}
+
+			if (pcollidable->GetShape()->IsCollidable() && pcollidable->GetShape()->IsTrigger() == false)
+			{
+				bool hasCollided = pcollidable->GetShape()->CollideResponse(tiles[j]->GetShape());
+
+				if (hasCollided)
+				{
+					EventManager::Instance()->AddEvent(new TriggerHoldEvent(pcollidable, tiles[j]));
 				}
 			}
 		}
