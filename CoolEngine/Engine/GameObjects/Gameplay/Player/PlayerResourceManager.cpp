@@ -50,7 +50,12 @@ PlayerResourceManager::PlayerResourceManager(PlayerResourceManager const& other)
 
 PlayerResourceManager::~PlayerResourceManager()
 {
-
+    for (
+        std::map<string, PlayerResource*>::iterator itt = m_resources.begin();
+        itt != m_resources.end(); itt++)
+    {
+        delete itt->second;
+    }
 }
 
 /// <summary>
