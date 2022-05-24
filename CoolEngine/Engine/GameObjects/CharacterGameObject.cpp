@@ -47,6 +47,11 @@ void CharacterGameObject::EditorUpdate()
 
 }
 
+WeaponGameObject* CharacterGameObject::GetWeapon()
+{
+	return m_pweapon;
+}
+
 void CharacterGameObject::TakeDamage(float damage)
 {
 	m_health -= damage;

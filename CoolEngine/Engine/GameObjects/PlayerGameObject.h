@@ -1,8 +1,13 @@
 #pragma once
 #include "Engine/GameObjects/CharacterGameObject.h"
 #include "Engine/Managers/Events/MouseEvents.h"
-#include "Engine/Managers/Events/KeyEvents.h"
+#include "Engine/Managers/Events/KeyEvents.h" 
+#include "CameraGameObject.h"
 #include "Engine/GameObjects/Gameplay/Player/PlayerController.h"
+#include "Inventory.h"
+#include "Engine/GameObjects/Gameplay/Player/PlayerResource.h"
+#include "Engine/GameObjects/Gameplay/Player/PlayerResourceInterface.h"
+#include "Engine/GameObjects/Gameplay/Player/PlayerResourceManager.h"
 
 class PlayerGameObject : public CharacterGameObject
 {
@@ -20,11 +25,19 @@ public:
     /// </summary>
 	void Handle(Event* e) override;
 
+    //CameraGameObject* m_cameraRef;
+
+    /// <summary>
+    /// Called after construction, before first Update.
+    /// </summary>
+    virtual void Start() override;
+
     /// <summary>
     /// Update loop for the gameobject
     /// </summary>
     virtual void Update() override;
     virtual void EditorUpdate() override;
+
 
 #if EDITOR
     /// <summary>
@@ -33,6 +46,13 @@ public:
     virtual void CreateEngineUI() override;
 #endif
 
+    virtual void TakeDamage(float damage);
+
+    /// <summary>
+    /// Gets the player resource (such as health)
+    /// </summary>
+    /// <returns>The resource manager</returns>
+    PlayerResourceManager* GetPlayerResources();
 protected:
 
     virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
@@ -53,11 +73,21 @@ protected:
     /// </summary>
     virtual void OnTriggerExit(GameObject* obj1, GameObject* obj2) override { }
 
+    //virtual void Update() override {}  /// commented out due to error: "Error	C2535	'void PlayerGameObject::Update(void)': member function already defined or declared	CoolEngine	C : \Users\s019135i\Documents\GitHub\CoolEngine\CoolEngine\Engine\GameObjects\PlayerGameObject.h	59
+    Inventory* m_myInventory;
+
 private:
     /// <summary>
     /// Handles movement around the scene for the player
     /// </summary>
+    /// 
     PlayerController* m_playerController;
+  
+
+    /// <summary>
+    /// Manages the Player Resources (Health and Stamina for example)
+    /// </summary>
+    PlayerResourceManager* m_resourceManager;
 
     void LoadLocalData(const nlohmann::json& jsonData);
     void SaveLocalData(nlohmann::json& jsonData);
@@ -86,4 +116,11 @@ private:
     /// Handles the mouse moving across the window
     /// </summary>
 	//void MouseMoved(MouseMovedEvent* e);
+
+	void SetWeaponPosition();
+	
+    /// <summary>
+    /// Ends the session as the player is dead
+    /// </summary>
+    void RunPlayerDeadSequence();
 };

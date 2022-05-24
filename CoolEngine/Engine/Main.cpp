@@ -759,7 +759,6 @@ void Update()
 	GameManager* pgamemanager = GameManager::GetInstance();
 
 	pgamemanager->GetTimer()->Tick();
-	pgamemanager->Start();
 	pgamemanager->Update();
 
 #if EDITOR

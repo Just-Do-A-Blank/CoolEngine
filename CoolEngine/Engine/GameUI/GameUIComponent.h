@@ -1,4 +1,5 @@
 #pragma once
+#include "Engine/GameUI/GameUIPrefab.h"
 #include "Engine/GameObjects/RenderableGameObject.h"
 #include "Engine/Structure/EditorUIComponent.h"
 #include "Engine/GameObjects/UUID.h"
@@ -26,7 +27,7 @@ enum class AccumulatedUIComponentType
 
 DEFINE_ENUM_FLAG_OPERATORS(UIComponentType);
 
-class GameUIComponent : public GameObject
+class GameUIComponent : public GameUIPrefab
 {
 	friend FileIO;
 private:
@@ -72,5 +73,12 @@ public:
 #endif
 	UIComponentType GetUIComponentType()const;
 
+protected:
+	virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
+	virtual void SaveAllPrefabData(nlohmann::json& jsonData) override;
+
+private:
+	void LoadLocalData(const nlohmann::json& jsonData);
+	void SaveLocalData(nlohmann::json& jsonData);
 };
 

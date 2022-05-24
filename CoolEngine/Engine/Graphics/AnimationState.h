@@ -1,5 +1,5 @@
 #pragma once
-#include "Engine/AI/FiniteState.h"
+#include "Engine/AI/States/FiniteState.h"
 #include "Engine/Graphics/SpriteAnimation.h"
 
 class AnimationState : public FiniteState

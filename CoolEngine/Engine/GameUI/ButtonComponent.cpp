@@ -21,18 +21,13 @@ ButtonComponent::ButtonComponent(nlohmann::json& data, CoolUUID uuid) : GameUICo
 
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
 
-	std::string tempPath = data["ButtonPressTexPath"];
-	m_buttonTexFilepath[(int)ButtonState::PRESSED] = std::wstring(tempPath.begin(), tempPath.end());
-
-	tempPath = data["ButtonHoveredTexPath"];
-	m_buttonTexFilepath[(int)ButtonState::HOVERED] = std::wstring(tempPath.begin(), tempPath.end());
-
-	tempPath = data["ButtonReleasedTexPath"];
-	m_buttonTexFilepath[(int)ButtonState::RELEASED] = std::wstring(tempPath.begin(), tempPath.end());
-
-	for (int i = 0; i < (int)ButtonState::COUNT; ++i)
+	if (GameUIComponent::IsPrefab())
 	{
-		m_pButtonTextures[i] = GraphicsManager::GetInstance()->GetShaderResourceView(m_buttonTexFilepath[i]);
+		LoadLocalData(GameUIComponent::GetPrefabDataLoadedAtCreation());
+	}
+	else
+	{
+		LoadLocalData(data);
 	}
 }
 
@@ -154,14 +149,51 @@ void ButtonComponent::Serialize(nlohmann::json& data)
 {
 	GameUIComponent::Serialize(data);
 
+	SaveLocalData(data);
+}
+
+void ButtonComponent::LoadLocalData(const nlohmann::json& jsonData)
+{
+	if (jsonData.contains("ButtonPressTexPath"))
+	{
+		std::string tempPath = jsonData["ButtonPressTexPath"];
+		m_buttonTexFilepath[(int)ButtonState::PRESSED] = std::wstring(tempPath.begin(), tempPath.end());
+
+		tempPath = jsonData["ButtonHoveredTexPath"];
+		m_buttonTexFilepath[(int)ButtonState::HOVERED] = std::wstring(tempPath.begin(), tempPath.end());
+
+		tempPath = jsonData["ButtonReleasedTexPath"];
+		m_buttonTexFilepath[(int)ButtonState::RELEASED] = std::wstring(tempPath.begin(), tempPath.end());
+
+		for (int i = 0; i < (int)ButtonState::COUNT; ++i)
+		{
+			m_pButtonTextures[i] = GraphicsManager::GetInstance()->GetShaderResourceView(m_buttonTexFilepath[i]);
+		}
+	}
+}
+
+void ButtonComponent::SaveLocalData(nlohmann::json& jsonData)
+{
 	std::string tempPath = std::string(m_buttonTexFilepath[(int)ButtonState::PRESSED].begin(), m_buttonTexFilepath[(int)ButtonState::PRESSED].end());
-	data["ButtonPressTexPath"] = tempPath;
+	jsonData["ButtonPressTexPath"] = tempPath;
 
 	tempPath = std::string(m_buttonTexFilepath[(int)ButtonState::HOVERED].begin(), m_buttonTexFilepath[(int)ButtonState::HOVERED].end());
-	data["ButtonHoveredTexPath"] = tempPath;
+	jsonData["ButtonHoveredTexPath"] = tempPath;
 
 	tempPath = std::string(m_buttonTexFilepath[(int)ButtonState::RELEASED].begin(), m_buttonTexFilepath[(int)ButtonState::RELEASED].end());
-	data["ButtonReleasedTexPath"] = tempPath;
+	jsonData["ButtonReleasedTexPath"] = tempPath;
+}
+
+void ButtonComponent::LoadAllPrefabData(const nlohmann::json& jsonData)
+{
+	LoadLocalData(jsonData);
+	GameUIComponent::LoadAllPrefabData(jsonData);
+}
+
+void ButtonComponent::SaveAllPrefabData(nlohmann::json& jsonData)
+{
+	SaveLocalData(jsonData);
+	GameUIComponent::SaveAllPrefabData(jsonData);
 }
 
 #if EDITOR
@@ -169,20 +201,20 @@ void ButtonComponent::CreateEngineUI()
 {
 	GameUIComponent::CreateEngineUI();
 
-	ImGui::Spacing();
-	ImGui::Separator();
-	ImGui::Spacing();
+	if (EditorUI::CollapsingSection("Button Options", true))
+	{
+		ImVec2 textureSize = ImVec2(128, 32);
+		float columnWidth = 120.0f;
 
-	ImVec2 textureSize = ImVec2(128, 32);
-	float columnWidth = 120.0f;
+		EditorUI::Texture("Released Texture", m_buttonTexFilepath[int(ButtonState::RELEASED)], m_pButtonTextures[int(ButtonState::RELEASED)], columnWidth, textureSize);
+		ImGui::Spacing();
+		EditorUI::Texture("Pressed Texture", m_buttonTexFilepath[int(ButtonState::PRESSED)], m_pButtonTextures[int(ButtonState::PRESSED)], columnWidth, textureSize);
+		ImGui::Spacing();
+		EditorUI::Texture("Hovered Texture", m_buttonTexFilepath[int(ButtonState::HOVERED)], m_pButtonTextures[int(ButtonState::HOVERED)], columnWidth, textureSize);
 
-	EditorUI::Texture("Released Texture", m_buttonTexFilepath[int(ButtonState::RELEASED)], m_pButtonTextures[int(ButtonState::RELEASED)], columnWidth, textureSize);
-	ImGui::Spacing();
-	EditorUI::Texture("Pressed Texture", m_buttonTexFilepath[int(ButtonState::PRESSED)], m_pButtonTextures[int(ButtonState::PRESSED)], columnWidth, textureSize);
-	ImGui::Spacing();
-	EditorUI::Texture("Hovered Texture", m_buttonTexFilepath[int(ButtonState::HOVERED)], m_pButtonTextures[int(ButtonState::HOVERED)], columnWidth, textureSize);
+		ImGui::Spacing();
+	}
 
-	ImGui::Spacing();
 }
 #endif
 

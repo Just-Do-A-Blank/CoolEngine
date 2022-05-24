@@ -31,12 +31,18 @@ PlayerController::PlayerController(InputsAsGameplayButtons* gameplayButtons, Pla
     m_movementParameters.m_lastFirstPressedInputButton = EGAMEPLAYBUTTONCLASS::Nothing;
     m_movementParameters.m_lastSecondPressedInputButton = EGAMEPLAYBUTTONCLASS::Nothing;
     m_movementParameters.m_playerMovingBody = m_playerMovingBody;
+    m_movementParameters.m_dodgeResource = &m_dodgeResource;
+    m_movementParameters.m_dodgeResourceChange = &m_dodgeResourceChange;
+    m_movementParameters.m_rollResource = &m_rollResource;
+    m_movementParameters.m_rollResourceChange = &m_rollResourceChange;
 
     EventManager::Instance()->AddClient(EventType::KeyPressed, this);
     EventManager::Instance()->AddClient(EventType::KeyReleased, this);
     EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
     EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
     EventManager::Instance()->AddClient(EventType::MouseMoved, this);
+
+    m_playerGameObject = playerReference;
 }
 
 PlayerController::PlayerController(PlayerController const& other, PlayerGameObject* newPlayer)
@@ -48,12 +54,16 @@ PlayerController::PlayerController(PlayerController const& other, PlayerGameObje
 	m_speedMultiplierWalking = other.m_speedMultiplierWalking;
 	m_moveSpeedPerFrame = other.m_moveSpeedPerFrame;
 	m_dragSpeedPerFrame = other.m_dragSpeedPerFrame;
+
+    m_playerGameObject = newPlayer;
 }
 
 PlayerController::~PlayerController()
 {
     delete m_forceApplied;
-    if (m_currentState == nullptr)
+
+    // The check is here incase no state is created below
+    if (m_currentState != nullptr)
     {
         delete m_currentState;
     }
@@ -69,7 +79,7 @@ PlayerController::~PlayerController()
 
 void PlayerController::LoadAllPrefabData(const nlohmann::json& jsonData)
 {
-    if (jsonData.contains("PlayerController_SpeedMax"))
+    if (jsonData.contains("PlayerController_DodgeResourceChange"))
     {
         m_moveSpeedMax = jsonData["PlayerController_SpeedMax"];
         m_speedMultiplierWalking = jsonData["PlayerController_SpeedMultiplier"];
@@ -79,6 +89,10 @@ void PlayerController::LoadAllPrefabData(const nlohmann::json& jsonData)
         m_timeInSecondsToDodgeFor = jsonData["PlayerController_DragTime"];
         m_rollSpeed = jsonData["PlayerController_RollSpeed"];
         m_timeInSecondsToRollFor = jsonData["PlayerController_RollTime"];
+        m_dodgeResource = jsonData["PlayerController_DodgeResource"];
+        m_dodgeResourceChange = jsonData["PlayerController_DodgeResourceChange"];
+        m_rollResource = jsonData["PlayerController_RollResource"];
+        m_rollResourceChange = jsonData["PlayerController_RollResourceChange"];
     }
 }
 
@@ -92,6 +106,10 @@ void PlayerController::SaveAllPrefabData(nlohmann::json& jsonData)
     jsonData["PlayerController_DragTime"] = m_timeInSecondsToDodgeFor;
     jsonData["PlayerController_RollSpeed"] = m_rollSpeed;
     jsonData["PlayerController_RollTime"] = m_timeInSecondsToRollFor;
+    jsonData["PlayerController_DodgeResource"] = m_dodgeResource;
+    jsonData["PlayerController_DodgeResourceChange"] = m_dodgeResourceChange;
+    jsonData["PlayerController_RollResource"] = m_rollResource;
+    jsonData["PlayerController_RollResourceChange"] = m_rollResourceChange;
 }
 
 /// <summary>
@@ -148,7 +166,7 @@ void PlayerController::CreateEngineUI()
         speedParameters.m_speed = 0.01f;
 
         EditorUI::FullTitle("Walking", titleParameters);
-
+        
         EditorUI::DragFloat("Walking Speed", m_speedMultiplierWalking, speedParameters);
 
         speedParameters.m_tooltipText = "When dodging this is the main multiplier - sensitive to big changes!";
@@ -161,6 +179,16 @@ void PlayerController::CreateEngineUI()
 
         EditorUI::DragFloat("Dodge Time in Seconds ", m_timeInSecondsToDodgeFor, speedParameters);
 
+        EditorUINonSpecificParameters resourceParam = EditorUINonSpecificParameters();
+        resourceParam.m_tooltipText = "Which resource to drain";
+        resourceParam.m_columnWidth = 150;
+        EditorUI::ComboBox("Dodge Resource", GetListOfPlayerResourcesForDropDown(), m_dodgeResource, resourceParam);
+
+        EditorUIIntParameters intResourceParams = EditorUIIntParameters();
+        intResourceParams.m_tooltipText = "How much to reduce the resource on use, will remain in bounds.";
+        intResourceParams.m_columnWidth = 150;
+        EditorUI::DragInt("Dodge Amount", m_dodgeResourceChange, intResourceParams);
+
         speedParameters.m_tooltipText = "When rolling this is the main multiplier - sensitive to big changes!";
 
         EditorUI::FullTitle("Roll", titleParameters);
@@ -170,6 +198,10 @@ void PlayerController::CreateEngineUI()
         speedParameters.m_tooltipText = "The time in seconds to roll for before returning to walking!";
 
         EditorUI::DragFloat("Roll Time in Seconds ", m_timeInSecondsToRollFor, speedParameters);
+
+        EditorUI::ComboBox("Roll Resource", GetListOfPlayerResourcesForDropDown(), m_rollResource, resourceParam);
+
+        EditorUI::DragInt("Roll Amount", m_rollResourceChange, intResourceParams);
 
         EditorUI::FullTitle("All Speed Stats", titleParameters);
 
@@ -184,5 +216,17 @@ void PlayerController::CreateEngineUI()
 
         EditorUI::DragInt("Drag Per Frame", m_dragSpeedPerFrame, numberParameters);
     }
+}
+
+/// <summary>
+/// Gets a list of player resources
+/// </summary>
+/// <returns>All the player resources for the drop down</returns>
+list<string> PlayerController::GetListOfPlayerResourcesForDropDown()
+{
+    list<string> resources = m_playerGameObject->GetPlayerResources()->GetResourceKeys();
+    resources.push_front("None");
+
+    return resources;
 }
 #endif

@@ -31,9 +31,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine\AI\FiniteState.h" />
+    <ClInclude Include="Engine\AI\EnemyStateMachine.h" />
     <ClInclude Include="Engine\AI\FiniteStateMachine.h" />
+    <ClInclude Include="Engine\AI\FuzzyStateMachine.h" />
     <ClInclude Include="Engine\AI\Pathfinding.h" />
+    <ClInclude Include="Engine\AI\States\FiniteState.h" />
+    <ClInclude Include="Engine\AI\States\FuzzyState.h" />
+    <ClInclude Include="Engine\AI\States\MeleeAttackState.h" />
+    <ClInclude Include="Engine\AI\States\MeleeMovementState.h" />
+    <ClInclude Include="Engine\AI\States\RangeAttackState.h" />
+    <ClInclude Include="Engine\AI\States\WanderState.h" />
     <ClInclude Include="Engine\EditorUI\ContentBrowser.h" />
     <ClInclude Include="Engine\EditorUI\EditorButtonCallback.h" />
     <ClInclude Include="Engine\EditorUI\EditorUI.h" />
@@ -52,14 +59,19 @@
     <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\GameplayButton.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\EPLAYERMOVEMENTSTATE.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\EResourceModificationResult.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerController.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerDodgingState.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovementParameters.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovementState.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovingBody.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerResource.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerResourceInterface.h" />
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerResourceManager.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerRollingState.h" />
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerWalkingState.h" />
     <ClInclude Include="Engine\GameObjects\InteractableGameObject.h" />
+    <ClInclude Include="Engine\GameObjects\LevelChangeGameObject.h" />
     <ClInclude Include="Engine\GameObjects\MeleeWeaponGameObject.h" />
     <ClInclude Include="Engine\GameObjects\PrefabGameObject.h" />
     <ClInclude Include="Engine\GameObjects\RangedWeaponGameObject.h" />
@@ -75,6 +87,7 @@
     <ClInclude Include="Engine\GameObjects\WeaponGameObject.h" />
     <ClInclude Include="Engine\GameObjects\UUID.h" />
     <ClInclude Include="Engine\GameUI\ButtonComponent.h" />
+    <ClInclude Include="Engine\GameUI\GameUIPrefab.h" />
     <ClInclude Include="Engine\GameUI\TextComponent.h" />
     <ClInclude Include="Engine\Graphics\AnimationState.h" />
     <ClInclude Include="Engine\Graphics\AnimationStateMachine.h" />
@@ -192,11 +205,19 @@
     <ClInclude Include="Engine\GameUI\GameUIComponent.h" />
     <ClInclude Include="Engine\GameUI\UICanvas.h" />
     <ClInclude Include="Engine\GameUI\ImageComponent.h" />
+    <ClInclude Include="Inventory.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Engine\AI\FiniteState.cpp" />
+    <ClCompile Include="Engine\AI\EnemyStateMachine.cpp" />
     <ClCompile Include="Engine\AI\FiniteStateMachine.cpp" />
+    <ClCompile Include="Engine\AI\FuzzyStateMachine.cpp" />
     <ClCompile Include="Engine\AI\Pathfinding.cpp" />
+    <ClCompile Include="Engine\AI\States\FiniteState.cpp" />
+    <ClCompile Include="Engine\AI\States\FuzzyState.cpp" />
+    <ClCompile Include="Engine\AI\States\MeleeAttackState.cpp" />
+    <ClCompile Include="Engine\AI\States\MeleeMovementState.cpp" />
+    <ClCompile Include="Engine\AI\States\RangeAttackState.cpp" />
+    <ClCompile Include="Engine\AI\States\WanderState.cpp" />
     <ClCompile Include="Engine\EditorUI\ContentBrowser.cpp" />
     <ClCompile Include="Engine\EditorUI\EditorUI.cpp" />
     <ClCompile Include="Engine\EditorUI\TileMapContentBrowser.cpp" />
@@ -209,9 +230,13 @@
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerController.cpp" />
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerDodgingState.cpp" />
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerMovingBody.cpp" />
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerResource.cpp" />
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerResourceInterface.cpp" />
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerResourceManager.cpp" />
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerRollingState.cpp" />
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerWalkingState.cpp" />
     <ClCompile Include="Engine\GameObjects\InteractableGameObject.cpp" />
+    <ClCompile Include="Engine\GameObjects\LevelChangeGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\MeleeWeaponGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\PrefabGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\RangedWeaponGameObject.cpp" />
@@ -227,6 +252,7 @@
     <ClCompile Include="Engine\GameObjects\WeaponGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\UUID.cpp" />
     <ClCompile Include="Engine\GameUI\ButtonComponent.cpp" />
+    <ClCompile Include="Engine\GameUI\GameUIPrefab.cpp" />
     <ClCompile Include="Engine\GameUI\TextComponent.cpp" />
     <ClCompile Include="Engine\Graphics\AnimationState.cpp" />
     <ClCompile Include="Engine\Graphics\AnimationStateMachine.cpp" />
@@ -289,6 +315,7 @@
     <ClCompile Include="Engine\GameUI\GameUIComponent.cpp" />
     <ClCompile Include="Engine\GameUI\UICanvas.cpp" />
     <ClCompile Include="Engine\GameUI\ImageComponent.cpp" />
+    <ClCompile Include="Inventory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">

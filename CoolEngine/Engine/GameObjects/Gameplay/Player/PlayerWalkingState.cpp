@@ -94,13 +94,20 @@ void PlayerWalkingState::KeyPressed(KeyPressedEvent* e)
     EGAMEPLAYBUTTONCLASS button = m_gameplayButtons->GetGameplayButtonFromKeyInput(e->GetKeyCode());
     if (button == EGAMEPLAYBUTTONCLASS::Dodge)
     {
-        m_nextState = EPLAYERMOVEMENTSTATE::Dodging;
+        if (UseDodgeResource())
+        {
+            m_nextState = EPLAYERMOVEMENTSTATE::Dodging;
+        }  
     }
     else if (button == EGAMEPLAYBUTTONCLASS::Roll)
     {
-        m_nextState = EPLAYERMOVEMENTSTATE::Rolling;
+        if (UseRollResource())
+        {
+            m_nextState = EPLAYERMOVEMENTSTATE::Rolling;
+        }
     }
-    else if (button != EGAMEPLAYBUTTONCLASS::Nothing)
+    
+    if (button != EGAMEPLAYBUTTONCLASS::Nothing)
     {
         UpdateButtonOrderOnButtonPressed(button);
     }
@@ -477,4 +484,24 @@ void PlayerWalkingState::MoveFloatTowardZero(float* value, float intensity)
             }
         }
     }
+}
+
+/// <summary>
+/// Uses the dodge resource
+/// </summary>
+/// <returns>True means this was successful</returns>
+bool PlayerWalkingState::UseDodgeResource()
+{
+    return m_playerReference->GetPlayerResources()->UseResource(
+        *m_playerMovementParameters.m_dodgeResource, *m_playerMovementParameters.m_dodgeResourceChange);
+}
+
+/// <summary>
+/// Uses the roll resource
+/// </summary>
+/// <returns>True means this was successful</returns>
+bool PlayerWalkingState::UseRollResource()
+{
+    return m_playerReference->GetPlayerResources()->UseResource(
+        *m_playerMovementParameters.m_rollResource, *m_playerMovementParameters.m_rollResourceChange);
 }

@@ -48,6 +48,12 @@ public:
 		return XMFLOAT3(var1.x * value, var1.y * value, var1.z * value);
 	}
 
+	//Multiplies var1 with var2 and returns it
+	static XMFLOAT2& Multiply(XMFLOAT2 var1, const float& value)
+	{
+		return XMFLOAT2(var1.x * value, var1.y * value);
+	}
+
 	//Multiplies var1 with var2 and stores in var1
 	static void MultiplyEquals(XMFLOAT3& var1, const float& value)
 	{
@@ -72,6 +78,12 @@ public:
 		return (var1.x * var2.x) + (var1.y * var2.y) + (var1.z * var2.z);
 	}
 
+	//Returns dot product of var1 with var2
+	static float DotProduct(const XMFLOAT2& var1, const XMFLOAT2 var2)
+	{
+		return (var1.x * var2.x) + (var1.y * var2.y);
+	}
+
 	//Return cross product of var1 with var2
 	static XMFLOAT3& CrossProduct(const XMFLOAT3& var1, const XMFLOAT3& var2)
 	{
@@ -88,6 +100,12 @@ public:
 		return sqrt((var1.x * var1.x) + (var1.y * var1.y) + (var1.z * var1.z));
 	}
 
+	//Return magnitude of var1
+	static float Magnitude(const XMFLOAT2& var1)
+	{
+		return sqrt((var1.x * var1.x) + (var1.y * var1.y));
+	}
+
 	//Returns square magnitude of var1
 	static float SquareMagnitude(const XMFLOAT3& var1)
 	{
@@ -100,6 +118,14 @@ public:
 		float mag = Magnitude(var1);
 		assert(mag != 0);
 		return XMFLOAT3(var1.x / mag, var1.y / mag, var1.z / mag);
+	}
+
+	//Retruns normalized var1
+	static XMFLOAT2& Normalize(const XMFLOAT2& var1)
+	{
+		float mag = Magnitude(var1);
+		assert(mag != 0);
+		return XMFLOAT2(var1.x / mag, var1.y / mag);
 	}
 
 	//Returns distance from var1 to var2

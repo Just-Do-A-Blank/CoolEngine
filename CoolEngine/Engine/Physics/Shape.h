@@ -28,7 +28,7 @@ public:
     virtual bool CollideResponse(Circle* circle) = 0;
     virtual bool CollideResponse(Box* box) = 0;
 
-	virtual void SetShapeDimensions(XMFLOAT3 scale) = 0;
+	virtual void UpdateShapeDimensions() = 0;
 
 	ShapeType GetShapeType();
 
@@ -48,7 +48,9 @@ public:
     bool IsCollidable() const;
     bool IsRendered() const;
 
+    XMFLOAT2 GetScale();
     virtual XMFLOAT2 GetShapeDimensions() = 0;
+    void SetScale(XMFLOAT2 scale);
 
     GameObject* m_pgameObject;
 
@@ -58,4 +60,6 @@ protected:
     bool m_isTrigger = false;
     bool m_isCollidable = true;
     bool m_isRendered = false;
+
+    XMFLOAT2 m_scale = XMFLOAT2(1, 1);
 };
