@@ -281,7 +281,13 @@
     </ClCompile>
     <ClCompile Include="Engine\AI\States\WanderState.cpp" />
     <ClCompile Include="Engine\GameObjects\PickupGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
+      <Filter>Engine\GameObjects\Gameplay\Pickups</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\PickupResource.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Pickups</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\PickupsManager.cpp">
+      <Filter>Engine\Managers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -733,11 +739,17 @@
       <Filter>Engine\GameUI</Filter>
     </ClInclude>
     <ClInclude Include="Engine\AI\States\WanderState.h" />
-    <ClInclude Include="Engine\GameObjects\PickupGameObject.h">
-      <Filter>Engine\GameObjects</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Managers\Events\PickupEvent.h">
       <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\PickupGameObject.h">
+      <Filter>Engine\GameObjects\Gameplay\Pickups</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\PickupResource.h">
+      <Filter>Engine\GameObjects\Gameplay\Pickups</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\PickupsManager.h">
+      <Filter>Engine\Managers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -858,6 +870,9 @@
     </Filter>
     <Filter Include="Engine\AI\States">
       <UniqueIdentifier>{eb254e0a-a23d-4071-9fc8-c9fa39695892}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GameObjects\Gameplay\Pickups">
+      <UniqueIdentifier>{4958383b-627e-456b-9b70-6f8dd49502cc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

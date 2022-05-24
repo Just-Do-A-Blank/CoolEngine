@@ -1,37 +1,9 @@
 #pragma once
 #include "Engine/GameObjects/InteractableGameObject.h"
+#include "Engine/GameObjects/PickupResource.h"
+#include <unordered_set>
 
-enum class CONSUMABLETYPE
-{
-	HEALTH,
-	STAMINA,
-	SE_BOOSTER,
-	KEY,
-	POTION,
-	NONE
-};
-
-struct ConsumableData
-{
-	CONSUMABLETYPE consumType;
-	bool isConsumedOnPickup;
-	float strength;
-
-	ConsumableData(CONSUMABLETYPE ConsumeType,bool isConsumed, float Strength)
-	{
-		consumType = ConsumeType;
-		isConsumedOnPickup = isConsumed;
-		strength = Strength;
-	}
-
-	ConsumableData()
-	{
-		consumType = CONSUMABLETYPE::NONE;
-		isConsumedOnPickup = false;
-		strength = 0;
-	}
-
-};
+class PlayerGameObject;
 
 class PickupGameObject : public InteractableGameObject
 {
@@ -41,10 +13,14 @@ public:
 	PickupGameObject(PickupGameObject const& other);
 	~PickupGameObject();
 	virtual void Serialize(nlohmann::json& data) override;
-	const ConsumableData GetConsumableData() const { return m_ConsumableData; }
+	const list<PickupResource*> GetConsumableData() const { return m_pResouces; }
 	void Update() override;
 
 	void SetToBeDeleted(bool ShouldDelete) { m_shouldbeDeleted = ShouldDelete; }
+
+	void LoadAllPrefabData(const nlohmann::json& jsonData) override;
+
+	void SaveAllPrefabData(nlohmann::json& jsonData) override;
 
 #if EDITOR
 	/// <summary>
@@ -56,16 +32,18 @@ public:
 
 private:
 	//Expose this to editor
-	ConsumableData m_ConsumableData;
-	
+	PickupResourceInterface* m_pPickupResourceInterface;
+
+	unordered_set<string>* m_pFullResourceList;
+	list<PickupResource*> m_pResouces;
+
+	bool m_isConsumedOnPickup;
 
 	virtual void LoadLocalData(const nlohmann::json& jsonData);
 	virtual void SaveLocalData(nlohmann::json& jsonData);
 
-
-	string GetConsumableTypeString(CONSUMABLETYPE type);
-
 	bool m_shouldbeDeleted;
+	PlayerGameObject* m_pPlayer;
 
 };
 

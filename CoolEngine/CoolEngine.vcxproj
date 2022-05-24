@@ -74,6 +74,7 @@
     <ClInclude Include="Engine\GameObjects\LevelChangeGameObject.h" />
     <ClInclude Include="Engine\GameObjects\MeleeWeaponGameObject.h" />
     <ClInclude Include="Engine\GameObjects\PickupGameObject.h" />
+    <ClInclude Include="Engine\GameObjects\PickupResource.h" />
     <ClInclude Include="Engine\GameObjects\PrefabGameObject.h" />
     <ClInclude Include="Engine\GameObjects\RangedWeaponGameObject.h" />
     <ClInclude Include="Engine\GameObjects\RenderableCollidableGameObject.h" />
@@ -183,6 +184,7 @@
     <ClInclude Include="Engine\Managers\FontManager.h" />
     <ClInclude Include="Engine\Managers\GameManager.h" />
     <ClInclude Include="Engine\Managers\GraphicsManager.h" />
+    <ClInclude Include="Engine\Managers\PickupsManager.h" />
     <ClInclude Include="Engine\Managers\SceneGraph.h" />
     <ClInclude Include="Engine\Physics\Box.h" />
     <ClInclude Include="Engine\Physics\Circle.h" />
@@ -240,6 +242,7 @@
     <ClCompile Include="Engine\GameObjects\LevelChangeGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\MeleeWeaponGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\PickupGameObject.cpp" />
+    <ClCompile Include="Engine\GameObjects\PickupResource.cpp" />
     <ClCompile Include="Engine\GameObjects\PrefabGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\RangedWeaponGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\RenderableCollidableGameObject.cpp" />
@@ -298,6 +301,7 @@
     <ClCompile Include="Engine\Managers\Events\EventObserver.cpp" />
     <ClCompile Include="Engine\Managers\Events\Events.cpp" />
     <ClCompile Include="Engine\Managers\FontManager.cpp" />
+    <ClCompile Include="Engine\Managers\PickupsManager.cpp" />
     <ClCompile Include="Engine\Physics\Shape.cpp" />
     <ClCompile Include="Engine\Scene\Scene.cpp" />
     <ClCompile Include="Engine\Managers\AudioManager.cpp" />

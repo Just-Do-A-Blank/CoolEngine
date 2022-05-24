@@ -42,6 +42,7 @@
 
 #include "Engine/Managers/Events/EventObserverExamples.h"
 #include "Engine/Managers/Events/DamageCalculation.h"
+#include "Engine/Managers/PickupsManager.h"
 #include "Engine/Structure/ObjectPool.h"
 #include "Engine/GameObjects/BulletGameObject.h"
 #include "Engine/GameObjects/PickupGameObject.h"
@@ -757,6 +758,10 @@ void Update()
 
 	Inputs::GetInstance()->Update();
 	EventManager::Instance()->ProcessEvents();
+
+	PickupsManager::GetInstance()->Update();
+
+
 
 	GameManager* pgamemanager = GameManager::GetInstance();
 
