@@ -26,8 +26,8 @@ public:
 	void SetTimeLethal(float time);
 	void SetDistanceTravelled(float dist);
 	void SetIsPlayerWeapon(bool player);
-	void SetWeaponTexturePath(wstring path);
-	void SetWeaponScale(XMFLOAT3 scale);
+	void SetBulletTexturePath(wstring path);
+	void SetBulletScale(XMFLOAT3 scale);
 	void SetCollisionScale(XMFLOAT2 scale);
 
 	int GetLevel();
@@ -39,8 +39,8 @@ public:
 	float GetTimeLethal();
 	float GetDistanceTravelled();
 	bool GetIsPlayerWeapon();
-	wstring GetWeaponTexturePath();
-	XMFLOAT3 GetWeaponScale();
+	wstring GetBulletTexturePath();
+	XMFLOAT3 GetBulletScale();
 	XMFLOAT2 GetCollisionScale();
 
 	bool GetIsDualType();
@@ -59,8 +59,8 @@ private:
 	float m_timeLethal = 1;
 	float m_distanceTravelled = 100.0f;
 
-	wstring m_weaponTexturePath = DEFAULT_IMGUI_IMAGE;
-	XMFLOAT3 m_weaponScale = XMFLOAT3(25, 25, 25);
+	wstring m_bulletTexturePath = DEFAULT_IMGUI_IMAGE;
+	XMFLOAT3 m_bulletScale = XMFLOAT3(25, 25, 25);
 	XMFLOAT2 m_collisionScale = XMFLOAT2(1, 1);
 
 	ELEMENTS m_element = ELEMENTS::NONE;

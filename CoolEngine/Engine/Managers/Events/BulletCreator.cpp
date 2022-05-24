@@ -67,7 +67,7 @@ void BulletCreator::CreateBullet(CreateBulletEvent* e)
 	p_bullet->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
 	p_bullet->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
 	p_bullet->GetTransform()->SetWorldPosition(objectPos);
-	p_bullet->GetTransform()->SetWorldScale(e->GetObj()->GetWeaponScale());
+	p_bullet->GetTransform()->SetWorldScale(e->GetObj()->GetBulletScale());
 	Circle* pcircle = new Circle(p_bullet);
 	pcircle->SetIsCollidable(isCollision);
 	isCollision = true;
@@ -87,7 +87,7 @@ void BulletCreator::CreateBullet(CreateBulletEvent* e)
 	p_bullet->SetActive(true);
 	p_bullet->SetCurrentTime(0.0f);
 	p_bullet->SetTotalTime(e->GetObj()->GetDistanceTravelled() / e->GetObj()->GetSpeed());
-	p_bullet->SetAlbedo(e->GetObj()->GetWeaponTexturePath());
+	p_bullet->SetAlbedo(e->GetObj()->GetBulletTexturePath());
 }
 
 void BulletCreator::TestFire(MouseButtonPressedEvent* e)

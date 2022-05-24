@@ -138,14 +138,14 @@ void WeaponGameObject::SetIsPlayerWeapon(bool player)
     m_isPlayerWeapon = player;
 }
 
-void WeaponGameObject::SetWeaponTexturePath(wstring path)
+void WeaponGameObject::SetBulletTexturePath(wstring path)
 {
-    m_weaponTexturePath = path;
+    m_bulletTexturePath = path;
 }
 
-void WeaponGameObject::SetWeaponScale(XMFLOAT3 scale)
+void WeaponGameObject::SetBulletScale(XMFLOAT3 scale)
 {
-    m_weaponScale = scale;
+    m_bulletScale = scale;
 }
 
 void WeaponGameObject::SetCollisionScale(XMFLOAT2 scale)
@@ -198,14 +198,14 @@ bool WeaponGameObject::GetIsPlayerWeapon()
     return m_isPlayerWeapon;
 }
 
-wstring WeaponGameObject::GetWeaponTexturePath()
+wstring WeaponGameObject::GetBulletTexturePath()
 {
-    return m_weaponTexturePath;
+    return m_bulletTexturePath;
 }
 
-XMFLOAT3 WeaponGameObject::GetWeaponScale()
+XMFLOAT3 WeaponGameObject::GetBulletScale()
 {
-    return m_weaponScale;
+    return m_bulletScale;
 }
 
 XMFLOAT2 WeaponGameObject::GetCollisionScale()
