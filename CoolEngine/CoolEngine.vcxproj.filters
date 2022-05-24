@@ -725,7 +725,9 @@
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerResourceManager.h">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\GameUI\GameUIPrefab.h" />
+    <ClInclude Include="Engine\GameUI\GameUIPrefab.h">
+      <Filter>Engine\GameUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Engine\Includes\DirectXTK\SimpleMath.inl" />

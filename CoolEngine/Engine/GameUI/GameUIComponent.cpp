@@ -19,15 +19,7 @@ GameUIComponent::GameUIComponent(nlohmann::json& data, CoolUUID uuid) : GameUIPr
 	m_gameObjectType |= GameObjectType::GAME_UI_COMPONENT;
 	m_uiComponentType |= UIComponentType::BASE;
 
-	m_isRenderable = data["IsRendering"];
-	m_layer = data["Layer"];
-
-	m_texFilepath = L"";
-
-	std::string tempTexPath = data["TexturePath"];
-	std::wstring wideTexPath = std::wstring(tempTexPath.begin(), tempTexPath.end());
-
-	SetTexture(wideTexPath);
+	LoadLocalData(data);
 }
 
 GameUIComponent::GameUIComponent(GameUIComponent const& other) : GameUIPrefab(other)
@@ -60,11 +52,32 @@ void GameUIComponent::Serialize(nlohmann::json& data)
 {
 	GameUIPrefab::Serialize(data);
 
+	SaveLocalData(data);
+}
+
+void GameUIComponent::LoadLocalData(const nlohmann::json& jsonData)
+{
+	if (jsonData.contains("IsRendering"))
+	{
+		m_isRenderable = jsonData["IsRendering"];
+		m_layer = jsonData["Layer"];
+
+		m_texFilepath = L"";
+
+		std::string tempTexPath = jsonData["TexturePath"];
+		std::wstring wideTexPath = std::wstring(tempTexPath.begin(), tempTexPath.end());
+
+		SetTexture(wideTexPath);
+	}
+}
+
+void GameUIComponent::SaveLocalData(nlohmann::json& jsonData)
+{
 	std::string tempPath = std::string(m_texFilepath.begin(), m_texFilepath.end());
-	data["TexturePath"] = tempPath;
-	data["Layer"] = m_layer;
-	data["IsRendering"] = m_isRenderable;
-	data["UIType"] = (int)m_uiComponentType;
+	jsonData["TexturePath"] = tempPath;
+	jsonData["Layer"] = m_layer;
+	jsonData["IsRendering"] = m_isRenderable;
+	jsonData["UIType"] = (int)m_uiComponentType;
 }
 
 void GameUIComponent::SetIsRenderable(bool& condition)
