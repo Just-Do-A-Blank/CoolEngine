@@ -4,6 +4,9 @@
 #include "Engine/GameObjects/UUID.h"
 #include "Engine/Includes/json.hpp"
 
+#include "Engine/Managers/Events/KeyEvents.h"
+#include "Engine/Managers/Events/EventObserver.h"
+
 class Transform;
 
 enum class UIComponentType
@@ -26,7 +29,7 @@ enum class AccumulatedUIComponentType
 
 DEFINE_ENUM_FLAG_OPERATORS(UIComponentType);
 
-class GameUIComponent : public GameObject
+class GameUIComponent : public GameObject, public Observer
 {
 	friend FileIO;
 private:
@@ -50,6 +53,11 @@ public:
 	virtual void EditorUpdate()override;
 
 	virtual void Serialize(nlohmann::json& data) override;
+
+	/// <summary>
+	/// Handles events from the Observations
+	/// </summary>
+	virtual void Handle(Event* e) override;
 
 	//Getters
 	int& GetLayer();

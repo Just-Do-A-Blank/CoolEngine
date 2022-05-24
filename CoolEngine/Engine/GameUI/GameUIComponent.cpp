@@ -6,12 +6,18 @@
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/EditorUI/EditorUI.h"
 
+#include "Engine/Managers/GameManager.h"
+#include "Engine/Managers/Events/EventManager.h"
+
 GameUIComponent::GameUIComponent(string identifier, CoolUUID uuid):GameObject(identifier, uuid)
 {
 	m_gameObjectType |= GameObjectType::GAME_UI_COMPONENT;
 	m_uiComponentType |= UIComponentType::BASE;
 
 	m_transform = new Transform();
+
+	EventManager::Instance()->AddClient(EventType::KeyPressed, this);
+	EventManager::Instance()->AddClient(EventType::KeyReleased, this);
 }
 
 GameUIComponent::GameUIComponent(nlohmann::json& data, CoolUUID uuid) : GameObject(data, uuid)
@@ -28,6 +34,9 @@ GameUIComponent::GameUIComponent(nlohmann::json& data, CoolUUID uuid) : GameObje
 	std::wstring wideTexPath = std::wstring(tempTexPath.begin(), tempTexPath.end());
 
 	SetTexture(wideTexPath);
+
+	EventManager::Instance()->AddClient(EventType::KeyPressed, this);
+	EventManager::Instance()->AddClient(EventType::KeyReleased, this);
 }
 
 GameUIComponent::GameUIComponent(GameUIComponent const& other) : GameObject(other)
@@ -37,6 +46,9 @@ GameUIComponent::GameUIComponent(GameUIComponent const& other) : GameObject(othe
 
 	m_uiComponentType = other.m_uiComponentType;
 	m_layer = other.m_layer;
+
+	EventManager::Instance()->AddClient(EventType::KeyPressed, this);
+	EventManager::Instance()->AddClient(EventType::KeyReleased, this);
 }
 
 void GameUIComponent::Render(RenderStruct& renderStruct)
@@ -52,8 +64,40 @@ void GameUIComponent::Update()
 {
 }
 
+void GameUIComponent::Handle(Event* e)
+{
+	if (e->GetEventID() == EventType::KeyReleased)
+	{
+		KeyReleasedEvent* released = (KeyReleasedEvent*)e;
+		if (released->GetKeyCode() == 'T')
+		{
+			if (m_identifier == "canvasTest")
+			{
+				// Get us in the tree
+				GameManager* gm = GameManager::GetInstance();
+				Scene* scene = GameManager::GetInstance()->GetCurrentScene();
+				SceneGraph<GameObject>* sceneGraph = scene->GetSceneGraph();
+				TreeNode<GameObject>* gameObjectNode = sceneGraph->GetNodeUsingIdentifier(m_identifier);
+
+				// Delete all children???
+				TreeNode<GameObject>* tempChild = nullptr;
+				TreeNode<GameObject>* currentChild = gameObjectNode->Child;
+				while (currentChild != nullptr)
+				{
+					tempChild = currentChild;
+					currentChild = currentChild->Sibling;
+					string iden = tempChild->NodeObject->GetIdentifier();
+					gm->DeleteGameObjectUsingIdentifier(iden);
+				}
+			}
+
+		}
+	}
+}
+
 void GameUIComponent::EditorUpdate()
 {
+
 }
 
 void GameUIComponent::Serialize(nlohmann::json& data)
