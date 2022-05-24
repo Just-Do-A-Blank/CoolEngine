@@ -1,6 +1,7 @@
 #pragma once
 #include "GameUIComponent.h"
 #include "Engine/Includes/DirectXTK/SimpleMath.h"
+#include "Engine/GameUI/GameplayIntegration/GameplayUIResourceAttachment.h"
 
 struct FontAtlasStruct;
 class TextComponent : public GameUIComponent
@@ -49,5 +50,7 @@ protected:
 private:
 	void LoadLocalData(const nlohmann::json& jsonData);
 	void SaveLocalData(nlohmann::json& jsonData);
+
+	GameplayUIResourceAttachment* m_resourceAttachement;
 };
 

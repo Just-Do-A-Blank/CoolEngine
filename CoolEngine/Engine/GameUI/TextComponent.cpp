@@ -8,6 +8,8 @@
 TextComponent::TextComponent(string identifier, CoolUUID uuid) : GameUIComponent(identifier, uuid)
 {	
 	m_uiComponentType |= UIComponentType::TEXT;
+
+	m_resourceAttachement = new GameplayUIResourceAttachment();
 }
 
 TextComponent::TextComponent(nlohmann::json& data, CoolUUID uuid, ID3D11Device* pdevice) : GameUIComponent(data, uuid)
@@ -19,10 +21,12 @@ TextComponent::TextComponent(nlohmann::json& data, CoolUUID uuid, ID3D11Device* 
 	if (GameUIComponent::IsPrefab())
 	{
 		LoadLocalData(GameUIComponent::GetPrefabDataLoadedAtCreation());
+		m_resourceAttachement = new GameplayUIResourceAttachment(GameUIComponent::GetPrefabDataLoadedAtCreation());
 	}
 	else
 	{
 		LoadLocalData(data);
+		m_resourceAttachement = new GameplayUIResourceAttachment(data);
 	}
 }
 
@@ -39,6 +43,7 @@ void TextComponent::Serialize(nlohmann::json& data)
 	std::string uuidString = to_string(*m_UUID);
 
 	SaveLocalData(data);
+	m_resourceAttachement->Serialize(data);
 }
 
 void TextComponent::LoadLocalData(const nlohmann::json& jsonData)
@@ -64,11 +69,13 @@ void TextComponent::LoadAllPrefabData(const nlohmann::json& jsonData)
 {
 	GameUIComponent::LoadAllPrefabData(jsonData);
 	LoadLocalData(jsonData);
+	m_resourceAttachement->LoadFromTopLevel(jsonData);
 }
 
 void TextComponent::SaveAllPrefabData(nlohmann::json& jsonData)
 {
 	SaveLocalData(jsonData);
+	m_resourceAttachement->SaveFromTopLevel(jsonData);
 	GameUIComponent::SaveAllPrefabData(jsonData);
 }
 
@@ -122,6 +129,8 @@ void TextComponent::CreateEngineUI()
 	ImGui::Spacing();
 	ImGui::Separator();
 
+
+	m_resourceAttachement->CreateEngineUI();
 }
 #endif
 
