@@ -10,11 +10,14 @@ public:
     ImageComponent(string identifier, CoolUUID uuid);
 	ImageComponent(nlohmann::json& data, CoolUUID uuid);
 	ImageComponent(ImageComponent const& other);
+    virtual ~ImageComponent() override;
 
 #if EDITOR
 		void CreateEngineUI() override;
 #endif
 
+    virtual void Start() override;
+    virtual void Update() override;
     virtual void Serialize(nlohmann::json& jsonData) override;
 
 protected:

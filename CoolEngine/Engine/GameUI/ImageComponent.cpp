@@ -42,6 +42,11 @@ ImageComponent::ImageComponent(ImageComponent const& other) : GameUIComponent(ot
 	
 }
 
+ImageComponent::~ImageComponent()
+{
+    delete m_resourceAttachement;
+}
+
 #if EDITOR
 void ImageComponent::CreateEngineUI()
 {
@@ -56,6 +61,17 @@ void ImageComponent::CreateEngineUI()
 }
 #endif
 
+void ImageComponent::Start()
+{
+    GameUIComponent::Start();
+    m_resourceAttachement->Start();
+}
+
+void ImageComponent::Update()
+{
+    GameUIComponent::Update();
+    m_resourceAttachement->Update();
+}
 
 void ImageComponent::Serialize(nlohmann::json& jsonData)
 {

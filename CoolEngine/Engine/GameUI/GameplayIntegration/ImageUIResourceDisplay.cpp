@@ -3,17 +3,25 @@
 
 ImageUIResourceDisplay::ImageUIResourceDisplay(ImageComponent* component) : GameplayUIResourceAttachment()
 {
+    m_imageComponent = component;
 	m_texturesForEachResourceChange = list<TextureToResource*>();
 }
 
 ImageUIResourceDisplay::ImageUIResourceDisplay(nlohmann::json& data, ImageComponent* component) : GameplayUIResourceAttachment(data)
 {
+    m_imageComponent = component;
 	m_texturesForEachResourceChange = list<TextureToResource*>();
+    LoadLocalData(data);
 }
 
 ImageUIResourceDisplay::ImageUIResourceDisplay(ImageUIResourceDisplay const& other, ImageComponent* component) : GameplayUIResourceAttachment(other)
 {
+    m_imageComponent = component;
 	m_texturesForEachResourceChange = list<TextureToResource*>();
+    for (TextureToResource* const& i : other.m_texturesForEachResourceChange)
+    {
+        m_texturesForEachResourceChange.push_back(new TextureToResource(*i));
+    }
 }
 
 ImageUIResourceDisplay::~ImageUIResourceDisplay()
@@ -72,7 +80,18 @@ void ImageUIResourceDisplay::Start()
 /// <param name="resourceValue">The resource value if set</param>
 void ImageUIResourceDisplay::Update(int resourceValue)
 {
+    if (m_texturesForEachResourceChange.size() == 0)
+    {
+        return;
+    }
 
+    for (TextureToResource* const& i : m_texturesForEachResourceChange)
+    {
+        if (i->WouldSetGivenValue(resourceValue))
+        {
+            m_imageComponent->SetTexture(i->GetTextureOut());
+        }
+    }
 }
 
 void ImageUIResourceDisplay::LoadAllPrefabData(const nlohmann::json& jsonData)

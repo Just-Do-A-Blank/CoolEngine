@@ -41,5 +41,10 @@ private:
 	/// Each texture for a resource change
 	/// </summary>
 	list<TextureToResource*> m_texturesForEachResourceChange;
+
+    /// <summary>
+    /// The actual image component on the UI
+    /// </summary>
+    ImageComponent* m_imageComponent;
 };
 
