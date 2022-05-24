@@ -19,7 +19,14 @@ GameUIComponent::GameUIComponent(nlohmann::json& data, CoolUUID uuid) : GameUIPr
 	m_gameObjectType |= GameObjectType::GAME_UI_COMPONENT;
 	m_uiComponentType |= UIComponentType::BASE;
 
-	LoadLocalData(data);
+	if (GameUIPrefab::IsPrefab())
+	{
+		LoadLocalData(GameUIPrefab::GetPrefabDataLoadedAtCreation());
+	}
+	else
+	{
+		LoadLocalData(data);
+	}
 }
 
 GameUIComponent::GameUIComponent(GameUIComponent const& other) : GameUIPrefab(other)
@@ -78,6 +85,18 @@ void GameUIComponent::SaveLocalData(nlohmann::json& jsonData)
 	jsonData["Layer"] = m_layer;
 	jsonData["IsRendering"] = m_isRenderable;
 	jsonData["UIType"] = (int)m_uiComponentType;
+}
+
+void GameUIComponent::LoadAllPrefabData(const nlohmann::json& jsonData)
+{
+	LoadLocalData(jsonData);
+	GameUIPrefab::LoadAllPrefabData(jsonData);
+}
+
+void GameUIComponent::SaveAllPrefabData(nlohmann::json& jsonData)
+{
+	SaveLocalData(jsonData);
+	GameUIPrefab::SaveAllPrefabData(jsonData);
 }
 
 void GameUIComponent::SetIsRenderable(bool& condition)

@@ -1,0 +1,11 @@
+Prefabs are single object saves.
+Add a key on some objects.
+Save the key and then hit save to create the file.
+When you save the scene it will save the key with the game object.
+On Scene load it will load the prefab with the scene.
+
+Keep in mind:
+1. Whilst editing, Prefabs are still game objects so hit load to update to the prefab version!
+2. There is no type protection so if you enter save an enemy prefab on the player it just won't load any player properties. Defaults would load.
+3. It's just a single object saver.
+4. Transforms are saved on the UI prefabs.
