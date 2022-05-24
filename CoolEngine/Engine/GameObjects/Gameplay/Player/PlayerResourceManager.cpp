@@ -22,7 +22,24 @@ PlayerResourceManager::PlayerResourceManager(const nlohmann::json& data)
 
 PlayerResourceManager::PlayerResourceManager(PlayerResourceManager const& other)
 {
-    m_resources = other.m_resources;
+    map<string, PlayerResource*> otherResources = other.m_resources;
+
+    m_resources = map<string, PlayerResource*>();
+    for (
+        std::map<string, PlayerResource*>::iterator itt = otherResources.begin();
+        itt != otherResources.end(); itt++)
+    {
+        PlayerResource* playerResource = new PlayerResource(itt->first);
+        playerResource->SetMinValue(itt->second->GetMinValue());
+        playerResource->SetMaxValue(itt->second->GetMaxValue());
+        playerResource->SetDefaultValue(itt->second->GetDefaultValue());
+        playerResource->SetAttachesToWeaponDamage(itt->second->GetAttachesToWeaponDamage());
+        playerResource->SetKillsOnDrain(itt->second->GetKillsOnDrain());
+
+        m_resources[itt->first] = playerResource;
+    }
+
+
 #if EDITOR
     m_resourceInterface = other.m_resourceInterface;
 #endif
