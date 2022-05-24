@@ -46,6 +46,7 @@ void TextUIResourceDisplay::Update(int resourceValue)
 
 		if (EditorUI::CollapsingSection("Text as Resource", true))
 		{
+			EditorUI::FullTitle("Overrides Text with Resource value");
 			EditorUI::InputText("Prefix", m_prefixText);
 			EditorUI::InputText("Suffix", m_suffixText);
 		}

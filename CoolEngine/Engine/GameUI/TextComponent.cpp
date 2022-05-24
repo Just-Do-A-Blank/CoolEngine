@@ -126,51 +126,64 @@ void TextComponent::CreateEngineUI()
 {
 	GameUIComponent::CreateEngineUI();
 
-	ImGui::Spacing();
-	ImGui::Separator();
-	ImGui::Spacing();
-
-	vector<string> fontList = FontManager::GetInstance()->GetFontNames();
-
-	if (IMGUI_LEFT_LABEL(ImGui::BeginCombo, "Font", m_fontName.c_str()) == true)
+	if (EditorUI::CollapsingSection("Text Options", true))
 	{
-		for (int i = 0; i < fontList.size(); ++i)
+
+		vector<string> fontList = FontManager::GetInstance()->GetFontNames();
+
+		// For an actual example of this see Combo box in EditorUI - Do not copy this.
+		ImGui::PushID("Font");
+		ImGui::Columns(2);
+		ImGui::SetColumnWidth(0, 100);
+		ImGui::Text("Font");
+		ImGui::NextColumn();
+		ImGui::PushItemWidth(ImGui::CalcItemWidth());
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+		if(ImGui::BeginCombo("", m_fontName.c_str()))
 		{
-			if (ImGui::Selectable(fontList[i].c_str(), m_fontName == fontList[i].c_str()))
+			for (int i = 0; i < fontList.size(); ++i)
 			{
-				m_fontName = fontList[i];
-				UpdateFont(fontList[i], m_fontSize);
-				CreateTextQuads();
+				if (ImGui::Selectable(fontList[i].c_str(), m_fontName == fontList[i].c_str()))
+				{
+					m_fontName = fontList[i];
+					UpdateFont(fontList[i], m_fontSize);
+					CreateTextQuads();
+				}
 			}
+
+			ImGui::EndCombo();
 		}
 
-		ImGui::EndCombo();
+		ImGui::PopItemWidth();
+		ImGui::PopStyleVar();
+		ImGui::Columns(1);
+		ImGui::PopID();
+		ImGui::Spacing();
+
+		if (EditorUI::InputText("Text", m_text) == true)
+		{
+			CreateTextQuads();
+		}
+
+		ImGui::Spacing();
+		EditorUIFloatParameters colorParameters = EditorUIFloatParameters();
+		colorParameters.m_columnWidth = 100;
+		colorParameters.m_speed = 0.01f;
+		colorParameters.m_minValue = 0;
+		colorParameters.m_maxValue = 1;
+
+		XMFLOAT3 colour = XMFLOAT3(m_colour.x, m_colour.y, m_colour.z);
+		EditorUI::DragFloat3("Colour", colour, colorParameters);
+
+		m_colour.x = colour.x;
+		m_colour.y = colour.y;
+		m_colour.z = colour.z;
+
+		ImGui::Spacing();
+		ImGui::Separator();
+
 	}
-
-	ImGui::Spacing();
-	
-	if (EditorUI::InputText("Text", m_text) == true)
-	{
-		CreateTextQuads();
-	}
-
-	ImGui::Spacing();
-    EditorUIFloatParameters colorParameters = EditorUIFloatParameters();
-    colorParameters.m_columnWidth = 100;
-    colorParameters.m_speed = 0.01f;
-    colorParameters.m_minValue = 0;
-    colorParameters.m_maxValue = 1;
-
-	XMFLOAT3 colour = XMFLOAT3(m_colour.x, m_colour.y, m_colour.z);
-	EditorUI::DragFloat3("Colour", colour, colorParameters);
-
-	m_colour.x = colour.x;
-	m_colour.y = colour.y;
-	m_colour.z = colour.z;
-
-	ImGui::Spacing();
-	ImGui::Separator();
-
 
 	m_resourceAttachement->CreateEngineUI();
 }
