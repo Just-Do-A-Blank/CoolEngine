@@ -6,7 +6,7 @@
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/EditorUI/EditorUI.h"
 
-GameUIComponent::GameUIComponent(string identifier, CoolUUID uuid):GameObject(identifier, uuid)
+GameUIComponent::GameUIComponent(string identifier, CoolUUID uuid):GameUIPrefab(identifier, uuid)
 {
 	m_gameObjectType |= GameObjectType::GAME_UI_COMPONENT;
 	m_uiComponentType |= UIComponentType::BASE;
@@ -14,7 +14,7 @@ GameUIComponent::GameUIComponent(string identifier, CoolUUID uuid):GameObject(id
 	m_transform = new Transform();
 }
 
-GameUIComponent::GameUIComponent(nlohmann::json& data, CoolUUID uuid) : GameObject(data, uuid)
+GameUIComponent::GameUIComponent(nlohmann::json& data, CoolUUID uuid) : GameUIPrefab(data, uuid)
 {
 	m_gameObjectType |= GameObjectType::GAME_UI_COMPONENT;
 	m_uiComponentType |= UIComponentType::BASE;
@@ -30,7 +30,7 @@ GameUIComponent::GameUIComponent(nlohmann::json& data, CoolUUID uuid) : GameObje
 	SetTexture(wideTexPath);
 }
 
-GameUIComponent::GameUIComponent(GameUIComponent const& other) : GameObject(other)
+GameUIComponent::GameUIComponent(GameUIComponent const& other) : GameUIPrefab(other)
 {
 	m_isRenderable = other.m_isRenderable;
 	m_ptexture = other.m_ptexture;
@@ -58,7 +58,7 @@ void GameUIComponent::EditorUpdate()
 
 void GameUIComponent::Serialize(nlohmann::json& data)
 {
-	GameObject::Serialize(data);
+	GameUIPrefab::Serialize(data);
 
 	std::string tempPath = std::string(m_texFilepath.begin(), m_texFilepath.end());
 	data["TexturePath"] = tempPath;
@@ -107,7 +107,7 @@ void GameUIComponent::ShowEngineUI()
 }
 void GameUIComponent::CreateEngineUI()
 {
-	GameObject::CreateEngineUI();
+	GameUIPrefab::CreateEngineUI();
 }
 UIComponentType GameUIComponent::GetUIComponentType() const
 {

@@ -251,7 +251,7 @@
     </ClCompile>
     <ClCompile Include="Inventory.cpp">
       <Filter>Engine\GameObjects\Gameplay\Inventory</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="Engine\AI\EnemyStateMachine.cpp">
       <Filter>Engine\AI</Filter>
     </ClCompile>
@@ -275,6 +275,9 @@
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerResourceManager.cpp">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameUIPrefab.cpp">
+      <Filter>Engine\GameUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -694,7 +697,7 @@
     </ClInclude>
     <ClInclude Include="Inventory.h">
       <Filter>Engine\GameObjects\Gameplay\Inventory</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="Engine\AI\EnemyStateMachine.h">
       <Filter>Engine\AI</Filter>
     </ClInclude>
@@ -722,6 +725,7 @@
     <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerResourceManager.h">
       <Filter>Engine\GameObjects\Gameplay\Player</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameUIPrefab.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Engine\Includes\DirectXTK\SimpleMath.inl" />
@@ -838,7 +842,7 @@
     </Filter>
     <Filter Include="Engine\GameObjects\Gameplay\Inventory">
       <UniqueIdentifier>{81686caf-18bc-42f0-9d12-d80b412a5a52}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="Engine\AI\States">
       <UniqueIdentifier>{eb254e0a-a23d-4071-9fc8-c9fa39695892}</UniqueIdentifier>
     </Filter>
