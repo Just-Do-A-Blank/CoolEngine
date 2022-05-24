@@ -279,6 +279,7 @@
     <ClCompile Include="Engine\GameUI\GameUIPrefab.cpp">
       <Filter>Engine\GameUI</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\AI\States\WanderState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -728,6 +729,7 @@
     <ClInclude Include="Engine\GameUI\GameUIPrefab.h">
       <Filter>Engine\GameUI</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\AI\States\WanderState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Engine\Includes\DirectXTK\SimpleMath.inl" />
