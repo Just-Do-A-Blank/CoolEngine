@@ -19,10 +19,10 @@ Quadtree::Quadtree(XMFLOAT2 pos, int childrenSize, int distantOffset)
     m_direction = CompassFacing::Centre;
     m_objectOffset = distantOffset;
 
-    NW_ = new Quadtree(XMFLOAT2(-1.f + pos.x, pos.y), childrenSize, CompassFacing::NorthWest, distantOffset);
-    NE_ = new Quadtree(XMFLOAT2(1.f + pos.x, pos.y), childrenSize, CompassFacing::NorthEast, distantOffset);
-    SW_ = new Quadtree(XMFLOAT2(-1.f + pos.x, pos.y), childrenSize, CompassFacing::SouthWest, distantOffset);
-    SE_ = new Quadtree(XMFLOAT2(1.f + pos.x, pos.y), childrenSize, CompassFacing::SouthEast, distantOffset);
+    m_NW = new Quadtree(XMFLOAT2(-1.f + pos.x, pos.y), childrenSize, CompassFacing::NorthWest, distantOffset);
+    m_NE = new Quadtree(XMFLOAT2(1.f + pos.x, pos.y), childrenSize, CompassFacing::NorthEast, distantOffset);
+    m_SW = new Quadtree(XMFLOAT2(-1.f + pos.x, pos.y), childrenSize, CompassFacing::SouthWest, distantOffset);
+    m_SE = new Quadtree(XMFLOAT2(1.f + pos.x, pos.y), childrenSize, CompassFacing::SouthEast, distantOffset);
 }
 
 
@@ -38,7 +38,7 @@ bool Quadtree::InsertElement(GameObject* obj)
         m_children.push_back(obj);
         return true;
     }
-    if(NW_ == nullptr) {
+    if(m_NW == nullptr) {
         Subdivide(this);
     }
 
@@ -49,24 +49,24 @@ bool Quadtree::InsertElement(GameObject* obj)
     bool insert_SE = false;
     bool insert_SW = false;
 
-    if (pos.x <= NW_->m_angle.x && pos.y >= NW_->m_angle.y)
+    if (pos.x <= m_NW->m_angle.x && pos.y >= m_NW->m_angle.y)
     {
-        insert_NW = NW_->InsertElement(obj);
+        insert_NW = m_NW->InsertElement(obj);
         return insert_NW;
     }
-    if (pos.x >= NE_->m_angle.y && pos.y >= NE_->m_angle.y)
+    if (pos.x >= m_NE->m_angle.y && pos.y >= m_NE->m_angle.y)
     {
-        insert_NE = NE_->InsertElement(obj);
+        insert_NE = m_NE->InsertElement(obj);
         return insert_NE;
     }
-    if (pos.x <= SW_->m_angle.x && pos.y <= SW_->m_angle.y)
+    if (pos.x <= m_SW->m_angle.x && pos.y <= m_SW->m_angle.y)
     {
-        insert_SE = SW_->InsertElement(obj);
+        insert_SE = m_SW->InsertElement(obj);
         return insert_SE;
     }
-    if (pos.x >= SE_->m_angle.x && pos.y <= SE_->m_angle.y)
+    if (pos.x >= m_SE->m_angle.x && pos.y <= m_SE->m_angle.y)
     {
-        insert_SW = SE_->InsertElement(obj);
+        insert_SW = m_SE->InsertElement(obj);
         return insert_SW;
     }
 
@@ -79,27 +79,27 @@ bool Quadtree::InsertElement(GameObject* obj)
 
 void Quadtree::Subdivide(Quadtree * root) {
 
-    if (NW_ != nullptr)
+    if (m_NW != nullptr)
     {
-        delete NW_;
+        delete m_NW;
     }
-    if (NE_ != nullptr)
+    if (m_NE != nullptr)
     {
-        delete NE_;
+        delete m_NE;
     }
-    if (SW_ != nullptr)
+    if (m_SW != nullptr)
     {
-        delete SW_;
+        delete m_SW;
     }
-    if (SE_ != nullptr)
+    if (m_SE != nullptr)
     {
-        delete SE_;
+        delete m_SE;
     }
 
-    NW_ = new Quadtree(XMFLOAT2(m_angle.x + -1.f, m_angle.y + 1.f), m_maxNodeSize, CompassFacing::NorthWest, m_objectOffset);
-    NE_ = new Quadtree(XMFLOAT2(m_angle.x + 1.f, m_angle.y + 1.f), m_maxNodeSize, CompassFacing::NorthEast, m_objectOffset);
-    SW_ = new Quadtree(XMFLOAT2(m_angle.x + -1.f, m_angle.y + -1.f), m_maxNodeSize, CompassFacing::SouthWest, m_objectOffset);
-    SE_ = new Quadtree(XMFLOAT2(m_angle.x + 1.f, m_angle.y + -1.f), m_maxNodeSize, CompassFacing::SouthEast, m_objectOffset);
+    m_NW = new Quadtree(XMFLOAT2(m_angle.x + -1.f, m_angle.y + 1.f), m_maxNodeSize, CompassFacing::NorthWest, m_objectOffset);
+    m_NE = new Quadtree(XMFLOAT2(m_angle.x + 1.f, m_angle.y + 1.f), m_maxNodeSize, CompassFacing::NorthEast, m_objectOffset);
+    m_SW = new Quadtree(XMFLOAT2(m_angle.x + -1.f, m_angle.y + -1.f), m_maxNodeSize, CompassFacing::SouthWest, m_objectOffset);
+    m_SE = new Quadtree(XMFLOAT2(m_angle.x + 1.f, m_angle.y + -1.f), m_maxNodeSize, CompassFacing::SouthEast, m_objectOffset);
 }
 
 void Quadtree::QtreeCheckCollisions(XMFLOAT2 playerPosition) {
@@ -214,83 +214,83 @@ void Quadtree::GetUpdateList(XMFLOAT2 updatePoint, std::vector<GameObject*>& lis
     {
         CheckForObjectUpdate(listToUpdate);
     }
-    if (NW_ == nullptr)
+    if (m_NW == nullptr)
     {
         return;
     }
 
-    //float difference = std::abs(NW_->m_angle.x - updatePoint.x);
-    //float difference2 = std::abs(NW_->m_angle.y - updatePoint.y);
+    //float difference = std::abs(m_NW->m_angle.x - updatePoint.x);
+    //float difference2 = std::abs(m_NW->m_angle.y - updatePoint.y);
 
-    if (NW_ != nullptr)
+    if (m_NW != nullptr)
     {
-        NW_->CheckForObjectUpdate(listToUpdate);
-        NW_->GetUpdateList(updatePoint, listToUpdate);
-        NE_->CheckForObjectUpdate(listToUpdate);
-        NE_->GetUpdateList(updatePoint, listToUpdate);
-        SW_->CheckForObjectUpdate(listToUpdate);
-        SW_->GetUpdateList(updatePoint, listToUpdate);
-        SE_->CheckForObjectUpdate(listToUpdate);
-        SE_->GetUpdateList(updatePoint, listToUpdate);
+        m_NW->CheckForObjectUpdate(listToUpdate);
+        m_NW->GetUpdateList(updatePoint, listToUpdate);
+        m_NE->CheckForObjectUpdate(listToUpdate);
+        m_NE->GetUpdateList(updatePoint, listToUpdate);
+        m_SW->CheckForObjectUpdate(listToUpdate);
+        m_SW->GetUpdateList(updatePoint, listToUpdate);
+        m_SE->CheckForObjectUpdate(listToUpdate);
+        m_SE->GetUpdateList(updatePoint, listToUpdate);
     }
 
 
 
 
-    //if (difference < m_objectOffset && difference2 < m_objectOffset && updatePoint.x <= NW_->m_angle.x && updatePoint.y >= NW_->m_angle.y)
+    //if (difference < m_objectOffset && difference2 < m_objectOffset && updatePoint.x <= m_NW->m_angle.x && updatePoint.y >= m_NW->m_angle.y)
     //{
-    //    NW_->CheckForObjectUpdate(listToUpdate);
-    //    NW_->GetUpdateList(updatePoint, listToUpdate);
+    //    m_NW->CheckForObjectUpdate(listToUpdate);
+    //    m_NW->GetUpdateList(updatePoint, listToUpdate);
     //}
-    // difference = std::abs(NE_->m_angle.x - updatePoint.x);
-    //  difference2 = std::abs(NE_->m_angle.y - updatePoint.y);
+    // difference = std::abs(m_NE->m_angle.x - updatePoint.x);
+    //  difference2 = std::abs(m_NE->m_angle.y - updatePoint.y);
 
-    //if (difference < m_objectOffset && difference2 < m_objectOffset && updatePoint.x >= NE_->m_angle.y && updatePoint.y >= NE_->m_angle.y)
+    //if (difference < m_objectOffset && difference2 < m_objectOffset && updatePoint.x >= m_NE->m_angle.y && updatePoint.y >= m_NE->m_angle.y)
     //{
-    //      NE_->CheckForObjectUpdate(listToUpdate);
-    //      NE_->GetUpdateList(updatePoint, listToUpdate);
-    //}
-
-    // difference = std::abs(SW_->m_angle.x - updatePoint.x);
-    //  difference2 = std::abs(SW_->m_angle.y - updatePoint.y);
-
-    //if (difference < m_objectOffset && difference2 < m_objectOffset && updatePoint.x <= SW_->m_angle.x && updatePoint.y <= SW_->m_angle.y)
-    //{
-    //    SW_->CheckForObjectUpdate(listToUpdate);
-    //    SW_->GetUpdateList(updatePoint, listToUpdate);
+    //      m_NE->CheckForObjectUpdate(listToUpdate);
+    //      m_NE->GetUpdateList(updatePoint, listToUpdate);
     //}
 
-    // difference = std::abs(SE_->m_angle.x - updatePoint.x);
-    //  difference2 = std::abs(SE_->m_angle.y - updatePoint.y);
+    // difference = std::abs(m_SW->m_angle.x - updatePoint.x);
+    //  difference2 = std::abs(m_SW->m_angle.y - updatePoint.y);
 
-    //if (difference < m_objectOffset && difference2 < m_objectOffset && updatePoint.x >= SE_->m_angle.x && updatePoint.y <= SE_->m_angle.y)
+    //if (difference < m_objectOffset && difference2 < m_objectOffset && updatePoint.x <= m_SW->m_angle.x && updatePoint.y <= m_SW->m_angle.y)
     //{
-    //   SE_->CheckForObjectUpdate(listToUpdate);
-    //   SE_->GetUpdateList(updatePoint, listToUpdate);
+    //    m_SW->CheckForObjectUpdate(listToUpdate);
+    //    m_SW->GetUpdateList(updatePoint, listToUpdate);
+    //}
+
+    // difference = std::abs(m_SE->m_angle.x - updatePoint.x);
+    //  difference2 = std::abs(m_SE->m_angle.y - updatePoint.y);
+
+    //if (difference < m_objectOffset && difference2 < m_objectOffset && updatePoint.x >= m_SE->m_angle.x && updatePoint.y <= m_SE->m_angle.y)
+    //{
+    //   m_SE->CheckForObjectUpdate(listToUpdate);
+    //   m_SE->GetUpdateList(updatePoint, listToUpdate);
     //}
 }
 
 GameObject* Quadtree::SimpleQueryByIdentifier(std::string identifier)
 {
     GameObject* gameObject = SearchQuadTree(identifier);
-    if (gameObject == nullptr && NW_ != nullptr)
+    if (gameObject == nullptr && m_NW != nullptr)
     {
-        gameObject = NW_->SearchQuadTree(identifier);
+        gameObject = m_NW->SearchQuadTree(identifier);
         if (gameObject == nullptr)
         {
             return gameObject;
         }
-        gameObject = NE_->SearchQuadTree(identifier);
+        gameObject = m_NE->SearchQuadTree(identifier);
         if (gameObject == nullptr)
         {
             return gameObject;
         }
-        gameObject = SW_->SearchQuadTree(identifier);
+        gameObject = m_SW->SearchQuadTree(identifier);
         if (gameObject == nullptr)
         {
             return gameObject;
         }
-        gameObject = SE_->SearchQuadTree(identifier);
+        gameObject = m_SE->SearchQuadTree(identifier);
     }
     return gameObject;
 }
@@ -298,38 +298,38 @@ GameObject* Quadtree::SimpleQueryByIdentifier(std::string identifier)
 GameObject* Quadtree::QueryByIdentifier(std::string identifier, XMFLOAT2 point)
 {
     GameObject* gameObject = SearchQuadTree(identifier);
-    if (gameObject == nullptr && NW_ != nullptr)
+    if (gameObject == nullptr && m_NW != nullptr)
     {
-        if (point.x <= NW_->m_angle.x && point.y >= NW_->m_angle.y)
+        if (point.x <= m_NW->m_angle.x && point.y >= m_NW->m_angle.y)
         {
-            gameObject = NW_->SearchQuadTree(identifier);
+            gameObject = m_NW->SearchQuadTree(identifier);
             if (gameObject == nullptr)
             {
                 return gameObject;
             }
         }
 
-        if (point.x >= NE_->m_angle.y && point.y >= NE_->m_angle.y)
+        if (point.x >= m_NE->m_angle.y && point.y >= m_NE->m_angle.y)
         {
-            gameObject = NE_->SearchQuadTree(identifier);
+            gameObject = m_NE->SearchQuadTree(identifier);
             if (gameObject == nullptr)
             {
                 return gameObject;
             }
         }
 
-        if (point.x <= SW_->m_angle.x && point.y <= SW_->m_angle.y)
+        if (point.x <= m_SW->m_angle.x && point.y <= m_SW->m_angle.y)
         {
-            gameObject = SW_->SearchQuadTree(identifier);
+            gameObject = m_SW->SearchQuadTree(identifier);
             if (gameObject == nullptr)
             {
                 return gameObject;
             }
         }
 
-        if (point.x >= SE_->m_angle.x && point.y <= SE_->m_angle.y)
+        if (point.x >= m_SE->m_angle.x && point.y <= m_SE->m_angle.y)
         {
-            gameObject = SE_->SearchQuadTree(identifier);
+            gameObject = m_SE->SearchQuadTree(identifier);
             if (gameObject == nullptr)
             {
                 return gameObject;

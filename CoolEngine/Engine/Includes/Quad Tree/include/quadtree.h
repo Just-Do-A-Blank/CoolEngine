@@ -32,16 +32,16 @@ public:
     void Subdivide(Quadtree *root);
 
     Quadtree *GetNW() const {
-        return NW_;
+        return m_NW;
     }
     Quadtree *GetNE() const {
-        return NE_;
+        return m_NE;
     }
     Quadtree *GetSW() const {
-        return SW_;
+        return m_SW;
     }
     Quadtree *GetSE() const {
-        return SE_;
+        return m_SE;
     }
 
     void QtreeCheckCollisions(XMFLOAT2 PlayerPosition);
@@ -69,10 +69,10 @@ private:
     bool LoacteObjectAndOverwrite(GameObject* dest,  GameObject* value);
 
     std::vector<GameObject*> m_children;
-    Quadtree *NW_ = nullptr;
-    Quadtree *NE_ = nullptr;
-    Quadtree *SW_ = nullptr;
-    Quadtree *SE_ = nullptr;
+    Quadtree * m_NW = nullptr;
+    Quadtree * m_NE = nullptr;
+    Quadtree * m_SW = nullptr;
+    Quadtree * m_SE = nullptr;
     XMFLOAT2 m_angle;
     CompassFacing m_direction;
     int m_maxNodeSize = 0;
