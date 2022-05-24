@@ -280,6 +280,9 @@
       <Filter>Engine\GameUI</Filter>
     </ClCompile>
     <ClCompile Include="Engine\AI\States\WanderState.cpp" />
+    <ClCompile Include="Engine\GameObjects\PickupGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -730,6 +733,12 @@
       <Filter>Engine\GameUI</Filter>
     </ClInclude>
     <ClInclude Include="Engine\AI\States\WanderState.h" />
+    <ClInclude Include="Engine\GameObjects\PickupGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\PickupEvent.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Engine\Includes\DirectXTK\SimpleMath.inl" />
