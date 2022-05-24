@@ -555,17 +555,28 @@ void EditorUI::DrawSceneManagementWindow()
 
             if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
             {
-                OpenFileExplorer(L"Scene files\0*.json\0", m_texNameBuffer, _countof(m_texNameBuffer));
+				OpenFileExplorer(L"Scene files\0*.json\0", m_sceneNameBuffer, _countof(m_sceneNameBuffer));
 
-                std::wstring tempString = std::wstring(m_texNameBuffer);
+				std::wstring tempString = std::wstring(m_sceneNameBuffer);
+				std::string trueString = std::string(tempString.begin(), tempString.end());
+				int indexOfSlash = tempString.find_last_of('\\');
+				std::string sceneName = trueString.substr(indexOfSlash + 1, trueString.length() - indexOfSlash - 6);
+				if (tempString != L"" && !GameManager::GetInstance()->SwitchSceneUsingIdentifier(sceneName))
+				{
+					GameManager::GetInstance()->LoadSceneFromFile(std::string(tempString.begin(), tempString.end()), false);
+					GameManager::GetInstance()->SwitchSceneUsingIdentifier(sceneName, "", true);
 
-                DeselectObjectInScene();
-                SimpleFileIO::LoadScene(std::string(tempString.begin(), tempString.end()));
+					DeselectObjectInScene();
+					if (m_sceneNodeSelected != -1)
+					{
+						m_sceneNodeSelected += 1;
+					}
+				}
             }
 
             if (ImGui::MenuItem("Delete Scene", "Ctrl+D"))
             {
-                pgameManager->DeleteSelectedScene();
+                pgameManager->DeleteCurrentScene();
                 selected = -1;
                 DeselectObjectInScene();
                 pgameManager->SwitchScene(nullptr);
@@ -638,7 +649,7 @@ void EditorUI::DrawSceneManagementWindow()
 
 		if (saveClicked & 1)
 		{
-			SimpleFileIO::SaveScene(std::string("Resources\\Levels\\") + m_saveSceneName);
+			SimpleFileIO::SaveScene(std::string("Resources\\Levels\\") + m_saveSceneName, m_saveSceneName);
 			m_saveSceneClicked = false;
 			m_saveSceneName[0] = {};
 		}
