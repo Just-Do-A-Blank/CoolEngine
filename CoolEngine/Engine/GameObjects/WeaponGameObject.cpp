@@ -138,6 +138,21 @@ void WeaponGameObject::SetIsPlayerWeapon(bool player)
     m_isPlayerWeapon = player;
 }
 
+void WeaponGameObject::SetBulletTexturePath(wstring path)
+{
+    m_bulletTexturePath = path;
+}
+
+void WeaponGameObject::SetBulletScale(XMFLOAT3 scale)
+{
+    m_bulletScale = scale;
+}
+
+void WeaponGameObject::SetCollisionScale(XMFLOAT2 scale)
+{
+    m_collisionScale = scale;
+}
+
 int WeaponGameObject::GetLevel()
 {
     return m_level;
@@ -181,6 +196,21 @@ float WeaponGameObject::GetDistanceTravelled()
 bool WeaponGameObject::GetIsPlayerWeapon()
 {
     return m_isPlayerWeapon;
+}
+
+wstring WeaponGameObject::GetBulletTexturePath()
+{
+    return m_bulletTexturePath;
+}
+
+XMFLOAT3 WeaponGameObject::GetBulletScale()
+{
+    return m_bulletScale;
+}
+
+XMFLOAT2 WeaponGameObject::GetCollisionScale()
+{
+    return m_collisionScale;
 }
 
 bool WeaponGameObject::GetIsDualType()
