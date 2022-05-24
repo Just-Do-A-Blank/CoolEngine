@@ -78,7 +78,7 @@ void DamageCalculation::TriggerHold(TriggerHoldEvent* e)
 				dynamic_cast<BulletGameObject*>(e->GetGameObject(1))->SetActive(false);
 			}
 		}
-		else
+		else if(!e->GetGameObject(0)->ContainsType(GameObjectType::RANGE_WEAPON))
 		{
 			// If not a character, just delete bullet
 			dynamic_cast<BulletGameObject*>(e->GetGameObject(1))->SetActive(false);
