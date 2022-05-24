@@ -204,10 +204,14 @@ void PlayerGameObject::OnTriggerHold(GameObject* obj1, GameObject* obj2)
 
 	if ((obj1->ContainsType(GameObjectType::PLAYER)) && (obj2->ContainsType(GameObjectType::PICKUP)))
 	{
+		PickupGameObject* pickup = dynamic_cast<PickupGameObject*>(obj2);
+
+
 		//Send event with the data for the player or anyone else that wants to know about to listen to. The pickup data related is also added when cast back to the event
-		EventManager::Instance()->AddEvent(new PickupEvent(dynamic_cast<PickupGameObject*>(obj2)->GetConsumableData()));
+		EventManager::Instance()->AddEvent(new PickupEvent(pickup->GetConsumableData()));
 		//This object should be removed from the scene after firing this event
-		GameManager::GetInstance()->DeleteGameObjectUsingIdentifier(obj2->GetIdentifier());
+
+		pickup->SetToBeDeleted(true);
 	}
 
 

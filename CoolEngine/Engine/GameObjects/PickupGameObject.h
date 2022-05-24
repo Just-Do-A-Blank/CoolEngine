@@ -42,6 +42,9 @@ public:
 	~PickupGameObject();
 	virtual void Serialize(nlohmann::json& data) override;
 	const ConsumableData GetConsumableData() const { return m_ConsumableData; }
+	void Update() override;
+
+	void SetToBeDeleted(bool ShouldDelete) { m_shouldbeDeleted = ShouldDelete; }
 
 #if EDITOR
 	/// <summary>
@@ -61,6 +64,8 @@ private:
 
 
 	string GetConsumableTypeString(CONSUMABLETYPE type);
+
+	bool m_shouldbeDeleted;
 
 };
 

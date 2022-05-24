@@ -4,6 +4,8 @@
 #include "Engine/Managers/Events/PickupEvent.h"
 #include "Engine\EditorUI\EditorUI.h"
 
+#include "Engine/Managers/GameManager.h"
+
 PickupGameObject::PickupGameObject(string identifier, CoolUUID uuid) : InteractableGameObject(identifier, uuid)
 {
     m_gameObjectType |= GameObjectType::PICKUP;
@@ -137,4 +139,18 @@ string PickupGameObject::GetConsumableTypeString(CONSUMABLETYPE type)
         return "None";
         break;
     }
+}
+
+void PickupGameObject::Update()
+{
+    InteractableGameObject::Update();
+
+    //If this object should be deleted, delete it.
+    if (m_shouldbeDeleted)
+    {
+        GameManager::GetInstance()->DeleteGameObjectUsingIdentifier(GetIdentifier());
+    }
+
+
+
 }
