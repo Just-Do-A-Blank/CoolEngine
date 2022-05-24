@@ -55,8 +55,12 @@ bool Collision::BoxCollisionAndResponse(Box* player, Box* object)
 {
 	XMFLOAT2 halfSizeP = XMFLOAT2(player->m_halfSize.x, player->m_halfSize.y);
 	XMFLOAT2 halfSizeO = XMFLOAT2(object->m_halfSize.x, object->m_halfSize.y);
-	XMFLOAT2 middleP = XMFLOAT2(player->m_pgameObject->GetTransform()->GetWorldPosition().x, player->m_pgameObject->GetTransform()->GetWorldPosition().y);
-	XMFLOAT2 middleO = XMFLOAT2(object->m_pgameObject->GetTransform()->GetWorldPosition().x, object->m_pgameObject->GetTransform()->GetWorldPosition().y);
+
+	Transform* playerTransform = player->m_pgameObject->GetTransform();
+	Transform* objectTransform = object->m_pgameObject->GetTransform();
+
+	XMFLOAT2 middleP = XMFLOAT2(playerTransform->GetWorldPosition().x, playerTransform->GetWorldPosition().y);
+	XMFLOAT2 middleO = XMFLOAT2(objectTransform->GetWorldPosition().x, objectTransform->GetWorldPosition().y);
 
 	if (middleP.x + halfSizeP.x > middleO.x - halfSizeO.x && middleP.x - halfSizeP.x < middleO.x + halfSizeO.x && middleP.y + halfSizeP.y > middleO.y - halfSizeO.y && middleP.y - halfSizeP.y < middleO.y + halfSizeO.y)
 	{
@@ -64,6 +68,10 @@ bool Collision::BoxCollisionAndResponse(Box* player, Box* object)
 		// Bottom to top - positive
 
 		// Based on stackoverflow.com/questions/46172953/aabb-collision-resolution-slipping-sides
+		if (playerTransform->HasChildTransform(objectTransform) || objectTransform->HasChildTransform(playerTransform))
+		{
+			return false;
+		}
 
 		XMFLOAT2 penetration = XMFLOAT2(0, 0);
 		XMFLOAT2 vertexToPlayerCentre = XMFLOAT2(middleP.x - middleO.x, middleP.y - middleO.y);
@@ -79,14 +87,14 @@ bool Collision::BoxCollisionAndResponse(Box* player, Box* object)
 			if (penetration.x < 0)
 			{
 				// Left side
-				XMFLOAT3 pos = XMFLOAT3(middleO.x - halfSizeO.x - halfSizeP.x, middleP.y, player->m_pgameObject->GetTransform()->GetWorldPosition().z);
+				XMFLOAT3 pos = XMFLOAT3(middleO.x - halfSizeO.x - halfSizeP.x, middleP.y, playerTransform->GetWorldPosition().z);
 				player->m_pgameObject->GetTransform()->SetWorldPosition(pos);
 			}
 			else
 			{
 				// Right side
-				XMFLOAT3 pos = XMFLOAT3(middleO.x + halfSizeO.x + halfSizeP.x, middleP.y, player->m_pgameObject->GetTransform()->GetWorldPosition().z);
-				player->m_pgameObject->GetTransform()->SetWorldPosition(pos);
+				XMFLOAT3 pos = XMFLOAT3(middleO.x + halfSizeO.x + halfSizeP.x, middleP.y, playerTransform->GetWorldPosition().z);
+				playerTransform->SetWorldPosition(pos);
 			}
 		}
 		else if (abs(penetration.x) > abs(penetration.y))
@@ -94,14 +102,14 @@ bool Collision::BoxCollisionAndResponse(Box* player, Box* object)
 			if (penetration.y < 0)
 			{
 				// Bottom side
-				XMFLOAT3 pos = XMFLOAT3(middleP.x, middleO.y - halfSizeO.y - halfSizeP.y, player->m_pgameObject->GetTransform()->GetWorldPosition().z);
-				player->m_pgameObject->GetTransform()->SetWorldPosition(pos);
+				XMFLOAT3 pos = XMFLOAT3(middleP.x, middleO.y - halfSizeO.y - halfSizeP.y, playerTransform->GetWorldPosition().z);
+				playerTransform->SetWorldPosition(pos);
 			}
 			else
 			{
 				// Top side
-				XMFLOAT3 pos = XMFLOAT3(middleP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_pgameObject->GetTransform()->GetWorldPosition().z);
-				player->m_pgameObject->GetTransform()->SetWorldPosition(pos);
+				XMFLOAT3 pos = XMFLOAT3(middleP.x, middleO.y + halfSizeO.y + halfSizeP.y, playerTransform->GetWorldPosition().z);
+				playerTransform->SetWorldPosition(pos);
 			}
 		}
 		else
@@ -111,14 +119,14 @@ bool Collision::BoxCollisionAndResponse(Box* player, Box* object)
 				if (penetration.y > 0)
 				{
 					// Top right corner
-					XMFLOAT3 pos = XMFLOAT3(middleO.x + halfSizeO.x + halfSizeP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_pgameObject->GetTransform()->GetWorldPosition().z);
-					player->m_pgameObject->GetTransform()->SetWorldPosition(pos);
+					XMFLOAT3 pos = XMFLOAT3(middleO.x + halfSizeO.x + halfSizeP.x, middleO.y + halfSizeO.y + halfSizeP.y, playerTransform->GetWorldPosition().z);
+					playerTransform->SetWorldPosition(pos);
 				}
 				else
 				{
 					// Bottom right corner
-					XMFLOAT3 pos = XMFLOAT3(middleO.x + halfSizeO.x + halfSizeP.x, middleO.y - halfSizeO.y - halfSizeP.y, player->m_pgameObject->GetTransform()->GetWorldPosition().z);
-					player->m_pgameObject->GetTransform()->SetWorldPosition(pos);
+					XMFLOAT3 pos = XMFLOAT3(middleO.x + halfSizeO.x + halfSizeP.x, middleO.y - halfSizeO.y - halfSizeP.y, playerTransform->GetWorldPosition().z);
+					playerTransform->SetWorldPosition(pos);
 				}
 			}
 			else if(penetration.x < 0)
@@ -127,13 +135,13 @@ bool Collision::BoxCollisionAndResponse(Box* player, Box* object)
 				{
 					// Top left corner
 					XMFLOAT3 pos = XMFLOAT3(middleO.x - halfSizeO.x - halfSizeP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_pgameObject->GetTransform()->GetWorldPosition().z);
-					player->m_pgameObject->GetTransform()->SetWorldPosition(pos);
+					playerTransform->SetWorldPosition(pos);
 				}
 				else
 				{
 					// Top right corner
 					XMFLOAT3 pos = XMFLOAT3(middleO.x + halfSizeO.x + halfSizeP.x, middleO.y + halfSizeO.y + halfSizeP.y, player->m_pgameObject->GetTransform()->GetWorldPosition().z);
-					player->m_pgameObject->GetTransform()->SetWorldPosition(pos);
+					playerTransform->SetWorldPosition(pos);
 				}
 			}
 		}
