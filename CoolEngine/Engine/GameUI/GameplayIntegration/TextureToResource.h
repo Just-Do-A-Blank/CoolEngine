@@ -44,10 +44,19 @@ private:
 
 	EUIRESOURCECHANGESETTING m_setting;
 
+	list<pair<int, string>> m_settingAsAList;
+
+	pair<int, string> m_selectedSettingValue;
 
 	ID3D11ShaderResourceView* m_ptexture = nullptr;
 
 	void LoadLocalData(const nlohmann::json& jsonData, int key);
 	void SaveLocalData(nlohmann::json& jsonData, int key);
+
+	/// <summary>
+	/// Used when loading to ensure the settings equals the value we actually use in code
+	/// </summary>
+	/// <param name="settings">Settings value</param>
+	void SetSelectedBasedOnSettingEnum(EUIRESOURCECHANGESETTING settings);
 };
 

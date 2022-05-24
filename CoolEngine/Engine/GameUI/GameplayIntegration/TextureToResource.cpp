@@ -7,11 +7,29 @@ TextureToResource::TextureToResource()
 	m_setting = EUIRESOURCECHANGESETTING::ChangeWhenNumberHit;
 	m_texturePath = wstring();
 	m_resourceValue = 0;
+
+	m_settingAsAList =
+	{
+		pair<int, string>(0, "Change when hit"),
+		pair<int, string>(1, "Change when above (>)"),
+		pair<int, string>(2, "Change when below (<)")
+	};
+
+	SetSelectedBasedOnSettingEnum(m_setting);
 }
 
 TextureToResource::TextureToResource(const nlohmann::json& data, int key)
 {
 	LoadLocalData(data, key);
+
+	m_settingAsAList =
+	{
+		pair<int, string>(0, "Change when hit"),
+		pair<int, string>(1, "Change when above (>)"),
+		pair<int, string>(2, "Change when below (<)")
+	};
+
+	SetSelectedBasedOnSettingEnum(m_setting);
 }
 
 TextureToResource::TextureToResource(TextureToResource const& other)
@@ -19,6 +37,15 @@ TextureToResource::TextureToResource(TextureToResource const& other)
 	m_setting = other.m_setting;
 	m_texturePath = other.m_texturePath;
 	m_resourceValue = other.m_resourceValue;
+
+	m_settingAsAList =
+	{
+		pair<int, string>(0, "Change when hit"),
+		pair<int, string>(1, "Change when above (>)"),
+		pair<int, string>(2, "Change when below (<)")
+	};
+
+	SetSelectedBasedOnSettingEnum(m_setting);
 }
 
 TextureToResource::~TextureToResource()
@@ -69,6 +96,15 @@ void TextureToResource::SaveLocalData(nlohmann::json& jsonData, int key)
 		if (EditorUI::CollapsingSection("Image: " + to_string(key), true))
 		{
 			EditorUI::Texture("Texture", m_texturePath, m_ptexture);
+
+			EditorUIIntParameters intParams = EditorUIIntParameters();
+			intParams.m_tooltipText = "What resource value you would like to infer from the setting context";
+			EditorUI::DragInt("Target", m_resourceValue);
+
+			if (EditorUI::ComboBox("Setting", m_settingAsAList, m_selectedSettingValue))
+			{
+				m_setting = (EUIRESOURCECHANGESETTING)m_selectedSettingValue.first;
+			}
 		}
 	}
 #endif
@@ -123,5 +159,25 @@ void TextureToResource::SetTexture(std::wstring wsfilepath)
 	else
 	{
 		m_texturePath = wsfilepath;
+	}
+}
+
+/// <summary>
+/// Used when loading to ensure the settings equals the value we actually use in code
+/// </summary>
+/// <param name="settings">Settings value</param>
+void TextureToResource::SetSelectedBasedOnSettingEnum(EUIRESOURCECHANGESETTING settings)
+{
+	switch (settings)
+	{
+		case EUIRESOURCECHANGESETTING::ChangeWhenNumberHit:
+			m_selectedSettingValue = pair<int, string>(0, "Change when hit");
+			break;
+		case EUIRESOURCECHANGESETTING::ChangeWhenNumberIsAboveThis:
+			m_selectedSettingValue = pair<int, string>(1, "Change when above (>)");
+			break;
+		case EUIRESOURCECHANGESETTING::ChangeWhenNumberIsBelowThis:
+			m_selectedSettingValue = pair<int, string>(2, "Change when below (<)");
+			break;
 	}
 }

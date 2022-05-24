@@ -45,7 +45,9 @@ ImageUIResourceDisplay::~ImageUIResourceDisplay()
 			int index = 0;
 			for (TextureToResource* const& i : m_texturesForEachResourceChange)
 			{
+				ImGui::PushID(("TextureToResource_" + to_string(index)).c_str());
 				i->CreateEngineUI(index++);
+				ImGui::PopID();
 			}
 		}
 	}
