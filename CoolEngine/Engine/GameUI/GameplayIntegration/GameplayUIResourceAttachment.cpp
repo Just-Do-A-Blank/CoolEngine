@@ -37,6 +37,24 @@ GameplayUIResourceAttachment::~GameplayUIResourceAttachment()
 
 }
 
+/// <summary>
+/// Called when the UI element should update
+/// </summary>
+void GameplayUIResourceAttachment::Update()
+{
+	if (m_resourceKey == "None")
+	{
+		return;
+	}
+
+	PlayerResourceManager* manager = GetResourceManager();
+	if (manager != nullptr)
+	{
+		int value = manager->GetResourceValue(m_resourceKey);
+		Update(value);
+	}
+}
+
 #if EDITOR
 	void GameplayUIResourceAttachment::CreateEngineUI()
 	{
@@ -70,29 +88,6 @@ GameplayUIResourceAttachment::~GameplayUIResourceAttachment()
 	}
 
 	/// <summary>
-	/// Attempts to find the player once at the start of the objects life
-	/// </summary>
-	void GameplayUIResourceAttachment::AttemptToFindPlayer(bool force)
-	{
-		if (!force && m_attmptedToFindPlayer)
-		{
-			return;
-		}
-		m_attmptedToFindPlayer = true;
-
-		GameManager* gm = GameManager::GetInstance();
-		m_currentPlayer = gm->GetGameObjectUsingIdentifier<PlayerGameObject>(std::string("Player"));
-
-		if (m_currentPlayer == nullptr)
-		{
-			return;
-		}
-
-		m_resourceKeys = m_currentPlayer->GetPlayerResources()->GetResourceKeys();
-		
-	}
-
-	/// <summary>
 	/// Get a list of all resource keys
 	/// </summary>
 	/// <param name="includeNone">True means none should be included</param>
@@ -109,14 +104,34 @@ GameplayUIResourceAttachment::~GameplayUIResourceAttachment()
 	}
 #endif
 
+/// <summary>
+/// Attempts to find the player once at the start of the objects life
+/// </summary>
+void GameplayUIResourceAttachment::AttemptToFindPlayer(bool force)
+{
+	if (!force && m_attmptedToFindPlayer)
+	{
+		return;
+	}
+	m_attmptedToFindPlayer = true;
+
+	GameManager* gm = GameManager::GetInstance();
+	m_currentPlayer = gm->GetGameObjectUsingIdentifier<PlayerGameObject>(std::string("Player"));
+
+	if (m_currentPlayer == nullptr)
+	{
+		return;
+	}
+
+	m_resourceKeys = m_currentPlayer->GetPlayerResources()->GetResourceKeys();
+}
 
 /// <summary>
 /// Called after construction, before first Update.
 /// </summary>
 void GameplayUIResourceAttachment::Start()
 {
-	GameManager* gm = GameManager::GetInstance();
-	PlayerGameObject* player = gm->GetGameObjectUsingIdentifier<PlayerGameObject>(std::string("Player"));
+	AttemptToFindPlayer();
 }
 
 void GameplayUIResourceAttachment::LoadFromTopLevel(const nlohmann::json& jsonData)

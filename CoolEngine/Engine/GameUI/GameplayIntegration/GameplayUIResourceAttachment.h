@@ -8,7 +8,7 @@ public:
 	GameplayUIResourceAttachment();
 	GameplayUIResourceAttachment(nlohmann::json& data);
 	GameplayUIResourceAttachment(GameplayUIResourceAttachment const& other);
-	~GameplayUIResourceAttachment();
+	virtual ~GameplayUIResourceAttachment();
 
 #if EDITOR
 	virtual void CreateEngineUI();
@@ -17,6 +17,14 @@ public:
 	/// A label for when the player is found
 	/// </summary>
 	string m_buttonFoundPlayerLabel;
+#endif
+
+	virtual void Serialize(nlohmann::json& data);
+
+	/// <summary>
+	/// Called after construction, before first Update.
+	/// </summary>
+	virtual void Start();
 
 	/// <summary>
 	/// True means an inital attempt to find the player was completed
@@ -28,14 +36,11 @@ public:
 	/// </summary>
 	/// <param name="force">True means it will overide the start of life</param>
 	void AttemptToFindPlayer(bool force = false);
-#endif
-
-	virtual void Serialize(nlohmann::json& data);
 
 	/// <summary>
-	/// Called after construction, before first Update.
+	/// Called when the UI element should update
 	/// </summary>
-	virtual void Start();
+	virtual void Update();
 
 	void LoadFromTopLevel(const nlohmann::json& jsonData);
 	void SaveFromTopLevel(nlohmann::json& jsonData);
@@ -58,6 +63,12 @@ protected:
 	/// <returns>A list of all keys as strings</returns>
 	list<string> GetResourceKeys(bool includeNone = false);
 #endif
+
+	/// <summary>
+	/// Runs during gameplay with the resource value
+	/// </summary>
+	/// <param name="resourceValue">The resource value if set</param>
+	virtual void Update(int resourceValue) {}
 
 private:
 	void LoadLocalData(const nlohmann::json& jsonData);

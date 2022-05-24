@@ -1,13 +1,14 @@
 #pragma once
 #include "Engine/GameUI/GameplayIntegration/GameplayUIResourceAttachment.h"
+#include "Engine/GameUI/TextComponent.h"
 
 class TextUIResourceDisplay : public GameplayUIResourceAttachment
 {
 public:
-	TextUIResourceDisplay();
-	TextUIResourceDisplay(nlohmann::json& data);
-	TextUIResourceDisplay(TextUIResourceDisplay const& other);
-	~TextUIResourceDisplay();
+	TextUIResourceDisplay(TextComponent* component);
+	TextUIResourceDisplay(nlohmann::json& data, TextComponent* component);
+	TextUIResourceDisplay(TextUIResourceDisplay const& other, TextComponent* component);
+	virtual ~TextUIResourceDisplay() override;
 
 #if EDITOR
 	virtual void CreateEngineUI();
@@ -28,11 +29,16 @@ protected:
 	/// Runs during gameplay with the resource value
 	/// </summary>
 	/// <param name="resourceValue">The resource value if set</param>
-	virtual void Update(int resourceValue);
+	virtual void Update(int resourceValue) override;
 
 private:
 	void LoadLocalData(const nlohmann::json& jsonData);
 	void SaveLocalData(nlohmann::json& jsonData);
+
+	/// <summary>
+	/// The actual UI text
+	/// </summary>
+	TextComponent* m_textComponent;
 
 	/// <summary>
 	/// Text before the number

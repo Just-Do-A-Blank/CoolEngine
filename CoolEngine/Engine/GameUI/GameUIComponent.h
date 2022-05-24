@@ -45,6 +45,7 @@ public:
 	GameUIComponent(string identifier, CoolUUID uuid);
 	GameUIComponent(nlohmann::json& data, CoolUUID uuid);
 	GameUIComponent(GameUIComponent const& other);
+	virtual ~GameUIComponent();
 
 	virtual void Render(RenderStruct& renderStruct);
 	virtual void Update()override;

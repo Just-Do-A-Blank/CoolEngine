@@ -38,6 +38,11 @@ GameUIComponent::GameUIComponent(GameUIComponent const& other) : GameUIPrefab(ot
 	m_layer = other.m_layer;
 }
 
+GameUIComponent::~GameUIComponent()
+{
+
+}
+
 void GameUIComponent::Render(RenderStruct& renderStruct)
 {
 	if (m_ptexture == nullptr)
