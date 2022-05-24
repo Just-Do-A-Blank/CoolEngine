@@ -92,17 +92,13 @@ void BulletCreator::CreateBullet(CreateBulletEvent* e)
 
 void BulletCreator::TestFire(MouseButtonPressedEvent* e)
 {
-	// Temporary, uses a weapon object in the scene as a reference. In the final, will probably store weapon data some other way.
-	string name = "Weapon";
-	RangedWeaponGameObject* p_weapon = GameManager::GetInstance()->GetGameObjectUsingIdentifier<RangedWeaponGameObject>(name);
-
 	// Get player location
-	name = "Player";
-	RenderableCollidableGameObject* p_player = GameManager::GetInstance()->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(name);
+	string name = "Player";
+	CharacterGameObject* p_player = GameManager::GetInstance()->GetGameObjectUsingIdentifier<CharacterGameObject>(name);
 
 	if (p_player != nullptr)
 	{
-		EventManager::Instance()->AddEvent(new CreateBulletEvent(p_weapon, XMFLOAT3(1, 0, 0), p_player->GetTransform()->GetWorldPosition()));
+		EventManager::Instance()->AddEvent(new CreateBulletEvent(dynamic_cast<RangedWeaponGameObject*>(p_player->GetWeapon()), p_player->GetWeaponDirection(), p_player->GetWeaponPosition()));
 	}
 }
 
