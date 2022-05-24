@@ -4,12 +4,13 @@
 #include "Engine/Managers/GraphicsManager.h"
 #include"Engine/ResourceDefines.h"
 #include "Engine/EditorUI/EditorUI.h"
+#include "Engine/GameUI/GameplayIntegration/TextUIResourceDisplay.h"
 
 TextComponent::TextComponent(string identifier, CoolUUID uuid) : GameUIComponent(identifier, uuid)
 {	
 	m_uiComponentType |= UIComponentType::TEXT;
 
-	m_resourceAttachement = new GameplayUIResourceAttachment();
+	m_resourceAttachement = new TextUIResourceDisplay();
 }
 
 TextComponent::TextComponent(nlohmann::json& data, CoolUUID uuid, ID3D11Device* pdevice) : GameUIComponent(data, uuid)
@@ -21,12 +22,12 @@ TextComponent::TextComponent(nlohmann::json& data, CoolUUID uuid, ID3D11Device* 
 	if (GameUIComponent::IsPrefab())
 	{
 		LoadLocalData(GameUIComponent::GetPrefabDataLoadedAtCreation());
-		m_resourceAttachement = new GameplayUIResourceAttachment(GameUIComponent::GetPrefabDataLoadedAtCreation());
+		m_resourceAttachement = new TextUIResourceDisplay(GameUIComponent::GetPrefabDataLoadedAtCreation());
 	}
 	else
 	{
 		LoadLocalData(data);
-		m_resourceAttachement = new GameplayUIResourceAttachment(data);
+		m_resourceAttachement = new TextUIResourceDisplay(data);
 	}
 }
 

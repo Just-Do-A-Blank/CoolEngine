@@ -282,6 +282,9 @@
     <ClCompile Include="Engine\GameUI\GameplayIntegration\GameplayUIResourceAttachment.cpp">
       <Filter>Engine\GameUI\GameplayIntegration</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\TextUIResourceDisplay.cpp">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -732,6 +735,9 @@
       <Filter>Engine\GameUI</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameUI\GameplayIntegration\GameplayUIResourceAttachment.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\TextUIResourceDisplay.h">
       <Filter>Engine\GameUI\GameplayIntegration</Filter>
     </ClInclude>
   </ItemGroup>

@@ -18,6 +18,8 @@ GameplayUIResourceAttachment::GameplayUIResourceAttachment(nlohmann::json& data)
 #if EDITOR
 	m_attmptedToFindPlayer = false;
 #endif
+
+	LoadLocalData(data);
 }
 
 GameplayUIResourceAttachment::GameplayUIResourceAttachment(GameplayUIResourceAttachment const& other)
@@ -26,6 +28,8 @@ GameplayUIResourceAttachment::GameplayUIResourceAttachment(GameplayUIResourceAtt
 #if EDITOR
 	m_attmptedToFindPlayer = false;
 #endif
+
+	m_resourceKey = other.m_resourceKey;
 }
 
 GameplayUIResourceAttachment::~GameplayUIResourceAttachment()
@@ -163,7 +167,7 @@ PlayerGameObject* GameplayUIResourceAttachment::GetPlayer()
 }
 
 /// <summary>
-/// Gets the resource Manager
+/// Gets the resource Manager. USE ONLY DURING PLAY!
 /// </summary>
 /// <returns>Manages the Player Resources (Health and Stamina for example)</returns>
 PlayerResourceManager* GameplayUIResourceAttachment::GetResourceManager()

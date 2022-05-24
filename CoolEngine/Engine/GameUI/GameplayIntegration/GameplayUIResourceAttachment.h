@@ -69,8 +69,14 @@ private:
 	/// <returns>The current player</returns>
 	PlayerGameObject* GetPlayer();
 
+	/// <summary>
+	/// The player resource attached to this player
+	/// </summary>
 	string m_resourceKey;
 
+	/// <summary>
+	/// During play the resource current value
+	/// </summary>
 	int m_resourceCurrentValue;
 
 	/// <summary>

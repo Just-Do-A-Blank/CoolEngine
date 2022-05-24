@@ -87,6 +87,7 @@
     <ClInclude Include="Engine\GameObjects\UUID.h" />
     <ClInclude Include="Engine\GameUI\ButtonComponent.h" />
     <ClInclude Include="Engine\GameUI\GameplayIntegration\GameplayUIResourceAttachment.h" />
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\TextUIResourceDisplay.h" />
     <ClInclude Include="Engine\GameUI\GameUIPrefab.h" />
     <ClInclude Include="Engine\GameUI\TextComponent.h" />
     <ClInclude Include="Engine\Graphics\AnimationState.h" />
@@ -251,6 +252,7 @@
     <ClCompile Include="Engine\GameObjects\UUID.cpp" />
     <ClCompile Include="Engine\GameUI\ButtonComponent.cpp" />
     <ClCompile Include="Engine\GameUI\GameplayIntegration\GameplayUIResourceAttachment.cpp" />
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\TextUIResourceDisplay.cpp" />
     <ClCompile Include="Engine\GameUI\GameUIPrefab.cpp" />
     <ClCompile Include="Engine\GameUI\TextComponent.cpp" />
     <ClCompile Include="Engine\Graphics\AnimationState.cpp" />
