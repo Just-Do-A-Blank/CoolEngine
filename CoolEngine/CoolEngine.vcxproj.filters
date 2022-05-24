@@ -279,6 +279,9 @@
     <ClCompile Include="Engine\GameUI\GameUIPrefab.cpp">
       <Filter>Engine\GameUI</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\GameplayUIResourceAttachment.cpp">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -728,6 +731,9 @@
     <ClInclude Include="Engine\GameUI\GameUIPrefab.h">
       <Filter>Engine\GameUI</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\GameplayUIResourceAttachment.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Engine\Includes\DirectXTK\SimpleMath.inl" />
@@ -847,6 +853,9 @@
     </Filter>
     <Filter Include="Engine\AI\States">
       <UniqueIdentifier>{eb254e0a-a23d-4071-9fc8-c9fa39695892}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GameUI\GameplayIntegration">
+      <UniqueIdentifier>{979ca6e5-7243-4163-b514-8320ff428abf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
