@@ -108,7 +108,7 @@ void GameManager::DeleteSceneUsingIdentifier(string sceneIdentifier)
 	m_editorSceneMap.erase(sceneIdentifier);
 }
 
-void GameManager::DeleteSelectedScene()
+void GameManager::DeleteCurrentScene()
 {
 	Scene*& pcurrentScene = GetCurrentViewStateScene();
 	pcurrentScene->m_psceneGraph->DeleteAllGameObjects();
@@ -565,7 +565,7 @@ Scene* GameManager::GetCurrentScene()
 	return GetCurrentViewStateScene();
 }
 
-void GameManager::SwitchScene(Scene* pscene)
+void GameManager::SwitchScene(Scene* pscene, string playerIdentifier, bool unloadCurrentScene)
 {
 	if (!pscene)
 	{
@@ -577,7 +577,7 @@ void GameManager::SwitchScene(Scene* pscene)
 
 }
 
-bool GameManager::SwitchSceneUsingIdentifier(string sceneIdentifier)
+bool GameManager::SwitchSceneUsingIdentifier(string sceneIdentifier, string playerIdentifier, bool unloadCurrentScene)
 {
 	unordered_map<string, Scene*> sceneMap = GetCurrentViewStateSceneMap();
 	if (sceneMap.count(sceneIdentifier) == 0)
@@ -585,7 +585,20 @@ bool GameManager::SwitchSceneUsingIdentifier(string sceneIdentifier)
 		LOG("Scene : " << sceneIdentifier << "; was not found in Scene Map ");
 		return false;
 	}
+
 	Scene*& pcurrentScene = GetCurrentViewStateScene();
+	
+	if (playerIdentifier != "")
+	{
+		PlayerGameObject* pplayer = pcurrentScene->GetGameObjectUsingIdentifier<PlayerGameObject>(playerIdentifier);
+		sceneMap[sceneIdentifier]->CopyGameObject<PlayerGameObject>(*pplayer);
+	}
+
+	if (pcurrentScene && unloadCurrentScene)
+	{
+		DeleteCurrentScene();
+	}
+
 	pcurrentScene = sceneMap[sceneIdentifier];
 	return true;
 }
@@ -666,8 +679,6 @@ vector<GameObject*>& GameManager::GetAllGameObjectsInCurrentScene()
 void GameManager::Serialize(nlohmann::json& data)
 {
 	vector<GameObject*> gameObjectsInScene = m_pcurrentEditorScene->GetAllGameObjects();
-
-	data["SceneName"] = m_pcurrentEditorScene->GetSceneIdentifier();
 
 	for (size_t i = 0; i < gameObjectsInScene.size(); i++)
 	{
@@ -911,8 +922,6 @@ void GameManager::Deserialize(nlohmann::json& data)
 	}
 
 	GetCurrentViewStateSceneMap().insert(pair<string, Scene*>(sceneName, pnewScene));
-	Scene*& pcurrentScene = GetCurrentViewStateScene();
-	pcurrentScene = pnewScene;
 }
 
 unordered_map<string, Scene*>& GameManager::GetCurrentViewStateSceneMap()
@@ -952,7 +961,7 @@ void GameManager::CreateScene(string sceneIdentifier, bool unloadCurrentScene)
 {
 	if (unloadCurrentScene)
 	{
-		DeleteSelectedScene();
+		DeleteCurrentScene();
 	}
 
 	Scene* newScene = new Scene(sceneIdentifier);
@@ -976,7 +985,7 @@ bool GameManager::LoadSceneFromFile(std::string fileLocation, bool unloadCurrent
 
 		if (unloadCurrentScene && GetCurrentViewStateScene())
 		{
-			DeleteSelectedScene();
+			DeleteCurrentScene();
 		}
 
 		Deserialize(dataIn);
@@ -984,6 +993,8 @@ bool GameManager::LoadSceneFromFile(std::string fileLocation, bool unloadCurrent
 	}
 	return false;
 }
+
+
 
 GameObject* GameManager::GetSelectedGameObject()
 {

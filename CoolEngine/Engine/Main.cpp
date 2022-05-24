@@ -148,7 +148,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	//Create scene
 	GameManager* pgameManager = GameManager::GetInstance();
-	pgameManager->CreateScene("TestScene");
 
 	//Music
 	AudioManager::GetInstance()->LoadMusic(TEST_MUSIC);
@@ -171,7 +170,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	DamageCalculation damageObserver = DamageCalculation();
 	
 	string testSceneFilePath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Levels\\TestScene.json";
-	if (!GameManager::GetInstance()->LoadSceneFromFile(testSceneFilePath))
+	if (pgameManager->LoadSceneFromFile(testSceneFilePath))
+	{
+		pgameManager->SwitchSceneUsingIdentifier("TestScene");
+	}
+	else
 	{
 		GameManager* pgameManager = GameManager::GetInstance();
 		pgameManager->CreateScene("EmptyScene");
