@@ -63,7 +63,7 @@ void DamageCalculation::TriggerHold(TriggerHoldEvent* e)
 	}
 #endif
 
-	if (e->GetGameObject(1)->ContainsType(GameObjectType::WEAPON))
+	if (e->GetGameObject(1)->ContainsType(GameObjectType::BULLET))
 	{
 		WeaponGameObject* pWeapon = dynamic_cast<WeaponGameObject*>(e->GetGameObject(1));
 

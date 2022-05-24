@@ -16,10 +16,14 @@ TextComponent::TextComponent(nlohmann::json& data, CoolUUID uuid, ID3D11Device* 
 
 	std::string uuidString = to_string(*m_UUID);
 
-	XMFLOAT4 colour;
-	colour = XMFLOAT4( data["Colour"][0], data["Colour"][1], data["Colour"][2], data["Colour"][3] );
-
-	Init(data["Text"], data["FontName"], data["FontSize"], colour);
+	if (GameUIComponent::IsPrefab())
+	{
+		LoadLocalData(GameUIComponent::GetPrefabDataLoadedAtCreation());
+	}
+	else
+	{
+		LoadLocalData(data);
+	}
 }
 
 void TextComponent::UpdateFont(string fontName, int fontSize)
@@ -34,10 +38,38 @@ void TextComponent::Serialize(nlohmann::json& data)
 
 	std::string uuidString = to_string(*m_UUID);
 
-	data["Text"] = m_text;
-	data["FontName"] = m_fontName;
-	data["FontSize"] = m_fontSize;
-	data["Colour"] = {m_colour.x, m_colour.y, m_colour.z, m_colour.w};
+	SaveLocalData(data);
+}
+
+void TextComponent::LoadLocalData(const nlohmann::json& jsonData)
+{
+	if (jsonData.contains("Text"))
+	{
+		XMFLOAT4 colour;
+		colour = XMFLOAT4(jsonData["Colour"][0], jsonData["Colour"][1], jsonData["Colour"][2], jsonData["Colour"][3]);
+
+		Init(jsonData["Text"], jsonData["FontName"], jsonData["FontSize"], colour);
+	}
+}
+
+void TextComponent::SaveLocalData(nlohmann::json& jsonData)
+{
+	jsonData["Text"] = m_text;
+	jsonData["FontName"] = m_fontName;
+	jsonData["FontSize"] = m_fontSize;
+	jsonData["Colour"] = { m_colour.x, m_colour.y, m_colour.z, m_colour.w };
+}
+
+void TextComponent::LoadAllPrefabData(const nlohmann::json& jsonData)
+{
+	GameUIComponent::LoadAllPrefabData(jsonData);
+	LoadLocalData(jsonData);
+}
+
+void TextComponent::SaveAllPrefabData(nlohmann::json& jsonData)
+{
+	SaveLocalData(jsonData);
+	GameUIComponent::SaveAllPrefabData(jsonData);
 }
 
 #if EDITOR

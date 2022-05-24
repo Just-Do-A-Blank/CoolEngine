@@ -8,11 +8,13 @@
 CollidableGameObject::CollidableGameObject() : PrefabGameObject()
 {
 	m_gameObjectType |= GameObjectType::COLLIDABLE;
+	m_pcollider = new Box(this);
 }
 
 CollidableGameObject::CollidableGameObject(string identifier, CoolUUID uuid) : PrefabGameObject(identifier, uuid)
 {
 	m_gameObjectType |= GameObjectType::COLLIDABLE;
+	m_pcollider = new Box(this);
 }
 
 CollidableGameObject::CollidableGameObject(const nlohmann::json& data, CoolUUID uuid) : PrefabGameObject(data, uuid)
@@ -166,10 +168,10 @@ void CollidableGameObject::SetShape(Shape* collider)
 	m_pcollider = collider;
 }
 
-void CollidableGameObject::SetShapeDimensions(XMFLOAT3 scale)
+void CollidableGameObject::UpdateShapeDimensions()
 {
 	if (m_pcollider != nullptr)
 	{
-		m_pcollider->SetShapeDimensions(scale);
+		m_pcollider->UpdateShapeDimensions();
 	}
 }

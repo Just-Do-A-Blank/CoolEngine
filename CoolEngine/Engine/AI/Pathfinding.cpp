@@ -45,6 +45,11 @@ void Pathfinding::SetupPath(XMFLOAT3 curPos, XMFLOAT3 tarPos)
 /// <returns></returns>
 bool Pathfinding::FindPath(XMFLOAT3 curPos, XMFLOAT3 tarPos, vector<node*> &path)
 {
+	if (m_mapWidth == 0 || m_mapHeight == 0)
+	{
+		return false;
+	}
+
 	SetupPath(curPos, tarPos);
 
 	while (!m_nodesToTest.empty() && m_nodesToTest.top() != m_pNodeEnd)
@@ -153,6 +158,8 @@ bool Pathfinding::GeneratePath(XMFLOAT3 tarPos, vector<node*>& path)
 		}
 	}
 
+	m_nodesToTest = priority_queue<node*, vector<node*>, NodeCompare>();
+
 	return true;
 }
 
@@ -207,6 +214,8 @@ node* Pathfinding::FindClosestNode(XMFLOAT3 pos)
 /// <param name="map"></param>
 void Pathfinding::Initialize(TileMap* map)
 {
+	m_pNodes.clear();
+
 	m_mapWidth = map->GetWidth();
 	m_mapHeight = map->GetHeight();
 	vector<node*> tempVec;
@@ -227,8 +236,8 @@ void Pathfinding::Initialize(TileMap* map)
 			if (ptile)
 			{
 				tempNode = new node();
-				tempNode->m_pos = ptile->GetTransform()->GetWorldPosition();
-				tempNode->m_obstacle = ptile->GetIsPassable();
+				tempNode->m_pos = ptile->GetTransform()->GetLocalPosition();
+				tempNode->m_obstacle = ptile->GetIsPassable() == false;
 			}
 
 			tempVec.push_back(tempNode);

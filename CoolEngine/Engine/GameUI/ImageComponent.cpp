@@ -23,12 +23,9 @@ void ImageComponent::CreateEngineUI()
 {
 	GameUIComponent::CreateEngineUI();
 
-	ImGui::Spacing();
-	ImGui::Separator();
-	ImGui::Spacing();
-
-	EditorUI::Texture("Texture", m_texFilepath, m_ptexture);
-
-	ImGui::Spacing();
+	if (EditorUI::CollapsingSection("Image Options", true))
+	{
+		EditorUI::Texture("Texture", m_texFilepath, m_ptexture);
+	}
 }
 #endif

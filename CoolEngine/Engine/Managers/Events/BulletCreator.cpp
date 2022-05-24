@@ -53,6 +53,11 @@ void BulletCreator::CreateBullet(CreateBulletEvent* e)
 {
 	BulletGameObject* p_bullet =  m_pBulletPool->CreateEntryInPool()->m_pObject;
 
+	if (e->GetObj() == nullptr)
+	{
+		return;
+	}
+
 	XMFLOAT3 objectPos = e->GetStartPos();
 	XMFLOAT3 objectScale = e->GetObj()->GetTransform()->GetWorldScale();
 	bool isCollision = false;
@@ -61,14 +66,14 @@ void BulletCreator::CreateBullet(CreateBulletEvent* e)
 	p_bullet->SetMesh(QUAD_MESH_NAME);
 	p_bullet->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
 	p_bullet->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	p_bullet->SetAlbedo(e->GetTextureName());
 	p_bullet->GetTransform()->SetWorldPosition(objectPos);
-	p_bullet->GetTransform()->SetWorldScale(objectScale);
-	Box* pbox = new Box(p_bullet);
-	pbox->SetIsCollidable(isCollision);
+	p_bullet->GetTransform()->SetWorldScale(e->GetObj()->GetBulletScale());
+	Circle* pcircle = new Circle(p_bullet);
+	pcircle->SetIsCollidable(isCollision);
 	isCollision = true;
-	pbox->SetIsTrigger(isCollision);
-	p_bullet->SetShape(pbox);
+	pcircle->SetIsTrigger(isCollision);
+	pcircle->SetScale(e->GetObj()->GetCollisionScale());
+	p_bullet->SetShape(pcircle);
 
 	// Weapon variables
 	p_bullet->SetDamage(e->GetObj()->GetDamage());
@@ -82,6 +87,7 @@ void BulletCreator::CreateBullet(CreateBulletEvent* e)
 	p_bullet->SetActive(true);
 	p_bullet->SetCurrentTime(0.0f);
 	p_bullet->SetTotalTime(e->GetObj()->GetDistanceTravelled() / e->GetObj()->GetSpeed());
+	p_bullet->SetAlbedo(e->GetObj()->GetBulletTexturePath());
 }
 
 void BulletCreator::TestFire(MouseButtonPressedEvent* e)
@@ -96,7 +102,7 @@ void BulletCreator::TestFire(MouseButtonPressedEvent* e)
 
 	if (p_player != nullptr)
 	{
-		EventManager::Instance()->AddEvent(new CreateBulletEvent(p_weapon, XMFLOAT3(1, 0, 0), p_player->GetTransform()->GetWorldPosition(), DEFAULT_IMGUI_IMAGE));
+		EventManager::Instance()->AddEvent(new CreateBulletEvent(p_weapon, XMFLOAT3(1, 0, 0), p_player->GetTransform()->GetWorldPosition()));
 	}
 }
 
@@ -111,4 +117,9 @@ void BulletCreator::Handle(Event* e)
 		TestFire((MouseButtonPressedEvent*)e);
 		break;
 	}
+}
+
+void BulletCreator::DeleteBullets()
+{
+	m_pBulletPool->ClearPool();
 }

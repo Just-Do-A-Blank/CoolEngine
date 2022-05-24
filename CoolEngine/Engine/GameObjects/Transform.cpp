@@ -152,7 +152,7 @@ const XMFLOAT3& Transform::GetLeftVector() const
     return m_leftVector;
 }
 
-void Transform::SetWorldPosition(XMFLOAT3& position)
+void Transform::SetWorldPosition(const XMFLOAT3& position)
 {
 	if (m_pparentTransform == nullptr)
 	{
@@ -266,6 +266,18 @@ void Transform::AddChildTransform(Transform* pchildTransform)
 {
     m_childrenTransformList.push_back(pchildTransform);
 
+}
+
+bool Transform::HasChildTransform(Transform* pchildTransform)
+{
+	for (int i = 0; i < m_childrenTransformList.size(); ++i)
+	{
+		if (m_childrenTransformList[i] == pchildTransform)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 void Transform::RemoveChildTransform(Transform* pchildTransform)

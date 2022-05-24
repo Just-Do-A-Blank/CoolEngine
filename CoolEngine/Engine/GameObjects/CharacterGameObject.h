@@ -2,6 +2,8 @@
 #include "TriggerableGameObject.h"
 #include "Engine/Managers/Events/DamageCalculation.h"
 
+class WeaponGameObject;
+
 class CharacterGameObject : public TriggerableGameObject
 {
 protected:
@@ -15,6 +17,8 @@ protected:
 	float m_invincibilityTime = 0.0f;
 
 	XMFLOAT3 m_direction = XMFLOAT3{0, 0, 0};
+
+	WeaponGameObject* m_pweapon = nullptr;
 
     virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
     virtual void SaveAllPrefabData(nlohmann::json& jsonData) override;
@@ -30,6 +34,8 @@ public:
 	virtual void Update();
 	virtual void EditorUpdate();
 
+	WeaponGameObject* GetWeapon();
+
 	float GetMoveSpeed() { return m_moveSpeed; }
 	float GetInvincibilityTime() { return m_invincibilityTime; }
 	ELEMENTS GetElement() { return m_element; }
@@ -41,7 +47,7 @@ public:
 	void SetStatus(STATUSES stat) { m_status = stat; }
 	void SetElementalStatus(ELEMENTALSTATUSES elemStat) { m_elementalStatus = elemStat; }
 
-	void TakeDamage(float damage);
+    virtual void TakeDamage(float damage);
 
 	virtual void Serialize(nlohmann::json& jsonData) override;
 

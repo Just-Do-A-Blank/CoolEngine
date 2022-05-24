@@ -1,5 +1,5 @@
 #pragma once
-#include <Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.h>
+#include "Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.h"
 #include <Engine\GameObjects\Transform.h>
 #include "Engine/Managers/Events/EventObserver.h"
 #include "Engine/Managers/Events/MouseEvents.h"
@@ -10,6 +10,7 @@
 #include "Engine/GameObjects/Gameplay/Player/PlayerMovementState.h"
 #include "Engine\GameObjects\Gameplay\Player\PlayerMovementParameters.h"
 #include "Engine\GameObjects\Gameplay\Player\PlayerMovingBody.h"
+#include "Engine/GameObjects/Gameplay/Player/PlayerResourceManager.h"
 
 /// <summary>
 /// Handles movement around the scene for the player
@@ -109,6 +110,16 @@ private:
     float m_dodgeSpeed;
 
     /// <summary>
+    /// The resource to use for dodging
+    /// </summary>
+    string m_dodgeResource;
+
+    /// <summary>
+    /// How much the resource changes on use
+    /// </summary>
+    int m_dodgeResourceChange;
+
+    /// <summary>
     /// How long to doge for in seconds
     /// </summary>
     float m_timeInSecondsToDodgeFor;
@@ -124,6 +135,16 @@ private:
     float m_timeInSecondsToRollFor;
 
     /// <summary>
+    /// The resource to use for rolling
+    /// </summary>
+    string m_rollResource;
+
+    /// <summary>
+    /// How much the resource changes on use
+    /// </summary>
+    int m_rollResourceChange;
+
+    /// <summary>
     /// The force currently applied to the player. Shared among states as this is the force on the player as a whole
     /// </summary>
     XMFLOAT3* m_forceApplied;
@@ -137,5 +158,16 @@ private:
     /// Indicators on what the player is currently doing
     /// </summary>
     PlayerMovingBody* m_playerMovingBody;
+
+    /// <summary>
+    /// The player we are on
+    /// </summary>
+    PlayerGameObject* m_playerGameObject;
+
+    /// <summary>
+    /// Gets a list of player resources
+    /// </summary>
+    /// <returns>All the player resources for the drop down</returns>
+    list<string> GetListOfPlayerResourcesForDropDown();
 };
 

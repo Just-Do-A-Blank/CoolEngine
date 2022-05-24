@@ -64,9 +64,14 @@ public:
 		return m_radius;
 	}
 
-	void SetShapeDimensions(XMFLOAT3 scale)
+	void UpdateShapeDimensions()
 	{
 		m_radius = m_pgameObject->GetTransform()->GetWorldScale().x;
+	}
+
+	XMFLOAT2 GetShapeDimensions()
+	{
+		return XMFLOAT2(m_scale.x * m_radius, m_scale.y * m_radius);
 	}
 
 	~Circle()
@@ -102,11 +107,6 @@ public:
 	bool CollideResponse(Box* box)
 	{
 		return Collision::CircleBoxCollisionAndResponse(this, box);
-	}
-
-	XMFLOAT2 GetShapeDimensions()
-	{
-		return XMFLOAT2(m_radius, m_radius);
 	}
 
 #if EDITOR

@@ -48,4 +48,12 @@ public:
 #endif
 
 	void SetButtonState(ButtonState buttonState);
+
+protected:
+	virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
+	virtual void SaveAllPrefabData(nlohmann::json& jsonData) override;
+
+private:
+	void LoadLocalData(const nlohmann::json& jsonData);
+	void SaveLocalData(nlohmann::json& jsonData);
 };

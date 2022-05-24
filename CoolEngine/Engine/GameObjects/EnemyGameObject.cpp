@@ -1,6 +1,12 @@
 #include "EnemyGameObject.h"
 #include "Engine/Managers/GameManager.h"
-
+#include "Engine/AI/States/MeleeMovementState.h"
+#include "Engine/AI/States/MeleeAttackState.h"
+#include "Engine/AI/States/WanderState.h"
+#include "Engine/GameObjects/MeleeWeaponGameObject.h"
+#include "Engine/ResourceDefines.h"
+#include "Engine/GameObjects/PlayerGameObject.h"
+#include "Engine/Physics/Shape.h"
 
 EnemyGameObject::EnemyGameObject(string identifier, CoolUUID uuid) : CharacterGameObject(identifier, uuid)
 {
@@ -14,8 +20,7 @@ EnemyGameObject::EnemyGameObject(const nlohmann::json& data, CoolUUID uuid) : Ch
 
 EnemyGameObject::EnemyGameObject(EnemyGameObject const& other) : CharacterGameObject(other)
 {
-	m_curPath = other.m_curPath;
-	m_enemyState = other.m_enemyState;
+
 }
 
 EnemyGameObject::~EnemyGameObject()
@@ -25,54 +30,94 @@ EnemyGameObject::~EnemyGameObject()
 
 void EnemyGameObject::Update()
 {
-	if (!m_curPath.empty())
+	m_stateMachine.Update();
+
+	if (m_invincibilityTime > 0.0f)
 	{
-
-		//Uses directional movement for calculations, should be moved to charactergameobject then update called from here
-
-		XMFLOAT3 desiredDirection = MathHelper::Minus(m_curPath.back()->m_pos, m_transform->GetWorldPosition());
-		desiredDirection = MathHelper::Normalize(desiredDirection);
-		m_direction = MathHelper::Plus(m_direction, desiredDirection);
-
-		if (m_curPath.back() == Pathfinding::GetInstance()->FindClosestNode(m_transform->GetWorldPosition()))
-		{
-			m_curPath.pop_back();
-			LOG("New Node");
-		}
-
-
-		float step = m_moveSpeed * GameManager::GetInstance()->GetTimer()->DeltaTime();
-
-		m_direction = MathHelper::Normalize(m_direction);
-
-		XMFLOAT3 stepPos = MathHelper::Multiply(m_direction, step);
-		stepPos = MathHelper::Plus(stepPos, m_transform->GetWorldPosition());
-		m_transform->SetWorldPosition(stepPos);
+		m_invincibilityTime -= GameManager::GetInstance()->GetTimer()->DeltaTime();
 	}
 	else
 	{
-		//LOG("NO PATH");
-		//Pathfinding::GetInstance()->FindPath(m_transform->GetPosition(), XMFLOAT3(1000, 200, 0), m_curPath); //test function
+		m_invincibilityTime = 0;
 	}
 
-	m_invincibilityTime -= GameManager::GetInstance()->GetTimer()->DeltaTime();
+	SetWeaponPosition();
 }
 
 void EnemyGameObject::EditorUpdate()
 {
 }
 
-void EnemyGameObject::SetPath(vector<node*> path)
-{
-	m_curPath = path;
-}
-
-const vector<node*> EnemyGameObject::GetPath() const
-{
-	return m_curPath;
-}
-
 void EnemyGameObject::Serialize(nlohmann::json& jsonData)
 {
 	CharacterGameObject::Serialize(jsonData);
+}
+
+void EnemyGameObject::CalculateMovement(node* pnode)
+{
+	XMFLOAT3 desiredDirection = MathHelper::Minus(pnode->m_pos, m_transform->GetWorldPosition());
+	desiredDirection = MathHelper::Normalize(desiredDirection);
+	m_direction = MathHelper::Plus(m_direction, desiredDirection);
+
+	float step = m_moveSpeed * GameManager::GetInstance()->GetTimer()->DeltaTime();
+
+	m_direction = MathHelper::Normalize(m_direction);
+
+	XMFLOAT3 stepPos = MathHelper::Multiply(m_direction, step);
+	stepPos = MathHelper::Plus(stepPos, m_transform->GetWorldPosition());
+	m_transform->SetWorldPosition(stepPos);
+}
+
+void EnemyGameObject::Start()
+{
+	PrefabGameObject::Start();
+
+	MeleeMovementState* pstate = new MeleeMovementState(this);
+
+	m_stateMachine.AddState(pstate);
+
+	MeleeAttackState* pattackState = new MeleeAttackState(this);
+
+	m_stateMachine.AddState(pattackState);
+
+	WanderState* pwanderState = new WanderState(this);
+
+	m_stateMachine.AddState(pwanderState);
+
+	m_pweapon = GameManager::GetInstance()->CreateGameObject<MeleeWeaponGameObject>("TestWeapon");
+	m_pweapon->SetAlbedo(TEST2);
+	m_pweapon->GetTransform()->SetLocalScale(XMFLOAT3(20, 20, 20));
+	m_pweapon->SetLayer(3);
+	m_pweapon->GetShape()->SetIsTrigger(true);
+	m_pweapon->GetShape()->SetIsCollidable(false);
+
+	m_pplayer = GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject>(std::string("Player"));
+}
+
+void EnemyGameObject::SetWeaponPosition()
+{
+	if (m_pweapon == nullptr || m_pplayer == nullptr)
+	{
+		return;
+	}
+
+	XMFLOAT2 posWorld = XMFLOAT2(GetTransform()->GetWorldPosition().x, GetTransform()->GetWorldPosition().y);
+	XMFLOAT2 playerPosWorld = XMFLOAT2(m_pplayer->GetTransform()->GetWorldPosition().x, m_pplayer->GetTransform()->GetWorldPosition().y);
+	XMFLOAT2 toWeapon = MathHelper::Minus(playerPosWorld, posWorld);
+	toWeapon = MathHelper::Normalize(toWeapon);
+	float weaponOffsetDistance = 50.0f;
+
+	XMFLOAT2 weaponPosition = MathHelper::Multiply(toWeapon, weaponOffsetDistance);
+	weaponPosition = MathHelper::Plus(posWorld, weaponPosition);
+
+	float angle = MathHelper::DotProduct(toWeapon, XMFLOAT2(0, 1));
+	angle = (std::acosf(angle) * 180.0f) / XM_PI;
+
+	if (toWeapon.x > 0.0f)
+	{
+		angle *= -1.0f;
+	}
+
+	m_pweapon->GetTransform()->SetWorldPosition(XMFLOAT3(weaponPosition.x, weaponPosition.y, 0.0f));
+	m_pweapon->GetTransform()->SetWorldRotation(XMFLOAT3(0, 0, angle));
 }

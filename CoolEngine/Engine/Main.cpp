@@ -42,7 +42,6 @@
 
 #include "Engine/Managers/Events/EventObserverExamples.h"
 #include "Engine/Managers/Events/DamageCalculation.h"
-#include "Engine/Managers/Events/BulletCreator.h"
 #include "Engine/Structure/ObjectPool.h"
 #include "Engine/GameObjects/BulletGameObject.h"
 #include "Engine/GameObjects/PickupGameObject.h"
@@ -83,9 +82,6 @@ PlayerGameObject* g_pplayer = nullptr;
 TileMap* g_testMap1;
 
 TileMap* g_testMap2;
-
-// Observer for making attacks
-BulletCreator bulletCreator;
 
 #if EDITOR
 EditorUI* g_peditorUI;
@@ -154,7 +150,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//Create scene
 	GameManager* pgameManager = GameManager::GetInstance();
 	pgameManager->CreateScene("TestScene");
-	//pgameManager->SelectSceneUsingIdentifier("TestScene");
 
 	//Music
 	AudioManager::GetInstance()->LoadMusic(TEST_MUSIC);
@@ -169,164 +164,13 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	GraphicsManager::GetInstance()->LoadTextureFromFile(DEFAULT_IMGUI_IMAGE);
 	GraphicsManager::GetInstance()->LoadTextureFromFile(TEST2);
 
-	//Load animations
-
-	//Create test gameobject
-	string obj0Name = "TestObject0";
-	string obj1Name = "TestObject1";
-	string playerName = "Player";
-	string enemyName = "Enemy";
-	string weaponName = "Weapon";
-	string pickupName = "Pickup";
-
-	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj0Name);
-	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj1Name);
-	pgameManager->CreateGameObject<PlayerGameObject>(playerName);
-	pgameManager->CreateGameObject<EnemyGameObject>(enemyName);
-	pgameManager->CreateGameObject<PickupGameObject>(pickupName);
-	RangedWeaponGameObject* weapon = dynamic_cast<RangedWeaponGameObject*>(pgameManager->CreateGameObject<RangedWeaponGameObject>(weaponName));
-
-
-	RenderableCollidableGameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj0Name);
-
-	XMFLOAT3 objectPos = XMFLOAT3(0, -200.0f, 0.0f);
-	XMFLOAT3 objectScale = XMFLOAT3(2, 2, 2);
-	XMFLOAT3 objectRot = XMFLOAT3(0, 0, 0);
-	bool isCollision = true;
-
-	pgameObject->SetMesh(QUAD_MESH_NAME);
-	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
-	pgameObject->GetTransform()->SetWorldPosition(objectPos);
-	pgameObject->GetTransform()->SetWorldScale(objectScale);
-	Box* pbox = new Box(pgameObject);
-	pbox->SetIsCollidable(isCollision);
-	pbox->SetIsTrigger(isCollision);
-	pgameObject->SetShape(pbox);
-
-	////Init second gameObject
-	pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj1Name);
-
-	objectPos = XMFLOAT3(10.0f, -200.0f, 0.0f);
-	objectScale = XMFLOAT3(2, 2, 2);
-
-	pgameObject->SetMesh(QUAD_MESH_NAME);
-	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	pgameObject->SetAlbedo(TEST2);
-	pgameObject->GetTransform()->SetWorldPosition(objectPos);
-	pgameObject->GetTransform()->SetWorldScale(objectScale);
-	pgameObject->GetTransform()->SetWorldRotation(objectRot);
-	pbox = new Box(pgameObject);
-	pbox->SetIsCollidable(isCollision);
-	pbox->SetIsTrigger(isCollision);
-	pgameObject->SetShape(pbox);
-
-	//Init enemy object
-	pgameObject = pgameManager->GetGameObjectUsingIdentifier<EnemyGameObject>(enemyName);
-	objectPos = XMFLOAT3(-570, -25.0f, 0);
-	objectScale = XMFLOAT3(40.0f, 40.0f, 40.0f);
-
-	pgameObject->SetMesh(QUAD_MESH_NAME);
-	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
-	pgameObject->GetTransform()->SetWorldPosition(objectPos);
-	pgameObject->GetTransform()->SetWorldScale(objectScale);
-	pbox = new Box(pgameObject);
-	pbox->SetIsCollidable(isCollision);
-	pbox->SetIsTrigger(isCollision);
-	pgameObject->SetShape(pbox);
-
-	// Init player object
-	pgameObject = pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName);
-
-	objectPos = XMFLOAT3(200.0f, -200.0f, 5.0f);
-	objectScale = XMFLOAT3(50, 50, 50);
-
-	pgameObject->SetMesh(QUAD_MESH_NAME);
-	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
-	pgameObject->GetTransform()->SetWorldPosition(objectPos);
-	pgameObject->GetTransform()->SetWorldScale(objectScale);
-	pbox = new Box(pgameObject);
-	pbox->SetIsCollidable(isCollision);
-	pbox->SetIsTrigger(isCollision);
-	pgameObject->SetShape(pbox);
-
-
-	// Weapon test
-	RangedWeaponGameObject* prangedObject = pgameManager->GetGameObjectUsingIdentifier<RangedWeaponGameObject>(weaponName);
-	prangedObject->SetMesh(QUAD_MESH_NAME);
-	prangedObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-	prangedObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	prangedObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
-	objectPos = XMFLOAT3(200.0f, 0.0f, 5.0f);
-	objectScale = XMFLOAT3(25, 25, 25);
-	prangedObject->GetTransform()->SetWorldPosition(objectPos);
-	prangedObject->GetTransform()->SetWorldScale(objectScale);
-	pbox = new Box(prangedObject);
-	pbox->SetIsTrigger(isCollision);
-	isCollision = false;
-	pbox->SetIsCollidable(isCollision);
-	prangedObject->SetShape(pbox);
-
-
-
-	// Init pickup object
-	pgameObject = pgameManager->GetGameObjectUsingIdentifier<PickupGameObject>(pickupName);
-
-	objectPos = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	objectScale = XMFLOAT3(400, 400, 400);
-
-	pgameObject->SetMesh(QUAD_MESH_NAME);
-	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
-	pgameObject->GetTransform()->SetWorldPosition(objectPos);
-	pgameObject->GetTransform()->SetWorldScale(objectScale);
-	pbox = new Box(pgameObject);
-	pbox->SetIsCollidable(isCollision);
-	pbox->SetIsTrigger(isCollision);
-	pgameObject->SetShape(pbox);
-
-	//g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, -200, 0), "TestMap");
-
-	//Pathfinding::GetInstance()->Initialize(g_testMap1);
-
+	
 	// Observer for collision detection
 	CollisionObserver collisionObserver = CollisionObserver();
 
 	// Observer for taking damage
 	DamageCalculation damageObserver = DamageCalculation();
 	
-
-	XMFLOAT3 pos = XMFLOAT3(-400, 250, 5);
-	XMFLOAT3 rot = XMFLOAT3(0, 0, 0);
-	XMFLOAT3 scale = XMFLOAT3(0.5f, 0.5f, 0.5f);
-	Transform trans = Transform();
-	trans.SetWorldPosition(pos);
-	trans.SetWorldRotation(rot);
-	trans.SetWorldScale(scale);
-	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 1.0f, 0.2f, 3, 20, 90.0f, 0.0f, 0.2f, 0);
-
-	pos = XMFLOAT3(0, 250, 5);
-	rot = XMFLOAT3(0, 0, 0);
-	scale = XMFLOAT3(0.5f, 0.5f, 0.5f);
-	trans.SetWorldPosition(pos);
-	trans.SetWorldRotation(rot);
-	trans.SetWorldScale(scale);
-	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 0.5f, 1.0f, 16, 100.0f, 0.0f, 0.0f, 0.2f, 2);
-
-	pos = XMFLOAT3(400, 250, 5);
-	rot = XMFLOAT3(0, 0, 0);
-	scale = XMFLOAT3(0.5f, 0.5f, 0.5f);
-	trans.SetWorldPosition(pos);
-	trans.SetWorldRotation(rot);
-	trans.SetWorldScale(scale);
-	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { -100,150 }, { 300,-75 }, 2.0f, 0.25f, 3, 100.0f, 25.0f, 25.0f, 0.1f, 1);
 	string testSceneFilePath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Levels\\TestScene.json";
 	if (!GameManager::GetInstance()->LoadSceneFromFile(testSceneFilePath))
 	{
@@ -823,8 +667,6 @@ void Render()
 
 	ParticleManager::GetInstance()->Render(renderStruct.m_pcontext);
 
-	bulletCreator.Render(renderStruct);
-
 #if _DEBUG
 	DebugDrawManager::GetInstance()->Render(renderStruct);
 #endif
@@ -916,10 +758,7 @@ void Update()
 	GameManager* pgamemanager = GameManager::GetInstance();
 
 	pgamemanager->GetTimer()->Tick();
-	pgamemanager->Start();
 	pgamemanager->Update();
-
-	bulletCreator.Update();
 
 #if EDITOR
 	g_peditorUI->Update();

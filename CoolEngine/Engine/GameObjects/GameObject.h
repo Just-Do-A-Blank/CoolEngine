@@ -22,7 +22,9 @@ enum class GameObjectType
 	BULLET = 4096,
 	GAME_UI_COMPONENT = 8192,
 	CAMERA = 16384,
-	PICKUP = 32768,
+	LEVEL_CHANGE = 32768,
+	TILE_MAP = 65536,
+	PICKUP = 131072,
 };
 
 DEFINE_ENUM_FLAG_OPERATORS(GameObjectType);
@@ -46,7 +48,9 @@ enum class AccumlateType
 	BULLET = (int)((int)GameObjectType::BULLET | WEAPON),
 	CAMERA = (int)((int)GameObjectType::CAMERA | BASE),
 	UI_COMPONENT = (int)((int)GameObjectType::GAME_UI_COMPONENT | BASE),
-	PICKUP = (int)((int)GameObjectType::PICKUP | INTERACTABLE),
+	LEVEL_CHANGE = (int)((int)GameObjectType::LEVEL_CHANGE | TRIGGERABLE),
+	TILE_MAP = ((int)GameObjectType::TILE_MAP | RENDERABLE),
+	PICKUP = (int)((int)GameObjectType::PICKUP | INTERACTABLE)
 };
 
 
@@ -57,10 +61,6 @@ class GameObject : public EditorUIComponent
 	friend class FileIO;
 private:
 
-    /// <summary>
-    /// True means start has occured 
-    /// </summary>
-    bool m_bHaveUpdated;
 protected:
 
 	Transform* m_transform;
@@ -103,7 +103,7 @@ public:
 #endif
 
 	//Getters
-	Transform* GetTransform();
+	Transform* GetTransform() const;
 	const GameObjectType& GetGameObjectType() const;
 
 	string& GetIdentifier();

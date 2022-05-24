@@ -4,16 +4,17 @@
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/TileMap/TileMap/TileMap.h"
 #include "Engine/Graphics/AnimationState.h"
+#include "Engine/Physics/Box.h"
 
 #if EDITOR
 TileMap* Tile::s_ptileMap = nullptr;
 #endif
 
-Tile::Tile() : RenderableGameObject()
+Tile::Tile() : RenderableCollidableGameObject()
 {
 }
 
-Tile::Tile(string identifier, CoolUUID uuid) : RenderableGameObject(identifier, uuid)
+Tile::Tile(string identifier, CoolUUID uuid) : RenderableCollidableGameObject(identifier, uuid)
 {
 }
 
@@ -23,7 +24,7 @@ void Tile::Init(string identifier, CoolUUID uuid)
 	SetUUID(uuid);
 }
 
-Tile::Tile(wstring path, string identifier, CoolUUID uuid) : RenderableGameObject(identifier, uuid)
+Tile::Tile(wstring path, string identifier, CoolUUID uuid) : RenderableCollidableGameObject(identifier, uuid)
 {
 	InitAnimation(path);
 }
@@ -56,6 +57,17 @@ int Tile::GetAnimIndex() const
 void Tile::SetIsPassable(bool passable)
 {
 	m_isPassable = passable;
+
+	if (m_isPassable == false)
+	{
+		m_pcollider = new Box(this);
+	}
+	else if (m_pcollider != nullptr)
+	{
+		delete m_pcollider;
+		m_pcollider = nullptr;
+	}
+
 }
 
 void Tile::SetSpriteIndex(int index)

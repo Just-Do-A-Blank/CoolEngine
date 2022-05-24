@@ -1,13 +1,13 @@
 #pragma once
 #include <vector>
 
-#include "Engine/GameObjects/RenderableGameObject.h"
+#include "Engine/GameObjects/RenderableCollidableGameObject.h"
 #include "Engine/Graphics/SpriteAnimation.h"
 #include "Engine/ResourceDefines.h"
 
 class TileMap;
 
-class Tile : public RenderableGameObject
+class Tile : public RenderableCollidableGameObject
 {
 public:
 	//Constructors

@@ -169,10 +169,10 @@ public:
     /// <param name="doPopupInCenter">true means the popup will display near to the center of the screen. Default is false.</param>
     /// <returns>True means popup is still on the screen</returns>
     static EditorButtonCallback ErrorPopupBoxWithOptions(
-        const string& key, 
-        const string& body, 
-        const string& leftButton, 
-        const string& rightButton, 
+        const string& key,
+        const string& body,
+        const string& leftButton,
+        const string& rightButton,
         bool doPopupInCenter = false
     );
 
@@ -181,6 +181,26 @@ public:
     /// </summary>
     /// <param name="key">A unique key for the error message box. Recommended: [ClassName]_[Something Unique with your class]</param>
     static void ShowError(const string& key);
+
+    /// <summary>
+    /// Standard combo box with strings as inputs
+    /// </summary>
+    /// <param name="label">The label to use</param>
+    /// <param name="values">A list of values as string</param>
+    /// <param name="selected">The selected value (updated as selected)</param>
+    /// <param name="parameters">The non-spesfic parametres</param>
+    /// <returns>True means the selection has changed</returns>
+    static bool ComboBox(const string& label, list<string>& values, string& selected, EditorUINonSpecificParameters parameters = {});
+
+    /// <summary>
+    /// Standard combo box with strings as inputs
+    /// </summary>
+    /// <param name="label">The label to use</param>
+    /// <param name="values">A list of values as string</param>
+    /// <param name="selected">The selected value (updated as selected)</param>
+    /// <param name="parameters">The non-spesfic parametres</param>
+    /// <returns>True means the selection has changed</returns>
+    static bool ComboBox(const string& label, list<pair<int, string>>& values, pair<int, string>& selected, EditorUINonSpecificParameters parameters = {});
 
     template<class T>
     static void ReferenceField(const string& label, T*& objectPointer, const float& columnWidth = 100.0f)
