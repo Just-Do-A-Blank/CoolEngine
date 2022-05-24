@@ -100,6 +100,6 @@ XMFLOAT3 CharacterGameObject::GetWeaponDirection()
 {
     // From character to weapon = weapon pos - character pos
     XMFLOAT3 weaponPos = m_pweapon->GetTransform()->GetWorldPosition();
-    XMFLOAT3 charaPos = GetTransform()->GetWorldPosition();
-    return XMFLOAT3(weaponPos.x - charaPos.x, weaponPos.y - charaPos.y, 0.0f);
+    XMFLOAT3 characterPos = GetTransform()->GetWorldPosition();
+    return XMFLOAT3(weaponPos.x - characterPos.x, weaponPos.y - characterPos.y, 0.0f);
 }
