@@ -35,6 +35,8 @@ public:
 	virtual void EditorUpdate();
 
 	WeaponGameObject* GetWeapon();
+	XMFLOAT3 GetWeaponPosition();
+	XMFLOAT3 GetWeaponDirection();
 
 	float GetMoveSpeed() { return m_moveSpeed; }
 	float GetInvincibilityTime() { return m_invincibilityTime; }

@@ -40,6 +40,7 @@
     <ClInclude Include="Engine\AI\States\MeleeAttackState.h" />
     <ClInclude Include="Engine\AI\States\MeleeMovementState.h" />
     <ClInclude Include="Engine\AI\States\RangeAttackState.h" />
+    <ClInclude Include="Engine\AI\States\WanderState.h" />
     <ClInclude Include="Engine\EditorUI\ContentBrowser.h" />
     <ClInclude Include="Engine\EditorUI\EditorButtonCallback.h" />
     <ClInclude Include="Engine\EditorUI\EditorUI.h" />
@@ -72,6 +73,8 @@
     <ClInclude Include="Engine\GameObjects\InteractableGameObject.h" />
     <ClInclude Include="Engine\GameObjects\LevelChangeGameObject.h" />
     <ClInclude Include="Engine\GameObjects\MeleeWeaponGameObject.h" />
+    <ClInclude Include="Engine\GameObjects\PickupGameObject.h" />
+    <ClInclude Include="Engine\GameObjects\PickupResource.h" />
     <ClInclude Include="Engine\GameObjects\PrefabGameObject.h" />
     <ClInclude Include="Engine\GameObjects\RangedWeaponGameObject.h" />
     <ClInclude Include="Engine\GameObjects\RenderableCollidableGameObject.h" />
@@ -182,9 +185,11 @@
     <ClInclude Include="Engine\Managers\Events\Events.h" />
     <ClInclude Include="Engine\Managers\Events\KeyEvents.h" />
     <ClInclude Include="Engine\Managers\Events\MouseEvents.h" />
+    <ClInclude Include="Engine\Managers\Events\PickupEvent.h" />
     <ClInclude Include="Engine\Managers\FontManager.h" />
     <ClInclude Include="Engine\Managers\GameManager.h" />
     <ClInclude Include="Engine\Managers\GraphicsManager.h" />
+    <ClInclude Include="Engine\Managers\PickupsManager.h" />
     <ClInclude Include="Engine\Managers\SceneGraph.h" />
     <ClInclude Include="Engine\Physics\Box.h" />
     <ClInclude Include="Engine\Physics\Circle.h" />
@@ -220,8 +225,10 @@
     <ClCompile Include="Engine\AI\States\MeleeAttackState.cpp" />
     <ClCompile Include="Engine\AI\States\MeleeMovementState.cpp" />
     <ClCompile Include="Engine\AI\States\RangeAttackState.cpp" />
+    <ClCompile Include="Engine\AI\States\WanderState.cpp" />
     <ClCompile Include="Engine\EditorUI\ContentBrowser.cpp" />
     <ClCompile Include="Engine\EditorUI\EditorUI.cpp" />
+    <ClCompile Include="Engine\EditorUI\EditorUIFloatParameters.cpp" />
     <ClCompile Include="Engine\EditorUI\TileMapContentBrowser.cpp" />
     <ClCompile Include="Engine\FileIO\FileIO.cpp" />
     <ClCompile Include="Engine\GameObjects\BulletGameObject.cpp" />
@@ -240,6 +247,8 @@
     <ClCompile Include="Engine\GameObjects\InteractableGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\LevelChangeGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\MeleeWeaponGameObject.cpp" />
+    <ClCompile Include="Engine\GameObjects\PickupGameObject.cpp" />
+    <ClCompile Include="Engine\GameObjects\PickupResource.cpp" />
     <ClCompile Include="Engine\GameObjects\PrefabGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\RangedWeaponGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\RenderableCollidableGameObject.cpp" />
@@ -302,6 +311,7 @@
     <ClCompile Include="Engine\Managers\Events\EventObserver.cpp" />
     <ClCompile Include="Engine\Managers\Events\Events.cpp" />
     <ClCompile Include="Engine\Managers\FontManager.cpp" />
+    <ClCompile Include="Engine\Managers\PickupsManager.cpp" />
     <ClCompile Include="Engine\Physics\Shape.cpp" />
     <ClCompile Include="Engine\Scene\Scene.cpp" />
     <ClCompile Include="Engine\Managers\AudioManager.cpp" />

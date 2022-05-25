@@ -61,7 +61,9 @@ PlayerController::PlayerController(PlayerController const& other, PlayerGameObje
 PlayerController::~PlayerController()
 {
     delete m_forceApplied;
-    if (m_currentState == nullptr)
+
+    // The check is here incase no state is created below
+    if (m_currentState != nullptr)
     {
         delete m_currentState;
     }

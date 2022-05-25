@@ -12,6 +12,13 @@ DamageCalculation::DamageCalculation()
 	EventManager::Instance()->AddClient(EventType::TriggerExit, this);
 }
 
+DamageCalculation::~DamageCalculation()
+{
+	EventManager::Instance()->RemoveClientEvent(EventType::TriggerEnter, this);
+	EventManager::Instance()->RemoveClientEvent(EventType::TriggerHold, this);
+	EventManager::Instance()->RemoveClientEvent(EventType::TriggerExit, this);
+}
+
 float DamageCalculation::CalculateDamage(float weaponDamage, ELEMENTS weaponElement, ELEMENTS characterElement, ELEMENTALSTATUSES characterStatus)
 {
 	float multiplier = 1.0f;
@@ -71,7 +78,7 @@ void DamageCalculation::TriggerHold(TriggerHoldEvent* e)
 				dynamic_cast<BulletGameObject*>(e->GetGameObject(1))->SetActive(false);
 			}
 		}
-		else
+		else if(!e->GetGameObject(0)->ContainsType(GameObjectType::RANGE_WEAPON))
 		{
 			// If not a character, just delete bullet
 			dynamic_cast<BulletGameObject*>(e->GetGameObject(1))->SetActive(false);

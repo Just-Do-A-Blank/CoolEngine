@@ -42,7 +42,7 @@ public:
 	///   This function saves a scene, functions by calling a serialize function on each manager in the engine which calls a serialize function on each object and inserts this data into a new json file.
 	/// </summary>
 	/// <param name="location"></param>
-	static void SaveScene(std::string location);
+	static void SaveScene(std::string location, string sceneName);
 
 private:
 

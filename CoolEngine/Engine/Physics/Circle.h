@@ -52,6 +52,11 @@ public:
 		m_shapeType = ShapeType::CIRCLE;
 	}
 
+	Circle(Circle const* other, GameObject* pgameobject) : Shape(other, pgameobject)
+	{
+		m_radius = other->m_radius;
+	}
+
 	void Serialize(nlohmann::json& data) override
 	{
 		Shape::Serialize(data);
@@ -64,9 +69,14 @@ public:
 		return m_radius;
 	}
 
-	void SetShapeDimensions(XMFLOAT3 scale)
+	void UpdateShapeDimensions()
 	{
 		m_radius = m_pgameObject->GetTransform()->GetWorldScale().x;
+	}
+
+	XMFLOAT2 GetShapeDimensions()
+	{
+		return XMFLOAT2(m_scale.x * m_radius, m_scale.y * m_radius);
 	}
 
 	~Circle()
@@ -104,15 +114,14 @@ public:
 		return Collision::CircleBoxCollisionAndResponse(this, box);
 	}
 
-	XMFLOAT2 GetShapeDimensions()
-	{
-		return XMFLOAT2(m_radius, m_radius);
-	}
-
 #if EDITOR
 	void CreateEngineUI() override
 	{
-        EditorUI::DragFloat("Radius", m_radius);
+		EditorUIFloatParameters params;
+		params.m_minValue = 0;
+		params.m_maxValue = 100000;
+
+        EditorUI::DragFloat2("Collider Scale", m_scale, params);
 
 		ImGui::Spacing();
 

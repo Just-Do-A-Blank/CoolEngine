@@ -9,11 +9,9 @@ class Box : public Shape
 {
 public:
 	XMFLOAT2 m_halfSize;
-	XMFLOAT2 m_scale;
 
 	Box()
 	{
-		m_scale = XMFLOAT2(1, 1);
 		m_pgameObject = nullptr;
 		m_halfSize = XMFLOAT2(0, 0);
 
@@ -22,7 +20,6 @@ public:
 
 	Box(GameObject* gameObject)
 	{
-		m_scale = XMFLOAT2(1, 1);
 		m_pgameObject = gameObject;
 		m_halfSize = XMFLOAT2(m_scale.x * m_pgameObject->GetTransform()->GetWorldScale().x, m_scale.y * m_pgameObject->GetTransform()->GetWorldScale().y);
 
@@ -31,7 +28,6 @@ public:
 
 	Box(GameObject* gameObject, XMFLOAT2 size)
 	{
-		m_scale = XMFLOAT2(1, 1);
 		m_pgameObject = gameObject;
 		m_halfSize = size;
 
@@ -46,6 +42,11 @@ public:
 		m_scale = XMFLOAT2(data["BoxScale"][0], data["BoxScale"][1]);
 
 		m_shapeType = ShapeType::BOX;
+	}
+
+	Box(Box const* other, GameObject* pgameobject) : Shape(other, pgameobject)
+	{
+		m_halfSize = other->m_halfSize;
 	}
 
 	~Box()
@@ -66,7 +67,7 @@ public:
 	}
 
 	// Based on gamedev.stackexchange.com/questions/20703/bounding-box-of-a-rotated-rectangle-2d
-	void SetShapeDimensions(XMFLOAT3 scale)
+	void UpdateShapeDimensions()
 	{
 		m_halfSize = XMFLOAT2(m_pgameObject->GetTransform()->GetWorldScale().x * m_scale.x, m_pgameObject->GetTransform()->GetWorldScale().y * m_scale.y);
 

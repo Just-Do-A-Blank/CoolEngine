@@ -38,11 +38,11 @@ CollidableGameObject::CollidableGameObject(CollidableGameObject const& other) : 
 		switch (other.m_pcollider->GetShapeType())
 		{
 		case ShapeType::BOX:
-			m_pcollider = new Box(this);
+			m_pcollider = new Box((Box const*)other.m_pcollider, this);
 			break;
 
 		case ShapeType::CIRCLE:
-			m_pcollider = new Circle(this);
+			m_pcollider = new Circle((Circle const*)other.m_pcollider, this);
 			break;
 		}
 	}
@@ -168,10 +168,10 @@ void CollidableGameObject::SetShape(Shape* collider)
 	m_pcollider = collider;
 }
 
-void CollidableGameObject::SetShapeDimensions(XMFLOAT3 scale)
+void CollidableGameObject::UpdateShapeDimensions()
 {
 	if (m_pcollider != nullptr)
 	{
-		m_pcollider->SetShapeDimensions(scale);
+		m_pcollider->UpdateShapeDimensions();
 	}
 }

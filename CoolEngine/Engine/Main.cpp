@@ -42,8 +42,10 @@
 
 #include "Engine/Managers/Events/EventObserverExamples.h"
 #include "Engine/Managers/Events/DamageCalculation.h"
+#include "Engine/Managers/PickupsManager.h"
 #include "Engine/Structure/ObjectPool.h"
 #include "Engine/GameObjects/BulletGameObject.h"
+#include "Engine/GameObjects/PickupGameObject.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
@@ -148,7 +150,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	//Create scene
 	GameManager* pgameManager = GameManager::GetInstance();
-	pgameManager->CreateScene("TestScene");
 
 	//Music
 	AudioManager::GetInstance()->LoadMusic(TEST_MUSIC);
@@ -171,7 +172,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	DamageCalculation damageObserver = DamageCalculation();
 	
 	string testSceneFilePath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Levels\\TestScene.json";
-	if (!GameManager::GetInstance()->LoadSceneFromFile(testSceneFilePath))
+	if (pgameManager->LoadSceneFromFile(testSceneFilePath))
+	{
+		pgameManager->SwitchSceneUsingIdentifier("TestScene");
+	}
+	else
 	{
 		GameManager* pgameManager = GameManager::GetInstance();
 		pgameManager->CreateScene("EmptyScene");
@@ -753,6 +758,10 @@ void Update()
 
 	Inputs::GetInstance()->Update();
 	EventManager::Instance()->ProcessEvents();
+
+	PickupsManager::GetInstance()->Update();
+
+
 
 	GameManager* pgamemanager = GameManager::GetInstance();
 

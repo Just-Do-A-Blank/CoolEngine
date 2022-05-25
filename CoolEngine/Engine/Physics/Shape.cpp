@@ -85,6 +85,16 @@ bool Shape::IsRendered() const
     return m_isRendered;
 }
 
+XMFLOAT2 Shape::GetScale()
+{
+    return m_scale;
+}
+
+void Shape::SetScale(XMFLOAT2 scale)
+{
+    m_scale = scale;
+}
+
 Shape::Shape(const nlohmann::json& data)
 {
 	if (data["ShapeType"] == "Box")
@@ -98,6 +108,16 @@ Shape::Shape(const nlohmann::json& data)
 
 	m_isTrigger = data["IsTrigger"];
 	m_isCollidable = data["IsCollidable"];
+}
+
+Shape::Shape(Shape const* other, GameObject* pgameobject)
+{
+	m_pgameObject = pgameobject;
+	m_scale = other->m_scale;
+	m_isTrigger = other->m_isTrigger;
+	m_isCollidable = other->m_isCollidable;
+	m_isTrigger = other->m_isTrigger;
+	m_shapeType = other->m_shapeType;
 }
 
 Shape::Shape()

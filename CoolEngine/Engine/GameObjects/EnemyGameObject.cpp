@@ -2,6 +2,7 @@
 #include "Engine/Managers/GameManager.h"
 #include "Engine/AI/States/MeleeMovementState.h"
 #include "Engine/AI/States/MeleeAttackState.h"
+#include "Engine/AI/States/WanderState.h"
 #include "Engine/GameObjects/MeleeWeaponGameObject.h"
 #include "Engine/ResourceDefines.h"
 #include "Engine/GameObjects/PlayerGameObject.h"
@@ -78,6 +79,10 @@ void EnemyGameObject::Start()
 	MeleeAttackState* pattackState = new MeleeAttackState(this);
 
 	m_stateMachine.AddState(pattackState);
+
+	WanderState* pwanderState = new WanderState(this);
+
+	m_stateMachine.AddState(pwanderState);
 
 	m_pweapon = GameManager::GetInstance()->CreateGameObject<MeleeWeaponGameObject>("TestWeapon");
 	m_pweapon->SetAlbedo(TEST2);

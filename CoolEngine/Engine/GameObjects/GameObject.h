@@ -24,6 +24,7 @@ enum class GameObjectType
 	CAMERA = 16384,
 	LEVEL_CHANGE = 32768,
 	TILE_MAP = 65536,
+	PICKUP = 131072,
 };
 
 DEFINE_ENUM_FLAG_OPERATORS(GameObjectType);
@@ -48,7 +49,8 @@ enum class AccumlateType
 	CAMERA = (int)((int)GameObjectType::CAMERA | BASE),
 	UI_COMPONENT = (int)((int)GameObjectType::GAME_UI_COMPONENT | BASE),
 	LEVEL_CHANGE = (int)((int)GameObjectType::LEVEL_CHANGE | TRIGGERABLE),
-	TILE_MAP = ((int)GameObjectType::TILE_MAP | RENDERABLE)
+	TILE_MAP = ((int)GameObjectType::TILE_MAP | RENDERABLE),
+	PICKUP = (int)((int)GameObjectType::PICKUP | INTERACTABLE)
 };
 
 

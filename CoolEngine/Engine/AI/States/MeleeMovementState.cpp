@@ -38,7 +38,7 @@ float MeleeMovementState::CalculateActivation()
 {
 	float distanceSq = MathHelper::DistanceSquared(m_penemy->GetTransform()->GetWorldPosition(), m_pplayer->GetTransform()->GetWorldPosition());
 
-	if (distanceSq > m_activationDistanceSq)
+	if (distanceSq > m_activationDistanceSq && distanceSq < m_maxActivationDistanceSq)
 	{
 		return 1.0f;
 	}

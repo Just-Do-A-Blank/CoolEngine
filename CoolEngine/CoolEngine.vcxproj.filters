@@ -291,6 +291,19 @@
     <ClCompile Include="Engine\GameUI\GameplayIntegration\TextureToResource.cpp">
       <Filter>Engine\GameUI\GameplayIntegration</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GameObjects\PickupGameObject.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Pickups</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\PickupResource.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Pickups</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\PickupsManager.cpp">
+      <Filter>Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\States\WanderState.cpp">
+      <Filter>Engine\AI\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\EditorUI\EditorUIFloatParameters.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -754,6 +767,20 @@
     </ClInclude>
     <ClInclude Include="Engine\GameUI\GameplayIntegration\EUIResourceChangeSetting.h">
       <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    <ClInclude Include="Engine\Managers\Events\PickupEvent.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\PickupGameObject.h">
+      <Filter>Engine\GameObjects\Gameplay\Pickups</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\PickupResource.h">
+      <Filter>Engine\GameObjects\Gameplay\Pickups</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\PickupsManager.h">
+      <Filter>Engine\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\WanderState.h">
+      <Filter>Engine\AI\States</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -877,6 +904,8 @@
     </Filter>
     <Filter Include="Engine\GameUI\GameplayIntegration">
       <UniqueIdentifier>{979ca6e5-7243-4163-b514-8320ff428abf}</UniqueIdentifier>
+    <Filter Include="Engine\GameObjects\Gameplay\Pickups">
+      <UniqueIdentifier>{4958383b-627e-456b-9b70-6f8dd49502cc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
