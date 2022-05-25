@@ -21,6 +21,10 @@ Transform::Transform(Transform const& other)
 	m_upVector = other.m_upVector;
 	m_leftVector = other.m_leftVector;
 
+	m_defaultForwardVector = other.m_defaultForwardVector;
+	m_defaultUpVector = other.m_defaultUpVector;
+	m_defaultLeftVector = other.m_defaultLeftVector;
+
 	m_pparentTransform = other.m_pparentTransform;
 	m_childrenTransformList = other.m_childrenTransformList;
 	
