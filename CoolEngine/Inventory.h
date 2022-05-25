@@ -1,52 +1,48 @@
 #pragma once
 #include "Engine/GameObjects/WeaponGameObject.h"
+#include "Engine/GameObjects/PickupResource.h"
+#include <algorithm>
+
+struct InventoryInfo
+{
+    string key;
+    float strength;
+    int quantity;
+
+    InventoryInfo(string Key, float Strength, float Quantity)
+    {
+        key = Key;
+        strength = Strength;
+        quantity = Quantity;
+    }
+
+};
+
 
 
 class Inventory
 {
 public:
+    Inventory();
+    Inventory(string identifier, CoolUUID uuid);
+    Inventory(const nlohmann::json& data, CoolUUID uuid);
+    Inventory(Inventory const& other);
 
-    //Inventory(string identifier, CoolUUID uuid);
-    //Inventory(const nlohmann::json& data, CoolUUID uuid);
-    //Inventory(Inventory const& other);
+    unordered_set<InventoryInfo*> GetPickupInventory() { return m_pInventoryInfo; }
+    unordered_set<WeaponGameObject*> GetWeaponInventory() { return m_pWeaponInventory; }
+    void RemoveWeapon(WeaponGameObject* weapon) { m_pWeaponInventory.erase(weapon); }
+    void RemoveWeaponByKey(string key);
 
-  /*  struct inventroryData
-    {*/
-        WeaponGameObject* m_selectedWeapon;
-        float m_money = 0;
-        float m_maxMoney;
+    bool RemovePickupByKey(string key,float strength, int quantityToRemove);
+    InventoryInfo* GetItemByKey(string key, float strength);
 
-        bool m_itemSlotsWeapons[4]; // values set as stated in design doc
-        bool m_itemSlotsConsumables[3];
-        bool m_itemSlotsKeys[2];
-
-        bool m_keyRetreievedRoomN; // Fire Mountain: Ortius (drops bomb on defeat)  Bool for each key as said in design doc
-        bool m_keyRetreievedRoomE; // Poison (drops Crystalised Flower)
-        bool m_keyRetreievedRoomS; // Electricity (drops Capacitor)
-        bool m_keyRetreievedRoomW; // Water (Drops Aquamarine Crystal)
-        bool m_keyRetreivedHideoutN;
-        bool m_keyRetreivedHideoutE;
-        bool m_keyRetreivedHideoutS;
-        bool m_keyRetreivedHideoutW;
-    //};
+    void AddPickup(unordered_set<PickupResource*> pickupEffects);
 
 
-    virtual float GetMoney();
-    virtual int GetSelectedItemIndex();
-
-    virtual void UpdateMoney(float ValueToAdd); // used to add/subtract money from inventory
-    virtual void NavigateInventory(int DirectionAndDistance);
-    virtual void SetSelectedIndex(int SelectedIndex);
-    virtual void PickupItem(GameObject Item);
-    virtual void DeleteItem(GameObject Item);
-    virtual void DeleteItemAtIndex();
-
-
-protected:
-
-
-
+    void SaveData(nlohmann::json& jsonData);
+    void LoadData(const nlohmann::json& jsonData);
 private:
-
+    unordered_set<InventoryInfo*> m_pInventoryInfo;
+    unordered_set<WeaponGameObject*> m_pWeaponInventory;
 };
 #pragma once

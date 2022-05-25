@@ -72,6 +72,8 @@ PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : Character
 
 	m_resourceManager = new PlayerResourceManager();
 
+	m_myInventory = new Inventory();
+
     EventManager::Instance()->AddClient(EventType::KeyPressed, this);
     EventManager::Instance()->AddClient(EventType::KeyReleased, this);
     EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
@@ -142,6 +144,9 @@ PlayerGameObject::PlayerGameObject(const nlohmann::json& data, CoolUUID uuid) : 
 	InputsAsGameplayButtons* buttons = new InputsAsGameplayButtons(gameplayButtons);
 	m_playerController = new PlayerController(buttons, this);
 
+
+	m_myInventory = new Inventory();
+
 	EventManager::Instance()->AddClient(EventType::KeyPressed, this);
 	EventManager::Instance()->AddClient(EventType::KeyReleased, this);
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
@@ -175,7 +180,7 @@ PlayerGameObject::PlayerGameObject(PlayerGameObject const& other) : CharacterGam
 	EventManager::Instance()->AddClient(EventType::MouseMoved, this);
 	EventManager::Instance()->AddClient(EventType::Pickup, this);
 
-	m_myInventory = new Inventory(); // creates the inventory object
+	m_myInventory = other.m_myInventory; // grabs the player's inventory
     m_resourceManager = new PlayerResourceManager(*other.m_resourceManager);
 }
 
@@ -233,12 +238,14 @@ void PlayerGameObject::LoadLocalData(const nlohmann::json& jsonData)
 {
     m_playerController->LoadAllPrefabData(jsonData);
 	m_resourceManager->LoadData(jsonData);
+	m_myInventory->LoadData(jsonData);
 }
 
 void PlayerGameObject::SaveLocalData(nlohmann::json& jsonData)
 {
     m_playerController->SaveAllPrefabData(jsonData);
     m_resourceManager->SaveData(jsonData);
+	m_myInventory->SaveData(jsonData);
 }
 
 void PlayerGameObject::SetWeaponPosition()
@@ -275,11 +282,25 @@ void PlayerGameObject::OnTriggerHold(GameObject* obj1, GameObject* obj2)
 	{
 		PickupGameObject* pickup = dynamic_cast<PickupGameObject*>(obj2);
 
-
-		//Send event with the data for the player or anyone else that wants to know about to listen to. The pickup data related is also added when cast back to the event
-		EventManager::Instance()->AddEvent(new PickupEvent(pickup->GetConsumableData()));
+		//If this pickup is consumed on pickup (e.g health pack)
+		if (pickup->GetConsumeOnPickup())
+		{
+			unordered_set<PickupResource*> resource = pickup->GetConsumableData();
+			unordered_set<PickupResource*>::iterator it;
+			//Giving the resources in this pickup to the player's resources
+			for (it = resource.begin(); it != resource.end(); it++)
+			{
+				m_resourceManager->GiveResource((*it)->key, (*it)->strength);
+			}
+		}
+		else//Otherwise send event that an item is picked up (and goes into inventory)
+		{
+			for (int i = 0; i < pickup->GetQuantity(); i++)
+			{
+				EventManager::Instance()->AddEvent(new PickupEvent(pickup->GetConsumableData()));
+			}
+		}
 		//This object should be removed from the scene after firing this event
-
 		pickup->SetToBeDeleted(true);
 	}
 
@@ -329,8 +350,9 @@ void PlayerGameObject::Handle(Event* e)
 	case EventType::MouseMoved:
 		//MouseMoved((MouseMovedEvent*)e);
 		break;
-	case EventType::Pickup://///////////////////////////////////////////////////////////////
-		PickupEvent* test = (PickupEvent*)e;
+	case EventType::Pickup:	
+		PickupEvent* pickupEvent = (PickupEvent*)e;
+		m_myInventory->AddPickup((pickupEvent->GetConsumableData()));
 		break;
 	}
 }

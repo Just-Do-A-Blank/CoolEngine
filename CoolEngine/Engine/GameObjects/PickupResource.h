@@ -21,15 +21,27 @@ struct PickupResource
     {
         key = Key;
     }
+
+    bool operator==(const PickupResource& ob)const
+    {
+        bool equal = false;
+        if (key == ob.key && strength == ob.strength)
+        {
+            equal = true;
+        }
+            
+
+        return equal;
+    }
 };
 
 class PickupResourceInterface
 {
 public:
-    PickupResourceInterface(list<PickupResource*>* resources);
+    PickupResourceInterface(unordered_set<PickupResource*>* resources);
     virtual void CreateEngineUI();
 
-    list<PickupResource*>* GetEffects() { return m_pPickupEffects; }
+    unordered_set<PickupResource*>* GetEffects() { return m_pPickupEffects; }
 
 
     const string m_popupKeyResourceKeyFound = "PickupResource_ResourceErrorKey";
@@ -44,7 +56,7 @@ private:
 
     PickupResource* m_deleteOnNextLoop;
 
-    list<PickupResource*>* m_pPickupEffects;
+    unordered_set<PickupResource*>* m_pPickupEffects;
     unordered_set<string>* m_pFullEffectsList;
 
 

@@ -5,12 +5,12 @@
 class PickupEvent : public Event
 {
 public:
-	PickupEvent(list<PickupResource*> ConsumableData) : m_consumableData(ConsumableData), Event(EventType::Pickup) {}
+	PickupEvent(unordered_set<PickupResource*> ConsumableData) : m_consumableData(ConsumableData), Event(EventType::Pickup) {}
 	~PickupEvent() {}
 
-	inline list<PickupResource*>  GetConsumableData() { return m_consumableData; }
+	inline unordered_set<PickupResource*>  GetConsumableData() { return m_consumableData; }
 private:
-	list<PickupResource*>  m_consumableData;
+	unordered_set<PickupResource*>  m_consumableData;
 
 
 };
