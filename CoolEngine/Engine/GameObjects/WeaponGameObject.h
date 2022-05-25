@@ -30,6 +30,7 @@ public:
 	void SetBulletScale(XMFLOAT3 scale);
 	void SetCollisionScale(XMFLOAT2 scale);
 
+	string GetUniqueKey();
 	int GetLevel();
 	int GetStrength();
 	int GetDamage();
@@ -43,14 +44,21 @@ public:
 	XMFLOAT3 GetBulletScale();
 	XMFLOAT2 GetCollisionScale();
 
+    std::wstring GetUITexturePath();
+
 	bool GetIsDualType();
 	int RoundUp(float value);
+
+#if EDITOR
+    virtual void CreateEngineUI() override;
+#endif
 
 protected:
     virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
     virtual void SaveAllPrefabData(nlohmann::json& jsonData) override;
 
 private:
+    string m_key;
 	int m_level = 0;
 	int m_strength = 0;
 	float m_damage = 1;
@@ -70,4 +78,28 @@ private:
 
     void LoadLocalData(const nlohmann::json& jsonData);
     void SaveLocalData(nlohmann::json& jsonData);
+
+    ID3D11ShaderResourceView* m_ptexture = nullptr;
+
+    std::wstring m_texturePath;
+    
+    void SetUITexture(std::wstring wsfilepath);
+   
+#if EDITOR
+    list<pair<int, string>> m_elementsList;
+
+    pair<int, string> m_elementSelectedItem;
+
+    list<pair<int, string>> GetElementsAsList();
+
+    pair<int, string> GetElementsFromIndex(int index);
+
+    list<pair<int, string>> m_statusList;
+
+    pair<int, string> m_statusSelectedItem;
+
+    list<pair<int, string>> GetStatusesAsList();
+
+    pair<int, string> GetStatusesFromIndex(int index);
+#endif
 };
