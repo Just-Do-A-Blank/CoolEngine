@@ -279,7 +279,6 @@
     <ClCompile Include="Engine\GameUI\GameUIPrefab.cpp">
       <Filter>Engine\GameUI</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\AI\States\WanderState.cpp" />
     <ClCompile Include="Engine\GameObjects\PickupGameObject.cpp">
       <Filter>Engine\GameObjects\Gameplay\Pickups</Filter>
     </ClCompile>
@@ -288,6 +287,12 @@
     </ClCompile>
     <ClCompile Include="Engine\Managers\PickupsManager.cpp">
       <Filter>Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\States\WanderState.cpp">
+      <Filter>Engine\AI\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\States\RangeMovementState.cpp">
+      <Filter>Engine\AI\States</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -738,7 +743,6 @@
     <ClInclude Include="Engine\GameUI\GameUIPrefab.h">
       <Filter>Engine\GameUI</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\AI\States\WanderState.h" />
     <ClInclude Include="Engine\Managers\Events\PickupEvent.h">
       <Filter>Engine\Managers\Events</Filter>
     </ClInclude>
@@ -750,6 +754,12 @@
     </ClInclude>
     <ClInclude Include="Engine\Managers\PickupsManager.h">
       <Filter>Engine\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\WanderState.h">
+      <Filter>Engine\AI\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\RangeMovementState.h">
+      <Filter>Engine\AI\States</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
