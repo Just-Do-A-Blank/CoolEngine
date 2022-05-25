@@ -3,6 +3,7 @@
 
 class PlayerGameObject;
 class EnemyGameObject;
+class MeleeWeaponGameObject;
 
 struct node;
 
@@ -28,6 +29,8 @@ protected:
 private:
 	PlayerGameObject* m_pplayer = nullptr;
 	EnemyGameObject* m_penemy = nullptr;
+
+	MeleeWeaponGameObject* m_pweapon = nullptr;
 
 	std::vector<node*> m_path;
 

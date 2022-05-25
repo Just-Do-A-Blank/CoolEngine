@@ -2,6 +2,7 @@
 #include "Engine/Managers/GameManager.h"
 #include "Engine/GameObjects/EnemyGameObject.h"
 #include "Engine/GameObjects/PlayerGameObject.h"
+#include "Engine/GameObjects/MeleeWeaponGameObject.h"
 #include "Engine/AI/Pathfinding.h"
 
 MeleeMovementState::MeleeMovementState(EnemyGameObject* penemy) : FuzzyState()
@@ -36,6 +37,22 @@ void MeleeMovementState::Exit()
 
 float MeleeMovementState::CalculateActivation()
 {
+	if (m_pplayer == nullptr)
+	{
+		return 0.0f;
+	}
+
+	WeaponGameObject* pweapon = m_penemy->GetWeapon();
+
+	if (pweapon != nullptr && pweapon->ContainsType(GameObjectType::MELEE_WEAPON) == true)
+	{
+		m_pweapon = dynamic_cast<MeleeWeaponGameObject*>(m_penemy->GetWeapon());
+	}
+	else
+	{
+		return 0.0f;
+	}
+
 	float distanceSq = MathHelper::DistanceSquared(m_penemy->GetTransform()->GetWorldPosition(), m_pplayer->GetTransform()->GetWorldPosition());
 
 	if (distanceSq > m_activationDistanceSq && distanceSq < m_maxActivationDistanceSq)
