@@ -1,6 +1,6 @@
 #pragma once
 #include "Engine/Includes/json.hpp"
-#include <Engine/GameObjects/PlayerGameObject.h>
+#include "Engine/GameObjects/PlayerGameObject.h"
 
 class GameplayUIResourceAttachment
 {
