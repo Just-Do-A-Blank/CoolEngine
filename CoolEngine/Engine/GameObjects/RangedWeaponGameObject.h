@@ -33,10 +33,12 @@ public:
 	void SetAngleInterval(float angle);
 	void SetIsShot(bool shot);
 	void SetSpeed(float speed);
+	void SetTimeBetweenShots(float shotTime);
 
 	float GetAngleInterval();
 	bool GetIsShot();
 	float GetSpeed();
+	float GetTimeBetweenShots();
 
 	virtual void Serialize(nlohmann::json& data) override;
 
@@ -49,6 +51,8 @@ protected:
 private:
 	float m_angleInterval = 0.0f;
 	float m_shotSpeed = 50.0f;
+	float m_timeBetweenShots = 1;
+	float m_lastShotTimestamp = -1.0f;
 
 	bool m_isShot = false;
 
