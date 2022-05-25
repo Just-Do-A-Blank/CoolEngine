@@ -306,6 +306,9 @@
     <ClCompile Include="Engine\EditorUI\EditorUIFloatParameters.cpp">
       <Filter>Engine\EditorUI</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\GameplayUIWeaponAttachment.cpp">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -783,6 +786,12 @@
       <Filter>Engine\GameUI\GameplayIntegration</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameUI\GameplayIntegration\EUIResourceChangeSetting.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\GameplayUIWeaponAttachment.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\EWeaponUIAttachmentOption.h">
       <Filter>Engine\GameUI\GameplayIntegration</Filter>
     </ClInclude>
   </ItemGroup>

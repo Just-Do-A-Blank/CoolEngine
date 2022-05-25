@@ -1,7 +1,7 @@
 #pragma once
 #include "GameUIComponent.h"
-
 class GameplayUIResourceAttachment;
+class GameplayUIWeaponAttachment;
 
 class ImageComponent : public GameUIComponent
 {
@@ -33,6 +33,8 @@ protected:
     /// <param name="jsonData">Data to add to</param>
     virtual void SaveAllPrefabData(nlohmann::json& jsonData);
 
+    int test;
+
 private:
 
     /// <summary>
@@ -47,6 +49,8 @@ private:
     /// <param name="jsonData">Data to be loaded</param>
     void LoadAllLocalData(const nlohmann::json& jsonData);
 
-	GameplayUIResourceAttachment* m_resourceAttachement;
+    GameplayUIResourceAttachment* m_resourceAttachement;
+
+    GameplayUIWeaponAttachment* m_weaponAttachment;
 };
 

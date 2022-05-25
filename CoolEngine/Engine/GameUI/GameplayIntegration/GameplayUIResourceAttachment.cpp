@@ -38,6 +38,19 @@ GameplayUIResourceAttachment::~GameplayUIResourceAttachment()
 }
 
 /// <summary>
+/// Called after construction, before first Update.
+/// </summary>
+void GameplayUIResourceAttachment::Start()
+{
+    if (m_resourceKey == "None")
+    {
+        return;
+    }
+
+    AttemptToFindPlayer();
+}
+
+/// <summary>
 /// Called when the UI element should update
 /// </summary>
 void GameplayUIResourceAttachment::Update()
@@ -58,7 +71,7 @@ void GameplayUIResourceAttachment::Update()
 #if EDITOR
 	void GameplayUIResourceAttachment::CreateEngineUI()
 	{
-		if (EditorUI::CollapsingSection("Resource Attachement", true))
+		if (EditorUI::CollapsingSection("Resource Options", true))
 		{
 			AttemptToFindPlayer();
 			PlayerGameObject* player = GetPlayer();
@@ -126,13 +139,7 @@ void GameplayUIResourceAttachment::AttemptToFindPlayer(bool force)
 	m_resourceKeys = m_currentPlayer->GetPlayerResources()->GetResourceKeys();
 }
 
-/// <summary>
-/// Called after construction, before first Update.
-/// </summary>
-void GameplayUIResourceAttachment::Start()
-{
-	AttemptToFindPlayer();
-}
+
 
 void GameplayUIResourceAttachment::LoadFromTopLevel(const nlohmann::json& jsonData)
 {
