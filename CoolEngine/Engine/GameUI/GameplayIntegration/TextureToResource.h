@@ -15,7 +15,8 @@ public:
 	/// Creates UI
 	/// </summary>
 	/// <param name="key">Used in the heading</param>
-	virtual void CreateEngineUI(int key);
+    /// <return>True means this may still exist, False means this has been chosen for deletion</return>
+	virtual bool CreateEngineUI(int key);
 #endif
 
 	wstring GetTextureOut();
@@ -36,6 +37,11 @@ public:
 	virtual void LoadAllPrefabData(const nlohmann::json& jsonData, int key);
 	virtual void SaveAllPrefabData(nlohmann::json& jsonData, int key);
 
+    /// <summary>
+    /// Called when ever a change in the ordering has occured
+    /// </summary>
+    virtual void ResetOrder();
+
 private:
 
 	wstring m_texturePath;
@@ -52,6 +58,11 @@ private:
 
 	void LoadLocalData(const nlohmann::json& jsonData, int key);
 	void SaveLocalData(nlohmann::json& jsonData, int key);
+
+    /// <summary>
+    /// True means we are showing the delete warning
+    /// </summary>
+    bool m_areShowingDeleteBox;
 
 	/// <summary>
 	/// Used when loading to ensure the settings equals the value we actually use in code

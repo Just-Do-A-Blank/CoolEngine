@@ -60,14 +60,25 @@ private:
     /// <summary>
     /// Detirmines if the component should update
     /// </summary>
-    /// <param name="resourceValue">The resource value if updating</param>
+    /// <param name="currentResourceValue">The resource value if updating</param>
     /// <return>True means should update</return>
     bool ShouldUpdate(int currentResourceValue);
 
     /// <summary>
     /// Flips and switches to confirm this has updated
     /// </summary>
-    /// <param name="resourceValue">The resource value if updating</param>
+    /// <param name="currentResourceValue">The resource value if updating</param>
     void UpdateComplete(int currentResourceValue);
+
+    /// <summary>
+    /// Deletes the texture to resource at a given index
+    /// </summary>
+    /// <param name="index">The index to delete</param>
+    void DeleteResourceTextureAtIndex(int index);
+
+    /// <summary>
+    /// Update all textures to inform them the order may have changed
+    /// </summary>
+    void ResetOrdering();
 };
 

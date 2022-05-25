@@ -7,6 +7,7 @@ TextureToResource::TextureToResource()
 	m_setting = EUIRESOURCECHANGESETTING::ChangeWhenNumberHit;
 	m_texturePath = wstring();
 	m_resourceValue = 0;
+    m_areShowingDeleteBox = false;
 
 	m_settingAsAList =
 	{
@@ -20,6 +21,7 @@ TextureToResource::TextureToResource()
 
 TextureToResource::TextureToResource(const nlohmann::json& data, int key)
 {
+    m_areShowingDeleteBox = false;
 	LoadLocalData(data, key);
 
 	m_settingAsAList =
@@ -37,6 +39,7 @@ TextureToResource::TextureToResource(TextureToResource const& other)
 	m_setting = other.m_setting;
 	m_texturePath = other.m_texturePath;
 	m_resourceValue = other.m_resourceValue;
+    m_areShowingDeleteBox = false;
 
 	m_settingAsAList =
 	{
@@ -91,8 +94,14 @@ void TextureToResource::SaveLocalData(nlohmann::json& jsonData, int key)
 }
 
 #if EDITOR
-	void TextureToResource::CreateEngineUI(int key)
+    /// <summary>
+    /// Creates UI
+    /// </summary>
+    /// <param name="key">Used in the heading</param>
+    /// <return>True means this may still exist, False means this has been chosen for deletion</return>
+    bool TextureToResource::CreateEngineUI(int key)
 	{
+        bool shouldExist = true;
 		if (EditorUI::CollapsingSection("Image: " + to_string(key), true))
 		{
 			EditorUI::Texture("Texture", m_texturePath, m_ptexture);
@@ -105,9 +114,44 @@ void TextureToResource::SaveLocalData(nlohmann::json& jsonData, int key)
 			{
 				m_setting = (EUIRESOURCECHANGESETTING)m_selectedSettingValue.first;
 			}
+            string popupID = "Image" + to_string(key) + "Popup";
+
+            if (m_areShowingDeleteBox)
+            {
+                EditorButtonCallback callback =
+                    EditorUI::ErrorPopupBoxWithOptions(popupID, "Are you sure you want to delete this image?",
+                        "Cancel", "Delete");
+
+                if (callback.m_leftButton)
+                {
+                    m_areShowingDeleteBox = false;
+                }
+                else if (callback.m_rightButton)
+                {
+                    shouldExist = false;
+                    m_areShowingDeleteBox = false;
+                }
+            }
+
+
+            if (EditorUI::BasicButton("Delete"))
+            {
+                EditorUI::ShowError(popupID);
+                m_areShowingDeleteBox = true;
+            }
 		}
+
+        return shouldExist;
 	}
 #endif
+
+/// <summary>
+/// Called when ever a change in the ordering has occured
+/// </summary>
+void TextureToResource::ResetOrder()
+{
+    m_areShowingDeleteBox = false;
+}
 
 wstring TextureToResource::GetTextureOut()
 {

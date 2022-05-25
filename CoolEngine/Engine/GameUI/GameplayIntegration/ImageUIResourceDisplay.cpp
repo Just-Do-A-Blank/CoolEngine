@@ -50,19 +50,30 @@ ImageUIResourceDisplay::~ImageUIResourceDisplay()
 			if (callback.m_leftButton)
 			{
 				m_texturesForEachResourceChange.push_back(new TextureToResource());
+                ResetOrdering();
 			}
 			else if (callback.m_rightButton)
 			{
 				m_texturesForEachResourceChange.push_front(new TextureToResource());
+                ResetOrdering();
 			}
 
+            int deletionIndex = -1;
 			int index = 0;
 			for (TextureToResource* const& i : m_texturesForEachResourceChange)
 			{
-				ImGui::PushID(("TextureToResource_" + to_string(index)).c_str());
-				i->CreateEngineUI(index++);
+                ImGui::PushID(("TextureToResource_" + to_string(index)).c_str());
+
+                if (!i->CreateEngineUI(index))
+                {
+                    deletionIndex = index;
+                }
+
+                index++;
 				ImGui::PopID();
 			}
+
+            DeleteResourceTextureAtIndex(deletionIndex);
 		}
 	}
 #endif
@@ -177,4 +188,33 @@ void ImageUIResourceDisplay::UpdateComplete(int currentResourceValue)
 {
     m_haveEverUpdated = true;
     m_lastKnownResourceValue = currentResourceValue;
+}
+
+/// <summary>
+/// Deletes the texture to resource at a given index
+/// </summary>
+/// <param name="index">The index to delete</param>
+void ImageUIResourceDisplay::DeleteResourceTextureAtIndex(int index)
+{
+    if (index <= -1)
+    {
+        return;
+    }
+
+    list<TextureToResource*>::iterator it = m_texturesForEachResourceChange.begin();
+    advance(it, index);
+    m_texturesForEachResourceChange.erase(it);
+
+    ResetOrdering();
+}
+
+/// <summary>
+/// Update all textures to inform them the order may have changed
+/// </summary>
+void ImageUIResourceDisplay::ResetOrdering()
+{
+    for (TextureToResource* const& i : m_texturesForEachResourceChange)
+    {
+        i->ResetOrder();
+    }
 }
