@@ -49,5 +49,28 @@ private:
 	/// Text after the number
 	/// </summary>
 	string m_suffixText;
+
+    /// <summary>
+    /// The value last updated to
+    /// </summary>
+    int m_lastKnownResourceValue;
+
+    /// <summary>
+    /// True means this has updated
+    /// </summary>
+    bool m_haveEverUpdated;
+
+    /// <summary>
+    /// Detirmines if the component should update
+    /// </summary>
+    /// <param name="currentResourceValue">The resource value if updating</param>
+    /// <return>True means should update</return>
+    bool ShouldUpdate(int currentResourceValue);
+
+    /// <summary>
+    /// Flips and switches to confirm this has updated
+    /// </summary>
+    /// <param name="currentResourceValue">The resource value if updating</param>
+    void UpdateComplete(int currentResourceValue);
 };
 
