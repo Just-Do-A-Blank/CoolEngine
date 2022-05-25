@@ -18,6 +18,7 @@ class Shape : EditorUIComponent
 {
 public:
 	Shape(const nlohmann::json& data);
+	Shape(Shape const* other, GameObject* pgameobject);
 	Shape();
 
     virtual bool Collide(Shape* shape) = 0;
