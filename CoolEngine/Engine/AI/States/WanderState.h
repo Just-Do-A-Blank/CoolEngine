@@ -31,7 +31,7 @@ private:
 
 	std::vector<node*> m_path;
 
-	float m_activationDistanceSq = 90000;
+	float m_activationDistanceSq = 562500;
 	float m_nodePopDistanceSq = 10.0f;
 	float m_wanderHalfRange = 100.0f;
 	float m_waitTime = 3.0f;
