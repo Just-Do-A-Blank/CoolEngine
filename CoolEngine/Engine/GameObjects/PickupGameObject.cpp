@@ -5,10 +5,15 @@
 #include "Engine\EditorUI\EditorUI.h"
 
 #include "Engine/Managers/GameManager.h"
+#include "Engine/Managers/PickupsManager.h"
 
 PickupGameObject::PickupGameObject(string identifier, CoolUUID uuid) : InteractableGameObject(identifier, uuid)
 {
     m_gameObjectType |= GameObjectType::PICKUP;
+    m_pPlayer = GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject>(string("Player"));
+    m_isConsumedOnPickup = false;
+    m_pPickupResourceInterface = new PickupResourceInterface(&m_pResouces);
+
 }
 
 PickupGameObject::PickupGameObject(const nlohmann::json& data, CoolUUID index) : InteractableGameObject(data, index)
@@ -45,55 +50,18 @@ void PickupGameObject::Serialize(nlohmann::json& data)
 void PickupGameObject::CreateEngineUI()
 {
     InteractableGameObject::CreateEngineUI();
+
     if (EditorUI::CollapsingSection("Pickup", true))
     {
-        //Drop down menu selection
-        string currentSelected = GetConsumableTypeString(m_ConsumableData.consumType);
+        
+        m_pPickupResourceInterface->CreateEngineUI();
 
-        if (IMGUI_LEFT_LABEL(ImGui::BeginCombo, "Pickup Type", currentSelected.c_str()) == true)
-        {
-            if (ImGui::Selectable(GetConsumableTypeString(CONSUMABLETYPE::HEALTH).c_str()))
-            {
-                m_ConsumableData.consumType = CONSUMABLETYPE::HEALTH;
-            }
-            else if (ImGui::Selectable(GetConsumableTypeString(CONSUMABLETYPE::KEY).c_str()))
-            {
-                m_ConsumableData.consumType = CONSUMABLETYPE::KEY;
-            }
-            else if (ImGui::Selectable(GetConsumableTypeString(CONSUMABLETYPE::POTION).c_str()))
-            {
-                m_ConsumableData.consumType = CONSUMABLETYPE::POTION;
-            }
-            else if (ImGui::Selectable(GetConsumableTypeString(CONSUMABLETYPE::SE_BOOSTER).c_str()))
-            {
-                m_ConsumableData.consumType = CONSUMABLETYPE::SE_BOOSTER;
-            }
-            else if (ImGui::Selectable(GetConsumableTypeString(CONSUMABLETYPE::STAMINA).c_str()))
-            {
-                m_ConsumableData.consumType = CONSUMABLETYPE::STAMINA;
-            }
-            else if (ImGui::Selectable(GetConsumableTypeString(CONSUMABLETYPE::NONE).c_str()))
-            {
-                m_ConsumableData.consumType = CONSUMABLETYPE::NONE;
-            }
-
-
-            ImGui::EndCombo();
-        }
 
         ImGui::Spacing();
         EditorUINonSpecificParameters pickupBoolParameter;
         pickupBoolParameter.m_columnWidth = 150;
         pickupBoolParameter.m_tooltipText = "If the pickup will be consumed by the player on pickup or it will go into inventory";
-
-        EditorUI::Checkbox("Consumed on Pickup", m_ConsumableData.isConsumedOnPickup, pickupBoolParameter);
-        ImGui::Spacing();
-
-
-        EditorUIFloatParameters pickupFloatParameters = EditorUIFloatParameters();
-        pickupFloatParameters.m_tooltipText = "Can set to negative to subtract if desired";
-        pickupFloatParameters.m_columnWidth = 150;
-        EditorUI::DragFloat("Strength", m_ConsumableData.strength, pickupFloatParameters);
+        EditorUI::Checkbox("Consumed on Pickup", m_isConsumedOnPickup, pickupBoolParameter);
 
     }
 }
@@ -103,43 +71,56 @@ void PickupGameObject::CreateEngineUI()
 
 void PickupGameObject::LoadLocalData(const nlohmann::json& jsonData)
 {
-    m_ConsumableData.consumType = jsonData["ConsumableType"];
-    m_ConsumableData.isConsumedOnPickup = jsonData["ConsumedOnPickup"];
-    m_ConsumableData.strength = jsonData["ConsumableStrength"];
+    m_pResouces.clear();
+    m_isConsumedOnPickup = jsonData["ConsumedOnPickup"];
+    bool exists = false;
+    int i = 0;
+    string name;
+
+    do
+    {
+        name = "EffectName";
+        name.append(to_string(i));
+        if (jsonData.contains(name))
+        {
+            exists = true;
+            string strength = "EffectStrength";
+            strength.append(to_string(i));
+            string key = jsonData[name];
+            m_pResouces.push_back(new PickupResource(key, jsonData[strength]));
+            i++;
+            PickupsManager::GetInstance()->GetList()->insert(key);
+        }
+        else
+        {
+            exists = false;
+        }
+
+    } while (exists);
+
 }
 
 void PickupGameObject::SaveLocalData(nlohmann::json& jsonData)
 {
-    jsonData["ConsumableType"] = m_ConsumableData.consumType;
-    jsonData["ConsumedOnPickup"] = m_ConsumableData.isConsumedOnPickup;
-    jsonData["ConsumableStrength"] = m_ConsumableData.strength;
-}
 
+    jsonData["ConsumedOnPickup"] = m_isConsumedOnPickup;
 
-string PickupGameObject::GetConsumableTypeString(CONSUMABLETYPE type)
-{
-    switch (type)
+    list<PickupResource*>::iterator it;
+    int i = 0;
+    list<PickupResource*> effects = *m_pPickupResourceInterface->GetEffects();
+    for (it = effects.begin(); it != effects.end(); it++)
     {
-    case CONSUMABLETYPE::HEALTH:
-        return "Health";
-        break;
-    case CONSUMABLETYPE::KEY:
-        return "Key";
-        break;
-    case CONSUMABLETYPE::POTION:
-        return "Potion";
-        break;
-    case CONSUMABLETYPE::SE_BOOSTER:
-        return "SE_Booster";
-        break;
-    case CONSUMABLETYPE::STAMINA:
-        return "Stamina";
-        break;
-    case CONSUMABLETYPE::NONE:
-        return "None";
-        break;
+        string name = "EffectName";
+        name.append(to_string(i));
+
+        jsonData[name] = (*it)->key;
+        name = "EffectStrength";
+        name.append(to_string(i));
+        jsonData[name] = (*it)->strength;
+        i++;
     }
 }
+
 
 void PickupGameObject::Update()
 {
@@ -153,4 +134,16 @@ void PickupGameObject::Update()
 
 
 
+}
+
+void PickupGameObject::LoadAllPrefabData(const nlohmann::json& jsonData)
+{
+    InteractableGameObject::LoadAllPrefabData(jsonData);
+    LoadLocalData(jsonData);
+}
+
+void PickupGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
+{
+    SaveLocalData(jsonData);
+    InteractableGameObject::SaveAllPrefabData(jsonData);
 }
