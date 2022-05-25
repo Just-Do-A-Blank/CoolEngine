@@ -128,6 +128,11 @@ void GameUIComponent::SetTexture(std::wstring wsfilepath)
 	}
 }
 
+std::wstring GameUIComponent::GetTextureFilePath()
+{
+    return m_texFilepath;
+}
+
 #if EDITOR
 void GameUIComponent::ShowEngineUI()
 {

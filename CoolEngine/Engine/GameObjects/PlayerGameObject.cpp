@@ -294,7 +294,7 @@ void PlayerGameObject::Handle(Event* e)
 		//KeyPressed((KeyPressedEvent*)e);
 		break;
 	case EventType::KeyReleased:
-		//KeyReleased((KeyReleasedEvent*)e);
+		KeyReleased((KeyReleasedEvent*)e);
 		break;
 	case EventType::MouseButtonPressed:
 		//MouseButtonPressed((MouseButtonPressedEvent*)e);
@@ -307,6 +307,21 @@ void PlayerGameObject::Handle(Event* e)
 		break;
 
 	}
+}
+
+/// <summary>
+/// Handles any keypresses when they are released (first frame).
+/// </summary>
+void PlayerGameObject::KeyReleased(KeyReleasedEvent* e)
+{
+    if (e->GetKeyCode() == 'T')
+    {
+        m_resourceManager->GiveResource("health", 1);
+    }
+    else if (e->GetKeyCode() == 'Y')
+    {
+        m_resourceManager->UseResource("health", 1);
+    }
 }
 
 /// <summary>

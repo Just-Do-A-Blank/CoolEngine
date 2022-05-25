@@ -5,6 +5,8 @@ ImageUIResourceDisplay::ImageUIResourceDisplay(ImageComponent* component) : Game
 {
     m_imageComponent = component;
 	m_texturesForEachResourceChange = list<TextureToResource*>();
+    m_lastKnownResourceValue = -1;
+    m_haveEverUpdated = false;
 }
 
 ImageUIResourceDisplay::ImageUIResourceDisplay(nlohmann::json& data, ImageComponent* component) : GameplayUIResourceAttachment(data)
@@ -22,6 +24,10 @@ ImageUIResourceDisplay::ImageUIResourceDisplay(ImageUIResourceDisplay const& oth
     {
         m_texturesForEachResourceChange.push_back(new TextureToResource(*i));
     }
+
+    m_lastKnownResourceValue = -1;
+    m_haveEverUpdated = false;
+
 }
 
 ImageUIResourceDisplay::~ImageUIResourceDisplay()
@@ -85,13 +91,24 @@ void ImageUIResourceDisplay::Update(int resourceValue)
         return;
     }
 
+    if (!ShouldUpdate(resourceValue))
+    {
+        return;
+    }
+
     for (TextureToResource* const& i : m_texturesForEachResourceChange)
     {
         if (i->WouldSetGivenValue(resourceValue))
         {
-            m_imageComponent->SetTexture(i->GetTextureOut());
+            std::wstring proposedTexture = i->GetTextureOut();
+            if (proposedTexture != m_imageComponent->GetTextureFilePath())
+            {
+                m_imageComponent->SetTexture(i->GetTextureOut());
+            }
         }
     }
+
+    UpdateComplete(resourceValue);
 }
 
 void ImageUIResourceDisplay::LoadAllPrefabData(const nlohmann::json& jsonData)
@@ -123,6 +140,9 @@ void ImageUIResourceDisplay::LoadLocalData(const nlohmann::json& jsonData)
 		++index;
 		current = prefix + to_string(index) + "_TexturePath";
 	}
+
+    m_lastKnownResourceValue = -1;
+    m_haveEverUpdated = false;
 }
 
 void ImageUIResourceDisplay::SaveLocalData(nlohmann::json& jsonData)
@@ -132,4 +152,29 @@ void ImageUIResourceDisplay::SaveLocalData(nlohmann::json& jsonData)
 	{
 		i->SaveAllPrefabData(jsonData, index++);
 	}
+}
+
+/// <summary>
+/// Detirmines if the component should update
+/// </summary>
+/// <param name="resourceValue">The resource value if updating</param>
+/// <return>True means should update</return>
+bool ImageUIResourceDisplay::ShouldUpdate(int currentResourceValue)
+{
+    if (m_haveEverUpdated && m_lastKnownResourceValue == currentResourceValue)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+/// <summary>
+/// Flips and switches to confirm this has updated
+/// </summary>
+/// <param name="resourceValue">The resource value if updating</param>
+void ImageUIResourceDisplay::UpdateComplete(int currentResourceValue)
+{
+    m_haveEverUpdated = true;
+    m_lastKnownResourceValue = currentResourceValue;
 }

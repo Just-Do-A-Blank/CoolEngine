@@ -37,14 +37,37 @@ private:
 	void LoadLocalData(const nlohmann::json& jsonData);
 	void SaveLocalData(nlohmann::json& jsonData);
 
+    /// <summary>
+    /// The actual image component on the UI
+    /// </summary>
+    ImageComponent* m_imageComponent;
+
+    /// <summary>
+    /// The value last updated to
+    /// </summary>
+    int m_lastKnownResourceValue;
+
+    /// <summary>
+    /// True means this has updated
+    /// </summary>
+    bool m_haveEverUpdated;
+
 	/// <summary>
 	/// Each texture for a resource change
 	/// </summary>
 	list<TextureToResource*> m_texturesForEachResourceChange;
 
     /// <summary>
-    /// The actual image component on the UI
+    /// Detirmines if the component should update
     /// </summary>
-    ImageComponent* m_imageComponent;
+    /// <param name="resourceValue">The resource value if updating</param>
+    /// <return>True means should update</return>
+    bool ShouldUpdate(int currentResourceValue);
+
+    /// <summary>
+    /// Flips and switches to confirm this has updated
+    /// </summary>
+    /// <param name="resourceValue">The resource value if updating</param>
+    void UpdateComplete(int currentResourceValue);
 };
 

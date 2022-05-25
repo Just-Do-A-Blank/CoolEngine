@@ -62,6 +62,8 @@ public:
 
 	bool ContainsType(UIComponentType type);
 
+    std::wstring GetTextureFilePath();
+
 	//Setters
 	void SetIsRenderable(bool& condition);
 	void SetLayer(const int& layer);
