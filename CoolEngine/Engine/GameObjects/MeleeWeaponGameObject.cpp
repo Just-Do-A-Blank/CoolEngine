@@ -51,6 +51,11 @@ void MeleeWeaponGameObject::SetIsBlunt(bool blunt)
     m_isBlunt = blunt;
 }
 
+void MeleeWeaponGameObject::SetSwingTime(float time)
+{
+    m_swingTime = time;
+}
+
 float MeleeWeaponGameObject::GetSwingAngle()
 {
     return m_swingAngle;
@@ -69,6 +74,11 @@ float MeleeWeaponGameObject::GetRadius()
 bool MeleeWeaponGameObject::GetIsBlunt()
 {
     return m_isBlunt;
+}
+
+float MeleeWeaponGameObject::GetSwingTime()
+{
+    return m_swingTime;
 }
 
 void MeleeWeaponGameObject::Serialize(nlohmann::json& data)

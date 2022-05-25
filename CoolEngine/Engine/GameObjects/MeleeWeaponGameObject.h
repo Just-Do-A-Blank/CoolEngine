@@ -34,11 +34,13 @@ public:
 	void SetChargeTime(float time);
 	void SetRadius(float rad);
 	void SetIsBlunt(bool blunt);
+	void SetSwingTime(float time);
 
 	float GetSwingAngle();
 	float GetChargeTime();
 	float GetRadius();
 	bool GetIsBlunt();
+	float GetSwingTime();
 
 	virtual void Serialize(nlohmann::json& data) override;
 
@@ -47,9 +49,10 @@ protected:
     virtual void SaveAllPrefabData(nlohmann::json& jsonData) override;
 
 private:
-	float m_swingAngle = 0.0f;
-	float m_chargeTime = 0.0f;
-	float m_radius = 0.0f;
+	float m_swingAngle = 90.0f;
+	float m_chargeTime = 0.5f;
+	float m_radius = 50.0f;
+	float m_swingTime = 0.5f;
 	
 	bool m_isBlunt = false;
 

@@ -4,6 +4,7 @@
 #include "Engine/AI/States/MeleeAttackState.h"
 #include "Engine/AI/States/WanderState.h"
 #include "Engine/GameObjects/MeleeWeaponGameObject.h"
+#include "Engine/GameObjects/RangedWeaponGameObject.h"
 #include "Engine/ResourceDefines.h"
 #include "Engine/GameObjects/PlayerGameObject.h"
 #include "Engine/Physics/Shape.h"
@@ -84,12 +85,24 @@ void EnemyGameObject::Start()
 
 	m_stateMachine.AddState(pwanderState);
 
-	m_pweapon = GameManager::GetInstance()->CreateGameObject<MeleeWeaponGameObject>("TestWeapon");
+	bool rendered;
+	if (m_isWeaponRanged)
+	{
+		m_pweapon = GameManager::GetInstance()->CreateGameObject<RangedWeaponGameObject>("TestWeapon");
+		rendered = true;
+	}
+	else
+	{
+		m_pweapon = GameManager::GetInstance()->CreateGameObject<MeleeWeaponGameObject>("TestWeapon");
+		rendered = false;
+	}
 	m_pweapon->SetAlbedo(TEST2);
 	m_pweapon->GetTransform()->SetLocalScale(XMFLOAT3(20, 20, 20));
 	m_pweapon->SetLayer(3);
-	m_pweapon->GetShape()->SetIsTrigger(true);
+	m_pweapon->GetShape()->SetIsTrigger(false);
 	m_pweapon->GetShape()->SetIsCollidable(false);
+	m_pweapon->SetIsRenderable(rendered);
+	m_pweapon->SetIsPlayerWeapon(ContainsType(GameObjectType::PLAYER));
 
 	m_pplayer = GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject>(std::string("Player"));
 }

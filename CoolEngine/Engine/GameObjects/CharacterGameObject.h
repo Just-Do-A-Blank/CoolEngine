@@ -19,6 +19,11 @@ protected:
 	XMFLOAT3 m_direction = XMFLOAT3{0, 0, 0};
 
 	WeaponGameObject* m_pweapon = nullptr;
+	bool m_isWeaponRanged = false;
+	bool m_isSwingingMelee = false;
+	float m_currentSwingAngle = 0.0f;
+	float m_swingSpeed = 1.0f;
+	float m_swingTime = 1.0f;
 
     virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
     virtual void SaveAllPrefabData(nlohmann::json& jsonData) override;
@@ -43,11 +48,14 @@ public:
 	ELEMENTS GetElement() { return m_element; }
 	STATUSES GetStatus() { return m_status; }
 	ELEMENTALSTATUSES GetElementalStatus() { return m_elementalStatus; }
+	bool GetIsWeaponRanged() { return m_isWeaponRanged; }
+
 	void SetSpeed(float speed) { m_moveSpeed = speed; }
 	void SetInvincibilityTime(float time) { m_invincibilityTime = time; }
 	void SetElement(ELEMENTS elem) { m_element = elem; }
 	void SetStatus(STATUSES stat) { m_status = stat; }
 	void SetElementalStatus(ELEMENTALSTATUSES elemStat) { m_elementalStatus = elemStat; }
+	void SetIsWeaponRanged(bool ranged) { m_isWeaponRanged = ranged; }
 
     virtual void TakeDamage(float damage);
 
