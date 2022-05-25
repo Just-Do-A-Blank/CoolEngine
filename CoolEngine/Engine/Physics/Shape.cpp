@@ -110,6 +110,16 @@ Shape::Shape(const nlohmann::json& data)
 	m_isCollidable = data["IsCollidable"];
 }
 
+Shape::Shape(Shape const* other, GameObject* pgameobject)
+{
+	m_pgameObject = pgameobject;
+	m_scale = other->m_scale;
+	m_isTrigger = other->m_isTrigger;
+	m_isCollidable = other->m_isCollidable;
+	m_isTrigger = other->m_isTrigger;
+	m_shapeType = other->m_shapeType;
+}
+
 Shape::Shape()
 {
 }

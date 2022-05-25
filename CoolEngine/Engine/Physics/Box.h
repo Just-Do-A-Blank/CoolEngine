@@ -44,6 +44,11 @@ public:
 		m_shapeType = ShapeType::BOX;
 	}
 
+	Box(Box const* other, GameObject* pgameobject) : Shape(other, pgameobject)
+	{
+		m_halfSize = other->m_halfSize;
+	}
+
 	~Box()
 	{
 		m_pgameObject = nullptr;

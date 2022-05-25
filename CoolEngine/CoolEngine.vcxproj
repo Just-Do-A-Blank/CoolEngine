@@ -223,6 +223,7 @@
     <ClCompile Include="Engine\AI\States\WanderState.cpp" />
     <ClCompile Include="Engine\EditorUI\ContentBrowser.cpp" />
     <ClCompile Include="Engine\EditorUI\EditorUI.cpp" />
+    <ClCompile Include="Engine\EditorUI\EditorUIFloatParameters.cpp" />
     <ClCompile Include="Engine\EditorUI\TileMapContentBrowser.cpp" />
     <ClCompile Include="Engine\FileIO\FileIO.cpp" />
     <ClCompile Include="Engine\GameObjects\BulletGameObject.cpp" />

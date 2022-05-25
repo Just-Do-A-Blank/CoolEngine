@@ -804,8 +804,6 @@ void EditorUI::OpenFolderExplorer(WCHAR* buffer, int bufferSize)
 
 void EditorUI::DragFloat2(const string& label, XMFLOAT2& values, EditorUIFloatParameters parameters)
 {
-    SetupDefaultsInParameters(parameters);
-
     ImGuiIO& io = ImGui::GetIO();
 
     ImGui::PushID(label.c_str());
@@ -843,8 +841,6 @@ void EditorUI::DragFloat2(const string& label, XMFLOAT2& values, EditorUIFloatPa
 
 void EditorUI::DragFloat3(const string& label, XMFLOAT3& values, EditorUIFloatParameters parameters)
 {
-    SetupDefaultsInParameters(parameters);
-
     ImGuiIO& io = ImGui::GetIO();
 
     ImGui::PushID(label.c_str());
@@ -1348,8 +1344,6 @@ void EditorUI::Animations(const string& label, unordered_map<string, SpriteAnima
 
 bool EditorUI::DragFloat(const string& label, float& value, EditorUIFloatParameters parameters)
 {
-    SetupDefaultsInParameters(parameters);
-
     bool interacted = false;
 
     ImGui::PushID(label.c_str());

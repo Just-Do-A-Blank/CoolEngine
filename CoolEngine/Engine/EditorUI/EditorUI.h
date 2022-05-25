@@ -253,6 +253,30 @@ public:
         ImGui::PopID();
     }
 
+	/// <summary>
+	/// Default width of a coloumn
+	/// </summary>
+	/// <returns>Default width of coloumns</returns>
+	static float GetDefaultColumnWidth() { return 100; }
+
+	/// <summary>
+	/// Default movement speed with sliders
+	/// </summary>
+	/// <returns>Default speed</returns>
+	static float GetDefaultSpeed() { return 0.1f; }
+
+	/// <summary>
+	/// Default minimum value of a number entry value
+	/// </summary>
+	/// <returns>Default minimum</returns>
+	static float GetDefaultMinimumValue() { return 0; }
+
+	/// <summary>
+	/// Default maximum value of a number entry value
+	/// </summary>
+	/// <returns>Default maximum</returns>
+	static float GetDefaultMaximumValue() { return 0; }
+
 private:
     /// <summary>
     /// When entering a name this is the error message box for this.
@@ -263,30 +287,6 @@ private:
     /// When pressing play this is the error message for no camera in scene
     /// </summary>
     bool m_cameraErrorMessageOnPlay;
-
-    /// <summary>
-    /// Default width of a coloumn
-    /// </summary>
-    /// <returns>Default width of coloumns</returns>
-    static float GetDefaultColumnWidth() { return 100; }
-
-    /// <summary>
-    /// Default movement speed with sliders
-    /// </summary>
-    /// <returns>Default speed</returns>
-    static float GetDefaultSpeed() { return 0.1f; }
-
-    /// <summary>
-    /// Default minimum value of a number entry value
-    /// </summary>
-    /// <returns>Default minimum</returns>
-    static float GetDefaultMinimumValue() { return 0; }
-
-    /// <summary>
-    /// Default maximum value of a number entry value
-    /// </summary>
-    /// <returns>Default maximum</returns>
-    static float GetDefaultMaximumValue() { return 0; }
 
     /// <summary>
     /// Sets up the default parameters for floats with defaults where optional parameters were opt-out
