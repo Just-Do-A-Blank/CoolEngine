@@ -61,11 +61,14 @@ void EnemyGameObject::CalculateMovement(node* pnode)
 
 	float step = m_moveSpeed * GameManager::GetInstance()->GetTimer()->DeltaTime();
 
-	m_direction = MathHelper::Normalize(m_direction);
+	if (MathHelper::SquareMagnitude(m_direction) != 0)
+	{
+		m_direction = MathHelper::Normalize(m_direction);
 
-	XMFLOAT3 stepPos = MathHelper::Multiply(m_direction, step);
-	stepPos = MathHelper::Plus(stepPos, m_transform->GetWorldPosition());
-	m_transform->SetWorldPosition(stepPos);
+		XMFLOAT3 stepPos = MathHelper::Multiply(m_direction, step);
+		stepPos = MathHelper::Plus(stepPos, m_transform->GetWorldPosition());
+		m_transform->SetWorldPosition(stepPos);
+	}
 }
 
 void EnemyGameObject::Start()
