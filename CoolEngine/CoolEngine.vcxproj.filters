@@ -294,6 +294,21 @@
     <ClCompile Include="Engine\AI\States\RangeMovementState.cpp">
       <Filter>Engine\AI\States</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\TextureToResource.cpp">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\TextUIResourceDisplay.cpp">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\ImageUIResourceDisplay.cpp">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\GameplayUIResourceAttachment.cpp">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\EditorUI\EditorUIFloatParameters.cpp">
+      <Filter>Engine\EditorUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -761,6 +776,21 @@
     <ClInclude Include="Engine\AI\States\RangeMovementState.h">
       <Filter>Engine\AI\States</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\TextureToResource.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\TextUIResourceDisplay.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\ImageUIResourceDisplay.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\GameplayUIResourceAttachment.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\EUIResourceChangeSetting.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Engine\Includes\DirectXTK\SimpleMath.inl" />
@@ -883,6 +913,9 @@
     </Filter>
     <Filter Include="Engine\GameObjects\Gameplay\Pickups">
       <UniqueIdentifier>{4958383b-627e-456b-9b70-6f8dd49502cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GameUI\GameplayIntegration">
+      <UniqueIdentifier>{6becce7d-f71a-409d-b98a-3e1518520701}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
