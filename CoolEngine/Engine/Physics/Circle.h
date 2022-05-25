@@ -52,6 +52,11 @@ public:
 		m_shapeType = ShapeType::CIRCLE;
 	}
 
+	Circle(Circle const* other, GameObject* pgameobject) : Shape(other, pgameobject)
+	{
+		m_radius = other->m_radius;
+	}
+
 	void Serialize(nlohmann::json& data) override
 	{
 		Shape::Serialize(data);
@@ -112,7 +117,11 @@ public:
 #if EDITOR
 	void CreateEngineUI() override
 	{
-        EditorUI::DragFloat("Radius", m_radius);
+		EditorUIFloatParameters params;
+		params.m_minValue = 0;
+		params.m_maxValue = 100000;
+
+        EditorUI::DragFloat2("Collider Scale", m_scale, params);
 
 		ImGui::Spacing();
 

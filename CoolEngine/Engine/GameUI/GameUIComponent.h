@@ -45,6 +45,7 @@ public:
 	GameUIComponent(string identifier, CoolUUID uuid);
 	GameUIComponent(nlohmann::json& data, CoolUUID uuid);
 	GameUIComponent(GameUIComponent const& other);
+	virtual ~GameUIComponent();
 
 	virtual void Render(RenderStruct& renderStruct);
 	virtual void Update()override;
@@ -60,6 +61,8 @@ public:
 	const UIComponentType& GetComponentType() const;
 
 	bool ContainsType(UIComponentType type);
+
+    std::wstring GetTextureFilePath();
 
 	//Setters
 	void SetIsRenderable(bool& condition);

@@ -38,11 +38,11 @@ CollidableGameObject::CollidableGameObject(CollidableGameObject const& other) : 
 		switch (other.m_pcollider->GetShapeType())
 		{
 		case ShapeType::BOX:
-			m_pcollider = new Box(this);
+			m_pcollider = new Box((Box const*)other.m_pcollider, this);
 			break;
 
 		case ShapeType::CIRCLE:
-			m_pcollider = new Circle(this);
+			m_pcollider = new Circle((Circle const*)other.m_pcollider, this);
 			break;
 		}
 	}
