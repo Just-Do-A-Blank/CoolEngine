@@ -1,7 +1,7 @@
 #pragma once
 #include "Engine/GameUI/GameplayIntegration/GameplayUIResourceAttachment.h"
-#include "Engine/GameUI/ImageComponent.h"
 #include "Engine/GameUI/GameplayIntegration/TextureToResource.h"
+class ImageComponent;
 
 class ImageUIResourceDisplay : public GameplayUIResourceAttachment
 {
@@ -21,7 +21,6 @@ public:
 	/// Called after construction, before first Update.
 	/// </summary>
 	virtual void Start();
-
 
 protected:
 	virtual void LoadAllPrefabData(const nlohmann::json& jsonData);
@@ -55,7 +54,7 @@ private:
 	/// <summary>
 	/// Each texture for a resource change
 	/// </summary>
-	list<TextureToResource*> m_texturesForEachResourceChange;
+	list<TextureToResource*>* m_texturesForEachResourceChange;
 
     /// <summary>
     /// Detirmines if the component should update

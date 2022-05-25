@@ -1,10 +1,11 @@
 #include "ImageUIResourceDisplay.h"
 #include "Engine/EditorUI/EditorUI.h"
+#include "Engine/GameUI/ImageComponent.h"
 
 ImageUIResourceDisplay::ImageUIResourceDisplay(ImageComponent* component) : GameplayUIResourceAttachment()
 {
     m_imageComponent = component;
-	m_texturesForEachResourceChange = list<TextureToResource*>();
+	m_texturesForEachResourceChange = new list<TextureToResource*>();
     m_lastKnownResourceValue = -1;
     m_haveEverUpdated = false;
 }
@@ -12,17 +13,17 @@ ImageUIResourceDisplay::ImageUIResourceDisplay(ImageComponent* component) : Game
 ImageUIResourceDisplay::ImageUIResourceDisplay(nlohmann::json& data, ImageComponent* component) : GameplayUIResourceAttachment(data)
 {
     m_imageComponent = component;
-	m_texturesForEachResourceChange = list<TextureToResource*>();
+	m_texturesForEachResourceChange = new list<TextureToResource*>();
     LoadLocalData(data);
 }
 
 ImageUIResourceDisplay::ImageUIResourceDisplay(ImageUIResourceDisplay const& other, ImageComponent* component) : GameplayUIResourceAttachment(other)
 {
     m_imageComponent = component;
-	m_texturesForEachResourceChange = list<TextureToResource*>();
-    for (TextureToResource* const& i : other.m_texturesForEachResourceChange)
+	m_texturesForEachResourceChange = new list<TextureToResource*>();
+    for (TextureToResource* const& i : *other.m_texturesForEachResourceChange)
     {
-        m_texturesForEachResourceChange.push_back(new TextureToResource(*i));
+        m_texturesForEachResourceChange->push_back(new TextureToResource(*i));
     }
 
     m_lastKnownResourceValue = -1;
@@ -32,10 +33,11 @@ ImageUIResourceDisplay::ImageUIResourceDisplay(ImageUIResourceDisplay const& oth
 
 ImageUIResourceDisplay::~ImageUIResourceDisplay()
 {
-	for (TextureToResource* const& i : m_texturesForEachResourceChange)
+	for (TextureToResource* const& i : *m_texturesForEachResourceChange)
 	{
 		delete i;
 	}
+    delete m_texturesForEachResourceChange;
 }
 
 
@@ -49,18 +51,18 @@ ImageUIResourceDisplay::~ImageUIResourceDisplay()
 			EditorButtonCallback callback = EditorUI::BasicDuelButtons("Add to end", "Add to start");
 			if (callback.m_leftButton)
 			{
-				m_texturesForEachResourceChange.push_back(new TextureToResource());
+				m_texturesForEachResourceChange->push_back(new TextureToResource());
                 ResetOrdering();
 			}
 			else if (callback.m_rightButton)
 			{
-				m_texturesForEachResourceChange.push_front(new TextureToResource());
+				m_texturesForEachResourceChange->push_front(new TextureToResource());
                 ResetOrdering();
 			}
 
             int deletionIndex = -1;
 			int index = 0;
-			for (TextureToResource* const& i : m_texturesForEachResourceChange)
+			for (TextureToResource* const& i : *m_texturesForEachResourceChange)
 			{
                 ImGui::PushID(("TextureToResource_" + to_string(index)).c_str());
 
@@ -97,7 +99,7 @@ void ImageUIResourceDisplay::Start()
 /// <param name="resourceValue">The resource value if set</param>
 void ImageUIResourceDisplay::Update(int resourceValue)
 {
-    if (m_texturesForEachResourceChange.size() == 0)
+    if (m_texturesForEachResourceChange->size() == 0)
     {
         return;
     }
@@ -107,7 +109,7 @@ void ImageUIResourceDisplay::Update(int resourceValue)
         return;
     }
 
-    for (TextureToResource* const& i : m_texturesForEachResourceChange)
+    for (TextureToResource* const& i : *m_texturesForEachResourceChange)
     {
         if (i->WouldSetGivenValue(resourceValue))
         {
@@ -136,18 +138,19 @@ void ImageUIResourceDisplay::SaveAllPrefabData(nlohmann::json& jsonData)
 
 void ImageUIResourceDisplay::LoadLocalData(const nlohmann::json& jsonData)
 {
-	for (TextureToResource* const& i : m_texturesForEachResourceChange)
+	for (TextureToResource* const& i : *m_texturesForEachResourceChange)
 	{
 		delete i;
 	}
-	m_texturesForEachResourceChange = list<TextureToResource*>();
+    delete m_texturesForEachResourceChange;
+	m_texturesForEachResourceChange = new list<TextureToResource*>();
 
 	int index = 0;
 	string prefix = "TextureToResource_";
 	string current = prefix + to_string(index) + "_TexturePath";
 	while (jsonData.contains(current))
 	{
-		m_texturesForEachResourceChange.push_back(new TextureToResource(jsonData, index));
+		m_texturesForEachResourceChange->push_back(new TextureToResource(jsonData, index));
 		++index;
 		current = prefix + to_string(index) + "_TexturePath";
 	}
@@ -159,7 +162,7 @@ void ImageUIResourceDisplay::LoadLocalData(const nlohmann::json& jsonData)
 void ImageUIResourceDisplay::SaveLocalData(nlohmann::json& jsonData)
 {
 	int index = 0;
-	for (TextureToResource* const& i : m_texturesForEachResourceChange)
+	for (TextureToResource* const& i : *m_texturesForEachResourceChange)
 	{
 		i->SaveAllPrefabData(jsonData, index++);
 	}
@@ -201,9 +204,9 @@ void ImageUIResourceDisplay::DeleteResourceTextureAtIndex(int index)
         return;
     }
 
-    list<TextureToResource*>::iterator it = m_texturesForEachResourceChange.begin();
+    list<TextureToResource*>::iterator it = m_texturesForEachResourceChange->begin();
     advance(it, index);
-    m_texturesForEachResourceChange.erase(it);
+    m_texturesForEachResourceChange->erase(it);
 
     ResetOrdering();
 }
@@ -213,7 +216,7 @@ void ImageUIResourceDisplay::DeleteResourceTextureAtIndex(int index)
 /// </summary>
 void ImageUIResourceDisplay::ResetOrdering()
 {
-    for (TextureToResource* const& i : m_texturesForEachResourceChange)
+    for (TextureToResource* const& i : *m_texturesForEachResourceChange)
     {
         i->ResetOrder();
     }
