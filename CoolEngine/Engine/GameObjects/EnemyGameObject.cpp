@@ -84,7 +84,7 @@ void EnemyGameObject::Start()
 
 	m_stateMachine.AddState(pwanderState);
 
-	m_pweapon = GameManager::GetInstance()->CreateGameObject<MeleeWeaponGameObject>("TestWeapon");
+	m_pweapon = GameManager::GetInstance()->CreateGameObject<MeleeWeaponGameObject>(m_identifier + "_TestWeapon");
 	m_pweapon->SetAlbedo(TEST2);
 	m_pweapon->GetTransform()->SetLocalScale(XMFLOAT3(20, 20, 20));
 	m_pweapon->SetLayer(3);
