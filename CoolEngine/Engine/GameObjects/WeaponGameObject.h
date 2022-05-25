@@ -3,7 +3,7 @@
 #include "Engine/Managers/Events/DamageCalculation.h"
 #include "Engine/ResourceDefines.h"
 
-class WeaponGameObject : public TriggerableGameObject
+class WeaponGameObject : public TriggerableGameObject, public Observer
 {
 public:
 	WeaponGameObject();
@@ -45,6 +45,13 @@ public:
 
 	bool GetIsDualType();
 	int RoundUp(float value);
+
+	void Handle(Event* e) override;
+
+	void RegisterForEvents();
+	void UnregisterForEvents();
+
+	virtual void Attack();
 
 protected:
     virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;

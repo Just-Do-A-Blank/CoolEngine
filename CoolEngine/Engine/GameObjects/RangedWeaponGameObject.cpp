@@ -1,4 +1,6 @@
 #include "RangedWeaponGameObject.h"
+#include "Engine/Managers/Events/AttackEvents.h"
+#include "Engine/Managers/Events/EventManager.h"
 
 RangedWeaponGameObject::RangedWeaponGameObject(string identifier, CoolUUID uuid) : WeaponGameObject(identifier, uuid)
 {
@@ -94,4 +96,9 @@ void RangedWeaponGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
 {
     SaveLocalData(jsonData);
     WeaponGameObject::SaveAllPrefabData(jsonData);
+}
+
+void RangedWeaponGameObject::Attack()
+{
+	EventManager::Instance()->AddEvent(new CreateBulletEvent(this, m_transform->GetForwardVector(), m_transform->GetWorldPosition()));
 }
