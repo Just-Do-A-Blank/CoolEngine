@@ -27,7 +27,10 @@ class PickupResourceInterface
 {
 public:
     PickupResourceInterface(list<PickupResource*>* resources);
-    virtual void CreateEngineUI();
+
+#if EDITOR
+    virtual void CreateEngineUI() override;
+#endif
 
     list<PickupResource*>* GetEffects() { return m_pPickupEffects; }
 
