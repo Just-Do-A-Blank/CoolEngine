@@ -100,7 +100,7 @@ private:
     /// <summary>
     /// Handles any keypresses when they are released (first frame).
     /// </summary>
-	void KeyReleased(KeyReleasedEvent* e);
+	//void KeyReleased(KeyReleasedEvent* e);
 
     /// <summary>
     /// Handles any mouse button presses when pressed (frame whilst pressed)
