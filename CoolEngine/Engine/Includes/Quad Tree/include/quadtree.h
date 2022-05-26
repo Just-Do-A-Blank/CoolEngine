@@ -50,14 +50,14 @@ public:
 
     void UpdateQuadTreeStucture();
 
-    void GetUpdateList(PlayerGameObject* player, std::vector<GameObject*>& list);
+    void GetUpdateList(CollidableGameObject* player, std::vector<GameObject*>& list);
 
     GameObject* SimpleQueryByIdentifier(std::string identifier);
 
     GameObject* QueryByIdentifier(std::string identifier, XMFLOAT2 point);
 
 private:
-    bool Collides(PlayerGameObject* pG, std::vector<GameObject*>& list);
+    bool Collides(CollidableGameObject* pG, std::vector<GameObject*>& list);
 
     GameObject* SearchQuadTree(std::string identifier);
 

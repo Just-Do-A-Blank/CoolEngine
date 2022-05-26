@@ -134,7 +134,7 @@ void Quadtree::UpdateQuadTreeStucture()
 
 }
 
-void Quadtree::GetUpdateList(PlayerGameObject* player, std::vector<GameObject*>& listToUpdate)
+void Quadtree::GetUpdateList(CollidableGameObject* player, std::vector<GameObject*>& listToUpdate)
 {
     Transform* t = player->GetTransform();
     XMFLOAT2 updatePoint = XMFLOAT2(t->GetWorldPosition().x, t->GetWorldPosition().y);
@@ -226,7 +226,7 @@ GameObject* Quadtree::QueryByIdentifier(std::string identifier, XMFLOAT2 point)
     return gameObject;
 }
 
-bool Quadtree::Collides(PlayerGameObject* pG, std::vector<GameObject*>& list)
+bool Quadtree::Collides(CollidableGameObject* pG, std::vector<GameObject*>& list)
 {
     if (m_NW != nullptr)
     {
