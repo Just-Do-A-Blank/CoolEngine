@@ -59,8 +59,8 @@ protected:
     /// <summary>
     /// Runs during gameplay with the resource value
     /// </summary>
-    /// <param name="weaponGameObject">The weapon to display</param>
-    virtual void Update(PickupGameObject* weaponGameObject) {}
+    /// <param name="pickupGameObject">The pickup to display</param>
+    virtual void Update(PickupGameObject* pickupGameObject) {}
 
     /// <summary>
     /// The player resource attached to this player

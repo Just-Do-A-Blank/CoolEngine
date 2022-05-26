@@ -41,8 +41,8 @@ protected:
     /// <summary>
     /// Runs during gameplay with the resource value
     /// </summary>
-    /// <param name="weaponGameObject">The weapon to display</param>
-    virtual void Update(PickupGameObject* weaponGameObject) override;
+    /// <param name="pickupGameObject">The pickup to display</param>
+    virtual void Update(PickupGameObject* pickupGameObject) override;
 
 private:
     void LoadLocalData(const nlohmann::json& jsonData);
