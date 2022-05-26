@@ -92,6 +92,8 @@ void BulletCreator::CreateBullet(CreateBulletEvent* e)
 
 void BulletCreator::TestFire(MouseButtonPressedEvent* e)
 {
+#if !EDITOR
+
 	// Get player location
 	string name = "Player";
 	CharacterGameObject* p_player = GameManager::GetInstance()->GetGameObjectUsingIdentifier<CharacterGameObject>(name);
@@ -100,6 +102,8 @@ void BulletCreator::TestFire(MouseButtonPressedEvent* e)
 	{
 		EventManager::Instance()->AddEvent(new CreateBulletEvent(dynamic_cast<RangedWeaponGameObject*>(p_player->GetWeapon()), p_player->GetWeaponDirection(), p_player->GetWeaponPosition()));
 	}
+
+#endif
 }
 
 void BulletCreator::Handle(Event* e)
