@@ -859,7 +859,7 @@ void GameManager::Deserialize(nlohmann::json& data)
 				break;
 			case AccumlateType::CAMERA:
 				gameObjects[*uuid] = new CameraGameObject(data[typeIt.key()][uuidString], uuid);
-				gameObjects[*uuid]->m_UUID = uuid;			
+				gameObjects[*uuid]->m_UUID = uuid;
 
 				pnewScene->m_cameraGameObjectMap[gameObjects[*uuid]->m_identifier] = dynamic_cast<CameraGameObject*>(gameObjects[*uuid]);
 
