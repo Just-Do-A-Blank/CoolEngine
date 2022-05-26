@@ -58,10 +58,6 @@ EnemyStateMachine::EnemyStateMachine(EnemyStateMachine const* other, EnemyGameOb
 	}
 }
 
-//EnemyStateMachine::~EnemyStateMachine()
-//{
-//}
-
 void EnemyStateMachine::Serialize(nlohmann::json& data)
 {
 	data["EnemyStateMachine"]["AIName"] = m_AIName;
