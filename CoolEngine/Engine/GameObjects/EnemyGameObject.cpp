@@ -106,6 +106,7 @@ void EnemyGameObject::Start()
 	m_pweapon->GetShape()->SetIsTrigger(true);
 	m_pweapon->GetShape()->SetIsCollidable(false);
 	m_pweapon->SetDistanceTravelled(500);
+	m_pweapon->SetHeld(true);//whenever we give a weapon to the enemy set it to be held so we dont try to add it to the player's inventory. If it is dropped then set to not be held
 
 	m_pplayer = GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject>(std::string("Player"));
 }

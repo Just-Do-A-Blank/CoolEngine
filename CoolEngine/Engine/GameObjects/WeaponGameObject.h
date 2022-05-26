@@ -55,6 +55,9 @@ public:
 	void UnregisterForEvents();
 
 	virtual void Attack();
+
+	bool GetHeld();
+	void SetHeld(bool isHeld);
 #if EDITOR
     virtual void CreateEngineUI() override;
 #endif
@@ -74,13 +77,14 @@ private:
 	float m_distanceTravelled = 100.0f;
 
 	wstring m_bulletTexturePath = DEFAULT_IMGUI_IMAGE;
-	XMFLOAT3 m_bulletScale = XMFLOAT3(25, 25, 25);
+	XMFLOAT3 m_bulletScale = XMFLOAT3(25.0f, 25.0f, 25.0f);
 	XMFLOAT2 m_collisionScale = XMFLOAT2(1, 1);
 
 	ELEMENTS m_element = ELEMENTS::NONE;
 	STATUSES m_statusEffect = STATUSES::NONE;
 
 	bool m_isPlayerWeapon = true;
+	bool m_isHeld = false;
 
     void LoadLocalData(const nlohmann::json& jsonData);
     void SaveLocalData(nlohmann::json& jsonData);

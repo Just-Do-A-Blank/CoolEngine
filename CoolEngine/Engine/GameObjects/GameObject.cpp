@@ -91,6 +91,15 @@ void GameObject::Serialize(nlohmann::json& jsonData)
 	jsonData["Position"] = position;
 	jsonData["Rotation"] = rotation;
 	jsonData["Scale"] = scale;
+
+	if (jsonData.count("isEnabled"))
+	{
+		jsonData["isEnabled"] = m_isEnabled;
+	}
+	else
+	{
+		m_isEnabled = true;
+	}
 }
 
 void GameObject::Init(const nlohmann::json& data, CoolUUID uuid)
@@ -101,6 +110,8 @@ void GameObject::Init(const nlohmann::json& data, CoolUUID uuid)
 
 	m_UUID = CoolUUID(*uuid);
 	m_identifier = data["Name"];
+
+
 }
 
 void GameObject::Init(GameObject const& other)
@@ -143,6 +154,9 @@ void GameObject::CreateEngineUI()
 		ImGui::Spacing();
 
 		EditorUI::ReferenceField("Reference test", m_pTest);
+
+		ImGui::Spacing();
+		EditorUI::Checkbox("Enable", m_isEnabled);
 
 	}
 }

@@ -13,13 +13,12 @@ public:
 	PickupGameObject(PickupGameObject const& other);
 	~PickupGameObject();
 	virtual void Serialize(nlohmann::json& data) override;
-	unordered_set<PickupResource*> GetConsumableData() const { return m_pResouces; }
-	int GetQuantity() const { return m_quantity; }
-	bool GetConsumeOnPickup() const { return m_isConsumedOnPickup; }
+	unordered_set<PickupResource*> GetConsumableData() { return m_pResouces; }
+	int GetQuantity() { return m_quantity; }
+	void SetQuantity(int quantity) { m_quantity = quantity; }
+	bool GetConsumeOnPickup() { return m_isConsumedOnPickup; }
 
 	void Update() override;
-
-	void SetToBeDeleted(bool ShouldDelete) { m_shouldbeDeleted = ShouldDelete; }
 
 	void LoadAllPrefabData(const nlohmann::json& jsonData) override;
 
@@ -46,7 +45,6 @@ private:
 	virtual void LoadLocalData(const nlohmann::json& jsonData);
 	virtual void SaveLocalData(nlohmann::json& jsonData);
 
-	bool m_shouldbeDeleted;
 	PlayerGameObject* m_pPlayer;
 
 };

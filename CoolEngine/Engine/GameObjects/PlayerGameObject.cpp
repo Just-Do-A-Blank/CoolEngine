@@ -152,6 +152,7 @@ PlayerGameObject::PlayerGameObject(const nlohmann::json& data, CoolUUID uuid) : 
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
 	EventManager::Instance()->AddClient(EventType::MouseMoved, this);
+	EventManager::Instance()->AddClient(EventType::Pickup, this);
 
 	m_gameObjectType |= GameObjectType::PLAYER;
 
@@ -222,6 +223,7 @@ void PlayerGameObject::Start()
 	m_pweapon->GetShape()->SetIsTrigger(true);
 	m_pweapon->GetShape()->SetIsCollidable(false);
 	m_pweapon->RegisterForEvents();
+	m_pweapon->SetHeld(true);
 }
 
 
@@ -286,34 +288,30 @@ void PlayerGameObject::SetWeaponPosition()
 
 void PlayerGameObject::OnTriggerHold(GameObject* obj1, GameObject* obj2)
 {
-
-	if ((obj1->ContainsType(GameObjectType::PLAYER)) && (obj2->ContainsType(GameObjectType::PICKUP)))
+	//If the player has interacted with the object
+	if (obj1->ContainsType(GameObjectType::PLAYER))
 	{
-		PickupGameObject* pickup = dynamic_cast<PickupGameObject*>(obj2);
+		//If ths object is a pickup object
+		if ((obj2->ContainsType(GameObjectType::PICKUP)))
+		{
+			EventManager::Instance()->AddEvent(new PickupEvent(obj2));
+			obj2->SetEnabled(false);
 
-		//If this pickup is consumed on pickup (e.g health pack)
-		if (pickup->GetConsumeOnPickup())
+		}
+		//if the object is a weapon
+		else if ((obj2->ContainsType(GameObjectType::WEAPON))) 
 		{
-			unordered_set<PickupResource*> resource = pickup->GetConsumableData();
-			unordered_set<PickupResource*>::iterator it;
-			//Giving the resources in this pickup to the player's resources
-			for (it = resource.begin(); it != resource.end(); it++)
+			WeaponGameObject* weapon = dynamic_cast<WeaponGameObject*>(obj2);
+			//If this weapon is not currently being held by someone
+			if (!weapon->GetHeld())
 			{
-				m_resourceManager->GiveResource((*it)->key, (*it)->strength);
+				//Pick it up
+				EventManager::Instance()->AddEvent(new PickupEvent(obj2));
+				obj2->SetEnabled(false);
 			}
 		}
-		else//Otherwise send event that an item is picked up (and goes into inventory)
-		{
-			for (int i = 0; i < pickup->GetQuantity(); i++)
-			{
-				EventManager::Instance()->AddEvent(new PickupEvent(pickup->GetConsumableData()));
-			}
-		}
-		//This object should be removed from the scene after firing this event
-		pickup->SetToBeDeleted(true);
+
 	}
-
-
 }
 
 /// <summary>

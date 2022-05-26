@@ -1,6 +1,7 @@
 #include "Inventory.h"
 #include "Engine/Managers/GameManager.h"
 
+
 Inventory::Inventory()
 {
 	
@@ -21,164 +22,89 @@ Inventory::Inventory(Inventory const& other)
 
 }
 
-void Inventory::RemoveWeaponByKey(string key)
+
+void Inventory::AddPickup(GameObject* pickedUpObject)
 {
-	WeaponGameObject* weapon = GameManager::GetInstance()->GetGameObjectUsingIdentifier<WeaponGameObject>(key);
-	m_pWeaponInventory.erase(weapon);
+	m_pInventory.push_back(pickedUpObject);
 }
 
-//Will return false if there are not enough of the key or the item doesnt exist in the inventory. Do not remove weapons through this method as it will always return false
-bool Inventory::RemovePickupByKey(string key, float strength, int quantityToRemove)
+GameObject* Inventory::GetItemInSlot(int pos)
 {
-	unordered_set<InventoryInfo*>::iterator it;
-
-	for (it = m_pInventoryInfo.begin(); it != m_pInventoryInfo.end(); it++)
+	if (pos <= m_pInventory.size())
 	{
-		if ((*it)->key == key && (*it)->strength == strength)
-		{
-			if ((*it)->quantity >= quantityToRemove)
-			{
-				(*it)->quantity -= quantityToRemove;
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
+		return m_pInventory[pos];
+	}
+	else
+	{
+		return nullptr;
 	}
 
-	return false;
-
 }
 
-InventoryInfo* Inventory::GetItemByKey(string key, float strength)
+
+//Quantity to remove only applies to if the item has more than 1 in the slot (for example a potion). Will also only remove upto the amount in slot if not enough. Returns quantity of item used. Make sure you have the effect before calling this
+int Inventory::RemoveQuantityInSlot(int pos, int quantityToRemove)
 {
-	unordered_set<InventoryInfo*>::iterator it;
-
-	for (it = m_pInventoryInfo.begin(); it != m_pInventoryInfo.end(); it++)
+	if (m_pInventory[pos]->ContainsType(GameObjectType::PICKUP))
 	{
-		if ((*it)->key == key && (*it)->strength == strength)
+		PickupGameObject* pickup = dynamic_cast<PickupGameObject*>(m_pInventory[pos]);
+		int quantityAvailable = pickup->GetQuantity();
+
+		if (quantityAvailable > quantityToRemove)
 		{
-			return (*it);
+			quantityAvailable -= quantityToRemove;
+			pickup->SetQuantity(quantityAvailable);
+			return quantityToRemove;
 		}
-	}
-
-	return nullptr;
-}
-
-WeaponGameObject* Inventory::GetWeaponByKey(string key)
-{
-	unordered_set<WeaponGameObject*>::iterator it;
-	
-	for (it = m_pWeaponInventory.begin(); it != m_pWeaponInventory.end(); it++)
-	{
-		if ((*it)->GetIdentifier() == key)
+		//We have now run out of this item, remove it from the inventory (also applies to weapons since they are now held instead of in inventory)
+		else if (quantityAvailable == quantityToRemove)
 		{
-			return (*it);
+			m_pInventory.erase(m_pInventory.begin() + pos);
+			delete pickup;
+			return quantityToRemove;
 		}
-	}
-	
-	LOG("Weapon not found in inventory");
-	return nullptr;
-
-
-
-}
-
-void Inventory::AddPickup(unordered_set<PickupResource*> pickupEffects)
-{
-	unordered_set<PickupResource*>::iterator it;
-	unordered_set<InventoryInfo*>::iterator jt;
-
-	bool found = false;
-	for (it = pickupEffects.begin(); it != pickupEffects.end(); it++)
-	{
-		//If we have a weapon
-		WeaponGameObject* weapon = GameManager::GetInstance()->GetGameObjectUsingIdentifier<WeaponGameObject>((*it)->key);
-		//We have a weapon pickup
-		if (weapon != nullptr)
-		{
-			m_pWeaponInventory.insert(weapon);
-		}
+		//We dont have enough of the item
 		else
 		{
-			for (jt = m_pInventoryInfo.begin(); jt != m_pInventoryInfo.end(); jt++)
-			{
-				if ((*it)->key == (*jt)->key && (*it)->strength == (*jt)->strength)
-				{
-					(*jt)->quantity++;
-					found = true;
-					break;
-				}
-			}
-
-			if (!found)
-			{
-				m_pInventoryInfo.insert(new InventoryInfo((*it)->key, (*it)->strength, 1));
-			}
-			else
-			{
-				found = false;
-			}
-
-
+			m_pInventory.erase(m_pInventory.begin() + pos);
+			delete pickup;
+			return quantityAvailable;
 		}
-
-
 	}
+	//We have a weapon
+	else if (m_pInventory[pos]->ContainsType(GameObjectType::WEAPON))
+	{
+		m_pInventory.erase(m_pInventory.begin() + pos);
+		return 1;
+	}
+
+	//Nothing used
+	return 0;
+
+
 }
 
 void Inventory::SaveData(nlohmann::json& jsonData)
 {
-	unordered_set<InventoryInfo*>::iterator it;
-	int i = 0;
-	for (it = m_pInventoryInfo.begin();it != m_pInventoryInfo.end(); it++)
+	for (int i = 0; i < m_pInventory.size(); i++)
 	{
-		string s = "PickupInventory_" + to_string(i++);
-
-		jsonData[s + "_key"] = (*it)->key;
-		jsonData[s + "_strength"] = (*it)->strength;
-		jsonData[s + "_quantity"] = (*it)->quantity;
+		string s = "PickupInventory_" + to_string(i);
+		jsonData[s + "_key"] = m_pInventory[i]->GetIdentifier();
 	}
-
-
-	unordered_set<WeaponGameObject*>::iterator itt;
-	i = 0;
-	for (itt = m_pWeaponInventory.begin(); itt != m_pWeaponInventory.end(); itt++)
-	{
-		string s = "WeaponInventory_" + to_string(i++);
-
-		jsonData[s + "_key"] = (*itt)->GetIdentifier();
-	}
-
 
 }
 
 
 void Inventory::LoadData(const nlohmann::json& jsonData)
 {
-	m_pInventoryInfo.clear();
+	m_pInventory.clear();
 
 	int i = 0;
 	string s = "PickupInventory_" + to_string(i);
 	while (jsonData.contains(s + "_key"))
 	{
-		InventoryInfo* newItem = new InventoryInfo(jsonData[s + "_key"], jsonData[s + "_strength"], jsonData[s + "_quantity"]);
 		s = "PickupInventory_" + to_string(++i);
-		m_pInventoryInfo.insert(newItem);
+		m_pInventory.push_back(GameManager::GetInstance()->GetGameObjectUsingIdentifier<GameObject>(s));
 	}
 
-
-	m_pWeaponInventory.clear();
-
-	i = 0;
-	s = "WeaponInventory_" + to_string(i++);
-	while (jsonData.contains(s + "_key"))
-	{
-		string wepKey = jsonData[s + "_key"];
-		WeaponGameObject* wep = GameManager::GetInstance()->GetGameObjectUsingIdentifier<WeaponGameObject>(wepKey);
-		s = "WeaponInventory_" + to_string(++i);
-		m_pWeaponInventory.insert(wep);
-	}
 }

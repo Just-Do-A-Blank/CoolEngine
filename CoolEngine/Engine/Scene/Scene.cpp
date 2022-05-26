@@ -30,7 +30,11 @@ void Scene::Update()
 	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
 	for (int it = 0; it < gameObjectList.size(); ++it)
 	{
-		gameObjectList[it]->Update();
+		if(gameObjectList[it]->GetEnabled())
+		{
+			gameObjectList[it]->Update();
+		}
+
 	}
 	gameObjectList = m_psceneGraph->GetAllNodeObjects();
 	Collision::Update(gameObjectList);

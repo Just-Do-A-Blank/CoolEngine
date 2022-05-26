@@ -153,16 +153,6 @@ void PickupGameObject::SaveLocalData(nlohmann::json& jsonData)
 void PickupGameObject::Update()
 {
     InteractableGameObject::Update();
-
-    //If this object should be deleted, delete it.
-    if (m_shouldbeDeleted)
-    {
-
-        GameManager::GetInstance()->DeleteGameObjectUsingIdentifier(GetIdentifier());
-    }
-
-
-
 }
 
 void PickupGameObject::LoadAllPrefabData(const nlohmann::json& jsonData)

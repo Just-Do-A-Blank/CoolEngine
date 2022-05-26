@@ -142,6 +142,7 @@ void WeaponGameObject::LoadLocalData(const nlohmann::json& jsonData)
         m_distanceTravelled = jsonData["WeaponDistanceTravelled"];
         m_element = (ELEMENTS)jsonData["WeaponElement"];
         m_statusEffect = (STATUSES)jsonData["WeaponStatus"];
+        //m_isHeld = jsonData["WeaponIsHeld"];
 
 #if EDITOR
         m_elementSelectedItem = GetElementsFromIndex((int)m_element);
@@ -171,6 +172,15 @@ void WeaponGameObject::SaveLocalData(nlohmann::json& jsonData)
     jsonData["WeaponElement"] = (int)m_element;
     jsonData["WeaponStatus"] = (int)m_statusEffect;
 
+    if (jsonData.count("WeaponIsHeld"))
+    {
+        jsonData["WeaponIsHeld"] = m_isHeld;
+    }
+    else
+    {
+        m_isHeld = false;
+    }
+
     std::string tempPath = std::string(m_texturePath.begin(), m_texturePath.end());
     jsonData["WeaponUITexturePath"] = tempPath;
 }
@@ -189,6 +199,16 @@ void WeaponGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
 
 void WeaponGameObject::Attack()
 {
+}
+
+bool WeaponGameObject::GetHeld()
+{
+    return m_isHeld;
+}
+
+void WeaponGameObject::SetHeld(bool isHeld)
+{
+    m_isHeld = isHeld;
 }
 
 void WeaponGameObject::CalculateWeaponStrength()
