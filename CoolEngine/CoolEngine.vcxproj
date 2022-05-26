@@ -94,6 +94,7 @@
     <ClInclude Include="Engine\GameUI\GameplayIntegration\GameplayUIResourceAttachment.h" />
     <ClInclude Include="Engine\GameUI\GameplayIntegration\GameplayUIWeaponAttachment.h" />
     <ClInclude Include="Engine\GameUI\GameplayIntegration\ImageUIResourceDisplay.h" />
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\ImageUIWeaponDisplay.h" />
     <ClInclude Include="Engine\GameUI\GameplayIntegration\TextUIResourceDisplay.h" />
     <ClInclude Include="Engine\GameUI\GameplayIntegration\TextureToResource.h" />
     <ClInclude Include="Engine\GameUI\GameUIPrefab.h" />
@@ -268,6 +269,7 @@
     <ClCompile Include="Engine\GameUI\GameplayIntegration\GameplayUIResourceAttachment.cpp" />
     <ClCompile Include="Engine\GameUI\GameplayIntegration\GameplayUIWeaponAttachment.cpp" />
     <ClCompile Include="Engine\GameUI\GameplayIntegration\ImageUIResourceDisplay.cpp" />
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\ImageUIWeaponDisplay.cpp" />
     <ClCompile Include="Engine\GameUI\GameplayIntegration\TextUIResourceDisplay.cpp" />
     <ClCompile Include="Engine\GameUI\GameplayIntegration\TextureToResource.cpp" />
     <ClCompile Include="Engine\GameUI\GameUIPrefab.cpp" />

@@ -4,7 +4,7 @@
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/EditorUI/EditorUI.h"
 #include "Engine/GameUI/GameplayIntegration/ImageUIResourceDisplay.h"
-#include "Engine/GameUI/GameplayIntegration/GameplayUIWeaponAttachment.h"
+#include "Engine/GameUI/GameplayIntegration/ImageUIWeaponDisplay.h"
 
 ImageComponent::ImageComponent(string identifier, CoolUUID uuid) : GameUIComponent(identifier, uuid)
 {
@@ -13,7 +13,8 @@ ImageComponent::ImageComponent(string identifier, CoolUUID uuid) : GameUICompone
 	m_resourceAttachementImage = new ImageUIResourceDisplay(this);
 	m_resourceAttachement = m_resourceAttachementImage;
 
-	m_weaponAttachement = new GameplayUIWeaponAttachment();
+	m_imageUIWeaponDisplay = new ImageUIWeaponDisplay(this);
+	m_weaponAttachement = m_imageUIWeaponDisplay;
 }
 
 ImageComponent::ImageComponent(nlohmann::json& data, CoolUUID uuid) : GameUIComponent(data, uuid)
@@ -26,7 +27,8 @@ ImageComponent::ImageComponent(nlohmann::json& data, CoolUUID uuid) : GameUIComp
 		m_resourceAttachementImage = new ImageUIResourceDisplay(GameUIComponent::GetPrefabDataLoadedAtCreation(), this);
 		m_resourceAttachement = m_resourceAttachementImage;
 
-		m_weaponAttachement = new GameplayUIWeaponAttachment(GameUIComponent::GetPrefabDataLoadedAtCreation());
+		m_imageUIWeaponDisplay = new ImageUIWeaponDisplay(GameUIComponent::GetPrefabDataLoadedAtCreation(), this);
+		m_weaponAttachement = m_imageUIWeaponDisplay;
 
 		LoadAllLocalData(GameUIComponent::GetPrefabDataLoadedAtCreation());
 		
@@ -36,7 +38,8 @@ ImageComponent::ImageComponent(nlohmann::json& data, CoolUUID uuid) : GameUIComp
 		m_resourceAttachementImage = new ImageUIResourceDisplay(data, this);
 		m_resourceAttachement = m_resourceAttachementImage;
 
-		m_weaponAttachement = new GameplayUIWeaponAttachment(data);
+		m_imageUIWeaponDisplay = new ImageUIWeaponDisplay(data, this);
+		m_weaponAttachement = m_imageUIWeaponDisplay;
 
 		LoadAllLocalData(data);
 	}
@@ -47,7 +50,8 @@ ImageComponent::ImageComponent(ImageComponent const& other) : GameUIComponent(ot
 	m_resourceAttachementImage = new ImageUIResourceDisplay(*other.m_resourceAttachementImage, this);
 	m_resourceAttachement = m_resourceAttachementImage;
 	
-	m_weaponAttachement = new GameplayUIWeaponAttachment(*other.m_weaponAttachement);
+	m_imageUIWeaponDisplay = new ImageUIWeaponDisplay(*other.m_imageUIWeaponDisplay, this);
+	m_weaponAttachement = m_imageUIWeaponDisplay;
 }
 
 ImageComponent::~ImageComponent()
@@ -56,7 +60,9 @@ ImageComponent::~ImageComponent()
 	m_resourceAttachementImage = nullptr;
 	m_resourceAttachement = nullptr;
 
-	delete m_weaponAttachement;
+	delete m_imageUIWeaponDisplay;
+	m_imageUIWeaponDisplay = nullptr;
+	m_weaponAttachement = nullptr;
 }
 
 #if EDITOR

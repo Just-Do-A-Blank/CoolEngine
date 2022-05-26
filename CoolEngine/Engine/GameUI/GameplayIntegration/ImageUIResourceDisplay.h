@@ -12,19 +12,19 @@ public:
 	virtual ~ImageUIResourceDisplay() override;
 
 #if EDITOR
-	virtual void CreateEngineUI();
+	virtual void CreateEngineUI() override;
 #endif
 
-	virtual void Serialize(nlohmann::json& data);
+	virtual void Serialize(nlohmann::json& data) override;
 
 	/// <summary>
 	/// Called after construction, before first Update.
 	/// </summary>
-	virtual void Start();
+	virtual void Start() override;
 
 protected:
-	virtual void LoadAllPrefabData(const nlohmann::json& jsonData);
-	virtual void SaveAllPrefabData(nlohmann::json& jsonData);
+	virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
+	virtual void SaveAllPrefabData(nlohmann::json& jsonData) override;
 
 	/// <summary>
 	/// Runs during gameplay with the resource value

@@ -63,6 +63,7 @@ WeaponGameObject::WeaponGameObject(WeaponGameObject const& other) : TriggerableG
 	STATUSES m_statusEffect = other.m_statusEffect;
 
     m_key = other.m_key;
+    m_UITexturePath = other.m_UITexturePath;
 
 #if EDITOR
     m_elementsList = GetElementsAsList();
@@ -117,7 +118,7 @@ void WeaponGameObject::Serialize(nlohmann::json& data)
                 m_statusEffect = (STATUSES)m_statusSelectedItem.first;
             }
 
-            EditorUI::Texture("UI Image", m_texturePath, m_ptexture, 100, ImVec2(75,75));
+            EditorUI::Texture("UI Image", m_UITexturePath, m_ptexture, 100, ImVec2(75,75));
         }
     }
 #endif
@@ -149,9 +150,9 @@ void WeaponGameObject::LoadLocalData(const nlohmann::json& jsonData)
     if (jsonData.contains("WeaponUITexturePath"))
     {
         std::string tempPath = jsonData["WeaponUITexturePath"];
-        m_texturePath = std::wstring(tempPath.begin(), tempPath.end());
+        m_UITexturePath = std::wstring(tempPath.begin(), tempPath.end());
 
-        SetUITexture(m_texturePath);
+        SetUITexture(m_UITexturePath);
     }
 
 }
@@ -168,7 +169,7 @@ void WeaponGameObject::SaveLocalData(nlohmann::json& jsonData)
     jsonData["WeaponElement"] = (int)m_element;
     jsonData["WeaponStatus"] = (int)m_statusEffect;
 
-    std::string tempPath = std::string(m_texturePath.begin(), m_texturePath.end());
+    std::string tempPath = std::string(m_UITexturePath.begin(), m_UITexturePath.end());
     jsonData["WeaponUITexturePath"] = tempPath;
 }
 
@@ -321,7 +322,7 @@ bool WeaponGameObject::GetIsDualType()
 
 std::wstring WeaponGameObject::GetUITexturePath()
 {
-    return m_texturePath;
+    return m_UITexturePath;
 }
 
 int WeaponGameObject::RoundUp(float value)
@@ -429,6 +430,6 @@ void WeaponGameObject::SetUITexture(std::wstring wsfilepath)
     }
     else
     {
-        m_texturePath = wsfilepath;
+        m_UITexturePath = wsfilepath;
     }
 }

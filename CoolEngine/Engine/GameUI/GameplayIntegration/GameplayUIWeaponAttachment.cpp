@@ -7,6 +7,9 @@ GameplayUIWeaponAttachment::GameplayUIWeaponAttachment()
     m_currentPlayer = nullptr;
     m_weaponAttachmentOption = EWEAPONUIATTACHMENTOPTION::None;
 
+    m_weaponKey = "";
+    m_haveEverUpdatedTheUI = false;
+
 #if EDITOR
     m_attmptedToFindPlayer = false;
 
@@ -18,6 +21,9 @@ GameplayUIWeaponAttachment::GameplayUIWeaponAttachment()
 GameplayUIWeaponAttachment::GameplayUIWeaponAttachment(nlohmann::json& data)
 {
     m_currentPlayer = nullptr;
+    m_weaponKey = "";
+    m_haveEverUpdatedTheUI = false;
+
 #if EDITOR
     m_attmptedToFindPlayer = false;
     m_attachmentSettingList = GetattachmentSettingsAsList();
@@ -30,6 +36,9 @@ GameplayUIWeaponAttachment::GameplayUIWeaponAttachment(GameplayUIWeaponAttachmen
 {
     m_currentPlayer = nullptr;
     m_weaponAttachmentOption = (EWEAPONUIATTACHMENTOPTION)other.m_weaponAttachmentOption;
+    m_weaponKey = "";
+    m_haveEverUpdatedTheUI = false;
+
 #if EDITOR
     m_attmptedToFindPlayer = false;
 
@@ -72,10 +81,11 @@ void GameplayUIWeaponAttachment::Update()
     }
 
     WeaponGameObject* playerWeapon = GetWeaponGameObject();
-    if (playerWeapon != nullptr)
+    if (ShouldUpdateUI(playerWeapon))
     {
         Update(playerWeapon);
     }
+    UpdatedUI(playerWeapon);
 }
 
 /// <summary>
@@ -235,3 +245,42 @@ pair<int, string> GameplayUIWeaponAttachment::GetattachmentSettingsFromIndex(int
     return returnPair;
 }
 #endif
+
+/// <summary>
+/// Detirmines if we should update the UI
+/// </summary>
+/// <param name="weapon">Current weapon to display</param>
+/// <returns>True means we should</returns>
+bool GameplayUIWeaponAttachment::ShouldUpdateUI(WeaponGameObject* weapon)
+{
+    string currentWeaponKey = "";
+    if (weapon != nullptr)
+    {
+        currentWeaponKey = weapon->GetUniqueKey();
+    }
+
+    bool shouldUpdateUI = false;
+    if (!m_haveEverUpdatedTheUI || currentWeaponKey != m_weaponKey)
+    {
+        shouldUpdateUI = true;
+    }
+
+    return shouldUpdateUI;
+}
+
+/// <summary>
+/// Call after updating the UI
+/// </summary>
+/// <param name="weapon">Current weapon to display</param>
+void GameplayUIWeaponAttachment::UpdatedUI(WeaponGameObject* weapon)
+{
+    string currentWeaponKey = "";
+    if (weapon != nullptr)
+    {
+        currentWeaponKey = weapon->GetUniqueKey();
+    }
+
+    m_weaponKey = currentWeaponKey;
+    m_haveEverUpdatedTheUI = true;
+
+}

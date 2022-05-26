@@ -42,7 +42,7 @@ public:
     /// <summary>
     /// Called when the UI element should update
     /// </summary>
-    virtual void Update();
+    void Update();
 
     void LoadFromTopLevel(const nlohmann::json& jsonData);
     void SaveFromTopLevel(nlohmann::json& jsonData);
@@ -64,6 +64,11 @@ protected:
     /// <param name="weaponGameObject">The weapon to display</param>
     virtual void Update(WeaponGameObject* weaponGameObject) {}
 
+    /// <summary>
+    /// The player resource attached to this player
+    /// </summary>
+    EWEAPONUIATTACHMENTOPTION m_weaponAttachmentOption;
+
 private:
     void LoadLocalData(const nlohmann::json& jsonData);
     void SaveLocalData(nlohmann::json& jsonData);
@@ -80,9 +85,27 @@ private:
     PlayerGameObject* m_currentPlayer;
 
     /// <summary>
-    /// The player resource attached to this player
+    /// The current weapon key
     /// </summary>
-    EWEAPONUIATTACHMENTOPTION m_weaponAttachmentOption;
+    string m_weaponKey;
+
+    /// <summary>
+    /// True means we have updated the UI
+    /// </summary>
+    bool m_haveEverUpdatedTheUI;
+
+    /// <summary>
+    /// Detirmines if we should update the UI
+    /// </summary>
+    /// <param name="weapon">Current weapon to display</param>
+    /// <returns>True means we should</returns>
+    bool ShouldUpdateUI(WeaponGameObject* weapon);
+
+    /// <summary>
+    /// Call after updating the UI
+    /// </summary>
+    /// <param name="weapon">Current weapon to display</param>
+    void UpdatedUI(WeaponGameObject* weapon);
 
 #if EDITOR
     list<pair<int, string>> m_attachmentSettingList;
