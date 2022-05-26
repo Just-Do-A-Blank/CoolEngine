@@ -85,7 +85,7 @@ WeaponGameObject::WeaponGameObject(WeaponGameObject const& other) : TriggerableG
 
 WeaponGameObject::~WeaponGameObject()
 {
-
+    UnregisterForEvents();
 }
 
 void WeaponGameObject::Serialize(nlohmann::json& data)
