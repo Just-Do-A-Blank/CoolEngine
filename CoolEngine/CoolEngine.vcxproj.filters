@@ -249,6 +249,10 @@
     <ClCompile Include="Engine\GameObjects\PrefabGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GameObjects\BulletGameObject.cpp" />
+    <ClCompile Include="Engine\Includes\Quad Tree\src\quadtree.cpp">
+      <Filter>Engine\Includes\Quad Tree</Filter>
+    </ClCompile>
     <ClCompile Include="Inventory.cpp">
       <Filter>Engine\GameObjects\Gameplay\Inventory</Filter>
     </ClCompile>
@@ -734,6 +738,9 @@
     <ClInclude Include="Engine\EditorUI\EditorButtonCallback.h">
       <Filter>Engine\EditorUI</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Includes\Quad Tree\include\quadtree.h">
+      <Filter>Engine\Includes\Quad Tree</Filter>
+    </ClInclude>
     <ClInclude Include="Inventory.h">
       <Filter>Engine\GameObjects\Gameplay\Inventory</Filter>
     </ClInclude>
@@ -929,11 +936,11 @@
     <Filter Include="Engine\Tilemap\Tilemap">
       <UniqueIdentifier>{2511a5c3-13d3-4be5-8a1c-4a99b0fb512a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\GameObjects\Gameplay\Inventory">
-      <UniqueIdentifier>{81686caf-18bc-42f0-9d12-d80b412a5a52}</UniqueIdentifier>
+    <Filter Include="Engine\Includes\Quad Tree">
+      <UniqueIdentifier>{5f84bbc7-cf26-4e0b-a6e6-de68878e424f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\AI\States">
-      <UniqueIdentifier>{eb254e0a-a23d-4071-9fc8-c9fa39695892}</UniqueIdentifier>
+    <Filter Include="Engine\Includes\Quad Tree">
+      <UniqueIdentifier>{5f84bbc7-cf26-4e0b-a6e6-de68878e424f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\GameObjects\Gameplay\Pickups">
       <UniqueIdentifier>{4958383b-627e-456b-9b70-6f8dd49502cc}</UniqueIdentifier>

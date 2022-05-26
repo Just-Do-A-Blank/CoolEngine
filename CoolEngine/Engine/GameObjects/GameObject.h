@@ -69,6 +69,8 @@ protected:
 
 	GameObject* m_pTest = nullptr;
 
+	bool m_isStatic = false;
+
 #if EDITOR
 	virtual void CreateEngineUI() override;
 #endif
