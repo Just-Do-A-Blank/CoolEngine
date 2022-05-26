@@ -6,21 +6,28 @@
 LevelChangeGameObject::LevelChangeGameObject() : TriggerableGameObject()
 {
     m_gameObjectType |= GameObjectType::LEVEL_CHANGE;
+
+    m_playerName = "Player";
 }
 
 LevelChangeGameObject::LevelChangeGameObject(string identifier, CoolUUID uuid) : TriggerableGameObject(identifier, uuid)
 {
     m_gameObjectType |= GameObjectType::LEVEL_CHANGE;
+    m_playerName = "Player";
 }
 
 LevelChangeGameObject::LevelChangeGameObject(const nlohmann::json& data, CoolUUID uuid) : TriggerableGameObject(data, uuid)
 {
     m_gameObjectType |= GameObjectType::LEVEL_CHANGE;
+
+    m_sceneName = data["LevelChangeName"];
+    m_playerName = data["PlayerName"];
 }
 
 LevelChangeGameObject::LevelChangeGameObject(LevelChangeGameObject const& other) : TriggerableGameObject(other)
 {
-    
+    m_sceneName = other.m_sceneName;
+    m_playerName = other.m_playerName;
 }
 
 LevelChangeGameObject::~LevelChangeGameObject()
@@ -31,6 +38,14 @@ LevelChangeGameObject::~LevelChangeGameObject()
 void LevelChangeGameObject::Serialize(nlohmann::json& jsonData)
 {
     TriggerableGameObject::Serialize(jsonData);
+
+    SaveLocalData(jsonData);
+}
+
+void LevelChangeGameObject::SaveLocalData(nlohmann::json& jsonData)
+{
+    jsonData["LevelChangeName"] = m_sceneName;
+    jsonData["PlayerName"] = m_playerName;
 }
 
 void LevelChangeGameObject::LoadAllPrefabData(const nlohmann::json& jsonData)
@@ -68,10 +83,14 @@ void LevelChangeGameObject::SetSceneName(string name)
 
 void LevelChangeGameObject::OnTriggerHold(GameObject* obj1, GameObject* obj2)
 {
-    if (obj1->ContainsType(GameObjectType::PLAYER))
+    if (obj1->ContainsType(GameObjectType::PLAYER) && obj2->ContainsType(GameObjectType::LEVEL_CHANGE))
     {
-        string testSceneFilePath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Levels\\" + m_sceneName + ".json";
-        GameManager::GetInstance()->LoadSceneFromFile(testSceneFilePath);
+        string sceneFilePath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Levels\\" + m_sceneName + ".json";
+        if (!GameManager::GetInstance()->SwitchSceneUsingIdentifier(sceneFilePath))
+        {
+            GameManager::GetInstance()->LoadSceneFromFile(sceneFilePath);
+            GameManager::GetInstance()->SwitchSceneUsingIdentifier(m_sceneName, m_playerName, true);
+        }
     }
 }
 
@@ -88,12 +107,12 @@ void LevelChangeGameObject::CreateEngineUI()
         parameters.m_tooltipText = "Name of the scene, not the full file path!";
 
         EditorUI::InputText("Scene Name", m_sceneName, parameters);
+        ImGui::Spacing();
+        EditorUI::InputText("Player Name", m_playerName, parameters);
 
         ImGui::Spacing();
         ImGui::Separator();
         ImGui::Spacing();
-
-        m_panimationStateMachine->CreateEngineUI();
     }
 }
 #endif

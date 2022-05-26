@@ -58,14 +58,14 @@ private:
 	std::unordered_map<std::string, TransitionInfo<float>> m_floatTransitionInfo;
 	std::unordered_map<std::string, TransitionInfo<bool>> m_boolTransitionInfo;
 
+	std::string m_name = "";
+
 #if EDITOR
 	std::string m_boolTransitionName = "";
 	std::string m_floatTransitionName = "";
 	std::string m_intTransitionName = "";
 
 	std::string m_selectedTransitionName = "";
-
-	std::string m_name = "";
 
 	void CreateBoolTransitionUI();
 	void CreateFloatTransitionUI();

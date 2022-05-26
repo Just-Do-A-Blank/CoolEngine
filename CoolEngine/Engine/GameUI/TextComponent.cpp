@@ -5,12 +5,17 @@
 #include"Engine/ResourceDefines.h"
 #include "Engine/EditorUI/EditorUI.h"
 #include "Engine/GameUI/GameplayIntegration/TextUIResourceDisplay.h"
+#include "Engine/GameUI/GameplayIntegration/TextUIWeaponDisplay.h"
 
 TextComponent::TextComponent(string identifier, CoolUUID uuid) : GameUIComponent(identifier, uuid)
 {	
 	m_uiComponentType |= UIComponentType::TEXT;
 
-	m_resourceAttachement = new TextUIResourceDisplay(this);
+	m_textUIResourceDisplay = new TextUIResourceDisplay(this);
+	m_resourceAttachement = m_textUIResourceDisplay;
+
+	m_textUIWeaponDisplay = new TextUIWeaponDisplay(this);
+	m_weaponAttachment = m_textUIWeaponDisplay;
 }
 
 TextComponent::TextComponent(nlohmann::json& data, CoolUUID uuid, ID3D11Device* pdevice) : GameUIComponent(data, uuid)
@@ -21,13 +26,23 @@ TextComponent::TextComponent(nlohmann::json& data, CoolUUID uuid, ID3D11Device* 
 
 	if (GameUIComponent::IsPrefab())
 	{
+		m_textUIResourceDisplay = new TextUIResourceDisplay(GameUIComponent::GetPrefabDataLoadedAtCreation(), this);
+		m_resourceAttachement = m_textUIResourceDisplay;
+
+		m_textUIWeaponDisplay = new TextUIWeaponDisplay(GameUIComponent::GetPrefabDataLoadedAtCreation(), this);
+		m_weaponAttachment = m_textUIWeaponDisplay;
+
 		LoadLocalData(GameUIComponent::GetPrefabDataLoadedAtCreation());
-		m_resourceAttachement = new TextUIResourceDisplay(GameUIComponent::GetPrefabDataLoadedAtCreation(), this);
 	}
 	else
 	{
+		m_textUIResourceDisplay = new TextUIResourceDisplay(data, this);
+		m_resourceAttachement = m_textUIResourceDisplay;
+
+		m_textUIWeaponDisplay = new TextUIWeaponDisplay(GameUIComponent::GetPrefabDataLoadedAtCreation(), this);
+		m_weaponAttachment = m_textUIWeaponDisplay;
+
 		LoadLocalData(data);
-		m_resourceAttachement = new TextUIResourceDisplay(data, this);
 	}
 }
 
@@ -50,20 +65,22 @@ TextComponent::TextComponent(TextComponent const& other) : GameUIComponent(other
 	m_colour = other.m_colour;
 	m_fontAtlas = other.m_fontAtlas;
 
-	TextUIResourceDisplay* textUI = dynamic_cast<TextUIResourceDisplay*>(other.m_resourceAttachement);
-	if (textUI != nullptr)
-	{
-		m_resourceAttachement = new TextUIResourceDisplay(*textUI, this);
-	}
+	m_textUIResourceDisplay = new TextUIResourceDisplay(*other.m_textUIResourceDisplay, this);
+	m_resourceAttachement = m_textUIResourceDisplay;
+
+	m_textUIWeaponDisplay = new TextUIWeaponDisplay(*other.m_textUIWeaponDisplay, this);
+	m_weaponAttachment = m_textUIWeaponDisplay;
 }
 
 TextComponent::~TextComponent()
 {
-	if (m_resourceAttachement != nullptr)
-	{
-		delete m_resourceAttachement;
-	}
-	
+	delete m_textUIResourceDisplay;
+	m_textUIResourceDisplay = nullptr;
+	m_resourceAttachement = nullptr;
+
+	delete m_textUIWeaponDisplay;
+	m_textUIWeaponDisplay = nullptr;
+	m_weaponAttachment = nullptr;
 }
 
 void TextComponent::UpdateFont(string fontName, int fontSize)
@@ -80,6 +97,7 @@ void TextComponent::Serialize(nlohmann::json& data)
 
 	SaveLocalData(data);
 	m_resourceAttachement->Serialize(data);
+	m_weaponAttachment->Serialize(data);
 }
 
 void TextComponent::LoadLocalData(const nlohmann::json& jsonData)
@@ -106,12 +124,14 @@ void TextComponent::LoadAllPrefabData(const nlohmann::json& jsonData)
 	GameUIComponent::LoadAllPrefabData(jsonData);
 	LoadLocalData(jsonData);
 	m_resourceAttachement->LoadFromTopLevel(jsonData);
+	m_weaponAttachment->LoadFromTopLevel(jsonData);
 }
 
 void TextComponent::SaveAllPrefabData(nlohmann::json& jsonData)
 {
 	SaveLocalData(jsonData);
 	m_resourceAttachement->SaveFromTopLevel(jsonData);
+	m_weaponAttachment->SaveFromTopLevel(jsonData);
 	GameUIComponent::SaveAllPrefabData(jsonData);
 }
 
@@ -185,7 +205,13 @@ void TextComponent::CreateEngineUI()
 
 	}
 
+	ImGui::PushID("ResourceAttachement");
 	m_resourceAttachement->CreateEngineUI();
+	ImGui::PopID();
+
+	ImGui::PushID("WeaponAttachment");
+	m_weaponAttachment->CreateEngineUI();
+	ImGui::PopID();
 }
 #endif
 
@@ -194,6 +220,7 @@ void TextComponent::Start()
 	GameUIComponent::Start();
 
 	m_resourceAttachement->Start();
+	m_weaponAttachment->Start();
 }
 
 void TextComponent::Update()
@@ -201,6 +228,7 @@ void TextComponent::Update()
 	AdjustRotationsDuringUpdate();
 
 	m_resourceAttachement->Update();
+	m_weaponAttachment->Update();
 }
 
 void TextComponent::EditorUpdate()

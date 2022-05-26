@@ -18,6 +18,7 @@
 #include "Engine/Managers/Events/BulletCreator.h"
 #include "Engine/GameObjects/LevelChangeGameObject.h"
 #include "Engine/GameObjects/PickupGameObject.h"
+#include "Engine/Managers/PickupsManager.h"
 
 #include <fstream>
 
@@ -159,6 +160,7 @@ bool GameManager::BeginPlay()
 	m_pcurrentGameScene = new Scene(m_pcurrentEditorScene->m_sceneIdentifier);
 
 	CopyScene();
+
 	m_pcurrentGameScene->SetActiveCameraUsingIdentifier(m_pcurrentEditorScene->GetActiveCamera()->GetIdentifier());
 	m_viewState = ViewState::GAME_VIEW;
 
@@ -166,11 +168,15 @@ bool GameManager::BeginPlay()
 
 	Start();
 
+	PickupsManager::GetInstance()->ResetPlayer();
+
 	return true;
 }
 
 bool GameManager::EndPlay()
 {
+	PickupsManager::GetInstance()->ResetPlayer();
+
 	if (m_pcurrentGameScene)
 	{
 		for (unordered_map<string, Scene*>::iterator it = m_gameSceneMap.begin(); it != m_gameSceneMap.end(); ++it)
@@ -592,6 +598,7 @@ void GameManager::SwitchScene(Scene* pscene, string playerIdentifier, bool unloa
 	Scene* pcurrentScene = GetCurrentViewStateScene();
 	pcurrentScene = pscene;
 
+	PickupsManager::GetInstance()->ResetPlayer();
 }
 
 bool GameManager::SwitchSceneUsingIdentifier(string sceneIdentifier, string playerIdentifier, bool unloadCurrentScene)
@@ -617,6 +624,9 @@ bool GameManager::SwitchSceneUsingIdentifier(string sceneIdentifier, string play
 	}
 
 	pcurrentScene = sceneMap[sceneIdentifier];
+
+	PickupsManager::GetInstance()->ResetPlayer();
+
 	return true;
 }
 
@@ -858,6 +868,11 @@ void GameManager::Deserialize(nlohmann::json& data)
 				{
 					mainCameraIdentifier = gameObjects[*uuid]->GetIdentifier();
 				}
+				break;
+
+			case AccumlateType::LEVEL_CHANGE:
+				gameObjects[*uuid] = new LevelChangeGameObject(data[typeIt.key()][uuidString], uuid);
+				gameObjects[*uuid]->m_UUID = uuid;
 				break;
 
 			case AccumlateType::TILE_MAP:

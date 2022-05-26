@@ -3,6 +3,10 @@
 #include "Engine/Includes/DirectXTK/SimpleMath.h"
 
 class GameplayUIResourceAttachment;
+class TextUIResourceDisplay;
+
+class GameplayUIWeaponAttachment;
+class TextUIWeaponDisplay;
 
 struct FontAtlasStruct;
 class TextComponent : public GameUIComponent
@@ -62,6 +66,24 @@ private:
 
 	void AdjustRotationsDuringUpdate();
 
+	/// <summary>
+	/// Handles how to show the resource on the UI
+	/// </summary>
 	GameplayUIResourceAttachment* m_resourceAttachement;
+
+	/// <summary>
+	/// Handles how the text handles the resource on the text component. ONLY USED FOR STORAGE, USE m_resourceAttachement.
+	/// </summary>
+	TextUIResourceDisplay* m_textUIResourceDisplay;
+
+	/// <summary>
+	/// Handles a weapon in the UI
+	/// </summary>
+	GameplayUIWeaponAttachment* m_weaponAttachment;
+
+	/// <summary>
+	/// Handles a weapon in UI with texture in particular. ONLY USED FOR STORAGE, USE m_weaponAttachment.
+	/// </summary>
+	TextUIWeaponDisplay* m_textUIWeaponDisplay;
 };
 

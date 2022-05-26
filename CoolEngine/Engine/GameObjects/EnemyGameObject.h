@@ -16,16 +16,21 @@ public:
     virtual void Update();
     virtual void EditorUpdate();
 
-    virtual void Serialize(nlohmann::json& jsonData) override;
+    virtual void Serialize(nlohmann::json& data) override;
 
 	void CalculateMovement(node* pnode);
 
 	void Start() override;
 
-	void SetWeaponPosition();
+	void SetWeaponPositionAgro();
+	void SetWeaponPositionWander();
+
+#if EDITOR
+	void CreateEngineUI() override;
+#endif
 
 private:
-    EnemyStateMachine m_stateMachine;
+    EnemyStateMachine* m_pAIStateMachine = nullptr;
 
 	PlayerGameObject* m_pplayer = nullptr;
 };
