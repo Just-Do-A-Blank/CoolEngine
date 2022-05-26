@@ -127,9 +127,7 @@ void MeleeWeaponGameObject::Attack()
     if (!m_isSwinging)
     {
         // Can begin attack
-        XMFLOAT2 playerPosWorld = XMFLOAT2(GetTransform()->GetWorldPosition().x, GetTransform()->GetWorldPosition().y);
-        XMFLOAT2 toWeapon = MathHelper::Minus(GameManager::GetInstance()->GetCamera()->GetMousePositionInWorldSpace(), playerPosWorld);
-        toWeapon = MathHelper::Normalize(toWeapon);
+		XMFLOAT2 toWeapon = XMFLOAT2(GetTransform()->GetForwardVector().x, GetTransform()->GetForwardVector().y);
 
         // Starting angle is offset from mouse direction (in degrees)
         m_currentSwingAngle = MathHelper::DotProduct(toWeapon, XMFLOAT2(1, 0));
