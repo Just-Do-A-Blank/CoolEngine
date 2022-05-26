@@ -10,6 +10,8 @@ public:
 	unordered_set<string>* GetList();
 	void CheckList(list<string>toCheck);
 
+	void ResetPlayer();
+
 	PickupsManager();
 	~PickupsManager() {}
 

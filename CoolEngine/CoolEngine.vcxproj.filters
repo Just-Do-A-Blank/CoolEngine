@@ -291,6 +291,9 @@
     <ClCompile Include="Engine\AI\States\WanderState.cpp">
       <Filter>Engine\AI\States</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\AI\States\RangeMovementState.cpp">
+      <Filter>Engine\AI\States</Filter>
+    </ClCompile>
     <ClCompile Include="Engine\GameUI\GameplayIntegration\TextureToResource.cpp">
       <Filter>Engine\GameUI\GameplayIntegration</Filter>
     </ClCompile>
@@ -768,6 +771,9 @@
       <Filter>Engine\Managers</Filter>
     </ClInclude>
     <ClInclude Include="Engine\AI\States\WanderState.h">
+      <Filter>Engine\AI\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\RangeMovementState.h">
       <Filter>Engine\AI\States</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameUI\GameplayIntegration\TextureToResource.h">

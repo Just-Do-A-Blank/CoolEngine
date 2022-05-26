@@ -189,6 +189,11 @@ PlayerGameObject::~PlayerGameObject()
 	EventManager::Instance()->RemoveClientEvent(EventType::MouseMoved, this);
 	EventManager::Instance()->RemoveClientEvent(EventType::Pickup, this);
 
+	if (m_pweapon != nullptr)
+	{
+		m_pweapon->UnregisterForEvents();
+	}
+
     delete m_playerController;
 	m_playerController = nullptr;
 
@@ -201,6 +206,15 @@ void PlayerGameObject::Start()
 	CharacterGameObject::Start();
 
 	m_resourceManager->Start();
+
+	// If this is meant to be a melee weapon then yell at me, but I was told to make it shoot bullets!
+	m_pweapon = GameManager::GetInstance()->CreateGameObject<RangedWeaponGameObject>(m_identifier + "_TestWeapon");
+	m_pweapon->SetAlbedo(TEST2);
+	m_pweapon->GetTransform()->SetLocalScale(XMFLOAT3(20, 20, 20));
+	m_pweapon->SetLayer(3);
+	m_pweapon->GetShape()->SetIsTrigger(true);
+	m_pweapon->GetShape()->SetIsCollidable(false);
+	m_pweapon->RegisterForEvents();
 }
 
 

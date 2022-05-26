@@ -66,7 +66,7 @@ void CharacterGameObject::Start()
 
 void CharacterGameObject::Update()
 {
-
+	TriggerableGameObject::Update();
 }
 
 void CharacterGameObject::EditorUpdate()
