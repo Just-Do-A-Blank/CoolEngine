@@ -44,8 +44,6 @@ public:
         return m_SE;
     }
 
-    void QtreeCheckCollisions(XMFLOAT2 PlayerPosition);
-
     void QtreeFreeMemory();
 
     void UpdateScene(XMFLOAT2 updatePoint);
