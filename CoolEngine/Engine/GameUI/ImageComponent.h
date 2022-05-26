@@ -2,6 +2,8 @@
 #include "GameUIComponent.h"
 
 class GameplayUIResourceAttachment;
+class ImageUIResourceDisplay;
+class GameplayUIWeaponAttachment;
 
 class ImageComponent : public GameUIComponent
 {
@@ -47,6 +49,16 @@ private:
     /// <param name="jsonData">Data to be loaded</param>
     void LoadAllLocalData(const nlohmann::json& jsonData);
 
+	/// <summary>
+	/// The resource attached to the component
+	/// </summary>
 	GameplayUIResourceAttachment* m_resourceAttachement;
+
+    /// <summary>
+    /// The image version of the Resource. ONLY USED IN THE COPY. PLEASE USE m_resourceAttachement.
+    /// </summary>
+    ImageUIResourceDisplay* m_resourceAttachementImage;
+
+    GameplayUIWeaponAttachment* m_weaponAttachement;
 };
 
