@@ -91,12 +91,14 @@
     <ClInclude Include="Engine\GameObjects\UUID.h" />
     <ClInclude Include="Engine\GameUI\ButtonComponent.h" />
     <ClInclude Include="Engine\GameUI\GameplayIntegration\EUIResourceChangeSetting.h" />
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\EWeaponTextDisplayStat.h" />
     <ClInclude Include="Engine\GameUI\GameplayIntegration\EWeaponUIAttachmentOption.h" />
     <ClInclude Include="Engine\GameUI\GameplayIntegration\GameplayUIResourceAttachment.h" />
     <ClInclude Include="Engine\GameUI\GameplayIntegration\GameplayUIWeaponAttachment.h" />
     <ClInclude Include="Engine\GameUI\GameplayIntegration\ImageUIResourceDisplay.h" />
     <ClInclude Include="Engine\GameUI\GameplayIntegration\ImageUIWeaponDisplay.h" />
     <ClInclude Include="Engine\GameUI\GameplayIntegration\TextUIResourceDisplay.h" />
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\TextUIWeaponDisplay.h" />
     <ClInclude Include="Engine\GameUI\GameplayIntegration\TextureToResource.h" />
     <ClInclude Include="Engine\GameUI\GameUIPrefab.h" />
     <ClInclude Include="Engine\GameUI\TextComponent.h" />
@@ -173,6 +175,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Engine\Includes\json.hpp" />
+    <ClInclude Include="Engine\Includes\Quad Tree\include\quadtree.h" />
     <ClInclude Include="Engine\Includes\RapidXML\rapidxml.hpp" />
     <ClInclude Include="Engine\Includes\RapidXML\rapidxml_iterators.hpp" />
     <ClInclude Include="Engine\Includes\RapidXML\rapidxml_print.hpp" />
@@ -273,6 +276,7 @@
     <ClCompile Include="Engine\GameUI\GameplayIntegration\ImageUIResourceDisplay.cpp" />
     <ClCompile Include="Engine\GameUI\GameplayIntegration\ImageUIWeaponDisplay.cpp" />
     <ClCompile Include="Engine\GameUI\GameplayIntegration\TextUIResourceDisplay.cpp" />
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\TextUIWeaponDisplay.cpp" />
     <ClCompile Include="Engine\GameUI\GameplayIntegration\TextureToResource.cpp" />
     <ClCompile Include="Engine\GameUI\GameUIPrefab.cpp" />
     <ClCompile Include="Engine\GameUI\TextComponent.cpp" />
@@ -310,6 +314,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Engine\Includes\Quad Tree\src\quadtree.cpp" />
     <ClCompile Include="Engine\Main.cpp" />
     <ClCompile Include="Engine\Managers\DebugDrawManager.cpp" />
     <ClCompile Include="Engine\Managers\Events\BulletCreator.cpp" />

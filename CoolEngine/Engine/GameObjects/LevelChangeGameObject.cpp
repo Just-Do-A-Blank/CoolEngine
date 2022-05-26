@@ -113,8 +113,6 @@ void LevelChangeGameObject::CreateEngineUI()
         ImGui::Spacing();
         ImGui::Separator();
         ImGui::Spacing();
-
-        m_panimationStateMachine->CreateEngineUI();
     }
 }
 #endif

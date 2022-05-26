@@ -116,7 +116,7 @@ WeaponGameObject* GameplayUIWeaponAttachment::GetWeaponGameObject()
 #if EDITOR
 void GameplayUIWeaponAttachment::CreateEngineUI()
 {
-    if (EditorUI::CollapsingSection("Resource Attachement", true))
+    if (EditorUI::CollapsingSection("Weapon Attachement", true))
     {
         AttemptToFindPlayer();
         PlayerGameObject* player = GetPlayer();

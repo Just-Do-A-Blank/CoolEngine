@@ -12,15 +12,15 @@ public:
     virtual ~ImageUIWeaponDisplay() override;
 
 #if EDITOR
-    virtual void CreateEngineUI();
+    virtual void CreateEngineUI() override;
 #endif
 
-    virtual void Serialize(nlohmann::json& data);
+    virtual void Serialize(nlohmann::json& data) override;
 
     /// <summary>
     /// Called after construction, before first Update.
     /// </summary>
-    virtual void Start();
+    virtual void Start() override;
 
     /// <summary>
     /// Set the texture when a weapon is displayed
