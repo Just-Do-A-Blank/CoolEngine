@@ -92,15 +92,14 @@ void RenderableCollidableGameObject::CreateEngineUI()
 		}
 	}
 }
+#endif
 
 void RenderableCollidableGameObject::Serialize(nlohmann::json& jsonData)
 {
 	RenderableGameObject::Serialize(jsonData);
-	
-    SaveLocalData(jsonData);
-}
 
-#endif
+	SaveLocalData(jsonData);
+}
 
 void RenderableCollidableGameObject::LoadAllPrefabData(const nlohmann::json& jsonData)
 {

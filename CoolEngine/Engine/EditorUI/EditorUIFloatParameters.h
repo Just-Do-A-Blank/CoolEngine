@@ -1,5 +1,7 @@
 #pragma once
 
+#if EDITOR
+
 /// <summary>
 /// Parameters optionally required to display a float or set of floats in the editor
 /// </summary>
@@ -33,3 +35,5 @@ struct EditorUIFloatParameters
 	EditorUIFloatParameters();
 
 };
+
+#endif
