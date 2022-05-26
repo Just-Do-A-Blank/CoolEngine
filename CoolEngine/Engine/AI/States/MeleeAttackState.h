@@ -3,6 +3,7 @@
 
 class PlayerGameObject;
 class EnemyGameObject;
+class MeleeWeaponGameObject;
 
 class MeleeAttackState : public FuzzyState
 {
@@ -35,6 +36,10 @@ private:
 	PlayerGameObject* m_pplayer = nullptr;
 	EnemyGameObject* m_penemy = nullptr;
 
+	MeleeWeaponGameObject* m_pweapon = nullptr;
+
 	float m_attackRangeVariance = 100.0f;
+
+	bool m_attackedLastFrame = false;
 };
 
