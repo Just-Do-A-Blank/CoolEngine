@@ -10,18 +10,31 @@ MeleeMovementState::MeleeMovementState(EnemyGameObject* penemy) : FuzzyState()
 {
 	m_stateType = FuzzyStateType::MELEE_MOVEMENT;
 
-	m_pplayer = GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject>(std::string("Player"));
 	m_penemy = penemy;
-
-	if (m_pplayer == nullptr)
-	{
-		LOG("AI state tried to get the player but couldn't!");
-	}
 }
 
 void MeleeMovementState::SetEnemy(EnemyGameObject* penemy)
 {
 	m_penemy = penemy;
+}
+
+MeleeMovementState::MeleeMovementState(const nlohmann::json& data) : FuzzyState(data)
+{
+	m_stateType = FuzzyStateType::MELEE_MOVEMENT;
+
+	Deserialize(data);
+}
+
+MeleeMovementState::MeleeMovementState(MeleeMovementState const* other, EnemyGameObject* penemy) : FuzzyState(other)
+{
+	m_stateType = FuzzyStateType::MELEE_MOVEMENT;
+
+	m_penemy = penemy;
+
+	m_activationDistance = other->m_activationDistance;
+	m_maxActivationDistance = other->m_maxActivationDistance;
+	m_nodePopDistance = other->m_nodePopDistance;
+	m_replanPathTime = other->m_replanPathTime;
 }
 
 void MeleeMovementState::Enter()
@@ -100,8 +113,8 @@ void MeleeMovementState::Deserialize(const nlohmann::json& data)
 {
 	FuzzyState::Deserialize(data);
 
-	m_activationDistance = data[(int)m_stateType]["ActivationDistance"];
-	m_nodePopDistance = data[(int)m_stateType]["NodePopDistance"];
+	m_activationDistance = data["ActivationDistance"];
+	m_nodePopDistance = data["NodePopDistance"];
 	m_maxActivationDistance = data["MaxActivationDistance"];
 	m_replanPathTime = data["ReplanPathTime"];
 }
@@ -148,3 +161,8 @@ void MeleeMovementState::CreateEngineUI()
 	EditorUI::DragFloat("Path Replan Time", m_replanPathTime, params);
 }
 #endif
+
+void MeleeMovementState::Start()
+{
+	m_pplayer = GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject>(std::string("Player"));
+}

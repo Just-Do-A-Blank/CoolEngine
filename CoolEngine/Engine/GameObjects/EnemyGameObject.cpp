@@ -13,26 +13,39 @@
 EnemyGameObject::EnemyGameObject(string identifier, CoolUUID uuid) : CharacterGameObject(identifier, uuid)
 {
     m_gameObjectType |= GameObjectType::ENEMY;
+
+	m_pAIStateMachine = new EnemyStateMachine(this);
 }
 
 EnemyGameObject::EnemyGameObject(const nlohmann::json& data, CoolUUID uuid) : CharacterGameObject(data, uuid)
 {
 	m_gameObjectType |= GameObjectType::ENEMY;
+
+	if (data.contains("EnemyStateMachine") == true)
+	{
+		m_pAIStateMachine = new EnemyStateMachine(data, this);
+	}
+	else
+	{
+		m_pAIStateMachine = new EnemyStateMachine(this);
+	}
 }
 
 EnemyGameObject::EnemyGameObject(EnemyGameObject const& other) : CharacterGameObject(other)
 {
-
+	m_pAIStateMachine = new EnemyStateMachine(other.m_pAIStateMachine, this);
 }
 
 EnemyGameObject::~EnemyGameObject()
 {
+	delete m_pAIStateMachine;
+	m_pAIStateMachine = nullptr;
 }
 
 
 void EnemyGameObject::Update()
 {
-	m_stateMachine.Update();
+	m_pAIStateMachine->Update();
 
 	if (m_invincibilityTime > 0.0f)
 	{
@@ -43,7 +56,7 @@ void EnemyGameObject::Update()
 		m_invincibilityTime = 0;
 	}
 
-	if (m_stateMachine.IsStateActive(FuzzyStateType::WANDER) == true)
+	if (m_pAIStateMachine->IsStateActive(FuzzyStateType::WANDER) == true)
 	{
 		SetWeaponPositionWander();
 	}
@@ -57,9 +70,11 @@ void EnemyGameObject::EditorUpdate()
 {
 }
 
-void EnemyGameObject::Serialize(nlohmann::json& jsonData)
+void EnemyGameObject::Serialize(nlohmann::json& data)
 {
-	CharacterGameObject::Serialize(jsonData);
+	CharacterGameObject::Serialize(data);
+
+	m_pAIStateMachine->Serialize(data);
 }
 
 void EnemyGameObject::CalculateMovement(node* pnode)
@@ -84,20 +99,7 @@ void EnemyGameObject::Start()
 {
 	PrefabGameObject::Start();
 
-	FuzzyState* pstate = new MeleeMovementState(this);
-	m_stateMachine.AddState(pstate);
-
-	pstate = new MeleeAttackState(this);
-	m_stateMachine.AddState(pstate);
-
-	pstate = new WanderState(this);
-	m_stateMachine.AddState(pstate);
-
-	pstate = new RangeMovementState(this);
-	m_stateMachine.AddState(pstate);
-
-	pstate = new RangeAttackState(this);
-	m_stateMachine.AddState(pstate);
+	m_pAIStateMachine->Start();
 
 	m_pweapon = GameManager::GetInstance()->CreateGameObject<RangedWeaponGameObject>(m_identifier + "_TestWeapon");
 	m_pweapon->SetAlbedo(TEST2);
@@ -151,4 +153,11 @@ void EnemyGameObject::SetWeaponPositionWander()
 	weaponPos = MathHelper::Plus(m_transform->GetWorldPosition(), weaponPos);
 
 	m_pweapon->GetTransform()->SetWorldPosition(weaponPos);
+}
+
+void EnemyGameObject::CreateEngineUI()
+{
+	CharacterGameObject::CreateEngineUI();
+
+	m_pAIStateMachine->CreateEngineUI();
 }

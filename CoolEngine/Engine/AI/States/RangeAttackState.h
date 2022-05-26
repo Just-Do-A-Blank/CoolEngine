@@ -9,6 +9,8 @@ class RangeAttackState : public FuzzyState
 {
 public:
 	RangeAttackState(EnemyGameObject* penemy);
+	RangeAttackState(const nlohmann::json& data);
+	RangeAttackState(RangeAttackState const* other, EnemyGameObject* penemy);
 
 	void SetEnemy(EnemyGameObject* penemy);
 
@@ -25,6 +27,8 @@ public:
 #if EDITOR
 	void CreateEngineUI() override;
 #endif
+
+	void Start() override;
 
 protected:
 

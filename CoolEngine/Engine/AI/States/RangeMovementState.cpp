@@ -4,17 +4,31 @@
 #include "Engine/GameObjects/PlayerGameObject.h"
 #include "Engine/EditorUI/EditorUI.h"
 
-RangeMovementState::RangeMovementState(EnemyGameObject* penemy)
+RangeMovementState::RangeMovementState(EnemyGameObject* penemy) : FuzzyState()
 {
 	m_stateType = FuzzyStateType::RANGE_MOVEMENT;
 
-	m_pplayer = GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject>(std::string("Player"));
+	m_penemy = penemy;
+}
+
+RangeMovementState::RangeMovementState(const nlohmann::json& data) : FuzzyState(data)
+{
+	m_stateType = FuzzyStateType::RANGE_MOVEMENT;
+
+	Deserialize(data);
+}
+
+RangeMovementState::RangeMovementState(RangeMovementState const* other, EnemyGameObject* penemy) : FuzzyState(other)
+{
+	m_stateType = FuzzyStateType::RANGE_MOVEMENT;
+
 	m_penemy = penemy;
 
-	if (m_pplayer == nullptr)
-	{
-		LOG("AI state tried to get the player but couldn't!");
-	}
+	m_maxActivationDistance = other->m_maxActivationDistance;
+	m_nodePopDistance = other->m_nodePopDistance;
+	m_replanPathTime = other->m_replanPathTime;
+	m_upperOptimalDistanceMultiplier = other->m_upperOptimalDistanceMultiplier;
+	m_lowerOptimalDistanceMultiplier = other->m_lowerOptimalDistanceMultiplier;
 }
 
 void RangeMovementState::SetEnemy(EnemyGameObject* penemy)
@@ -178,4 +192,9 @@ XMFLOAT3 RangeMovementState::CalculateTargetPosition() const
 	targetPos = MathHelper::Plus(m_pplayer->GetTransform()->GetWorldPosition(), targetPos);
 
 	return targetPos;
+}
+
+void RangeMovementState::Start()
+{
+	m_pplayer = GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject>(std::string("Player"));
 }

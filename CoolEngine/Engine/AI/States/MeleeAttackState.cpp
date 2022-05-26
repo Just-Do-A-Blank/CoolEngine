@@ -5,13 +5,27 @@
 #include "Engine/GameObjects/MeleeWeaponGameObject.h"
 #include "Engine/EditorUI/EditorUI.h"
 
-MeleeAttackState::MeleeAttackState(EnemyGameObject* penemy)
+MeleeAttackState::MeleeAttackState(EnemyGameObject* penemy) : FuzzyState()
+{
+	m_stateType = FuzzyStateType::MELEE_ATTACK;
+
+	m_penemy = penemy;
+}
+
+MeleeAttackState::MeleeAttackState(const nlohmann::json& data) : FuzzyState(data)
+{
+	m_stateType = FuzzyStateType::MELEE_ATTACK;
+
+	Deserialize(data);
+}
+
+MeleeAttackState::MeleeAttackState(MeleeAttackState const* other, EnemyGameObject* penemy) : FuzzyState(other)
 {
 	m_stateType = FuzzyStateType::MELEE_ATTACK;
 
 	m_penemy = penemy;
 
-	m_pplayer = GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject>(std::string("Player"));
+	m_attackRangeVariance = other->m_attackRangeVariance;
 }
 
 void MeleeAttackState::SetEnemy(EnemyGameObject* penemy)
@@ -81,4 +95,9 @@ void MeleeAttackState::Deserialize(const nlohmann::json& data)
 	FuzzyState::Deserialize(data);
 
 	m_attackRangeVariance = data["AttackRangeVariance"];
+}
+
+void MeleeAttackState::Start()
+{
+	m_pplayer = GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject>(std::string("Player"));
 }

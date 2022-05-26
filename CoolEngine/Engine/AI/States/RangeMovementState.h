@@ -11,6 +11,8 @@ class RangeMovementState : public FuzzyState
 {
 public:
 	RangeMovementState(EnemyGameObject* penemy);
+	RangeMovementState(const nlohmann::json& data);
+	RangeMovementState(RangeMovementState const* other, EnemyGameObject* penemy);
 
 	void SetEnemy(EnemyGameObject* penemy);
 
@@ -27,6 +29,8 @@ public:
 #if EDITOR
 	void CreateEngineUI() override;
 #endif
+
+	void Start() override;
 
 protected:
 

@@ -18,6 +18,10 @@ public:
 	const std::vector<FuzzyState*>* GetStates();
 	const std::vector<FuzzyState*>* GetActiveStates();
 
+#if EDITOR
+	virtual void CreateEngineUI() = 0;
+#endif
+
 protected:
 
 	std::vector<FuzzyState*> m_states;

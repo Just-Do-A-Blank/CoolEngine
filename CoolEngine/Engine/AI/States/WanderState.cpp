@@ -8,9 +8,27 @@ WanderState::WanderState(EnemyGameObject* penemy) : FuzzyState()
 {
 	m_stateType = FuzzyStateType::WANDER;
 
-	m_pplayer = GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject>(std::string("Player"));
+	m_penemy = penemy;
+}
+
+WanderState::WanderState(const nlohmann::json& data) : FuzzyState(data)
+{
+	m_stateType = FuzzyStateType::WANDER;
+
+	Deserialize(data);
+}
+
+WanderState::WanderState(WanderState const* other, EnemyGameObject* penemy) : FuzzyState(other)
+{
+	m_stateType = FuzzyStateType::WANDER;
 
 	m_penemy = penemy;
+
+	m_activationDistance = other->m_activationDistance;
+	m_nodePopDistance = other->m_nodePopDistance;
+	m_wanderDistance = other->m_wanderDistance;
+	m_waitTime = other->m_waitTime;
+	m_waitTimeVariance = other->m_waitTimeVariance;
 }
 
 void WanderState::SetEnemy(EnemyGameObject* penemy)
@@ -153,4 +171,9 @@ void WanderState::CreateEngineUI()
 	params.m_tooltipText = "The amount of variance in the time that the AI waits.";
 
 	EditorUI::DragFloat("Wait Time Variance", m_waitTimeVariance, params);
+}
+
+void WanderState::Start()
+{
+	m_pplayer = GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject>(std::string("Player"));
 }

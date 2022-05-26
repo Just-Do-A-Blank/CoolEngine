@@ -11,6 +11,8 @@ class MeleeMovementState : public FuzzyState
 {
 public:
 	MeleeMovementState(EnemyGameObject* penemy);
+	MeleeMovementState(const nlohmann::json& data);
+	MeleeMovementState(MeleeMovementState const* other, EnemyGameObject* penemy);
 
 	void SetEnemy(EnemyGameObject* penemy);
 
@@ -27,6 +29,8 @@ public:
 #if EDITOR
 	void CreateEngineUI() override;
 #endif
+
+	void Start() override;
 
 protected:
 

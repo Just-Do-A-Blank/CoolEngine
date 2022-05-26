@@ -4,17 +4,27 @@
 #include "Engine/Managers/GameManager.h"
 #include "Engine/EditorUI/EditorUI.h"
 
-RangeAttackState::RangeAttackState(EnemyGameObject* penemy)
+RangeAttackState::RangeAttackState(EnemyGameObject* penemy) : FuzzyState()
 {
 	m_stateType = FuzzyStateType::RANGE_ATTACK;
 
-	m_pplayer = GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject>(std::string("Player"));
+	m_penemy = penemy;
+}
+
+RangeAttackState::RangeAttackState(const nlohmann::json& data) : FuzzyState(data)
+{
+	m_stateType = FuzzyStateType::RANGE_ATTACK;
+
+	Deserialize(data);
+}
+
+RangeAttackState::RangeAttackState(RangeAttackState const* other, EnemyGameObject* penemy) : FuzzyState(other)
+{
+	m_stateType = FuzzyStateType::RANGE_ATTACK;
+
 	m_penemy = penemy;
 
-	if (m_pplayer == nullptr)
-	{
-		LOG("AI state tried to get the player but couldn't!");
-	}
+	m_attackRangeVariance = other->m_attackRangeVariance;
 }
 
 void RangeAttackState::SetEnemy(EnemyGameObject* penemy)
@@ -92,4 +102,9 @@ void RangeAttackState::CreateEngineUI()
 	params.m_tooltipText = "Variance around the distance at which the enemy fires the weapon. The higher it is the more likely the enemy will be to fire too early.";
 
 	EditorUI::DragFloat("Attack Range Variance", m_attackRangeVariance, params);
+}
+
+void RangeAttackState::Start()
+{
+	m_pplayer = GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject>(std::string("Player"));
 }
