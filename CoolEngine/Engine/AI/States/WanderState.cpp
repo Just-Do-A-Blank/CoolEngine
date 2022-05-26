@@ -9,8 +9,7 @@ WanderState::WanderState(EnemyGameObject* penemy) : FuzzyState()
 	m_stateType = FuzzyStateType::WANDER;
 
 	m_penemy = penemy;
-}
-
+}
 WanderState::WanderState(const nlohmann::json& data) : FuzzyState(data)
 {
 	m_stateType = FuzzyStateType::WANDER;
