@@ -54,7 +54,7 @@ private:
 	}
 
 	template<typename T>
-	T* GetGameObjectUsingUUID(CoolUUID& uuid)
+	T* GetGameObjectUsingUUID(CoolUUID uuid)
 	{
 		GameObject* pobject = m_psceneGraph->GetNodeObjectUsingUUID(uuid);
 
