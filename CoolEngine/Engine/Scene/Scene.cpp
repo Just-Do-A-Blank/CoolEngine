@@ -34,10 +34,7 @@ void Scene::Start()
 
 void Scene::Update()
 {
-	vector<GameObject*> gameObjectList; //= m_psceneGraph->GetAllNodeObjects();
-
-	m_quadtree->GetUpdateList(dynamic_cast<PlayerGameObject*>(m_psceneGraph->GetNodeObjectUsingIdentifier((std::string)"Player")), gameObjectList);
-
+	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
 
 	for (int it = 0; it < gameObjectList.size(); ++it)
 	{
