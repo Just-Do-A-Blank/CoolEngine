@@ -210,8 +210,6 @@ bool TileMap::Load(string path) // Load data for the map from a given path
 		return false;
 	}
 
-	m_tileMapName = path;
-
 	json jsonData;
 
 	inFile >> jsonData;
@@ -299,8 +297,6 @@ bool TileMap::Save(string path)
 
 		return false;
 	}
-
-	m_tileMapName = path;
 
 	json jsonOutput = {};
 	jsonOutput["Dimensions"] = { m_width, m_height };
