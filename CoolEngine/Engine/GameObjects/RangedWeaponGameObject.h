@@ -42,7 +42,9 @@ public:
 
 	virtual void Serialize(nlohmann::json& data) override;
 
-	void CreateEngineUI() override;
+#if EDITOR
+	virtual void CreateEngineUI() override;
+#endif
 
 	void Attack() override;
 
