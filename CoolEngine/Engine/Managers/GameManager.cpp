@@ -859,11 +859,7 @@ void GameManager::Deserialize(nlohmann::json& data)
 				break;
 			case AccumlateType::CAMERA:
 				gameObjects[*uuid] = new CameraGameObject(data[typeIt.key()][uuidString], uuid);
-				gameObjects[*uuid]->m_UUID = uuid;
-
-			case AccumlateType::LEVEL_CHANGE:
-				gameObjects[*uuid] = new LevelChangeGameObject(data[typeIt.key()][uuidString], uuid);
-				gameObjects[*uuid]->m_UUID = uuid;
+				gameObjects[*uuid]->m_UUID = uuid;			
 
 				pnewScene->m_cameraGameObjectMap[gameObjects[*uuid]->m_identifier] = dynamic_cast<CameraGameObject*>(gameObjects[*uuid]);
 
@@ -871,6 +867,11 @@ void GameManager::Deserialize(nlohmann::json& data)
 				{
 					mainCameraIdentifier = gameObjects[*uuid]->GetIdentifier();
 				}
+				break;
+
+			case AccumlateType::LEVEL_CHANGE:
+				gameObjects[*uuid] = new LevelChangeGameObject(data[typeIt.key()][uuidString], uuid);
+				gameObjects[*uuid]->m_UUID = uuid;
 				break;
 
 			case AccumlateType::TILE_MAP:
