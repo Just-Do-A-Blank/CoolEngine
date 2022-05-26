@@ -5,6 +5,7 @@ class GameplayUIResourceAttachment;
 class ImageUIResourceDisplay;
 class GameplayUIWeaponAttachment;
 class ImageUIWeaponDisplay;
+class GameplayUIPickupAttachement;
 
 class ImageComponent : public GameUIComponent
 {
@@ -69,5 +70,10 @@ private:
     /// How the weapon is displayed from an image point of view. ONLY USED IN THE COPY. PLEASE USE m_weaponAttachement.
     /// </summary>
     ImageUIWeaponDisplay* m_imageUIWeaponDisplay;
+
+    /// <summary>
+    /// The pickup attachement
+    /// </summary>
+    GameplayUIPickupAttachement* m_pickupAttachement;
 };
 
