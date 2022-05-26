@@ -110,6 +110,21 @@ public:
 	}
 
 	template<typename T>
+	T* GetGameObjectUsingUUID(CoolUUID& uuid)
+	{
+		switch (m_viewState)
+		{
+		case ViewState::EDITOR_VIEW:
+			return m_pcurrentEditorScene->GetGameObjectUsingUUID<T>(uuid);
+			break;
+
+		case ViewState::GAME_VIEW:
+			return m_pcurrentGameScene->GetGameObjectUsingUUID<T>(uuid);
+			break;
+		}
+	}
+
+	template<typename T>
 	T* CreateGameObject(string identifier, TreeNode<GameObject>* nodeParent = nullptr)
 	{
 		return GetCurrentViewStateScene()->CreateGameObject<T>(identifier, nodeParent);

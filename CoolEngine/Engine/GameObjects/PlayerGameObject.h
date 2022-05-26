@@ -116,8 +116,6 @@ private:
     /// Handles the mouse moving across the window
     /// </summary>
 	//void MouseMoved(MouseMovedEvent* e);
-
-	void SetWeaponPosition();
 	
     /// <summary>
     /// Ends the session as the player is dead

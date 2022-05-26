@@ -20,6 +20,7 @@ private:
 	TreeNode<T>* m_rootNode = nullptr;
 	unordered_map<string, TreeNode<T>*> m_sceneTreeNodeMap;
 	unordered_map<string, T*> m_sceneNodeObjectsMap;
+	unordered_map<UINT64, T*> m_sceneNodeObjectsUUIDMap;
 	vector<T*> m_sceneNodeObjectList;
 	vector<TreeNode<T>*> m_sceneNodeList;
 
@@ -110,6 +111,7 @@ public:
 	vector<T*>& GetAllNodeObjects();
 	vector<TreeNode<T>*>& GetAllNodes();
 	T* GetNodeObjectUsingIdentifier(string& identifier);
+	T* GetNodeObjectUsingUUID(CoolUUID& uuid);
 };
 template class SceneGraph<GameObject>;
 template class SceneGraph<GameUIComponent>;
