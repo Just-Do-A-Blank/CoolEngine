@@ -407,23 +407,6 @@ int WeaponGameObject::RoundUp(float value)
     return temp;
 }
 
-void WeaponGameObject::Handle(Event* e)
-{
-	/*switch (e->GetEventID())
-	{
-	case EventType::MouseButtonPressed:
-		{
-			MouseButtonPressedEvent* pmouseEvent = (MouseButtonPressedEvent*)e;
-
-			if (pmouseEvent->GetButton() == VK_LBUTTON && m_isPlayerWeapon)
-			{
-				Attack();
-			}
-		}
-		break;
-	}*/
-}
-
 void WeaponGameObject::RegisterForEvents()
 {
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
