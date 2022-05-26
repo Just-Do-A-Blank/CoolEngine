@@ -19,7 +19,7 @@ protected:
 	XMFLOAT3 m_direction = XMFLOAT3{0, 0, 0};
 
 	WeaponGameObject* m_pweapon = nullptr;
-	bool m_isWeaponRanged = false;
+	bool m_isWeaponRanged = true;
 
     virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
     virtual void SaveAllPrefabData(nlohmann::json& jsonData) override;

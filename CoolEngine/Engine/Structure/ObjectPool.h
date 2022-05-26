@@ -38,16 +38,18 @@ public:
 		}
 	}
 
-	ObjectEntry<T>* CreateEntryInPool()
+	T* CreateEntryInPool()
 	{
 		for (size_t i = 0; i < m_pObjects.size(); ++i)
 		{
 			if (!m_pObjects[i]->m_Active)
 			{
 				m_pObjects[i]->m_Active = true;
-				return m_pObjects[i];
+				return m_pObjects[i]->m_pObject;
 			}
 		}
+
+		return nullptr;
 	}
 
 
