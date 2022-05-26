@@ -5,6 +5,7 @@
 #include "Engine/EditorUI/EditorUI.h"
 #include "Engine/GameUI/GameplayIntegration/ImageUIResourceDisplay.h"
 #include "Engine/GameUI/GameplayIntegration/ImageUIWeaponDisplay.h"
+#include "Engine/GameUI/GameplayIntegration/ImageUIPickupDisplay.h"
 
 ImageComponent::ImageComponent(string identifier, CoolUUID uuid) : GameUIComponent(identifier, uuid)
 {
@@ -15,6 +16,9 @@ ImageComponent::ImageComponent(string identifier, CoolUUID uuid) : GameUICompone
 
 	m_imageUIWeaponDisplay = new ImageUIWeaponDisplay(this);
 	m_weaponAttachement = m_imageUIWeaponDisplay;
+
+    m_imageUIPickupDisplay = new ImageUIPickupDisplay(this);
+    m_pickupAttachement = m_imageUIPickupDisplay;
 }
 
 ImageComponent::ImageComponent(nlohmann::json& data, CoolUUID uuid) : GameUIComponent(data, uuid)
@@ -30,6 +34,9 @@ ImageComponent::ImageComponent(nlohmann::json& data, CoolUUID uuid) : GameUIComp
 		m_imageUIWeaponDisplay = new ImageUIWeaponDisplay(GameUIComponent::GetPrefabDataLoadedAtCreation(), this);
 		m_weaponAttachement = m_imageUIWeaponDisplay;
 
+        m_imageUIPickupDisplay = new ImageUIPickupDisplay(GameUIComponent::GetPrefabDataLoadedAtCreation(), this);
+        m_pickupAttachement = m_imageUIPickupDisplay;
+
 		LoadAllLocalData(GameUIComponent::GetPrefabDataLoadedAtCreation());
 		
 	}
@@ -40,6 +47,9 @@ ImageComponent::ImageComponent(nlohmann::json& data, CoolUUID uuid) : GameUIComp
 
 		m_imageUIWeaponDisplay = new ImageUIWeaponDisplay(data, this);
 		m_weaponAttachement = m_imageUIWeaponDisplay;
+
+        m_imageUIPickupDisplay = new ImageUIPickupDisplay(data, this);
+        m_pickupAttachement = m_imageUIPickupDisplay;
 
 		LoadAllLocalData(data);
 	}
@@ -52,6 +62,9 @@ ImageComponent::ImageComponent(ImageComponent const& other) : GameUIComponent(ot
 	
 	m_imageUIWeaponDisplay = new ImageUIWeaponDisplay(*other.m_imageUIWeaponDisplay, this);
 	m_weaponAttachement = m_imageUIWeaponDisplay;
+
+    m_imageUIPickupDisplay = new ImageUIPickupDisplay(*other.m_imageUIPickupDisplay, this);
+    m_pickupAttachement = m_imageUIPickupDisplay;
 }
 
 ImageComponent::~ImageComponent()
@@ -63,6 +76,10 @@ ImageComponent::~ImageComponent()
 	delete m_imageUIWeaponDisplay;
 	m_imageUIWeaponDisplay = nullptr;
 	m_weaponAttachement = nullptr;
+
+    delete m_imageUIPickupDisplay;
+    m_imageUIPickupDisplay = nullptr;
+    m_pickupAttachement = nullptr;
 }
 
 #if EDITOR
@@ -77,6 +94,7 @@ void ImageComponent::CreateEngineUI()
 
 	m_resourceAttachement->CreateEngineUI();
 	m_weaponAttachement->CreateEngineUI();
+    m_pickupAttachement->CreateEngineUI();
 }
 #endif
 
@@ -85,6 +103,7 @@ void ImageComponent::Start()
     GameUIComponent::Start();
     m_resourceAttachement->Start();
 	m_weaponAttachement->Start();
+    m_pickupAttachement->Start();
 }
 
 void ImageComponent::Update()
@@ -92,6 +111,7 @@ void ImageComponent::Update()
     GameUIComponent::Update();
     m_resourceAttachement->Update();
 	m_weaponAttachement->Update();
+    m_pickupAttachement->Update();
 }
 
 void ImageComponent::Serialize(nlohmann::json& jsonData)
@@ -99,6 +119,7 @@ void ImageComponent::Serialize(nlohmann::json& jsonData)
 	GameUIComponent::Serialize(jsonData);
 	m_resourceAttachement->SaveFromTopLevel(jsonData);
 	m_weaponAttachement->SaveFromTopLevel(jsonData);
+    m_pickupAttachement->SaveFromTopLevel(jsonData);
 }
 
 /// <summary>
@@ -109,6 +130,7 @@ void ImageComponent::SaveAllLocalData(nlohmann::json& jsonData)
 {
 	m_resourceAttachement->SaveFromTopLevel(jsonData);
 	m_weaponAttachement->SaveFromTopLevel(jsonData);
+    m_pickupAttachement->SaveFromTopLevel(jsonData);
 }
 
 /// <summary>
@@ -119,6 +141,7 @@ void ImageComponent::LoadAllLocalData(const nlohmann::json& jsonData)
 {
 	m_resourceAttachement->LoadFromTopLevel(jsonData);
 	m_weaponAttachement->LoadFromTopLevel(jsonData);
+    m_pickupAttachement->LoadFromTopLevel(jsonData);
 }
 
 /// <summary>
@@ -130,6 +153,7 @@ void ImageComponent::LoadAllPrefabData(const nlohmann::json& jsonData)
 	GameUIComponent::LoadAllPrefabData(jsonData);
 	m_resourceAttachement->LoadFromTopLevel(jsonData);
 	m_weaponAttachement->LoadFromTopLevel(jsonData);
+    m_pickupAttachement->LoadFromTopLevel(jsonData);
 }
 
 /// <summary>
@@ -141,4 +165,5 @@ void ImageComponent::SaveAllPrefabData(nlohmann::json& jsonData)
 	GameUIComponent::SaveAllPrefabData(jsonData);
 	m_resourceAttachement->SaveFromTopLevel(jsonData);
 	m_weaponAttachement->SaveFromTopLevel(jsonData);
+    m_pickupAttachement->SaveFromTopLevel(jsonData);
 }
