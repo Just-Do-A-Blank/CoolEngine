@@ -139,13 +139,13 @@ void Shape::SetScale(XMFLOAT2 scale)
 #if EDITOR
 list<pair<int, string>> Shape::GetCollideTypeAsList()
 {
-	list<pair<int, string>> returnItem = list<pair<int, string>>();
+	list<pair<int, string>> returnListItem = list<pair<int, string>>();
 	for (int i = 0; i < 3; ++i)
 	{
-		returnItem.push_back(GetCollideTypeFromIndex(i));
+		returnListItem.push_back(GetCollideTypeFromIndex(i));
 	}
 
-	return returnItem;
+	return returnListItem;
 }
 
 pair<int, string> Shape::GetCollideTypeFromIndex(int index)
