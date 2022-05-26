@@ -336,3 +336,12 @@ bool PrefabGameObject::IsThisKeyCurrentKeyOrNewKey(string key)
 
     return key != m_prefabLoadedKey;
 }
+
+/// <summary>
+/// The key used to save and load the prefab - Blank means there is no prefab
+/// </summary>
+/// <returns>The prefab key</returns>
+string PrefabGameObject::GetPrefabKey()
+{
+    return m_prefabLoadedKey;
+}
