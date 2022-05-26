@@ -92,6 +92,8 @@ private:
     void LoadLocalData(const nlohmann::json& jsonData);
     void SaveLocalData(nlohmann::json& jsonData);
 
+    void UseResource(unordered_set<PickupResource*> consumable);
+
     /// <summary>
     /// Handles any keypresses when they are pressed (frame whilst pressed)
     /// </summary>

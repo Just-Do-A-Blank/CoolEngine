@@ -81,7 +81,6 @@ PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : Character
     EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
     EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
     EventManager::Instance()->AddClient(EventType::MouseMoved, this);
-	EventManager::Instance()->AddClient(EventType::Pickup, this);
 }
 
 PlayerGameObject::PlayerGameObject(const nlohmann::json& data, CoolUUID uuid) : CharacterGameObject(data, uuid)
@@ -154,7 +153,6 @@ PlayerGameObject::PlayerGameObject(const nlohmann::json& data, CoolUUID uuid) : 
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
 	EventManager::Instance()->AddClient(EventType::MouseMoved, this);
-	EventManager::Instance()->AddClient(EventType::Pickup, this);
 
 	m_gameObjectType |= GameObjectType::PLAYER;
 
@@ -182,7 +180,6 @@ PlayerGameObject::PlayerGameObject(PlayerGameObject const& other) : CharacterGam
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
 	EventManager::Instance()->AddClient(EventType::MouseMoved, this);
-	EventManager::Instance()->AddClient(EventType::Pickup, this);
 
     m_resourceManager = new PlayerResourceManager(*other.m_resourceManager);
 	m_pInventory = new Inventory(*other.m_pInventory);
@@ -219,6 +216,7 @@ void PlayerGameObject::Start()
 	m_resourceManager->Start();
 
 	//Need to init the inventory after all other objects have been inited. This loads all the objects into the inventory
+	EventManager::Instance()->AddClient(EventType::Pickup, this);
 	m_pInventory->Start();
 	
 }
@@ -257,6 +255,16 @@ void PlayerGameObject::SaveLocalData(nlohmann::json& jsonData)
 	m_pInventory->SaveData(jsonData);
 }
 
+void PlayerGameObject::UseResource(unordered_set<PickupResource*> consumable)
+{
+
+	unordered_set<PickupResource*>::iterator it;
+	for (it = consumable.begin(); it != consumable.end(); it++)
+	{
+		m_resourceManager->GiveResource((*it)->key, (*it)->strength);
+	}
+}
+
 void PlayerGameObject::OnTriggerHold(GameObject* obj1, GameObject* obj2)
 {
 	//If the player has interacted with the object
@@ -265,8 +273,23 @@ void PlayerGameObject::OnTriggerHold(GameObject* obj1, GameObject* obj2)
 		//If ths object is a pickup object
 		if ((obj2->ContainsType(GameObjectType::PICKUP)))
 		{
-			EventManager::Instance()->AddEvent(new PickupEvent(obj2));
-			obj2->SetEnabled(false);
+			PickupGameObject* pickup = dynamic_cast<PickupGameObject*>(obj2);
+			if (pickup->GetEnabled())
+			{
+				//if this item is a consumable, dont add it to the event list and afftect the player's resource by the same amount. Can be changed if this is wanted to be affected elsewhere
+				if (pickup->GetConsumeOnPickup())
+				{
+					UseResource(pickup->GetConsumableData());
+				}
+				else
+				{
+					EventManager::Instance()->AddEvent(new PickupEvent(obj2));
+					pickup->SetEnabled(false);
+				}
+
+			}
+
+
 
 		}
 		//if the object is a weapon
