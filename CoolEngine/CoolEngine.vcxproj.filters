@@ -240,29 +240,15 @@
     <ClCompile Include="Engine\AI\FuzzyStateMachine.cpp">
       <Filter>Engine\AI</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\AI\States\FiniteState.cpp">
-      <Filter>Engine\AI\States</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\AI\States\FuzzyState.cpp">
-      <Filter>Engine\AI\States</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\GameObjects\PrefabGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
     </ClCompile>
-    <ClCompile Include="Inventory.cpp">
-      <Filter>Engine\GameObjects\Gameplay\Inventory</Filter>
+    <ClCompile Include="Engine\GameObjects\BulletGameObject.cpp" />
+    <ClCompile Include="Engine\Includes\Quad Tree\src\quadtree.cpp">
+      <Filter>Engine\Includes\Quad Tree</Filter>
     </ClCompile>
     <ClCompile Include="Engine\AI\EnemyStateMachine.cpp">
       <Filter>Engine\AI</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\AI\States\MeleeMovementState.cpp">
-      <Filter>Engine\AI\States</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\AI\States\MeleeAttackState.cpp">
-      <Filter>Engine\AI\States</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\AI\States\RangeAttackState.cpp">
-      <Filter>Engine\AI\States</Filter>
     </ClCompile>
     <ClCompile Include="Engine\GameObjects\LevelChangeGameObject.cpp">
       <Filter>Engine\GameObjects</Filter>
@@ -288,12 +274,6 @@
     <ClCompile Include="Engine\Managers\PickupsManager.cpp">
       <Filter>Engine\Managers</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\AI\States\WanderState.cpp">
-      <Filter>Engine\AI\States</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\AI\States\RangeMovementState.cpp">
-      <Filter>Engine\AI\States</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\GameUI\GameplayIntegration\TextureToResource.cpp">
       <Filter>Engine\GameUI\GameplayIntegration</Filter>
     </ClCompile>
@@ -317,6 +297,30 @@
     </ClCompile>
     <ClCompile Include="Engine\GameUI\GameplayIntegration\TextUIWeaponDisplay.cpp">
       <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\States\MeleeAttackState.cpp">
+      <Filter>Engine\AI\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\States\MeleeMovementState.cpp">
+      <Filter>Engine\AI\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\States\FiniteState.cpp">
+      <Filter>Engine\AI\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\States\FuzzyState.cpp">
+      <Filter>Engine\AI\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\States\RangeAttackState.cpp">
+      <Filter>Engine\AI\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\States\RangeMovementState.cpp">
+      <Filter>Engine\AI\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\States\WanderState.cpp">
+      <Filter>Engine\AI\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Inventory.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Inventory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -722,32 +726,17 @@
     <ClInclude Include="Engine\AI\FuzzyStateMachine.h">
       <Filter>Engine\AI</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\AI\States\FiniteState.h">
-      <Filter>Engine\AI\States</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\AI\States\FuzzyState.h">
-      <Filter>Engine\AI\States</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\GameObjects\PrefabGameObject.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="Engine\EditorUI\EditorButtonCallback.h">
       <Filter>Engine\EditorUI</Filter>
     </ClInclude>
-    <ClInclude Include="Inventory.h">
-      <Filter>Engine\GameObjects\Gameplay\Inventory</Filter>
+    <ClInclude Include="Engine\Includes\Quad Tree\include\quadtree.h">
+      <Filter>Engine\Includes\Quad Tree</Filter>
     </ClInclude>
     <ClInclude Include="Engine\AI\EnemyStateMachine.h">
       <Filter>Engine\AI</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\AI\States\MeleeMovementState.h">
-      <Filter>Engine\AI\States</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\AI\States\MeleeAttackState.h">
-      <Filter>Engine\AI\States</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\AI\States\RangeAttackState.h">
-      <Filter>Engine\AI\States</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\LevelChangeGameObject.h">
       <Filter>Engine\GameObjects</Filter>
@@ -779,12 +768,6 @@
     <ClInclude Include="Engine\Managers\PickupsManager.h">
       <Filter>Engine\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\AI\States\WanderState.h">
-      <Filter>Engine\AI\States</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\AI\States\RangeMovementState.h">
-      <Filter>Engine\AI\States</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\GameUI\GameplayIntegration\TextureToResource.h">
       <Filter>Engine\GameUI\GameplayIntegration</Filter>
     </ClInclude>
@@ -814,6 +797,30 @@
     </ClInclude>
     <ClInclude Include="Engine\GameUI\GameplayIntegration\EWeaponTextDisplayStat.h">
       <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\MeleeAttackState.h">
+      <Filter>Engine\AI\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\MeleeMovementState.h">
+      <Filter>Engine\AI\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\FiniteState.h">
+      <Filter>Engine\AI\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\FuzzyState.h">
+      <Filter>Engine\AI\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\RangeAttackState.h">
+      <Filter>Engine\AI\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\RangeMovementState.h">
+      <Filter>Engine\AI\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\WanderState.h">
+      <Filter>Engine\AI\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Inventory.h">
+      <Filter>Engine\GameObjects\Gameplay\Inventory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -929,17 +936,23 @@
     <Filter Include="Engine\Tilemap\Tilemap">
       <UniqueIdentifier>{2511a5c3-13d3-4be5-8a1c-4a99b0fb512a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\GameObjects\Gameplay\Inventory">
-      <UniqueIdentifier>{81686caf-18bc-42f0-9d12-d80b412a5a52}</UniqueIdentifier>
+    <Filter Include="Engine\Includes\Quad Tree">
+      <UniqueIdentifier>{5f84bbc7-cf26-4e0b-a6e6-de68878e424f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\AI\States">
-      <UniqueIdentifier>{eb254e0a-a23d-4071-9fc8-c9fa39695892}</UniqueIdentifier>
+    <Filter Include="Engine\Includes\Quad Tree">
+      <UniqueIdentifier>{5f84bbc7-cf26-4e0b-a6e6-de68878e424f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\GameObjects\Gameplay\Pickups">
       <UniqueIdentifier>{4958383b-627e-456b-9b70-6f8dd49502cc}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\GameUI\GameplayIntegration">
       <UniqueIdentifier>{6becce7d-f71a-409d-b98a-3e1518520701}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\AI\States">
+      <UniqueIdentifier>{e1a8d3d1-ace4-4914-b20d-3698d95b0467}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GameObjects\Gameplay\Inventory">
+      <UniqueIdentifier>{ccf1ad0f-be3a-4001-9019-4e6cc72f5a6b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

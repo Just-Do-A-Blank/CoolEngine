@@ -112,6 +112,12 @@ public:
 		return (var1.x * var1.x) + (var1.y * var1.y) + (var1.z * var1.z);
 	}
 
+	//Returns square magnitude of var1
+	static float SquareMagnitude(const XMFLOAT2& var1)
+	{
+		return (var1.x * var1.x) + (var1.y * var1.y);
+	}
+
 	//Retruns normalized var1
 	static XMFLOAT3& Normalize(const XMFLOAT3& var1)
 	{

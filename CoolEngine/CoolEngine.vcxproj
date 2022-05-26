@@ -175,6 +175,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Engine\Includes\json.hpp" />
+    <ClInclude Include="Engine\Includes\Quad Tree\include\quadtree.h" />
     <ClInclude Include="Engine\Includes\RapidXML\rapidxml.hpp" />
     <ClInclude Include="Engine\Includes\RapidXML\rapidxml_iterators.hpp" />
     <ClInclude Include="Engine\Includes\RapidXML\rapidxml_print.hpp" />
@@ -313,6 +314,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameRelease|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GameDebug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Engine\Includes\Quad Tree\src\quadtree.cpp" />
     <ClCompile Include="Engine\Main.cpp" />
     <ClCompile Include="Engine\Managers\DebugDrawManager.cpp" />
     <ClCompile Include="Engine\Managers\Events\BulletCreator.cpp" />
