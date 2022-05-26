@@ -19,6 +19,7 @@ enum class ToolMode
 	LAYER,
 	DELETE_TILE,
 	SELECT,
+	COLLISION,
 
 	COUNT
 };
@@ -50,6 +51,7 @@ private:
 	int m_tileMapHeight = 0;
 
 	int m_paintLayer = 0;
+	bool m_paintPassable = false;
 
 	float m_tileDimensions = 0;
 

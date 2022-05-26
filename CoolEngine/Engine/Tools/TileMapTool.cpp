@@ -86,6 +86,13 @@ void TileMapTool::Render()
 				ImGui::EndMenu();
 			}
 
+			if (ImGui::BeginMenu("Passable", m_toolMode != ToolMode::COLLISION))
+			{
+				m_toolMode = ToolMode::COLLISION;
+
+				ImGui::EndMenu();
+			}
+
 			ImGui::EndMenuBar();
 		}
 
@@ -101,6 +108,10 @@ void TileMapTool::Render()
 
 		case ToolMode::TEXTURE:
 			EditorUI::Texture("Texture", m_relativePath, m_ppaintSRV);
+			break;
+
+		case ToolMode::COLLISION:
+			EditorUI::Checkbox("Is Passable", m_paintPassable);
 			break;
 		}
 
@@ -184,6 +195,10 @@ void TileMapTool::Update()
 				m_ptileMap->AddSpritePath(ptile, m_relativePath);
 				ptile->SetAlbedo(m_ppaintSRV);
 			}
+			break;
+
+		case ToolMode::COLLISION:
+			ptile->SetIsPassable(m_paintPassable);
 			break;
 
 		default:
