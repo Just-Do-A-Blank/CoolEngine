@@ -56,7 +56,7 @@ public:
 
 	virtual void Serialize(nlohmann::json& data) override;
 
-	void CreateEngineUI();
+	void CreateEngineUI() override;
 
 protected:
     virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;

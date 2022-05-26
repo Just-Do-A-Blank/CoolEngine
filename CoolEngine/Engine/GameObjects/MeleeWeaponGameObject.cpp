@@ -230,11 +230,10 @@ void MeleeWeaponGameObject::CreateEngineUI()
     if (EditorUI::CollapsingSection("Melee Weapon", true))
     {
         EditorUIFloatParameters floatParam = EditorUIFloatParameters();
-        EditorUIIntParameters numberParam = EditorUIIntParameters();
         EditorUINonSpecificParameters nonParam = EditorUINonSpecificParameters();
 
-        numberParam.m_minValue = 0;
-        numberParam.m_maxValue = 720.0f;
+        floatParam.m_minValue = 0;
+        floatParam.m_maxValue = 720.0f;
         EditorUI::DragFloat("Swing Angle", m_totalSwingAngle, floatParam);
 
         floatParam.m_minValue = 0;

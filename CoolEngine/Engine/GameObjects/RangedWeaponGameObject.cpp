@@ -93,11 +93,10 @@ void RangedWeaponGameObject::CreateEngineUI()
     if (EditorUI::CollapsingSection("Ranged Weapon", true))
     {
         EditorUIFloatParameters floatParam = EditorUIFloatParameters();
-        EditorUIIntParameters numberParam = EditorUIIntParameters();
         EditorUINonSpecificParameters nonParam = EditorUINonSpecificParameters();
 
-        numberParam.m_minValue = 0;
-        numberParam.m_maxValue = 1000.0f;
+        floatParam.m_minValue = 0;
+        floatParam.m_maxValue = 1000.0f;
         EditorUI::DragFloat("Shot Speed", m_shotSpeed, floatParam);
 
         floatParam.m_minValue = 0;
