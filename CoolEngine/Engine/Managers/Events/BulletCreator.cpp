@@ -88,21 +88,6 @@ void BulletCreator::CreateBullet(CreateBulletEvent* e)
 	p_bullet->SetAlbedo(e->GetObj()->GetBulletTexturePath());
 }
 
-void BulletCreator::TestFire(MouseButtonPressedEvent* e)
-{
-#if !EDITOR
-
-	// Get player location
-	string name = "Player";
-	CharacterGameObject* p_player = GameManager::GetInstance()->GetGameObjectUsingIdentifier<CharacterGameObject>(name);
-
-	if (p_player != nullptr)
-	{
-		EventManager::Instance()->AddEvent(new CreateBulletEvent(dynamic_cast<RangedWeaponGameObject*>(p_player->GetWeapon()), p_player->GetWeaponDirection(), p_player->GetWeaponPosition()));
-	}
-
-#endif
-}
 
 void BulletCreator::Handle(Event* e)
 {
