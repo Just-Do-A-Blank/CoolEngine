@@ -88,6 +88,7 @@ void BulletCreator::CreateBullet(CreateBulletEvent* e)
 	p_bullet->SetAlbedo(e->GetObj()->GetBulletTexturePath());
 }
 
+
 void BulletCreator::Handle(Event* e)
 {
 	switch (e->GetEventID())

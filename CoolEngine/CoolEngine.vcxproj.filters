@@ -298,6 +298,12 @@
     <ClCompile Include="Engine\GameUI\GameplayIntegration\TextUIWeaponDisplay.cpp">
       <Filter>Engine\GameUI\GameplayIntegration</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\ImageUIPickupDisplay.cpp">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\GameplayUIPickupAttachement.cpp">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
     <ClCompile Include="Engine\AI\States\MeleeAttackState.cpp">
       <Filter>Engine\AI\States</Filter>
     </ClCompile>
@@ -796,6 +802,12 @@
       <Filter>Engine\GameUI\GameplayIntegration</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameUI\GameplayIntegration\EWeaponTextDisplayStat.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\ImageUIPickupDisplay.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\GameplayUIPickupAttachement.h">
       <Filter>Engine\GameUI\GameplayIntegration</Filter>
     </ClInclude>
     <ClInclude Include="Engine\AI\States\MeleeAttackState.h">
