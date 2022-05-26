@@ -25,7 +25,6 @@ MeleeWeaponGameObject::MeleeWeaponGameObject(MeleeWeaponGameObject const& other)
 {
     m_totalSwingAngle = other.m_totalSwingAngle;
 	m_chargeTime = other.m_chargeTime;
-	m_radius = other.m_radius;
 	m_isBlunt = other.m_isBlunt;
 }
 
@@ -41,11 +40,6 @@ void MeleeWeaponGameObject::SetSwingAngle(float angle)
 void MeleeWeaponGameObject::SetChargeTime(float time)
 {
     m_chargeTime = time;
-}
-
-void MeleeWeaponGameObject::SetRadius(float rad)
-{
-    m_radius = rad;
 }
 
 void MeleeWeaponGameObject::SetIsBlunt(bool blunt)
@@ -86,11 +80,6 @@ float MeleeWeaponGameObject::GetSwingAngle()
 float MeleeWeaponGameObject::GetChargeTime()
 {
     return m_chargeTime;
-}
-
-float MeleeWeaponGameObject::GetRadius()
-{
-    return m_radius;
 }
 
 bool MeleeWeaponGameObject::GetIsBlunt()
@@ -146,9 +135,41 @@ void MeleeWeaponGameObject::Attack()
         m_swingSpeed = m_totalSwingAngle / m_totalSwingTime;
 
         m_isSwinging = true;
-        bool rendered = true;
-        SetIsRenderable(rendered);
         GetShape()->SetIsTrigger(true);
+    }
+}
+
+void MeleeWeaponGameObject::Update()
+{
+    if (!m_isSwinging)
+    {
+        XMFLOAT2 toWeapon;
+        if (GetIsPointingAtPlayer())
+        {
+            toWeapon = MathHelper::Minus(GetTargetPosition(), GetHolderPosition());
+        }
+        else
+        {
+            toWeapon = MathHelper::Minus(GameManager::GetInstance()->GetCamera()->GetMousePositionInWorldSpace(), GetHolderPosition());
+        }
+        toWeapon = MathHelper::Normalize(toWeapon);
+
+        SetWeaponPosition(toWeapon);
+    }
+    else if (m_isSwinging && m_currentSwingTime > 0.0f)
+    {
+        XMFLOAT2 toWeapon = XMFLOAT2(std::cosf(XM_PI * m_currentSwingAngle / 180.0f), std::sinf(XM_PI * m_currentSwingAngle / 180.0f));
+
+        SetWeaponPosition(toWeapon);
+
+        float dTime = GameManager::GetInstance()->GetTimer()->DeltaTime();
+        SetCurrentSwingAngle(m_currentSwingAngle + (m_swingSpeed * dTime));
+        SetCurrentSwingTime(m_currentSwingTime - dTime);
+        if (m_currentSwingTime <= 0.0f)
+        {
+            m_isSwinging = false;
+            GetShape()->SetIsTrigger(false);
+        }
     }
 }
 
@@ -165,7 +186,6 @@ void MeleeWeaponGameObject::LoadLocalData(const nlohmann::json& jsonData)
     {
         m_totalSwingAngle = jsonData["SwingAngle"];
         m_chargeTime = jsonData["ChargeTime"];
-        m_radius = jsonData["Radius"];
         m_isBlunt = jsonData["IsBlunt"];
     }
 }
@@ -174,7 +194,6 @@ void MeleeWeaponGameObject::SaveLocalData(nlohmann::json& jsonData)
 {
     jsonData["SwingAngle"] = m_totalSwingAngle;
     jsonData["ChargeTime"] = m_chargeTime;
-    jsonData["Radius"] = m_radius;
     jsonData["IsBlunt"] = m_isBlunt;
 }
 

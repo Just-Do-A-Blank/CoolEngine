@@ -119,3 +119,11 @@ void RangedWeaponGameObject::Attack()
 		m_lastShotTimestamp = GameManager::GetInstance()->GetTimer()->GameTime();
 	}
 }
+
+void RangedWeaponGameObject::Update()
+{
+    XMFLOAT2 toWeapon = MathHelper::Minus(GameManager::GetInstance()->GetCamera()->GetMousePositionInWorldSpace(), GetHolderPosition());
+    toWeapon = MathHelper::Normalize(toWeapon);
+
+    SetWeaponPosition(toWeapon);
+}

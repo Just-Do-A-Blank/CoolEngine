@@ -33,16 +33,9 @@ EnemyGameObject::~EnemyGameObject()
 
 void EnemyGameObject::Update()
 {
-	m_stateMachine.Update();
+	CharacterGameObject::Update();
 
-	if (m_invincibilityTime > 0.0f)
-	{
-		m_invincibilityTime -= GameManager::GetInstance()->GetTimer()->DeltaTime();
-	}
-	else
-	{
-		m_invincibilityTime = 0;
-	}
+	m_stateMachine.Update();
 
 	if (m_stateMachine.IsStateActive(FuzzyStateType::WANDER) == true)
 	{
@@ -110,25 +103,8 @@ void EnemyGameObject::SetWeaponPositionAgro()
 		return;
 	}
 
-	XMFLOAT2 posWorld = XMFLOAT2(GetTransform()->GetWorldPosition().x, GetTransform()->GetWorldPosition().y);
-	XMFLOAT2 playerPosWorld = XMFLOAT2(m_pplayer->GetTransform()->GetWorldPosition().x, m_pplayer->GetTransform()->GetWorldPosition().y);
-	XMFLOAT2 toWeapon = MathHelper::Minus(playerPosWorld, posWorld);
-	toWeapon = MathHelper::Normalize(toWeapon);
-	float weaponOffsetDistance = 50.0f;
-
-	XMFLOAT2 weaponPosition = MathHelper::Multiply(toWeapon, weaponOffsetDistance);
-	weaponPosition = MathHelper::Plus(posWorld, weaponPosition);
-
-	float angle = MathHelper::DotProduct(toWeapon, XMFLOAT2(0, 1));
-	angle = (std::acosf(angle) * 180.0f) / XM_PI;
-
-	if (toWeapon.x > 0.0f)
-	{
-		angle *= -1.0f;
-	}
-
-	m_pweapon->GetTransform()->SetWorldPosition(XMFLOAT3(weaponPosition.x, weaponPosition.y, 0.0f));
-	m_pweapon->GetTransform()->SetWorldRotation(XMFLOAT3(0, 0, angle));
+	m_pweapon->SetIsPointingAtPlayer(true);
+	m_pweapon->SetTargetPosition(XMFLOAT2(m_pplayer->GetTransform()->GetWorldPosition().x, m_pplayer->GetTransform()->GetWorldPosition().y));
 }
 
 void EnemyGameObject::SetWeaponPositionWander()
@@ -137,6 +113,8 @@ void EnemyGameObject::SetWeaponPositionWander()
 	{
 		return;
 	}
+
+	m_pweapon->SetIsPointingAtPlayer(false);
 
 	float weaponOffsetDistance = 50.0f;
 

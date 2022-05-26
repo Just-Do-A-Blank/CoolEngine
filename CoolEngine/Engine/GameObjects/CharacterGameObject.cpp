@@ -57,8 +57,6 @@ void CharacterGameObject::Start()
 	m_pweapon->SetLayer(3);
 	m_pweapon->GetShape()->SetIsTrigger(false);
 	m_pweapon->GetShape()->SetIsCollidable(false);
-	bool rendered = true;
-	m_pweapon->SetIsRenderable(rendered);
 	m_pweapon->RegisterForEvents();
 	m_pweapon->SetDistanceTravelled(500);
 
@@ -69,6 +67,18 @@ void CharacterGameObject::Start()
 void CharacterGameObject::Update()
 {
 	TriggerableGameObject::Update();
+
+	if (m_invincibilityTime > 0.0f)
+	{
+		m_invincibilityTime -= GameManager::GetInstance()->GetTimer()->DeltaTime();
+	}
+	else
+	{
+		m_invincibilityTime = 0;
+	}
+
+	// Update weapon position/angle
+	m_pweapon->SetHolderPosition(XMFLOAT2(GetTransform()->GetWorldPosition().x, GetTransform()->GetWorldPosition().y));
 }
 
 void CharacterGameObject::EditorUpdate()
