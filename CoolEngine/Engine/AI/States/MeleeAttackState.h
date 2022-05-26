@@ -8,6 +8,8 @@ class MeleeAttackState : public FuzzyState
 {
 public:
 	MeleeAttackState(EnemyGameObject* penemy);
+	MeleeAttackState(const nlohmann::json& data);
+	MeleeAttackState(MeleeAttackState const* other, EnemyGameObject* penemy);
 
 	void SetEnemy(EnemyGameObject* penemy);
 
@@ -16,10 +18,16 @@ public:
 
 	float CalculateActivation() override;
 
+#if EDITOR
+	void CreateEngineUI() override;
+#endif
+
 	void Update() override;
 
 	void Serialize(nlohmann::json& data) override;
 	void Deserialize(const nlohmann::json& data) override;
+
+	void Start() override;
 
 protected:
 

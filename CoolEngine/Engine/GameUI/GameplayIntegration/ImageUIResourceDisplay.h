@@ -1,7 +1,7 @@
 #pragma once
 #include "Engine/GameUI/GameplayIntegration/GameplayUIResourceAttachment.h"
-#include "Engine/GameUI/ImageComponent.h"
 #include "Engine/GameUI/GameplayIntegration/TextureToResource.h"
+class ImageComponent;
 
 class ImageUIResourceDisplay : public GameplayUIResourceAttachment
 {
@@ -12,20 +12,19 @@ public:
 	virtual ~ImageUIResourceDisplay() override;
 
 #if EDITOR
-	virtual void CreateEngineUI();
+	virtual void CreateEngineUI() override;
 #endif
 
-	virtual void Serialize(nlohmann::json& data);
+	virtual void Serialize(nlohmann::json& data) override;
 
 	/// <summary>
 	/// Called after construction, before first Update.
 	/// </summary>
-	virtual void Start();
-
+	virtual void Start() override;
 
 protected:
-	virtual void LoadAllPrefabData(const nlohmann::json& jsonData);
-	virtual void SaveAllPrefabData(nlohmann::json& jsonData);
+	virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
+	virtual void SaveAllPrefabData(nlohmann::json& jsonData) override;
 
 	/// <summary>
 	/// Runs during gameplay with the resource value
@@ -55,7 +54,7 @@ private:
 	/// <summary>
 	/// Each texture for a resource change
 	/// </summary>
-	list<TextureToResource*> m_texturesForEachResourceChange;
+	list<TextureToResource*>* m_texturesForEachResourceChange;
 
     /// <summary>
     /// Detirmines if the component should update

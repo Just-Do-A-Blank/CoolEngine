@@ -869,6 +869,11 @@ void GameManager::Deserialize(nlohmann::json& data)
 				}
 				break;
 
+			case AccumlateType::LEVEL_CHANGE:
+				gameObjects[*uuid] = new LevelChangeGameObject(data[typeIt.key()][uuidString], uuid);
+				gameObjects[*uuid]->m_UUID = uuid;
+				break;
+
 			case AccumlateType::TILE_MAP:
 				gameObjects[*uuid] = new TileMap(data[typeIt.key()][uuidString], uuid);
 				gameObjects[*uuid]->m_UUID = uuid;

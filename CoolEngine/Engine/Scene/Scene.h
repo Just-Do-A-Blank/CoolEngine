@@ -54,6 +54,22 @@ private:
 	}
 
 	template<typename T>
+	T* GetGameObjectUsingUUID(CoolUUID uuid)
+	{
+		GameObject* pobject = m_psceneGraph->GetNodeObjectUsingUUID(uuid);
+
+		if (pobject == nullptr)
+		{
+			return nullptr;
+		}
+		else
+		{
+			return  dynamic_cast<T*>(pobject);
+		}
+
+	}
+
+	template<typename T>
 	T* CreateGameObject(string identifier, TreeNode<GameObject>* nodeParent = nullptr)
 	{
 		assert(m_psceneGraph != nullptr);
