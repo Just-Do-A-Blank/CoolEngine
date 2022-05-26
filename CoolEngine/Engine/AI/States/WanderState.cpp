@@ -2,6 +2,7 @@
 #include "Engine/GameObjects/EnemyGameObject.h"
 #include "Engine/GameObjects/PlayerGameObject.h"
 #include "Engine/Managers/GameManager.h"
+#include "Engine/EditorUI/EditorUI.h"
 
 WanderState::WanderState(EnemyGameObject* penemy) : FuzzyState()
 {
@@ -84,8 +85,72 @@ void WanderState::Update()
 
 void WanderState::Serialize(nlohmann::json& data)
 {
+	FuzzyState::Serialize(data);
+
+	data["activationDistance"] = m_activationDistance;
+	data["NodePopDistance"] = m_nodePopDistance;
+	data["WanderDistance"] = m_wanderDistance;
+	data["WaitTime"] = m_waitTime;
+	data["WaitTimeVariance"] = m_waitTimeVariance;
 }
 
 void WanderState::Deserialize(const nlohmann::json& data)
 {
+	FuzzyState::Deserialize(data);
+
+	m_activationDistance = data["activationDistance"];
+	m_nodePopDistance = data["NodePopDistance"];
+	m_wanderDistance = data["WanderDistance"];
+	m_waitTime = data["WaitTime"];
+	m_waitTimeVariance = data["WaitTimeVariance"];
+}
+
+void WanderState::CreateEngineUI()
+{
+	FuzzyState::CreateEngineUI();
+
+	ImGui::Spacing();
+
+	EditorUIFloatParameters params;
+	params.m_minValue = 0;
+	params.m_maxValue = 10000;
+	params.m_tooltipText = "The distance at which this state will activate";
+
+	EditorUI::DragFloat("Activation Distance", m_activationDistance, params);
+
+	ImGui::Spacing();
+
+	params = EditorUIFloatParameters();
+	params.m_minValue = 0.1f;
+	params.m_maxValue = 100.0f;
+	params.m_tooltipText = "The distance at which the enemy must be from the pathfinding node before it's classed as being visited.";
+
+	EditorUI::DragFloat("Node Pop Distance", m_nodePopDistance, params);
+
+	ImGui::Spacing();
+
+	params = EditorUIFloatParameters();
+	params.m_minValue = 0.0f;
+	params.m_maxValue = 10000.0f;
+	params.m_tooltipText = "The maximum distance in each axis the AI can wander";
+
+	EditorUI::DragFloat("Max Wander Distance", m_wanderDistance, params);
+
+	ImGui::Spacing();
+
+	params = EditorUIFloatParameters();
+	params.m_minValue = 0.0f;
+	params.m_maxValue = 100.0f;
+	params.m_tooltipText = "The amount of time the AI will wait before wandering to a different position.";
+
+	EditorUI::DragFloat("Wait Time", m_waitTime, params);
+
+	ImGui::Spacing();
+
+	params = EditorUIFloatParameters();
+	params.m_minValue = 0.0f;
+	params.m_maxValue = 100.0f;
+	params.m_tooltipText = "The amount of variance in the time that the AI waits.";
+
+	EditorUI::DragFloat("Wait Time Variance", m_waitTimeVariance, params);
 }

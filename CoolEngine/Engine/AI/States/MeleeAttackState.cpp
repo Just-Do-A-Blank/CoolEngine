@@ -3,6 +3,7 @@
 #include "Engine/GameObjects/EnemyGameObject.h"
 #include "Engine/GameObjects/PlayerGameObject.h"
 #include "Engine/GameObjects/MeleeWeaponGameObject.h"
+#include "Engine/EditorUI/EditorUI.h"
 
 MeleeAttackState::MeleeAttackState(EnemyGameObject* penemy)
 {
@@ -47,6 +48,22 @@ float MeleeAttackState::CalculateActivation()
 	return 0.0f;
 }
 
+#if EDITOR
+void MeleeAttackState::CreateEngineUI()
+{
+	FuzzyState::CreateEngineUI();
+
+	ImGui::Spacing();
+
+	EditorUIFloatParameters params;
+	params.m_minValue = 0;
+	params.m_maxValue = 10000;
+	params.m_tooltipText = "Variance around the distance at which the enemy swings the weapon. The higher it is the more likely the enemy will be to miss.";
+
+	EditorUI::DragFloat("Attack Range Variance", m_attackRangeVariance, params);
+}
+#endif
+
 void MeleeAttackState::Update()
 {
 	//Add code to swing weapon
@@ -54,8 +71,14 @@ void MeleeAttackState::Update()
 
 void MeleeAttackState::Serialize(nlohmann::json& data)
 {
+	FuzzyState::Serialize(data);
+
+	data["AttackRangeVariance"] = m_attackRangeVariance;
 }
 
 void MeleeAttackState::Deserialize(const nlohmann::json& data)
 {
+	FuzzyState::Deserialize(data);
+
+	m_attackRangeVariance = data["AttackRangeVariance"];
 }

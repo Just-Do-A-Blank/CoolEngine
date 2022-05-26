@@ -22,6 +22,10 @@ public:
 	void Serialize(nlohmann::json& data) override;
 	void Deserialize(const nlohmann::json& data) override;
 
+#if EDITOR
+	void CreateEngineUI() override;
+#endif
+
 protected:
 
 private:
@@ -29,5 +33,7 @@ private:
 	EnemyGameObject* m_penemy = nullptr;
 
 	RangedWeaponGameObject* m_pweapon = nullptr;
+
+	float m_attackRangeVariance = 100.0f;
 };
 

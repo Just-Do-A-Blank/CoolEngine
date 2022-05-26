@@ -2,6 +2,7 @@
 #include "Engine/GameObjects/RangedWeaponGameObject.h"
 #include "Engine/GameObjects/PlayerGameObject.h"
 #include "Engine/Managers/GameManager.h"
+#include "Engine/EditorUI/EditorUI.h"
 
 RangeAttackState::RangeAttackState(EnemyGameObject* penemy)
 {
@@ -49,7 +50,10 @@ float RangeAttackState::CalculateActivation()
 
 	float distanceSq = MathHelper::DistanceSquared(m_penemy->GetTransform()->GetWorldPosition(), m_pplayer->GetTransform()->GetWorldPosition());
 
-	if (distanceSq < m_pweapon->GetDistanceTravelled() * m_pweapon->GetDistanceTravelled())
+	float attackVarianceSq = MathHelper::RandomNumber(-m_attackRangeVariance * 0.5f, m_attackRangeVariance * 0.5f);
+	attackVarianceSq *= attackVarianceSq;
+
+	if (distanceSq < m_pweapon->GetDistanceTravelled() * m_pweapon->GetDistanceTravelled() + attackVarianceSq)
 	{
 		return 1.0f;
 	}
@@ -64,8 +68,28 @@ void RangeAttackState::Update()
 
 void RangeAttackState::Serialize(nlohmann::json& data)
 {
+	FuzzyState::Serialize(data);
+
+	data["AttackRangeVariance"] = m_attackRangeVariance;
 }
 
 void RangeAttackState::Deserialize(const nlohmann::json& data)
 {
+	FuzzyState::Deserialize(data);
+
+	m_attackRangeVariance = data["AttackRangeVariance"];
+}
+
+void RangeAttackState::CreateEngineUI()
+{
+	FuzzyState::CreateEngineUI();
+
+	ImGui::Spacing();
+
+	EditorUIFloatParameters params;
+	params.m_minValue = 0;
+	params.m_maxValue = 10000;
+	params.m_tooltipText = "Variance around the distance at which the enemy fires the weapon. The higher it is the more likely the enemy will be to fire too early.";
+
+	EditorUI::DragFloat("Attack Range Variance", m_attackRangeVariance, params);
 }

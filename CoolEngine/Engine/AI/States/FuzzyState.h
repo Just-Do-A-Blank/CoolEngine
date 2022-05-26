@@ -25,11 +25,15 @@ public:
 
 	virtual float CalculateActivation() = 0;
 
+#if EDITOR
+	virtual void CreateEngineUI();
+#endif
+
 	void SetActivationLevel(float activationLevel);
 	float GetActivationLevel() const;
 
-	virtual void Serialize(nlohmann::json& data) = 0;
-	virtual void Deserialize(const nlohmann::json& data) = 0;
+	virtual void Serialize(nlohmann::json& data);
+	virtual void Deserialize(const nlohmann::json& data);
 
 	FuzzyStateType GetStateType() const;
 

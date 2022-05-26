@@ -23,6 +23,10 @@ public:
 	void Serialize(nlohmann::json& data) override;
 	void Deserialize(const nlohmann::json& data) override;
 
+#if EDITOR
+	void CreateEngineUI() override;
+#endif
+
 protected:
 
 private:

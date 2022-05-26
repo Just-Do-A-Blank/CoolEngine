@@ -2,6 +2,7 @@
 #include "Engine/Managers/GameManager.h"
 #include "Engine/GameObjects/RangedWeaponGameObject.h"
 #include "Engine/GameObjects/PlayerGameObject.h"
+#include "Engine/EditorUI/EditorUI.h"
 
 RangeMovementState::RangeMovementState(EnemyGameObject* penemy)
 {
@@ -88,10 +89,76 @@ void RangeMovementState::Update()
 
 void RangeMovementState::Serialize(nlohmann::json& data)
 {
+	FuzzyState::Serialize(data);
+
+	data["MaxActivationDistance"] = m_maxActivationDistance;
+	data["NodePopDistance"] = m_nodePopDistance;
+	data["ReplanPathTime"] = m_replanPathTime;
+	data["UpperOptimalDistance"] = m_upperOptimalDistanceMultiplier;
+	data["LowerOptimalDistance"] = m_lowerOptimalDistanceMultiplier;
 }
 
 void RangeMovementState::Deserialize(const nlohmann::json& data)
 {
+	FuzzyState::Deserialize(data);
+
+	m_maxActivationDistance = data["MaxActivationDistance"];
+	m_nodePopDistance = data["NodePopDistance"];
+	m_replanPathTime = data["ReplanPathTime"];
+	m_upperOptimalDistanceMultiplier = data["UpperOptimalDistance"];
+	m_lowerOptimalDistanceMultiplier = data["LowerOptimalDistance"];
+}
+
+void RangeMovementState::CreateEngineUI()
+{
+	FuzzyState::CreateEngineUI();
+
+	ImGui::Spacing();
+
+	EditorUIFloatParameters params;
+	params.m_minValue = 0.0f;
+	params.m_maxValue = 10000.0f;
+	params.m_tooltipText = "The maximum distance the player can be from the enemy for this state to activate.";
+
+	EditorUI::DragFloat("Max Activation Distance", m_maxActivationDistance);
+
+	ImGui::Spacing();
+
+	params = EditorUIFloatParameters();
+	params.m_minValue = 0.1f;
+	params.m_maxValue = 100.0f;
+	params.m_tooltipText = "The distance at which the enemy must be from the pathfinding node before it's classed as being visited.";
+
+	EditorUI::DragFloat("Node Pop Distance", m_nodePopDistance, params);
+
+	ImGui::Spacing();
+
+	params = EditorUIFloatParameters();
+	params.m_minValue = 0.0f;
+	params.m_maxValue = 100.0f;
+	params.m_tooltipText = "The time spent between replanning the path to the player in seconds.";
+
+	EditorUI::DragFloat("Path Replan Time", m_replanPathTime, params);
+
+	ImGui::Spacing();
+
+	params = EditorUIFloatParameters();
+	params.m_minValue = 0.0f;
+	params.m_maxValue = 1.0f;
+	params.m_speed = 0.01f;
+	params.m_tooltipText = "The percentage of the range of the range weapon currently being held at which the enemy will run away from the player.";
+
+	EditorUI::DragFloat("Minimum Activation Multiplier", m_lowerOptimalDistanceMultiplier, params);
+
+	ImGui::Spacing();
+
+	params = EditorUIFloatParameters();
+	params.m_minValue = 0.0f;
+	params.m_maxValue = 1.0f;
+	params.m_speed = 0.01f;
+	params.m_tooltipText = "The percentage of the range of the range weapon currently being held at which the enemy will run towards the player.";
+
+	EditorUI::DragFloat("Maximum Activation Multiplier", m_upperOptimalDistanceMultiplier, params);
 }
 
 XMFLOAT3 RangeMovementState::CalculateTargetPosition() const
