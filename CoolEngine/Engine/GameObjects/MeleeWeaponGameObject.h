@@ -35,12 +35,22 @@ public:
 	void SetRadius(float rad);
 	void SetIsBlunt(bool blunt);
 	void SetSwingTime(float time);
+	void SetIsSwinging(bool swing);
+	void SetCurrentSwingTime(float time);
+	void SetSwingSpeed(float speed);
+	void SetCurrentSwingAngle(float angle);
 
 	float GetSwingAngle();
 	float GetChargeTime();
 	float GetRadius();
 	bool GetIsBlunt();
 	float GetSwingTime();
+	bool GetIsSwinging();
+	float GetCurrentSwingTime();
+	float GetSwingSpeed();
+	float GetCurrentSwingAngle();
+
+	void Attack() override;
 
 	virtual void Serialize(nlohmann::json& data) override;
 
@@ -49,10 +59,16 @@ protected:
     virtual void SaveAllPrefabData(nlohmann::json& jsonData) override;
 
 private:
-	float m_swingAngle = 90.0f;
+	float m_totalSwingAngle = 90.0f;
+	float m_currentSwingAngle = 0.0f;
+
+	float m_totalSwingTime = 0.5f;
+	float m_currentSwingTime = 0.0f;
+
 	float m_chargeTime = 0.5f;
 	float m_radius = 50.0f;
-	float m_swingTime = 0.5f;
+	bool m_isSwinging = false;
+	float m_swingSpeed = 1.0f;
 	
 	bool m_isBlunt = false;
 

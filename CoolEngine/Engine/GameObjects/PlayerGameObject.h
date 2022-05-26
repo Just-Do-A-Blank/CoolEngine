@@ -105,7 +105,7 @@ private:
     /// <summary>
     /// Handles any mouse button presses when pressed (frame whilst pressed)
     /// </summary>
-	void MouseButtonPressed(MouseButtonPressedEvent* e);
+	//void MouseButtonPressed(MouseButtonPressedEvent* e);
 
     /// <summary>
     /// Handles any mouse button when they are released (first frame).

@@ -189,6 +189,7 @@ void WeaponGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
 
 void WeaponGameObject::Attack()
 {
+
 }
 
 void WeaponGameObject::CalculateWeaponStrength()

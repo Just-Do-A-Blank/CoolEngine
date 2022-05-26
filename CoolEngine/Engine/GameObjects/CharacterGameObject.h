@@ -20,10 +20,6 @@ protected:
 
 	WeaponGameObject* m_pweapon = nullptr;
 	bool m_isWeaponRanged = false;
-	bool m_isSwingingMelee = false;
-	float m_currentSwingAngle = 0.0f;
-	float m_swingSpeed = 1.0f;
-	float m_swingTime = 1.0f;
 
     virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
     virtual void SaveAllPrefabData(nlohmann::json& jsonData) override;

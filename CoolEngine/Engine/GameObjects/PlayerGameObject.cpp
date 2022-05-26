@@ -206,15 +206,6 @@ void PlayerGameObject::Start()
 	CharacterGameObject::Start();
 
 	m_resourceManager->Start();
-
-	// If this is meant to be a melee weapon then yell at me, but I was told to make it shoot bullets!
-	m_pweapon = GameManager::GetInstance()->CreateGameObject<RangedWeaponGameObject>(m_identifier + "_TestWeapon");
-	m_pweapon->SetAlbedo(TEST2);
-	m_pweapon->GetTransform()->SetLocalScale(XMFLOAT3(20, 20, 20));
-	m_pweapon->SetLayer(3);
-	m_pweapon->GetShape()->SetIsTrigger(true);
-	m_pweapon->GetShape()->SetIsCollidable(false);
-	m_pweapon->RegisterForEvents();
 }
 
 
@@ -248,40 +239,40 @@ void PlayerGameObject::SaveLocalData(nlohmann::json& jsonData)
     m_resourceManager->SaveData(jsonData);
 }
 
-void PlayerGameObject::MouseButtonPressed(MouseButtonPressedEvent* e)
-{
-	// Melee attack
-	if ((!m_isWeaponRanged) && (!m_isSwingingMelee))
-	{
-		if (m_pweapon == nullptr)
-		{
-			return;
-		}
-
-		// Can begin attack
-		XMFLOAT2 playerPosWorld = XMFLOAT2(GetTransform()->GetWorldPosition().x, GetTransform()->GetWorldPosition().y);
-		XMFLOAT2 toWeapon = MathHelper::Minus(GameManager::GetInstance()->GetCamera()->GetMousePositionInWorldSpace(), playerPosWorld);
-		toWeapon = MathHelper::Normalize(toWeapon);
-
-		// Starting angle is offset from mouse direction (in degrees)
-		m_currentSwingAngle = MathHelper::DotProduct(toWeapon, XMFLOAT2(1, 0));
-		m_currentSwingAngle = (std::acosf(m_currentSwingAngle) * 180.0f) / XM_PI;
-		if (toWeapon.y < 0)
-		{
-			m_currentSwingAngle *= -1;
-		}
-		m_currentSwingAngle -= (dynamic_cast<MeleeWeaponGameObject*>(m_pweapon)->GetSwingAngle() / 2);
-
-		// Used to increase angle
-		m_swingTime = dynamic_cast<MeleeWeaponGameObject*>(m_pweapon)->GetSwingTime();
-		m_swingSpeed = dynamic_cast<MeleeWeaponGameObject*>(m_pweapon)->GetSwingAngle() / m_swingTime;
-
-		m_isSwingingMelee = true;
-		bool rendered = true;
-		m_pweapon->SetIsRenderable(rendered);
-		m_pweapon->GetShape()->SetIsTrigger(true);
-	}
-}
+//void PlayerGameObject::MouseButtonPressed(MouseButtonPressedEvent* e)
+//{
+//	// Melee attack
+//	if ((!m_isWeaponRanged) && (!m_isSwingingMelee))
+//	{
+//		if (m_pweapon == nullptr)
+//		{
+//			return;
+//		}
+//
+//		// Can begin attack
+//		XMFLOAT2 playerPosWorld = XMFLOAT2(GetTransform()->GetWorldPosition().x, GetTransform()->GetWorldPosition().y);
+//		XMFLOAT2 toWeapon = MathHelper::Minus(GameManager::GetInstance()->GetCamera()->GetMousePositionInWorldSpace(), playerPosWorld);
+//		toWeapon = MathHelper::Normalize(toWeapon);
+//
+//		// Starting angle is offset from mouse direction (in degrees)
+//		m_currentSwingAngle = MathHelper::DotProduct(toWeapon, XMFLOAT2(1, 0));
+//		m_currentSwingAngle = (std::acosf(m_currentSwingAngle) * 180.0f) / XM_PI;
+//		if (toWeapon.y < 0)
+//		{
+//			m_currentSwingAngle *= -1;
+//		}
+//		m_currentSwingAngle -= (dynamic_cast<MeleeWeaponGameObject*>(m_pweapon)->GetSwingAngle() / 2);
+//
+//		// Used to increase angle
+//		m_swingTime = dynamic_cast<MeleeWeaponGameObject*>(m_pweapon)->GetSwingTime();
+//		m_swingSpeed = dynamic_cast<MeleeWeaponGameObject*>(m_pweapon)->GetSwingAngle() / m_swingTime;
+//
+//		m_isSwingingMelee = true;
+//		bool rendered = true;
+//		m_pweapon->SetIsRenderable(rendered);
+//		m_pweapon->GetShape()->SetIsTrigger(true);
+//	}
+//}
 
 void PlayerGameObject::SetWeaponPosition(XMFLOAT2 toWeapon, float weaponRadius)
 {
@@ -356,7 +347,7 @@ void PlayerGameObject::Handle(Event* e)
 		//KeyReleased((KeyReleasedEvent*)e);
 		break;
 	case EventType::MouseButtonPressed:
-		MouseButtonPressed((MouseButtonPressedEvent*)e);
+		//MouseButtonPressed((MouseButtonPressedEvent*)e);
 		break;
 	case EventType::MouseButtonReleased:
 		//MouseButtonReleased((MouseButtonReleasedEvent*)e);
@@ -389,7 +380,8 @@ void PlayerGameObject::Update()
 	}
 
 	// Update weapon position/angle
-	if (m_isWeaponRanged || (!m_isSwingingMelee))
+	MeleeWeaponGameObject* meleeWeapon = dynamic_cast<MeleeWeaponGameObject*>(m_pweapon);
+	if (m_isWeaponRanged || (!meleeWeapon->GetIsSwinging()))
 	{
 		XMFLOAT2 playerPosWorld = XMFLOAT2(GetTransform()->GetWorldPosition().x, GetTransform()->GetWorldPosition().y);
 		XMFLOAT2 toWeapon = MathHelper::Minus(GameManager::GetInstance()->GetCamera()->GetMousePositionInWorldSpace(), playerPosWorld);
@@ -397,18 +389,18 @@ void PlayerGameObject::Update()
 
 		SetWeaponPosition(toWeapon, 50.0f);
 	}
-	else if (m_isSwingingMelee && m_swingTime > 0.0f)
+	else if (meleeWeapon->GetIsSwinging() && meleeWeapon->GetCurrentSwingTime() > 0.0f)
 	{
-		XMFLOAT2 toWeapon = XMFLOAT2(std::cosf(XM_PI * m_currentSwingAngle / 180.0f), std::sinf(XM_PI * m_currentSwingAngle / 180.0f));
+		XMFLOAT2 toWeapon = XMFLOAT2(std::cosf(XM_PI * meleeWeapon->GetCurrentSwingAngle() / 180.0f), std::sinf(XM_PI * meleeWeapon->GetCurrentSwingAngle() / 180.0f));
 
-		SetWeaponPosition(toWeapon, dynamic_cast<MeleeWeaponGameObject*>(m_pweapon)->GetRadius());
+		SetWeaponPosition(toWeapon, meleeWeapon->GetRadius());
 
 		float dTime = GameManager::GetInstance()->GetTimer()->DeltaTime();
-		m_currentSwingAngle += (m_swingSpeed * dTime);
-		m_swingTime -= dTime;
-		if (m_swingTime <= 0.0f)
+		meleeWeapon->SetCurrentSwingAngle(meleeWeapon->GetCurrentSwingAngle() + (meleeWeapon->GetSwingSpeed() * dTime));
+		meleeWeapon->SetCurrentSwingTime(meleeWeapon->GetCurrentSwingTime() - dTime);
+		if (meleeWeapon->GetCurrentSwingTime() <= 0.0f)
 		{
-			m_isSwingingMelee = false;
+			meleeWeapon->SetIsSwinging(false);
 			m_pweapon->GetShape()->SetIsTrigger(false);
 		}
 	}

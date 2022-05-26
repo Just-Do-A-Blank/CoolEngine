@@ -46,11 +46,11 @@ void CharacterGameObject::Start()
 
 	if (m_isWeaponRanged)
 	{
-		m_pweapon = GameManager::GetInstance()->CreateGameObject<RangedWeaponGameObject>("TestWeapon");
+		m_pweapon = GameManager::GetInstance()->CreateGameObject<RangedWeaponGameObject>(m_identifier + "_TestWeapon");
 	}
 	else
 	{
-		m_pweapon = GameManager::GetInstance()->CreateGameObject<MeleeWeaponGameObject>("TestWeapon");
+		m_pweapon = GameManager::GetInstance()->CreateGameObject<MeleeWeaponGameObject>(m_identifier + "_TestWeapon");
 	}
 	m_pweapon->SetAlbedo(TEST2);
 	m_pweapon->GetTransform()->SetLocalScale(XMFLOAT3(20, 20, 20));
@@ -59,6 +59,8 @@ void CharacterGameObject::Start()
 	m_pweapon->GetShape()->SetIsCollidable(false);
 	bool rendered = true;
 	m_pweapon->SetIsRenderable(rendered);
+	m_pweapon->RegisterForEvents();
+	m_pweapon->SetDistanceTravelled(500);
 
 	// Sets true if player, false if enemy
 	m_pweapon->SetIsPlayerWeapon(ContainsType(GameObjectType::PLAYER));
