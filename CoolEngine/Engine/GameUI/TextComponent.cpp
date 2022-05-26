@@ -10,7 +10,8 @@ TextComponent::TextComponent(string identifier, CoolUUID uuid) : GameUIComponent
 {	
 	m_uiComponentType |= UIComponentType::TEXT;
 
-	m_resourceAttachement = new TextUIResourceDisplay(this);
+	m_textUIResourceDisplay = new TextUIResourceDisplay(this);
+	m_resourceAttachement = m_textUIResourceDisplay;
 }
 
 TextComponent::TextComponent(nlohmann::json& data, CoolUUID uuid, ID3D11Device* pdevice) : GameUIComponent(data, uuid)
@@ -22,12 +23,14 @@ TextComponent::TextComponent(nlohmann::json& data, CoolUUID uuid, ID3D11Device* 
 	if (GameUIComponent::IsPrefab())
 	{
 		LoadLocalData(GameUIComponent::GetPrefabDataLoadedAtCreation());
-		m_resourceAttachement = new TextUIResourceDisplay(GameUIComponent::GetPrefabDataLoadedAtCreation(), this);
+		m_textUIResourceDisplay = new TextUIResourceDisplay(GameUIComponent::GetPrefabDataLoadedAtCreation(), this);
+		m_resourceAttachement = m_textUIResourceDisplay;
 	}
 	else
 	{
 		LoadLocalData(data);
-		m_resourceAttachement = new TextUIResourceDisplay(data, this);
+		m_textUIResourceDisplay = new TextUIResourceDisplay(data, this);
+		m_resourceAttachement = m_textUIResourceDisplay;
 	}
 }
 
@@ -50,20 +53,15 @@ TextComponent::TextComponent(TextComponent const& other) : GameUIComponent(other
 	m_colour = other.m_colour;
 	m_fontAtlas = other.m_fontAtlas;
 
-	TextUIResourceDisplay* textUI = dynamic_cast<TextUIResourceDisplay*>(other.m_resourceAttachement);
-	if (textUI != nullptr)
-	{
-		m_resourceAttachement = new TextUIResourceDisplay(*textUI, this);
-	}
+	m_textUIResourceDisplay = new TextUIResourceDisplay(*other.m_textUIResourceDisplay, this);
+	m_resourceAttachement = m_textUIResourceDisplay;
 }
 
 TextComponent::~TextComponent()
 {
-	if (m_resourceAttachement != nullptr)
-	{
-		delete m_resourceAttachement;
-	}
-	
+	delete m_textUIResourceDisplay;
+	m_textUIResourceDisplay = nullptr;
+	m_resourceAttachement = nullptr;
 }
 
 void TextComponent::UpdateFont(string fontName, int fontSize)

@@ -63,4 +63,20 @@ protected:
     bool m_isRendered = false;
 
     XMFLOAT2 m_scale = XMFLOAT2(1, 1);
+
+private:
+    
+#if EDITOR
+    list<pair<int, string>> m_collideTypeList;
+
+    pair<int, string> m_collideTypeSelectedItem;
+
+    list<pair<int, string>> GetCollideTypeAsList();
+
+    pair<int, string> GetCollideTypeFromIndex(int index);
+
+    int CollideBoolsToListIndex(bool isCollidable, bool isTriggerable);
+
+    void SetTriggerableCollidableFromIndex(int index);
+#endif
 };
