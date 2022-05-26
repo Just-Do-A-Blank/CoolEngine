@@ -24,6 +24,8 @@ public:
 
 	void SaveAllPrefabData(nlohmann::json& jsonData) override;
 
+	void Start() override;
+
 #if EDITOR
 	/// <summary>
 	/// Shows engine UI

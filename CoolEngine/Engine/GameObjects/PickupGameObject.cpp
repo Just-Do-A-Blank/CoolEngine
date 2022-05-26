@@ -10,7 +10,6 @@
 PickupGameObject::PickupGameObject(string identifier, CoolUUID uuid) : InteractableGameObject(identifier, uuid)
 {
     m_gameObjectType |= GameObjectType::PICKUP;
-    m_pPlayer = GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject>(string("Player"));
     m_isConsumedOnPickup = false;
     m_pPickupResourceInterface = new PickupResourceInterface(&m_pResouces);
 
@@ -19,6 +18,9 @@ PickupGameObject::PickupGameObject(string identifier, CoolUUID uuid) : Interacta
 PickupGameObject::PickupGameObject(const nlohmann::json& data, CoolUUID index) : InteractableGameObject(data, index)
 {
     m_gameObjectType |= GameObjectType::PICKUP;
+
+    m_isConsumedOnPickup = false;
+    m_pPickupResourceInterface = new PickupResourceInterface(&m_pResouces);
 
     if (PrefabGameObject::IsPrefab())
     {
@@ -33,7 +35,6 @@ PickupGameObject::PickupGameObject(const nlohmann::json& data, CoolUUID index) :
 PickupGameObject::PickupGameObject(PickupGameObject const& other) : InteractableGameObject(other)
 {
     m_pPickupResourceInterface = new PickupResourceInterface(*other.m_pPickupResourceInterface);
-    m_pPlayer = GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject>(string("Player"));
     m_isConsumedOnPickup = other.m_isConsumedOnPickup;
 }
 
@@ -42,6 +43,13 @@ PickupGameObject::~PickupGameObject()
     delete m_pPickupResourceInterface;
     m_pPickupResourceInterface = nullptr;
 }
+
+void PickupGameObject::Start()
+{
+    m_pPlayer = GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject>(string("Player"));
+}
+
+
 
 void PickupGameObject::Serialize(nlohmann::json& data)
 {
@@ -166,3 +174,5 @@ void PickupGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
     SaveLocalData(jsonData);
     InteractableGameObject::SaveAllPrefabData(jsonData);
 }
+
+

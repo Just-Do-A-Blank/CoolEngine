@@ -72,8 +72,9 @@ PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : Character
     m_playerController = new PlayerController(buttons, this);
 
 	m_resourceManager = new PlayerResourceManager();
-
 	m_pInventory = new Inventory();
+
+
 
     EventManager::Instance()->AddClient(EventType::KeyPressed, this);
     EventManager::Instance()->AddClient(EventType::KeyReleased, this);
@@ -146,7 +147,7 @@ PlayerGameObject::PlayerGameObject(const nlohmann::json& data, CoolUUID uuid) : 
 	m_playerController = new PlayerController(buttons, this);
 
 
-	m_pInventory = new Inventory();
+
 
 	EventManager::Instance()->AddClient(EventType::KeyPressed, this);
 	EventManager::Instance()->AddClient(EventType::KeyReleased, this);
@@ -161,6 +162,7 @@ PlayerGameObject::PlayerGameObject(const nlohmann::json& data, CoolUUID uuid) : 
 	//pgameManager->CreateGameObject<CameraGameObject>("Camera"); //  use - GameManager::GetInstance()->GetCamera(); - to set camera to editor camera
 	//GameManager::GetInstance()->SetCamera(m_cameraRef);
     m_resourceManager = new PlayerResourceManager();
+	m_pInventory = new Inventory();
     if (PrefabGameObject::IsPrefab())
     {
         LoadLocalData(PrefabGameObject::GetPrefabDataLoadedAtCreation());
@@ -182,8 +184,8 @@ PlayerGameObject::PlayerGameObject(PlayerGameObject const& other) : CharacterGam
 	EventManager::Instance()->AddClient(EventType::MouseMoved, this);
 	EventManager::Instance()->AddClient(EventType::Pickup, this);
 
-	m_pInventory = new Inventory(*other.m_pInventory);
     m_resourceManager = new PlayerResourceManager(*other.m_resourceManager);
+	m_pInventory = new Inventory(*other.m_pInventory);
 }
 
 PlayerGameObject::~PlayerGameObject()
@@ -215,6 +217,10 @@ void PlayerGameObject::Start()
 	CharacterGameObject::Start();
 
 	m_resourceManager->Start();
+
+	//Need to init the inventory after all other objects have been inited. This loads all the objects into the inventory
+	m_pInventory->Start();
+	
 }
 
 
@@ -241,6 +247,7 @@ void PlayerGameObject::LoadLocalData(const nlohmann::json& jsonData)
     m_playerController->LoadAllPrefabData(jsonData);
 	m_resourceManager->LoadData(jsonData);
 	m_pInventory->LoadData(jsonData);
+
 }
 
 void PlayerGameObject::SaveLocalData(nlohmann::json& jsonData)

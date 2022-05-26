@@ -20,7 +20,11 @@ public:
 
     void SaveData(nlohmann::json& jsonData);
     void LoadData(const nlohmann::json& jsonData);
+    void Start();
+    
 private:
+
+    nlohmann::json m_json;
     vector<GameObject*> m_pInventory;
 };
 

@@ -4,7 +4,6 @@
 
 Inventory::Inventory()
 {
-	
 }
 
 Inventory::Inventory(string identifier, CoolUUID uuid)
@@ -19,6 +18,8 @@ Inventory::Inventory(const nlohmann::json& data, CoolUUID uuid)
 
 Inventory::Inventory(Inventory const& other)
 {
+	m_json = other.m_json;
+	m_pInventory = other.m_pInventory;
 
 }
 
@@ -89,7 +90,8 @@ void Inventory::SaveData(nlohmann::json& jsonData)
 	for (int i = 0; i < m_pInventory.size(); i++)
 	{
 		string s = "PickupInventory_" + to_string(i);
-		jsonData[s + "_key"] = m_pInventory[i]->GetIdentifier();
+
+		jsonData[s + "_key"] = to_string(*(m_pInventory[i]->GetUUID()));
 	}
 
 }
@@ -97,14 +99,40 @@ void Inventory::SaveData(nlohmann::json& jsonData)
 
 void Inventory::LoadData(const nlohmann::json& jsonData)
 {
-	m_pInventory.clear();
+	m_json.clear();
+	m_json = jsonData;
 
+
+
+}
+
+void Inventory::Start()
+{
+
+
+	//m_pInventory.clear();
+	bool exists = false;
 	int i = 0;
-	string s = "PickupInventory_" + to_string(i);
-	while (jsonData.contains(s + "_key"))
+	string name;
+
+	do
 	{
-		s = "PickupInventory_" + to_string(++i);
-		m_pInventory.push_back(GameManager::GetInstance()->GetGameObjectUsingIdentifier<GameObject>(s));
-	}
+		name = "PickupInventory_";
+		name.append(to_string(i));
+		name = name + "_key";
+		if (m_json.contains(name))
+		{
+			exists = true;
+			string id = m_json[name];
+			CoolUUID CoolID = stoull(id);
+			AddItemToInventory(GameManager::GetInstance()->GetGameObjectUsingUUID<GameObject>(CoolID));
+			i++;
+		}
+		else
+		{
+			exists = false;
+		}
+
+	} while (exists);
 
 }
