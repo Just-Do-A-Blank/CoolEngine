@@ -359,7 +359,7 @@ void PlayerGameObject::Handle(Event* e)
 		break;
 	case EventType::Pickup:	
 		PickupEvent* pickupEvent = (PickupEvent*)e;
-		m_pInventory->AddPickup((pickupEvent->GetConsumableData()));
+		m_pInventory->AddItemToInventory((pickupEvent->GetConsumableData()));
 		break;
 	}
 }

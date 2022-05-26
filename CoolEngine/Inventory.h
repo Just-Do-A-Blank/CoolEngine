@@ -13,9 +13,10 @@ public:
 
     vector<GameObject*>* GetInventory() { return &m_pInventory; }
    
-    void AddPickup(GameObject* pickedUpObject);
+    void AddItemToInventory(GameObject* pickedUpObject);
     int RemoveQuantityInSlot(int pos, int quantityToRemove);
     GameObject* GetItemInSlot(int pos);
+
 
     void SaveData(nlohmann::json& jsonData);
     void LoadData(const nlohmann::json& jsonData);

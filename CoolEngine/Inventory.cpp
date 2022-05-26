@@ -23,7 +23,7 @@ Inventory::Inventory(Inventory const& other)
 }
 
 
-void Inventory::AddPickup(GameObject* pickedUpObject)
+void Inventory::AddItemToInventory(GameObject* pickedUpObject)
 {
 	m_pInventory.push_back(pickedUpObject);
 }
