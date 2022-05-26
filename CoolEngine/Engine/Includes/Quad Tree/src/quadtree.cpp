@@ -124,11 +124,6 @@ void Quadtree::QtreeFreeMemory() {
     delete this;
 }
 
-void Quadtree::UpdateScene(XMFLOAT2 updatePoint)
-{
-    QtreeCheckCollisions(updatePoint);
-}
-
 bool Quadtree::RemoveObject(GameObject* pgameObjectAddress)
 {
     return LoacteObjectAndOverwrite(pgameObjectAddress, nullptr);

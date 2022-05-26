@@ -46,8 +46,6 @@ public:
 
     void QtreeFreeMemory();
 
-    void UpdateScene(XMFLOAT2 updatePoint);
-
     bool RemoveObject(GameObject* pgameObjectAddress);
 
     void UpdateQuadTreeStucture();
