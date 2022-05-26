@@ -42,6 +42,8 @@ public:
 
 	virtual void Serialize(nlohmann::json& data) override;
 
+	void CreateEngineUI();
+
 	void Attack() override;
 
 	void Update() override;
@@ -53,7 +55,7 @@ protected:
 private:
 	float m_angleInterval = 0.0f;
 	float m_shotSpeed = 50.0f;
-	float m_timeBetweenShots = 1;
+	float m_timeBetweenShots = 0.5f;
 	float m_lastShotTimestamp = -1.0f;
 
 	bool m_isShot = false;

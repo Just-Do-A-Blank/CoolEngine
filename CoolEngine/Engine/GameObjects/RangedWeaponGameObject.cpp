@@ -2,6 +2,7 @@
 #include "Engine/Managers/Events/AttackEvents.h"
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/Managers/GameManager.h"
+#include "Engine/EditorUI/EditorUI.h"
 
 RangedWeaponGameObject::RangedWeaponGameObject(string identifier, CoolUUID uuid) : WeaponGameObject(identifier, uuid)
 {
@@ -83,6 +84,34 @@ void RangedWeaponGameObject::Serialize(nlohmann::json& data)
 
     SaveLocalData(data);
 }
+
+#if EDITOR
+void RangedWeaponGameObject::CreateEngineUI()
+{
+    WeaponGameObject::CreateEngineUI();
+
+    if (EditorUI::CollapsingSection("Ranged Weapon", true))
+    {
+        EditorUIFloatParameters floatParam = EditorUIFloatParameters();
+        EditorUIIntParameters numberParam = EditorUIIntParameters();
+        EditorUINonSpecificParameters nonParam = EditorUINonSpecificParameters();
+
+        numberParam.m_minValue = 0;
+        numberParam.m_maxValue = 1000.0f;
+        EditorUI::DragFloat("Shot Speed", m_shotSpeed, floatParam);
+
+        floatParam.m_minValue = 0;
+        floatParam.m_maxValue = 100.0f;
+        EditorUI::DragFloat("Angle Interval", m_angleInterval, floatParam);
+
+        floatParam.m_minValue = 0;
+        floatParam.m_maxValue = 5.0f;
+        EditorUI::DragFloat("Time Between Shots", m_timeBetweenShots, floatParam);
+
+        EditorUI::Checkbox("Is Bullet", m_isShot, nonParam);
+    }
+}
+#endif
 
 void RangedWeaponGameObject::LoadLocalData(const nlohmann::json& jsonData)
 {

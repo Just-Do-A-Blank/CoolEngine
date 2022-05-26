@@ -1,7 +1,7 @@
 #include "WeaponGameObject.h"
 #include "Engine/Managers/Events/MouseEvents.h"
 #include "Engine/Managers/Events/EventManager.h"
-#include "Engine\EditorUI\EditorUI.h"
+#include "Engine/EditorUI/EditorUI.h"
 #include "Engine/Managers/GraphicsManager.h"
 
 WeaponGameObject::WeaponGameObject() : TriggerableGameObject()
@@ -99,23 +99,26 @@ void WeaponGameObject::Serialize(nlohmann::json& data)
     void WeaponGameObject::CreateEngineUI()
     {
         TriggerableGameObject::CreateEngineUI();
+
         if (EditorUI::CollapsingSection("Weapon", true))
         {
             EditorUI::InputText("Unique Key", m_key);
 
             EditorUIIntParameters numberParam = EditorUIIntParameters();
             numberParam.m_minValue = 0;
-            numberParam.m_maxValue = 99999;
+            numberParam.m_maxValue = 1000;
             EditorUI::DragInt("Level", m_level, numberParam);
 
             EditorUIFloatParameters floatParam = EditorUIFloatParameters();
             floatParam.m_minValue = 0;
-            floatParam.m_maxValue = 99999;
+            floatParam.m_maxValue = 1000;
             EditorUI::DragFloat("Damage", m_damage, floatParam);
+
+            EditorUI::DragFloat("Radius", m_radius, floatParam);
 
             EditorUI::DragInt("Shots", m_shotCount, numberParam);
 
-            EditorUI::DragFloat("Leathal Time", m_timeLethal, floatParam);
+            EditorUI::DragFloat("Lethal Time", m_timeLethal, floatParam);
             EditorUI::DragFloat("Travel Distance", m_distanceTravelled, floatParam);
 
             if (EditorUI::ComboBox("Element", m_elementsList, m_elementSelectedItem))
