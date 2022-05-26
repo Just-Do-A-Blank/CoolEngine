@@ -1,5 +1,8 @@
 #include "CharacterGameObject.h"
 #include "Engine/Managers/GameManager.h"
+#include "Engine/GameObjects/MeleeWeaponGameObject.h"
+#include "Engine/GameObjects/RangedWeaponGameObject.h"
+#include "Engine/Physics/Shape.h"
 
 CharacterGameObject::CharacterGameObject() : TriggerableGameObject()
 {
@@ -35,6 +38,30 @@ CharacterGameObject::CharacterGameObject(CharacterGameObject const& other) : Tri
 CharacterGameObject::~CharacterGameObject()
 {
 
+}
+
+void CharacterGameObject::Start()
+{
+    PrefabGameObject::Start();
+
+	if (m_isWeaponRanged)
+	{
+		m_pweapon = GameManager::GetInstance()->CreateGameObject<RangedWeaponGameObject>("TestWeapon");
+	}
+	else
+	{
+		m_pweapon = GameManager::GetInstance()->CreateGameObject<MeleeWeaponGameObject>("TestWeapon");
+	}
+	m_pweapon->SetAlbedo(TEST2);
+	m_pweapon->GetTransform()->SetLocalScale(XMFLOAT3(20, 20, 20));
+	m_pweapon->SetLayer(3);
+	m_pweapon->GetShape()->SetIsTrigger(false);
+	m_pweapon->GetShape()->SetIsCollidable(false);
+	bool rendered = true;
+	m_pweapon->SetIsRenderable(rendered);
+
+	// Sets true if player, false if enemy
+	m_pweapon->SetIsPlayerWeapon(ContainsType(GameObjectType::PLAYER));
 }
 
 void CharacterGameObject::Update()

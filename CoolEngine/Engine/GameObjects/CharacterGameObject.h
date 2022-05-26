@@ -36,6 +36,8 @@ public:
 	CharacterGameObject(CharacterGameObject const& other);
 	virtual ~CharacterGameObject()override;
 
+	void Start() override;
+
 	virtual void Update();
 	virtual void EditorUpdate();
 

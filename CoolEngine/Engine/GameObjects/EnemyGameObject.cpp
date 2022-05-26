@@ -71,7 +71,7 @@ void EnemyGameObject::CalculateMovement(node* pnode)
 
 void EnemyGameObject::Start()
 {
-	PrefabGameObject::Start();
+	CharacterGameObject::Start();
 
 	MeleeMovementState* pstate = new MeleeMovementState(this);
 
@@ -84,25 +84,6 @@ void EnemyGameObject::Start()
 	WanderState* pwanderState = new WanderState(this);
 
 	m_stateMachine.AddState(pwanderState);
-
-	bool rendered;
-	if (m_isWeaponRanged)
-	{
-		m_pweapon = GameManager::GetInstance()->CreateGameObject<RangedWeaponGameObject>("TestWeapon");
-		rendered = true;
-	}
-	else
-	{
-		m_pweapon = GameManager::GetInstance()->CreateGameObject<MeleeWeaponGameObject>("TestWeapon");
-		rendered = false;
-	}
-	m_pweapon->SetAlbedo(TEST2);
-	m_pweapon->GetTransform()->SetLocalScale(XMFLOAT3(20, 20, 20));
-	m_pweapon->SetLayer(3);
-	m_pweapon->GetShape()->SetIsTrigger(false);
-	m_pweapon->GetShape()->SetIsCollidable(false);
-	m_pweapon->SetIsRenderable(rendered);
-	m_pweapon->SetIsPlayerWeapon(ContainsType(GameObjectType::PLAYER));
 
 	m_pplayer = GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject>(std::string("Player"));
 }

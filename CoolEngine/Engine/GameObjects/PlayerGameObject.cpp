@@ -198,28 +198,9 @@ PlayerGameObject::~PlayerGameObject()
 
 void PlayerGameObject::Start()
 {
-	PrefabGameObject::Start();
+	CharacterGameObject::Start();
 
 	m_resourceManager->Start();
-
-	bool rendered;
-	if (m_isWeaponRanged)
-	{
-		m_pweapon = GameManager::GetInstance()->CreateGameObject<RangedWeaponGameObject>("TestWeapon");
-		rendered = true;
-	}
-	else
-	{
-		m_pweapon = GameManager::GetInstance()->CreateGameObject<MeleeWeaponGameObject>("TestWeapon");
-		rendered = false;
-	}
-	m_pweapon->SetAlbedo(TEST2);
-	m_pweapon->GetTransform()->SetLocalScale(XMFLOAT3(20, 20, 20));
-	m_pweapon->SetLayer(3);
-	m_pweapon->GetShape()->SetIsTrigger(false);
-	m_pweapon->GetShape()->SetIsCollidable(false);
-	m_pweapon->SetIsRenderable(rendered);
-	m_pweapon->SetIsPlayerWeapon(ContainsType(GameObjectType::PLAYER));
 }
 
 
@@ -393,7 +374,8 @@ void PlayerGameObject::Update()
 		m_invincibilityTime = 0;
 	}
 
-	if (m_isWeaponRanged)
+	// Update weapon position/angle
+	if (m_isWeaponRanged || (!m_isSwingingMelee))
 	{
 		XMFLOAT2 playerPosWorld = XMFLOAT2(GetTransform()->GetWorldPosition().x, GetTransform()->GetWorldPosition().y);
 		XMFLOAT2 toWeapon = MathHelper::Minus(GameManager::GetInstance()->GetCamera()->GetMousePositionInWorldSpace(), playerPosWorld);
@@ -413,8 +395,6 @@ void PlayerGameObject::Update()
 		if (m_swingTime <= 0.0f)
 		{
 			m_isSwingingMelee = false;
-			bool rendered = false;
-			m_pweapon->SetIsRenderable(rendered);
 			m_pweapon->GetShape()->SetIsTrigger(false);
 		}
 	}
