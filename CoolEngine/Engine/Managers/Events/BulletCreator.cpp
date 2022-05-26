@@ -5,8 +5,6 @@
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/Physics/Collision.h"
 
-
-
 BulletCreator::BulletCreator()
 {
 	EventManager::Instance()->AddClient(EventType::CreateBullet, this);
@@ -90,31 +88,12 @@ void BulletCreator::CreateBullet(CreateBulletEvent* e)
 	p_bullet->SetAlbedo(e->GetObj()->GetBulletTexturePath());
 }
 
-void BulletCreator::TestFire(MouseButtonPressedEvent* e)
-{
-	// Temporary, uses a weapon object in the scene as a reference. In the final, will probably store weapon data some other way.
-	string name = "Weapon";
-	RangedWeaponGameObject* p_weapon = GameManager::GetInstance()->GetGameObjectUsingIdentifier<RangedWeaponGameObject>(name);
-
-	// Get player location
-	name = "Player";
-	RenderableCollidableGameObject* p_player = GameManager::GetInstance()->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(name);
-
-	if (p_player != nullptr)
-	{
-		EventManager::Instance()->AddEvent(new CreateBulletEvent(p_weapon, XMFLOAT3(1, 0, 0), p_player->GetTransform()->GetWorldPosition()));
-	}
-}
-
 void BulletCreator::Handle(Event* e)
 {
 	switch (e->GetEventID())
 	{
 	case EventType::CreateBullet:
 		CreateBullet((CreateBulletEvent*)e);
-		break;
-	case EventType::MouseButtonPressed:
-		TestFire((MouseButtonPressedEvent*)e);
 		break;
 	}
 }

@@ -27,6 +27,6 @@ private:
 	PlayerGameObject* m_pplayer = nullptr;
 	EnemyGameObject* m_penemy = nullptr;
 
-	float m_attackRangeVariance = 900.0f;
+	float m_attackRangeVariance = 100.0f;
 };
 

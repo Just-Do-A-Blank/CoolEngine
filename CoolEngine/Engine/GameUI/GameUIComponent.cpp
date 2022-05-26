@@ -38,6 +38,11 @@ GameUIComponent::GameUIComponent(GameUIComponent const& other) : GameUIPrefab(ot
 	m_layer = other.m_layer;
 }
 
+GameUIComponent::~GameUIComponent()
+{
+
+}
+
 void GameUIComponent::Render(RenderStruct& renderStruct)
 {
 	if (m_ptexture == nullptr)
@@ -121,6 +126,11 @@ void GameUIComponent::SetTexture(std::wstring wsfilepath)
 	{
 		m_texFilepath = wsfilepath;
 	}
+}
+
+std::wstring GameUIComponent::GetTextureFilePath()
+{
+    return m_texFilepath;
 }
 
 #if EDITOR

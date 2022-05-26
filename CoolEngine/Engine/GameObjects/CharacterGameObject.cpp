@@ -1,5 +1,8 @@
 #include "CharacterGameObject.h"
 #include "Engine/Managers/GameManager.h"
+#include "Engine/GameObjects/MeleeWeaponGameObject.h"
+#include "Engine/GameObjects/RangedWeaponGameObject.h"
+#include "Engine/Physics/Shape.h"
 
 CharacterGameObject::CharacterGameObject() : TriggerableGameObject()
 {
@@ -37,9 +40,45 @@ CharacterGameObject::~CharacterGameObject()
 
 }
 
+void CharacterGameObject::Start()
+{
+    PrefabGameObject::Start();
+
+	if (m_isWeaponRanged)
+	{
+		m_pweapon = GameManager::GetInstance()->CreateGameObject<RangedWeaponGameObject>(m_identifier + "_TestWeapon");
+	}
+	else
+	{
+		m_pweapon = GameManager::GetInstance()->CreateGameObject<MeleeWeaponGameObject>(m_identifier + "_TestWeapon");
+	}
+	m_pweapon->SetAlbedo(TEST2);
+	m_pweapon->GetTransform()->SetLocalScale(XMFLOAT3(20, 20, 20));
+	m_pweapon->SetLayer(3);
+	m_pweapon->GetShape()->SetIsTrigger(false);
+	m_pweapon->GetShape()->SetIsCollidable(false);
+	m_pweapon->RegisterForEvents();
+	m_pweapon->SetDistanceTravelled(500);
+
+	// Sets true if player, false if enemy
+	m_pweapon->SetIsPlayerWeapon(ContainsType(GameObjectType::PLAYER));
+}
+
 void CharacterGameObject::Update()
 {
+	TriggerableGameObject::Update();
 
+	if (m_invincibilityTime > 0.0f)
+	{
+		m_invincibilityTime -= GameManager::GetInstance()->GetTimer()->DeltaTime();
+	}
+	else
+	{
+		m_invincibilityTime = 0;
+	}
+
+	// Update weapon position/angle
+	m_pweapon->SetHolderPosition(XMFLOAT2(GetTransform()->GetWorldPosition().x, GetTransform()->GetWorldPosition().y));
 }
 
 void CharacterGameObject::EditorUpdate()
@@ -89,4 +128,17 @@ void CharacterGameObject::SaveLocalData(nlohmann::json& jsonData)
 {
     jsonData["Health"] = m_health;
     jsonData["Movement Speed"] = m_moveSpeed;
+}
+
+XMFLOAT3 CharacterGameObject::GetWeaponPosition()
+{
+    return m_pweapon->GetTransform()->GetWorldPosition();
+}
+
+XMFLOAT3 CharacterGameObject::GetWeaponDirection()
+{
+    // From character to weapon = weapon pos - character pos
+    XMFLOAT3 weaponPos = m_pweapon->GetTransform()->GetWorldPosition();
+    XMFLOAT3 characterPos = GetTransform()->GetWorldPosition();
+    return XMFLOAT3(weaponPos.x - characterPos.x, weaponPos.y - characterPos.y, 0.0f);
 }

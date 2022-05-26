@@ -149,11 +149,19 @@ XMFLOAT2& CameraGameObject::GetMousePositionInWorldSpace()const
 	GetCursorPos(&point);
 	ScreenToClient(*GraphicsManager::GetInstance()->GetHWND(), &point);
 
+	float x = 0;
+	float y = 0;
+
+#if EDITOR
 	DirectX::XMFLOAT2 relativePos = EditorUI::GetViewportPosition();
 	relativePos = DirectX::XMFLOAT2(point.x - relativePos.x, point.y - relativePos.y);
 
-	float x = ((2.0f * relativePos.x) / EditorUI::GetViewportSize().x) - 1.0f;
-	float y = 1.0f - ((2.0f * relativePos.y) / EditorUI::GetViewportSize().y);
+	x = ((2.0f * relativePos.x) / EditorUI::GetViewportSize().x) - 1.0f;
+	y = 1.0f - ((2.0f * relativePos.y) / EditorUI::GetViewportSize().y);
+#else
+	x = ((2.0f * point.x) / GraphicsManager::GetInstance()->GetWindowDimensions().x) - 1.0f;
+	y = 1.0f - ((2.0f * point.y) / GraphicsManager::GetInstance()->GetWindowDimensions().y);
+#endif
 
 	XMFLOAT2 clickPosWorld;
 

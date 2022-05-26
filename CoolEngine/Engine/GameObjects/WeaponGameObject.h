@@ -3,7 +3,7 @@
 #include "Engine/Managers/Events/DamageCalculation.h"
 #include "Engine/ResourceDefines.h"
 
-class WeaponGameObject : public TriggerableGameObject
+class WeaponGameObject : public TriggerableGameObject, public Observer
 {
 public:
 	WeaponGameObject();
@@ -29,7 +29,11 @@ public:
 	void SetBulletTexturePath(wstring path);
 	void SetBulletScale(XMFLOAT3 scale);
 	void SetCollisionScale(XMFLOAT2 scale);
+	void SetRadius(float rad);
+	void SetHolderPosition(XMFLOAT2 pos);
+	void SetTargetPosition(XMFLOAT2 pos);
 
+	string GetUniqueKey();
 	int GetLevel();
 	int GetStrength();
 	int GetDamage();
@@ -42,15 +46,34 @@ public:
 	wstring GetBulletTexturePath();
 	XMFLOAT3 GetBulletScale();
 	XMFLOAT2 GetCollisionScale();
+	float GetRadius();
+	XMFLOAT2 GetHolderPosition();
+	XMFLOAT2 GetTargetPosition();
+
+    std::wstring GetUITexturePath();
 
 	bool GetIsDualType();
 	int RoundUp(float value);
+
+	void Handle(Event* e) override;
+
+	void RegisterForEvents();
+	void UnregisterForEvents();
+
+	void SetWeaponPosition(XMFLOAT2 toWeapon);
+
+	virtual void Attack();
+
+#if EDITOR
+    virtual void CreateEngineUI() override;
+#endif
 
 protected:
     virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
     virtual void SaveAllPrefabData(nlohmann::json& jsonData) override;
 
 private:
+    string m_key;
 	int m_level = 0;
 	int m_strength = 0;
 	float m_damage = 1;
@@ -58,6 +81,7 @@ private:
 	int m_shotCount = 1;
 	float m_timeLethal = 1;
 	float m_distanceTravelled = 100.0f;
+	float m_radius = 50.0f;
 
 	wstring m_bulletTexturePath = DEFAULT_IMGUI_IMAGE;
 	XMFLOAT3 m_bulletScale = XMFLOAT3(25, 25, 25);
@@ -67,7 +91,36 @@ private:
 	STATUSES m_statusEffect = STATUSES::NONE;
 
 	bool m_isPlayerWeapon = true;
+	XMFLOAT2 m_holderPosition = XMFLOAT2(0.0f, 0.0f);
+	XMFLOAT2 m_targetPosition = XMFLOAT2(1.0f, 1.0f);
 
     void LoadLocalData(const nlohmann::json& jsonData);
     void SaveLocalData(nlohmann::json& jsonData);
+
+    ID3D11ShaderResourceView* m_ptexture = nullptr;
+
+    /// <summary>
+    /// Path of the UI texture
+    /// </summary>
+    std::wstring m_UITexturePath;
+
+    void SetUITexture(std::wstring wsfilepath);
+
+#if EDITOR
+    list<pair<int, string>> m_elementsList;
+
+    pair<int, string> m_elementSelectedItem;
+
+    list<pair<int, string>> GetElementsAsList();
+
+    pair<int, string> GetElementsFromIndex(int index);
+
+    list<pair<int, string>> m_statusList;
+
+    pair<int, string> m_statusSelectedItem;
+
+    list<pair<int, string>> GetStatusesAsList();
+
+    pair<int, string> GetStatusesFromIndex(int index);
+#endif
 };

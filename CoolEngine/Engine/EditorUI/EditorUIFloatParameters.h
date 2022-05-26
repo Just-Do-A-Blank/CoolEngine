@@ -1,5 +1,7 @@
 #pragma once
 
+#if EDITOR
+
 /// <summary>
 /// Parameters optionally required to display a float or set of floats in the editor
 /// </summary>
@@ -29,4 +31,9 @@ struct EditorUIFloatParameters
     /// Adds a tooltip over the input. Blank means nothing is added.
     /// </summary>
     char* m_tooltipText;
+
+	EditorUIFloatParameters();
+
 };
+
+#endif

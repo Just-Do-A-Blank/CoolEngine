@@ -38,11 +38,11 @@ CollidableGameObject::CollidableGameObject(CollidableGameObject const& other) : 
 		switch (other.m_pcollider->GetShapeType())
 		{
 		case ShapeType::BOX:
-			m_pcollider = new Box(this);
+			m_pcollider = new Box((Box const*)other.m_pcollider, this);
 			break;
 
 		case ShapeType::CIRCLE:
-			m_pcollider = new Circle(this);
+			m_pcollider = new Circle((Circle const*)other.m_pcollider, this);
 			break;
 		}
 	}
@@ -109,15 +109,15 @@ void CollidableGameObject::CreateEngineUI()
 		}
 	}
 }
+#endif
 
 //Due to diamond pattern code here needs to be updated in RenderableCollidable as well
 void CollidableGameObject::Serialize(nlohmann::json& jsonData)
 {
-    GameObject::Serialize(jsonData);
+	GameObject::Serialize(jsonData);
 
-    SaveAllPrefabData(jsonData);
+	SaveAllPrefabData(jsonData);
 }
-#endif
 
 void CollidableGameObject::LoadAllPrefabData(const nlohmann::json& jsonData)
 {

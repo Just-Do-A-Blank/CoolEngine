@@ -6,10 +6,10 @@
 
 void SimpleFileIO::LoadScene(std::string location)
 {
-	GameManager::GetInstance()->LoadSceneFromFile(location, true);
+	GameManager::GetInstance()->LoadSceneFromFile(location, false);
 }
 
-void SimpleFileIO::SaveScene(std::string location)
+void SimpleFileIO::SaveScene(std::string location, string sceneName)
 {
 	location.append(".json");
 
@@ -18,6 +18,8 @@ void SimpleFileIO::SaveScene(std::string location)
 	ofstream fileOut(path);
 
 	json outData;
+
+	outData["SceneName"] = sceneName;
 
 
 	AudioManager::GetInstance()->Serialize(outData);

@@ -1,4 +1,7 @@
 #include "RangedWeaponGameObject.h"
+#include "Engine/Managers/Events/AttackEvents.h"
+#include "Engine/Managers/Events/EventManager.h"
+#include "Engine/Managers/GameManager.h"
 
 RangedWeaponGameObject::RangedWeaponGameObject(string identifier, CoolUUID uuid) : WeaponGameObject(identifier, uuid)
 {
@@ -27,6 +30,7 @@ RangedWeaponGameObject::RangedWeaponGameObject(RangedWeaponGameObject const& oth
 	m_shotSpeed = other.m_shotSpeed;
 
 	m_isShot = other.m_isShot;
+	m_timeBetweenShots = other.m_timeBetweenShots;
 }
 
 RangedWeaponGameObject::~RangedWeaponGameObject()
@@ -48,6 +52,11 @@ void RangedWeaponGameObject::SetSpeed(float speed)
 	m_shotSpeed = speed;
 }
 
+void RangedWeaponGameObject::SetTimeBetweenShots(float shotTime)
+{
+	m_timeBetweenShots = shotTime;
+}
+
 float RangedWeaponGameObject::GetAngleInterval()
 {
 	return m_angleInterval;
@@ -61,6 +70,11 @@ bool RangedWeaponGameObject::GetIsShot()
 float RangedWeaponGameObject::GetSpeed()
 {
 	return m_shotSpeed;
+}
+
+float RangedWeaponGameObject::GetTimeBetweenShots()
+{
+	return m_timeBetweenShots;
 }
 
 void RangedWeaponGameObject::Serialize(nlohmann::json& data)
@@ -94,4 +108,30 @@ void RangedWeaponGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
 {
     SaveLocalData(jsonData);
     WeaponGameObject::SaveAllPrefabData(jsonData);
+}
+
+void RangedWeaponGameObject::Attack()
+{
+	if (GameManager::GetInstance()->GetTimer()->GameTime() - m_lastShotTimestamp >= m_timeBetweenShots)
+	{
+		EventManager::Instance()->AddEvent(new CreateBulletEvent(this, m_transform->GetForwardVector(), m_transform->GetWorldPosition()));
+
+		m_lastShotTimestamp = GameManager::GetInstance()->GetTimer()->GameTime();
+	}
+}
+
+void RangedWeaponGameObject::Update()
+{
+    XMFLOAT2 toWeapon;
+    if (GetIsPlayerWeapon())
+    {
+        toWeapon = MathHelper::Minus(GameManager::GetInstance()->GetCamera()->GetMousePositionInWorldSpace(), GetHolderPosition());
+    }
+    else
+    {
+        toWeapon = MathHelper::Minus(GetTargetPosition(), GetHolderPosition());
+    }
+    toWeapon = MathHelper::Normalize(toWeapon);
+
+    SetWeaponPosition(toWeapon);
 }

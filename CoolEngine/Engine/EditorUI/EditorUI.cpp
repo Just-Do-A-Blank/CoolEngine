@@ -8,6 +8,7 @@
 #include "Engine/GameObjects/WeaponGameObject.h"
 #include "Engine\GameObjects\EnemyGameObject.h"
 #include "Engine/GameObjects/LevelChangeGameObject.h"
+#include "Engine/GameObjects/PickupGameObject.h"
 #include "Engine/Tools/ToolBase.h"
 #include "Engine/Tools/AnimationTool.h"
 #include "Engine//Tools/TileMapTool.h"
@@ -17,6 +18,7 @@
 #include "Engine/GameUI/ImageComponent.h"
 #include "Engine/GameUI/TextComponent.h"
 #include "Engine/GameUI/ButtonComponent.h"
+
 
 #include <ShlObj_core.h>
 
@@ -245,6 +247,12 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 
                     m_createObjectType = GameObjectType::LEVEL_CHANGE;
                 }
+                if (ImGui::MenuItem("Pickup"))
+                {
+                    m_createGameObjectClicked = true;
+
+                    m_createObjectType = GameObjectType::PICKUP;
+                }
 
                 ImGui::EndMenu();
             }
@@ -441,6 +449,9 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
                 case GameObjectType::LEVEL_CHANGE:
                     pgameManager->CreateGameObject<LevelChangeGameObject>(gameObjectName, m_selectedGameObjectNode);
                     break;
+                case GameObjectType::PICKUP:
+                    pgameManager->CreateGameObject<PickupGameObject>(gameObjectName, m_selectedGameObjectNode);
+                    break;
                 }
 
 
@@ -555,17 +566,28 @@ void EditorUI::DrawSceneManagementWindow()
 
             if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
             {
-                OpenFileExplorer(L"Scene files\0*.json\0", m_texNameBuffer, _countof(m_texNameBuffer));
+				OpenFileExplorer(L"Scene files\0*.json\0", m_sceneNameBuffer, _countof(m_sceneNameBuffer));
 
-                std::wstring tempString = std::wstring(m_texNameBuffer);
+				std::wstring tempString = std::wstring(m_sceneNameBuffer);
+				std::string trueString = std::string(tempString.begin(), tempString.end());
+				int indexOfSlash = tempString.find_last_of('\\');
+				std::string sceneName = trueString.substr(indexOfSlash + 1, trueString.length() - indexOfSlash - 6);
+				if (tempString != L"" && !GameManager::GetInstance()->SwitchSceneUsingIdentifier(sceneName))
+				{
+					GameManager::GetInstance()->LoadSceneFromFile(std::string(tempString.begin(), tempString.end()), false);
+					GameManager::GetInstance()->SwitchSceneUsingIdentifier(sceneName, "", true);
 
-                DeselectObjectInScene();
-                SimpleFileIO::LoadScene(std::string(tempString.begin(), tempString.end()));
+					DeselectObjectInScene();
+					if (m_sceneNodeSelected != -1)
+					{
+						m_sceneNodeSelected += 1;
+					}
+				}
             }
 
             if (ImGui::MenuItem("Delete Scene", "Ctrl+D"))
             {
-                pgameManager->DeleteSelectedScene();
+                pgameManager->DeleteCurrentScene();
                 selected = -1;
                 DeselectObjectInScene();
                 pgameManager->SwitchScene(nullptr);
@@ -638,7 +660,7 @@ void EditorUI::DrawSceneManagementWindow()
 
 		if (saveClicked & 1)
 		{
-			SimpleFileIO::SaveScene(std::string("Resources\\Levels\\") + m_saveSceneName);
+			SimpleFileIO::SaveScene(std::string("Resources\\Levels\\") + m_saveSceneName, m_saveSceneName);
 			m_saveSceneClicked = false;
 			m_saveSceneName[0] = {};
 		}
@@ -782,8 +804,6 @@ void EditorUI::OpenFolderExplorer(WCHAR* buffer, int bufferSize)
 
 void EditorUI::DragFloat2(const string& label, XMFLOAT2& values, EditorUIFloatParameters parameters)
 {
-    SetupDefaultsInParameters(parameters);
-
     ImGuiIO& io = ImGui::GetIO();
 
     ImGui::PushID(label.c_str());
@@ -821,8 +841,6 @@ void EditorUI::DragFloat2(const string& label, XMFLOAT2& values, EditorUIFloatPa
 
 void EditorUI::DragFloat3(const string& label, XMFLOAT3& values, EditorUIFloatParameters parameters)
 {
-    SetupDefaultsInParameters(parameters);
-
     ImGuiIO& io = ImGui::GetIO();
 
     ImGui::PushID(label.c_str());
@@ -1326,8 +1344,6 @@ void EditorUI::Animations(const string& label, unordered_map<string, SpriteAnima
 
 bool EditorUI::DragFloat(const string& label, float& value, EditorUIFloatParameters parameters)
 {
-    SetupDefaultsInParameters(parameters);
-
     bool interacted = false;
 
     ImGui::PushID(label.c_str());
@@ -1368,23 +1384,11 @@ void EditorUI::FullTitle(const string& label, EditorUINonSpecificParameters para
     ImGui::Separator();
     ImGui::PushID(label.c_str());
 
-    ImGui::Columns(2);
-    ImGui::SetColumnWidth(0, parameters.m_columnWidth);
-    ImGui::NextColumn();
-
-    ImGui::SetColumnWidth(0, parameters.m_columnWidth);
+    ImGui::Columns(1);
     ImGui::Text(label.c_str());
     SetupTooltip(parameters.m_tooltipText);
 
-    ImGui::NextColumn();
-
-    ImGui::PushItemWidth(ImGui::CalcItemWidth());
-    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
-
-    ImGui::PopItemWidth();
-    ImGui::PopStyleVar();
     ImGui::PopID();
-
     ImGui::Separator();
 }
 

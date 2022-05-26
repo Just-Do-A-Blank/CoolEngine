@@ -2,6 +2,9 @@
 #include "GameUIComponent.h"
 #include "Engine/Includes/DirectXTK/SimpleMath.h"
 
+class GameplayUIResourceAttachment;
+class TextUIResourceDisplay;
+
 struct FontAtlasStruct;
 class TextComponent : public GameUIComponent
 {
@@ -30,13 +33,21 @@ public:
 	TextComponent(string identifier, CoolUUID uuid);
 	TextComponent(nlohmann::json& data, CoolUUID uuid, ID3D11Device* pdevice);
 	TextComponent(TextComponent const& other);
+	virtual ~TextComponent() override;
 
 	void CreateTextQuads();
 	void UpdateFont(string fontName, int fontSize);
 
-	virtual void Update()override;
+	virtual void Start() override;
+	virtual void Update() override;
 	virtual void EditorUpdate()override;
 	void Serialize(nlohmann::json& data) override;
+
+	/// <summary>
+	/// Updates the text
+	/// </summary>
+	/// <param name="text">New text</param>
+	void SetText(string text);
 
 #if EDITOR
 	void CreateEngineUI() override;
@@ -49,5 +60,17 @@ protected:
 private:
 	void LoadLocalData(const nlohmann::json& jsonData);
 	void SaveLocalData(nlohmann::json& jsonData);
+
+	void AdjustRotationsDuringUpdate();
+
+	/// <summary>
+	/// Handles how to show the resource on the UI
+	/// </summary>
+	GameplayUIResourceAttachment* m_resourceAttachement;
+
+	/// <summary>
+	/// Handles how the text handles the resource on the text component. ONLY USED FOR STORAGE, USE m_resourceAttachement.
+	/// </summary>
+	TextUIResourceDisplay* m_textUIResourceDisplay;
 };
 

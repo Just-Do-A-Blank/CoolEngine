@@ -300,8 +300,9 @@ void ParticleSystem::CreateEngineUI()
 
 	ImGui::Spacing();
 }
+#endif
+
 const std::wstring& ParticleSystem::GetTexturePath() const
 {
 	return m_texFilepath;
 }
-#endif

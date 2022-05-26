@@ -27,6 +27,7 @@ RenderableGameObject::RenderableGameObject(RenderableGameObject const& other) : 
 	}
 	m_layer = other.m_layer;
 	m_isRenderable = other.m_isRenderable;
+
 	m_texFilepath = other.m_texFilepath;
 
 	m_panimationStateMachine = new AnimationStateMachine(other.m_panimationStateMachine);
@@ -84,7 +85,7 @@ const bool& RenderableGameObject::IsRenderable()
 
 void RenderableGameObject::Render(RenderStruct& renderStruct)
 {
-	if (m_isRenderable == false)
+	if (!m_isRenderable)
 	{
 		return;
 	}

@@ -1,18 +1,45 @@
 #include "WeaponGameObject.h"
+#include "Engine/Managers/Events/MouseEvents.h"
+#include "Engine/Managers/Events/EventManager.h"
+#include "Engine\EditorUI\EditorUI.h"
+#include "Engine/Managers/GraphicsManager.h"
 
 WeaponGameObject::WeaponGameObject() : TriggerableGameObject()
 {
     m_gameObjectType |= GameObjectType::WEAPON;
+    m_key = "";
+
+#if EDITOR
+    m_elementsList = GetElementsAsList();
+    m_elementSelectedItem = GetElementsFromIndex((int)m_element);
+
+    m_statusList = GetStatusesAsList();
+    m_statusSelectedItem = GetStatusesFromIndex((int)m_statusEffect);
+#endif
 }
 
 WeaponGameObject::WeaponGameObject(string identifier, CoolUUID uuid) : TriggerableGameObject(identifier, uuid)
 {
     m_gameObjectType |= GameObjectType::WEAPON;
+    m_key = "";
+
+#if EDITOR
+    m_elementsList = GetElementsAsList();
+    m_elementSelectedItem = GetElementsFromIndex((int)m_element);
+
+    m_statusList = GetStatusesAsList();
+    m_statusSelectedItem = GetStatusesFromIndex((int)m_statusEffect);
+#endif
 }
 
 WeaponGameObject::WeaponGameObject(const nlohmann::json& data, CoolUUID uuid) : TriggerableGameObject(data, uuid)
 {
     m_gameObjectType |= GameObjectType::WEAPON;
+
+#if EDITOR
+    m_elementsList = GetElementsAsList();
+    m_statusList = GetStatusesAsList();
+#endif
 
     if (PrefabGameObject::IsPrefab())
     {
@@ -33,13 +60,26 @@ WeaponGameObject::WeaponGameObject(WeaponGameObject const& other) : TriggerableG
 	m_shotCount = other.m_shotCount;
 	m_timeLethal = other.m_timeLethal;
 	m_distanceTravelled = other.m_distanceTravelled;
+    m_radius = other.m_radius;
 
 	ELEMENTS m_element = other.m_element;
 	STATUSES m_statusEffect = other.m_statusEffect;
+
+    m_key = other.m_key;
+    m_UITexturePath = other.m_UITexturePath;
+
+#if EDITOR
+    m_elementsList = GetElementsAsList();
+    m_elementSelectedItem = other.m_elementSelectedItem;
+
+    m_statusList = GetStatusesAsList();
+    m_statusSelectedItem = other.m_statusSelectedItem;
+#endif
 }
 
 WeaponGameObject::~WeaponGameObject()
 {
+
 }
 
 void WeaponGameObject::Serialize(nlohmann::json& data)
@@ -49,8 +89,51 @@ void WeaponGameObject::Serialize(nlohmann::json& data)
     SaveLocalData(data);
 }
 
+#if EDITOR
+    void WeaponGameObject::CreateEngineUI()
+    {
+        TriggerableGameObject::CreateEngineUI();
+        if (EditorUI::CollapsingSection("Weapon", true))
+        {
+            EditorUI::InputText("Unique Key", m_key);
+
+            EditorUIIntParameters numberParam = EditorUIIntParameters();
+            numberParam.m_minValue = 0;
+            numberParam.m_maxValue = 99999;
+            EditorUI::DragInt("Level", m_level, numberParam);
+
+            EditorUIFloatParameters floatParam = EditorUIFloatParameters();
+            floatParam.m_minValue = 0;
+            floatParam.m_maxValue = 99999;
+            EditorUI::DragFloat("Damage", m_damage, floatParam);
+
+            EditorUI::DragInt("Shots", m_shotCount, numberParam);
+
+            EditorUI::DragFloat("Leathal Time", m_timeLethal, floatParam);
+            EditorUI::DragFloat("Travel Distance", m_distanceTravelled, floatParam);
+
+            if (EditorUI::ComboBox("Element", m_elementsList, m_elementSelectedItem))
+            {
+                m_element = (ELEMENTS)m_elementSelectedItem.first;
+            }
+
+            if (EditorUI::ComboBox("Status", m_statusList, m_statusSelectedItem))
+            {
+                m_statusEffect = (STATUSES)m_statusSelectedItem.first;
+            }
+
+            EditorUI::Texture("UI Image", m_UITexturePath, m_ptexture, 100, ImVec2(75,75));
+        }
+    }
+#endif
+
 void WeaponGameObject::LoadLocalData(const nlohmann::json& jsonData)
 {
+    if (jsonData.contains("WeaponKey"))
+    {
+        m_key = jsonData["WeaponKey"];
+    }
+
     if (jsonData.contains("WeaponLevel"))
     {
         m_level = jsonData["WeaponLevel"];
@@ -61,11 +144,27 @@ void WeaponGameObject::LoadLocalData(const nlohmann::json& jsonData)
         m_distanceTravelled = jsonData["WeaponDistanceTravelled"];
         m_element = (ELEMENTS)jsonData["WeaponElement"];
         m_statusEffect = (STATUSES)jsonData["WeaponStatus"];
+        m_radius = jsonData["Radius"];
+
+#if EDITOR
+        m_elementSelectedItem = GetElementsFromIndex((int)m_element);
+        m_statusSelectedItem = GetStatusesFromIndex((int)m_statusEffect);
+#endif
     }
+
+    if (jsonData.contains("WeaponUITexturePath"))
+    {
+        std::string tempPath = jsonData["WeaponUITexturePath"];
+        m_UITexturePath = std::wstring(tempPath.begin(), tempPath.end());
+
+        SetUITexture(m_UITexturePath);
+    }
+
 }
 
 void WeaponGameObject::SaveLocalData(nlohmann::json& jsonData)
 {
+    jsonData["WeaponKey"] = m_key;
     jsonData["WeaponLevel"] = m_level;
     jsonData["WeaponStrength"] = m_strength;
     jsonData["WeaponDamage"] = m_damage;
@@ -74,6 +173,10 @@ void WeaponGameObject::SaveLocalData(nlohmann::json& jsonData)
     jsonData["WeaponDistanceTravelled"] = m_distanceTravelled;
     jsonData["WeaponElement"] = (int)m_element;
     jsonData["WeaponStatus"] = (int)m_statusEffect;
+    jsonData["Radius"] = m_radius;
+
+    std::string tempPath = std::string(m_UITexturePath.begin(), m_UITexturePath.end());
+    jsonData["WeaponUITexturePath"] = tempPath;
 }
 
 void WeaponGameObject::LoadAllPrefabData(const nlohmann::json& jsonData)
@@ -86,6 +189,11 @@ void WeaponGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
 {
     SaveLocalData(jsonData);
     TriggerableGameObject::SaveAllPrefabData(jsonData);
+}
+
+void WeaponGameObject::Attack()
+{
+
 }
 
 void WeaponGameObject::CalculateWeaponStrength()
@@ -153,6 +261,26 @@ void WeaponGameObject::SetCollisionScale(XMFLOAT2 scale)
     m_collisionScale = scale;
 }
 
+void WeaponGameObject::SetRadius(float rad)
+{
+    m_radius = rad;
+}
+
+void WeaponGameObject::SetHolderPosition(XMFLOAT2 pos)
+{
+    m_holderPosition = pos;
+}
+
+void WeaponGameObject::SetTargetPosition(XMFLOAT2 pos)
+{
+    m_targetPosition = pos;
+}
+
+string WeaponGameObject::GetUniqueKey()
+{
+    return m_key;
+}
+
 int WeaponGameObject::GetLevel()
 {
     return m_level;
@@ -213,9 +341,29 @@ XMFLOAT2 WeaponGameObject::GetCollisionScale()
     return m_collisionScale;
 }
 
+float WeaponGameObject::GetRadius()
+{
+    return m_radius;
+}
+
+XMFLOAT2 WeaponGameObject::GetHolderPosition()
+{
+    return m_holderPosition;
+}
+
+XMFLOAT2 WeaponGameObject::GetTargetPosition()
+{
+    return m_targetPosition;
+}
+
 bool WeaponGameObject::GetIsDualType()
 {
     return ((int)m_element >= (int)ELEMENTS::POISONFIRE);
+}
+
+std::wstring WeaponGameObject::GetUITexturePath()
+{
+    return m_UITexturePath;
 }
 
 int WeaponGameObject::RoundUp(float value)
@@ -228,4 +376,145 @@ int WeaponGameObject::RoundUp(float value)
     }
 
     return temp;
+}
+
+void WeaponGameObject::Handle(Event* e)
+{
+	switch (e->GetEventID())
+	{
+	case EventType::MouseButtonPressed:
+		{
+			MouseButtonPressedEvent* pmouseEvent = (MouseButtonPressedEvent*)e;
+
+			if (pmouseEvent->GetButton() == VK_LBUTTON && m_isPlayerWeapon)
+			{
+				Attack();
+			}
+		}
+		break;
+	}
+}
+
+void WeaponGameObject::RegisterForEvents()
+{
+	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
+}
+
+void WeaponGameObject::UnregisterForEvents()
+{
+	EventManager::Instance()->RemoveClientEvent(EventType::MouseButtonPressed, this);
+}
+
+void WeaponGameObject::SetWeaponPosition(XMFLOAT2 toWeapon)
+{
+    XMFLOAT2 weaponPosition = MathHelper::Multiply(toWeapon, m_radius);
+    weaponPosition = MathHelper::Plus(m_holderPosition, weaponPosition);
+
+    float angle = MathHelper::DotProduct(toWeapon, XMFLOAT2(0, 1));
+    angle = (std::acosf(angle) * 180.0f) / XM_PI;
+
+    if (toWeapon.x > 0.0f)
+    {
+        angle *= -1.0f;
+    }
+
+    GetTransform()->SetWorldPosition(XMFLOAT3(weaponPosition.x, weaponPosition.y, 0.0f));
+    GetTransform()->SetWorldRotation(XMFLOAT3(0, 0, angle));
+}
+
+#if EDITOR
+list<pair<int, string>> WeaponGameObject::GetElementsAsList()
+{
+    m_elementsList = list<pair<int, string>>();
+    for (int i = 0; i < (int)ELEMENTS::COUNT; ++i)
+    {
+        m_elementsList.push_back(GetElementsFromIndex(i));
+    }
+
+    return m_elementsList;
+}
+
+pair<int, string> WeaponGameObject::GetElementsFromIndex(int index)
+{
+    pair<int, string > returnPair = pair<int, string >(0, "None");
+    switch (index)
+    {
+        case 1:
+            returnPair = pair<int, string >(index, "Fire");
+            break;
+        case 2:
+            returnPair = pair<int, string >(index, "Water");
+            break;
+        case 3:
+            returnPair = pair<int, string >(index, "Poison");
+            break;
+        case 4:
+            returnPair = pair<int, string >(index, "Electric");
+            break;
+        case 5:
+            returnPair = pair<int, string >(index, "Poison Fire");
+            break;
+        case 6:
+            returnPair = pair<int, string >(index, "Electric Poison");
+            break;
+        case 7:
+            returnPair = pair<int, string >(index, "Water Electric");
+            break;
+        case 8:
+            returnPair = pair<int, string >(index, "Fire Water");
+            break;
+    }
+
+    return returnPair;
+}
+
+list<pair<int, string>> WeaponGameObject::GetStatusesAsList()
+{
+    m_statusList = list<pair<int, string>>();
+    for (int i = 0; i < (int)STATUSES::COUNT; ++i)
+    {
+        m_statusList.push_back(GetStatusesFromIndex(i));
+    }
+
+    return m_statusList;
+}
+
+pair<int, string> WeaponGameObject::GetStatusesFromIndex(int index)
+{
+    pair<int, string > returnPair = pair<int, string >(0, "None");
+    switch (index)
+    {
+    case 1:
+        returnPair = pair<int, string >(index, "Bleeding");
+        break;
+    case 2:
+        returnPair = pair<int, string >(index, "Weakness");
+        break;
+    case 3:
+        returnPair = pair<int, string >(index, "Confusion");
+        break;
+    case 4:
+        returnPair = pair<int, string >(index, "Adrenaline");
+        break;
+    case 5:
+        returnPair = pair<int, string >(index, "Charm");
+        break;
+    }
+
+    return returnPair;
+}
+#endif
+
+void WeaponGameObject::SetUITexture(std::wstring wsfilepath)
+{
+    m_ptexture = GraphicsManager::GetInstance()->GetShaderResourceView(wsfilepath);
+
+    if (m_ptexture == nullptr)
+    {
+        LOG("Tried to get a texture that doesn't exist!");
+    }
+    else
+    {
+        m_UITexturePath = wsfilepath;
+    }
 }

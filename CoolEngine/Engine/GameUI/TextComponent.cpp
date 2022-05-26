@@ -4,10 +4,14 @@
 #include "Engine/Managers/GraphicsManager.h"
 #include"Engine/ResourceDefines.h"
 #include "Engine/EditorUI/EditorUI.h"
+#include "Engine/GameUI/GameplayIntegration/TextUIResourceDisplay.h"
 
 TextComponent::TextComponent(string identifier, CoolUUID uuid) : GameUIComponent(identifier, uuid)
 {	
 	m_uiComponentType |= UIComponentType::TEXT;
+
+	m_textUIResourceDisplay = new TextUIResourceDisplay(this);
+	m_resourceAttachement = m_textUIResourceDisplay;
 }
 
 TextComponent::TextComponent(nlohmann::json& data, CoolUUID uuid, ID3D11Device* pdevice) : GameUIComponent(data, uuid)
@@ -19,11 +23,45 @@ TextComponent::TextComponent(nlohmann::json& data, CoolUUID uuid, ID3D11Device* 
 	if (GameUIComponent::IsPrefab())
 	{
 		LoadLocalData(GameUIComponent::GetPrefabDataLoadedAtCreation());
+		m_textUIResourceDisplay = new TextUIResourceDisplay(GameUIComponent::GetPrefabDataLoadedAtCreation(), this);
+		m_resourceAttachement = m_textUIResourceDisplay;
 	}
 	else
 	{
 		LoadLocalData(data);
+		m_textUIResourceDisplay = new TextUIResourceDisplay(data, this);
+		m_resourceAttachement = m_textUIResourceDisplay;
 	}
+}
+
+TextComponent::TextComponent(TextComponent const& other) : GameUIComponent(other)
+{
+	m_characterSourceRects = other.m_characterSourceRects;
+	m_characterDestinationRects = other.m_characterDestinationRects;
+
+	m_dimensions = other.m_dimensions;
+	m_fontTextureDimension = other.m_fontTextureDimension;
+
+	m_cachedZRotation = other.m_cachedZRotation;
+	m_cachedPosition = other.m_cachedPosition;
+	m_cachedScale = other.m_cachedScale;
+
+	m_text = other.m_text;
+	m_fontName = other.m_fontName;
+	m_fontSize = other.m_fontSize;
+
+	m_colour = other.m_colour;
+	m_fontAtlas = other.m_fontAtlas;
+
+	m_textUIResourceDisplay = new TextUIResourceDisplay(*other.m_textUIResourceDisplay, this);
+	m_resourceAttachement = m_textUIResourceDisplay;
+}
+
+TextComponent::~TextComponent()
+{
+	delete m_textUIResourceDisplay;
+	m_textUIResourceDisplay = nullptr;
+	m_resourceAttachement = nullptr;
 }
 
 void TextComponent::UpdateFont(string fontName, int fontSize)
@@ -39,6 +77,7 @@ void TextComponent::Serialize(nlohmann::json& data)
 	std::string uuidString = to_string(*m_UUID);
 
 	SaveLocalData(data);
+	m_resourceAttachement->Serialize(data);
 }
 
 void TextComponent::LoadLocalData(const nlohmann::json& jsonData)
@@ -64,68 +103,110 @@ void TextComponent::LoadAllPrefabData(const nlohmann::json& jsonData)
 {
 	GameUIComponent::LoadAllPrefabData(jsonData);
 	LoadLocalData(jsonData);
+	m_resourceAttachement->LoadFromTopLevel(jsonData);
 }
 
 void TextComponent::SaveAllPrefabData(nlohmann::json& jsonData)
 {
 	SaveLocalData(jsonData);
+	m_resourceAttachement->SaveFromTopLevel(jsonData);
 	GameUIComponent::SaveAllPrefabData(jsonData);
 }
 
+void TextComponent::SetText(string text)
+{
+	m_text = text;
+}
+
 #if EDITOR
+
 void TextComponent::CreateEngineUI()
 {
 	GameUIComponent::CreateEngineUI();
 
-	ImGui::Spacing();
-	ImGui::Separator();
-	ImGui::Spacing();
-
-	vector<string> fontList = FontManager::GetInstance()->GetFontNames();
-
-	if (IMGUI_LEFT_LABEL(ImGui::BeginCombo, "Font", m_fontName.c_str()) == true)
+	if (EditorUI::CollapsingSection("Text Options", true))
 	{
-		for (int i = 0; i < fontList.size(); ++i)
+
+		vector<string> fontList = FontManager::GetInstance()->GetFontNames();
+
+		// For an actual example of this see Combo box in EditorUI - Do not copy this.
+		ImGui::PushID("Font");
+		ImGui::Columns(2);
+		ImGui::SetColumnWidth(0, 100);
+		ImGui::Text("Font");
+		ImGui::NextColumn();
+		ImGui::PushItemWidth(ImGui::CalcItemWidth());
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+		if(ImGui::BeginCombo("", m_fontName.c_str()))
 		{
-			if (ImGui::Selectable(fontList[i].c_str(), m_fontName == fontList[i].c_str()))
+			for (int i = 0; i < fontList.size(); ++i)
 			{
-				m_fontName = fontList[i];
-				UpdateFont(fontList[i], m_fontSize);
-				CreateTextQuads();
+				if (ImGui::Selectable(fontList[i].c_str(), m_fontName == fontList[i].c_str()))
+				{
+					m_fontName = fontList[i];
+					UpdateFont(fontList[i], m_fontSize);
+					CreateTextQuads();
+				}
 			}
+
+			ImGui::EndCombo();
 		}
 
-		ImGui::EndCombo();
+		ImGui::PopItemWidth();
+		ImGui::PopStyleVar();
+		ImGui::Columns(1);
+		ImGui::PopID();
+		ImGui::Spacing();
+
+		if (EditorUI::InputText("Text", m_text) == true)
+		{
+			CreateTextQuads();
+		}
+
+		ImGui::Spacing();
+		EditorUIFloatParameters colorParameters = EditorUIFloatParameters();
+		colorParameters.m_columnWidth = 100;
+		colorParameters.m_speed = 0.01f;
+		colorParameters.m_minValue = 0;
+		colorParameters.m_maxValue = 1;
+
+		XMFLOAT3 colour = XMFLOAT3(m_colour.x, m_colour.y, m_colour.z);
+		EditorUI::DragFloat3("Colour", colour, colorParameters);
+
+		m_colour.x = colour.x;
+		m_colour.y = colour.y;
+		m_colour.z = colour.z;
+
+		ImGui::Spacing();
+		ImGui::Separator();
+
 	}
 
-	ImGui::Spacing();
-	
-	if (EditorUI::InputText("Text", m_text) == true)
-	{
-		CreateTextQuads();
-	}
-
-	ImGui::Spacing();
-    EditorUIFloatParameters colorParameters = EditorUIFloatParameters();
-    colorParameters.m_columnWidth = 100;
-    colorParameters.m_speed = 0.01f;
-    colorParameters.m_minValue = 0;
-    colorParameters.m_maxValue = 1;
-
-	XMFLOAT3 colour = XMFLOAT3(m_colour.x, m_colour.y, m_colour.z);
-	EditorUI::DragFloat3("Colour", colour, colorParameters);
-
-	m_colour.x = colour.x;
-	m_colour.y = colour.y;
-	m_colour.z = colour.z;
-
-	ImGui::Spacing();
-	ImGui::Separator();
-
+	m_resourceAttachement->CreateEngineUI();
 }
 #endif
 
+void TextComponent::Start()
+{
+	GameUIComponent::Start();
+
+	m_resourceAttachement->Start();
+}
+
 void TextComponent::Update()
+{
+	AdjustRotationsDuringUpdate();
+
+	m_resourceAttachement->Update();
+}
+
+void TextComponent::EditorUpdate()
+{
+	AdjustRotationsDuringUpdate();
+}
+
+void TextComponent::AdjustRotationsDuringUpdate()
 {
 	XMFLOAT3 position = m_transform->GetWorldPosition();
 	float zRotation = m_transform->GetWorldRotation().z;
@@ -139,31 +220,6 @@ void TextComponent::Update()
 		m_cachedZRotation = m_transform->GetWorldRotation().z;
 		m_cachedScale = m_transform->GetWorldScale();
 	}
-}
-
-void TextComponent::EditorUpdate()
-{
-	Update();
-}
-
-TextComponent::TextComponent(TextComponent const& other) : GameUIComponent(other)
-{
-	m_characterSourceRects = other.m_characterSourceRects;
-	m_characterDestinationRects = other.m_characterDestinationRects;
-
-	m_dimensions = other.m_dimensions;
-	m_fontTextureDimension = other.m_fontTextureDimension;
-
-	m_cachedZRotation = other.m_cachedZRotation;
-	m_cachedPosition = other.m_cachedPosition;
-	m_cachedScale = other.m_cachedScale;
-
-	m_text = other.m_text;
-	m_fontName = other.m_fontName;
-	m_fontSize = other.m_fontSize;
-
-	m_colour = other.m_colour;
-	m_fontAtlas = other.m_fontAtlas;
 }
 
 

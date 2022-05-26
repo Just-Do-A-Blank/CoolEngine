@@ -3,7 +3,11 @@
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/EditorUI/EditorUI.h"
 #include "Engine/GameObjects/MeleeWeaponGameObject.h"
+#include "Engine/GameObjects/RangedWeaponGameObject.h"
 #include "Engine/Physics/Shape.h"
+#include "Engine/GameObjects/PickupGameObject.h"
+#include "Engine/Managers/Events/PickupEvent.h"
+
 
 PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : CharacterGameObject(identifier, uuid)
 {
@@ -74,7 +78,7 @@ PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : Character
     EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
     EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
     EventManager::Instance()->AddClient(EventType::MouseMoved, this);
-
+	EventManager::Instance()->AddClient(EventType::Pickup, this);
 }
 
 PlayerGameObject::PlayerGameObject(const nlohmann::json& data, CoolUUID uuid) : CharacterGameObject(data, uuid)
@@ -170,6 +174,7 @@ PlayerGameObject::PlayerGameObject(PlayerGameObject const& other) : CharacterGam
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
 	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, this);
 	EventManager::Instance()->AddClient(EventType::MouseMoved, this);
+	EventManager::Instance()->AddClient(EventType::Pickup, this);
 
 	m_myInventory = new Inventory(); // creates the inventory object
     m_resourceManager = new PlayerResourceManager(*other.m_resourceManager);
@@ -182,6 +187,12 @@ PlayerGameObject::~PlayerGameObject()
 	EventManager::Instance()->RemoveClientEvent(EventType::MouseButtonPressed, this);
 	EventManager::Instance()->RemoveClientEvent(EventType::MouseButtonReleased, this);
 	EventManager::Instance()->RemoveClientEvent(EventType::MouseMoved, this);
+	EventManager::Instance()->RemoveClientEvent(EventType::Pickup, this);
+
+	if (m_pweapon != nullptr)
+	{
+		m_pweapon->UnregisterForEvents();
+	}
 
     delete m_playerController;
 	m_playerController = nullptr;
@@ -192,16 +203,9 @@ PlayerGameObject::~PlayerGameObject()
 
 void PlayerGameObject::Start()
 {
-	PrefabGameObject::Start();
+	CharacterGameObject::Start();
 
 	m_resourceManager->Start();
-
-	m_pweapon = GameManager::GetInstance()->CreateGameObject<MeleeWeaponGameObject>("TestWeapon");
-	m_pweapon->SetAlbedo(TEST2);
-	m_pweapon->GetTransform()->SetLocalScale(XMFLOAT3(20, 20, 20));
-	m_pweapon->SetLayer(3);
-	m_pweapon->GetShape()->SetIsTrigger(true);
-	m_pweapon->GetShape()->SetIsCollidable(false);
 }
 
 
@@ -235,31 +239,19 @@ void PlayerGameObject::SaveLocalData(nlohmann::json& jsonData)
     m_resourceManager->SaveData(jsonData);
 }
 
-void PlayerGameObject::SetWeaponPosition()
+void PlayerGameObject::OnTriggerHold(GameObject* obj1, GameObject* obj2)
 {
-	if (m_pweapon == nullptr)
+	if ((obj1->ContainsType(GameObjectType::PLAYER)) && (obj2->ContainsType(GameObjectType::PICKUP)))
 	{
-		return;
+		PickupGameObject* pickup = dynamic_cast<PickupGameObject*>(obj2);
+
+
+		//Send event with the data for the player or anyone else that wants to know about to listen to. The pickup data related is also added when cast back to the event
+		EventManager::Instance()->AddEvent(new PickupEvent(pickup->GetConsumableData()));
+		//This object should be removed from the scene after firing this event
+
+		pickup->SetToBeDeleted(true);
 	}
-
-	XMFLOAT2 playerPosWorld = XMFLOAT2(GetTransform()->GetWorldPosition().x, GetTransform()->GetWorldPosition().y);
-	XMFLOAT2 toWeapon = MathHelper::Minus(GameManager::GetInstance()->GetCamera()->GetMousePositionInWorldSpace(), playerPosWorld);
-	toWeapon = MathHelper::Normalize(toWeapon);
-	float weaponOffsetDistance = 50.0f;
-
-	XMFLOAT2 weaponPosition = MathHelper::Multiply(toWeapon, weaponOffsetDistance);
-	weaponPosition = MathHelper::Plus(playerPosWorld, weaponPosition);
-
-	float angle = MathHelper::DotProduct(toWeapon, XMFLOAT2(0, 1));
-	angle = (std::acosf(angle) * 180.0f) / XM_PI;
-
-	if (toWeapon.x > 0.0f)
-	{
-		angle *= -1.0f;
-	}
-
-	m_pweapon->GetTransform()->SetWorldPosition(XMFLOAT3(weaponPosition.x, weaponPosition.y, 0.0f));
-	m_pweapon->GetTransform()->SetWorldRotation(XMFLOAT3(0, 0, angle));
 }
 
 /// <summary>
@@ -305,7 +297,9 @@ void PlayerGameObject::Handle(Event* e)
 	case EventType::MouseMoved:
 		//MouseMoved((MouseMovedEvent*)e);
 		break;
-
+	case EventType::Pickup://///////////////////////////////////////////////////////////////
+		PickupEvent* test = (PickupEvent*)e;
+		break;
 	}
 }
 
@@ -317,17 +311,6 @@ void PlayerGameObject::Update()
 	CharacterGameObject::Update();
 
     m_playerController->Update();
-
-	if (m_invincibilityTime > 0.0f)
-	{
-		m_invincibilityTime -= GameManager::GetInstance()->GetTimer()->DeltaTime();
-	}
-	else
-	{
-		m_invincibilityTime = 0;
-	}
-
-	SetWeaponPosition();
 }
 
 void PlayerGameObject::TakeDamage(float damage)

@@ -17,6 +17,8 @@
 #include "Engine/TileMap/TileMap/TileMap.h"
 #include "Engine/Managers/Events/BulletCreator.h"
 #include "Engine/GameObjects/LevelChangeGameObject.h"
+#include "Engine/GameObjects/PickupGameObject.h"
+#include "Engine/Managers/PickupsManager.h"
 
 #include <fstream>
 
@@ -108,7 +110,7 @@ void GameManager::DeleteSceneUsingIdentifier(string sceneIdentifier)
 	m_editorSceneMap.erase(sceneIdentifier);
 }
 
-void GameManager::DeleteSelectedScene()
+void GameManager::DeleteCurrentScene()
 {
 	Scene*& pcurrentScene = GetCurrentViewStateScene();
 	pcurrentScene->m_psceneGraph->DeleteAllGameObjects();
@@ -166,11 +168,15 @@ bool GameManager::BeginPlay()
 
 	Start();
 
+	PickupsManager::GetInstance()->ResetPlayer();
+
 	return true;
 }
 
 bool GameManager::EndPlay()
 {
+	PickupsManager::GetInstance()->ResetPlayer();
+
 	if (m_pcurrentGameScene)
 	{
 		for (unordered_map<string, Scene*>::iterator it = m_gameSceneMap.begin(); it != m_gameSceneMap.end(); ++it)
@@ -400,6 +406,22 @@ void GameManager::CopyScene()
 				m_pcurrentGameScene->CopyGameObject<RangedWeaponGameObject>(*(dynamic_cast<RangedWeaponGameObject*>(gameObjectNodeList[it]->NodeObject)));
 			}
 			break;
+		case AccumlateType::PICKUP:
+			if (gameObjectNodeList[it]->PreviousParent)
+			{
+				TreeNode<GameObject>* parentNode = m_pcurrentGameScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
+				m_pcurrentGameScene->CopyGameObject<PickupGameObject>(*(dynamic_cast<PickupGameObject*>(gameObjectNodeList[it]->NodeObject)), parentNode);
+			}
+			else if (gameObjectNodeList[it]->PreviousSibling)
+			{
+				TreeNode<GameObject>* previousSiblingNode = m_pcurrentGameScene->GetTreeNode(gameObjectNodeList[it]->PreviousSibling->NodeObject);
+				m_pcurrentGameScene->CopyGameObject<PickupGameObject>(*(dynamic_cast<PickupGameObject*>(gameObjectNodeList[it]->NodeObject)), nullptr, previousSiblingNode);
+			}
+			else
+			{
+				m_pcurrentGameScene->CopyGameObject<PickupGameObject>(*(dynamic_cast<PickupGameObject*>(gameObjectNodeList[it]->NodeObject)));
+			}
+			break;
 
 		case AccumlateType::CAMERA:
 			if (gameObjectNodeList[it]->PreviousParent)
@@ -566,7 +588,7 @@ Scene* GameManager::GetCurrentScene()
 	return GetCurrentViewStateScene();
 }
 
-void GameManager::SwitchScene(Scene* pscene)
+void GameManager::SwitchScene(Scene* pscene, string playerIdentifier, bool unloadCurrentScene)
 {
 	if (!pscene)
 	{
@@ -576,9 +598,10 @@ void GameManager::SwitchScene(Scene* pscene)
 	Scene* pcurrentScene = GetCurrentViewStateScene();
 	pcurrentScene = pscene;
 
+	PickupsManager::GetInstance()->ResetPlayer();
 }
 
-bool GameManager::SwitchSceneUsingIdentifier(string sceneIdentifier)
+bool GameManager::SwitchSceneUsingIdentifier(string sceneIdentifier, string playerIdentifier, bool unloadCurrentScene)
 {
 	unordered_map<string, Scene*> sceneMap = GetCurrentViewStateSceneMap();
 	if (sceneMap.count(sceneIdentifier) == 0)
@@ -586,8 +609,24 @@ bool GameManager::SwitchSceneUsingIdentifier(string sceneIdentifier)
 		LOG("Scene : " << sceneIdentifier << "; was not found in Scene Map ");
 		return false;
 	}
+
 	Scene*& pcurrentScene = GetCurrentViewStateScene();
+	
+	if (playerIdentifier != "")
+	{
+		PlayerGameObject* pplayer = pcurrentScene->GetGameObjectUsingIdentifier<PlayerGameObject>(playerIdentifier);
+		sceneMap[sceneIdentifier]->CopyGameObject<PlayerGameObject>(*pplayer);
+	}
+
+	if (pcurrentScene && unloadCurrentScene)
+	{
+		DeleteCurrentScene();
+	}
+
 	pcurrentScene = sceneMap[sceneIdentifier];
+
+	PickupsManager::GetInstance()->ResetPlayer();
+
 	return true;
 }
 
@@ -667,8 +706,6 @@ vector<GameObject*>& GameManager::GetAllGameObjectsInCurrentScene()
 void GameManager::Serialize(nlohmann::json& data)
 {
 	vector<GameObject*> gameObjectsInScene = m_pcurrentEditorScene->GetAllGameObjects();
-
-	data["SceneName"] = m_pcurrentEditorScene->GetSceneIdentifier();
 
 	for (size_t i = 0; i < gameObjectsInScene.size(); i++)
 	{
@@ -817,7 +854,10 @@ void GameManager::Deserialize(nlohmann::json& data)
 				gameObjects[*uuid] = new RangedWeaponGameObject(data[typeIt.key()][uuidString], uuid);
 				gameObjects[*uuid]->m_UUID = uuid;
 				break;
-
+			case AccumlateType::PICKUP:
+				gameObjects[*uuid] = new PickupGameObject(data[typeIt.key()][uuidString], uuid);
+				gameObjects[*uuid]->m_UUID = uuid;
+				break;
 			case AccumlateType::CAMERA:
 				gameObjects[*uuid] = new CameraGameObject(data[typeIt.key()][uuidString], uuid);
 				gameObjects[*uuid]->m_UUID = uuid;
@@ -912,8 +952,6 @@ void GameManager::Deserialize(nlohmann::json& data)
 	}
 
 	GetCurrentViewStateSceneMap().insert(pair<string, Scene*>(sceneName, pnewScene));
-	Scene*& pcurrentScene = GetCurrentViewStateScene();
-	pcurrentScene = pnewScene;
 }
 
 unordered_map<string, Scene*>& GameManager::GetCurrentViewStateSceneMap()
@@ -953,7 +991,7 @@ void GameManager::CreateScene(string sceneIdentifier, bool unloadCurrentScene)
 {
 	if (unloadCurrentScene)
 	{
-		DeleteSelectedScene();
+		DeleteCurrentScene();
 	}
 
 	Scene* newScene = new Scene(sceneIdentifier);
@@ -977,7 +1015,7 @@ bool GameManager::LoadSceneFromFile(std::string fileLocation, bool unloadCurrent
 
 		if (unloadCurrentScene && GetCurrentViewStateScene())
 		{
-			DeleteSelectedScene();
+			DeleteCurrentScene();
 		}
 
 		Deserialize(dataIn);
@@ -985,6 +1023,8 @@ bool GameManager::LoadSceneFromFile(std::string fileLocation, bool unloadCurrent
 	}
 	return false;
 }
+
+
 
 GameObject* GameManager::GetSelectedGameObject()
 {

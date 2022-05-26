@@ -283,7 +283,42 @@
     <ClCompile Include="Engine\GameUI\GameUIPrefab.cpp">
       <Filter>Engine\GameUI</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\AI\States\WanderState.cpp" />
+    <ClCompile Include="Engine\GameObjects\PickupGameObject.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Pickups</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\PickupResource.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Pickups</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\PickupsManager.cpp">
+      <Filter>Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\States\WanderState.cpp">
+      <Filter>Engine\AI\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\States\RangeMovementState.cpp">
+      <Filter>Engine\AI\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\TextureToResource.cpp">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\TextUIResourceDisplay.cpp">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\ImageUIResourceDisplay.cpp">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\GameplayUIResourceAttachment.cpp">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\EditorUI\EditorUIFloatParameters.cpp">
+      <Filter>Engine\EditorUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\GameplayUIWeaponAttachment.cpp">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\ImageUIWeaponDisplay.cpp">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -736,7 +771,48 @@
     <ClInclude Include="Engine\GameUI\GameUIPrefab.h">
       <Filter>Engine\GameUI</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\AI\States\WanderState.h" />
+    <ClInclude Include="Engine\Managers\Events\PickupEvent.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\PickupGameObject.h">
+      <Filter>Engine\GameObjects\Gameplay\Pickups</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\PickupResource.h">
+      <Filter>Engine\GameObjects\Gameplay\Pickups</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\PickupsManager.h">
+      <Filter>Engine\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\WanderState.h">
+      <Filter>Engine\AI\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\RangeMovementState.h">
+      <Filter>Engine\AI\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\TextureToResource.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\TextUIResourceDisplay.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\ImageUIResourceDisplay.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\GameplayUIResourceAttachment.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\EUIResourceChangeSetting.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\GameplayUIWeaponAttachment.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\EWeaponUIAttachmentOption.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\ImageUIWeaponDisplay.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Engine\Includes\DirectXTK\SimpleMath.inl" />
@@ -856,6 +932,12 @@
     </Filter>
     <Filter Include="Engine\Includes\Quad Tree">
       <UniqueIdentifier>{5f84bbc7-cf26-4e0b-a6e6-de68878e424f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GameObjects\Gameplay\Pickups">
+      <UniqueIdentifier>{4958383b-627e-456b-9b70-6f8dd49502cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GameUI\GameplayIntegration">
+      <UniqueIdentifier>{6becce7d-f71a-409d-b98a-3e1518520701}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

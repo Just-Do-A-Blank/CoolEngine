@@ -40,7 +40,7 @@ void Scene::Update()
 	{
 		gameObjectList[it]->Update();
 	}
-
+	gameObjectList = m_psceneGraph->GetAllNodeObjects();
 	Collision::Update(gameObjectList);
 }
 
