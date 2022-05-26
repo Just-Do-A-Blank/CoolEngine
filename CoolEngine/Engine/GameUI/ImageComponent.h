@@ -2,6 +2,9 @@
 #include "GameUIComponent.h"
 
 class GameplayUIResourceAttachment;
+class ImageUIResourceDisplay;
+class GameplayUIWeaponAttachment;
+class ImageUIWeaponDisplay;
 
 class ImageComponent : public GameUIComponent
 {
@@ -47,6 +50,24 @@ private:
     /// <param name="jsonData">Data to be loaded</param>
     void LoadAllLocalData(const nlohmann::json& jsonData);
 
+	/// <summary>
+	/// The resource attached to the component
+	/// </summary>
 	GameplayUIResourceAttachment* m_resourceAttachement;
+
+    /// <summary>
+    /// The image version of the Resource. ONLY USED IN THE COPY. PLEASE USE m_resourceAttachement.
+    /// </summary>
+    ImageUIResourceDisplay* m_resourceAttachementImage;
+
+    /// <summary>
+    /// The weapon which attached to the player
+    /// </summary>
+    GameplayUIWeaponAttachment* m_weaponAttachement;
+
+    /// <summary>
+    /// How the weapon is displayed from an image point of view. ONLY USED IN THE COPY. PLEASE USE m_weaponAttachement.
+    /// </summary>
+    ImageUIWeaponDisplay* m_imageUIWeaponDisplay;
 };
 

@@ -31,6 +31,9 @@ TreeNode<T>* SceneGraph<T>::NewNode(T* gameObject)
 		m_sceneNodeObjectsMap.insert(pair<string, T*>(gameObject->GetIdentifier(), gameObject));
 		m_sceneNodeObjectList.push_back(gameObject);
 		m_sceneNodeList.push_back(m_rootNode);
+		
+		m_sceneNodeObjectsUUIDMap[*gameObject->GetUUID()] = gameObject;
+		
 		return m_rootNode;
 	}
 
@@ -46,6 +49,7 @@ TreeNode<T>* SceneGraph<T>::NewNode(T* gameObject)
 	m_sceneNodeObjectsMap.insert(pair<string, T*>(gameObjectName, gameObject));
 	m_sceneNodeObjectList.push_back(gameObject);
 	m_sceneNodeList.push_back(newNode);
+	m_sceneNodeObjectsUUIDMap[*gameObject->GetUUID()] = gameObject;
 	return newNode;
 }
 
@@ -377,4 +381,15 @@ T* SceneGraph<T>::GetNodeObjectUsingIdentifier(string& identifier)
 	}
 	
 	return m_sceneNodeObjectsMap[identifier];
+}
+
+template<class T>
+T* SceneGraph<T>::GetNodeObjectUsingUUID(CoolUUID& uuid)
+{
+	if (m_sceneNodeObjectsUUIDMap.count(*uuid) == 0)
+	{
+		return nullptr;
+	}
+
+	return m_sceneNodeObjectsUUIDMap[*uuid];
 }

@@ -32,13 +32,27 @@ public:
 
 	void SetSwingAngle(float angle);
 	void SetChargeTime(float time);
-	void SetRadius(float rad);
 	void SetIsBlunt(bool blunt);
+	void SetSwingTime(float time);
+	void SetIsSwinging(bool swing);
+	void SetCurrentSwingTime(float time);
+	void SetSwingSpeed(float speed);
+	void SetCurrentSwingAngle(float angle);
+	void SetCurrentChargeTime(float time);
 
 	float GetSwingAngle();
 	float GetChargeTime();
-	float GetRadius();
 	bool GetIsBlunt();
+	float GetSwingTime();
+	bool GetIsSwinging();
+	float GetCurrentSwingTime();
+	float GetSwingSpeed();
+	float GetCurrentSwingAngle();
+	float GetCurrentChargeTime();
+
+	void Attack() override;
+
+	void Update() override;
 
 	virtual void Serialize(nlohmann::json& data) override;
 
@@ -47,11 +61,20 @@ protected:
     virtual void SaveAllPrefabData(nlohmann::json& jsonData) override;
 
 private:
-	float m_swingAngle = 0.0f;
-	float m_chargeTime = 0.0f;
-	float m_radius = 0.0f;
+	float m_totalSwingAngle = 90.0f;
+	float m_currentSwingAngle = 0.0f;
+
+	float m_totalSwingTime = 0.5f;
+	float m_currentSwingTime = 0.0f;
+
+	float m_totalChargeTime = 0.5f;
+	float m_currentChargeTime = 0.0f;
+
+	float m_swingSpeed = 1.0f;
 	
-	bool m_isBlunt = false;
+	bool m_isSwinging = false;
+	bool m_isSecondSwing = false;
+	bool m_isBlunt = true;
 
     void LoadLocalData(const nlohmann::json& jsonData);
     void SaveLocalData(nlohmann::json& jsonData);

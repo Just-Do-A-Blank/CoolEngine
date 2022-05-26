@@ -29,6 +29,9 @@ public:
 	void SetBulletTexturePath(wstring path);
 	void SetBulletScale(XMFLOAT3 scale);
 	void SetCollisionScale(XMFLOAT2 scale);
+	void SetRadius(float rad);
+	void SetHolderPosition(XMFLOAT2 pos);
+	void SetTargetPosition(XMFLOAT2 pos);
 
 	string GetUniqueKey();
 	int GetLevel();
@@ -43,6 +46,9 @@ public:
 	wstring GetBulletTexturePath();
 	XMFLOAT3 GetBulletScale();
 	XMFLOAT2 GetCollisionScale();
+	float GetRadius();
+	XMFLOAT2 GetHolderPosition();
+	XMFLOAT2 GetTargetPosition();
 
     std::wstring GetUITexturePath();
 
@@ -53,6 +59,8 @@ public:
 
 	void RegisterForEvents();
 	void UnregisterForEvents();
+
+	void SetWeaponPosition(XMFLOAT2 toWeapon);
 
 	virtual void Attack();
 
@@ -75,6 +83,7 @@ private:
 	int m_shotCount = 1;
 	float m_timeLethal = 1;
 	float m_distanceTravelled = 100.0f;
+	float m_radius = 50.0f;
 
 	wstring m_bulletTexturePath = DEFAULT_IMGUI_IMAGE;
 	XMFLOAT3 m_bulletScale = XMFLOAT3(25.0f, 25.0f, 25.0f);
@@ -84,6 +93,8 @@ private:
 	STATUSES m_statusEffect = STATUSES::NONE;
 
 	bool m_isPlayerWeapon = true;
+	XMFLOAT2 m_holderPosition = XMFLOAT2(0.0f, 0.0f);
+	XMFLOAT2 m_targetPosition = XMFLOAT2(1.0f, 1.0f);
 	bool m_isHeld = false;
 
     void LoadLocalData(const nlohmann::json& jsonData);
@@ -91,7 +102,10 @@ private:
 
     ID3D11ShaderResourceView* m_ptexture = nullptr;
 
-    std::wstring m_texturePath;
+    /// <summary>
+    /// Path of the UI texture
+    /// </summary>
+    std::wstring m_UITexturePath;
 
     void SetUITexture(std::wstring wsfilepath);
 
