@@ -36,8 +36,6 @@ GameUIComponent::GameUIComponent(GameUIComponent const& other) : GameUIPrefab(ot
 
 	m_uiComponentType = other.m_uiComponentType;
 	m_layer = other.m_layer;
-
-	m_transform = new Transform(*other.m_transform);
 }
 
 GameUIComponent::~GameUIComponent()
