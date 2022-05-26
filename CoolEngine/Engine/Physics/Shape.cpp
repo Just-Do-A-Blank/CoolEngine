@@ -1,7 +1,48 @@
 #include "Shape.h"
 #include "Engine/EditorUI/EditorUI.h"
 
+Shape::Shape()
+{
+#if EDITOR
+	m_collideTypeList = GetCollideTypeAsList();
+	m_collideTypeSelectedItem = GetCollideTypeFromIndex(0);
+#endif
+}
 
+Shape::Shape(const nlohmann::json& data)
+{
+	if (data["ShapeType"] == "Box")
+	{
+		m_shapeType = ShapeType::BOX;
+	}
+	else if (data["ShapeType"] == "Circle")
+	{
+		m_shapeType = ShapeType::CIRCLE;
+	}
+
+	m_isTrigger = data["IsTrigger"];
+	m_isCollidable = data["IsCollidable"];
+
+#if EDITOR
+	m_collideTypeList = GetCollideTypeAsList();
+	m_collideTypeSelectedItem = GetCollideTypeFromIndex(CollideBoolsToListIndex(m_isCollidable, m_isTrigger));
+#endif
+}
+
+Shape::Shape(Shape const* other, GameObject* pgameobject)
+{
+	m_pgameObject = pgameobject;
+	m_scale = other->m_scale;
+	m_isTrigger = other->m_isTrigger;
+	m_isCollidable = other->m_isCollidable;
+	m_isTrigger = other->m_isTrigger;
+	m_shapeType = other->m_shapeType;
+
+#if EDITOR
+	m_collideTypeList = GetCollideTypeAsList();
+	m_collideTypeSelectedItem = GetCollideTypeFromIndex(CollideBoolsToListIndex(m_isCollidable, m_isTrigger));
+#endif
+}
 
 ShapeType Shape::GetShapeType()
 {
@@ -26,11 +67,10 @@ string Shape::ShapeTypeToString(ShapeType type)
 #if EDITOR
 void Shape::CreateEngineUI()
 {
-    EditorUI::Checkbox("Collidable", m_isCollidable);
-
-    ImGui::Spacing();
-
-    EditorUI::Checkbox("Trigger", m_isTrigger);
+	if (EditorUI::ComboBox("Collider", m_collideTypeList, m_collideTypeSelectedItem))
+	{
+		SetTriggerableCollidableFromIndex(m_collideTypeSelectedItem.first);
+	}
 
     ImGui::Spacing();
 
@@ -95,31 +135,66 @@ void Shape::SetScale(XMFLOAT2 scale)
     m_scale = scale;
 }
 
-Shape::Shape(const nlohmann::json& data)
+
+#if EDITOR
+list<pair<int, string>> Shape::GetCollideTypeAsList()
 {
-	if (data["ShapeType"] == "Box")
+	list<pair<int, string>> returnItem = list<pair<int, string>>();
+	for (int i = 0; i < 3; ++i)
 	{
-		m_shapeType = ShapeType::BOX;
+		returnItem.push_back(GetCollideTypeFromIndex(i));
 	}
-	else if (data["ShapeType"] == "Circle")
+
+	return returnItem;
+}
+
+pair<int, string> Shape::GetCollideTypeFromIndex(int index)
+{
+	pair<int, string> returnItem = pair<int, string>(0, "None");
+	switch (index)
 	{
-		m_shapeType = ShapeType::CIRCLE;
+		case 1:
+			returnItem = pair<int, string>(1, "Collidable");
+			break;
+		case 2:
+			returnItem = pair<int, string>(2, "Triggerable");
+			break;
 	}
 
-	m_isTrigger = data["IsTrigger"];
-	m_isCollidable = data["IsCollidable"];
+	return returnItem;
 }
 
-Shape::Shape(Shape const* other, GameObject* pgameobject)
+int Shape::CollideBoolsToListIndex(bool isCollidable, bool isTriggerable)
 {
-	m_pgameObject = pgameobject;
-	m_scale = other->m_scale;
-	m_isTrigger = other->m_isTrigger;
-	m_isCollidable = other->m_isCollidable;
-	m_isTrigger = other->m_isTrigger;
-	m_shapeType = other->m_shapeType;
+	if (isCollidable)
+	{
+		return 1;
+	}
+
+	if (isTriggerable)
+	{
+		return 2;
+	}
+
+	return 0;
 }
 
-Shape::Shape()
+void Shape::SetTriggerableCollidableFromIndex(int index)
 {
+	switch (index)
+	{
+	case 0:
+		m_isTrigger = false;
+		m_isCollidable = false;
+		break;
+	case 1:
+		m_isTrigger = false;
+		m_isCollidable = true;
+		break;
+	case 2:
+		m_isTrigger = true;
+		m_isCollidable = false;
+		break;
+	}
 }
+#endif
