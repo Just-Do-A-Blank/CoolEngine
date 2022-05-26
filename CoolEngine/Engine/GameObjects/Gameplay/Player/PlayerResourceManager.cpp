@@ -6,18 +6,20 @@ PlayerResourceManager::PlayerResourceManager()
 
 #if EDITOR
 	m_resourceInterface = new PlayerResourceInterface(&m_resources);
-#endif
 
     m_resourceKeys = list<string>();
     UpdateAllKeys();
+#endif
 }
 
 PlayerResourceManager::PlayerResourceManager(const nlohmann::json& data)
 {
     LoadData(data);
 
+#if EDITOR
     m_resourceKeys = list<string>();
     UpdateAllKeys();
+#endif
 }
 
 PlayerResourceManager::PlayerResourceManager(PlayerResourceManager const& other)
@@ -42,10 +44,11 @@ PlayerResourceManager::PlayerResourceManager(PlayerResourceManager const& other)
 
 #if EDITOR
     m_resourceInterface = other.m_resourceInterface;
-#endif
+
 
     m_resourceKeys = list<string>();
     UpdateAllKeys();
+#endif
 }
 
 PlayerResourceManager::~PlayerResourceManager()
@@ -137,9 +140,9 @@ void PlayerResourceManager::LoadData(const nlohmann::json& jsonData)
         s = "PlayerResource_" + to_string(++i);
     }
 
+#if EDITOR
     UpdateAllKeys();
 
-#if EDITOR
     delete m_resourceInterface;
     m_resourceInterface = new PlayerResourceInterface(&m_resources);
 #endif
@@ -190,6 +193,7 @@ void PlayerResourceManager::TakeWeaponDamage(float damage)
     }
 }
 
+#if EDITOR
 /// <summary>
 /// Update key list. This should be called when the key list is updated.
 /// </summary>
@@ -210,6 +214,7 @@ list<string> PlayerResourceManager::GetResourceKeys()
 {
     return m_resourceKeys;
 }
+#endif
 
 /// <summary>
 /// Uses a resource

@@ -515,6 +515,7 @@ void TileMap::CreateEngineUI()
 	ImGui::Spacing();
 	ImGui::Separator();
 }
+#endif
 
 void TileMap::Init(int width, int height, XMFLOAT3 position, float tileDimensions)
 {
@@ -551,11 +552,11 @@ void TileMap::Serialize(nlohmann::json& data)
 	data["MapPath"] = tempPath;
 	data["Position"] = { m_transform->GetLocalPosition().x ,m_transform->GetLocalPosition().y ,m_transform->GetLocalPosition().z };
 }
+
 std::wstring TileMap::GetMapPath() const
 {
 	return m_mapPath;
 }
-#endif
 
 bool TileMap::GetTileFromWorldPos(XMFLOAT2 pos, Tile*& ptile, int* prow, int* pcolumn) // Takes a set of coordinates and finds if a tile is there
 {

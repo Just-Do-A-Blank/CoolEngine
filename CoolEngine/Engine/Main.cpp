@@ -187,6 +187,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	GameManager::GetInstance()->GetTimer()->Tick();
 	GameManager::GetInstance()->GetTimer()->Tick();
 
+#if !EDITOR
+	GameManager::GetInstance()->BeginPlay();
+#endif
+
 	// Main message loop
 	MSG msg = { 0 };
 	while (WM_QUIT != msg.message)
@@ -609,8 +613,13 @@ void Render()
 	g_pImmediateContext->ClearRenderTargetView(g_pRenderTargetView, DirectX::Colors::MidnightBlue);
 
 	//Set current render target to render to texture target.
+
+#if EDITOR
 	g_pImmediateContext->OMSetRenderTargets(1, &g_pRTTRenderTargetView, nullptr);
 	g_pImmediateContext->ClearRenderTargetView(g_pRTTRenderTargetView, DirectX::Colors::MidnightBlue);
+#else
+	g_pImmediateContext->OMSetRenderTargets(1, &g_pRenderTargetView, nullptr);
+#endif
 
 	g_pImmediateContext->IASetInputLayout(GraphicsManager::GetInstance()->GetInputLayout(GraphicsManager::InputLayouts::POS_TEX));
 
@@ -649,8 +658,15 @@ void Render()
 				D3D11_VIEWPORT viewport;
 				viewport.TopLeftX = 0;
 				viewport.TopLeftY = 0;
+
+#if EDITOR
 				viewport.Width = EditorUI::GetViewportSize().x;
 				viewport.Height = EditorUI::GetViewportSize().y;
+#else
+				viewport.Width = GraphicsManager::GetInstance()->GetWindowDimensions().x;
+				viewport.Height = GraphicsManager::GetInstance()->GetWindowDimensions().y;
+#endif
+
 				viewport.MinDepth = 0.01f;
 				viewport.MaxDepth = 1.0f;
 
@@ -680,18 +696,18 @@ void Render()
 		GraphicsManager::GetInstance()->GetSpriteBatches()[i]->End();
 	}
 
+#if EDITOR
 	if (g_ptoolBase != nullptr)
 	{
 		g_ptoolBase->Render();
 	}
 	else
 	{
-#if EDITOR
+
 		g_peditorUI->DrawEditorUI(g_pd3dDevice, g_ptoolBase);
-#endif
+
 	}
 
-#if EDITOR
 	ImGuiWindowFlags viewportWindowFlags = 0;
 	viewportWindowFlags |= ImGuiWindowFlags_HorizontalScrollbar;
 	ImGui::Begin("Viewport", nullptr, viewportWindowFlags);
@@ -770,7 +786,6 @@ void Update()
 
 #if EDITOR
 	g_peditorUI->Update();
-#endif
 
 	if (g_ptoolBase != nullptr)
 	{
@@ -784,6 +799,7 @@ void Update()
 			g_ptoolBase->Update();
 		}
 	}
+#endif
 }
 
 void BindQuadBuffers()
