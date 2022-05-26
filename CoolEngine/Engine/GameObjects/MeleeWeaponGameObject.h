@@ -38,6 +38,7 @@ public:
 	void SetCurrentSwingTime(float time);
 	void SetSwingSpeed(float speed);
 	void SetCurrentSwingAngle(float angle);
+	void SetCurrentChargeTime(float time);
 
 	float GetSwingAngle();
 	float GetChargeTime();
@@ -47,6 +48,7 @@ public:
 	float GetCurrentSwingTime();
 	float GetSwingSpeed();
 	float GetCurrentSwingAngle();
+	float GetCurrentChargeTime();
 
 	void Attack() override;
 
@@ -65,11 +67,14 @@ private:
 	float m_totalSwingTime = 0.5f;
 	float m_currentSwingTime = 0.0f;
 
-	float m_chargeTime = 0.5f;
-	bool m_isSwinging = false;
+	float m_totalChargeTime = 0.5f;
+	float m_currentChargeTime = 0.0f;
+
 	float m_swingSpeed = 1.0f;
 	
-	bool m_isBlunt = false;
+	bool m_isSwinging = false;
+	bool m_isSecondSwing = false;
+	bool m_isBlunt = true;
 
     void LoadLocalData(const nlohmann::json& jsonData);
     void SaveLocalData(nlohmann::json& jsonData);
