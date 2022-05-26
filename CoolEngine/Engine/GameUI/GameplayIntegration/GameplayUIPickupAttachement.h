@@ -1,9 +1,12 @@
 #pragma once
 #include "Engine/Includes/json.hpp"
+#include "Engine/Managers/Events/EventObserver.h"
+#include "Engine\Managers\Events\PickupEvent.h"
+
 class PickupGameObject;
 class PlayerGameObject;
 
-class GameplayUIPickupAttachement
+class GameplayUIPickupAttachement : public Observer
 {
 public:
     GameplayUIPickupAttachement();
@@ -42,6 +45,11 @@ public:
     /// Called when the UI element should update
     /// </summary>
     void Update();
+
+    /// <summary>
+    /// Handles events from the Observations
+    /// </summary>
+    void Handle(Event* e) override;
 
     void LoadFromTopLevel(const nlohmann::json& jsonData);
     void SaveFromTopLevel(nlohmann::json& jsonData);
@@ -93,16 +101,18 @@ private:
     bool m_haveEverUpdatedTheUI;
 
     /// <summary>
-    /// Detirmines if we should update the UI
+    /// True mean player has picked up item so we should up date our information
     /// </summary>
-    /// <param name="pickup">Current pickup to display</param>
-    /// <returns>True means we should</returns>
-    bool ShouldUpdateUI(PickupGameObject* pickup);
+    bool m_playerPickedUpItem;
 
     /// <summary>
-    /// Call after updating the UI
+    /// Current pickup
     /// </summary>
-    /// <param name="pickup">Current pickup to display</param>
-    void UpdatedUI(PickupGameObject* pickup);
+    PickupGameObject* m_currentPickup;
+
+    /// <summary>
+    /// Handles pickup events
+    /// </summary>
+    void PlayerPickedupItem(PickupEvent* e);
 };
 

@@ -33,7 +33,13 @@ public:
 	virtual void CreateEngineUI();
 #endif
 
+    void SetUITexture(std::wstring wsfilepath);
 
+    /// <summary>
+    /// Shows engine UI
+    /// </summary>
+    /// <return>Get the UI Texture for the Pickup</return>
+    std::wstring GetUITexturePath();
 private:
 	//Expose this to editor
 	PickupResourceInterface* m_pPickupResourceInterface;
@@ -49,5 +55,7 @@ private:
 
 	PlayerGameObject* m_pPlayer;
 
+    ID3D11ShaderResourceView* m_pUItexture = nullptr;
+    wstring m_UItexturePath;
 };
 

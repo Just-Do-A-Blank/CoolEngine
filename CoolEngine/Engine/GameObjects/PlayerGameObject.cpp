@@ -414,3 +414,12 @@ PlayerResourceManager* PlayerGameObject::GetPlayerResources()
 {
 	return m_resourceManager;
 }
+
+/// <summary>
+/// Gets the inventory on the player.
+/// </summary>
+/// <returns>The player's inventory</returns>
+Inventory* PlayerGameObject::GetInventory()
+{
+    return m_pInventory;
+}

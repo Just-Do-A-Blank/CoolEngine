@@ -14,6 +14,8 @@ GameplayUIPickupAttachement::GameplayUIPickupAttachement()
 #if EDITOR
     m_attmptedToFindPlayer = false;
 #endif
+
+    EventManager::Instance()->AddClient(EventType::Pickup, this);
 }
 
 GameplayUIPickupAttachement::GameplayUIPickupAttachement(nlohmann::json& data)
@@ -26,6 +28,8 @@ GameplayUIPickupAttachement::GameplayUIPickupAttachement(nlohmann::json& data)
 #endif
 
     LoadLocalData(data);
+
+    EventManager::Instance()->AddClient(EventType::Pickup, this);
 }
 
 GameplayUIPickupAttachement::GameplayUIPickupAttachement(GameplayUIPickupAttachement const& other)
@@ -37,11 +41,13 @@ GameplayUIPickupAttachement::GameplayUIPickupAttachement(GameplayUIPickupAttache
 #if EDITOR
     m_attmptedToFindPlayer = false;
 #endif
+
+    EventManager::Instance()->AddClient(EventType::Pickup, this);
 }
 
 GameplayUIPickupAttachement::~GameplayUIPickupAttachement()
 {
-
+    EventManager::Instance()->RemoveClientEvent(EventType::Pickup, this);
 }
 
 /// <summary>
@@ -50,6 +56,7 @@ GameplayUIPickupAttachement::~GameplayUIPickupAttachement()
 void GameplayUIPickupAttachement::Start()
 {
     AttemptToFindPlayer();
+    m_playerPickedUpItem = true;
 }
 
 /// <summary>
@@ -57,17 +64,42 @@ void GameplayUIPickupAttachement::Start()
 /// </summary>
 void GameplayUIPickupAttachement::Update()
 {
+    // This ensures we only update when data changes
+    // see handle Player Pickups
+    if (!m_playerPickedUpItem)
+    {
+        return;
+    }
+    m_playerPickedUpItem = false;
+
     if (m_currentPlayer == nullptr)
     {
         return;
     }
 
     PickupGameObject* playerPickup = GetPickupToDisplay();
-    if (ShouldUpdateUI(playerPickup))
+    Update(playerPickup);
+}
+
+/// <summary>
+/// Handles events from the Observations
+/// </summary>
+void GameplayUIPickupAttachement::Handle(Event* e)
+{
+    switch (e->GetEventID())
     {
-        Update(playerPickup);
+    case EventType::Pickup:
+        PlayerPickedupItem((PickupEvent*)e);
+        break;
     }
-    UpdatedUI(playerPickup);
+}
+
+/// <summary>
+/// Handles pickup events
+/// </summary>
+void GameplayUIPickupAttachement::PlayerPickedupItem(PickupEvent* e)
+{
+    m_playerPickedUpItem = true;
 }
 
 /// <summary>
@@ -76,15 +108,42 @@ void GameplayUIPickupAttachement::Update()
 /// <returns>The weapon to use</returns>
 PickupGameObject* GameplayUIPickupAttachement::GetPickupToDisplay()
 {
+    if (m_pickupSlot == 0)
+    {
+        return nullptr;
+    }
+
     if (m_currentPlayer == nullptr)
     {
         return nullptr;
     }
 
-    PickupGameObject* weaponReturn = nullptr;
-    //m_currentPlayer->GetPickupInInventory(number); [INVENTORY]
+    PickupGameObject* pickupGameObject = nullptr;
+    int slot = m_pickupSlot;
+    Inventory* inventory = m_currentPlayer->GetInventory();
+    if (inventory != nullptr)
+    {
+        int i = -1;
+        while(slot > 0)
+        {
+            ++i;
+            if (inventory->GetItemInSlot(i) == nullptr)
+            {
+                --slot;
+            }
+            else if (inventory->GetItemInSlot(i)->ContainsType(GameObjectType::PICKUP))
+            {
+                --slot;
+            }
+        }
 
-    return weaponReturn;
+        if (inventory->GetItemInSlot(i) != nullptr)
+        {
+            pickupGameObject = dynamic_cast<PickupGameObject*>(inventory->GetItemInSlot(i));
+        }
+    }
+
+    return pickupGameObject;
 }
 
 #if EDITOR
@@ -185,43 +244,4 @@ void GameplayUIPickupAttachement::SaveLocalData(nlohmann::json& jsonData)
 PlayerGameObject* GameplayUIPickupAttachement::GetPlayer()
 {
     return m_currentPlayer;
-}
-
-/// <summary>
-/// Detirmines if we should update the UI
-/// </summary>
-/// <param name="pickup">Current pickup to display</param>
-/// <returns>True means we should</returns>
-bool GameplayUIPickupAttachement::ShouldUpdateUI(PickupGameObject* pickup)
-{
-    /*string currentPickupKey = "";
-    if (pickup != nullptr)
-    {
-        currentPickupKey = pickup->GetUniqueKey(); [INVENTORY]
-    }
-
-    bool shouldUpdateUI = false;
-    if (!m_haveEverUpdatedTheUI || currentPickupKey != m_pickupKey)
-    {
-        shouldUpdateUI = true;
-    }
-
-    return shouldUpdateUI;*/return true;
-}
-
-/// <summary>
-/// Call after updating the UI
-/// </summary>
-/// <param name="pickup">Current pickup to display</param>
-void GameplayUIPickupAttachement::UpdatedUI(PickupGameObject* pickup)
-{
-    string currentPickupKey = "";
-    if (pickup != nullptr)
-    {
-        //currentPickupKey = pickup->GetUniqueKey();
-    }
-
-    m_pickupKey = currentPickupKey;
-    m_haveEverUpdatedTheUI = true;
-
 }

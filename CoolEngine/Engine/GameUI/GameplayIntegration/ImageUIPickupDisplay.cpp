@@ -24,7 +24,7 @@ ImageUIPickupDisplay::ImageUIPickupDisplay(ImageUIPickupDisplay const& other, Im
     SetAttachedTexture(m_texturePathAttached);
 
     m_texturePathNotAttached = other.m_texturePathNotAttached;
-    SetAttachedTexture(m_texturePathNotAttached);
+    SetNotAttachedTexture(m_texturePathNotAttached);
 }
 
 ImageUIPickupDisplay::~ImageUIPickupDisplay()
@@ -94,7 +94,19 @@ void ImageUIPickupDisplay::SaveAllPrefabData(nlohmann::json& jsonData)
 /// <param name="pickupGameObject">The pickup to display</param>
 void ImageUIPickupDisplay::Update(PickupGameObject* pickupGameObject)
 {
-
+    if (m_texturePathAttached != std::wstring() && pickupGameObject != nullptr)
+    {
+        m_imageComponent->SetTexture(m_texturePathAttached);
+    }
+    else if (m_texturePathNotAttached != std::wstring() && pickupGameObject == nullptr)
+    {
+        m_imageComponent->SetTexture(m_texturePathNotAttached);
+    }
+    else if (pickupGameObject != nullptr)
+    {
+        std::wstring texture = pickupGameObject->GetUITexturePath();
+        m_imageComponent->SetTexture(texture);
+    }
 }
 
 void ImageUIPickupDisplay::LoadLocalData(const nlohmann::json& jsonData)
