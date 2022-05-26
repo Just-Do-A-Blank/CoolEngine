@@ -56,7 +56,7 @@ float RangeMovementState::CalculateActivation()
 	float upperDistance = m_prangeWeapon->GetDistanceTravelled() * m_prangeWeapon->GetDistanceTravelled() * m_upperOptimalDistanceMultiplier * m_upperOptimalDistanceMultiplier;
 	float lowerDistance = m_prangeWeapon->GetDistanceTravelled() * m_prangeWeapon->GetDistanceTravelled() * m_lowerOptimalDistanceMultiplier * m_lowerOptimalDistanceMultiplier;
 
-	if ((distanceSq > upperDistance || distanceSq < lowerDistance) && distanceSq < m_maxActivationDistanceSq)
+	if ((distanceSq > upperDistance || distanceSq < lowerDistance) && distanceSq < m_maxActivationDistance * m_maxActivationDistance)
 	{
 		return 1.0f;
 	}
@@ -79,7 +79,7 @@ void RangeMovementState::Update()
 	{
 		m_penemy->CalculateMovement(m_path.back());
 
-		if (MathHelper::DistanceSquared(m_penemy->GetTransform()->GetWorldPosition(), m_path.back()->m_pos) < m_nodePopDistanceSq)
+		if (MathHelper::DistanceSquared(m_penemy->GetTransform()->GetWorldPosition(), m_path.back()->m_pos) < m_nodePopDistance * m_nodePopDistance)
 		{
 			m_path.pop_back();
 		}

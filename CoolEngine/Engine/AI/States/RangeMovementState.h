@@ -34,9 +34,8 @@ private:
 
 	std::vector<node*> m_path;
 
-	float m_activationDistanceSq = 100.0f;
-	float m_maxActivationDistanceSq = 562500;
-	float m_nodePopDistanceSq = 10.0f;
+	float m_maxActivationDistance = 750;
+	float m_nodePopDistance = 3.0f;
 	float m_replanPathTime = 1.0f;
 	float m_replanPathTimeStamp = 0;
 	float m_upperOptimalDistanceMultiplier = 0.8f;
