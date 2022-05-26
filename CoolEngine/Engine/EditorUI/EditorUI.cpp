@@ -1384,23 +1384,11 @@ void EditorUI::FullTitle(const string& label, EditorUINonSpecificParameters para
     ImGui::Separator();
     ImGui::PushID(label.c_str());
 
-    ImGui::Columns(2);
-    ImGui::SetColumnWidth(0, parameters.m_columnWidth);
-    ImGui::NextColumn();
-
-    ImGui::SetColumnWidth(0, parameters.m_columnWidth);
+    ImGui::Columns(1);
     ImGui::Text(label.c_str());
     SetupTooltip(parameters.m_tooltipText);
 
-    ImGui::NextColumn();
-
-    ImGui::PushItemWidth(ImGui::CalcItemWidth());
-    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
-
-    ImGui::PopItemWidth();
-    ImGui::PopStyleVar();
     ImGui::PopID();
-
     ImGui::Separator();
 }
 

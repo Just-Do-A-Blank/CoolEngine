@@ -87,7 +87,10 @@ private:
 
     ID3D11ShaderResourceView* m_ptexture = nullptr;
 
-    std::wstring m_texturePath;
+    /// <summary>
+    /// Path of the UI texture
+    /// </summary>
+    std::wstring m_UITexturePath;
 
     void SetUITexture(std::wstring wsfilepath);
 
