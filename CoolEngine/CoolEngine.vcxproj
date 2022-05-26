@@ -401,6 +401,9 @@
     <None Include="Engine\Includes\DirectXTK\SimpleMath.inl" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\..\..\..\Downloads\ajl42-1i080.dds" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

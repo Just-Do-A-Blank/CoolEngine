@@ -911,5 +911,16 @@
     <Filter Include="Engine\GameUI\GameplayIntegration">
       <UniqueIdentifier>{6becce7d-f71a-409d-b98a-3e1518520701}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Player">
+      <UniqueIdentifier>{38b6a2dc-61e4-4fdb-b638-c1499841257e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Player\MovementAnims">
+      <UniqueIdentifier>{6ea56c27-7c9e-49ce-abe0-8aefd0998e4f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\..\..\..\Downloads\ajl42-1i080.dds">
+      <Filter>Resources\Player\MovementAnims</Filter>
+    </Image>
   </ItemGroup>
 </Project>
