@@ -1,4 +1,6 @@
 #pragma once
+
+#if EDITOR
 class ContentBrowser
 {
 public:
@@ -17,4 +19,4 @@ protected:
 private:
 
 };
-
+#endif

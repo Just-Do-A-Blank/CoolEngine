@@ -3,6 +3,7 @@
 
 class EnemyGameObject;
 class PlayerGameObject;
+class RangedWeaponGameObject;
 
 class RangeAttackState : public FuzzyState
 {
@@ -27,6 +28,6 @@ private:
 	PlayerGameObject* m_pplayer = nullptr;
 	EnemyGameObject* m_penemy = nullptr;
 
-	float m_attackRangeVariance = 900.0f;
+	RangedWeaponGameObject* m_pweapon = nullptr;
 };
 

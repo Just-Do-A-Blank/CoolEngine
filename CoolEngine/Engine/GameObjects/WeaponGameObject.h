@@ -3,7 +3,7 @@
 #include "Engine/Managers/Events/DamageCalculation.h"
 #include "Engine/ResourceDefines.h"
 
-class WeaponGameObject : public TriggerableGameObject
+class WeaponGameObject : public TriggerableGameObject, public Observer
 {
 public:
 	WeaponGameObject();
@@ -49,6 +49,12 @@ public:
 	bool GetIsDualType();
 	int RoundUp(float value);
 
+	void Handle(Event* e) override;
+
+	void RegisterForEvents();
+	void UnregisterForEvents();
+
+	virtual void Attack();
 #if EDITOR
     virtual void CreateEngineUI() override;
 #endif
@@ -85,9 +91,9 @@ private:
     /// Path of the UI texture
     /// </summary>
     std::wstring m_UITexturePath;
-    
+
     void SetUITexture(std::wstring wsfilepath);
-   
+
 #if EDITOR
     list<pair<int, string>> m_elementsList;
 

@@ -123,7 +123,9 @@ void GameplayUIResourceAttachment::AttemptToFindPlayer(bool force)
 		return;
 	}
 
+#if EDITOR
 	m_resourceKeys = m_currentPlayer->GetPlayerResources()->GetResourceKeys();
+#endif
 }
 
 /// <summary>

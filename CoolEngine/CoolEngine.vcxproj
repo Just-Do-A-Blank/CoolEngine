@@ -40,6 +40,7 @@
     <ClInclude Include="Engine\AI\States\MeleeAttackState.h" />
     <ClInclude Include="Engine\AI\States\MeleeMovementState.h" />
     <ClInclude Include="Engine\AI\States\RangeAttackState.h" />
+    <ClInclude Include="Engine\AI\States\RangeMovementState.h" />
     <ClInclude Include="Engine\AI\States\WanderState.h" />
     <ClInclude Include="Engine\EditorUI\ContentBrowser.h" />
     <ClInclude Include="Engine\EditorUI\EditorButtonCallback.h" />
@@ -228,6 +229,7 @@
     <ClCompile Include="Engine\AI\States\MeleeAttackState.cpp" />
     <ClCompile Include="Engine\AI\States\MeleeMovementState.cpp" />
     <ClCompile Include="Engine\AI\States\RangeAttackState.cpp" />
+    <ClCompile Include="Engine\AI\States\RangeMovementState.cpp" />
     <ClCompile Include="Engine\AI\States\WanderState.cpp" />
     <ClCompile Include="Engine\EditorUI\ContentBrowser.cpp" />
     <ClCompile Include="Engine\EditorUI\EditorUI.cpp" />
