@@ -56,34 +56,34 @@ float DamageCalculation::CalculateDamage(float weaponDamage, ELEMENTS weaponElem
 
 void DamageCalculation::TriggerHold(TriggerHoldEvent* e)
 {
-#if EDITOR
-	if (GameManager::GetInstance()->GetViewState() == ViewState::EDITOR_VIEW)
-	{
-		return;
-	}
-#endif
-
-	if (e->GetGameObject(1)->ContainsType(GameObjectType::BULLET))
-	{
-		WeaponGameObject* pWeapon = dynamic_cast<WeaponGameObject*>(e->GetGameObject(1));
-
-		if (e->GetGameObject(0)->ContainsType(GameObjectType::CHARACTER))
-		{
-			// If character, only hit bullet if not invincible
-			CharacterGameObject* pCharacter = dynamic_cast<CharacterGameObject*>(e->GetGameObject(0));
-			if ((pCharacter->GetInvincibilityTime() <= 0.0f) && ((pCharacter->ContainsType(GameObjectType::PLAYER) && pWeapon->GetIsPlayerWeapon() == false) || (pCharacter->ContainsType(GameObjectType::ENEMY) && pWeapon->GetIsPlayerWeapon())))
-			{
-				pCharacter->TakeDamage(CalculateDamage(pWeapon->GetDamage(), pWeapon->GetElement(), pCharacter->GetElement(), pCharacter->GetElementalStatus()));
-				pCharacter->SetInvincibilityTime(INVINCIBLE_TIME);
-				dynamic_cast<BulletGameObject*>(e->GetGameObject(1))->SetActive(false);
-			}
-		}
-		else if(!e->GetGameObject(0)->ContainsType(GameObjectType::RANGE_WEAPON))
-		{
-			// If not a character, just delete bullet
-			dynamic_cast<BulletGameObject*>(e->GetGameObject(1))->SetActive(false);
-		}
-	}
+//#if EDITOR
+//	if (GameManager::GetInstance()->GetViewState() == ViewState::EDITOR_VIEW)
+//	{
+//		return;
+//	}
+//#endif
+//
+//	if (e->GetGameObject(1)->ContainsType(GameObjectType::BULLET))
+//	{
+//		WeaponGameObject* pWeapon = dynamic_cast<WeaponGameObject*>(e->GetGameObject(1));
+//
+//		if (e->GetGameObject(0)->ContainsType(GameObjectType::CHARACTER))
+//		{
+//			// If character, only hit bullet if not invincible
+//			CharacterGameObject* pCharacter = dynamic_cast<CharacterGameObject*>(e->GetGameObject(0));
+//			if ((pCharacter->GetInvincibilityTime() <= 0.0f) && ((pCharacter->ContainsType(GameObjectType::PLAYER) && pWeapon->GetIsPlayerWeapon() == false) || (pCharacter->ContainsType(GameObjectType::ENEMY) && pWeapon->GetIsPlayerWeapon())))
+//			{
+//				pCharacter->TakeDamage(CalculateDamage(pWeapon->GetDamage(), pWeapon->GetElement(), pCharacter->GetElement(), pCharacter->GetElementalStatus()));
+//				pCharacter->SetInvincibilityTime(INVINCIBLE_TIME);
+//				dynamic_cast<BulletGameObject*>(e->GetGameObject(1))->SetActive(false);
+//			}
+//		}
+//		else if(!e->GetGameObject(0)->ContainsType(GameObjectType::RANGE_WEAPON))
+//		{
+//			// If not a character, just delete bullet
+//			dynamic_cast<BulletGameObject*>(e->GetGameObject(1))->SetActive(false);
+//		}
+//	}
 }
 
 void DamageCalculation::CollisionHold(CollisionHoldEvent* e)
