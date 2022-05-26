@@ -775,7 +775,7 @@ void Update()
 	Inputs::GetInstance()->Update();
 	EventManager::Instance()->ProcessEvents();
 
-	PickupsManager::GetInstance()->Update();
+	//PickupsManager::GetInstance()->Update();
 
 
 
