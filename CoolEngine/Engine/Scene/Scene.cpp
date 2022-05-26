@@ -35,13 +35,27 @@ void Scene::Start()
 void Scene::Update()
 {
 	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
+	vector<GameObject*> updateList;
+	PlayerGameObject* pgO;
 
-	for (int it = 0; it < gameObjectList.size(); ++it)
+	updateList.reserve(gameObjectList.size());
+
+	for (size_t i = 0; i < gameObjectList.size(); i++)
 	{
-		gameObjectList[it]->Update();
+		if (gameObjectList[i]->ContainsType(GameObjectType::PLAYER))
+		{
+			pgO = dynamic_cast<PlayerGameObject*>( gameObjectList[i]);
+		}
 	}
-	gameObjectList = m_psceneGraph->GetAllNodeObjects();
-	Collision::Update(gameObjectList);
+
+	m_quadtree->GetUpdateList(pgO, updateList);
+	
+	for (int it = 0; it < updateList.size(); ++it)
+	{
+		updateList[it]->Update();
+	}
+
+	Collision::Update(updateList);
 }
 
 void Scene::EditorUpdate()
