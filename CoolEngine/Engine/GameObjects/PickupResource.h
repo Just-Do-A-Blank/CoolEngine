@@ -29,7 +29,7 @@ public:
     PickupResourceInterface(list<PickupResource*>* resources);
 
 #if EDITOR
-    virtual void CreateEngineUI() override;
+    virtual void CreateEngineUI();
 #endif
 
     list<PickupResource*>* GetEffects() { return m_pPickupEffects; }
