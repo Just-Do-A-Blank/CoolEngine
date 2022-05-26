@@ -10,6 +10,8 @@ class WanderState : public FuzzyState
 {
 public:
 	WanderState(EnemyGameObject* penemy);
+	WanderState(const nlohmann::json& data);
+	WanderState(WanderState const* other, EnemyGameObject* penemy);
 
 	void SetEnemy(EnemyGameObject* penemy);
 
@@ -22,6 +24,12 @@ public:
 
 	void Serialize(nlohmann::json& data) override;
 	void Deserialize(const nlohmann::json& data) override;
+
+#if EDITOR
+	void CreateEngineUI() override;
+#endif
+
+	void Start() override;
 
 protected:
 
