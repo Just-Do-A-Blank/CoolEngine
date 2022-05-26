@@ -9,6 +9,18 @@ Quadtree::Quadtree(XMFLOAT2 pos , int childrenSize, CompassFacing direction, int
     m_maxNodeSize = childrenSize;
     m_direction = direction;
     m_objectOffset = distantOffset;
+
+    XMFLOAT3 pos3 = XMFLOAT3(pos.x, pos.y, 0);
+    XMFLOAT3 rot = XMFLOAT3(0, 0, 0);
+    XMFLOAT3 scal = XMFLOAT3(distantOffset, distantOffset, 1);
+
+    m_Anchor = new GameObject();
+    m_Anchor->GetTransform()->SetWorldPosition(pos3);
+    m_Anchor->GetTransform()->SetWorldRotation(rot);
+    m_Anchor->GetTransform()->SetWorldScale(scal);
+
+
+    m_Collider = new Box(m_Anchor);
 }
 
 Quadtree::Quadtree(XMFLOAT2 pos, int childrenSize, int distantOffset)
@@ -208,8 +220,10 @@ void Quadtree::UpdateQuadTreeStucture()
 
 }
 
-void Quadtree::GetUpdateList(XMFLOAT2 updatePoint, std::vector<GameObject*>& listToUpdate)
+void Quadtree::GetUpdateList(PlayerGameObject* player, std::vector<GameObject*>& listToUpdate)
 {
+    Transform* t = player->GetTransform();
+    XMFLOAT2 updatePoint = XMFLOAT2(t->GetWorldPosition().x, t->GetWorldPosition().y);
     if (m_direction == CompassFacing::Centre)
     {
         CheckForObjectUpdate(listToUpdate);
@@ -218,56 +232,14 @@ void Quadtree::GetUpdateList(XMFLOAT2 updatePoint, std::vector<GameObject*>& lis
     {
         return;
     }
+    
+    PlayerGameObject* gObj = dynamic_cast<PlayerGameObject*>(SimpleQueryByIdentifier("Player"));
 
-    //float difference = std::abs(m_NW->m_angle.x - updatePoint.x);
-    //float difference2 = std::abs(m_NW->m_angle.y - updatePoint.y);
+    m_NW->Collides(player, listToUpdate);
+    m_NE->Collides(player, listToUpdate);
+    m_SW->Collides(player, listToUpdate);
+    m_SE->Collides(player, listToUpdate);
 
-    if (m_NW != nullptr)
-    {
-        m_NW->CheckForObjectUpdate(listToUpdate);
-        m_NW->GetUpdateList(updatePoint, listToUpdate);
-        m_NE->CheckForObjectUpdate(listToUpdate);
-        m_NE->GetUpdateList(updatePoint, listToUpdate);
-        m_SW->CheckForObjectUpdate(listToUpdate);
-        m_SW->GetUpdateList(updatePoint, listToUpdate);
-        m_SE->CheckForObjectUpdate(listToUpdate);
-        m_SE->GetUpdateList(updatePoint, listToUpdate);
-    }
-
-
-
-
-    //if (difference < m_objectOffset && difference2 < m_objectOffset && updatePoint.x <= m_NW->m_angle.x && updatePoint.y >= m_NW->m_angle.y)
-    //{
-    //    m_NW->CheckForObjectUpdate(listToUpdate);
-    //    m_NW->GetUpdateList(updatePoint, listToUpdate);
-    //}
-    // difference = std::abs(m_NE->m_angle.x - updatePoint.x);
-    //  difference2 = std::abs(m_NE->m_angle.y - updatePoint.y);
-
-    //if (difference < m_objectOffset && difference2 < m_objectOffset && updatePoint.x >= m_NE->m_angle.y && updatePoint.y >= m_NE->m_angle.y)
-    //{
-    //      m_NE->CheckForObjectUpdate(listToUpdate);
-    //      m_NE->GetUpdateList(updatePoint, listToUpdate);
-    //}
-
-    // difference = std::abs(m_SW->m_angle.x - updatePoint.x);
-    //  difference2 = std::abs(m_SW->m_angle.y - updatePoint.y);
-
-    //if (difference < m_objectOffset && difference2 < m_objectOffset && updatePoint.x <= m_SW->m_angle.x && updatePoint.y <= m_SW->m_angle.y)
-    //{
-    //    m_SW->CheckForObjectUpdate(listToUpdate);
-    //    m_SW->GetUpdateList(updatePoint, listToUpdate);
-    //}
-
-    // difference = std::abs(m_SE->m_angle.x - updatePoint.x);
-    //  difference2 = std::abs(m_SE->m_angle.y - updatePoint.y);
-
-    //if (difference < m_objectOffset && difference2 < m_objectOffset && updatePoint.x >= m_SE->m_angle.x && updatePoint.y <= m_SE->m_angle.y)
-    //{
-    //   m_SE->CheckForObjectUpdate(listToUpdate);
-    //   m_SE->GetUpdateList(updatePoint, listToUpdate);
-    //}
 }
 
 GameObject* Quadtree::SimpleQueryByIdentifier(std::string identifier)
@@ -338,6 +310,20 @@ GameObject* Quadtree::QueryByIdentifier(std::string identifier, XMFLOAT2 point)
     }
 
     return gameObject;
+}
+
+bool Quadtree::Collides(PlayerGameObject* pG, std::vector<GameObject*>& list)
+{
+    if (m_NW != nullptr)
+    {
+        if (m_Collider->Collide(pG->GetShape()))
+        {
+            CheckForObjectUpdate(list);
+            GetUpdateList(pG, list);
+            return true;
+        }
+    }
+    return false;
 }
 
 GameObject* Quadtree::SearchQuadTree(std::string identifier)

@@ -54,13 +54,14 @@ public:
 
     void UpdateQuadTreeStucture();
 
-    void GetUpdateList(XMFLOAT2 updatePoint, std::vector<GameObject*>& list);
+    void GetUpdateList(PlayerGameObject* player, std::vector<GameObject*>& list);
 
     GameObject* SimpleQueryByIdentifier(std::string identifier);
 
     GameObject* QueryByIdentifier(std::string identifier, XMFLOAT2 point);
 
 private:
+    bool Collides(PlayerGameObject* pG, std::vector<GameObject*>& list);
 
     GameObject* SearchQuadTree(std::string identifier);
 
@@ -77,6 +78,8 @@ private:
     CompassFacing m_direction;
     int m_maxNodeSize = 0;
     int m_objectOffset;
+    Box* m_Collider;
+    GameObject* m_Anchor;
 };
 
 #endif // QUADTREE_H_
