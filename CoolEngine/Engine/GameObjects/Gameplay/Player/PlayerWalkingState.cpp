@@ -3,6 +3,8 @@
 #include "Engine/GameObjects/PlayerGameObject.h"
 #include "Engine/GameObjects/Gameplay/Player/PlayerDodgingState.h"
 #include "Engine/GameObjects/Gameplay/Player/PlayerRollingState.h"
+#include "Engine/Graphics/AnimationState.h"
+#include "Engine/Graphics/AnimationStateMachine.h"
 
 PlayerWalkingState::PlayerWalkingState(PlayerMovementParameters movement)
 {
@@ -162,9 +164,32 @@ void PlayerWalkingState::UpdateButtonOrderOnButtonPressed(EGAMEPLAYBUTTONCLASS b
 bool PlayerWalkingState::IsVerticalDirection(EGAMEPLAYBUTTONCLASS button)
 {
     bool isVertical = false;
+
+    //Implementing Animations
+
+    XMFLOAT3 playerForce = m_playerMovingBody->GetForceApplied();
+
+    
+
+    bool playerIdle = false;
+
     switch (button)
     {
     case EGAMEPLAYBUTTONCLASS::MoveUp:
+    {
+        FiniteState* nextAnimState = m_playerReference->GetAnimationStateMachine()->GetState("PlayerWalkUp");
+        AnimationState* pAnimationState = dynamic_cast<AnimationState*>(nextAnimState);
+        pAnimationState->SetInt("WalkUpTrans", 5);
+        FiniteState* transtitionState = dynamic_cast<FiniteState*>(pAnimationState);
+        pAnimationState->Transition(transtitionState);
+    }
+        break;
+
+
+       /* if (MathHelper::Equals(playerForce, XMFLOAT3(0.0, 0.0, 0.0)))
+        {
+            pAnimationState->SetInt("PlayerFrontTrans", 1);
+        }*/
     case EGAMEPLAYBUTTONCLASS::MoveDown:
         isVertical = true;
         break;

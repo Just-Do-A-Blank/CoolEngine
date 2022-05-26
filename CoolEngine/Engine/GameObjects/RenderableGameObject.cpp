@@ -392,7 +392,7 @@ bool RenderableGameObject::AddAnimationState(string stateName, AnimationState* p
 {
 	if (m_panimationStateMachine->AddState(stateName, panimState) == false)
 	{
-		return false;
+		return false;  
 	}
 
 	if (isActive == true)

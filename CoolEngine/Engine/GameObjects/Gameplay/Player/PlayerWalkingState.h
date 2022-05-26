@@ -8,6 +8,8 @@
 #include "Engine\GameObjects\Gameplay\Player\PlayerMovementParameters.h"
 #include "Engine/GameObjects/Gameplay/Player/EPLAYERMOVEMENTSTATE.h"
 #include "Engine\GameObjects\Gameplay\Player\PlayerMovingBody.h"
+#include "Engine/GameObjects/CharacterGameObject.h"
+#include "Engine/Graphics/AnimationStateMachine.h"
 
 /// <summary>
 /// Allows the player to walk around
@@ -37,6 +39,9 @@ public:
     virtual void Handle(Event* e) override;
 
 private:
+    //New
+
+    AnimationStateMachine m_animationStateMachine;
 
     /// <summary>
     /// Next state to use. Should be walking unless the state is over
