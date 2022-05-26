@@ -1,5 +1,7 @@
 #pragma once
 #include "ContentBrowser.h"
+
+#if EDITOR
 class TileMapContentBrowser : public ContentBrowser
 {
 public:
@@ -15,4 +17,4 @@ protected:
 private:
 
 };
-
+#endif

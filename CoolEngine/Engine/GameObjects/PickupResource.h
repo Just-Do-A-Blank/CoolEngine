@@ -38,8 +38,12 @@ struct PickupResource
 class PickupResourceInterface
 {
 public:
+
     PickupResourceInterface(unordered_set<PickupResource*>* resources);
+
+#if EDITOR
     virtual void CreateEngineUI();
+#endif
 
     unordered_set<PickupResource*>* GetEffects() { return m_pPickupEffects; }
 

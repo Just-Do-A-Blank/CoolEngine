@@ -1,6 +1,7 @@
 #include "TileMapContentBrowser.h"
 #include "Engine/Includes/IMGUI/imgui.h"
 
+#if EDITOR
 const std::string& TileMapContentBrowser::GetSelectedPath() const
 {
 	return m_selectedFilePath;
@@ -47,3 +48,4 @@ void TileMapContentBrowser::CreateFileEntry(const WIN32_FIND_DATAA& kfileData)
 	ImGui::SameLine();
 	ContentBrowser::CreateFileEntry(kfileData);
 }
+#endif

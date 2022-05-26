@@ -39,7 +39,7 @@ CharacterGameObject::~CharacterGameObject()
 
 void CharacterGameObject::Update()
 {
-
+	TriggerableGameObject::Update();
 }
 
 void CharacterGameObject::EditorUpdate()

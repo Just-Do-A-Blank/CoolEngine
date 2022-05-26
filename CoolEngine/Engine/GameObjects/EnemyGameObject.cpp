@@ -1,9 +1,11 @@
 #include "EnemyGameObject.h"
 #include "Engine/Managers/GameManager.h"
 #include "Engine/AI/States/MeleeMovementState.h"
+#include "Engine/AI/States/RangeMovementState.h"
+#include "Engine/AI/States/RangeAttackState.h"
 #include "Engine/AI/States/MeleeAttackState.h"
 #include "Engine/AI/States/WanderState.h"
-#include "Engine/GameObjects/MeleeWeaponGameObject.h"
+#include "Engine/GameObjects/RangedWeaponGameObject.h"
 #include "Engine/ResourceDefines.h"
 #include "Engine/GameObjects/PlayerGameObject.h"
 #include "Engine/Physics/Shape.h"
@@ -41,7 +43,14 @@ void EnemyGameObject::Update()
 		m_invincibilityTime = 0;
 	}
 
-	SetWeaponPosition();
+	if (m_stateMachine.IsStateActive(FuzzyStateType::WANDER) == true)
+	{
+		SetWeaponPositionWander();
+	}
+	else
+	{
+		SetWeaponPositionAgro();
+	}
 }
 
 void EnemyGameObject::EditorUpdate()
@@ -61,40 +70,47 @@ void EnemyGameObject::CalculateMovement(node* pnode)
 
 	float step = m_moveSpeed * GameManager::GetInstance()->GetTimer()->DeltaTime();
 
-	m_direction = MathHelper::Normalize(m_direction);
+	if (MathHelper::SquareMagnitude(m_direction) != 0)
+	{
+		m_direction = MathHelper::Normalize(m_direction);
 
-	XMFLOAT3 stepPos = MathHelper::Multiply(m_direction, step);
-	stepPos = MathHelper::Plus(stepPos, m_transform->GetWorldPosition());
-	m_transform->SetWorldPosition(stepPos);
+		XMFLOAT3 stepPos = MathHelper::Multiply(m_direction, step);
+		stepPos = MathHelper::Plus(stepPos, m_transform->GetWorldPosition());
+		m_transform->SetWorldPosition(stepPos);
+	}
 }
 
 void EnemyGameObject::Start()
 {
 	PrefabGameObject::Start();
 
-	MeleeMovementState* pstate = new MeleeMovementState(this);
-
+	FuzzyState* pstate = new MeleeMovementState(this);
 	m_stateMachine.AddState(pstate);
 
-	MeleeAttackState* pattackState = new MeleeAttackState(this);
+	pstate = new MeleeAttackState(this);
+	m_stateMachine.AddState(pstate);
 
-	m_stateMachine.AddState(pattackState);
+	pstate = new WanderState(this);
+	m_stateMachine.AddState(pstate);
 
-	WanderState* pwanderState = new WanderState(this);
+	pstate = new RangeMovementState(this);
+	m_stateMachine.AddState(pstate);
 
-	m_stateMachine.AddState(pwanderState);
+	pstate = new RangeAttackState(this);
+	m_stateMachine.AddState(pstate);
 
-	m_pweapon = GameManager::GetInstance()->CreateGameObject<MeleeWeaponGameObject>("TestWeapon");
+	m_pweapon = GameManager::GetInstance()->CreateGameObject<RangedWeaponGameObject>(m_identifier + "_TestWeapon");
 	m_pweapon->SetAlbedo(TEST2);
 	m_pweapon->GetTransform()->SetLocalScale(XMFLOAT3(20, 20, 20));
 	m_pweapon->SetLayer(3);
 	m_pweapon->GetShape()->SetIsTrigger(true);
 	m_pweapon->GetShape()->SetIsCollidable(false);
+	m_pweapon->SetDistanceTravelled(500);
 
 	m_pplayer = GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject>(std::string("Player"));
 }
 
-void EnemyGameObject::SetWeaponPosition()
+void EnemyGameObject::SetWeaponPositionAgro()
 {
 	if (m_pweapon == nullptr || m_pplayer == nullptr)
 	{
@@ -120,4 +136,19 @@ void EnemyGameObject::SetWeaponPosition()
 
 	m_pweapon->GetTransform()->SetWorldPosition(XMFLOAT3(weaponPosition.x, weaponPosition.y, 0.0f));
 	m_pweapon->GetTransform()->SetWorldRotation(XMFLOAT3(0, 0, angle));
+}
+
+void EnemyGameObject::SetWeaponPositionWander()
+{
+	if (m_pweapon == nullptr || MathHelper::SquareMagnitude(m_direction) == 0.0f)
+	{
+		return;
+	}
+
+	float weaponOffsetDistance = 50.0f;
+
+	XMFLOAT3 weaponPos = MathHelper::Multiply(m_direction, weaponOffsetDistance);
+	weaponPos = MathHelper::Plus(m_transform->GetWorldPosition(), weaponPos);
+
+	m_pweapon->GetTransform()->SetWorldPosition(weaponPos);
 }

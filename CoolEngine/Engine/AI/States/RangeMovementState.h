@@ -3,14 +3,14 @@
 
 class PlayerGameObject;
 class EnemyGameObject;
-class MeleeWeaponGameObject;
+class RangedWeaponGameObject;
 
 struct node;
 
-class MeleeMovementState : public FuzzyState
+class RangeMovementState : public FuzzyState
 {
 public:
-	MeleeMovementState(EnemyGameObject* penemy);
+	RangeMovementState(EnemyGameObject* penemy);
 
 	void SetEnemy(EnemyGameObject* penemy);
 
@@ -30,14 +30,17 @@ private:
 	PlayerGameObject* m_pplayer = nullptr;
 	EnemyGameObject* m_penemy = nullptr;
 
-	MeleeWeaponGameObject* m_pweapon = nullptr;
+	RangedWeaponGameObject* m_prangeWeapon = nullptr;
 
 	std::vector<node*> m_path;
 
-	float m_activationDistance = 10.0f;
 	float m_maxActivationDistance = 750;
 	float m_nodePopDistance = 3.0f;
 	float m_replanPathTime = 1.0f;
 	float m_replanPathTimeStamp = 0;
+	float m_upperOptimalDistanceMultiplier = 0.8f;
+	float m_lowerOptimalDistanceMultiplier = 0.6f;
+
+	XMFLOAT3 CalculateTargetPosition() const;
 };
 

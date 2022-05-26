@@ -2,7 +2,7 @@
 #include "Engine/Includes/IMGUI/imgui.h"
 #include "Engine/Managers/GameManager.h"
 
-
+#if EDITOR
 ContentBrowser::ContentBrowser()
 {
 	m_sfilepath = GameManager::GetInstance()->GetWorkingDirectory();
@@ -135,3 +135,4 @@ void ContentBrowser::CreateEntry(const WIN32_FIND_DATAA& kfileData)
 		CreateFileEntry(kfileData);
 	}
 }
+#endif

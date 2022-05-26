@@ -1,4 +1,6 @@
 #include "WeaponGameObject.h"
+#include "Engine/Managers/Events/MouseEvents.h"
+#include "Engine/Managers/Events/EventManager.h"
 #include "Engine\EditorUI\EditorUI.h"
 #include "Engine/Managers/GraphicsManager.h"
 
@@ -75,6 +77,7 @@ WeaponGameObject::WeaponGameObject(WeaponGameObject const& other) : TriggerableG
 
 WeaponGameObject::~WeaponGameObject()
 {
+
 }
 
 void WeaponGameObject::Serialize(nlohmann::json& data)
@@ -182,6 +185,10 @@ void WeaponGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
 {
     SaveLocalData(jsonData);
     TriggerableGameObject::SaveAllPrefabData(jsonData);
+}
+
+void WeaponGameObject::Attack()
+{
 }
 
 void WeaponGameObject::CalculateWeaponStrength()
@@ -336,6 +343,32 @@ int WeaponGameObject::RoundUp(float value)
     return temp;
 }
 
+void WeaponGameObject::Handle(Event* e)
+{
+	switch (e->GetEventID())
+	{
+	case EventType::MouseButtonPressed:
+		{
+			MouseButtonPressedEvent* pmouseEvent = (MouseButtonPressedEvent*)e;
+
+			if (pmouseEvent->GetButton() == VK_LBUTTON)
+			{
+				Attack();
+			}
+		}
+		break;
+	}
+}
+
+void WeaponGameObject::RegisterForEvents()
+{
+	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
+}
+
+void WeaponGameObject::UnregisterForEvents()
+{
+	EventManager::Instance()->RemoveClientEvent(EventType::MouseButtonPressed, this);
+}
 #if EDITOR
 list<pair<int, string>> WeaponGameObject::GetElementsAsList()
 {

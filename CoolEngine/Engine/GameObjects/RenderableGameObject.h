@@ -90,10 +90,7 @@ protected:
 	//Flags
 	bool m_isRenderable = true;
 
-#if EDITOR
-	//ImGui variables
 	wstring m_texFilepath;
-#endif
 
 	AnimationStateMachine* m_panimationStateMachine;
 
