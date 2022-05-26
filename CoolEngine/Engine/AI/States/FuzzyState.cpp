@@ -29,7 +29,7 @@ FuzzyState::FuzzyState(const FuzzyState* pother)
 void FuzzyState::CreateEngineUI()
 {
 	EditorUIFloatParameters params;
-	params.m_minValue = 0;
+	params.m_minValue = 0.01f;
 	params.m_maxValue = 1;
 	params.m_tooltipText = "The level at which the state becomes active";
 

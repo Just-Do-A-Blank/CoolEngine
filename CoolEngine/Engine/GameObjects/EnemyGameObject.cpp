@@ -50,8 +50,6 @@ void EnemyGameObject::Update()
   
 	m_pAIStateMachine->Update();
 
-	m_stateMachine.Update();
-
 	if (m_pAIStateMachine->IsStateActive(FuzzyStateType::WANDER) == true)
 	{
 		SetWeaponPositionWander();
