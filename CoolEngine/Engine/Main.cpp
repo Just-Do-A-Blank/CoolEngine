@@ -775,8 +775,6 @@ void Update()
 	Inputs::GetInstance()->Update();
 	EventManager::Instance()->ProcessEvents();
 
-	PickupsManager::GetInstance()->Update();
-
 
 
 	GameManager* pgamemanager = GameManager::GetInstance();

@@ -2,6 +2,7 @@
 #include "Engine/GameObjects/CharacterGameObject.h"
 #include "Engine/Managers/Events/MouseEvents.h"
 #include "Engine/Managers/Events/KeyEvents.h" 
+#include "Engine/Managers/PickupsManager.h" 
 #include "CameraGameObject.h"
 #include "Engine/GameObjects/Gameplay/Player/PlayerController.h"
 #include "Inventory.h"
@@ -83,6 +84,10 @@ private:
     /// 
     PlayerController* m_playerController;
   
+    /// <summary>
+    /// Manages and updates the systems related to pickups
+    /// </summary>
+    PickupsManager* m_pickupsManager;
 
     /// <summary>
     /// Manages the Player Resources (Health and Stamina for example)

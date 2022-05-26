@@ -2,8 +2,7 @@
 #include <unordered_set>
 #include "Engine/Structure/Singleton.h"
 
-class PlayerGameObject;
-class PickupsManager : public Singleton<PickupsManager>
+class PickupsManager
 {
 public:
 	void Update();

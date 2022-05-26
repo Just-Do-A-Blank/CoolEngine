@@ -73,6 +73,8 @@ PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : Character
 
 	m_resourceManager = new PlayerResourceManager();
 
+	m_pickupsManager = new PickupsManager();
+
     EventManager::Instance()->AddClient(EventType::KeyPressed, this);
     EventManager::Instance()->AddClient(EventType::KeyReleased, this);
     EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
@@ -155,6 +157,8 @@ PlayerGameObject::PlayerGameObject(const nlohmann::json& data, CoolUUID uuid) : 
 	//pgameManager->CreateGameObject<CameraGameObject>("Camera"); //  use - GameManager::GetInstance()->GetCamera(); - to set camera to editor camera
 	//GameManager::GetInstance()->SetCamera(m_cameraRef);
     m_resourceManager = new PlayerResourceManager();
+	m_pickupsManager = new PickupsManager();
+
     if (PrefabGameObject::IsPrefab())
     {
         LoadLocalData(PrefabGameObject::GetPrefabDataLoadedAtCreation());
@@ -178,6 +182,7 @@ PlayerGameObject::PlayerGameObject(PlayerGameObject const& other) : CharacterGam
 
 	m_myInventory = new Inventory(); // creates the inventory object
     m_resourceManager = new PlayerResourceManager(*other.m_resourceManager);
+	m_pickupsManager = new PickupsManager();
 }
 
 PlayerGameObject::~PlayerGameObject()
@@ -198,6 +203,8 @@ PlayerGameObject::~PlayerGameObject()
 	m_playerController = nullptr;
 
 	delete m_resourceManager;
+
+	delete m_pickupsManager;
 }
 
 
@@ -206,6 +213,7 @@ void PlayerGameObject::Start()
 	CharacterGameObject::Start();
 
 	m_resourceManager->Start();
+
 }
 
 
@@ -309,6 +317,8 @@ void PlayerGameObject::Handle(Event* e)
 void PlayerGameObject::Update()
 {
 	CharacterGameObject::Update();
+
+	m_pickupsManager->Update();
 
     m_playerController->Update();
 }
