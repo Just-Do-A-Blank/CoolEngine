@@ -16,6 +16,8 @@ WeaponGameObject::WeaponGameObject() : TriggerableGameObject()
     m_statusList = GetStatusesAsList();
     m_statusSelectedItem = GetStatusesFromIndex((int)m_statusEffect);
 #endif
+
+    CalculateWeaponStrength();
 }
 
 WeaponGameObject::WeaponGameObject(string identifier, CoolUUID uuid) : TriggerableGameObject(identifier, uuid)
@@ -30,6 +32,8 @@ WeaponGameObject::WeaponGameObject(string identifier, CoolUUID uuid) : Triggerab
     m_statusList = GetStatusesAsList();
     m_statusSelectedItem = GetStatusesFromIndex((int)m_statusEffect);
 #endif
+
+    CalculateWeaponStrength();
 }
 
 WeaponGameObject::WeaponGameObject(const nlohmann::json& data, CoolUUID uuid) : TriggerableGameObject(data, uuid)
@@ -75,6 +79,8 @@ WeaponGameObject::WeaponGameObject(WeaponGameObject const& other) : TriggerableG
     m_statusList = GetStatusesAsList();
     m_statusSelectedItem = other.m_statusSelectedItem;
 #endif
+
+    CalculateWeaponStrength();
 }
 
 WeaponGameObject::~WeaponGameObject()
@@ -160,6 +166,7 @@ void WeaponGameObject::LoadLocalData(const nlohmann::json& jsonData)
         SetUITexture(m_UITexturePath);
     }
 
+    CalculateWeaponStrength();
 }
 
 void WeaponGameObject::SaveLocalData(nlohmann::json& jsonData)

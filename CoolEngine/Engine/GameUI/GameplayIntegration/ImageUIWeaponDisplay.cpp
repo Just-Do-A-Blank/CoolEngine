@@ -47,7 +47,7 @@ void ImageUIWeaponDisplay::Update(WeaponGameObject* weaponGameObject)
 	switch (m_weaponAttachmentOption)
 	{
 		case EWEAPONUIATTACHMENTOPTION::Holding:
-			if (m_texturePathAttached == std::wstring())
+			if (weaponGameObject != nullptr && m_texturePathAttached == std::wstring())
 			{
 				m_imageComponent->SetTexture(weaponGameObject->GetUITexturePath());
 			}
@@ -57,7 +57,7 @@ void ImageUIWeaponDisplay::Update(WeaponGameObject* weaponGameObject)
 			}
 			break;
 		case EWEAPONUIATTACHMENTOPTION::Inventory:
-			if (m_texturePathAttached == std::wstring())
+			if (weaponGameObject != nullptr && m_texturePathAttached == std::wstring())
 			{
 				m_imageComponent->SetTexture(weaponGameObject->GetUITexturePath());
 			}

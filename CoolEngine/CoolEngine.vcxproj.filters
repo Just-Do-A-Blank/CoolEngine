@@ -315,6 +315,9 @@
     <ClCompile Include="Engine\GameUI\GameplayIntegration\ImageUIWeaponDisplay.cpp">
       <Filter>Engine\GameUI\GameplayIntegration</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\TextUIWeaponDisplay.cpp">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -804,6 +807,12 @@
       <Filter>Engine\GameUI\GameplayIntegration</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameUI\GameplayIntegration\ImageUIWeaponDisplay.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\TextUIWeaponDisplay.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\EWeaponTextDisplayStat.h">
       <Filter>Engine\GameUI\GameplayIntegration</Filter>
     </ClInclude>
   </ItemGroup>
