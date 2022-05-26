@@ -225,7 +225,7 @@ void Collision::Update(vector<GameObject*> gameObjectMap)
 
 	for (int it1 = 0; it1 < gameObjectMap.size(); ++it1)
 	{
-		if (gameObjectMap[it1]->ContainsType(GameObjectType::COLLIDABLE) == false)
+		if (gameObjectMap[it1]->ContainsType(GameObjectType::COLLIDABLE) == false || gameObjectMap[it1]->GetEnabled() == false)
 		{
 			continue;
 		}
@@ -242,11 +242,16 @@ void Collision::Update(vector<GameObject*> gameObjectMap)
 
 	for (int it1 = 0; it1 < gameObjectMap.size(); ++it1)
 	{
+		if (gameObjectMap[it1]->GetEnabled() == false)
+		{
+			continue;
+		}
+
 		for (int it2 = 0; it2 < gameObjectMap.size(); ++it2)
 		{
 			if (it1 != it2)
 			{
-				if (gameObjectMap[it1]->ContainsType(GameObjectType::COLLIDABLE) == false || gameObjectMap[it2]->ContainsType(GameObjectType::COLLIDABLE) == false)
+				if (gameObjectMap[it1]->ContainsType(GameObjectType::COLLIDABLE) == false || gameObjectMap[it2]->ContainsType(GameObjectType::COLLIDABLE) == false || gameObjectMap[it2]->GetEnabled() == false)
 				{
 					continue;
 				}
