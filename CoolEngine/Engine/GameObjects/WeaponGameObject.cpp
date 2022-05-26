@@ -64,6 +64,7 @@ WeaponGameObject::WeaponGameObject(WeaponGameObject const& other) : TriggerableG
 	m_shotCount = other.m_shotCount;
 	m_timeLethal = other.m_timeLethal;
 	m_distanceTravelled = other.m_distanceTravelled;
+    m_radius = other.m_radius;
 
 	ELEMENTS m_element = other.m_element;
 	STATUSES m_statusEffect = other.m_statusEffect;
@@ -149,6 +150,7 @@ void WeaponGameObject::LoadLocalData(const nlohmann::json& jsonData)
         m_distanceTravelled = jsonData["WeaponDistanceTravelled"];
         m_element = (ELEMENTS)jsonData["WeaponElement"];
         m_statusEffect = (STATUSES)jsonData["WeaponStatus"];
+        m_radius = jsonData["Radius"];
 
 #if EDITOR
         m_elementSelectedItem = GetElementsFromIndex((int)m_element);
@@ -178,6 +180,7 @@ void WeaponGameObject::SaveLocalData(nlohmann::json& jsonData)
     jsonData["WeaponDistanceTravelled"] = m_distanceTravelled;
     jsonData["WeaponElement"] = (int)m_element;
     jsonData["WeaponStatus"] = (int)m_statusEffect;
+    jsonData["Radius"] = m_radius;
 
     std::string tempPath = std::string(m_UITexturePath.begin(), m_UITexturePath.end());
     jsonData["WeaponUITexturePath"] = tempPath;
@@ -197,6 +200,7 @@ void WeaponGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
 
 void WeaponGameObject::Attack()
 {
+
 }
 
 void WeaponGameObject::CalculateWeaponStrength()
@@ -264,6 +268,21 @@ void WeaponGameObject::SetCollisionScale(XMFLOAT2 scale)
     m_collisionScale = scale;
 }
 
+void WeaponGameObject::SetRadius(float rad)
+{
+    m_radius = rad;
+}
+
+void WeaponGameObject::SetHolderPosition(XMFLOAT2 pos)
+{
+    m_holderPosition = pos;
+}
+
+void WeaponGameObject::SetTargetPosition(XMFLOAT2 pos)
+{
+    m_targetPosition = pos;
+}
+
 string WeaponGameObject::GetUniqueKey()
 {
     return m_key;
@@ -329,6 +348,21 @@ XMFLOAT2 WeaponGameObject::GetCollisionScale()
     return m_collisionScale;
 }
 
+float WeaponGameObject::GetRadius()
+{
+    return m_radius;
+}
+
+XMFLOAT2 WeaponGameObject::GetHolderPosition()
+{
+    return m_holderPosition;
+}
+
+XMFLOAT2 WeaponGameObject::GetTargetPosition()
+{
+    return m_targetPosition;
+}
+
 bool WeaponGameObject::GetIsDualType()
 {
     return ((int)m_element >= (int)ELEMENTS::POISONFIRE);
@@ -359,7 +393,7 @@ void WeaponGameObject::Handle(Event* e)
 		{
 			MouseButtonPressedEvent* pmouseEvent = (MouseButtonPressedEvent*)e;
 
-			if (pmouseEvent->GetButton() == VK_LBUTTON)
+			if (pmouseEvent->GetButton() == VK_LBUTTON && m_isPlayerWeapon)
 			{
 				Attack();
 			}
@@ -377,6 +411,24 @@ void WeaponGameObject::UnregisterForEvents()
 {
 	EventManager::Instance()->RemoveClientEvent(EventType::MouseButtonPressed, this);
 }
+
+void WeaponGameObject::SetWeaponPosition(XMFLOAT2 toWeapon)
+{
+    XMFLOAT2 weaponPosition = MathHelper::Multiply(toWeapon, m_radius);
+    weaponPosition = MathHelper::Plus(m_holderPosition, weaponPosition);
+
+    float angle = MathHelper::DotProduct(toWeapon, XMFLOAT2(0, 1));
+    angle = (std::acosf(angle) * 180.0f) / XM_PI;
+
+    if (toWeapon.x > 0.0f)
+    {
+        angle *= -1.0f;
+    }
+
+    GetTransform()->SetWorldPosition(XMFLOAT3(weaponPosition.x, weaponPosition.y, 0.0f));
+    GetTransform()->SetWorldRotation(XMFLOAT3(0, 0, angle));
+}
+
 #if EDITOR
 list<pair<int, string>> WeaponGameObject::GetElementsAsList()
 {

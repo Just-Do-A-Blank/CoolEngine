@@ -12,6 +12,8 @@ public:
 
 	virtual void Serialize(nlohmann::json& data) override;
 
+	void SaveLocalData(nlohmann::json& jsonData);
+
 	void SetSceneName(string path);
 
 #if EDITOR
@@ -44,5 +46,6 @@ private:
 	void TriggerCollisionEvents(CollisionEvent*);
 
 	string m_sceneName;
+	string m_playerName;
 };
 

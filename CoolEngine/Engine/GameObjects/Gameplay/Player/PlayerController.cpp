@@ -47,7 +47,6 @@ PlayerController::PlayerController(InputsAsGameplayButtons* gameplayButtons, Pla
 
 PlayerController::PlayerController(PlayerController const& other, PlayerGameObject* newPlayer)
 {
-	m_currentState = other.m_currentState;
 	m_movementParameters = other.m_movementParameters;
 	m_movementParameters.m_playerReference = newPlayer;
 	m_moveSpeedMax = other.m_moveSpeedMax;

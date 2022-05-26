@@ -8,6 +8,7 @@
 #include "Engine/GameObjects/PickupGameObject.h"
 #include "Engine/Managers/Events/PickupEvent.h"
 
+
 PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : CharacterGameObject(identifier, uuid)
 {
     m_gameObjectType |= GameObjectType::PLAYER;
@@ -202,18 +203,9 @@ PlayerGameObject::~PlayerGameObject()
 
 void PlayerGameObject::Start()
 {
-	PrefabGameObject::Start();
+	CharacterGameObject::Start();
 
 	m_resourceManager->Start();
-
-	// If this is meant to be a melee weapon then yell at me, but I was told to make it shoot bullets!
-	m_pweapon = GameManager::GetInstance()->CreateGameObject<RangedWeaponGameObject>(m_identifier + "_TestWeapon");
-	m_pweapon->SetAlbedo(TEST2);
-	m_pweapon->GetTransform()->SetLocalScale(XMFLOAT3(20, 20, 20));
-	m_pweapon->SetLayer(3);
-	m_pweapon->GetShape()->SetIsTrigger(true);
-	m_pweapon->GetShape()->SetIsCollidable(false);
-	m_pweapon->RegisterForEvents();
 }
 
 
@@ -247,36 +239,8 @@ void PlayerGameObject::SaveLocalData(nlohmann::json& jsonData)
     m_resourceManager->SaveData(jsonData);
 }
 
-void PlayerGameObject::SetWeaponPosition()
-{
-	if (m_pweapon == nullptr)
-	{
-		return;
-	}
-
-	XMFLOAT2 playerPosWorld = XMFLOAT2(GetTransform()->GetWorldPosition().x, GetTransform()->GetWorldPosition().y);
-	XMFLOAT2 toWeapon = MathHelper::Minus(GameManager::GetInstance()->GetCamera()->GetMousePositionInWorldSpace(), playerPosWorld);
-	toWeapon = MathHelper::Normalize(toWeapon);
-	float weaponOffsetDistance = 50.0f;
-
-	XMFLOAT2 weaponPosition = MathHelper::Multiply(toWeapon, weaponOffsetDistance);
-	weaponPosition = MathHelper::Plus(playerPosWorld, weaponPosition);
-
-	float angle = MathHelper::DotProduct(toWeapon, XMFLOAT2(0, 1));
-	angle = (std::acosf(angle) * 180.0f) / XM_PI;
-
-	if (toWeapon.x > 0.0f)
-	{
-		angle *= -1.0f;
-	}
-
-	m_pweapon->GetTransform()->SetWorldPosition(XMFLOAT3(weaponPosition.x, weaponPosition.y, 0.0f));
-	m_pweapon->GetTransform()->SetWorldRotation(XMFLOAT3(0, 0, angle));
-}
-
 void PlayerGameObject::OnTriggerHold(GameObject* obj1, GameObject* obj2)
 {
-
 	if ((obj1->ContainsType(GameObjectType::PLAYER)) && (obj2->ContainsType(GameObjectType::PICKUP)))
 	{
 		PickupGameObject* pickup = dynamic_cast<PickupGameObject*>(obj2);
@@ -288,8 +252,6 @@ void PlayerGameObject::OnTriggerHold(GameObject* obj1, GameObject* obj2)
 
 		pickup->SetToBeDeleted(true);
 	}
-
-
 }
 
 /// <summary>
@@ -349,17 +311,6 @@ void PlayerGameObject::Update()
 	CharacterGameObject::Update();
 
     m_playerController->Update();
-
-	if (m_invincibilityTime > 0.0f)
-	{
-		m_invincibilityTime -= GameManager::GetInstance()->GetTimer()->DeltaTime();
-	}
-	else
-	{
-		m_invincibilityTime = 0;
-	}
-
-	SetWeaponPosition();
 }
 
 void PlayerGameObject::TakeDamage(float damage)

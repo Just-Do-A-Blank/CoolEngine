@@ -85,7 +85,7 @@ const bool& RenderableGameObject::IsRenderable()
 
 void RenderableGameObject::Render(RenderStruct& renderStruct)
 {
-	if (m_isRenderable == false)
+	if (!m_isRenderable)
 	{
 		return;
 	}
