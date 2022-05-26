@@ -177,11 +177,10 @@ bool PlayerWalkingState::IsVerticalDirection(EGAMEPLAYBUTTONCLASS button)
     {
     case EGAMEPLAYBUTTONCLASS::MoveUp:
     {
-        FiniteState* nextAnimState = m_playerReference->GetAnimationStateMachine()->GetState("PlayerWalkUp");
+        FiniteState* nextAnimState = m_playerReference->GetAnimationStateMachine()->GetActiveState();
         AnimationState* pAnimationState = dynamic_cast<AnimationState*>(nextAnimState);
-        pAnimationState->SetInt("WalkUpTrans", 5);
-        FiniteState* transtitionState = dynamic_cast<FiniteState*>(pAnimationState);
-        pAnimationState->Transition(transtitionState);
+        pAnimationState->SetInt("PlayerFrontTrans", 5);
+        
     }
         break;
 

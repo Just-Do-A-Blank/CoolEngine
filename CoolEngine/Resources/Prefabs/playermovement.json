@@ -1,5 +1,4 @@
 {
-  
   "AnimationStateMachine": {
     "ActiveState": "PlayerIdleFront",
     "States": {
@@ -8,7 +7,17 @@
         "AnimIsLooping": true,
         "BoolTransitions": null,
         "FloatTransitions": null,
-        "IntTransitions": { "PlayerFrontTrans": [ [ 0, 1, "PlayerIdleFront" ] ] }
+        "IntTransitions": {
+          "0_IdleUpTrans": [ [ 0, 1, "PlayerIdleUp" ] ],
+          "1_IdleLeftTrans": [ [ 0, 2, "PlayerIdleLeft" ] ],
+          "2_IdleRightTrans": [ [ 0, 3, "PlayerIdleRight" ] ],
+          "3_WalkUpTrans": [ [ 0, 4, "PlayerWalkUp" ] ],
+          "4_WalkDownTrans": [ [ 0, 6, "PlayerWalkDown" ] ],
+          "5_WalkLeftTrans": [ [ 0, 7, "PlayerWalkLeft" ] ],
+          "6_WalkRightTrans": [ [ 0, 8, "PlayerWalkRight" ] ],
+          "7_IdleDownTrans": [ [ 0, 1, "" ] ],
+          "PlayerFrontTrans": [ [ 0, 5, "PlayerWalkUp" ] ]
+        }
       },
       "PlayerIdleLeft": {
         "Anim": "Animations\\idleleftanim.json",
@@ -29,7 +38,16 @@
         "AnimIsLooping": true,
         "BoolTransitions": null,
         "FloatTransitions": null,
-        "IntTransitions": { "PlayerUpTrans": [ [ 0, 2, "PlayerIdleUp" ] ] }
+        "IntTransitions": {
+          "1_IdleDownTrans": [ [ 0, 1, "PlayerIdleFront" ] ],
+          "1_IdleLeftTrans": [ [ 0, 1, "" ] ],
+          "1_IdleRightTrans": [ [ 0, 1, "" ] ],
+          "1_IdleUpTrans": [ [ 0, 1, "" ] ],
+          "1_WalkDownTrans": [ [ 0, 1, "" ] ],
+          "1_WalkLeftTrans": [ [ 0, 1, "" ] ],
+          "1_WalkRightTrans": [ [ 0, 1, "" ] ],
+          "1_WalkUpTrans": [ [ 0, 1, "" ] ]
+        }
       },
       "PlayerWalkDown": {
         "Anim": "Animations\\WalkFrontAnim.json",
@@ -57,7 +75,10 @@
         "AnimIsLooping": true,
         "BoolTransitions": null,
         "FloatTransitions": null,
-        "IntTransitions": { "WalkUpTrans": [ [ 0, 5, "PlayerWalkUp" ] ] }
+        "IntTransitions": {
+          "WalkUpTrans": [ [ 0, 5, "PlayerWalkUp" ] ],
+          "testTrans": [ [ 0, 1, "PlayerIdleFront" ] ]
+        }
       }
     }
   },
