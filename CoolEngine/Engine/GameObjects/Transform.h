@@ -2,6 +2,10 @@
 
 #include "Engine/Structure/EditorUIComponent.h"
 
+#define FORWARD_DEFAULT XMFLOAT3(0.0f, 1.0f, 0.0f)
+#define UP_DEFAULT XMFLOAT3(0.0f, 0.0f, 1.0f)
+#define LEFT_DEFAULT XMFLOAT3(-1.0f, 0.0f, 0.0f)
+
 class Transform : EditorUIComponent
 {
 	XMFLOAT3 m_localPosition;
@@ -12,9 +16,13 @@ class Transform : EditorUIComponent
 	XMFLOAT3 m_worldRotation;
 	XMFLOAT3 m_worldScale;
 
-	XMFLOAT3 m_forwardVector = XMFLOAT3(0.0f, -1.0f, 0.0f);
-	XMFLOAT3 m_upVector = XMFLOAT3(0.0f, 0.0f, 1.0f);;
-	XMFLOAT3 m_leftVector = XMFLOAT3(-1.0f, 0.0f, 0.0f);
+	XMFLOAT3 m_forwardVector = FORWARD_DEFAULT;
+	XMFLOAT3 m_upVector = UP_DEFAULT;
+	XMFLOAT3 m_leftVector = LEFT_DEFAULT;
+
+	XMFLOAT3 m_defaultForwardVector = FORWARD_DEFAULT;
+	XMFLOAT3 m_defaultUpVector = UP_DEFAULT;
+	XMFLOAT3 m_defaultLeftVector = LEFT_DEFAULT;
 
 	Transform* m_pparentTransform;
 	vector<Transform*> m_childrenTransformList;

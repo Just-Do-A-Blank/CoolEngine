@@ -17,3 +17,8 @@ float FuzzyState::GetActivationLevel() const
 {
 	return m_activationLevel;
 }
+
+FuzzyStateType FuzzyState::GetStateType() const
+{
+	return m_stateType;
+}

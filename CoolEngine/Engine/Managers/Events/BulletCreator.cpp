@@ -5,8 +5,6 @@
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/Physics/Collision.h"
 
-
-
 BulletCreator::BulletCreator()
 {
 	EventManager::Instance()->AddClient(EventType::CreateBullet, this);
@@ -112,9 +110,6 @@ void BulletCreator::Handle(Event* e)
 	{
 	case EventType::CreateBullet:
 		CreateBullet((CreateBulletEvent*)e);
-		break;
-	case EventType::MouseButtonPressed:
-		TestFire((MouseButtonPressedEvent*)e);
 		break;
 	}
 }

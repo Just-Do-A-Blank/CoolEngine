@@ -11,8 +11,11 @@ void PickupsManager::CheckList(list<string> toCheck)
 		//Only inserts if the item is not present already
 		m_pFullEffectList.insert(*it);
 	}
+}
 
-
+void PickupsManager::ResetPlayer()
+{
+	m_pPlayer = nullptr;
 }
 
 PickupsManager::PickupsManager()
@@ -23,7 +26,6 @@ PickupsManager::PickupsManager()
 
 void PickupsManager::Update()
 {
-
 	//If we dont have a player yet, get one
 	if (m_pPlayer == nullptr)
 	{

@@ -16,7 +16,7 @@ public:
 
 	void CreateBullet(CreateBulletEvent* e);
 	void TestFire(MouseButtonPressedEvent* e);
-	void Handle(Event* e);
+	void Handle(Event* e) override;
 
 	void DeleteBullets();
 
