@@ -1,1 +1,5 @@
-{"FramePaths":["Resources\\Sprites\\General\\Player\\Idle_Front_1.dds","Resources\\Sprites\\General\\Player\\Idle_Front_2.dds","Resources\\Sprites\\General\\Player\\Idle_Front_3.dds","Resources\\Sprites\\General\\Player\\Idle_Front_4.dds"],"FrameTimes":[1.2000000476837158,1.100000023841858,1.2000000476837158,1.2999999523162842]}
+{
+  
+  "FramePaths": [ "Resources\\Sprites\\General\\Animated\\Player\\Idle\\Idle_Front_1.dds", "Resources\\Sprites\\General\\Animated\\Player\\Idle\\Idle_Front_2.dds", "Resources\\Sprites\\General\\Animated\\Player\\Idle\\Idle_Front_3.dds", "Resources\\Sprites\\General\\Animated\\Player\\Idle\\Idle_Front_4.dds" ],
+  "FrameTimes": [ 0.25, 0.25, 0.25, 0.25 ]
+}

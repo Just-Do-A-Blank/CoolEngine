@@ -29,7 +29,7 @@ AnimationStateMachine::AnimationStateMachine(AnimationStateMachine const* other)
 }
 
 void AnimationStateMachine::Serialize(nlohmann::json& data)
-{
+ {
 	data["AnimationStateMachine"]["ActiveState"] = GetStateName(m_pstate);
 	data["AnimationStateMachine"]["States"] = {};
 
@@ -37,11 +37,17 @@ void AnimationStateMachine::Serialize(nlohmann::json& data)
 	{
 		it->second->Serialize(data["AnimationStateMachine"]["States"], this);
 	}
+	int i = 0;
 }
 
 void AnimationStateMachine::Deserialize(const nlohmann::json& data)
 {
 	m_states.clear();
+
+	if (!data.contains("AnimationStateMachine"))
+	{
+		return;
+	}
 
 	if (data["AnimationStateMachine"]["States"] != NULL)
 	{
