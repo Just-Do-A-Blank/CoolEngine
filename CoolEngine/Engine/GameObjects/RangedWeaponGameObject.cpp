@@ -122,7 +122,15 @@ void RangedWeaponGameObject::Attack()
 
 void RangedWeaponGameObject::Update()
 {
-    XMFLOAT2 toWeapon = MathHelper::Minus(GameManager::GetInstance()->GetCamera()->GetMousePositionInWorldSpace(), GetHolderPosition());
+    XMFLOAT2 toWeapon;
+    if (GetIsPlayerWeapon())
+    {
+        toWeapon = MathHelper::Minus(GameManager::GetInstance()->GetCamera()->GetMousePositionInWorldSpace(), GetHolderPosition());
+    }
+    else
+    {
+        toWeapon = MathHelper::Minus(GetTargetPosition(), GetHolderPosition());
+    }
     toWeapon = MathHelper::Normalize(toWeapon);
 
     SetWeaponPosition(toWeapon);

@@ -144,13 +144,13 @@ void MeleeWeaponGameObject::Update()
     if (!m_isSwinging)
     {
         XMFLOAT2 toWeapon;
-        if (GetIsPointingAtPlayer())
+        if (GetIsPlayerWeapon())
         {
-            toWeapon = MathHelper::Minus(GetTargetPosition(), GetHolderPosition());
+            toWeapon = MathHelper::Minus(GameManager::GetInstance()->GetCamera()->GetMousePositionInWorldSpace(), GetHolderPosition());
         }
         else
         {
-            toWeapon = MathHelper::Minus(GameManager::GetInstance()->GetCamera()->GetMousePositionInWorldSpace(), GetHolderPosition());
+            toWeapon = MathHelper::Minus(GetTargetPosition(), GetHolderPosition());
         }
         toWeapon = MathHelper::Normalize(toWeapon);
 

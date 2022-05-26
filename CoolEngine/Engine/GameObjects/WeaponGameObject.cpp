@@ -270,11 +270,6 @@ void WeaponGameObject::SetHolderPosition(XMFLOAT2 pos)
     m_holderPosition = pos;
 }
 
-void WeaponGameObject::SetIsPointingAtPlayer(bool point)
-{
-    m_isPointingAtPlayer = point;
-}
-
 void WeaponGameObject::SetTargetPosition(XMFLOAT2 pos)
 {
     m_targetPosition = pos;
@@ -353,11 +348,6 @@ float WeaponGameObject::GetRadius()
 XMFLOAT2 WeaponGameObject::GetHolderPosition()
 {
     return m_holderPosition;
-}
-
-bool WeaponGameObject::GetIsPointingAtPlayer()
-{
-    return m_isPointingAtPlayer;
 }
 
 XMFLOAT2 WeaponGameObject::GetTargetPosition()

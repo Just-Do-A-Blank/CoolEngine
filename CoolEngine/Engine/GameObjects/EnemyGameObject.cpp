@@ -103,7 +103,6 @@ void EnemyGameObject::SetWeaponPositionAgro()
 		return;
 	}
 
-	m_pweapon->SetIsPointingAtPlayer(true);
 	m_pweapon->SetTargetPosition(XMFLOAT2(m_pplayer->GetTransform()->GetWorldPosition().x, m_pplayer->GetTransform()->GetWorldPosition().y));
 }
 
@@ -114,12 +113,10 @@ void EnemyGameObject::SetWeaponPositionWander()
 		return;
 	}
 
-	m_pweapon->SetIsPointingAtPlayer(false);
-
 	float weaponOffsetDistance = 50.0f;
 
 	XMFLOAT3 weaponPos = MathHelper::Multiply(m_direction, weaponOffsetDistance);
 	weaponPos = MathHelper::Plus(m_transform->GetWorldPosition(), weaponPos);
 
-	m_pweapon->GetTransform()->SetWorldPosition(weaponPos);
+	m_pweapon->SetTargetPosition(XMFLOAT2(m_pplayer->GetTransform()->GetWorldPosition().x, m_pplayer->GetTransform()->GetWorldPosition().y));
 }
