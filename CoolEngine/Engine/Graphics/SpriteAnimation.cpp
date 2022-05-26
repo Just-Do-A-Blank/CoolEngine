@@ -127,6 +127,7 @@ ID3D11ShaderResourceView* SpriteAnimation::GetCurrentFrame() const
 	return m_pframes->at(m_currentFrameIndex).m_ptexture;
 }
 
+#if EDITOR
 void SpriteAnimation::CreateEngineUI()
 {
 	ID3D11ShaderResourceView* psrv = nullptr;
@@ -160,3 +161,4 @@ void SpriteAnimation::CreateEngineUI()
 		}
 	}
 }
+#endif
