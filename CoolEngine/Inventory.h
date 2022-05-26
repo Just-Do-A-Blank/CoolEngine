@@ -1,52 +1,32 @@
 #pragma once
+#include <algorithm>
+#include "Engine/GameObjects/PickupGameObject.h"
 #include "Engine/GameObjects/WeaponGameObject.h"
-
 
 class Inventory
 {
 public:
+    Inventory();
+    Inventory(string identifier, CoolUUID uuid);
+    Inventory(const nlohmann::json& data, CoolUUID uuid);
+    Inventory(Inventory const& other);
 
-    //Inventory(string identifier, CoolUUID uuid);
-    //Inventory(const nlohmann::json& data, CoolUUID uuid);
-    //Inventory(Inventory const& other);
-
-  /*  struct inventroryData
-    {*/
-        WeaponGameObject* m_selectedWeapon;
-        float m_money = 0;
-        float m_maxMoney;
-
-        bool m_itemSlotsWeapons[4]; // values set as stated in design doc
-        bool m_itemSlotsConsumables[3];
-        bool m_itemSlotsKeys[2];
-
-        bool m_keyRetreievedRoomN; // Fire Mountain: Ortius (drops bomb on defeat)  Bool for each key as said in design doc
-        bool m_keyRetreievedRoomE; // Poison (drops Crystalised Flower)
-        bool m_keyRetreievedRoomS; // Electricity (drops Capacitor)
-        bool m_keyRetreievedRoomW; // Water (Drops Aquamarine Crystal)
-        bool m_keyRetreivedHideoutN;
-        bool m_keyRetreivedHideoutE;
-        bool m_keyRetreivedHideoutS;
-        bool m_keyRetreivedHideoutW;
-    //};
+    vector<GameObject*>* GetInventory() { return &m_pInventory; }
+   
+    void AddItemToInventory(GameObject* pickedUpObject);
+    int RemoveQuantityInSlot(int pos, int quantityToRemove);
+    GameObject* GetItemInSlot(int pos);
 
 
-    virtual float GetMoney();
-    virtual int GetSelectedItemIndex();
-
-    virtual void UpdateMoney(float ValueToAdd); // used to add/subtract money from inventory
-    virtual void NavigateInventory(int DirectionAndDistance);
-    virtual void SetSelectedIndex(int SelectedIndex);
-    virtual void PickupItem(GameObject Item);
-    virtual void DeleteItem(GameObject Item);
-    virtual void DeleteItemAtIndex();
-
-
-protected:
-
-
-
+    void SaveData(nlohmann::json& jsonData);
+    void LoadData(const nlohmann::json& jsonData);
+    void Start();
+    
 private:
 
+    nlohmann::json m_json;
+    vector<GameObject*> m_pInventory;
 };
+
+
 #pragma once

@@ -5,12 +5,12 @@
 class PickupEvent : public Event
 {
 public:
-	PickupEvent(list<PickupResource*> ConsumableData) : m_consumableData(ConsumableData), Event(EventType::Pickup) {}
+	PickupEvent(GameObject* object) : m_PickedupObject(object), Event(EventType::Pickup) {}
 	~PickupEvent() {}
 
-	inline list<PickupResource*>  GetConsumableData() { return m_consumableData; }
+	inline GameObject* GetConsumableData() { return m_PickedupObject; }
 private:
-	list<PickupResource*>  m_consumableData;
+	GameObject* m_PickedupObject;
 
 
 };

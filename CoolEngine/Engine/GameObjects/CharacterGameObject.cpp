@@ -62,6 +62,8 @@ void CharacterGameObject::Start()
 
 	// Sets true if player, false if enemy
 	m_pweapon->SetIsPlayerWeapon(ContainsType(GameObjectType::PLAYER));
+	//Setting this weapon to be held
+	m_pweapon->SetHeld(true);
 }
 
 void CharacterGameObject::Update()
@@ -141,4 +143,6 @@ XMFLOAT3 CharacterGameObject::GetWeaponDirection()
     XMFLOAT3 weaponPos = m_pweapon->GetTransform()->GetWorldPosition();
     XMFLOAT3 characterPos = GetTransform()->GetWorldPosition();
     return XMFLOAT3(weaponPos.x - characterPos.x, weaponPos.y - characterPos.y, 0.0f);
+
+
 }
