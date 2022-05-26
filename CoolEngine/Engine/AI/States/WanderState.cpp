@@ -19,7 +19,7 @@ void WanderState::SetEnemy(EnemyGameObject* penemy)
 
 void WanderState::Enter()
 {
-	XMFLOAT3 randomPos = XMFLOAT3(MathHelper::RandomNumber(-m_wanderHalfRange, m_wanderHalfRange), MathHelper::RandomNumber(-m_wanderHalfRange, m_wanderHalfRange), MathHelper::RandomNumber(-m_wanderHalfRange, m_wanderHalfRange));
+	XMFLOAT3 randomPos = XMFLOAT3(MathHelper::RandomNumber(-m_wanderDistance * 0.5f, m_wanderDistance * 0.5f), MathHelper::RandomNumber(-m_wanderDistance * 0.5f, m_wanderDistance * 0.5f), MathHelper::RandomNumber(-m_wanderDistance * 0.5f, m_wanderDistance * 0.5f));
 
 	Pathfinding::GetInstance()->FindPath(m_penemy->GetTransform()->GetWorldPosition(), randomPos, m_path);
 }
@@ -40,7 +40,7 @@ float WanderState::CalculateActivation()
 
 	float distanceSq = MathHelper::DistanceSquared(m_penemy->GetTransform()->GetWorldPosition(), m_pplayer->GetTransform()->GetWorldPosition());
 
-	if (distanceSq > m_activationDistanceSq)
+	if (distanceSq > m_activationDistance * m_activationDistance)
 	{
 		return 1.0f;
 	}
@@ -59,18 +59,18 @@ void WanderState::Update()
 			return;
 		}
 
-		XMFLOAT3 randomPos = XMFLOAT3(MathHelper::RandomNumber(-m_wanderHalfRange, m_wanderHalfRange), MathHelper::RandomNumber(-m_wanderHalfRange, m_wanderHalfRange), MathHelper::RandomNumber(-m_wanderHalfRange, m_wanderHalfRange));
+		XMFLOAT3 randomPos = XMFLOAT3(MathHelper::RandomNumber(-m_wanderDistance * 0.5f, m_wanderDistance * 0.5f), MathHelper::RandomNumber(-m_wanderDistance * 0.5f, m_wanderDistance * 0.5f), MathHelper::RandomNumber(-m_wanderDistance * 0.5f, m_wanderDistance * 0.5f));
 
 		Pathfinding::GetInstance()->FindPath(m_penemy->GetTransform()->GetWorldPosition(), randomPos, m_path);
 
-		m_currentWaitTime = MathHelper::RandomNumber(m_waitTime - m_waitTimeHalfRange, m_waitTime + m_waitTimeHalfRange);
+		m_currentWaitTime = MathHelper::RandomNumber(m_waitTime - (m_waitTimeVariance * 0.5f), m_waitTime + (m_waitTimeVariance * 0.5f));
 	}
 
 	if (m_path.size() != 0)
 	{
 		m_penemy->CalculateMovement(m_path.back());
 
-		if (MathHelper::DistanceSquared(m_penemy->GetTransform()->GetWorldPosition(), m_path.back()->m_pos) < m_nodePopDistanceSq)
+		if (MathHelper::DistanceSquared(m_penemy->GetTransform()->GetWorldPosition(), m_path.back()->m_pos) < m_nodePopDistance * m_nodePopDistance)
 		{
 			m_path.pop_back();
 		}

@@ -31,6 +31,8 @@ public:
 	virtual void Serialize(nlohmann::json& data) = 0;
 	virtual void Deserialize(const nlohmann::json& data) = 0;
 
+	FuzzyStateType GetStateType() const;
+
 protected:
 	FuzzyStateType m_stateType = FuzzyStateType::COUNT;
 

@@ -22,7 +22,8 @@ public:
 
 	void Start() override;
 
-	void SetWeaponPosition();
+	void SetWeaponPositionAgro();
+	void SetWeaponPositionWander();
 
 private:
     EnemyStateMachine m_stateMachine;

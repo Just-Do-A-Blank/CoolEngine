@@ -21,6 +21,10 @@ Transform::Transform(Transform const& other)
 	m_upVector = other.m_upVector;
 	m_leftVector = other.m_leftVector;
 
+	m_defaultForwardVector = other.m_defaultForwardVector;
+	m_defaultUpVector = other.m_defaultUpVector;
+	m_defaultLeftVector = other.m_defaultLeftVector;
+
 	m_pparentTransform = other.m_pparentTransform;
 	m_childrenTransformList = other.m_childrenTransformList;
 	
@@ -77,10 +81,13 @@ void Transform::UpdateMatrix()
 
 void Transform::UpdateComponentVectors()
 {
+	XMMATRIX rotationMatrix = XMMatrixRotationRollPitchYaw((m_worldRotation.x / 180.0f) * XM_PI, (m_worldRotation.y / 180.0f) * XM_PI, (m_worldRotation.z / 180.0f) * XM_PI);
+
     XMVECTOR tempForward, tempUp, tempLeft;
-    tempForward = XMVector3TransformNormal(XMLoadFloat3(&m_forwardVector), m_rotationMatrix);
-    tempUp = XMVector3TransformNormal(XMLoadFloat3(&m_upVector), m_rotationMatrix);
-    tempLeft = XMVector3TransformNormal(XMLoadFloat3(&m_leftVector), m_rotationMatrix);
+
+    tempForward = XMVector3Transform(XMLoadFloat3(&m_defaultForwardVector), rotationMatrix);
+    tempUp = XMVector3Transform(XMLoadFloat3(&m_defaultUpVector), rotationMatrix);
+    tempLeft = XMVector3Transform(XMLoadFloat3(&m_defaultLeftVector), rotationMatrix);
 
     XMStoreFloat3(&m_forwardVector, tempForward);
     XMStoreFloat3(&m_upVector, tempUp);
@@ -218,6 +225,8 @@ void Transform::SetLocalScale(XMFLOAT3& scale)
 
 void Transform::SetForwardVector(XMFLOAT3& forwardVector)
 {
+	m_defaultForwardVector = forwardVector;
+
     m_forwardVector = forwardVector;
 
 	UpdateMatrix();
@@ -225,6 +234,8 @@ void Transform::SetForwardVector(XMFLOAT3& forwardVector)
 
 void Transform::SetUpVector(XMFLOAT3& upVector)
 {
+	m_defaultUpVector = upVector;
+
     m_upVector = upVector;
 
 	UpdateMatrix();
@@ -232,6 +243,8 @@ void Transform::SetUpVector(XMFLOAT3& upVector)
 
 void Transform::SetLeftVector(XMFLOAT3& leftVector)
 {
+	m_defaultLeftVector = leftVector;
+
     m_leftVector = leftVector;
 
 	UpdateMatrix();
