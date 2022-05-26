@@ -61,9 +61,9 @@ float RangeAttackState::CalculateActivation()
 	float distanceSq = MathHelper::DistanceSquared(m_penemy->GetTransform()->GetWorldPosition(), m_pplayer->GetTransform()->GetWorldPosition());
 
 	float attackVarianceSq = MathHelper::RandomNumber(-m_attackRangeVariance * 0.5f, m_attackRangeVariance * 0.5f);
-	attackVarianceSq *= attackVarianceSq;
+	attackVarianceSq *= std::abs(attackVarianceSq);
 
-	if (distanceSq < m_pweapon->GetDistanceTravelled() * m_pweapon->GetDistanceTravelled() + attackVarianceSq)
+	if (distanceSq + attackVarianceSq < m_pweapon->GetDistanceTravelled() * m_pweapon->GetDistanceTravelled())
 	{
 		return 1.0f;
 	}

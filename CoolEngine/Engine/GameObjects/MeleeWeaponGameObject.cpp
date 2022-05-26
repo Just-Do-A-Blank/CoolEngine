@@ -1,6 +1,7 @@
 #include "MeleeWeaponGameObject.h"
 #include "Engine/Managers/GameManager.h"
 #include "Engine/Physics/Shape.h"
+#include "Engine/EditorUI/EditorUI.h"
 
 MeleeWeaponGameObject::MeleeWeaponGameObject(string identifier, CoolUUID uuid) : WeaponGameObject(identifier, uuid)
 {
@@ -127,9 +128,7 @@ void MeleeWeaponGameObject::Attack()
     if (!m_isSwinging)
     {
         // Can begin attack
-        XMFLOAT2 playerPosWorld = XMFLOAT2(GetTransform()->GetWorldPosition().x, GetTransform()->GetWorldPosition().y);
-        XMFLOAT2 toWeapon = MathHelper::Minus(GameManager::GetInstance()->GetCamera()->GetMousePositionInWorldSpace(), playerPosWorld);
-        toWeapon = MathHelper::Normalize(toWeapon);
+		XMFLOAT2 toWeapon = XMFLOAT2(GetTransform()->GetForwardVector().x, GetTransform()->GetForwardVector().y);
 
         // Starting angle is offset from mouse direction (in degrees)
         m_currentSwingAngle = MathHelper::DotProduct(toWeapon, XMFLOAT2(1, 0));
@@ -220,6 +219,33 @@ void MeleeWeaponGameObject::Serialize(nlohmann::json& data)
 
     SaveLocalData(data);
 }
+
+#if EDITOR
+void MeleeWeaponGameObject::CreateEngineUI()
+{
+    WeaponGameObject::CreateEngineUI();
+
+    if (EditorUI::CollapsingSection("Melee Weapon", true))
+    {
+        EditorUIFloatParameters floatParam = EditorUIFloatParameters();
+        EditorUINonSpecificParameters nonParam = EditorUINonSpecificParameters();
+
+        floatParam.m_minValue = 0;
+        floatParam.m_maxValue = 720.0f;
+        EditorUI::DragFloat("Swing Angle", m_totalSwingAngle, floatParam);
+
+        floatParam.m_minValue = 0;
+        floatParam.m_maxValue = 10.0f;
+        EditorUI::DragFloat("Swing Time", m_totalSwingTime, floatParam);
+
+        floatParam.m_minValue = 0;
+        floatParam.m_maxValue = 5.0f;
+        EditorUI::DragFloat("Charge Time", m_totalChargeTime, floatParam);
+
+        EditorUI::Checkbox("Is Blunt", m_isBlunt, nonParam);
+    }
+}
+#endif
 
 void MeleeWeaponGameObject::LoadLocalData(const nlohmann::json& jsonData)
 {

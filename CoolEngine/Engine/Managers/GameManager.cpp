@@ -160,6 +160,7 @@ bool GameManager::BeginPlay()
 	m_pcurrentGameScene = new Scene(m_pcurrentEditorScene->m_sceneIdentifier);
 
 	CopyScene();
+
 	m_pcurrentGameScene->SetActiveCameraUsingIdentifier(m_pcurrentEditorScene->GetActiveCamera()->GetIdentifier());
 	m_viewState = ViewState::GAME_VIEW;
 

@@ -9,6 +9,13 @@ Scene::Scene(string identifier)
 {
 	m_sceneIdentifier = identifier;
 	m_psceneGraph = new SceneGraph<GameObject>();
+	
+	const XMFLOAT3 pos = XMFLOAT3(0, 0, 0);
+	const XMFLOAT3 rot = XMFLOAT3(0, 0, 0);
+	const XMFLOAT3 scal = XMFLOAT3(1, 1, 1);
+
+	Transform* trans = new Transform();
+	m_quadtree = new Quadtree(XMFLOAT2(300,0), 4, 600);
 }
 
 Scene::~Scene()
@@ -28,9 +35,14 @@ void Scene::Start()
 void Scene::Update()
 {
 	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
+
 	for (int it = 0; it < gameObjectList.size(); ++it)
 	{
-		gameObjectList[it]->Update();
+		if(gameObjectList[it]->GetEnabled())
+		{
+			gameObjectList[it]->Update();
+		}
+
 	}
 	gameObjectList = m_psceneGraph->GetAllNodeObjects();
 	Collision::Update(gameObjectList);
@@ -38,7 +50,8 @@ void Scene::Update()
 
 void Scene::EditorUpdate()
 {
-	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
+	vector<GameObject*> gameObjectList= m_psceneGraph->GetAllNodeObjects();
+
 	for (int it = 0; it < gameObjectList.size(); ++it)
 	{
 		gameObjectList[it]->EditorUpdate();
@@ -54,6 +67,13 @@ void Scene::Render(RenderStruct& renderStruct)
 	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
 	for (int it = 0; it < gameObjectList.size(); ++it)
 	{
+		//If this object is not enabled, do not render it 
+		if (!gameObjectList[it]->GetEnabled())
+		{
+			continue;
+		}
+
+
 		if (gameObjectList[it]->ContainsType(GameObjectType::RENDERABLE))
 		{
 			prenderableGameObject = dynamic_cast<RenderableGameObject*>(gameObjectList[it]);
@@ -67,6 +87,15 @@ void Scene::Render(RenderStruct& renderStruct)
 			dynamic_cast<GameUIComponent*>(gameObjectList[it])->Render(renderStruct);
 			continue;
 		}
+	}
+}
+
+void Scene::InitializeQuadTree()
+{
+	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
+	for (size_t i = 0; i < gameObjectList.size(); i++)
+	{
+		m_quadtree->InsertElement(gameObjectList[i]);
 	}
 }
 

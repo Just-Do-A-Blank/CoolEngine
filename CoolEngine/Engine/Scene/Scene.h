@@ -3,8 +3,17 @@
 #include "Engine/GameObjects/PlayerGameObject.h"
 #include "Engine/Managers/SceneGraph.h"
 #include "Engine/GameObjects/CameraGameObject.h"
+#include "Engine/Includes/Quad Tree/include/quadtree.h"
 
 class GameObject;
+
+struct Node
+{
+	GameObject* m_gameObject;
+	GameObjectType m_type;
+	CoolUUID m_id;
+};
+
 
 class Scene
 {
@@ -18,6 +27,10 @@ private:
 	unordered_map<string, CameraGameObject*> m_cameraGameObjectMap;
 	CameraGameObject* m_pactiveCamera = nullptr;
 	
+	Quadtree* m_quadtree = nullptr;
+
+	int m_treeSizeOffset = 0;
+
 public:
 	Scene(string identifier);
 	~Scene();
@@ -28,6 +41,8 @@ public:
 	virtual void Render(RenderStruct& renderStruct);
 
 	SceneGraph<GameObject>* GetSceneGraph();
+
+	void InitializeQuadTree();
 
 private:
 

@@ -66,8 +66,11 @@ protected:
 	Transform* m_transform;
 	string m_identifier;
 	CoolUUID m_UUID;
+	bool m_isEnabled;
 
 	GameObject* m_pTest = nullptr;
+
+	bool m_isStatic = false;
 
 #if EDITOR
 	virtual void CreateEngineUI() override;
@@ -80,14 +83,14 @@ protected:
 
 public:
 	GameObject();
-	GameObject(GameObject const &other);
+	GameObject(GameObject const& other);
 	GameObject(string identifier, CoolUUID uuid);
 	GameObject(const nlohmann::json& data, CoolUUID uuid);
 	virtual ~GameObject();
 
-    /// <summary>
-    /// Called after construction, before first Update.
-    /// </summary>
+	/// <summary>
+	/// Called after construction, before first Update.
+	/// </summary>
 	virtual void Start();
 
 	virtual void Update();
@@ -97,6 +100,9 @@ public:
 
 	void Init(const nlohmann::json& data, CoolUUID uuid);
 	void Init(GameObject const& other);
+
+	void SetEnabled(bool isEnabled) { m_isEnabled = isEnabled; }
+	bool GetEnabled() { return m_isEnabled; }
 
 #if EDITOR
 	virtual void ShowEngineUI();
