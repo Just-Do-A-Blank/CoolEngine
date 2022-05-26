@@ -28,13 +28,14 @@ public:
     Inventory(const nlohmann::json& data, CoolUUID uuid);
     Inventory(Inventory const& other);
 
-    unordered_set<InventoryInfo*> GetPickupInventory() { return m_pInventoryInfo; }
-    unordered_set<WeaponGameObject*> GetWeaponInventory() { return m_pWeaponInventory; }
+    unordered_set<InventoryInfo*>* GetPickupInventory() { return &m_pInventoryInfo; }
+    unordered_set<WeaponGameObject*>* GetWeaponInventory() { return &m_pWeaponInventory; }
     void RemoveWeapon(WeaponGameObject* weapon) { m_pWeaponInventory.erase(weapon); }
     void RemoveWeaponByKey(string key);
 
     bool RemovePickupByKey(string key,float strength, int quantityToRemove);
     InventoryInfo* GetItemByKey(string key, float strength);
+    WeaponGameObject* GetWeaponByKey(string key);
 
     void AddPickup(unordered_set<PickupResource*> pickupEffects);
 

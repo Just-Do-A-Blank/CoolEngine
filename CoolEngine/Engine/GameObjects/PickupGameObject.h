@@ -13,9 +13,9 @@ public:
 	PickupGameObject(PickupGameObject const& other);
 	~PickupGameObject();
 	virtual void Serialize(nlohmann::json& data) override;
-	const unordered_set<PickupResource*> GetConsumableData() const { return m_pResouces; }
-	const int GetQuantity() const { return m_quantity; }
-	const bool GetConsumeOnPickup() const { return m_isConsumedOnPickup; }
+	unordered_set<PickupResource*> GetConsumableData() const { return m_pResouces; }
+	int GetQuantity() const { return m_quantity; }
+	bool GetConsumeOnPickup() const { return m_isConsumedOnPickup; }
 
 	void Update() override;
 

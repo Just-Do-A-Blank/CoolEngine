@@ -67,6 +67,25 @@ InventoryInfo* Inventory::GetItemByKey(string key, float strength)
 	return nullptr;
 }
 
+WeaponGameObject* Inventory::GetWeaponByKey(string key)
+{
+	unordered_set<WeaponGameObject*>::iterator it;
+	
+	for (it = m_pWeaponInventory.begin(); it != m_pWeaponInventory.end(); it++)
+	{
+		if ((*it)->GetIdentifier() == key)
+		{
+			return (*it);
+		}
+	}
+	
+	LOG("Weapon not found in inventory");
+	return nullptr;
+
+
+
+}
+
 void Inventory::AddPickup(unordered_set<PickupResource*> pickupEffects)
 {
 	unordered_set<PickupResource*>::iterator it;

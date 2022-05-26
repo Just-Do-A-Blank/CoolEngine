@@ -32,13 +32,15 @@ PickupGameObject::PickupGameObject(const nlohmann::json& data, CoolUUID index) :
 
 PickupGameObject::PickupGameObject(PickupGameObject const& other) : InteractableGameObject(other)
 {
-    m_pPickupResourceInterface = other.m_pPickupResourceInterface;
-    m_pPlayer = other.m_pPlayer;
+    m_pPickupResourceInterface = new PickupResourceInterface(*other.m_pPickupResourceInterface);
+    m_pPlayer = GameManager::GetInstance()->GetGameObjectUsingIdentifier<PlayerGameObject>(string("Player"));
     m_isConsumedOnPickup = other.m_isConsumedOnPickup;
 }
 
 PickupGameObject::~PickupGameObject()
 {
+    delete m_pPickupResourceInterface;
+    m_pPickupResourceInterface = nullptr;
 }
 
 void PickupGameObject::Serialize(nlohmann::json& data)

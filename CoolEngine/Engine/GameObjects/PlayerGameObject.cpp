@@ -72,7 +72,7 @@ PlayerGameObject::PlayerGameObject(string identifier, CoolUUID uuid) : Character
 
 	m_resourceManager = new PlayerResourceManager();
 
-	m_myInventory = new Inventory();
+	m_pInventory = new Inventory();
 
     EventManager::Instance()->AddClient(EventType::KeyPressed, this);
     EventManager::Instance()->AddClient(EventType::KeyReleased, this);
@@ -145,7 +145,7 @@ PlayerGameObject::PlayerGameObject(const nlohmann::json& data, CoolUUID uuid) : 
 	m_playerController = new PlayerController(buttons, this);
 
 
-	m_myInventory = new Inventory();
+	m_pInventory = new Inventory();
 
 	EventManager::Instance()->AddClient(EventType::KeyPressed, this);
 	EventManager::Instance()->AddClient(EventType::KeyReleased, this);
@@ -180,7 +180,7 @@ PlayerGameObject::PlayerGameObject(PlayerGameObject const& other) : CharacterGam
 	EventManager::Instance()->AddClient(EventType::MouseMoved, this);
 	EventManager::Instance()->AddClient(EventType::Pickup, this);
 
-	m_myInventory = other.m_myInventory; // grabs the player's inventory
+	m_pInventory = new Inventory(*other.m_pInventory);
     m_resourceManager = new PlayerResourceManager(*other.m_resourceManager);
 }
 
@@ -197,6 +197,9 @@ PlayerGameObject::~PlayerGameObject()
 	m_playerController = nullptr;
 
 	delete m_resourceManager;
+
+	delete m_pInventory;
+	m_pInventory = nullptr;
 }
 
 
@@ -238,14 +241,14 @@ void PlayerGameObject::LoadLocalData(const nlohmann::json& jsonData)
 {
     m_playerController->LoadAllPrefabData(jsonData);
 	m_resourceManager->LoadData(jsonData);
-	m_myInventory->LoadData(jsonData);
+	m_pInventory->LoadData(jsonData);
 }
 
 void PlayerGameObject::SaveLocalData(nlohmann::json& jsonData)
 {
     m_playerController->SaveAllPrefabData(jsonData);
     m_resourceManager->SaveData(jsonData);
-	m_myInventory->SaveData(jsonData);
+	m_pInventory->SaveData(jsonData);
 }
 
 void PlayerGameObject::SetWeaponPosition()
@@ -352,7 +355,7 @@ void PlayerGameObject::Handle(Event* e)
 		break;
 	case EventType::Pickup:	
 		PickupEvent* pickupEvent = (PickupEvent*)e;
-		m_myInventory->AddPickup((pickupEvent->GetConsumableData()));
+		m_pInventory->AddPickup((pickupEvent->GetConsumableData()));
 		break;
 	}
 }
