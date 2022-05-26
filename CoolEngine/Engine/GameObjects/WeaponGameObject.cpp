@@ -409,7 +409,7 @@ int WeaponGameObject::RoundUp(float value)
 
 void WeaponGameObject::Handle(Event* e)
 {
-	switch (e->GetEventID())
+	/*switch (e->GetEventID())
 	{
 	case EventType::MouseButtonPressed:
 		{
@@ -421,7 +421,7 @@ void WeaponGameObject::Handle(Event* e)
 			}
 		}
 		break;
-	}
+	}*/
 }
 
 void WeaponGameObject::RegisterForEvents()

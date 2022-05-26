@@ -9,7 +9,7 @@ class RangeAttackState : public FuzzyState
 {
 public:
 	RangeAttackState(EnemyGameObject* penemy);
-	RangeAttackState(const nlohmann::json& data);
+	RangeAttackState(const nlohmann::json& data, EnemyGameObject* penemy);
 	RangeAttackState(RangeAttackState const* other, EnemyGameObject* penemy);
 
 	void SetEnemy(EnemyGameObject* penemy);
@@ -34,7 +34,6 @@ protected:
 
 private:
 	PlayerGameObject* m_pplayer = nullptr;
-	EnemyGameObject* m_penemy = nullptr;
 
 	RangedWeaponGameObject* m_pweapon = nullptr;
 

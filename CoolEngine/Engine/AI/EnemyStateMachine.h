@@ -11,6 +11,7 @@ public:
 	EnemyStateMachine(EnemyGameObject* penemy);
 	EnemyStateMachine(const nlohmann::json& data, EnemyGameObject* penemy);
 	EnemyStateMachine(EnemyStateMachine const* other, EnemyGameObject* penemy);
+	//virtual ~EnemyStateMachine();
 
 	void Serialize(nlohmann::json& data) override;
 	void Deserialize(const nlohmann::json& data) override;
