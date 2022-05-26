@@ -81,6 +81,7 @@ void AnimationState::Deserialize(const nlohmann::json& data, FiniteStateMachine*
 	m_animation.SetLooping(data[GetName()]["AnimIsLooping"]);
 }
 
+#if EDITOR
 void AnimationState::CreateEngineUI()
 {
 	FiniteState::CreateEngineUI();
@@ -89,3 +90,4 @@ void AnimationState::CreateEngineUI()
 
 	ImGui::Spacing();
 }
+#endif

@@ -7,7 +7,10 @@ PlayerResourceInterface::PlayerResourceInterface(map<string, PlayerResource*>* p
 	m_playerResources = playerResources;
 	m_lastEntryIsError = false;
     m_errorMessage = "";
+
+#if EDITOR
     m_modificationResult = ERESOURCEMODIFICATIONRESULT::NoListModification;
+#endif
 }
 
 #if EDITOR

@@ -1,6 +1,8 @@
 #include "EditorUIFloatParameters.h"
 #include "EditorUI.h"
 
+#if EDITOR
+
 EditorUIFloatParameters::EditorUIFloatParameters()
 {
 	m_columnWidth = EditorUI::GetDefaultColumnWidth();
@@ -9,3 +11,5 @@ EditorUIFloatParameters::EditorUIFloatParameters()
 	m_maxValue = EditorUI::GetDefaultMaximumValue();
 	m_tooltipText = "";
 }
+
+#endif
