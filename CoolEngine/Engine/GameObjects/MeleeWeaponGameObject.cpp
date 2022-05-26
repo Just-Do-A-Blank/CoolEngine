@@ -24,7 +24,7 @@ MeleeWeaponGameObject::MeleeWeaponGameObject(const nlohmann::json& data, CoolUUI
 MeleeWeaponGameObject::MeleeWeaponGameObject(MeleeWeaponGameObject const& other) : WeaponGameObject(other)
 {
     m_totalSwingAngle = other.m_totalSwingAngle;
-	m_chargeTime = other.m_chargeTime;
+	m_totalChargeTime = other.m_totalChargeTime;
 	m_isBlunt = other.m_isBlunt;
 }
 
@@ -39,7 +39,7 @@ void MeleeWeaponGameObject::SetSwingAngle(float angle)
 
 void MeleeWeaponGameObject::SetChargeTime(float time)
 {
-    m_chargeTime = time;
+    m_totalChargeTime = time;
 }
 
 void MeleeWeaponGameObject::SetIsBlunt(bool blunt)
@@ -72,6 +72,11 @@ void MeleeWeaponGameObject::SetCurrentSwingAngle(float angle)
     m_currentSwingAngle = angle;
 }
 
+void MeleeWeaponGameObject::SetCurrentChargeTime(float time)
+{
+    m_currentChargeTime = time;
+}
+
 float MeleeWeaponGameObject::GetSwingAngle()
 {
     return m_totalSwingAngle;
@@ -79,7 +84,7 @@ float MeleeWeaponGameObject::GetSwingAngle()
 
 float MeleeWeaponGameObject::GetChargeTime()
 {
-    return m_chargeTime;
+    return m_totalChargeTime;
 }
 
 bool MeleeWeaponGameObject::GetIsBlunt()
@@ -112,6 +117,11 @@ float MeleeWeaponGameObject::GetCurrentSwingAngle()
     return m_currentSwingAngle;
 }
 
+float MeleeWeaponGameObject::GetCurrentChargeTime()
+{
+    return m_currentChargeTime;
+}
+
 void MeleeWeaponGameObject::Attack()
 {
     if (!m_isSwinging)
@@ -133,9 +143,10 @@ void MeleeWeaponGameObject::Attack()
         // Used to increase angle
         m_currentSwingTime = m_totalSwingTime;
         m_swingSpeed = m_totalSwingAngle / m_totalSwingTime;
+        m_currentChargeTime = m_totalChargeTime;
 
         m_isSwinging = true;
-        GetShape()->SetIsTrigger(true);
+        GetShape()->SetIsTrigger(false);
     }
 }
 
@@ -159,16 +170,46 @@ void MeleeWeaponGameObject::Update()
     else if (m_isSwinging && m_currentSwingTime > 0.0f)
     {
         XMFLOAT2 toWeapon = XMFLOAT2(std::cosf(XM_PI * m_currentSwingAngle / 180.0f), std::sinf(XM_PI * m_currentSwingAngle / 180.0f));
-
         SetWeaponPosition(toWeapon);
 
         float dTime = GameManager::GetInstance()->GetTimer()->DeltaTime();
-        SetCurrentSwingAngle(m_currentSwingAngle + (m_swingSpeed * dTime));
-        SetCurrentSwingTime(m_currentSwingTime - dTime);
-        if (m_currentSwingTime <= 0.0f)
+
+        if (m_currentChargeTime > 0.0f)
         {
-            m_isSwinging = false;
-            GetShape()->SetIsTrigger(false);
+            // Just before attack
+            m_currentChargeTime -= dTime;
+            if (m_currentChargeTime <= 0.0f)
+            {
+                GetShape()->SetIsTrigger(true);
+            }
+        }
+        else
+        {
+            // Swinging weapon
+            m_currentSwingAngle += (m_swingSpeed * dTime);
+            m_currentSwingTime -= dTime;
+            if (m_currentSwingTime <= 0.0f)
+            {
+                if (m_isBlunt && (!m_isSecondSwing))
+                {
+                    // Prepare for 2nd swing
+                    m_currentSwingTime = m_totalSwingTime;
+                    m_swingSpeed = m_totalSwingAngle / m_totalSwingTime;
+                    m_swingSpeed *= -1;
+                    m_currentChargeTime = m_totalChargeTime;
+
+                    m_isSecondSwing = true;
+                    GetShape()->SetIsTrigger(false);
+                }
+                else
+                {
+                    // End swing
+                    m_isSwinging = false;
+                    GetShape()->SetIsTrigger(false);
+
+                    m_isSecondSwing = false;
+                }
+            }
         }
     }
 }
@@ -185,7 +226,7 @@ void MeleeWeaponGameObject::LoadLocalData(const nlohmann::json& jsonData)
     if (jsonData.contains("SwingAngle"))
     {
         m_totalSwingAngle = jsonData["SwingAngle"];
-        m_chargeTime = jsonData["ChargeTime"];
+        m_totalChargeTime = jsonData["ChargeTime"];
         m_isBlunt = jsonData["IsBlunt"];
     }
 }
@@ -193,7 +234,7 @@ void MeleeWeaponGameObject::LoadLocalData(const nlohmann::json& jsonData)
 void MeleeWeaponGameObject::SaveLocalData(nlohmann::json& jsonData)
 {
     jsonData["SwingAngle"] = m_totalSwingAngle;
-    jsonData["ChargeTime"] = m_chargeTime;
+    jsonData["ChargeTime"] = m_totalChargeTime;
     jsonData["IsBlunt"] = m_isBlunt;
 }
 

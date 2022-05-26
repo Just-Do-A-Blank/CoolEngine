@@ -113,9 +113,7 @@ void EnemyGameObject::SetWeaponPositionWander()
 		return;
 	}
 
-	float weaponOffsetDistance = 50.0f;
-
-	XMFLOAT3 weaponPos = MathHelper::Multiply(m_direction, weaponOffsetDistance);
+	XMFLOAT3 weaponPos = MathHelper::Multiply(m_direction, m_pweapon->GetRadius());
 	weaponPos = MathHelper::Plus(m_transform->GetWorldPosition(), weaponPos);
 
 	m_pweapon->SetTargetPosition(XMFLOAT2(m_pplayer->GetTransform()->GetWorldPosition().x, m_pplayer->GetTransform()->GetWorldPosition().y));
