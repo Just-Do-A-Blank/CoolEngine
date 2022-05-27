@@ -46,6 +46,11 @@ bool PlayerResource::GetKillsOnDrain()
     return m_resourceKillOnDrain;
 }
 
+int PlayerResource::GetGain()
+{
+	return m_valueGained;
+}
+
 void PlayerResource::SetValue(int value)
 {
 	m_value = value;
@@ -74,4 +79,9 @@ void PlayerResource::SetAttachesToWeaponDamage(bool value)
 void PlayerResource::SetKillsOnDrain(bool value)
 {
     m_resourceKillOnDrain = value;
+}
+
+void PlayerResource::SetGain(int value)
+{
+	m_valueGained = value;
 }

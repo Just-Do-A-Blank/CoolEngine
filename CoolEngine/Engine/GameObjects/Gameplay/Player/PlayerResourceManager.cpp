@@ -106,6 +106,7 @@ void PlayerResourceManager::SaveData(nlohmann::json& jsonData)
         jsonData[s + "_defaultValue"] = itt->second->GetDefaultValue();
         jsonData[s + "_attachToWeaponDamage"] = itt->second->GetAttachesToWeaponDamage();
         jsonData[s + "_killOnDrain"] = itt->second->GetKillsOnDrain();
+        jsonData[s + "_valueGained"] = itt->second->GetGain();
     }
 }
 
@@ -134,6 +135,11 @@ void PlayerResourceManager::LoadData(const nlohmann::json& jsonData)
         newResource->SetDefaultValue(jsonData[s + "_defaultValue"]);
         newResource->SetAttachesToWeaponDamage(jsonData[s + "_attachToWeaponDamage"]);
         newResource->SetKillsOnDrain(jsonData[s + "_killOnDrain"]);
+        if (jsonData.contains(s + "_valueGained"))
+        {
+            newResource->SetGain(jsonData[s + "_valueGained"]);
+        }
+        
 
         m_resources[jsonData[s + "_key"]] = newResource;
 

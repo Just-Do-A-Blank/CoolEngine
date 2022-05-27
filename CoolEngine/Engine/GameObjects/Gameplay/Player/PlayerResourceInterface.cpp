@@ -128,6 +128,12 @@ void PlayerResourceInterface::RemoveResourceFromList(string key)
             nonSpecificParameters.m_tooltipText = "If ticked then this will kill when active value equals min value";
             EditorUI::Checkbox("Will Kill", i->second->m_resourceKillOnDrain, nonSpecificParameters);
 
+            EditorUIIntParameters intParam = EditorUIIntParameters();
+            intParam.m_tooltipText = "Gain value every half second";
+            intParam.m_minValue = 0;
+            intParam.m_maxValue = 99999;
+            EditorUI::DragInt("Gain", i->second->m_valueGained, intParam);
+
             if (EditorUI::BasicButton("Delete"))
             {
                 m_deleteOnNextLoop = i->first;
