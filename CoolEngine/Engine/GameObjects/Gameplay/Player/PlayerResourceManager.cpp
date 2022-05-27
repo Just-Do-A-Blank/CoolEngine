@@ -3,6 +3,7 @@
 PlayerResourceManager::PlayerResourceManager()
 {
 	m_resources = map<string, PlayerResource*>();
+    m_timePassed = 0;
 
 #if EDITOR
 	m_resourceInterface = new PlayerResourceInterface(&m_resources);
@@ -15,6 +16,7 @@ PlayerResourceManager::PlayerResourceManager()
 PlayerResourceManager::PlayerResourceManager(const nlohmann::json& data)
 {
     LoadData(data);
+    m_timePassed = 0;
 
 #if EDITOR
     m_resourceKeys = list<string>();
@@ -25,6 +27,7 @@ PlayerResourceManager::PlayerResourceManager(const nlohmann::json& data)
 PlayerResourceManager::PlayerResourceManager(PlayerResourceManager const& other)
 {
     map<string, PlayerResource*> otherResources = other.m_resources;
+    m_timePassed = 0;
 
     m_resources = map<string, PlayerResource*>();
     for (
@@ -37,6 +40,7 @@ PlayerResourceManager::PlayerResourceManager(PlayerResourceManager const& other)
         playerResource->SetDefaultValue(itt->second->GetDefaultValue());
         playerResource->SetAttachesToWeaponDamage(itt->second->GetAttachesToWeaponDamage());
         playerResource->SetKillsOnDrain(itt->second->GetKillsOnDrain());
+        playerResource->SetGain(itt->second->GetGain());
 
         m_resources[itt->first] = playerResource;
     }
@@ -74,6 +78,46 @@ void PlayerResourceManager::Start()
     }
 }
 
+/// <summary>
+/// Updates the resources for draining
+/// </summary>
+void PlayerResourceManager::Update(float timeDelta)
+{
+    m_timePassed += timeDelta;
+    if (m_timePassed > 0.5f)
+    {
+        RegenerationUpdate();
+        m_timePassed -= 0.5f;
+    }
+}
+
+/// <summary>
+/// Update for the regeneration cycle
+/// </summary>
+void PlayerResourceManager::RegenerationUpdate()
+{
+    // Minor optomisation to not keep allocating during loop
+    int gain = 0;
+    int max = 0;
+    int value = 0;
+
+    for (
+        std::map<string, PlayerResource*>::iterator itt = m_resources.begin();
+        itt != m_resources.end(); itt++)
+    {
+        gain = itt->second->GetGain();
+        if (gain > 0)
+        {
+            value = itt->second->GetValue();
+            max = itt->second->GetMaxValue();
+            if (value + gain <= max)
+            {
+                itt->second->SetValue(value + gain);
+            }
+        }
+    }
+}
+
 #if EDITOR
 /// <summary>
 /// Shows engine UI
@@ -106,6 +150,7 @@ void PlayerResourceManager::SaveData(nlohmann::json& jsonData)
         jsonData[s + "_defaultValue"] = itt->second->GetDefaultValue();
         jsonData[s + "_attachToWeaponDamage"] = itt->second->GetAttachesToWeaponDamage();
         jsonData[s + "_killOnDrain"] = itt->second->GetKillsOnDrain();
+        jsonData[s + "_valueGained"] = itt->second->GetGain();
     }
 }
 
@@ -134,6 +179,11 @@ void PlayerResourceManager::LoadData(const nlohmann::json& jsonData)
         newResource->SetDefaultValue(jsonData[s + "_defaultValue"]);
         newResource->SetAttachesToWeaponDamage(jsonData[s + "_attachToWeaponDamage"]);
         newResource->SetKillsOnDrain(jsonData[s + "_killOnDrain"]);
+        if (jsonData.contains(s + "_valueGained"))
+        {
+            newResource->SetGain(jsonData[s + "_valueGained"]);
+        }
+        
 
         m_resources[jsonData[s + "_key"]] = newResource;
 

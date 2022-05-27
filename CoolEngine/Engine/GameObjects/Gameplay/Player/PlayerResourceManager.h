@@ -20,6 +20,11 @@ public:
     virtual void Start();
 
     /// <summary>
+    /// Updates the resources for draining
+    /// </summary>
+    virtual void Update(float timeDelta);
+
+    /// <summary>
     /// Saves the player resources
     /// </summary>
     /// <param name="name">Data to add to</param>
@@ -81,6 +86,16 @@ public:
 
 private:
     map<string, PlayerResource*> m_resources;
+
+    /// <summary>
+    /// Time passed in the update loop. (Used simalarly to a fixed update)
+    /// </summary>
+    float m_timePassed;
+
+    /// <summary>
+    /// Update for the regeneration cycle
+    /// </summary>
+    void RegenerationUpdate();
 
 #if EDITOR
     PlayerResourceInterface* m_resourceInterface;

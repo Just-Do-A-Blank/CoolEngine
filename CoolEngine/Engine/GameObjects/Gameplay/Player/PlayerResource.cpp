@@ -7,6 +7,7 @@ PlayerResource::PlayerResource(string key)
 	m_minValue = 0;
 	m_key = key;
     m_defaultValue = 0;
+    m_valueGained = 0;
     m_attachToWeaponDamage = false;
     m_resourceKillOnDrain = false;
 }
@@ -46,6 +47,11 @@ bool PlayerResource::GetKillsOnDrain()
     return m_resourceKillOnDrain;
 }
 
+int PlayerResource::GetGain()
+{
+	return m_valueGained;
+}
+
 void PlayerResource::SetValue(int value)
 {
 	m_value = value;
@@ -74,4 +80,9 @@ void PlayerResource::SetAttachesToWeaponDamage(bool value)
 void PlayerResource::SetKillsOnDrain(bool value)
 {
     m_resourceKillOnDrain = value;
+}
+
+void PlayerResource::SetGain(int value)
+{
+	m_valueGained = value;
 }
