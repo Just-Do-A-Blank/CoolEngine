@@ -87,8 +87,8 @@ void LevelChangeGameObject::SetSceneName(string name)
 
 void LevelChangeGameObject::OnTriggerHold(GameObject* obj1, GameObject* obj2)
 {
-	if (obj1->ContainsType(GameObjectType::LEVEL_CHANGE) && obj2->ContainsType(GameObjectType::PLAYER) ||
-		obj2->ContainsType(GameObjectType::LEVEL_CHANGE) && obj1->ContainsType(GameObjectType::PLAYER) && m_enemiesInScene <= 0)
+	if ((obj1->ContainsType(GameObjectType::LEVEL_CHANGE) && obj2->ContainsType(GameObjectType::PLAYER) ||
+		obj2->ContainsType(GameObjectType::LEVEL_CHANGE) && obj1->ContainsType(GameObjectType::PLAYER)) && m_enemiesInScene <= 0)
 	{
 		string sceneFilePath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Levels\\" + m_sceneName + ".json";
 		if (!GameManager::GetInstance()->SwitchSceneUsingIdentifier(sceneFilePath))
