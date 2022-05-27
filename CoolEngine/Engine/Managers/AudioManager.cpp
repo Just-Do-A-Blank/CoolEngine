@@ -1,6 +1,7 @@
 #include "Engine/Managers/AudioManager.h"
 #include "Engine/Includes/FMOD/fmod.hpp"
 #include "Engine/Includes/FMOD/fmod_errors.h"
+#include "Engine/Managers/GameManager.h"
 
 bool AudioManager::Init()
 {
@@ -29,18 +30,20 @@ bool AudioManager::Init()
 	return true;
 }
 
-bool AudioManager::LoadMusic(string relativePath)
+bool AudioManager::LoadMusic(string name)
 {
-	if (m_music.count(relativePath) != 0)
+	if (m_music.count(name) != 0)
 	{
 		LOG("Tried to load music that has already been loaded!");
 
 		return false;
 	}
 
+	std::string path = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Audio\\Music\\" + name;
+
 	FMOD::Sound* sound;
 
-	FMOD_RESULT result = m_psystem->createStream(relativePath.c_str(), FMOD_DEFAULT, 0, &sound);
+	FMOD_RESULT result = m_psystem->createStream(path.c_str(), FMOD_DEFAULT, 0, &sound);
 
 	if (result != FMOD_OK)
 	{
@@ -49,12 +52,12 @@ bool AudioManager::LoadMusic(string relativePath)
 		return false;
 	}
 
-	m_music[relativePath] = sound;
+	m_music[name] = sound;
 
 	return true;
 }
 
-bool AudioManager::PlayMusic(string relativePath, float volume, bool loop)
+bool AudioManager::PlayMusic(string name, float volume, bool loop)
 {
 	if (volume < 0 || volume > 1.0f)
 	{
@@ -63,9 +66,9 @@ bool AudioManager::PlayMusic(string relativePath, float volume, bool loop)
 		return false;
 	}
 
-	if (m_music.count(relativePath) == 0)
+	if (m_music.count(name) == 0)
 	{
-		if (GetInstance()->LoadMusic(relativePath) == false)
+		if (GetInstance()->LoadMusic(name) == false)
 		{
 			return false;
 		}
@@ -73,13 +76,13 @@ bool AudioManager::PlayMusic(string relativePath, float volume, bool loop)
 
 	FMOD::Channel* pchannel;
 
-	m_psystem->playSound(m_music[relativePath], nullptr, true, &m_pmusicChannel);
+	m_psystem->playSound(m_music[name], nullptr, true, &m_pmusicChannel);
 
 	m_pmusicChannel->setVolume(m_masterVolume * volume);
 
 	m_pmusicChannel->setPaused(false);
 
-	m_pcurrentMusic = m_music[relativePath];
+	m_pcurrentMusic = m_music[name];
 
 	m_loopMusic = loop;
 
@@ -88,18 +91,20 @@ bool AudioManager::PlayMusic(string relativePath, float volume, bool loop)
 	return true;
 }
 
-bool AudioManager::Load(string relativePath)
+bool AudioManager::Load(string name)
 {
-	if (m_sounds.count(relativePath) != 0)
+	if (m_sounds.count(name) != 0)
 	{
 		LOG("Tried to load a sound that has already been loaded!");
 
-		return false;
+		return true;
 	}
+
+	std::string path = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Audio\\" + name;
 
 	FMOD::Sound* sound;
 
-	FMOD_RESULT result = m_psystem->createSound(relativePath.c_str(), FMOD_3D, 0, &sound);
+	FMOD_RESULT result = m_psystem->createSound(path.c_str(), FMOD_3D, 0, &sound);
 
 	if (result != FMOD_OK)
 	{
@@ -108,12 +113,12 @@ bool AudioManager::Load(string relativePath)
 		return false;
 	}
 
-	m_sounds[relativePath] = sound;
+	m_sounds[name] = sound;
 
 	return true;
 }
 
-bool AudioManager::Play(string relativePath, float volume)
+bool AudioManager::Play(string name, float volume)
 {
 	if (volume < 0 || volume > 1.0f)
 	{
@@ -122,9 +127,9 @@ bool AudioManager::Play(string relativePath, float volume)
 		return false;
 	}
 
-	if (m_sounds.count(relativePath) == 0)
+	if (m_sounds.count(name) == 0)
 	{
-		if (GetInstance()->Load(relativePath) == false)
+		if (GetInstance()->Load(name) == false)
 		{
 			return false;
 		}
@@ -132,7 +137,7 @@ bool AudioManager::Play(string relativePath, float volume)
 
 	FMOD::Channel* pchannel;
 
-	m_psystem->playSound(m_sounds[relativePath], nullptr, true, &pchannel);
+	m_psystem->playSound(m_sounds[name], nullptr, true, &pchannel);
 
 	pchannel->setVolume(m_masterVolume * volume);
 
@@ -141,7 +146,7 @@ bool AudioManager::Play(string relativePath, float volume)
 	return true;
 }
 
-bool AudioManager::Play(string relativePath, XMFLOAT3 position, float volume)
+bool AudioManager::Play(string name, XMFLOAT3 position, float volume, FMOD::Channel** ppchannel)
 {
 	if (volume < 0 || volume > 1.0f)
 	{
@@ -150,9 +155,9 @@ bool AudioManager::Play(string relativePath, XMFLOAT3 position, float volume)
 		return false;
 	}
 
-	if (m_sounds.count(relativePath) == 0)
+	if (m_sounds.count(name) == 0)
 	{
-		if (GetInstance()->Load(relativePath) == false)
+		if (GetInstance()->Load(name) == false)
 		{
 			return false;
 		}
@@ -160,7 +165,7 @@ bool AudioManager::Play(string relativePath, XMFLOAT3 position, float volume)
 
 	FMOD::Channel* pchannel;
 
-	m_psystem->playSound(m_sounds[relativePath], nullptr, true, &pchannel);
+	m_psystem->playSound(m_sounds[name], nullptr, true, &pchannel);
 
 	pchannel->setMode(FMOD_3D);
 	pchannel->setVolume(m_masterVolume * volume);
@@ -173,6 +178,11 @@ bool AudioManager::Play(string relativePath, XMFLOAT3 position, float volume)
 	pchannel->set3DAttributes(&pos, nullptr);
 
 	pchannel->setPaused(false);
+
+	if (ppchannel != nullptr)
+	{
+		*ppchannel = pchannel;
+	}
 
 	return true;
 }
@@ -197,18 +207,18 @@ void AudioManager::Update()
 	}
 }
 
-bool AudioManager::Delete(string relativePath)
+bool AudioManager::Delete(string name)
 {
-	if (m_sounds.count(relativePath) == 0)
+	if (m_sounds.count(name) == 0)
 	{
 		LOG("Tried to delete a sound that hasn't been loaded!");
 
 		return false;
 	}
 
-	m_sounds[relativePath]->release();
+	m_sounds[name]->release();
 
-	m_sounds.erase(relativePath);
+	m_sounds.erase(name);
 
 	return false;
 }

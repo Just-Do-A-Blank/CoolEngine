@@ -10,7 +10,7 @@ class WanderState : public FuzzyState
 {
 public:
 	WanderState(EnemyGameObject* penemy);
-	WanderState(const nlohmann::json& data);
+	WanderState(const nlohmann::json& data, EnemyGameObject* penemy);
 	WanderState(WanderState const* other, EnemyGameObject* penemy);
 
 	void SetEnemy(EnemyGameObject* penemy);
@@ -35,7 +35,6 @@ protected:
 
 private:
 	PlayerGameObject* m_pplayer = nullptr;
-	EnemyGameObject* m_penemy = nullptr;
 
 	std::vector<node*> m_path;
 

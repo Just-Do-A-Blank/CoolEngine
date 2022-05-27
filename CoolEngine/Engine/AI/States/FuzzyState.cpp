@@ -1,5 +1,6 @@
 #include "FuzzyState.h"
 #include "Engine/EditorUI/EditorUI.h"
+#include "Engine/GameObjects/EnemyGameObject.h"
 
 std::string FuzzyState::s_typeNames[(int)FuzzyStateType::COUNT + 1] =
 {
@@ -11,18 +12,21 @@ std::string FuzzyState::s_typeNames[(int)FuzzyStateType::COUNT + 1] =
 	"Invalid State"
 };
 
-FuzzyState::FuzzyState()
+FuzzyState::FuzzyState(EnemyGameObject* penemy)
 {
+	m_penemy = penemy;
 }
 
-FuzzyState::FuzzyState(const nlohmann::json& data)
+FuzzyState::FuzzyState(const nlohmann::json& data, EnemyGameObject* penemy)
 {
+	m_penemy = penemy;
 	Deserialize(data);
 }
 
-FuzzyState::FuzzyState(const FuzzyState* pother)
+FuzzyState::FuzzyState(const FuzzyState* pother, EnemyGameObject* penemy)
 {
 	m_activationLevel = pother->m_activationLevel;
+	m_penemy = penemy;
 }
 
 #if EDITOR

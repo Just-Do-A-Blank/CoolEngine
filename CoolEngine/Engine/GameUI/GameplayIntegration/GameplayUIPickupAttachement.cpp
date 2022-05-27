@@ -55,6 +55,11 @@ GameplayUIPickupAttachement::~GameplayUIPickupAttachement()
 /// </summary>
 void GameplayUIPickupAttachement::Start()
 {
+    if (m_pickupSlot == 0)
+    {
+        return;
+    }
+
     AttemptToFindPlayer();
     m_playerPickedUpItem = true;
 }
@@ -64,6 +69,11 @@ void GameplayUIPickupAttachement::Start()
 /// </summary>
 void GameplayUIPickupAttachement::Update()
 {
+    if (m_pickupSlot == 0)
+    {
+        return;
+    }
+
     // This ensures we only update when data changes
     // see handle Player Pickups
     if (!m_playerPickedUpItem)

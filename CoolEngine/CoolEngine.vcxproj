@@ -50,6 +50,7 @@
     <ClInclude Include="Engine\EditorUI\EditorUINonSpecificParameters.h" />
     <ClInclude Include="Engine\EditorUI\TileMapContentBrowser.h" />
     <ClInclude Include="Engine\FileIO\FileIO.h" />
+    <ClInclude Include="Engine\GameObjects\AudioSourceGameObject.h" />
     <ClInclude Include="Engine\GameObjects\BulletGameObject.h" />
     <ClInclude Include="Engine\GameObjects\CameraGameObject.h" />
     <ClInclude Include="Engine\GameObjects\CharacterGameObject.h" />
@@ -188,6 +189,7 @@
     <ClInclude Include="Engine\Managers\Events\BulletCreator.h" />
     <ClInclude Include="Engine\Managers\Events\CollisionEvents.h" />
     <ClInclude Include="Engine\Managers\Events\DamageCalculation.h" />
+    <ClInclude Include="Engine\Managers\Events\EnemyDeathEvent.h" />
     <ClInclude Include="Engine\Managers\Events\EventManager.h" />
     <ClInclude Include="Engine\Managers\Events\EventObserver.h" />
     <ClInclude Include="Engine\Managers\Events\EventObserverExamples.h" />
@@ -241,6 +243,7 @@
     <ClCompile Include="Engine\EditorUI\EditorUIFloatParameters.cpp" />
     <ClCompile Include="Engine\EditorUI\TileMapContentBrowser.cpp" />
     <ClCompile Include="Engine\FileIO\FileIO.cpp" />
+    <ClCompile Include="Engine\GameObjects\AudioSourceGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\BulletGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp" />
     <ClCompile Include="Engine\GameObjects\CharacterGameObject.cpp" />
@@ -323,6 +326,7 @@
     <ClCompile Include="Engine\Managers\DebugDrawManager.cpp" />
     <ClCompile Include="Engine\Managers\Events\BulletCreator.cpp" />
     <ClCompile Include="Engine\Managers\Events\DamageCalculation.cpp" />
+    <ClCompile Include="Engine\Managers\Events\EnemyDeathEvent.cpp" />
     <ClCompile Include="Engine\Managers\Events\EventManager.cpp" />
     <ClCompile Include="Engine\Managers\Events\EventObserver.cpp" />
     <ClCompile Include="Engine\Managers\Events\Events.cpp" />
@@ -626,7 +630,7 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;_UNICODE;UNICODE</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <ForcedIncludeFiles>$(ProjectDir)Engine\stdafx.h</ForcedIncludeFiles>

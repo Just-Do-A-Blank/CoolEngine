@@ -16,10 +16,15 @@ GameplayUIWeaponAttachment::GameplayUIWeaponAttachment()
     m_attachmentSettingList = GetattachmentSettingsAsList();
     m_attachmentSettingSelectedItem = GetattachmentSettingsFromIndex((int)m_weaponAttachmentOption);
 #endif
+
+    m_weaponCurrentlyInInventory = nullptr;
+
+    EventManager::Instance()->AddClient(EventType::Pickup, this);
 }
 
 GameplayUIWeaponAttachment::GameplayUIWeaponAttachment(nlohmann::json& data)
 {
+    m_weaponCurrentlyInInventory = nullptr;
     m_currentPlayer = nullptr;
     m_weaponKey = "";
     m_haveEverUpdatedTheUI = false;
@@ -30,10 +35,13 @@ GameplayUIWeaponAttachment::GameplayUIWeaponAttachment(nlohmann::json& data)
 #endif
 
     LoadLocalData(data);
+
+    EventManager::Instance()->AddClient(EventType::Pickup, this);
 }
 
 GameplayUIWeaponAttachment::GameplayUIWeaponAttachment(GameplayUIWeaponAttachment const& other)
 {
+    m_weaponCurrentlyInInventory = nullptr;
     m_currentPlayer = nullptr;
     m_weaponAttachmentOption = (EWEAPONUIATTACHMENTOPTION)other.m_weaponAttachmentOption;
     m_weaponKey = "";
@@ -45,11 +53,13 @@ GameplayUIWeaponAttachment::GameplayUIWeaponAttachment(GameplayUIWeaponAttachmen
     m_attachmentSettingList = GetattachmentSettingsAsList();
     m_attachmentSettingSelectedItem = GetattachmentSettingsFromIndex((int)m_weaponAttachmentOption);
 #endif
+
+    EventManager::Instance()->AddClient(EventType::Pickup, this);
 }
 
 GameplayUIWeaponAttachment::~GameplayUIWeaponAttachment()
 {
-
+    EventManager::Instance()->RemoveClientEvent(EventType::Pickup, this);
 }
 
 /// <summary>
@@ -106,11 +116,76 @@ WeaponGameObject* GameplayUIWeaponAttachment::GetWeaponGameObject()
             weaponReturn = m_currentPlayer->GetWeapon();
             break;
         case EWEAPONUIATTACHMENTOPTION::Inventory:
-            // [WAIT FOR INVENTORY]
+            if (m_playerPickedUpItem)
+            {
+                m_weaponCurrentlyInInventory = GetWeaponInInventory();
+            }
+            m_playerPickedUpItem = false;
+            weaponReturn = m_weaponCurrentlyInInventory;
             break;
     }
 
     return weaponReturn;
+}
+
+/// <summary>
+/// Handles events from the Observations
+/// </summary>
+void GameplayUIWeaponAttachment::Handle(Event* e)
+{
+    switch (e->GetEventID())
+    {
+        case EventType::Pickup:
+            PlayerPickedupItem((PickupEvent*)e);
+            break;
+    }
+}
+
+/// <summary>
+/// Handles pickup events
+/// </summary>
+void GameplayUIWeaponAttachment::PlayerPickedupItem(PickupEvent* e)
+{
+    m_playerPickedUpItem = true;
+}
+
+/// <summary>
+/// Gets the weapon in the inventory
+/// </summary>
+/// <returns>The weapon to use</returns>
+WeaponGameObject* GameplayUIWeaponAttachment::GetWeaponInInventory()
+{
+    if (m_currentPlayer == nullptr)
+    {
+        return nullptr;
+    }
+
+    WeaponGameObject* weaponGameObject = nullptr;
+    int slot = 1;
+    Inventory* inventory = m_currentPlayer->GetInventory();
+    if (inventory != nullptr)
+    {
+        int i = -1;
+        while (slot > 0)
+        {
+            ++i;
+            if (inventory->GetItemInSlot(i) == nullptr)
+            {
+                --slot;
+            }
+            else if (inventory->GetItemInSlot(i)->ContainsType(GameObjectType::WEAPON))
+            {
+                --slot;
+            }
+        }
+
+        if (inventory->GetItemInSlot(i) != nullptr)
+        {
+            weaponGameObject = dynamic_cast<WeaponGameObject*>(inventory->GetItemInSlot(i));
+        }
+    }
+
+    return weaponGameObject;
 }
 
 #if EDITOR

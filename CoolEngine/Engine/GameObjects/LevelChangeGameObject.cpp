@@ -36,7 +36,7 @@ LevelChangeGameObject::LevelChangeGameObject(LevelChangeGameObject const& other)
 
 LevelChangeGameObject::~LevelChangeGameObject()
 {
-    
+	EventManager::Instance()->RemoveClientEvent(EventType::EnemyDeath, this);
 }
 
 void LevelChangeGameObject::Serialize(nlohmann::json& jsonData)
@@ -87,32 +87,12 @@ void LevelChangeGameObject::SetSceneName(string name)
 
 void LevelChangeGameObject::UpdateDoorState()
 {
-    int enemycount = 0;
-
-    for each (GameObject * var in GameManager::GetInstance()->GetAllGameObjectsInCurrentScene())
-    {
-        if (var->GetGameObjectType() == (GameObjectType)16)
-        {
-            enemycount + 1;
-        }
-    }
-
-    if (enemycount > 0)
-    {
-        GetAnimationStateMachine()->SetActiveState("DoorOpenned");
-        m_doorIsOpen = true;
-    }
-    else
-    {
-        GetAnimationStateMachine()->SetActiveState("DoorClosed");
-        m_doorIsOpen = false;
-    }
 
 }
 
 void LevelChangeGameObject::OnTriggerHold(GameObject* obj1, GameObject* obj2)
 {
-    if (obj1->ContainsType(GameObjectType::PLAYER) && obj2->ContainsType(GameObjectType::LEVEL_CHANGE) && m_doorIsOpen)
+	if (obj1->ContainsType(GameObjectType::PLAYER) && obj2->ContainsType(GameObjectType::LEVEL_CHANGE) && m_enemiesInScene <= 0)
     {
         string sceneFilePath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Levels\\" + m_sceneName + ".json";
         if (!GameManager::GetInstance()->SwitchSceneUsingIdentifier(sceneFilePath))
@@ -120,6 +100,48 @@ void LevelChangeGameObject::OnTriggerHold(GameObject* obj1, GameObject* obj2)
             GameManager::GetInstance()->LoadSceneFromFile(sceneFilePath);
             GameManager::GetInstance()->SwitchSceneUsingIdentifier(m_sceneName, m_playerName, true);
         }
+    }
+}
+
+void LevelChangeGameObject::Handle(Event* e)
+{
+	TriggerableGameObject::Handle(e);
+
+	if (e->GetEventID() == EventType::EnemyDeath)
+	{
+		--m_enemiesInScene;
+        if(m_enemiesInScene <= 0)
+        {
+            GetAnimationStateMachine()->SetActiveState("DoorOpenned");
+        }
+    }
+}
+
+void LevelChangeGameObject::Start()
+{
+	TriggerableGameObject::Start();
+
+	EventManager::Instance()->AddClient(EventType::EnemyDeath, this);
+
+	std::vector<GameObject*>& gameObjects = GameManager::GetInstance()->GetAllGameObjects();
+
+	m_enemiesInScene = 0;
+
+	for (int i = 0; i < gameObjects.size(); ++i)
+	{
+		if (gameObjects[i]->ContainsType(GameObjectType::ENEMY) == true)
+		{
+			++m_enemiesInScene;
+		}
+	}
+
+    if(m_enemiesInScene > 0)
+    {
+        GetAnimationStateMachine()->SetActiveState("DoorClosed");
+    }
+    else
+    {
+        GetAnimationStateMachine()->SetActiveState("DoorOpenned");
     }
 }
 

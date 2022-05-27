@@ -4,25 +4,21 @@
 #include "Engine/Managers/GameManager.h"
 #include "Engine/EditorUI/EditorUI.h"
 
-RangeAttackState::RangeAttackState(EnemyGameObject* penemy) : FuzzyState()
+RangeAttackState::RangeAttackState(EnemyGameObject* penemy) : FuzzyState(penemy)
 {
 	m_stateType = FuzzyStateType::RANGE_ATTACK;
-
-	m_penemy = penemy;
 }
 
-RangeAttackState::RangeAttackState(const nlohmann::json& data) : FuzzyState(data)
+RangeAttackState::RangeAttackState(const nlohmann::json& data, EnemyGameObject* penemy) : FuzzyState(data, penemy)
 {
 	m_stateType = FuzzyStateType::RANGE_ATTACK;
 
 	Deserialize(data);
 }
 
-RangeAttackState::RangeAttackState(RangeAttackState const* other, EnemyGameObject* penemy) : FuzzyState(other)
+RangeAttackState::RangeAttackState(RangeAttackState const* other, EnemyGameObject* penemy) : FuzzyState(other, penemy)
 {
 	m_stateType = FuzzyStateType::RANGE_ATTACK;
-
-	m_penemy = penemy;
 
 	m_attackRangeVariance = other->m_attackRangeVariance;
 }
@@ -90,6 +86,7 @@ void RangeAttackState::Deserialize(const nlohmann::json& data)
 	m_attackRangeVariance = data["AttackRangeVariance"];
 }
 
+#if EDITOR
 void RangeAttackState::CreateEngineUI()
 {
 	FuzzyState::CreateEngineUI();
@@ -103,6 +100,7 @@ void RangeAttackState::CreateEngineUI()
 
 	EditorUI::DragFloat("Attack Range Variance", m_attackRangeVariance, params);
 }
+#endif
 
 void RangeAttackState::Start()
 {

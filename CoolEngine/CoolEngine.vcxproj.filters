@@ -328,6 +328,10 @@
     <ClCompile Include="Inventory.cpp">
       <Filter>Engine\GameObjects\Gameplay\Inventory</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GameObjects\AudioSourceGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\Events\EnemyDeathEvent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -834,6 +838,10 @@
     <ClInclude Include="Inventory.h">
       <Filter>Engine\GameObjects\Gameplay\Inventory</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\GameObjects\AudioSourceGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\EnemyDeathEvent.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Engine\Includes\DirectXTK\SimpleMath.inl" />
