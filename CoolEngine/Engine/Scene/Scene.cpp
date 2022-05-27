@@ -15,7 +15,7 @@ Scene::Scene(string identifier)
 	const XMFLOAT3 scal = XMFLOAT3(1, 1, 1);
 
 	Transform* trans = new Transform();
-	m_quadtree = new Quadtree(XMFLOAT2(0,0), 4, 1000);
+	m_quadtree = new Quadtree(XMFLOAT2(0,0), 4, 500);
 }
 
 Scene::~Scene()
@@ -34,6 +34,12 @@ void Scene::Start()
 
 void Scene::Update()
 {
+	if (!m_quadtree->Initialized())
+	{
+		InitializeQuadTree();
+	}
+
+
 	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
 	vector<GameObject*> updateList;
 	PlayerGameObject* pgO = nullptr;
@@ -54,7 +60,7 @@ void Scene::Update()
 	}
 
 	m_quadtree->GetUpdateList(pgO, updateList);
-	
+	 
 	for (int it = 0; it < updateList.size(); ++it)
 	{
 		updateList[it]->Update();
@@ -80,18 +86,31 @@ void Scene::Render(RenderStruct& renderStruct)
 	RenderableGameObject* prenderableGameObject = nullptr;
 
 	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
-	for (int it = 0; it < gameObjectList.size(); ++it)
+	vector<GameObject*> updateList;
+	PlayerGameObject* pgO = nullptr;
+
+	updateList.reserve(gameObjectList.size());
+
+	for (size_t i = 0; i < gameObjectList.size(); i++)
 	{
-		//If this object is not enabled, do not render it 
-		if (!gameObjectList[it]->GetEnabled())
+		if (gameObjectList[i]->ContainsType(GameObjectType::PLAYER))
 		{
-			continue;
+			pgO = dynamic_cast<PlayerGameObject*>(gameObjectList[i]);
 		}
+	}
 
+	if (pgO == nullptr)
+	{
+		return;
+	}
 
-		if (gameObjectList[it]->ContainsType(GameObjectType::RENDERABLE))
+	m_quadtree->GetUpdateList(pgO, updateList);
+
+	for (int it = 0; it < updateList.size(); ++it)
+	{
+		if (updateList[it]->ContainsType(GameObjectType::RENDERABLE))
 		{
-			prenderableGameObject = dynamic_cast<RenderableGameObject*>(gameObjectList[it]);
+			prenderableGameObject = dynamic_cast<RenderableGameObject*>(updateList[it]);
 			prenderableGameObject->Render(renderStruct);
 
 			continue;
@@ -99,7 +118,7 @@ void Scene::Render(RenderStruct& renderStruct)
 
 		if (gameObjectList[it]->ContainsType(GameObjectType::GAME_UI_COMPONENT))
 		{
-			dynamic_cast<GameUIComponent*>(gameObjectList[it])->Render(renderStruct);
+			dynamic_cast<GameUIComponent*>(updateList[it])->Render(renderStruct);
 			continue;
 		}
 	}
@@ -112,6 +131,7 @@ void Scene::InitializeQuadTree()
 	{
 		m_quadtree->InsertElement(gameObjectList[i]);
 	}
+	m_quadtree->SetInitialized(true);
 }
 
 vector<GameObject*>& Scene::GetAllGameObjects()

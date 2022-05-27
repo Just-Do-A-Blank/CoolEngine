@@ -129,10 +129,6 @@ bool Quadtree::RemoveObject(GameObject* pgameObjectAddress)
     return LoacteObjectAndOverwrite(pgameObjectAddress, nullptr);
 }
 
-void Quadtree::UpdateQuadTreeStucture()
-{
-
-}
 
 void Quadtree::GetUpdateList(CollidableGameObject* player, std::vector<GameObject*>& listToUpdate)
 {
