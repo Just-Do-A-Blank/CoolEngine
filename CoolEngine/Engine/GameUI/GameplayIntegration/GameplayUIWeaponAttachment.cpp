@@ -191,7 +191,7 @@ WeaponGameObject* GameplayUIWeaponAttachment::GetWeaponInInventory()
 #if EDITOR
 void GameplayUIWeaponAttachment::CreateEngineUI()
 {
-    if (EditorUI::CollapsingSection("Weapon Attachement", true))
+    if (EditorUI::CollapsingSection("Weapon Slot Options", true))
     {
         AttemptToFindPlayer();
         PlayerGameObject* player = GetPlayer();

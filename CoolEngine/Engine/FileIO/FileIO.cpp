@@ -4,6 +4,7 @@
 #include "Engine/Managers/FontManager.h"
 #include "Engine/Managers/GraphicsManager.h"
 
+
 void SimpleFileIO::LoadScene(std::string location)
 {
 	GameManager::GetInstance()->LoadSceneFromFile(location, false);

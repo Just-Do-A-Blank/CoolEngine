@@ -90,11 +90,23 @@ void ImageComponent::CreateEngineUI()
 	if (EditorUI::CollapsingSection("Image Options", true))
 	{
 		EditorUI::Texture("Texture", m_texFilepath, m_ptexture);
+		if (EditorUI::BasicButton("Reset Image"))
+		{
+			SetTexture(std::wstring());
+		}
 	}
 
+	ImGui::PushID("ResourceAttachement");
 	m_resourceAttachement->CreateEngineUI();
+	ImGui::PopID();
+
+	ImGui::PushID("WeaponAttachement");
 	m_weaponAttachement->CreateEngineUI();
+	ImGui::PopID();
+
+	ImGui::PushID("PickupAttachement");
     m_pickupAttachement->CreateEngineUI();
+	ImGui::PopID();
 }
 #endif
 

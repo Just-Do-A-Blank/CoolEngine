@@ -64,28 +64,32 @@ void ImageUIWeaponDisplay::Update(WeaponGameObject* weaponGameObject)
 #if EDITOR
 	void ImageUIWeaponDisplay::CreateEngineUI()
 	{
-		GameplayUIWeaponAttachment::CreateEngineUI();
-		if (EditorUI::CollapsingSection("Weapon display", true))
+		if (EditorUI::CollapsingSection("Weapon display", false))
 		{
-			EditorUI::FullTitle("Blank/No texture images mean\nnothing displayed or weapon image displayed.");
+			GameplayUIWeaponAttachment::CreateEngineUI();
 
-			float colWidth = 150;
-			ImVec2 imageSize = ImVec2(100, 100);
-			EditorUI::Texture("Image if full", m_texturePathAttached, m_ptextureWeaponAttached, colWidth, imageSize);
-
-			if (EditorUI::BasicButton("Reset Image Held"))
+			if (EditorUI::CollapsingSection("Image Options", true))
 			{
-				SetAttachedTexture(std::wstring());
+				EditorUI::FullTitle("Blank/No texture images mean\nnothing displayed or weapon image displayed.");
+
+				float colWidth = 150;
+				ImVec2 imageSize = ImVec2(100, 100);
+				EditorUI::Texture("Image if full", m_texturePathAttached, m_ptextureWeaponAttached, colWidth, imageSize);
+
+				if (EditorUI::BasicButton("Reset Image Held"))
+				{
+					SetAttachedTexture(std::wstring());
+				}
+
+				EditorUI::Texture("Image if empty", m_texturePathNotAttached, m_ptextureWeaponNotAttached, colWidth, imageSize);
+
+				if (EditorUI::BasicButton("Reset Image Not Held"))
+				{
+					SetNotAttachedTexture(std::wstring());
+				}
+
+				ImGui::Separator();
 			}
-
-			EditorUI::Texture("Image if empty", m_texturePathNotAttached, m_ptextureWeaponNotAttached, colWidth, imageSize);
-
-			if (EditorUI::BasicButton("Reset Image Not Held"))
-			{
-				SetNotAttachedTexture(std::wstring());
-			}
-
-			ImGui::Separator();
 		}
 	}
 #endif
@@ -117,8 +121,8 @@ void ImageUIWeaponDisplay::LoadLocalData(const nlohmann::json& jsonData)
 
 		SetAttachedTexture(m_texturePathAttached);
 
-		tempPath = jsonData["ImageUIWeaponDisplay_WeaponTexturePathNotAttached"];
-		m_texturePathNotAttached = std::wstring(tempPath.begin(), tempPath.end());
+		std::string tempPath2 = jsonData["ImageUIWeaponDisplay_WeaponTexturePathNotAttached"];
+		m_texturePathNotAttached = std::wstring(tempPath2.begin(), tempPath2.end());
 
 		SetNotAttachedTexture(m_texturePathNotAttached);
 	}

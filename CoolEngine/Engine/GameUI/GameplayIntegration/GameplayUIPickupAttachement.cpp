@@ -159,7 +159,7 @@ PickupGameObject* GameplayUIPickupAttachement::GetPickupToDisplay()
 #if EDITOR
 void GameplayUIPickupAttachement::CreateEngineUI()
 {
-    if (EditorUI::CollapsingSection("Pickup Attachement", true))
+    if (EditorUI::CollapsingSection("Pickup Slot", true))
     {
         AttemptToFindPlayer();
         PlayerGameObject* player = GetPlayer();

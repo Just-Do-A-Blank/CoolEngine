@@ -44,38 +44,41 @@ ImageUIResourceDisplay::~ImageUIResourceDisplay()
 #if EDITOR
 	void ImageUIResourceDisplay::CreateEngineUI()
 	{
-		GameplayUIResourceAttachment::CreateEngineUI();
-
-		if (EditorUI::CollapsingSection("Image Link", true))
+		if (EditorUI::CollapsingSection("Pickup Image Options", false))
 		{
-			EditorButtonCallback callback = EditorUI::BasicDuelButtons("Add to end", "Add to start");
-			if (callback.m_leftButton)
-			{
-				m_texturesForEachResourceChange->push_back(new TextureToResource());
-                ResetOrdering();
-			}
-			else if (callback.m_rightButton)
-			{
-				m_texturesForEachResourceChange->push_front(new TextureToResource());
-                ResetOrdering();
-			}
+            GameplayUIResourceAttachment::CreateEngineUI();
 
-            int deletionIndex = -1;
-			int index = 0;
-			for (TextureToResource* const& i : *m_texturesForEachResourceChange)
-			{
-                ImGui::PushID(("TextureToResource_" + to_string(index)).c_str());
-
-                if (!i->CreateEngineUI(index))
+            if (EditorUI::CollapsingSection("Image Options", true))
+            {
+                EditorButtonCallback callback = EditorUI::BasicDuelButtons("Add to end", "Add to start");
+                if (callback.m_leftButton)
                 {
-                    deletionIndex = index;
+                    m_texturesForEachResourceChange->push_back(new TextureToResource());
+                    ResetOrdering();
+                }
+                else if (callback.m_rightButton)
+                {
+                    m_texturesForEachResourceChange->push_front(new TextureToResource());
+                    ResetOrdering();
                 }
 
-                index++;
-				ImGui::PopID();
-			}
+                int deletionIndex = -1;
+                int index = 0;
+                for (TextureToResource* const& i : *m_texturesForEachResourceChange)
+                {
+                    ImGui::PushID(("TextureToResource_" + to_string(index)).c_str());
 
-            DeleteResourceTextureAtIndex(deletionIndex);
+                    if (!i->CreateEngineUI(index))
+                    {
+                        deletionIndex = index;
+                    }
+
+                    index++;
+                    ImGui::PopID();
+                }
+
+                DeleteResourceTextureAtIndex(deletionIndex);
+            }
 		}
 	}
 #endif

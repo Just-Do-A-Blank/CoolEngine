@@ -35,29 +35,33 @@ ImageUIPickupDisplay::~ImageUIPickupDisplay()
 #if EDITOR
 	void ImageUIPickupDisplay::CreateEngineUI()
 	{
-		GameplayUIPickupAttachement::CreateEngineUI();
-
-        if (EditorUI::CollapsingSection("Pickup Image Options", true))
+        if (EditorUI::CollapsingSection("Pickup Options", false))
         {
-            EditorUI::FullTitle("Override the pickup image in these situations.\nBlank will not override the pickup image");
+            GameplayUIPickupAttachement::CreateEngineUI();
 
-            float colWidth = 150;
-            ImVec2 imageSize = ImVec2(150, 150);
-            EditorUI::Texture("Slot is full", m_texturePathAttached, m_ptextureWeaponAttached, colWidth, imageSize);
-
-            if (EditorUI::BasicButton("Reset slot is full"))
+            if (EditorUI::CollapsingSection("Pickup Image Options", true))
             {
-                m_texturePathAttached = std::wstring();
-                SetAttachedTexture(m_texturePathAttached);
+                EditorUI::FullTitle("Override the pickup image in these situations.\nBlank will not override the pickup image");
+
+                float colWidth = 150;
+                ImVec2 imageSize = ImVec2(150, 150);
+                EditorUI::Texture("Slot is full", m_texturePathAttached, m_ptextureWeaponAttached, colWidth, imageSize);
+
+                if (EditorUI::BasicButton("Reset slot is full"))
+                {
+                    m_texturePathAttached = std::wstring();
+                    SetAttachedTexture(m_texturePathAttached);
+                }
+
+                EditorUI::Texture("Slot is empty", m_texturePathNotAttached, m_ptextureWeaponNotAttached, colWidth, imageSize);
+
+                if (EditorUI::BasicButton("Reset slot is empty"))
+                {
+                    m_texturePathNotAttached = std::wstring();
+                    SetNotAttachedTexture(m_texturePathNotAttached);
+                }
             }
 
-            EditorUI::Texture("Slot is empty", m_texturePathNotAttached, m_ptextureWeaponNotAttached, colWidth, imageSize);
-
-            if (EditorUI::BasicButton("Reset slot is empty"))
-            {
-                m_texturePathNotAttached = std::wstring();
-                SetNotAttachedTexture(m_texturePathNotAttached);
-            }
         }
 	}
 #endif

@@ -1,0 +1,1 @@
+{"AnimationStateMachine":{"ActiveState":"","States":null},"BoxScale":[1.0,1.0],"ConsumedOnPickup":false,"IsCollidable":false,"IsRenderable":true,"IsTrigger":true,"Layers":0,"PickupQuantity":0,"PickupUITexturePath":"Resources\\UI\\TestUI\\ThisIsAPickup.dds","PrefabKey":"pickuppre","ShapeType":"Box","TexturePath":"Resources\\UI\\TestUI\\Pickup.dds"}
