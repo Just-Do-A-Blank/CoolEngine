@@ -90,7 +90,6 @@ void LevelChangeGameObject::OnTriggerHold(GameObject* obj1, GameObject* obj2)
 		if (!GameManager::GetInstance()->SwitchSceneUsingIdentifier(sceneFilePath))
 		{
 			GameManager::GetInstance()->LoadSceneFromFile(sceneFilePath, m_playerName, true);
-			m_sceneName = "";
 		}
 	}
 }
