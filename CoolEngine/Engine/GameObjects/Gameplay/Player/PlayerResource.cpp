@@ -7,6 +7,7 @@ PlayerResource::PlayerResource(string key)
 	m_minValue = 0;
 	m_key = key;
     m_defaultValue = 0;
+    m_valueGained = 0;
     m_attachToWeaponDamage = false;
     m_resourceKillOnDrain = false;
 }
