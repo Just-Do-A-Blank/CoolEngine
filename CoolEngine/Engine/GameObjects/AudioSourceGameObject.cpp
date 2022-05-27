@@ -1,17 +1,36 @@
 #include "AudioSourceGameObject.h"
+#include "Engine/GameObjects/CharacterGameObject.h"
 #include "Engine/EditorUI/EditorUI.h"
 #include "Engine/Managers/AudioManager.h"
 #include "Engine/Includes/FMOD/fmod.hpp"
 #include "Engine/Includes/FMOD/fmod_errors.h"
 
-AudioSourceGameObject::AudioSourceGameObject() : GameObject()
+AudioSourceGameObject::AudioSourceGameObject() : TriggerableGameObject()
 {
 	m_gameObjectType |= GameObjectType::SOUND;
 }
 
-AudioSourceGameObject::AudioSourceGameObject(string identifier) : GameObject(identifier)
+AudioSourceGameObject::AudioSourceGameObject(string identifier, CoolUUID uuid) : TriggerableGameObject(identifier, uuid)
 {
 	m_gameObjectType |= GameObjectType::SOUND;
+}
+
+AudioSourceGameObject::AudioSourceGameObject(const nlohmann::json& data, CoolUUID uuid) : TriggerableGameObject(data, uuid)
+{
+	m_gameObjectType |= GameObjectType::SOUND;
+
+	m_volume = data["Volume"];
+	m_soundName = data["SoundName"];
+	m_loop = data["Loop"];
+	m_playOnOverlap = data["PlayOnOverlap"];
+}
+
+AudioSourceGameObject::AudioSourceGameObject(AudioSourceGameObject const& other) : TriggerableGameObject(other)
+{
+	m_volume = other.m_volume;
+	m_soundName = other.m_soundName;
+	m_loop = other.m_loop;
+	m_playOnOverlap = other.m_playOnOverlap;
 }
 
 const float& AudioSourceGameObject::GetVolume() const
@@ -21,17 +40,12 @@ const float& AudioSourceGameObject::GetVolume() const
 
 const std::string& AudioSourceGameObject::GetSoundPath() const
 {
-	return m_relativePath;
+	return m_soundName;
 }
 
 const bool& AudioSourceGameObject::IsLooping() const
 {
 	return m_loop;
-}
-
-const bool& AudioSourceGameObject::IsEnabled() const
-{
-	return m_enabled;
 }
 
 void AudioSourceGameObject::SetVolume(float volume)
@@ -41,7 +55,7 @@ void AudioSourceGameObject::SetVolume(float volume)
 
 void AudioSourceGameObject::SetSoundPath(std::string path)
 {
-	m_relativePath = path;
+	m_soundName = path;
 }
 
 void AudioSourceGameObject::SetIsLooping(bool looping)
@@ -49,50 +63,51 @@ void AudioSourceGameObject::SetIsLooping(bool looping)
 	m_loop = looping;
 }
 
-void AudioSourceGameObject::SetIsEnabled(bool enabled)
+void AudioSourceGameObject::Serialize(nlohmann::json& data)
 {
-	m_enabled = enabled;
+	TriggerableGameObject::Serialize(data);
+
+	data["Volume"] = m_volume;
+	data["SoundName"] = m_soundName;
+	data["Loop"] = m_loop;
+	data["PlayOnOverlap"] = m_playOnOverlap;
 }
 
 #if EDITOR
 
 void AudioSourceGameObject::CreateEngineUI()
 {
-	GameObject::CreateEngineUI();
+	TriggerableGameObject::CreateEngineUI();
 
 	ImGui::Spacing();
 
-	EditorUI::RelativePath("Audio Path", m_relativePath);
-
-	ImGui::Spacing();
-
-	EditorUI::DragFloat("Volume", m_volume, 100, 0.01f, 0, 1);
-
-	ImGui::Spacing();
-
-	EditorUI::Checkbox("Looping", m_loop);
-
-	ImGui::Spacing();
-
-	EditorUI::Checkbox("Enabled", m_enabled);
-
-	ImGui::Spacing();
-
-	if (ImGui::Button("Play") == true)
+	if (EditorUI::CollapsingSection("Audio") == true)
 	{
-		Play();
-	}
+		EditorUI::InputText("Audio Path", m_soundName);
 
-	ImGui::Spacing();
+		ImGui::Spacing();
+
+		EditorUIFloatParameters params;
+		params.m_minValue = 0.0f;
+		params.m_maxValue = 1.0f;
+
+		EditorUI::DragFloat("Volume", m_volume, params);
+
+		ImGui::Spacing();
+
+		EditorUI::Checkbox("Looping", m_loop);
+
+		ImGui::Spacing();
+
+		if (ImGui::Button("Play") == true)
+		{
+			Play();
+		}
+	}
 }
 
 void AudioSourceGameObject::Update()
 {
-	if (m_enabled == false)
-	{
-		return;
-	}
-
 	if (m_loop)
 	{
 		bool isPlaying = false;
@@ -109,16 +124,47 @@ void AudioSourceGameObject::Update()
 	}
 }
 
-void AudioSourceGameObject::Play()
+bool AudioSourceGameObject::Play()
 {
-	if (m_relativePath != "")
+	if (m_soundName != "")
 	{
-		AudioManager::GetInstance()->Play(m_relativePath, m_transform->GetPosition(), m_volume, &m_pchannel);
+		return AudioManager::GetInstance()->Play(m_soundName, m_transform->GetWorldPosition(), m_volume, &m_pchannel);
 	}
 	else
 	{
 		LOG("Tried to play sound when the sound path hasn't been set");
+
+		return false;
 	}
+}
+
+void AudioSourceGameObject::OnTriggerHold(GameObject* obj1, GameObject* obj2)
+{
+	bool isPlaying = false;
+	m_pchannel->isPlaying(&isPlaying);
+
+	if (m_playOnOverlap == false || isPlaying == true)
+	{
+		return;
+	}
+
+	CharacterGameObject* pcharacter = nullptr;
+
+	if (obj1->ContainsType(GameObjectType::CHARACTER) == true)
+	{
+		pcharacter = dynamic_cast<CharacterGameObject*>(obj1);
+	}
+	else if (obj2->ContainsType(GameObjectType::CHARACTER) == true)
+	{
+		pcharacter = dynamic_cast<CharacterGameObject*>(obj2);
+	}
+
+	if (pcharacter == nullptr)
+	{
+		return;
+	}
+
+	Play();
 }
 
 #endif

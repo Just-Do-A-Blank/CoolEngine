@@ -1,28 +1,30 @@
 #pragma once
-#include "GameObject.h"
+#include "Engine/GameObjects/TriggerableGameObject.h"
 
 namespace FMOD
 {
 	class Channel;
 }
 
-class AudioSourceGameObject : public GameObject
+class AudioSourceGameObject : public TriggerableGameObject
 {
 public:
 	AudioSourceGameObject();
-	AudioSourceGameObject(string identifier);
+	AudioSourceGameObject(string identifier, CoolUUID uuid);
+	AudioSourceGameObject(const nlohmann::json& data, CoolUUID uuid);
+	AudioSourceGameObject(AudioSourceGameObject const& other);
 
 	//Getters
 	const float& GetVolume() const;
 	const std::string& GetSoundPath() const;
 	const bool& IsLooping() const;
-	const bool& IsEnabled() const;
 
 	//Setters
 	void SetVolume(float volume);
 	void SetSoundPath(std::string path);
 	void SetIsLooping(bool looping);
-	void SetIsEnabled(bool enabled);
+
+	void Serialize(nlohmann::json& data) override;
 
 #if EDITOR
 	virtual void CreateEngineUI() override;
@@ -30,17 +32,18 @@ public:
 
 	void Update() override;
 
-	void Play();
+	bool Play();
 
 protected:
+	void OnTriggerHold(GameObject* obj1, GameObject* obj2) override;
 
 private:
 	float m_volume = 1.0f;
 
-	std::string m_relativePath = "";
+	std::string m_soundName = "";
 
 	bool m_loop = false;
-	bool m_enabled = false;
+	bool m_playOnOverlap = true;
 
 	FMOD::Channel* m_pchannel = nullptr;
 };
