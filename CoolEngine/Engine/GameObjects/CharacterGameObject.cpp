@@ -118,7 +118,7 @@ void CharacterGameObject::TakeDamage(float damage)
 	if (m_health < 0 && ContainsType(GameObjectType::ENEMY))
 	{
 		EventManager::Instance()->AddEvent(new EnemyDeathEvent());
-		//delete this; caused crash at Scene.cpp line 43 it=0
+		GameManager::GetInstance()->DeleteGameObjectUsingIdentifier(m_identifier);
 	}
 }
 
