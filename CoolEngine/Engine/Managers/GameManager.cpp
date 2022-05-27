@@ -800,8 +800,6 @@ void GameManager::Deserialize(nlohmann::json& data)
 	Scene* pnewScene = new Scene(sceneName);
 	GetCurrentViewStateSceneMap().insert(pair<string, Scene*>(sceneName, pnewScene));
 
-	vector<CharacterGameObject*> penemies;
-
 	for (nlohmann::json::const_iterator typeIt = data.begin(); typeIt != data.end(); ++typeIt)
 	{
 		if (typeIt.key() == "RootNode" || typeIt.key() == "AudioManager" || typeIt.key() == "GraphicsManager" || typeIt.key() == "GameUI" || typeIt.key() == "FontManager" || typeIt.key() == "SceneName")
@@ -844,8 +842,6 @@ void GameManager::Deserialize(nlohmann::json& data)
 			case AccumlateType::ENEMY:
 				gameObjects[*uuid] = new EnemyGameObject(data[typeIt.key()][uuidString], uuid);
 				gameObjects[*uuid]->m_UUID = uuid;
-
-				penemies.push_back(dynamic_cast<CharacterGameObject*>(gameObjects[*uuid]));
 				break;
 
 			case AccumlateType::PLAYER:
@@ -945,8 +941,6 @@ void GameManager::Deserialize(nlohmann::json& data)
 
 	pcomponent = gameObjects[data["RootNode"]];
 
-
-
 	pnode = pnewScene->m_psceneGraph->NewNode(pcomponent);
 
 	std::stack<TreeNode<GameObject>*> toPush;
@@ -976,7 +970,6 @@ void GameManager::Deserialize(nlohmann::json& data)
 
 	pnode = pnewScene->m_psceneGraph->GetRootNode();
 
-
 	while (pnode != nullptr)
 	{
 		pnode->NodeObject->GetTransform()->UpdateMatrix();
@@ -987,11 +980,13 @@ void GameManager::Deserialize(nlohmann::json& data)
 	Scene*& currentScene = GetCurrentViewStateScene();
 	currentScene = pnewScene;
 
-	for (int i = 0; i < penemies.size(); ++i)
+	if (m_viewState == ViewState::GAME_VIEW)
 	{
-		penemies[i]->Start();
+		for (std::unordered_map<UINT64, GameObject*>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
+		{
+			it->second->Start();
+		}
 	}
-
 }
 
 unordered_map<string, Scene*>& GameManager::GetCurrentViewStateSceneMap()
