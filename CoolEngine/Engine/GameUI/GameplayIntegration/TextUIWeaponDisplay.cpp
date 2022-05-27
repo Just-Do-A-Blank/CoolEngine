@@ -16,10 +16,8 @@ TextUIWeaponDisplay::TextUIWeaponDisplay(TextComponent* textComponent) : Gamepla
 
 TextUIWeaponDisplay::TextUIWeaponDisplay(nlohmann::json& data, TextComponent* textComponent) : GameplayUIWeaponAttachment(data)
 {
-#if EDITOR
 	m_WeaponStatList = GetWeaponStatAsList();
 	LoadLocalData(data);
-#endif
 
 	m_textComponent = textComponent;
 }
