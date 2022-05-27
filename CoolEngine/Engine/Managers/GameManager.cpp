@@ -985,7 +985,11 @@ void GameManager::Deserialize(nlohmann::json& data)
 	if (m_playerName != "")
 	{
 		PlayerGameObject* pplayer = GetCurrentViewStateScene()->GetGameObjectUsingIdentifier<PlayerGameObject>(m_playerName);
-		pnewScene->CopyGameObject<PlayerGameObject>(*pplayer);
+		CameraGameObject* pcamera = GetCurrentViewStateScene()->GetActiveCamera();
+
+		PlayerGameObject* pnewPlayer = pnewScene->CopyGameObject<PlayerGameObject>(*pplayer);
+		TreeNode<GameObject>* playerNode = GetCurrentViewStateScene()->GetTreeNode(pnewPlayer);
+		pnewScene->CopyGameObject<CameraGameObject>(*pcamera, playerNode);
 	}
 
 	Scene*& currentScene = GetCurrentViewStateScene();
