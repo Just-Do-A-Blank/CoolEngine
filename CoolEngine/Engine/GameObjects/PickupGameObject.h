@@ -13,14 +13,18 @@ public:
 	PickupGameObject(PickupGameObject const& other);
 	~PickupGameObject();
 	virtual void Serialize(nlohmann::json& data) override;
-	const list<PickupResource*> GetConsumableData() const { return m_pResouces; }
-	void Update() override;
+	unordered_set<PickupResource*> GetConsumableData() { return m_pResouces; }
+	int GetQuantity() { return m_quantity; }
+	void SetQuantity(int quantity) { m_quantity = quantity; }
+	bool GetConsumeOnPickup() { return m_isConsumedOnPickup; }
 
-	void SetToBeDeleted(bool ShouldDelete) { m_shouldbeDeleted = ShouldDelete; }
+	void Update() override;
 
 	void LoadAllPrefabData(const nlohmann::json& jsonData) override;
 
 	void SaveAllPrefabData(nlohmann::json& jsonData) override;
+
+	void Start() override;
 
 #if EDITOR
 	/// <summary>
@@ -29,21 +33,29 @@ public:
 	virtual void CreateEngineUI();
 #endif
 
+    void SetUITexture(std::wstring wsfilepath);
 
+    /// <summary>
+    /// Shows engine UI
+    /// </summary>
+    /// <return>Get the UI Texture for the Pickup</return>
+    std::wstring GetUITexturePath();
 private:
 	//Expose this to editor
 	PickupResourceInterface* m_pPickupResourceInterface;
 
 	unordered_set<string>* m_pFullResourceList;
-	list<PickupResource*> m_pResouces;
+	unordered_set<PickupResource*> m_pResouces;
 
 	bool m_isConsumedOnPickup;
+	int m_quantity;
 
 	virtual void LoadLocalData(const nlohmann::json& jsonData);
 	virtual void SaveLocalData(nlohmann::json& jsonData);
 
-	bool m_shouldbeDeleted;
 	PlayerGameObject* m_pPlayer;
 
+    ID3D11ShaderResourceView* m_pUItexture = nullptr;
+    wstring m_UItexturePath;
 };
 

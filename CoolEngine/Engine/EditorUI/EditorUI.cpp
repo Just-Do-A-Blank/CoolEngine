@@ -574,8 +574,7 @@ void EditorUI::DrawSceneManagementWindow()
 				std::string sceneName = trueString.substr(indexOfSlash + 1, trueString.length() - indexOfSlash - 6);
 				if (tempString != L"" && !GameManager::GetInstance()->SwitchSceneUsingIdentifier(sceneName))
 				{
-					GameManager::GetInstance()->LoadSceneFromFile(std::string(tempString.begin(), tempString.end()), false);
-					GameManager::GetInstance()->SwitchSceneUsingIdentifier(sceneName, "", true);
+					GameManager::GetInstance()->LoadSceneFromFile(std::string(tempString.begin(), tempString.end()), "", true);
 
 					DeselectObjectInScene();
 					if (m_sceneNodeSelected != -1)

@@ -4,25 +4,21 @@
 #include "Engine/Managers/GameManager.h"
 #include "Engine/EditorUI/EditorUI.h"
 
-RangeAttackState::RangeAttackState(EnemyGameObject* penemy) : FuzzyState()
+RangeAttackState::RangeAttackState(EnemyGameObject* penemy) : FuzzyState(penemy)
 {
 	m_stateType = FuzzyStateType::RANGE_ATTACK;
-
-	m_penemy = penemy;
 }
 
-RangeAttackState::RangeAttackState(const nlohmann::json& data) : FuzzyState(data)
+RangeAttackState::RangeAttackState(const nlohmann::json& data, EnemyGameObject* penemy) : FuzzyState(data, penemy)
 {
 	m_stateType = FuzzyStateType::RANGE_ATTACK;
 
 	Deserialize(data);
 }
 
-RangeAttackState::RangeAttackState(RangeAttackState const* other, EnemyGameObject* penemy) : FuzzyState(other)
+RangeAttackState::RangeAttackState(RangeAttackState const* other, EnemyGameObject* penemy) : FuzzyState(other, penemy)
 {
 	m_stateType = FuzzyStateType::RANGE_ATTACK;
-
-	m_penemy = penemy;
 
 	m_attackRangeVariance = other->m_attackRangeVariance;
 }
@@ -61,9 +57,9 @@ float RangeAttackState::CalculateActivation()
 	float distanceSq = MathHelper::DistanceSquared(m_penemy->GetTransform()->GetWorldPosition(), m_pplayer->GetTransform()->GetWorldPosition());
 
 	float attackVarianceSq = MathHelper::RandomNumber(-m_attackRangeVariance * 0.5f, m_attackRangeVariance * 0.5f);
-	attackVarianceSq *= attackVarianceSq;
+	attackVarianceSq *= std::abs(attackVarianceSq);
 
-	if (distanceSq < m_pweapon->GetDistanceTravelled() * m_pweapon->GetDistanceTravelled() + attackVarianceSq)
+	if (distanceSq + attackVarianceSq < m_pweapon->GetDistanceTravelled() * m_pweapon->GetDistanceTravelled())
 	{
 		return 1.0f;
 	}

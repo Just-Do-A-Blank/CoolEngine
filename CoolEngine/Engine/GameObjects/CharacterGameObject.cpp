@@ -33,6 +33,7 @@ CharacterGameObject::CharacterGameObject(CharacterGameObject const& other) : Tri
 	m_moveSpeed = other.m_moveSpeed;
 	m_health = other.m_health;
 	m_direction = other.m_direction;
+	m_hasWeapon = other.m_hasWeapon;
 }
 
 CharacterGameObject::~CharacterGameObject()
@@ -44,6 +45,11 @@ void CharacterGameObject::Start()
 {
     PrefabGameObject::Start();
 
+	AddWeapon();
+}
+
+void CharacterGameObject::AddWeapon()
+{
 	if (m_isWeaponRanged)
 	{
 		m_pweapon = GameManager::GetInstance()->CreateGameObject<RangedWeaponGameObject>(m_identifier + "_TestWeapon");
@@ -62,11 +68,20 @@ void CharacterGameObject::Start()
 
 	// Sets true if player, false if enemy
 	m_pweapon->SetIsPlayerWeapon(ContainsType(GameObjectType::PLAYER));
+	//Setting this weapon to be held
+	m_pweapon->SetHeld(true);
+
+	m_hasWeapon = true;
 }
 
 void CharacterGameObject::Update()
 {
 	TriggerableGameObject::Update();
+
+	if (m_hasWeapon && !m_pweapon)
+	{
+		AddWeapon();
+	}
 
 	if (m_invincibilityTime > 0.0f)
 	{
@@ -78,7 +93,10 @@ void CharacterGameObject::Update()
 	}
 
 	// Update weapon position/angle
-	m_pweapon->SetHolderPosition(XMFLOAT2(GetTransform()->GetWorldPosition().x, GetTransform()->GetWorldPosition().y));
+	if (m_pweapon)
+	{
+		m_pweapon->SetHolderPosition(XMFLOAT2(GetTransform()->GetWorldPosition().x, GetTransform()->GetWorldPosition().y));
+	}
 }
 
 void CharacterGameObject::EditorUpdate()
@@ -141,4 +159,6 @@ XMFLOAT3 CharacterGameObject::GetWeaponDirection()
     XMFLOAT3 weaponPos = m_pweapon->GetTransform()->GetWorldPosition();
     XMFLOAT3 characterPos = GetTransform()->GetWorldPosition();
     return XMFLOAT3(weaponPos.x - characterPos.x, weaponPos.y - characterPos.y, 0.0f);
+
+
 }

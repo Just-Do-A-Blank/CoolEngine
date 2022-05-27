@@ -308,23 +308,23 @@ bool EnemyStateMachine::Load()
 		switch (type)
 		{
 		case FuzzyStateType::MELEE_ATTACK:
-			m_states.push_back(new MeleeAttackState(data[it.key()]));
+			m_states.push_back(new MeleeAttackState(data[it.key()], m_penemy));
 			break;
 
 		case FuzzyStateType::MELEE_MOVEMENT:
-			m_states.push_back(new MeleeMovementState(data[it.key()]));
+			m_states.push_back(new MeleeMovementState(data[it.key()], m_penemy));
 			break;
 
 		case FuzzyStateType::RANGE_ATTACK:
-			m_states.push_back(new RangeAttackState(data[it.key()]));
+			m_states.push_back(new RangeAttackState(data[it.key()], m_penemy));
 			break;
 
 		case FuzzyStateType::RANGE_MOVEMENT:
-			m_states.push_back(new RangeMovementState(data[it.key()]));
+			m_states.push_back(new RangeMovementState(data[it.key()], m_penemy));
 			break;
 
 		case FuzzyStateType::WANDER:
-			m_states.push_back(new WanderState(data[it.key()]));
+			m_states.push_back(new WanderState(data[it.key()], m_penemy));
 			break;
 		}
 	}

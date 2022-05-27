@@ -38,7 +38,11 @@ void Scene::Update()
 
 	for (int it = 0; it < gameObjectList.size(); ++it)
 	{
-		gameObjectList[it]->Update();
+		if(gameObjectList[it]->GetEnabled())
+		{
+			gameObjectList[it]->Update();
+		}
+
 	}
 	gameObjectList = m_psceneGraph->GetAllNodeObjects();
 	Collision::Update(gameObjectList);
@@ -63,6 +67,13 @@ void Scene::Render(RenderStruct& renderStruct)
 	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
 	for (int it = 0; it < gameObjectList.size(); ++it)
 	{
+		//If this object is not enabled, do not render it 
+		if (!gameObjectList[it]->GetEnabled())
+		{
+			continue;
+		}
+
+
 		if (gameObjectList[it]->ContainsType(GameObjectType::RENDERABLE))
 		{
 			prenderableGameObject = dynamic_cast<RenderableGameObject*>(gameObjectList[it]);

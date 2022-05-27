@@ -53,6 +53,12 @@ public:
     /// </summary>
     /// <returns>The resource manager</returns>
     PlayerResourceManager* GetPlayerResources();
+
+    /// <summary>
+    /// Gets the inventory on the player.
+    /// </summary>
+    /// <returns>The player's inventory</returns>
+    Inventory* GetInventory();
 protected:
 
     virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
@@ -74,7 +80,7 @@ protected:
     virtual void OnTriggerExit(GameObject* obj1, GameObject* obj2) override { }
 
     //virtual void Update() override {}  /// commented out due to error: "Error	C2535	'void PlayerGameObject::Update(void)': member function already defined or declared	CoolEngine	C : \Users\s019135i\Documents\GitHub\CoolEngine\CoolEngine\Engine\GameObjects\PlayerGameObject.h	59
-    Inventory* m_myInventory;
+    Inventory* m_pInventory;
 
 private:
     /// <summary>
@@ -91,6 +97,8 @@ private:
 
     void LoadLocalData(const nlohmann::json& jsonData);
     void SaveLocalData(nlohmann::json& jsonData);
+
+    void UseResource(unordered_set<PickupResource*> consumable);
 
     /// <summary>
     /// Handles any keypresses when they are pressed (frame whilst pressed)
