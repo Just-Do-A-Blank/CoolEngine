@@ -49,5 +49,7 @@ private:
 
 	string m_sceneName;
 	string m_playerName;
+
+	bool m_doorIsOpen = false;
 };
 

@@ -100,17 +100,19 @@ void LevelChangeGameObject::UpdateDoorState()
     if (enemycount > 0)
     {
         GetAnimationStateMachine()->SetActiveState("DoorOpenned");
+        m_doorIsOpen = true;
     }
     else
     {
         GetAnimationStateMachine()->SetActiveState("DoorClosed");
+        m_doorIsOpen = false;
     }
 
 }
 
 void LevelChangeGameObject::OnTriggerHold(GameObject* obj1, GameObject* obj2)
 {
-    if (obj1->ContainsType(GameObjectType::PLAYER) && obj2->ContainsType(GameObjectType::LEVEL_CHANGE) && GetAnimationStateMachine()->GetStateName(GetAnimationStateMachine()->GetActiveState()) == "OpennedDoor")
+    if (obj1->ContainsType(GameObjectType::PLAYER) && obj2->ContainsType(GameObjectType::LEVEL_CHANGE) && m_doorIsOpen)
     {
         string sceneFilePath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Levels\\" + m_sceneName + ".json";
         if (!GameManager::GetInstance()->SwitchSceneUsingIdentifier(sceneFilePath))
