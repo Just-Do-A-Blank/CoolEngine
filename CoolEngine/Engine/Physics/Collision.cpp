@@ -341,7 +341,21 @@ void Collision::Update(vector<GameObject*>& gameObjectMap, vector<Tile*>& tiles)
 				continue;
 			}
 
-			if (pcollidable->GetShape()->IsCollidable() && pcollidable->GetShape()->IsTrigger() == false)
+			if (pcollidable->GetShape() != nullptr && pcollidable->GetShape()->IsRendered())
+			{
+				XMFLOAT3 p = pcollidable->GetTransform()->GetWorldPosition();
+				XMFLOAT2 d = pcollidable->GetShape()->GetShapeDimensions();
+				DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect(p, XMFLOAT3(d.x, d.y, 1), DebugDrawManager::DebugColour::PURPLE);
+			}
+
+			if (tiles[j]->GetShape() != nullptr && tiles[j]->GetShape()->IsRendered())
+			{
+				XMFLOAT3 p = tiles[j]->GetTransform()->GetWorldPosition();
+				XMFLOAT2 d = tiles[j]->GetShape()->GetShapeDimensions();
+				DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect(p, XMFLOAT3(d.x, d.y, 1), DebugDrawManager::DebugColour::PURPLE);
+			}
+
+			if (pcollidable->GetShape()->IsCollidable() == true)
 			{
 				bool hasCollided = pcollidable->GetShape()->CollideResponse(tiles[j]->GetShape());
 

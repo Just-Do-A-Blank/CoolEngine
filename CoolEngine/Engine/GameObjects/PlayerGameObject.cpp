@@ -369,6 +369,8 @@ void PlayerGameObject::Update()
 	CharacterGameObject::Update();
 
     m_playerController->Update();
+
+	AudioManager::GetInstance()->SetListenerPosition(m_transform->GetWorldPosition());
 }
 
 void PlayerGameObject::TakeDamage(float damage)
@@ -386,6 +388,7 @@ void PlayerGameObject::RunPlayerDeadSequence()
 
 void PlayerGameObject::EditorUpdate()
 {
+	AudioManager::GetInstance()->SetListenerPosition(m_transform->GetWorldPosition());
 }
 
 #if EDITOR

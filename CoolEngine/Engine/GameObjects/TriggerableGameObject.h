@@ -15,6 +15,8 @@ public:
 
 	virtual void Serialize(nlohmann::json& data) override;
 
+	virtual void Start() override;
+
     /// <summary>
     /// Handles events from the Observations
     /// </summary>

@@ -153,7 +153,16 @@ void WeaponGameObject::LoadLocalData(const nlohmann::json& jsonData)
         m_distanceTravelled = jsonData["WeaponDistanceTravelled"];
         m_element = (ELEMENTS)jsonData["WeaponElement"];
         m_statusEffect = (STATUSES)jsonData["WeaponStatus"];
-        m_radius = jsonData["Radius"];
+
+		if (jsonData.contains("Radius") == true)
+		{
+			m_radius = jsonData["Radius"];
+		}
+		else
+		{
+			m_radius = 0.0f;
+		}
+
         if (jsonData.count("WeaponIsHeld"))
         {
             m_isHeld = jsonData["WeaponIsHeld"];
