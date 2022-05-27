@@ -19,7 +19,7 @@ cbuffer perInstanceCB : register(b1)
     float4x4 world;
 }
 
-static float alphaClipThreshold = 0.1f;
+static float alphaClipThreshold = 0.5f;
 
 float4 main(PS_INPUT input) : SV_TARGET
 {
