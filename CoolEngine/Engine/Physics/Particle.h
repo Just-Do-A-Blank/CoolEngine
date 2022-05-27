@@ -104,12 +104,12 @@ public:
 
 	void SetPosition(XMFLOAT3 pos) 
 	{ 
-		m_transform.SetPosition(pos); 
+		m_transform.SetWorldPosition(pos); 
 	}
 
 	void SetScale(XMFLOAT3 scale) 
 	{ 
-		m_transform.SetScale(scale); 
+		m_transform.SetWorldScale(scale); 
 	}
 
 	void SetTexture(ID3D11ShaderResourceView* tex)

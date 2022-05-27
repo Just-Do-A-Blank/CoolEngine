@@ -4,6 +4,7 @@
 #include "Engine/GameObjects/DebugRect.h"
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/ResourceDefines.h"
+#include "Engine/Managers/GameManager.h"
 
 void DebugDrawManager::Init(ID3D11Device* pd3dDevice)
 {
@@ -19,22 +20,30 @@ void DebugDrawManager::Init(ID3D11Device* pd3dDevice)
 	}	
 }
 
-void DebugDrawManager::CreateWorldSpaceDebugRect(string identifier, XMFLOAT3& position, XMFLOAT3& dimension, DebugColour colour)
+void DebugDrawManager::CreateWorldSpaceDebugRect(XMFLOAT3& position, XMFLOAT3& dimension, DebugColour colour)
 {
-	DebugRect* debugRect = new DebugRect(m_albedoMap.find(colour)->second, identifier, false);
-	debugRect->GetTransform()->SetPosition(position);
-	debugRect->GetTransform()->SetScale(dimension);
+	string name = "DebugRect";
+	name += to_string(m_debugRectMap.size());
 
-	m_debugRectMap.insert(pair<string, DebugRect*>(identifier, debugRect));
+	CoolUUID uuid;
+	DebugRect* debugRect = new DebugRect(m_albedoMap.find(colour)->second, name, uuid, false);
+	debugRect->GetTransform()->SetWorldPosition(position);
+	debugRect->GetTransform()->SetWorldScale(dimension);
+
+	m_debugRectMap.insert(pair<string, DebugRect*>(name, debugRect));
 }
 
-void DebugDrawManager::CreateScreenSpaceDebugRect(string identifier, XMFLOAT3& position, XMFLOAT3& dimension, DebugColour colour)
+void DebugDrawManager::CreateScreenSpaceDebugRect(XMFLOAT3& position, XMFLOAT3& dimension, DebugColour colour)
 {
-	DebugRect* debugRect = new DebugRect(m_albedoMap.find(colour)->second, identifier, true);
-	debugRect->GetTransform()->SetPosition(position);
-	debugRect->GetTransform()->SetScale(dimension);
+	string name = "DebugRect";
+	name += to_string(m_debugRectMap.size());
 
-	m_debugRectMap.insert(pair<string, DebugRect*>(identifier, debugRect));
+	CoolUUID uuid;
+	DebugRect* debugRect = new DebugRect(m_albedoMap.find(colour)->second, name, uuid, true);
+	debugRect->GetTransform()->SetWorldPosition(position);
+	debugRect->GetTransform()->SetWorldScale(dimension);
+
+	m_debugRectMap.insert(pair<string, DebugRect*>(name, debugRect));
 }
 
 void DebugDrawManager::Render(RenderStruct& renderStruct)
@@ -49,8 +58,18 @@ void DebugDrawManager::Update()
 {
 	for (unordered_map<string, DebugRect*>::iterator it = m_debugRectMap.begin(); it != m_debugRectMap.end(); ++it)
 	{
-		it->second->Update();
+		delete it->second;
 	}
+
+	m_debugRectMap.clear();
+}
+
+void DebugDrawManager::Serialize(nlohmann::json& data)
+{
+}
+
+void DebugDrawManager::Deserialize(nlohmann::json& data)
+{
 }
 
 #endif //_DEBUG

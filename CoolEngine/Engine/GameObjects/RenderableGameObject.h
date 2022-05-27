@@ -1,20 +1,25 @@
 #pragma once
-#include "GameObject.h"
+#include "Engine/GameObjects/PrefabGameObject.h"
 #include "Engine/Graphics/SpriteAnimation.h"
+#include "Engine/Graphics/AnimationStateMachine.h"
 
 class Mesh;
+class AnimationState;
 
 struct RenderStruct
 {
 	ID3D11DeviceContext* m_pcontext;
 };
 
-class RenderableGameObject : virtual public GameObject
+class RenderableGameObject : public PrefabGameObject
 {
 public:
 	RenderableGameObject();
-	RenderableGameObject(string identifier);
+	RenderableGameObject(RenderableGameObject const& other);
+	RenderableGameObject(string identifier, CoolUUID uuid);
+	RenderableGameObject(const nlohmann::json& data, CoolUUID uuid);
 
+	virtual ~RenderableGameObject()override;
 
 	//Getters
 	const bool& IsRenderable();
@@ -22,11 +27,10 @@ public:
 	Mesh* GetMesh() const;
 
 	SpriteAnimation GetAnimation(std::string name);
-	std::unordered_map<std::string, SpriteAnimation>* GetAnimations();
 
 	int GetLayer() const;
 
-	SpriteAnimation* GetCurrentAnimation();
+	const SpriteAnimation* GetCurrentAnimation();
 
 	ID3D11ShaderResourceView* GetAlbedoSRV() const;
 
@@ -52,18 +56,21 @@ public:
 
 	void SetLayer(int layer);
 
-	bool AddAnimation(string animName, SpriteAnimation& anim);
-	bool AddAnimation(string localAnimName, wstring animName);
-	bool RemoveAnimation(string animName);
-	bool OverwriteAnimation(string animName, SpriteAnimation& anim);
-
+	bool AddAnimationState(string stateName, AnimationState* panimState, bool isActive = false);
+	bool RemoveAnimationState(string stateName);
 
 	void InitGraphics();
 
 	virtual void Render(RenderStruct& renderStruct);
 	virtual void Update() override;
+	virtual void EditorUpdate() override;
 
-	bool PlayAnimation(std::string name);
+	void PlayAnimation();
+	void PauseAnimation();
+
+	AnimationStateMachine* GetAnimationStateMachine();
+
+	virtual void Serialize(nlohmann::json& data) override;
 
 #if EDITOR
 	virtual void CreateEngineUI() override;
@@ -83,19 +90,16 @@ protected:
 	//Flags
 	bool m_isRenderable = true;
 
-#if EDITOR
-	//ImGui variables
 	wstring m_texFilepath;
 
-	char m_createDeleteAnimName[ANIM_NAME_SIZE];
-#endif
+	AnimationStateMachine* m_panimationStateMachine;
 
-	std::unordered_map<std::string, SpriteAnimation> m_animations;
-
-	SpriteAnimation* m_pcurrentAnimation = nullptr;
-	string m_currentAnimationName = "";
+    virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
+    virtual void SaveAllPrefabData(nlohmann::json& jsonData) override;
 
 private:
 
+    void LoadLocalData(const nlohmann::json& jsonData);
+    void SaveLocalData(nlohmann::json& jsonData);
 };
 

@@ -1,11 +1,11 @@
 #if _DEBUG
 #pragma once
-#include "Engine/Structure/Singleton.h"
+#include "Engine/Structure/Manager.h"
 
 class DebugRect;
 class RenderStruct;
 
-class DebugDrawManager : public Singleton<DebugDrawManager>
+class DebugDrawManager : public Manager<DebugDrawManager>
 {
 public:
 	enum class DebugColour
@@ -21,10 +21,13 @@ public:
 	};
 
 	void Init(ID3D11Device* pd3dDevice);
-	void CreateWorldSpaceDebugRect(string identifier, XMFLOAT3& position, XMFLOAT3& dimension, DebugColour colour);
-	void CreateScreenSpaceDebugRect(string identifier, XMFLOAT3& position, XMFLOAT3& dimension, DebugColour colour);
+	void CreateWorldSpaceDebugRect(XMFLOAT3& position, XMFLOAT3& dimension, DebugColour colour);
+	void CreateScreenSpaceDebugRect(XMFLOAT3& position, XMFLOAT3& dimension, DebugColour colour);
 	void Render(RenderStruct& renderStruct);
 	void Update();
+
+	void Serialize(nlohmann::json& data) override;
+	void Deserialize(nlohmann::json& data) override;
 
 private:
 	unordered_map<string, DebugRect*> m_debugRectMap;

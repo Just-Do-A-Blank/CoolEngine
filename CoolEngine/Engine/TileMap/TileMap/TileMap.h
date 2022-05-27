@@ -21,18 +21,23 @@ public:
 
 	TileMap();
 
-	TileMap(string identifier);
+	TileMap(string identifier, CoolUUID uuid);
+	TileMap(const nlohmann::json& data, CoolUUID uuid);
+
+	TileMap(TileMap const& other);
 
 	// Load from file
-	TileMap(wstring mapPath, XMFLOAT3 position, string identifier);
+	TileMap(std::string mapName, XMFLOAT3 position, string identifier, CoolUUID uuid);
 
 	// Load from parameters
-	TileMap(int width, int height, string identifier, XMFLOAT3 position, float tileDimensions);
+	TileMap(int width, int height, string identifier, CoolUUID uuid, XMFLOAT3 position, float tileDimensions);
 
 	//Destructor
-	~TileMap();
+	virtual ~TileMap();
 
-	void Update(float d);
+	void Update() override;
+	void EditorUpdate() override;
+	void Render(RenderStruct& renderStruct) override;
 
 	bool GetTileFromWorldPos(XMFLOAT2 pos, Tile*& ptile, int* prow = nullptr, int* pcolumn = nullptr);
 	bool GetTileFromMapPos(int x, int y, Tile*& ptile);
@@ -53,9 +58,18 @@ public:
 	void AddSpritePath(Tile* ptile, wstring& path);
 	void AddAnimPath(Tile* ptile, wstring& path);
 
+	void DeleteTile(int row, int column);
+
 #if EDITOR
 	void CreateEngineUI() override;
 #endif
+
+	void Init(int width, int height, XMFLOAT3 position, float tileDimensions);
+	void Init(std::string mapPath, XMFLOAT3 position);
+
+	void Serialize(nlohmann::json& jsonData) override;
+
+	std::string GetMapName() const;
 
 protected:
 
@@ -65,8 +79,8 @@ private:
 
 	void InitTilePosition(Tile* tile, int row, int column);
 
-	bool Load(wstring path);
-	bool Save(wstring path);
+	bool Load(string path);
+	bool Save(string path);
 
 	bool GetCoordsFromWorldPos(int* prow, int* pcolumn, const XMFLOAT2& pos);
 
@@ -82,7 +96,6 @@ private:
 	std::vector<wstring> m_spritePaths;
 	std::vector<wstring> m_animPaths;
 
-#if EDITOR
 	string m_tileMapName = "";
-#endif
+	string m_editorTileMapName = "";
 };

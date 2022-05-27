@@ -20,17 +20,25 @@ class SpriteAnimation
 	bool m_isLooping = true;
 	bool m_isPaused = false;
 
+	std::wstring m_animPath = L"";
+
+#if EDITOR
+	std::wstring m_uiFilePath = L"";
+#endif
+
 public:
 	SpriteAnimation();
-	SpriteAnimation(std::vector<Frame>* pframes);
+	SpriteAnimation(std::vector<Frame>* pframes, std::wstring animPath);
 
 	void SetFrames(std::vector<Frame>* pframes);
-	std::vector<Frame>* GetFrames();
+	std::vector<Frame>* GetFrames() const;
 
-	bool IsLooping();
+	const std::wstring& GetAnimPath() const;
+
+	bool IsLooping() const;
 	void SetLooping(bool isLooping);
 
-	bool IsPaused();
+	bool IsPaused() const;
 
 	void Update();
 
@@ -39,5 +47,9 @@ public:
 
 	void Restart();
 
-	ID3D11ShaderResourceView* GetCurrentFrame();
+	ID3D11ShaderResourceView* GetCurrentFrame() const;
+
+#if EDITOR
+	void CreateEngineUI();
+#endif
 };

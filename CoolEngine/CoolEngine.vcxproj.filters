@@ -1,102 +1,348 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Engine">
-      <UniqueIdentifier>{e5ac9346-5f75-4b34-9c87-0b7a9bddcdb3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resources">
-      <UniqueIdentifier>{4b407c04-bc52-4783-83d3-9fb2d84bfc1e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\AI">
-      <UniqueIdentifier>{56c44b97-8b3f-4502-b468-0b9dac131b9b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Audio">
-      <UniqueIdentifier>{6d2a90a9-75f7-49a3-9b9e-b502397a734b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\FileIO">
-      <UniqueIdentifier>{0760a3dd-dc08-4ab0-9dfc-9087a74af9c2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Graphics">
-      <UniqueIdentifier>{08c13242-5736-4926-a182-0c5421411272}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Physics">
-      <UniqueIdentifier>{42eaa370-6f66-450f-aa5f-042f0d9b49ca}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Tools">
-      <UniqueIdentifier>{55094a54-883f-424a-bc96-3c53b5bbd9d1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Graphics\UI">
-      <UniqueIdentifier>{0f45a4ca-a841-4035-a2f3-cc67e81e511d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Tools\LevelEditor">
-      <UniqueIdentifier>{c70b75aa-c792-4eb1-a75c-652195bdb247}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resources\Audio">
-      <UniqueIdentifier>{44d506d5-5b41-4097-a0e3-d7c3a8317cd3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resources\Levels">
-      <UniqueIdentifier>{d156a664-ce98-4f80-bc38-c494094ff818}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resources\Sprites">
-      <UniqueIdentifier>{95cbd263-18c7-4ba0-a147-e8e8588b3f9f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resources\UI">
-      <UniqueIdentifier>{32d1376a-4037-46be-b6fe-35f906fd5ef6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\GameObjects">
-      <UniqueIdentifier>{538b9ef7-73a5-459d-a461-42f205c14b3d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Managers">
-      <UniqueIdentifier>{26faa8bf-974d-40b5-b889-21ab258c934a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Graphics\Shaders">
-      <UniqueIdentifier>{8f10024e-6222-47c0-83e5-679de881b965}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Structure">
-      <UniqueIdentifier>{2e610b81-e2f8-4347-8d90-edcc56b6f1c1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Managers\Events">
-      <UniqueIdentifier>{fe343eac-e903-4a37-800d-6b7c75317835}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Helpers">
-      <UniqueIdentifier>{b7094138-64a7-40ab-b98e-13bc2b8ff7e4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Includes">
-      <UniqueIdentifier>{849334a7-9492-4248-8ccb-4876c67dd766}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Includes\IMGUI">
-      <UniqueIdentifier>{25e05f73-ba22-439a-a374-c951e2bf745f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Scenes">
-      <UniqueIdentifier>{1dd4e68e-7a12-4c4c-9e2b-6c5bfd8206be}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\EditorUI">
-      <UniqueIdentifier>{f37b6a14-892f-408c-b813-6cd328411a91}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\GameObjects\TileMap">
-      <UniqueIdentifier>{4362da10-2646-4398-9553-b164f7571686}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Includes\FMOD">
-      <UniqueIdentifier>{c843e429-6caa-48d0-bfb4-53854ba97bf5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resources\DebugColours">
-      <UniqueIdentifier>{e1480dde-4628-43e7-af6d-078fd29de11b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\GameUI">
-      <UniqueIdentifier>{791533ad-fc86-4e9f-909a-caf767071b33}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Includes\RapidXML">
-      <UniqueIdentifier>{7d9ce4e5-0879-48c1-b50e-4e48e6d1a00d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Includes\DirectXTK">
-      <UniqueIdentifier>{6232a7dd-79ec-414a-a6a5-86f0a9a5aec9}</UniqueIdentifier>
-    </Filter>
+    <FxCompile Include="Engine\Graphics\Shaders\SpriteBatchPixel.hlsl">
+      <Filter>Engine\Graphics\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\SpriteBatchVertex.hlsl">
+      <Filter>Engine\Graphics\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\ScreenSpaceVertex.hlsl">
+      <Filter>Engine\Graphics\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\DummyPosTexColor.hlsl">
+      <Filter>Engine\Graphics\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\DummyPosTex.hlsl">
+      <Filter>Engine\Graphics\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\BasicVertex.hlsl">
+      <Filter>Engine\Graphics\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">
+      <Filter>Engine\Graphics\Shaders</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\CharacterGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\CollidableGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\PlayerGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\GameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\Transform.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\GameManager.cpp">
+      <Filter>Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\AudioManager.cpp">
+      <Filter>Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\DDSTextureLoader.cpp">
+      <Filter>Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Physics\Collision.cpp">
+      <Filter>Engine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Physics\Particle.cpp">
+      <Filter>Engine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Physics\ParticleManager.cpp">
+      <Filter>Engine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Physics\ParticleSystem.cpp">
+      <Filter>Engine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\GraphicsManager.cpp">
+      <Filter>Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\SpriteAnimation.cpp">
+      <Filter>Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Helpers\Timer.cpp">
+      <Filter>Engine\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Includes\IMGUI\imgui.cpp">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Includes\IMGUI\imgui_demo.cpp">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Includes\IMGUI\imgui_draw.cpp">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Includes\IMGUI\imgui_impl_dx11.cpp">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Includes\IMGUI\imgui_impl_win32.cpp">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Includes\IMGUI\imgui_tables.cpp">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Includes\IMGUI\imgui_widgets.cpp">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Scene\Scene.cpp">
+      <Filter>Engine\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\EditorUI\EditorUI.cpp">
+      <Filter>Engine\EditorUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\TileMap\TileMap\Tile.cpp">
+      <Filter>Engine\Tilemap\Tilemap</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\TileMap\TileMap\TileMap.cpp">
+      <Filter>Engine\Tilemap\Tilemap</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Physics\Shape.cpp">
+      <Filter>Engine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Helpers\Inputs.cpp">
+      <Filter>Engine\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\Events\EventObserver.cpp">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\Events\Events.cpp">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\Events\EventManager.cpp">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Tools\TileMapTool.cpp">
+      <Filter>Engine\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Tools\ToolBase.cpp">
+      <Filter>Engine\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\DebugDrawManager.cpp">
+      <Filter>Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\DebugRect.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Tools\AnimationTool.cpp">
+      <Filter>Engine\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\RenderableCollidableGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\RenderableGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerController.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerWalkingState.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.cpp">
+      <Filter>Engine\GameObjects\Gameplay\GameplayButtons</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\InteractableGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\MeleeWeaponGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\TriggerableGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\WeaponGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\EnemyGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\Pathfinding.cpp">
+      <Filter>Engine\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameUIComponent.cpp">
+      <Filter>Engine\GameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\ImageComponent.cpp">
+      <Filter>Engine\GameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\UICanvas.cpp">
+      <Filter>Engine\GameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\FileIO\FileIO.cpp">
+      <Filter>Engine\FileIO</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\FontManager.cpp">
+      <Filter>Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\TextComponent.cpp">
+      <Filter>Engine\GameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\EditorUI\ContentBrowser.cpp">
+      <Filter>Engine\EditorUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\UUID.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\EditorCameraGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\SceneGraph.cpp">
+      <Filter>Engine\Structure</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\RangedWeaponGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Main.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\EditorUI\TileMapContentBrowser.cpp">
+      <Filter>Engine\EditorUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\ButtonComponent.cpp">
+      <Filter>Engine\GameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\FiniteStateMachine.cpp">
+      <Filter>Engine\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\AnimationState.cpp">
+      <Filter>Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\Events\DamageCalculation.cpp">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\Events\BulletCreator.cpp">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerDodgingState.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\AnimationStateMachine.cpp">
+      <Filter>Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\BulletGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerMovingBody.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerRollingState.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\FuzzyStateMachine.cpp">
+      <Filter>Engine\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\PrefabGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\BulletGameObject.cpp" />
+    <ClCompile Include="Engine\Includes\Quad Tree\src\quadtree.cpp">
+      <Filter>Engine\Includes\Quad Tree</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\EnemyStateMachine.cpp">
+      <Filter>Engine\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\LevelChangeGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerResource.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerResourceInterface.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\Gameplay\Player\PlayerResourceManager.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameUIPrefab.cpp">
+      <Filter>Engine\GameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\PickupGameObject.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Pickups</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObjects\PickupResource.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Pickups</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\PickupsManager.cpp">
+      <Filter>Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\TextureToResource.cpp">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\TextUIResourceDisplay.cpp">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\ImageUIResourceDisplay.cpp">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\GameplayUIResourceAttachment.cpp">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\EditorUI\EditorUIFloatParameters.cpp">
+      <Filter>Engine\EditorUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\GameplayUIWeaponAttachment.cpp">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\ImageUIWeaponDisplay.cpp">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\TextUIWeaponDisplay.cpp">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\ImageUIPickupDisplay.cpp">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\GameplayUIPickupAttachement.cpp">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\States\MeleeAttackState.cpp">
+      <Filter>Engine\AI\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\States\MeleeMovementState.cpp">
+      <Filter>Engine\AI\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\States\FiniteState.cpp">
+      <Filter>Engine\AI\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\States\FuzzyState.cpp">
+      <Filter>Engine\AI\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\States\RangeAttackState.cpp">
+      <Filter>Engine\AI\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\States\RangeMovementState.cpp">
+      <Filter>Engine\AI\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\AI\States\WanderState.cpp">
+      <Filter>Engine\AI\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Inventory.cpp">
+      <Filter>Engine\GameObjects\Gameplay\Inventory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\CameraGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\CharacterGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\CollidableGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\PlayerGameObject.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\GameObject.h">
@@ -109,9 +355,6 @@
       <Filter>Engine\Managers</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Managers\AudioManager.h">
-      <Filter>Engine\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Managers\SceneGraph.h">
       <Filter>Engine\Managers</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Graphics\ConstantBuffer.h">
@@ -171,6 +414,12 @@
     <ClInclude Include="Engine\Includes\IMGUI\imgui.h">
       <Filter>Engine\Includes\IMGUI</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Includes\IMGUI\imgui_impl_dx11.h">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\IMGUI\imgui_impl_win32.h">
+      <Filter>Engine\Includes\IMGUI</Filter>
+    </ClInclude>
     <ClInclude Include="Engine\Includes\IMGUI\imgui_internal.h">
       <Filter>Engine\Includes\IMGUI</Filter>
     </ClInclude>
@@ -183,12 +432,6 @@
     <ClInclude Include="Engine\Includes\IMGUI\imstb_truetype.h">
       <Filter>Engine\Includes\IMGUI</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Includes\IMGUI\imgui_impl_dx11.h">
-      <Filter>Engine\Includes\IMGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Includes\IMGUI\imgui_impl_win32.h">
-      <Filter>Engine\Includes\IMGUI</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Scene\Scene.h">
       <Filter>Engine\Scenes</Filter>
     </ClInclude>
@@ -196,10 +439,10 @@
       <Filter>Engine\EditorUI</Filter>
     </ClInclude>
     <ClInclude Include="Engine\TileMap\TileMap\TileMap.h">
-      <Filter>Engine\GameObjects\TileMap</Filter>
+      <Filter>Engine\Tilemap\Tilemap</Filter>
     </ClInclude>
     <ClInclude Include="Engine\TileMap\TileMap\Tile.h">
-      <Filter>Engine\GameObjects\TileMap</Filter>
+      <Filter>Engine\Tilemap\Tilemap</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Physics\Shape.h">
       <Filter>Engine\Physics</Filter>
@@ -211,6 +454,9 @@
       <Filter>Engine\Managers\Events</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Managers\Events\Events.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\EventObserverExamples.h">
       <Filter>Engine\Managers\Events</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Managers\Events\EventManager.h">
@@ -243,16 +489,10 @@
     <ClInclude Include="Engine\ResourceDefines.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\GameObjects\PlayerGameObject.h">
-      <Filter>Engine\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObjects\CharacterGameObject.h">
-      <Filter>Engine\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Tools\ToolBase.h">
+    <ClInclude Include="Engine\Tools\TileMapTool.h">
       <Filter>Engine\Tools</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Tools\TileMapTool.h">
+    <ClInclude Include="Engine\Tools\ToolBase.h">
       <Filter>Engine\Tools</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Managers\DebugDrawManager.h">
@@ -267,13 +507,43 @@
     <ClInclude Include="Engine\Structure\EditorUIComponent.h">
       <Filter>Engine\Structure</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\GameObjects\CollidableGameObject.h">
+    <ClInclude Include="Engine\GameObjects\RenderableCollidableGameObject.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\RenderableGameObject.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\GameObjects\RenderableCollidableGameObject.h">
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerController.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovementState.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerWalkingState.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\EPLAYERMOVEMENTSTATE.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\InputsAsGameplayButtons.h">
+      <Filter>Engine\GameObjects\Gameplay\GameplayButtons</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\InteractableGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\GameplayButton.h">
+      <Filter>Engine\GameObjects\Gameplay\GameplayButtons</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\EGameplayButtonClass.h">
+      <Filter>Engine\GameObjects\Gameplay\GameplayButtons</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\MeleeWeaponGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\TriggerableGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\WeaponGameObject.h">
       <Filter>Engine\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameObjects\EnemyGameObject.h">
@@ -290,12 +560,6 @@
     </ClInclude>
     <ClInclude Include="Engine\GameUI\UICanvas.h">
       <Filter>Engine\GameUI</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Managers\UIManager.h">
-      <Filter>Engine\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\FileIO\FileIOCache.h">
-      <Filter>Engine\FileIO</Filter>
     </ClInclude>
     <ClInclude Include="Engine\FileIO\FileIO.h">
       <Filter>Engine\FileIO</Filter>
@@ -318,9 +582,6 @@
     <ClInclude Include="Engine\GameUI\TextComponent.h">
       <Filter>Engine\GameUI</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Tools\InGameUITool.h">
-      <Filter>Engine\Tools</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Includes\DirectXTK\Audio.h">
       <Filter>Engine\Includes\DirectXTK</Filter>
     </ClInclude>
@@ -328,9 +589,6 @@
       <Filter>Engine\Includes\DirectXTK</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Includes\DirectXTK\CommonStates.h">
-      <Filter>Engine\Includes\DirectXTK</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Includes\DirectXTK\DDSTextureLoader.h">
       <Filter>Engine\Includes\DirectXTK</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Includes\DirectXTK\DirectXHelpers.h">
@@ -384,195 +642,329 @@
     <ClInclude Include="Engine\EditorUI\ContentBrowser.h">
       <Filter>Engine\EditorUI</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\GameObjects\AudioSourceGameObject.h">
+    <ClInclude Include="Engine\GameObjects\UUID.h">
       <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\EditorCameraGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\json.hpp">
+      <Filter>Engine\Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Structure\Manager.h">
+      <Filter>Engine\Structure</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\SceneGraph.h">
+      <Filter>Engine\Structure</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\CollisionEvents.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\MouseEvents.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\KeyEvents.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\RangedWeaponGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\Character\ECharacterDirectionClass.h">
+      <Filter>Engine\GameObjects\Gameplay\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\DirectXTK\DDSTextureLoader.h">
+      <Filter>Engine\Includes\DirectXTK</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\EditorUI\TileMapContentBrowser.h">
+      <Filter>Engine\EditorUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovementParameters.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\ButtonComponent.h">
+      <Filter>Engine\GameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\DamageCalculation.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\EditorUI\EditorUIFloatParameters.h">
+      <Filter>Engine\EditorUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\EditorUI\EditorUIIntParameters.h">
+      <Filter>Engine\EditorUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\EditorUI\EditorUINonSpecificParameters.h">
+      <Filter>Engine\EditorUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\FiniteStateMachine.h">
+      <Filter>Engine\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\AnimationState.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\BulletCreator.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\AttackEvents.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerDodgingState.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\GameplayButtons\EVirtualKeyCode.h">
+      <Filter>Engine\GameObjects\Gameplay\GameplayButtons</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\AnimationStateMachine.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Structure\ObjectPool.h">
+      <Filter>Engine\Structure</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\BulletGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerMovingBody.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerRollingState.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\FuzzyStateMachine.h">
+      <Filter>Engine\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\PrefabGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\EditorUI\EditorButtonCallback.h">
+      <Filter>Engine\EditorUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Includes\Quad Tree\include\quadtree.h">
+      <Filter>Engine\Includes\Quad Tree</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\EnemyStateMachine.h">
+      <Filter>Engine\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\LevelChangeGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\EResourceModificationResult.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerResource.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerResourceInterface.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\Gameplay\Player\PlayerResourceManager.h">
+      <Filter>Engine\GameObjects\Gameplay\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameUIPrefab.h">
+      <Filter>Engine\GameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\PickupEvent.h">
+      <Filter>Engine\Managers\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\PickupGameObject.h">
+      <Filter>Engine\GameObjects\Gameplay\Pickups</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\PickupResource.h">
+      <Filter>Engine\GameObjects\Gameplay\Pickups</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\PickupsManager.h">
+      <Filter>Engine\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\TextureToResource.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\TextUIResourceDisplay.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\ImageUIResourceDisplay.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\GameplayUIResourceAttachment.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\EUIResourceChangeSetting.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\GameplayUIWeaponAttachment.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\EWeaponUIAttachmentOption.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\ImageUIWeaponDisplay.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\TextUIWeaponDisplay.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\EWeaponTextDisplayStat.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\ImageUIPickupDisplay.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\GameplayUIPickupAttachement.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\MeleeAttackState.h">
+      <Filter>Engine\AI\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\MeleeMovementState.h">
+      <Filter>Engine\AI\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\FiniteState.h">
+      <Filter>Engine\AI\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\FuzzyState.h">
+      <Filter>Engine\AI\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\RangeAttackState.h">
+      <Filter>Engine\AI\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\RangeMovementState.h">
+      <Filter>Engine\AI\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\AI\States\WanderState.h">
+      <Filter>Engine\AI\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Inventory.h">
+      <Filter>Engine\GameObjects\Gameplay\Inventory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Engine\Main.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\CameraGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\GameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\Transform.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Managers\GameManager.cpp">
-      <Filter>Engine\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Managers\AudioManager.cpp">
-      <Filter>Engine\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Managers\SceneGraph.cpp">
-      <Filter>Engine\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Graphics\DDSTextureLoader.cpp">
-      <Filter>Engine\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Physics\Collision.cpp">
-      <Filter>Engine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Physics\Particle.cpp">
-      <Filter>Engine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Physics\ParticleManager.cpp">
-      <Filter>Engine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Physics\ParticleSystem.cpp">
-      <Filter>Engine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Managers\GraphicsManager.cpp">
-      <Filter>Engine\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Graphics\SpriteAnimation.cpp">
-      <Filter>Engine\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Helpers\Timer.cpp">
-      <Filter>Engine\Helpers</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Includes\IMGUI\imgui.cpp">
-      <Filter>Engine\Includes\IMGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Includes\IMGUI\imgui_demo.cpp">
-      <Filter>Engine\Includes\IMGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Includes\IMGUI\imgui_draw.cpp">
-      <Filter>Engine\Includes\IMGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Includes\IMGUI\imgui_tables.cpp">
-      <Filter>Engine\Includes\IMGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Includes\IMGUI\imgui_widgets.cpp">
-      <Filter>Engine\Includes\IMGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Includes\IMGUI\imgui_impl_dx11.cpp">
-      <Filter>Engine\Includes\IMGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Includes\IMGUI\imgui_impl_win32.cpp">
-      <Filter>Engine\Includes\IMGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Scene\Scene.cpp">
-      <Filter>Engine\Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\EditorUI\EditorUI.cpp">
-      <Filter>Engine\EditorUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\TileMap\TileMap\TileMap.cpp">
-      <Filter>Engine\GameObjects\TileMap</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\TileMap\TileMap\Tile.cpp">
-      <Filter>Engine\GameObjects\TileMap</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Helpers\Inputs.cpp">
-      <Filter>Engine\Helpers</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Managers\Events\EventObserver.cpp">
-      <Filter>Engine\Managers\Events</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Managers\Events\Events.cpp">
-      <Filter>Engine\Managers\Events</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Managers\Events\EventManager.cpp">
-      <Filter>Engine\Managers\Events</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\PlayerGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\CharacterGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Tools\ToolBase.cpp">
-      <Filter>Engine\Tools</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Tools\TileMapTool.cpp">
-      <Filter>Engine\Tools</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Managers\DebugDrawManager.cpp">
-      <Filter>Engine\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\DebugRect.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Physics\Shape.cpp">
-      <Filter>Engine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Tools\AnimationTool.cpp">
-      <Filter>Engine\Tools</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\CollidableGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\RenderableGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\RenderableCollidableGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\EnemyGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\AI\Pathfinding.cpp">
-      <Filter>Engine\AI</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameUI\GameUIComponent.cpp">
-      <Filter>Engine\GameUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameUI\ImageComponent.cpp">
-      <Filter>Engine\GameUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameUI\UICanvas.cpp">
-      <Filter>Engine\GameUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Managers\UIManager.cpp">
-      <Filter>Engine\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\FileIO\FileIOCache.cpp">
-      <Filter>Engine\FileIO</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\FileIO\FileIO.cpp">
-      <Filter>Engine\FileIO</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Managers\FontManager.cpp">
-      <Filter>Engine\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameUI\TextComponent.cpp">
-      <Filter>Engine\GameUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Tools\InGameUITool.cpp">
-      <Filter>Engine\Tools</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\EditorUI\ContentBrowser.cpp">
-      <Filter>Engine\EditorUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObjects\AudioSourceGameObject.cpp">
-      <Filter>Engine\GameObjects</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Engine\Graphics\Shaders\BasicPixel.hlsl">
-      <Filter>Engine\Graphics\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Engine\Graphics\Shaders\BasicVertex.hlsl">
-      <Filter>Engine\Graphics\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Engine\Graphics\Shaders\DummyPosTex.hlsl">
-      <Filter>Engine\Graphics\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Engine\Graphics\Shaders\ScreenSpaceVertex.hlsl">
-      <Filter>Engine\Graphics\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Engine\Graphics\Shaders\TextPixel.hlsl">
-      <Filter>Engine\Graphics\Shaders</Filter>
-    </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="Engine\Includes\DirectXTK\SimpleMath.inl" />
     <None Include="packages.config" />
-    <None Include="Engine\Includes\DirectXTK\SimpleMath.inl">
-      <Filter>Engine\Includes\DirectXTK</Filter>
-    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{f8df8a2a-2067-4fc2-a5cd-eede8c5a8505}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{5232b526-20ac-4cb4-b8de-c0f95c55ed62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\AI">
+      <UniqueIdentifier>{04152c28-6984-47fe-a775-ed4f096b2ee2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Audio">
+      <UniqueIdentifier>{897971dc-d6b8-4c33-9e41-eb1fe2248f01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\FileIO">
+      <UniqueIdentifier>{25ed9e15-b019-4bcc-aa7f-725823077949}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Graphics">
+      <UniqueIdentifier>{477a37e5-d8d0-4a7c-a6cf-b5755d48bbdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Physics">
+      <UniqueIdentifier>{9b4dc9d5-5273-4d0b-8d5c-347271cdfa47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Tools">
+      <UniqueIdentifier>{4b1b7170-5cca-4f0b-aac9-1296215532d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Graphics\UI">
+      <UniqueIdentifier>{96c19883-77db-402a-8763-0b82340db23e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Tools\LevelEditor">
+      <UniqueIdentifier>{45271f9b-a149-4506-bc04-c077768dca56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Levels">
+      <UniqueIdentifier>{e35397e6-3b5e-49cd-8863-0f45d8ee4c9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Sprites">
+      <UniqueIdentifier>{b8bcafe4-1929-429e-b1ce-71d2cf775064}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\UI">
+      <UniqueIdentifier>{45e25456-8834-471d-abe7-0ecf5c30bfc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GameObjects">
+      <UniqueIdentifier>{c66abd6e-08f1-4b8d-a6a1-b94e1335e5ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Managers">
+      <UniqueIdentifier>{8044ac0d-657a-4ebd-8ba7-67c6cc43616a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Graphics\Shaders">
+      <UniqueIdentifier>{a3f75338-30a5-422a-8444-47d2313a081e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Structure">
+      <UniqueIdentifier>{03cdf719-fa49-402c-9b9d-02823bdb09df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Managers\Events">
+      <UniqueIdentifier>{f40faef3-8871-46ba-b4ce-2633d2ff55dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Helpers">
+      <UniqueIdentifier>{254824ed-5c67-4416-b2b4-269bd40d30e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Includes">
+      <UniqueIdentifier>{e45835cf-a293-499b-a030-f3d8066158c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Scenes">
+      <UniqueIdentifier>{1a14601e-9387-4d1e-a96a-c3cc30296f59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\EditorUI">
+      <UniqueIdentifier>{be398bfc-a530-4216-b526-9539d7b9b444}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GameObjects\TileMap">
+      <UniqueIdentifier>{f9a6ff52-28af-492f-9d85-4de306819c3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Includes\FMOD">
+      <UniqueIdentifier>{bd35460b-0058-4867-a278-bbc197eb5433}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\DebugColours">
+      <UniqueIdentifier>{37cc2bc7-6049-4bc6-97da-767b9fd772f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GameUI">
+      <UniqueIdentifier>{d83555e9-533b-48de-9df1-7f52c9dc4edf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Includes\RapidXML">
+      <UniqueIdentifier>{8485d8b9-85d9-456f-a310-24789552f5ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Includes\DirectXTK">
+      <UniqueIdentifier>{6818e938-9355-4e25-9674-f7db2902b669}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Includes\json">
+      <UniqueIdentifier>{4c2cb5c7-37e1-4ed4-b637-c10314805ea2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GameObjects\Gameplay">
+      <UniqueIdentifier>{13efa529-6987-4024-a42e-96cd1810ea3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GameObjects\Gameplay\Player">
+      <UniqueIdentifier>{1b35de15-bf68-4d03-adf4-fbed817eb21b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GameObjects\Gameplay\GameplayButtons">
+      <UniqueIdentifier>{f8c10280-33f9-4e1e-9f00-e29495603fe8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GameObjects\Gameplay\Character">
+      <UniqueIdentifier>{c57e8cf3-676a-480f-b89d-7ad1d62f5826}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Includes\IMGUI">
+      <UniqueIdentifier>{c9749be8-4576-42c5-b74d-3a5281e78663}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Tilemap">
+      <UniqueIdentifier>{1e730ee1-62cd-49ad-a4c3-e2db9f54d340}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Tilemap\Tilemap">
+      <UniqueIdentifier>{2511a5c3-13d3-4be5-8a1c-4a99b0fb512a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Includes\Quad Tree">
+      <UniqueIdentifier>{5f84bbc7-cf26-4e0b-a6e6-de68878e424f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Includes\Quad Tree">
+      <UniqueIdentifier>{5f84bbc7-cf26-4e0b-a6e6-de68878e424f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GameObjects\Gameplay\Pickups">
+      <UniqueIdentifier>{4958383b-627e-456b-9b70-6f8dd49502cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GameUI\GameplayIntegration">
+      <UniqueIdentifier>{6becce7d-f71a-409d-b98a-3e1518520701}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\AI\States">
+      <UniqueIdentifier>{e1a8d3d1-ace4-4914-b20d-3698d95b0467}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GameObjects\Gameplay\Inventory">
+      <UniqueIdentifier>{ccf1ad0f-be3a-4001-9019-4e6cc72f5a6b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

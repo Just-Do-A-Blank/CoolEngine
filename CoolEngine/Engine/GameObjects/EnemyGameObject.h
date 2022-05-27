@@ -1,62 +1,36 @@
 #pragma once
 #include "Engine/GameObjects/CharacterGameObject.h"
 #include "Engine/AI/Pathfinding.h"
+#include  "Engine/AI/EnemyStateMachine.h"
 
+class PlayerGameObject;
 
-//Add FsSM states
-enum class EnemyState
+class EnemyGameObject : public CharacterGameObject
 {
-    WANDER,
-    ATTACK,
-    RUN,
-    PATROL,
-    STAY,
-};
-
-//Change getters and setters for this when setting up FsSM
-struct EnemyStateMachine
-{
-    float WANDER;
-    float ATTACK;
-    float STAY;
-
-    //FSM
-    EnemyState state;
-};
-
-class EnemyGameObject :
-    public CharacterGameObject
-{
-
 public:
-    EnemyGameObject(string identifier); 
-    void Update();
+    EnemyGameObject(string identifier, CoolUUID uuid);
+    EnemyGameObject(const nlohmann::json& data, CoolUUID uuid);
+	EnemyGameObject(EnemyGameObject const& other);
+	virtual ~EnemyGameObject()override;
 
+    virtual void Update();
+    virtual void EditorUpdate();
 
-    //Setters
-    void SetPath(vector<node*> path);
-    void SetTarget(XMFLOAT3 target);
-    void SetDirection(XMFLOAT3 dir);
-    void SetEnemyState(EnemyState state); //will be changed to FsSM states in the future
+    virtual void Serialize(nlohmann::json& data) override;
 
+	void CalculateMovement(node* pnode);
 
-    //Getters
-    const vector<node*> GetPath() const;
-    const XMFLOAT3 GetTarget() const;
+	void Start() override;
 
-    const XMFLOAT3 GetDirection() const;
-    const EnemyState GetEnemyState() const; //will be changed to FsSM states in the future 
+	void SetWeaponPositionAgro();
+	void SetWeaponPositionWander();
 
+#if EDITOR
+	void CreateEngineUI() override;
+#endif
 
 private:
+    EnemyStateMachine* m_pAIStateMachine = nullptr;
 
-    vector<node*> m_curPath;
-
-   
-    EnemyStateMachine m_enemyState;
-
-    void DetermineAction();
-
-
+	PlayerGameObject* m_pplayer = nullptr;
 };
-

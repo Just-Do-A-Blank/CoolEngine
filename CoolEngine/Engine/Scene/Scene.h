@@ -2,8 +2,18 @@
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/GameObjects/PlayerGameObject.h"
 #include "Engine/Managers/SceneGraph.h"
+#include "Engine/GameObjects/CameraGameObject.h"
+#include "Engine/Includes/Quad Tree/include/quadtree.h"
 
 class GameObject;
+
+struct Node
+{
+	GameObject* m_gameObject;
+	GameObjectType m_type;
+	CoolUUID m_id;
+};
+
 
 class Scene
 {
@@ -13,37 +23,84 @@ private:
 	SceneGraph<GameObject>* m_psceneGraph;
 
 	GameObject* m_pselectedGameObject = nullptr;
-	TreeNode<GameObject>* m_pselectedNode = nullptr;
 	TreeNode<GameObject>* m_prootTreeNode = nullptr;
+	unordered_map<string, CameraGameObject*> m_cameraGameObjectMap;
+	CameraGameObject* m_pactiveCamera = nullptr;
 	
+	Quadtree* m_quadtree = nullptr;
+
+	int m_treeSizeOffset = 0;
+
 public:
 	Scene(string identifier);
 	~Scene();
 
+	virtual void Start();
 	virtual void Update();
+	virtual void EditorUpdate();
 	virtual void Render(RenderStruct& renderStruct);
+
+	SceneGraph<GameObject>* GetSceneGraph();
+
+	void InitializeQuadTree();
 
 private:
 
 	vector<GameObject*>& GetAllGameObjects();
+	CameraGameObject* GetActiveCamera();
+
+	unordered_map<string, CameraGameObject*> GetCameraGameObjectMap();
+	bool SetActiveCameraUsingIdentifier(string identifier);
 
 	template<typename T>
 	T* GetGameObjectUsingIdentifier(string& identifier)
 	{
-		return  dynamic_cast<T*>(m_psceneGraph->GetGameObjectUsingIdentifier(identifier));
+		GameObject* pobject = m_psceneGraph->GetNodeObjectUsingIdentifier(identifier);
+
+		if (pobject == nullptr)
+		{
+			return nullptr;
+		}
+		else
+		{
+			return  dynamic_cast<T*>(pobject);
+		}
+
 	}
 
-	void SelectGameObjectUsingIdentifier(string identifier);
-	void SelectGameObject(GameObject* pgameObject);
-	void SelectGameObjectUsingTreeNode(TreeNode<GameObject>* pnode);
+	template<typename T>
+	T* GetGameObjectUsingUUID(CoolUUID uuid)
+	{
+		GameObject* pobject = m_psceneGraph->GetNodeObjectUsingUUID(uuid);
 
+		if (pobject == nullptr)
+		{
+			return nullptr;
+		}
+		else
+		{
+			return  dynamic_cast<T*>(pobject);
+		}
+
+	}
 
 	template<typename T>
-	T* CreateGameObject(string identifier)
+	T* CreateGameObject(string identifier, TreeNode<GameObject>* nodeParent = nullptr)
 	{
 		assert(m_psceneGraph != nullptr);
+		
+		CoolUUID uuid;
+		T* gameObject = new T(std::string(identifier), uuid);
 
-		T* gameObject = new T(identifier);
+		if (std::is_same<T, CameraGameObject>::value)
+		{
+			CameraGameObject* cameraObject = dynamic_cast<CameraGameObject*>(gameObject);
+			m_cameraGameObjectMap[identifier] = cameraObject;
+			if (!m_pactiveCamera)
+			{
+				m_pactiveCamera = cameraObject;
+			}
+		}
 
 		GameObject* pgameObject = dynamic_cast<GameObject*>(gameObject);
 		pgameObject->m_identifier = identifier;
@@ -55,27 +112,110 @@ private:
 		}
 		else
 		{
-			if (!m_pselectedGameObject)
+			if (nodeParent == nullptr)
 			{
 				m_psceneGraph->AddSibling(m_prootTreeNode, gameObject);
 			}
 			else
 			{
-				m_psceneGraph->AddChild(m_psceneGraph->GetNodeUsingIdentifier(m_pselectedGameObject->GetIdentifier()), gameObject);
+				m_psceneGraph->AddChild(nodeParent, gameObject);
 			}
 		}
 
 		return gameObject;
 	}
 
+	template<typename T>
+	T* CopyGameObject(T object, TreeNode<GameObject>* nodeParent = nullptr, TreeNode<GameObject>* nodePreviousSibling = nullptr)
+	{
+		assert(m_psceneGraph != nullptr);
 
-	void DeleteSelectedGameObject();
+		CoolUUID uuid;
+		T* gameObject = new T(object);
+
+		GameObject* pgameObject = dynamic_cast<GameObject*>(gameObject);
+
+		if (std::is_same<T, CameraGameObject>::value)
+		{
+			CameraGameObject* cameraObject = dynamic_cast<CameraGameObject*>(gameObject);
+			m_cameraGameObjectMap[pgameObject->m_identifier] = cameraObject;
+			if (!m_pactiveCamera)
+			{
+				m_pactiveCamera = cameraObject;
+			}
+		}
+
+		m_prootTreeNode = m_psceneGraph->GetRootNode();
+		if (!m_prootTreeNode)
+		{
+			m_prootTreeNode = m_psceneGraph->NewNode(gameObject);
+		}
+		else
+		{
+			if (nodeParent == nullptr)
+			{
+				if (nodePreviousSibling == nullptr)
+				{
+					m_psceneGraph->AddSibling(m_prootTreeNode, gameObject);
+				}
+				else
+				{
+					m_psceneGraph->AddSibling(nodePreviousSibling, gameObject);
+				}
+			}
+			else
+			{
+				m_psceneGraph->AddChild(nodeParent, gameObject);
+			}
+		}
+
+		return gameObject;
+	}
+
+	template<typename T>
+	T* CreateGameObject(string identifier, CoolUUID uuid, TreeNode<GameObject>* nodeParent = nullptr)
+	{
+		assert(m_psceneGraph != nullptr);
+
+		T* gameObject = new T(identifier, uuid);
+
+		GameObject* pgameObject = dynamic_cast<GameObject*>(gameObject);
+		pgameObject->m_identifier = identifier;
+
+		m_prootTreeNode = m_psceneGraph->GetRootNode();
+		if (!m_prootTreeNode)
+		{
+			m_prootTreeNode = m_psceneGraph->NewNode(gameObject);
+		}
+		else
+		{
+			if (nodeParent == nullptr)
+			{
+				m_psceneGraph->AddSibling(m_prootTreeNode, gameObject);
+			}
+			else
+			{
+				m_psceneGraph->AddChild(nodeParent, gameObject);
+			}
+		}
+
+		return gameObject;
+	}
+
+	void DeleteGameObjectUsingNode(TreeNode<GameObject>* currentNode);
 	void DeleteGameObjectUsingIdentifier(string identifier);
+
+	template<typename T>
+	void DeleteGameObjectUsingNode(T* pgameObject, std::string identifier)
+	{
+		m_psceneGraph->DeleteGameObject(pgameObject, identifier);
+	}
 
 	//Getters
 	TreeNode<GameObject>* GetRootTreeNode();
 	TreeNode<GameObject>* GetTreeNode(GameObject* pgameObject);
 	string& GetSceneIdentifier();
 	GameObject* GetSelectedGameObject();
+	
 };
 

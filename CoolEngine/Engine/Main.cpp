@@ -9,8 +9,8 @@
 #include "Engine/Graphics/ConstantBuffer.h"
 #include "Engine/Graphics/SpriteAnimation.h"
 #include "Engine/GameObjects/CameraGameObject.h"
-#include "Engine/GameObjects/PlayerGameObject.h"
 #include "Engine/GameObjects/EnemyGameObject.h"
+#include "Engine/GameObjects/WeaponGameObject.h"
 
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/Managers/Events/EventObserver.h"
@@ -28,7 +28,6 @@
 #include "Scene/Scene.h"
 #include "Engine/Managers/GameManager.h"
 #include <Engine/Physics/Box.h>
-#include "Engine/Managers/UIManager.h"
 #include "Engine/GameUI/GameUIComponent.h"
 #include "Engine/GameUI/ImageComponent.h"
 #include "Engine/GameUI/TextComponent.h"
@@ -36,13 +35,17 @@
 #include "Physics/ParticleManager.h"
 #include "Engine/Managers/FontManager.h"
 
-#if TOOL
 #include "Engine/Tools/ToolBase.h"
-
 #include "Engine/Tools/TileMapTool.h"
 #include "Engine/Tools/AnimationTool.h"
-#include "Engine/Tools/InGameUITool.h"
-#endif
+#include "Engine/GameObjects/EditorCameraGameObject.h"
+
+#include "Engine/Managers/Events/EventObserverExamples.h"
+#include "Engine/Managers/Events/DamageCalculation.h"
+#include "Engine/Managers/PickupsManager.h"
+#include "Engine/Structure/ObjectPool.h"
+#include "Engine/GameObjects/BulletGameObject.h"
+#include "Engine/GameObjects/PickupGameObject.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT	InitWindow(HINSTANCE hInstance, int nCmdShow);
@@ -75,7 +78,6 @@ ID3D11ShaderResourceView* g_pRTTShaderResourceView;
 
 
 
-CameraGameObject* g_pcamera = nullptr;
 PlayerGameObject* g_pplayer = nullptr;
 
 TileMap* g_testMap1;
@@ -84,13 +86,10 @@ TileMap* g_testMap2;
 
 #if EDITOR
 EditorUI* g_peditorUI;
-#endif
-
-Inputs* g_inputController;
-
-#if TOOL
 ToolBase* g_ptoolBase = nullptr;
 #endif
+
+
 
 using namespace DirectX;
 
@@ -122,10 +121,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	GameManager::GetInstance()->Init();
 
-#if EDITOR
-	g_peditorUI = new EditorUI(g_pd3dDevice);
-	g_peditorUI->InitIMGUI(g_pImmediateContext, g_pd3dDevice, &g_hWnd);
-#endif
 
 	//Setup audio stuff
 	AudioManager::GetInstance()->Init();
@@ -135,58 +130,26 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	GraphicsManager::GetInstance()->Init(g_pd3dDevice, g_pImmediateContext);
 	GraphicsManager::GetInstance()->SetHWND(&g_hWnd);
 
-	g_inputController = new Inputs();
+#if EDITOR
+	g_peditorUI = new EditorUI(g_pd3dDevice);
+	g_peditorUI->InitIMGUI(g_pImmediateContext, g_pd3dDevice, &g_hWnd);
+#endif
+
+	Inputs::GetInstance();
 
 	//Debug Manager
 #if _DEBUG
 	DebugDrawManager::GetInstance()->Init(g_pd3dDevice);
-
-
 #endif
 
 	srand(time(0));
 
 	//Create camera
-	XMFLOAT3 cameraPos = XMFLOAT3(0, 0, -5);
-	XMFLOAT3 cameraForward = XMFLOAT3(0, 0, 1);
-	XMFLOAT3 cameraUp = XMFLOAT3(0, 1, 0);
-
-	float windowWidth = GraphicsManager::GetInstance()->GetWindowDimensions().x;
-	float windowHeight = GraphicsManager::GetInstance()->GetWindowDimensions().y;
-
-	float nearDepth = 0.01f;
-	float farDepth = 1000.0f;
-
-	g_pcamera = new CameraGameObject("Camera");
-	g_pcamera->Initialize(cameraPos, cameraForward, cameraUp, windowWidth, windowHeight, nearDepth, farDepth);
-
-	GameManager::GetInstance()->SetCamera(g_pcamera);
+	
+	FontManager::GetInstance()->LoadFont(L"Resources\\Fonts\\ComicSans", "comicSans");
 
 	//Create scene
 	GameManager* pgameManager = GameManager::GetInstance();
-	pgameManager->CreateScene("TestScene");
-	pgameManager->SelectSceneUsingIdentifier("TestScene");
-	pgameManager->SelectSceneUsingIdentifier("TestScene");
-
-#if TOOL
-
-#if TILE_MAP_TOOL
-	g_ptoolBase = new TileMapTool();
-#elif ANIMATION_TOOL
-	g_ptoolBase = new AnimationTool();
-#elif IN_GAME_UI_TOOL
-	g_ptoolBase = new InGameUITool();
-	FontManager::GetInstance()->LoadFont("Resources/Fonts/ComicSans.xml", L"Resources/Fonts/ComicSans.dds", "comicSans");
-	UIManager::GetInstance()->Init(g_pd3dDevice);
-	UIManager::GetInstance()->CreateCanvas("testCanvas", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
-	//TextComponent* tc = UIManager::GetInstance()->CreateUIComponent<TextComponent>("TestText", XMFLOAT3(0.0, 20.0, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f));
-	//tc->Init("Cool Engine!", "comicSans", 16, Colors::Yellow, g_pd3dDevice);
-	UIManager::GetInstance()->CreateUIComponent<ImageComponent>("TestUIImage", XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT3(0.9f, 0.9f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
-
-#endif
-
-	g_ptoolBase->Init(g_pd3dDevice);
-#else
 
 	//Music
 	AudioManager::GetInstance()->LoadMusic(TEST_MUSIC);
@@ -201,142 +164,28 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	GraphicsManager::GetInstance()->LoadTextureFromFile(DEFAULT_IMGUI_IMAGE);
 	GraphicsManager::GetInstance()->LoadTextureFromFile(TEST2);
 
-	//Load animations
-
-	//Create test gameobject
-	string obj0Name = "TestObject0";
-	string obj1Name = "TestObject1";
-	string playerName = "Player";
-	string enemyName = "Enemy";
-
-	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj0Name);
-	pgameManager->CreateGameObject<RenderableCollidableGameObject>(obj1Name);
-	pgameManager->CreateGameObject<PlayerGameObject>(playerName);
-	pgameManager->CreateGameObject<EnemyGameObject>(enemyName);
-
-	RenderableCollidableGameObject* pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj0Name);
-
-	XMFLOAT3 objectPos = XMFLOAT3(0, -200.0f, 0.0f);
-	XMFLOAT3 objectScale = XMFLOAT3(100, 100, 100);
-	bool isCollision = true;
-
-	pgameObject->SetMesh(QUAD_MESH_NAME);
-	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
-	pgameObject->GetTransform()->SetPosition(objectPos);
-	pgameObject->GetTransform()->SetScale(objectScale);
-	Box* pbox = new Box(pgameObject->GetTransform());
-	pbox->SetIsCollidable(isCollision);
-	pbox->SetIsTrigger(isCollision);
-	pgameObject->SetShape(pbox);
-
-	////Init second gameObject
-	pgameObject = pgameManager->GetGameObjectUsingIdentifier<RenderableCollidableGameObject>(obj1Name);
-
-	objectPos = XMFLOAT3(10.0f, -200.0f, 0.0f);
-	objectScale = XMFLOAT3(100, 100, 100);
-
-	pgameObject->SetMesh(QUAD_MESH_NAME);
-	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	pgameObject->SetAlbedo(TEST2);
-	pgameObject->GetTransform()->SetPosition(objectPos);
-	pgameObject->GetTransform()->SetScale(objectScale);
-	pbox = new Box(pgameObject->GetTransform());
-	pbox->SetIsCollidable(isCollision);
-	pbox->SetIsTrigger(isCollision);
-	pgameObject->SetShape(pbox);
-
-	//Init enemy object
-	pgameObject = pgameManager->GetGameObjectUsingIdentifier<EnemyGameObject>(enemyName);
-	objectPos = XMFLOAT3(-570, -25.0f, 0);
-	objectScale = XMFLOAT3(40, 40, 40);
-
-	pgameObject->SetMesh(QUAD_MESH_NAME);
-	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
-	pgameObject->GetTransform()->SetPosition(objectPos);
-	pgameObject->GetTransform()->SetScale(objectScale);
-	pbox = new Box(pgameObject->GetTransform());
-	pbox->SetIsCollidable(isCollision);
-	pbox->SetIsTrigger(isCollision);
-	pgameObject->SetShape(pbox);
-
-	// Init player object
-	pgameObject = pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName);
-
-	objectPos = XMFLOAT3(200.0f, -200.0f, 5.0f);
-	objectScale = XMFLOAT3(50, 50, 50);
-
-	pgameObject->SetMesh(QUAD_MESH_NAME);
-	pgameObject->SetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-	pgameObject->SetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
-	pgameObject->SetAlbedo(DEFAULT_IMGUI_IMAGE);
-	pgameObject->GetTransform()->SetPosition(objectPos);
-	pgameObject->GetTransform()->SetScale(objectScale);
-	pbox = new Box(pgameObject->GetTransform());
-	pbox->SetIsCollidable(isCollision);
-	pbox->SetIsTrigger(isCollision);
-	pgameObject->SetShape(pbox);
-
-
-	g_testMap1 = new TileMap(TEST_MAP, XMFLOAT3(-500, -200, 0), "TestMap");
-
-	Pathfinding::GetInstance()->Initialize(g_testMap1);
-
-	// Observer for button inputs
-	ExampleObserver exampleObserver(new int(10), pgameManager->GetGameObjectUsingIdentifier<PlayerGameObject>(playerName));
-	EventManager::Instance()->AddClient(EventType::KeyPressed, &exampleObserver);
-	EventManager::Instance()->AddClient(EventType::KeyReleased, &exampleObserver);
-	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, &exampleObserver);
-	EventManager::Instance()->AddClient(EventType::MouseButtonReleased, &exampleObserver);
-	EventManager::Instance()->AddClient(EventType::MouseMoved, &exampleObserver);
-
+	
 	// Observer for collision detection
-	CollisionObserver collisionObserver;
-	EventManager::Instance()->AddClient(EventType::TriggerEnter, &collisionObserver);
-	EventManager::Instance()->AddClient(EventType::TriggerHold, &collisionObserver);
-	EventManager::Instance()->AddClient(EventType::TriggerExit, &collisionObserver);
-	EventManager::Instance()->AddClient(EventType::CollisionEnter, &collisionObserver);
-	EventManager::Instance()->AddClient(EventType::CollisionHold, &collisionObserver);
-	EventManager::Instance()->AddClient(EventType::CollisionExit, &collisionObserver);
+	CollisionObserver collisionObserver = CollisionObserver();
 
-	XMFLOAT3 pos = XMFLOAT3(-400, 250, 5);
-	XMFLOAT3 rot = XMFLOAT3(0, 0, 0);
-	XMFLOAT3 scale = XMFLOAT3(25, 25, 25);
-	Transform trans = Transform();
-	trans.SetPosition(pos);
-	trans.SetRotation(rot);
-	trans.SetScale(scale);
-	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 1.0f, 0.2f, 3, 20, 90.0f, 0.0f, 0.2f, 0);
-
-	pos = XMFLOAT3(0, 250, 5);
-	rot = XMFLOAT3(0, 0, 0);
-	scale = XMFLOAT3(25, 25, 25);
-	trans.SetPosition(pos);
-	trans.SetRotation(rot);
-	trans.SetScale(scale);
-	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { 0,0 }, { 0,0 }, 0.5f, 1.0f, 16, 100.0f, 0.0f, 0.0f, 0.2f, 2);
-
-	pos = XMFLOAT3(400, 250, 5);
-	rot = XMFLOAT3(0, 0, 0);
-	scale = XMFLOAT3(25, 25, 25);
-	trans.SetPosition(pos);
-	trans.SetRotation(rot);
-	trans.SetScale(scale);
-	ParticleManager::GetInstance()->AddSystem(trans, 1000.0f, DEFAULT_IMGUI_IMAGE, { -100,150 }, { 300,-75 }, 2.0f, 0.25f, 3, 100.0f, 25.0f, 25.0f, 0.1f, 1);
+	// Observer for taking damage
+	DamageCalculation damageObserver = DamageCalculation();
+	
+	string testSceneFilePath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Levels\\TestScene.json";
+	if (!pgameManager->LoadSceneFromFile(testSceneFilePath, "", true))
+	{
+		GameManager* pgameManager = GameManager::GetInstance();
+		pgameManager->CreateScene("EmptyScene");
+		pgameManager->SwitchSceneUsingIdentifier("EmptyScene");
+		pgameManager->CreateGameObject<CameraGameObject>("SceneCamera");
+	}
 
 	GameManager::GetInstance()->GetTimer()->Tick();
+	GameManager::GetInstance()->GetTimer()->Tick();
 
-#if _DEBUG
-	DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect("DebugRect1", XMFLOAT3(-100.0f, -300.0f, 0.0f), objectScale, DebugDrawManager::DebugColour::BEIGE);
-#endif //_DEBUG
-
+#if !EDITOR
+	GameManager::GetInstance()->BeginPlay();
 #endif
-
-	//Create test Tile Map
 
 	// Main message loop
 	MSG msg = { 0 };
@@ -381,7 +230,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 #endif
 
-	g_inputController->Update(&hWnd, &message, &wParam, &lParam);
+	Inputs::GetInstance()->Update(&hWnd, &message, &wParam, &lParam);
 
 	PAINTSTRUCT ps;
 	HDC hdc;
@@ -407,8 +256,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
-
-
 
 	return 0;
 }
@@ -589,7 +436,6 @@ inline HRESULT InitDevice()
 	renderTargetViewDesc.Texture2D.MipSlice = 0;
 
 	hr = g_pd3dDevice->CreateRenderTargetView(g_pRTTRrenderTargetTexture, &renderTargetViewDesc, &g_pRTTRenderTargetView);
-	g_pRTTRrenderTargetTexture->Release();
 
 	if (FAILED(hr))
 		return hr;
@@ -639,6 +485,65 @@ inline HRESULT InitDevice()
 	g_pImmediateContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	return S_OK;
+}
+
+void RecreateFrameResources(XMFLOAT2 dimensions)
+{
+	g_pRTTRrenderTargetTexture->Release();
+	g_pRTTRenderTargetView->Release();
+	g_pRTTShaderResourceView->Release();
+
+	D3D11_TEXTURE2D_DESC textureDesc;
+	ZeroMemory(&textureDesc, sizeof(textureDesc));
+	textureDesc.Width = dimensions.x;
+	textureDesc.Height = dimensions.y;
+	textureDesc.MipLevels = 1;
+	textureDesc.ArraySize = 1;
+	textureDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+	textureDesc.SampleDesc.Count = 1;
+	textureDesc.Usage = D3D11_USAGE_DEFAULT;
+	textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	textureDesc.CPUAccessFlags = 0;
+	textureDesc.MiscFlags = 0;
+	HRESULT hr = g_pd3dDevice->CreateTexture2D(&textureDesc, NULL, &g_pRTTRrenderTargetTexture);
+
+	if (FAILED(hr))
+	{
+		LOG("Failed to create viewport texture!");
+
+		return;
+	}
+
+	// Setup the description of the render target view.
+	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
+	renderTargetViewDesc.Format = textureDesc.Format;
+	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+	renderTargetViewDesc.Texture2D.MipSlice = 0;
+
+	hr = g_pd3dDevice->CreateRenderTargetView(g_pRTTRrenderTargetTexture, &renderTargetViewDesc, &g_pRTTRenderTargetView);
+
+	if (FAILED(hr))
+	{
+		LOG("Failed to create view to viewport texture!");
+
+		return;
+	}
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
+	shaderResourceViewDesc.Format = textureDesc.Format;
+	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
+	shaderResourceViewDesc.Texture2D.MipLevels = 1;
+
+	// Create the shader resource view.
+	hr = g_pd3dDevice->CreateShaderResourceView(g_pRTTRrenderTargetTexture, &shaderResourceViewDesc, &g_pRTTShaderResourceView);
+
+	if (FAILED(hr))
+	{
+		LOG("Failed to create shader resource view to viewport texture!");
+
+		return;
+	}
 }
 
 void CleanupDevice()
@@ -704,8 +609,13 @@ void Render()
 	g_pImmediateContext->ClearRenderTargetView(g_pRenderTargetView, DirectX::Colors::MidnightBlue);
 
 	//Set current render target to render to texture target.
+
+#if EDITOR
 	g_pImmediateContext->OMSetRenderTargets(1, &g_pRTTRenderTargetView, nullptr);
 	g_pImmediateContext->ClearRenderTargetView(g_pRTTRenderTargetView, DirectX::Colors::MidnightBlue);
+#else
+	g_pImmediateContext->OMSetRenderTargets(1, &g_pRenderTargetView, nullptr);
+#endif
 
 	g_pImmediateContext->IASetInputLayout(GraphicsManager::GetInstance()->GetInputLayout(GraphicsManager::InputLayouts::POS_TEX));
 
@@ -715,10 +625,14 @@ void Render()
 	ID3D11SamplerState* psampler = GraphicsManager::GetInstance()->GetSampler(GraphicsManager::Samplers::LINEAR_WRAP);
 
 	g_pImmediateContext->PSSetSamplers(0, 1, &psampler);
-
+			
 	//Update per frame CB
 	PerFrameCB perFrameCB;
-	XMStoreFloat4x4(&perFrameCB.viewProjection, XMMatrixTranspose(XMLoadFloat4x4(&g_pcamera->GetViewProjection())));
+	CameraGameObject* activeCamera = GameManager::GetInstance()->GetCamera();
+	if (activeCamera)
+	{
+		XMStoreFloat4x4(&perFrameCB.viewProjection, XMMatrixTranspose(XMLoadFloat4x4(&activeCamera->GetViewProjection())));
+	}
 
 	GraphicsManager::GetInstance()->m_pperFrameCB->Update(perFrameCB, g_pImmediateContext);
 
@@ -733,7 +647,35 @@ void Render()
 
 	for (int i = 0; i < GraphicsManager::GetInstance()->GetNumLayers(); ++i)
 	{
-		GraphicsManager::GetInstance()->GetSpriteBatches()[i]->Begin();
+		GraphicsManager::GetInstance()->GetSpriteBatches()[i]->Begin(SpriteSortMode_Deferred, nullptr, nullptr, nullptr, nullptr, [=]
+		{
+				ID3D11Buffer* pbuffer = GraphicsManager::GetInstance()->m_pperFrameCB->GetBuffer();
+
+				D3D11_VIEWPORT viewport;
+				viewport.TopLeftX = 0;
+				viewport.TopLeftY = 0;
+
+#if EDITOR
+				viewport.Width = EditorUI::GetViewportSize().x;
+				viewport.Height = EditorUI::GetViewportSize().y;
+#else
+				viewport.Width = GraphicsManager::GetInstance()->GetWindowDimensions().x;
+				viewport.Height = GraphicsManager::GetInstance()->GetWindowDimensions().y;
+#endif
+
+				viewport.MinDepth = 0.01f;
+				viewport.MaxDepth = 1.0f;
+
+				g_pImmediateContext->RSSetViewports(1, &viewport);
+				g_pImmediateContext->RSSetState(g_prasterState);
+				g_pImmediateContext->IASetInputLayout(GraphicsManager::GetInstance()->GetInputLayout(GraphicsManager::InputLayouts::POS_TEX_COLOR));
+
+				g_pImmediateContext->VSSetShader(GraphicsManager::GetInstance()->GetVertexShader(SPRITE_BATCH_VERTEX_SHADER_NAME), nullptr, 0);
+				g_pImmediateContext->PSSetShader(GraphicsManager::GetInstance()->GetPixelShader(SPRITE_BATCH_PIXEL_SHADER_NAME), nullptr, 0);
+
+				g_pImmediateContext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pbuffer);
+				g_pImmediateContext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_FRAME, 1, &pbuffer);
+		});
 	}
 
 	GameManager* pgamemanager = GameManager::GetInstance();
@@ -750,25 +692,47 @@ void Render()
 		GraphicsManager::GetInstance()->GetSpriteBatches()[i]->End();
 	}
 
-	UIManager::GetInstance()->Render(renderStruct);
-
-#if TOOL
-	g_ptoolBase->Render();
-#else
 #if EDITOR
-	g_peditorUI->DrawEditorUI(g_pd3dDevice);
-#endif
-#endif
+	if (g_ptoolBase != nullptr)
+	{
+		g_ptoolBase->Render();
+	}
+	else
+	{
 
-#if EDITOR
+		g_peditorUI->DrawEditorUI(g_pd3dDevice, g_ptoolBase);
+
+	}
+
 	ImGuiWindowFlags viewportWindowFlags = 0;
 	viewportWindowFlags |= ImGuiWindowFlags_HorizontalScrollbar;
 	ImGui::Begin("Viewport", nullptr, viewportWindowFlags);
 
+	ImVec2 viewportPos = ImGui::GetCursorScreenPos();
+	EditorUI::SetViewportPosition(DirectX::XMFLOAT2(viewportPos.x, viewportPos.y));
+
+	ImVec2 newViewportSize = ImGui::GetContentRegionAvail();
+	XMFLOAT2 oldViewportSize = EditorUI::GetViewportSize();
+
+	if ((oldViewportSize.x != newViewportSize.x || oldViewportSize.y != newViewportSize.y) && (newViewportSize.x > 0 && newViewportSize.y > 0))
+	{
+		XMFLOAT2 viewportSize = XMFLOAT2(newViewportSize.x, newViewportSize.y);
+
+		RecreateFrameResources(viewportSize);
+
+		EditorUI::SetViewportSize(viewportSize);
+	}
+
 	//Pass everything rendered till this point into ImGuiImage
+
 	XMFLOAT2 dimension = GraphicsManager::GetInstance()->GetWindowDimensions();
-	ImGui::Image(g_pRTTShaderResourceView, ImVec2(dimension.x, dimension.y));
+	ImGui::Image(g_pRTTShaderResourceView, newViewportSize);
+
+	EditorUI::SetIsViewportHovered(ImGui::IsItemHovered());
+
 	ImGui::End();
+
+
 
 	//Swap render target to back buffer
 	g_pImmediateContext->OMSetRenderTargets(1, &g_pRenderTargetView, nullptr);
@@ -796,25 +760,39 @@ float temp;
 
 void Update()
 {
-	GameManager* pgamemanager = GameManager::GetInstance();
-
-	pgamemanager->GetTimer()->Tick();
-	pgamemanager->Update();
+#if _DEBUG
+	DebugDrawManager::GetInstance()->Update();
+#endif
 
 	ParticleManager::GetInstance()->Update(GameManager::GetInstance()->GetTimer()->DeltaTime());
 
 	AudioManager::GetInstance()->Update();
 
+	Inputs::GetInstance()->Update();
 	EventManager::Instance()->ProcessEvents();
+
+	//PickupsManager::GetInstance()->Update();
+
+	GameManager* pgamemanager = GameManager::GetInstance();
+
+	pgamemanager->GetTimer()->Tick();
+	pgamemanager->Update();
 
 #if EDITOR
 	g_peditorUI->Update();
-#endif
 
-	g_inputController->Update();
-
-#if TOOL
-	g_ptoolBase->Update();
+	if (g_ptoolBase != nullptr)
+	{
+		if (g_ptoolBase->HasToolExited() == true)
+		{
+			delete g_ptoolBase;
+			g_ptoolBase = nullptr;
+		}
+		else
+		{
+			g_ptoolBase->Update();
+		}
+	}
 #endif
 }
 

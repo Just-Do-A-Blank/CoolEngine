@@ -16,6 +16,7 @@ void GraphicsManager::Init(ID3D11Device* pdevice, ID3D11DeviceContext* pcontext)
 	for (int i = 0; i < s_kNumLayers; ++i)
 	{
 		m_pBatches[i] = unique_ptr<SpriteBatch>(new SpriteBatch(pcontext));
+		m_pBatches[i]->SetRotation(DXGI_MODE_ROTATION_UNSPECIFIED);
 	}
 
 	CreateQuadMesh();
@@ -135,7 +136,7 @@ bool GraphicsManager::LoadTextureFromFile(wstring filename, size_t maxSize, DDS_
 	{
 		LOG("That texture has already been loaded!");
 
-		return false;
+		return true;
 	}
 
 	ID3D11ShaderResourceView* psRV;
@@ -161,13 +162,12 @@ bool GraphicsManager::LoadAnimationFromFile(wstring animName, size_t maxSize, DD
 {
 	if (m_animationFrames.count(animName) != 0)
 	{
-		LOG("Tried to load an animation but one with that name already exists!");
+		LOG("Tried to load an already loaded animation!");
 
-		return false;
+		return true;
 	}
 
-	//Get information txt file and parse in
-	ifstream file(GameManager::GetInstance()->GetWideWorkingDirectory() + L"\\Resources\\Animations\\" + animName + L"\\" + animName + L".txt", std::ios::in);
+	std::ifstream file(GameManager::GetInstance()->GetWideWorkingDirectory() + L"\\Resources\\" + animName);
 
 	if (file.is_open() == false)
 	{
@@ -176,31 +176,26 @@ bool GraphicsManager::LoadAnimationFromFile(wstring animName, size_t maxSize, DD
 		return false;
 	}
 
-	//Get num frames and pre allocate vector memory
-	int numFrames;
-	file >> numFrames;
+	nlohmann::json data;
+	file >> data;
 
 	std::vector<Frame>* pframes = new std::vector<Frame>();
-	pframes->resize(numFrames);
-
-	//Read in frame times and textures
-
-	wstring frameName;
+	pframes->resize(data["FrameTimes"].size());
 
 	for(int i = 0; i < pframes->size(); ++i)
 	{
-		file >> pframes->at(i).m_frameTime;
+		std::string tempPath = data["FramePaths"][i];
+		std::wstring framePath = std::wstring(tempPath.begin(), tempPath.end());
 
-		frameName = L"Resources\\Animations\\" + animName + L"\\" + animName + to_wstring(i) + L".dds";
-
-		if (LoadTextureFromFile(frameName, maxSize, alphaMode) == false)
+		if (LoadTextureFromFile(framePath, maxSize, alphaMode) == false)
 		{
 			LOG("Failed to load animation from file as failed to load animation frame!");
 
 			return false;
 		}
 
-		pframes->at(i).m_ptexture = m_textureSRVs[frameName];
+		pframes->at(i).m_ptexture = m_textureSRVs[framePath];
+		pframes->at(i).m_frameTime = data["FrameTimes"][i];
 	}
 
 	m_animationFrames[animName] = pframes;
@@ -220,12 +215,6 @@ void GraphicsManager::SetHWND(HWND* hwnd)
 
 void GraphicsManager::RenderQuad(ID3D11ShaderResourceView* psrv, XMFLOAT3 position, XMFLOAT3 scale, float rotation, int layer)
 {
-	XMFLOAT4 pixelCoords;
-	XMStoreFloat4(&pixelCoords, XMVector2Transform(XMVectorSet(position.x, position.y, 0, 0), XMLoadFloat4x4(&GameManager::GetInstance()->GetCamera()->GetViewProjection())));
-
-	pixelCoords.x = (pixelCoords.x + 1.0f) * m_windowDimensions.x * 0.5f;
-	pixelCoords.y = (1.0f - pixelCoords.y) * m_windowDimensions.y * 0.5f;
-
 	ID3D11Resource* pResource = nullptr;
 	ID3D11Texture2D* pTexture2D = nullptr;
 	D3D11_TEXTURE2D_DESC desc;
@@ -235,8 +224,8 @@ void GraphicsManager::RenderQuad(ID3D11ShaderResourceView* psrv, XMFLOAT3 positi
 	pTexture2D->GetDesc(&desc);
 
 	SimpleMath::Rectangle rect;
-	rect.x = pixelCoords.x;
-	rect.y = pixelCoords.y;
+	rect.x = position.x;
+	rect.y = position.y;
 	rect.width = scale.x * 2.0f;
 	rect.height = scale.y * 2.0f;
 
@@ -244,6 +233,12 @@ void GraphicsManager::RenderQuad(ID3D11ShaderResourceView* psrv, XMFLOAT3 positi
 
 	pResource->Release();
 	pTexture2D->Release();
+}
+
+void GraphicsManager::RenderOffsettedColouredSpriteSheetQuad(ID3D11ShaderResourceView* psrv, RECT* sourceRect, const RECT& destinationRect, float rotation, XMFLOAT2 offset, XMFLOAT4 colour, int layer)
+{
+	XMFLOAT2 pos = XMFLOAT2(destinationRect.left + ((destinationRect.right - destinationRect.left)*0.5), destinationRect.bottom + ((destinationRect.top - destinationRect.bottom)*0.5));
+	m_pBatches[layer]->Draw(psrv, destinationRect, sourceRect, XMLoadFloat4(&colour), XMConvertToRadians(rotation), XMFLOAT2(((destinationRect.right - destinationRect.left) * 0.5f) + offset.x, ((destinationRect.top - destinationRect.bottom) * 0.5f) + offset.y), SpriteEffects_FlipVertically);
 }
 
 std::unique_ptr<DirectX::SpriteBatch>* GraphicsManager::GetSpriteBatches()
@@ -315,16 +310,16 @@ SpriteAnimation GraphicsManager::GetAnimation(wstring name) const
 	{
 		if (GetInstance()->LoadAnimationFromFile(name) == false)
 		{
-			return SpriteAnimation(nullptr);
+			return SpriteAnimation(nullptr, L"");
 		}
 	}
 
-	return SpriteAnimation(m_animationFrames.at(name));
+	return SpriteAnimation(m_animationFrames.at(name), name);
 }
 
 int GraphicsManager::GetNumLayers()
 {
-	return s_kNumLayers;
+	return 5;
 }
 
 bool GraphicsManager::IsTextureLoaded(wstring filename)
@@ -342,6 +337,11 @@ HWND* GraphicsManager::GetHWND()
 	return m_pHWND;
 }
 
+ID3D11Device* GraphicsManager::GetDevice()
+{
+	return m_pdevice;
+}
+
 ID3D11InputLayout* GraphicsManager::GetInputLayout(InputLayouts inputLayout) const
 {
 	return m_inputLayouts[(int)inputLayout];
@@ -352,17 +352,51 @@ ID3D11SamplerState* GraphicsManager::GetSampler(Samplers sampler)
 	return m_samplers[(int)sampler];
 }
 
+void GraphicsManager::Serialize(nlohmann::json& data)
+{
+	for (std::unordered_map<wstring, ID3D11ShaderResourceView*>::iterator it = m_textureSRVs.begin(); it != m_textureSRVs.end(); ++it)
+	{
+		std::string tempPath = std::string(it->first.begin(), it->first.end());
+
+		data["GraphicsManager"]["Textures"].push_back(tempPath);
+	}
+
+	for (std::unordered_map<wstring, std::vector<Frame>*>::iterator it = m_animationFrames.begin(); it != m_animationFrames.end(); ++it)
+	{
+		std::string tempPath = std::string(it->first.begin(), it->first.end());
+
+		data["GraphicsManager"]["Animations"].push_back(tempPath);
+	}
+}
+
+void GraphicsManager::Deserialize(nlohmann::json& data)
+{
+	for (int i = 0; i < data["GraphicsManager"]["Textures"].size(); ++i)
+	{
+		std::string tempPath = data["GraphicsManager"]["Textures"][i];
+
+		LoadTextureFromFile(std::wstring(tempPath.begin(), tempPath.end()));
+	}
+
+	for (int i = 0; i < data["GraphicsManager"]["Animations"].size(); ++i)
+	{
+		std::string tempPath = data["GraphicsManager"]["Animations"][i];
+
+		LoadAnimationFromFile(std::wstring(tempPath.begin(), tempPath.end()));
+	}
+}
+
 void GraphicsManager::CreateInputLayouts()
 {
 	m_inputLayouts.resize((int)InputLayouts::COUNT);
 
 	// Define the input layout
-	D3D11_INPUT_ELEMENT_DESC layout[] =
+	D3D11_INPUT_ELEMENT_DESC layoutPosTex[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT , D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
-	UINT numElements = ARRAYSIZE(layout);
+	UINT numElements = ARRAYSIZE(layoutPosTex);
 
 	//Compile dummy shader and use blob to verify the input layout
 	ID3DBlob* pblob = nullptr;
@@ -370,13 +404,35 @@ void GraphicsManager::CreateInputLayouts()
 	CompileShaderFromFile(POS_TEX_DUMMY_FILE_NAME, "main", "vs_4_0", pblob);
 
 	// Create the input layout
-	HRESULT hr = m_pdevice->CreateInputLayout(layout, numElements, pblob->GetBufferPointer(), pblob->GetBufferSize(), &m_inputLayouts[(int)InputLayouts::POS_TEX]);
+	HRESULT hr = m_pdevice->CreateInputLayout(layoutPosTex, numElements, pblob->GetBufferPointer(), pblob->GetBufferSize(), &m_inputLayouts[(int)InputLayouts::POS_TEX]);
 
 	pblob->Release();
 
 	if (FAILED(hr))
 	{
 		LOG("Failed to create input POS_TEX input layout!");
+	}
+
+	pblob = nullptr;
+
+	// Define the input layout
+	D3D11_INPUT_ELEMENT_DESC layoutPosTexColour[] =
+	{
+		{ "SV_Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT , D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	};
+	numElements = ARRAYSIZE(layoutPosTexColour);
+
+	CompileShaderFromFile(POS_TEX_COLOR_DUMMY_FILE_NAME, "main", "vs_4_0", pblob);
+
+	hr = m_pdevice->CreateInputLayout(layoutPosTexColour, numElements, pblob->GetBufferPointer(), pblob->GetBufferSize(), &m_inputLayouts[(int)InputLayouts::POS_TEX_COLOR]);
+
+	pblob->Release();
+
+	if (FAILED(hr))
+	{
+		LOG("Failed to create input POS_TEX_COLOR input layout!");
 	}
 }
 
@@ -476,7 +532,8 @@ void GraphicsManager::CompileDefaultShaders()
 	CompileShaderFromFile(DEFAULT_VERTEX_SHADER_NAME, "main", "vs_4_0");
 	CompileShaderFromFile(SCREENSPACE_VERTEX_SHADER_NAME, "main", "vs_4_0");
 	CompileShaderFromFile(DEFAULT_PIXEL_SHADER_NAME, "main", "ps_4_0");
-	CompileShaderFromFile(TEXT_PIXEL_SHADER_NAME, "main", "ps_4_0");
+	CompileShaderFromFile(SPRITE_BATCH_VERTEX_SHADER_NAME, "main", "vs_4_0");
+	CompileShaderFromFile(SPRITE_BATCH_PIXEL_SHADER_NAME, "main", "ps_4_0");
 }
 
 bool GraphicsManager::CompileShaderFromFile(wstring szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob*& pblob)

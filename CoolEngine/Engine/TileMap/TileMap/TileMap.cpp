@@ -1,57 +1,108 @@
 #include "TileMap.h"
 
 #include "Engine/EditorUI/EditorUI.h"
-#include  "Engine/Includes/json.hpp"
+#include "Engine/Includes/json.hpp"
+#include "Engine/Graphics/AnimationStateMachine.h"
+#include "Engine/Graphics/AnimationState.h"
+#include "Engine/Physics/Collision.h"
 
 using namespace nlohmann;
 
 TileMap::TileMap() : RenderableGameObject()
 {
+	m_gameObjectType |= GameObjectType::TILE_MAP;
+
 #if EDITOR
 	Tile::s_ptileMap = this;
 #endif
 }
 
-TileMap::TileMap(string identifier) : RenderableGameObject(identifier)
+TileMap::TileMap(string identifier, CoolUUID uuid) : RenderableGameObject(identifier, uuid)
 {
+	m_gameObjectType |= GameObjectType::TILE_MAP;
+
 #if EDITOR
 	Tile::s_ptileMap = this;
 #endif
 }
 
-TileMap::TileMap(wstring mapPath, XMFLOAT3 position, string identifier) : RenderableGameObject(identifier)
+TileMap::TileMap(const nlohmann::json& data, CoolUUID uuid) : RenderableGameObject(data, uuid)
 {
+	m_gameObjectType |= GameObjectType::TILE_MAP;
+
 #if EDITOR
 	Tile::s_ptileMap = this;
 #endif
 
-	m_transform->SetPosition(position);
+	if (data.contains("MapName"))
+	{
+		m_tileMapName = data["MapName"];
+	}
+	else
+	{
+		m_tileMapName = "";
+	}
 
-	Load(mapPath);
+	m_editorTileMapName = m_tileMapName;
+
+	XMFLOAT3 position = XMFLOAT3(data["Position"][0], data["Position"][1], data["Position"][2]);
+
+	Init(m_tileMapName, position);
 }
 
-TileMap::TileMap(int width, int height, string identifier, XMFLOAT3 position, float tileDimensions) : RenderableGameObject(identifier)
+TileMap::TileMap(TileMap const& other) : RenderableGameObject(other)
 {
 #if EDITOR
 	Tile::s_ptileMap = this;
 #endif
 
-	m_width = width;
-	m_height = height;
+	m_tileMapName = other.m_tileMapName;
+	m_editorTileMapName = m_tileMapName;
 
-	m_totalTiles = m_width * m_height;
+	XMFLOAT3 position = other.GetTransform()->GetLocalPosition();
 
-	XMFLOAT3 scale = XMFLOAT3(tileDimensions, tileDimensions, tileDimensions);
+	Init(m_tileMapName, position);
+}
 
-	m_transform->SetScale(scale);
+TileMap::TileMap(string mapName, XMFLOAT3 position, string identifier, CoolUUID uuid) : RenderableGameObject(identifier, uuid)
+{
+	m_gameObjectType |= GameObjectType::TILE_MAP;
 
-	m_transform->SetPosition(position);
+#if EDITOR
+	Tile::s_ptileMap = this;
+#endif
 
-	InitMap();
+	m_tileMapName = mapName;
+	m_editorTileMapName = m_tileMapName;
+
+	Init(mapName, position);
+}
+
+TileMap::TileMap(int width, int height, string identifier, CoolUUID uuid, XMFLOAT3 position, float tileDimensions) : RenderableGameObject(identifier, uuid)
+{
+	m_gameObjectType |= GameObjectType::TILE_MAP;
+
+#if EDITOR
+	Tile::s_ptileMap = this;
+#endif
+
+	Init(width, height, position, tileDimensions);
 }
 
 TileMap::~TileMap()
 {
+	for (int i = 0; i < m_height; i++)
+	{
+		for (int j = 0; j < m_width; j++)
+		{
+			if (m_tiles[i][j] != nullptr)
+			{
+				delete m_tiles[i][j];
+				m_tiles[i][j] = nullptr;
+			}
+		}
+	}
+
 	m_tiles.clear(); // Run first to allow each tile to release its memory, but this does not release the memory for the vector
 	m_tiles.resize(0);
 
@@ -59,13 +110,55 @@ TileMap::~TileMap()
 	m_animPaths.resize(0);
 }
 
-void TileMap::Update(float d)
+void TileMap::Update()
 {
-	for (int i = 0; i < m_height; i++)
+	for (int i = 0; i < m_width; i++)
 	{
-		for (int j = 0; j < m_width; j++)
+		for (int j = 0; j < m_height; j++)
 		{
-			m_tiles[i][j]->Update();
+			if (m_tiles[i][j] != nullptr)
+			{
+				m_tiles[i][j]->Update();
+				m_tiles[i][j]->GetTransform()->UpdateMatrix();
+			}
+		}
+	}
+
+	Scene* currentScene = GameManager::GetInstance()->GetCurrentScene();
+	if (currentScene)
+	{
+		for (int i = 0; i < m_width; ++i)
+		{
+			Collision::Update(currentScene->GetSceneGraph()->GetAllNodeObjects(), m_tiles[i]);
+		}
+	}
+}
+
+void TileMap::EditorUpdate()
+{
+	for (int i = 0; i < m_width; i++)
+	{
+		for (int j = 0; j < m_height; j++)
+		{
+			if (m_tiles[i][j] != nullptr)
+			{
+				m_tiles[i][j]->Update();
+				m_tiles[i][j]->GetTransform()->UpdateMatrix();
+			}
+		}
+	}
+}
+
+void TileMap::Render(RenderStruct& renderStruct)
+{
+	for (int i = 0; i < m_width; i++)
+	{
+		for (int j = 0; j < m_height; j++)
+		{
+			if (m_tiles[i][j] != nullptr)
+			{
+				m_tiles[i][j]->Render(renderStruct);
+			}
 		}
 	}
 }
@@ -74,18 +167,18 @@ void TileMap::InitMap() // Create and store tiles in m_Tiles
 {
 	GameManager* pGameManager = GameManager::GetInstance();
 
-	XMFLOAT3 scale = GetTransform()->GetScale();
+	XMFLOAT3 scale = GetTransform()->GetLocalScale();
 
-	m_tiles.resize(m_height);
+	m_tiles.resize(m_width);
 
 	int ID = 0;
-	for (int i = 0; i < m_height; ++i)
+	for (int i = 0; i < m_width; ++i)
 	{
-		for (int j = 0; j < m_width; ++j)
+		for (int j = 0; j < m_height; ++j)
 		{
 			if (j == 0)
 			{
-				m_tiles[i].resize(m_width);
+				m_tiles[i].resize(m_height);
 			}
 
 			m_tiles[i][j] = nullptr;
@@ -95,18 +188,18 @@ void TileMap::InitMap() // Create and store tiles in m_Tiles
 
 void TileMap::InitTilePosition(Tile* tile, int row, int column) // Give tiles positions in the world relative to the TileMaps position
 {
-	XMFLOAT2 tileScale = XMFLOAT2(m_transform->GetScale().x * 2.0f, m_transform->GetScale().y * 2.0f);
+	XMFLOAT2 tileScale = XMFLOAT2(m_transform->GetLocalScale().x * 2.0f, m_transform->GetLocalScale().y * 2.0f);
 
-	XMFLOAT2 pos = MathHelper::Minus(XMFLOAT2(m_transform->GetPosition().x, m_transform->GetPosition().y), XMFLOAT2(m_width * tileScale.x * 0.5f, m_height * tileScale.y * 0.5f));	//Offset to min tile can be
+	XMFLOAT2 pos = MathHelper::Minus(XMFLOAT2(m_transform->GetLocalPosition().x, m_transform->GetLocalPosition().y), XMFLOAT2(m_width * tileScale.x * 0.5f, m_height * tileScale.y * 0.5f));	//Offset to min tile can be
 
 	//Offsetting by half tile scale and then positioning based on row and column
 	pos = MathHelper::Plus(pos, XMFLOAT2(tileScale.x * 0.5f, tileScale.y * 0.5f));
 	pos = MathHelper::Plus(pos, XMFLOAT2(row * tileScale.x, column * tileScale.y));
 
-	tile->GetTransform()->SetPosition(XMFLOAT3(pos.x, pos.y, 0));
+	tile->GetTransform()->SetLocalPosition(XMFLOAT3(pos.x, pos.y, 0));
 }
 
-bool TileMap::Load(wstring path) // Load data for the map from a given path
+bool TileMap::Load(string path) // Load data for the map from a given path
 {
 	ifstream inFile(path);
 
@@ -124,7 +217,7 @@ bool TileMap::Load(wstring path) // Load data for the map from a given path
 	inFile.close();
 
 	XMFLOAT3 scale = XMFLOAT3(jsonData["TileMapScale"][0][0], jsonData["TileMapScale"][0][1], jsonData["TileMapScale"][0][2]);
-	m_transform->SetScale(scale);
+	m_transform->SetLocalScale(scale);
 
 	m_width = jsonData["Dimensions"][0];
 	m_height = jsonData["Dimensions"][1];
@@ -150,7 +243,7 @@ bool TileMap::Load(wstring path) // Load data for the map from a given path
 
 	for (int i = 0; i < m_width; ++i)
 	{
-		m_tiles[i].resize(m_width);
+		m_tiles[i].resize(m_height);
 
 		for (int j = 0; j < m_height; ++j)
 		{
@@ -167,10 +260,8 @@ bool TileMap::Load(wstring path) // Load data for the map from a given path
 			{
 				CreateTile(i, j, ptile);
 
-#if TILE_MAP_TOOL
 				m_tiles[i][j]->SetSpriteIndex(spriteIndex);
 				m_tiles[i][j]->SetAnimIndex(animIndex);
-#endif
 
 				m_tiles[i][j]->SetLayer(tileLayer);
 				m_tiles[i][j]->SetIsPassable(tilePassable);
@@ -182,8 +273,11 @@ bool TileMap::Load(wstring path) // Load data for the map from a given path
 
 				if (animIndex != -1)
 				{
-					m_tiles[i][j]->AddAnimation("default", m_animPaths[animIndex]);
-					m_tiles[i][j]->PlayAnimation("default");
+					AnimationState* pstate = new AnimationState();
+					pstate->SetName("default");
+					pstate->SetAnimation(m_animPaths[animIndex]);
+
+					m_tiles[i][j]->AddAnimationState("default", pstate, true);
 				}
 			}
 		}
@@ -192,7 +286,7 @@ bool TileMap::Load(wstring path) // Load data for the map from a given path
 	return true;
 }
 
-bool TileMap::Save(wstring path)
+bool TileMap::Save(string path)
 {
 	std::ofstream outFile;
 	outFile.open(path);
@@ -230,10 +324,8 @@ bool TileMap::Save(wstring path)
 			}
 			else
 			{
-#if TILE_MAP_TOOL
 				jsonOutput["TileSpriteIndexes"].push_back({ m_tiles[i][j]->GetSpriteIndex() });
 				jsonOutput["TileAnimIndexes"].push_back({ m_tiles[i][j]->GetAnimIndex() });
-#endif
 
 				jsonOutput["TileLayer"].push_back({ m_tiles[i][j]->GetLayer() });
 				jsonOutput["TilePassable"].push_back({ m_tiles[i][j]->GetIsPassable() });
@@ -242,7 +334,7 @@ bool TileMap::Save(wstring path)
 		}
 	}
 
-	jsonOutput["TileMapScale"].push_back({ m_transform->GetScale().x, m_transform->GetScale().y, m_transform->GetScale().z });
+	jsonOutput["TileMapScale"].push_back({ m_transform->GetLocalScale().x, m_transform->GetLocalScale().y, m_transform->GetLocalScale().z });
 
 	outFile << jsonOutput;
 
@@ -253,16 +345,30 @@ bool TileMap::Save(wstring path)
 
 bool TileMap::GetCoordsFromWorldPos(int* prow, int* pcolumn, const XMFLOAT2& pos)
 {
-	XMFLOAT2 relativePos = MathHelper::Minus(pos, XMFLOAT2(m_transform->GetPosition().x, m_transform->GetPosition().y));
+	XMFLOAT2 relativePos = MathHelper::Minus(pos, XMFLOAT2(m_transform->GetLocalPosition().x, m_transform->GetLocalPosition().y));
 
-	XMFLOAT2 tileScale = XMFLOAT2(m_transform->GetScale().x * 2.0f, m_transform->GetScale().y * 2.0f);
+	XMFLOAT2 tileScale = XMFLOAT2(m_transform->GetLocalScale().x * 2.0f, m_transform->GetLocalScale().y * 2.0f);
 
 	relativePos = MathHelper::Plus(relativePos, XMFLOAT2(m_width * tileScale.x * 0.5f, m_height * tileScale.y * 0.5f));
 
-	*prow = (relativePos.x / (int)tileScale.x);
-	*pcolumn = ((int)relativePos.y / (int)tileScale.y);
+	float row;
+	float column;
 
-	if (*prow >= m_width || *pcolumn >= m_height || *prow < 0 || *pcolumn < 0)
+	if (relativePos.x < 0 || relativePos.y < 0)
+	{
+		row = -1;
+		column = -1;
+	}
+	else
+	{
+		row = (relativePos.x / tileScale.x);
+		column = (relativePos.y / tileScale.y);
+	}
+
+	*prow = row;
+	*pcolumn = column;
+
+	if (row >= (float)m_width || column >= (float)m_height || row < 0 || column < 0)
 	{
 		LOG("Tried to create tile but the indexes passed in are out of range!");
 
@@ -281,15 +387,18 @@ bool TileMap::CreateTile(int row, int column, Tile*& ptile)
 		return false;
 	}
 
-	m_tiles[row][column] = GameManager::GetInstance()->CreateGameObject<Tile>("Tile_" + to_string(row) + "_" + to_string(column));
+	m_tiles[row][column] = new Tile("", CoolUUID());
+	m_tiles[row][column]->Init("Tile_" + to_string(row) + "_" + to_string(column), CoolUUID());
 
-	XMFLOAT3 scale = GetTransform()->GetScale();
+	XMFLOAT3 scale = GetTransform()->GetLocalScale();
 
-	m_tiles[row][column]->GetTransform()->SetScale(scale);
+	m_tiles[row][column]->GetTransform()->SetLocalScale(scale);
 
 	InitTilePosition(m_tiles[row][column], row, column);
 
 	ptile = m_tiles[row][column];
+
+	ptile->GetTransform()->UpdateMatrix();
 
 	return true;
 }
@@ -300,9 +409,7 @@ void TileMap::AddSpritePath(Tile* ptile, wstring& path)
 	{
 		if (m_spritePaths[i] == path)
 		{
-#if TILE_MAP_TOOL
 			ptile->SetSpriteIndex(i);
-#endif
 
 			return;
 		}
@@ -310,9 +417,7 @@ void TileMap::AddSpritePath(Tile* ptile, wstring& path)
 
 	m_spritePaths.push_back(path);
 
-#if TILE_MAP_TOOL
 	ptile->SetSpriteIndex(m_spritePaths.size() - 1);
-#endif
 }
 
 void TileMap::AddAnimPath(Tile* ptile, wstring& path)
@@ -321,9 +426,7 @@ void TileMap::AddAnimPath(Tile* ptile, wstring& path)
 	{
 		if (m_animPaths[i] == path)
 		{
-#if TILE_MAP_TOOL
 			ptile->SetAnimIndex(i);
-#endif
 
 			return;
 		}
@@ -331,9 +434,18 @@ void TileMap::AddAnimPath(Tile* ptile, wstring& path)
 
 	m_animPaths.push_back(path);
 
-#if TILE_MAP_TOOL
 	ptile->SetAnimIndex(m_animPaths.size() - 1);
-#endif
+}
+
+void TileMap::DeleteTile(int row, int column)
+{
+	if (m_tiles[row][column] == nullptr)
+	{
+		return;
+	}
+
+	delete m_tiles[row][column];
+	m_tiles[row][column] = nullptr;
 }
 
 #if EDITOR
@@ -342,23 +454,25 @@ void TileMap::CreateEngineUI()
 	ImGui::Separator();
 	ImGui::Spacing();
 
-	EditorUI::InputText("Tile Map Name", m_tileMapName);
+	EditorUI::InputText("Tile Map Name", m_editorTileMapName);
 
 	ImGui::Spacing();
 
 	if (ImGui::Button("Save") == true)
 	{
-		if (m_tileMapName == "") 
+		if (m_editorTileMapName == "")
 		{
 			LOG("Tried to save the tile map but didn't enter a name!");
 		}
 		else
 		{
-			wstring filepath = GameManager::GetInstance()->GetWideWorkingDirectory() + L"\\Resources\\Levels\\TileMaps\\" + wstring(m_tileMapName.begin(), m_tileMapName.end()) + L".json";
+			string filepath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Levels\\TileMaps\\" + m_editorTileMapName + ".json";
 
 			if (Save(filepath) == true)
 			{
 				LOG("Tile map saved!");
+
+				m_tileMapName = m_editorTileMapName;
 			}
 			else
 			{
@@ -371,16 +485,25 @@ void TileMap::CreateEngineUI()
 
 	if (ImGui::Button("Load") == true)
 	{
-		if (m_tileMapName == "")
+		if (m_editorTileMapName == "")
 		{
 			LOG("Tried to load a tile map but didn't enter a name!");
 		}
 		else
 		{
-			wstring filepath = GameManager::GetInstance()->GetWideWorkingDirectory() + L"\\Resources\\Levels\\TileMaps\\" + wstring(m_tileMapName.begin(), m_tileMapName.end()) + L".json";
+			string filepath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Levels\\TileMaps\\" + m_editorTileMapName + ".json";
 
 			for (int i = 0; i < m_width; ++i)
 			{
+				for (int j = 0; j < m_height; ++j)
+				{
+					if (m_tiles[i][j] != nullptr)
+					{
+						delete m_tiles[i][j];
+						m_tiles[i][j] = nullptr;
+					}
+				}
+
 				m_tiles[i].clear();
 			}
 
@@ -390,6 +513,8 @@ void TileMap::CreateEngineUI()
 			if (Load(filepath) == true)
 			{
 				LOG("Tile map loaded!");
+
+				m_tileMapName = m_editorTileMapName;
 			}
 			else
 			{
@@ -402,6 +527,47 @@ void TileMap::CreateEngineUI()
 	ImGui::Separator();
 }
 #endif
+
+void TileMap::Init(int width, int height, XMFLOAT3 position, float tileDimensions)
+{
+	m_width = width;
+	m_height = height;
+
+	m_totalTiles = m_width * m_height;
+
+	XMFLOAT3 scale = XMFLOAT3(tileDimensions, tileDimensions, tileDimensions);
+
+	m_transform->SetLocalScale(scale);
+
+	m_transform->SetLocalPosition(position);
+
+	InitMap();
+}
+
+void TileMap::Init(string mapPath, XMFLOAT3 position)
+{
+	m_transform->SetLocalPosition(position);
+
+	string filepath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Levels\\TileMaps\\" + mapPath + ".json";
+
+	if (Load(filepath) == true)
+	{
+		Pathfinding::GetInstance()->Initialize(this);
+	}
+}
+
+void TileMap::Serialize(nlohmann::json& data)
+{
+	RenderableGameObject::Serialize(data);
+
+	data["MapName"] = m_tileMapName;
+	data["Position"] = { m_transform->GetLocalPosition().x ,m_transform->GetLocalPosition().y ,m_transform->GetLocalPosition().z };
+}
+
+std::string TileMap::GetMapName() const
+{
+	return m_tileMapName;
+}
 
 bool TileMap::GetTileFromWorldPos(XMFLOAT2 pos, Tile*& ptile, int* prow, int* pcolumn) // Takes a set of coordinates and finds if a tile is there
 {
@@ -450,9 +616,9 @@ bool TileMap::GetTileFromMapPos(int x, int y, Tile*& ptile) // Returns the tile 
 
 void TileMap::SetTileAtWorldPos(XMFLOAT2 worldPos, Tile* newTile)
 {
-	XMFLOAT2 relativePos = MathHelper::Minus(worldPos, XMFLOAT2(m_transform->GetPosition().x, m_transform->GetPosition().y));
+	XMFLOAT2 relativePos = MathHelper::Minus(worldPos, XMFLOAT2(m_transform->GetWorldPosition().x, m_transform->GetWorldPosition().y));
 
-	XMFLOAT2 tileScale = XMFLOAT2(m_transform->GetScale().x * 2.0f, m_transform->GetScale().y * 2.0f);
+	XMFLOAT2 tileScale = XMFLOAT2(m_transform->GetWorldScale().x * 2.0f, m_transform->GetWorldScale().y * 2.0f);
 
 	relativePos = MathHelper::Plus(relativePos, XMFLOAT2(m_width * tileScale.x * 0.5f, m_height * tileScale.y * 0.5f));
 
@@ -476,12 +642,12 @@ void TileMap::SetTileAtMapPos(int posX, int posY, Tile* newTile)
 
 XMFLOAT3 TileMap::GetTileScale()
 {
-	return m_transform->GetScale();
+	return m_transform->GetLocalScale();
 }
 
 void TileMap::SetTileScale(XMFLOAT3 newScale)
 {
-	m_transform->SetScale(newScale);
+	m_transform->SetLocalScale(newScale);
 }
 
 void TileMap::SetPassable(int x, int y, bool passable)

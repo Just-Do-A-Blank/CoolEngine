@@ -32,9 +32,17 @@ private:
 
 	int m_layer = 0;
 
+    void LoadLocalData(const nlohmann::json& jsonData);
+    void SaveLocalData(nlohmann::json& jsonData);
+    void SetLocalDataDefaults();
+
 public:
-	ParticleSystem(string identifier);
-	~ParticleSystem();
+	ParticleSystem(string identifier, CoolUUID uuid);
+	ParticleSystem(const nlohmann::json& data, CoolUUID uuid);
+	ParticleSystem(ParticleSystem const& other);
+	virtual ~ParticleSystem()override;
+
+	virtual void Serialize(nlohmann::json& data) override;
 
 	/// <summary>
 	/// Activate a free particle system slot
@@ -42,7 +50,7 @@ public:
 	/// <param name="trans"></param>
 	/// <param name="life"></param>
 	/// <param name="tex"></param>
-	void Initialise(Transform trans, float life, ID3D11ShaderResourceView* tex, int layer);
+	void Initialise(Transform trans, float life, std::wstring texPath, int layer);
 
 	/// <summary>
 	/// Activate a free particle system slot, and set particle properties
@@ -59,7 +67,7 @@ public:
 	/// <param name="randVel"></param>
 	/// <param name="randAccel"></param>
 	/// <param name="randLife"></param>
-	void Initialise(Transform trans, float life, ID3D11ShaderResourceView* tex, XMFLOAT2 vel, XMFLOAT2 accel, float partLife, float interval, int number, float randPos, float randVel, float randAccel, float randLife, int layer);
+	void Initialise(Transform trans, float life, std::wstring texPath, XMFLOAT2 vel, XMFLOAT2 accel, float partLife, float interval, int number, float randPos, float randVel, float randAccel, float randLife, int layer);
 
 	/// <summary>
 	/// Set the properties used to create particles
@@ -76,8 +84,8 @@ public:
 	/// <summary>
 	/// Tick timer down to zero, and generate particles in pattern according to type
 	/// </summary>
-	/// <param name="dTime"></param>
-	void Update(const float dTime);
+	virtual void Update()override;
+	virtual void EditorUpdate()override;
 
 #if EDITOR
 	void CreateEngineUI() override;
@@ -154,6 +162,7 @@ public:
 		return m_layer;
 	}
 
+	const std::wstring& GetTexturePath() const;
 
 	// Setters
 	void SetActive(bool active) 

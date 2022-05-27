@@ -2,10 +2,11 @@
 #include "Engine/Includes/IMGUI/imgui.h"
 #include "Engine/Managers/GameManager.h"
 
-
+#if EDITOR
 ContentBrowser::ContentBrowser()
 {
 	m_sfilepath = GameManager::GetInstance()->GetWorkingDirectory();
+	m_sfileName = "";
 }
 
 void ContentBrowser::Draw()
@@ -95,6 +96,14 @@ void ContentBrowser::CreateDirectoryEntry(const WIN32_FIND_DATAA& kfileData)
 		std::string tempString = std::string(kfileData.cFileName);
 
 		m_sfilepath += "\\" + tempString;
+		m_sfileName = tempString;
+	}
+
+	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID) == true)
+	{
+		std::string fileName = std::string(kfileData.cFileName);
+		ImGui::SetDragDropPayload("ContentBrowserDirectory", fileName.c_str(), fileName.size() * sizeof(char), ImGuiCond_Once);
+		ImGui::EndDragDropSource();
 	}
 }
 
@@ -105,7 +114,7 @@ void ContentBrowser::CreateFileEntry(const WIN32_FIND_DATAA& kfileData)
 	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID) == true)
 	{
 		std::string filepath = m_sfilepath + "\\" + std::string(kfileData.cFileName);
-		ImGui::SetDragDropPayload("ContentBrowser", filepath.c_str(), filepath.size() * sizeof(char), ImGuiCond_Once);
+		ImGui::SetDragDropPayload("ContentBrowserFile", filepath.c_str(), filepath.size() * sizeof(char), ImGuiCond_Once);
 		ImGui::EndDragDropSource();
 	}
 }
@@ -126,3 +135,4 @@ void ContentBrowser::CreateEntry(const WIN32_FIND_DATAA& kfileData)
 		CreateFileEntry(kfileData);
 	}
 }
+#endif

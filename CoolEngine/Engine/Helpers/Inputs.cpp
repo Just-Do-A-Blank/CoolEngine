@@ -1,9 +1,23 @@
 #include "Inputs.h"
 #include "Engine/Managers/Events/EventManager.h"
 
+#include "Engine/Managers/Events/KeyEvents.h"
+#include "Engine/Managers/Events/MouseEvents.h"
+
 #if EDITOR
-#include "Engine/Includes/IMGUI/imgui.h"
+    #include "Engine/Includes/IMGUI/imgui.h"
+    #include "Engine/EditorUI/EditorUI.h"
 #endif
+
+bool Inputs::IsKeyPressed(int ikeycode)
+{
+	if (ikeycode >= NUM_KEYCODES || ikeycode < 0)
+	{
+		return false;
+	}
+
+	return m_keyState[ikeycode];
+}
 
 void Inputs::Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam)
 {
@@ -12,14 +26,16 @@ void Inputs::Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam)
 	case(WM_KEYDOWN):
 	case(WM_KEYUP):
 	{
+
 #if EDITOR
 		ImGuiIO io = ImGui::GetIO();
-
+        
 		if (io.WantCaptureKeyboard == true)
 		{
 			return;
 		}
 #endif
+
 	}
 	break;
 
@@ -33,14 +49,16 @@ void Inputs::Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam)
 	case(WM_XBUTTONUP):
 	case(WM_MOUSEMOVE):
 	{
+
 #if EDITOR
 		ImGuiIO io = ImGui::GetIO();
 
-		if (io.WantCaptureMouse == true)
+		if (io.WantCaptureMouse == true && EditorUI::GetIsViewportHovered() == false)
 		{
 			return;
 		}
 #endif
+
 	}
 	break;
 
@@ -78,16 +96,16 @@ void Inputs::Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam)
 
 
 	case(WM_LBUTTONUP):
-		EventManager::Instance()->AddEvent(new MouseButtonReleasedEvent(*wParam));
+		EventManager::Instance()->AddEvent(new MouseButtonReleasedEvent(VK_LBUTTON));
 		break;
 	case(WM_MBUTTONUP):
-		EventManager::Instance()->AddEvent(new MouseButtonReleasedEvent(*wParam));
+		EventManager::Instance()->AddEvent(new MouseButtonReleasedEvent(VK_MBUTTON));
 		break;
 	case(WM_RBUTTONUP):
-		EventManager::Instance()->AddEvent(new MouseButtonReleasedEvent(*wParam));
+		EventManager::Instance()->AddEvent(new MouseButtonReleasedEvent(VK_RBUTTON));
 		break;
 	case(WM_XBUTTONUP):
-		EventManager::Instance()->AddEvent(new MouseButtonReleasedEvent(*wParam));
+		EventManager::Instance()->AddEvent(new MouseButtonReleasedEvent(VK_XBUTTON1));
 		break;
 
 	case(WM_MOUSEMOVE):
@@ -105,7 +123,7 @@ void Inputs::Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam)
 
 void Inputs::Update()
 {
-	for (int i = 0; i < 256; ++i)
+	for (int i = 0; i < NUM_KEYCODES; ++i)
 	{
 		if (m_keyState[i])
 		{

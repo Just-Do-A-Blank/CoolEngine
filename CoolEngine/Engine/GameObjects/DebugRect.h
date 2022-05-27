@@ -10,10 +10,14 @@ private:
     DebugDrawManager::DebugColour m_colour;
 
 public:
-    DebugRect(wstring albedoName, string identifier, bool screenSpace);
+    DebugRect(wstring albedoName, string identifier, CoolUUID uuid, bool screenSpace);
+	DebugRect(DebugRect const& other);
+	virtual ~DebugRect()override;
+
     void SetDebugColour(DebugDrawManager::DebugColour colour);
     void Render(RenderStruct& renderStruct);
-    void Update();
+    virtual void Update()override;
+    virtual void EditorUpdate()override;
 };
 
 #endif //DEBUG

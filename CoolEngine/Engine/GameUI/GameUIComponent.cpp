@@ -6,56 +6,102 @@
 #include "Engine/Managers/GraphicsManager.h"
 #include "Engine/EditorUI/EditorUI.h"
 
-GameUIComponent::GameUIComponent(string identifier, XMFLOAT3& position, XMFLOAT3& scale, XMFLOAT3& rotation)
+GameUIComponent::GameUIComponent(string identifier, CoolUUID uuid):GameUIPrefab(identifier, uuid)
 {
-	m_uiElementIdentifier = identifier;
+	m_gameObjectType |= GameObjectType::GAME_UI_COMPONENT;
+	m_uiComponentType |= UIComponentType::BASE;
+
 	m_transform = new Transform();
-	InitGraphics();
-
-	m_transform->SetScale(scale);
-	m_transform->SetPosition(position);
-	m_transform->SetRotation(rotation);
-
 }
 
-void GameUIComponent::InitGraphics()
+GameUIComponent::GameUIComponent(nlohmann::json& data, CoolUUID uuid) : GameUIPrefab(data, uuid)
 {
-	m_pvertexShader = GraphicsManager::GetInstance()->GetVertexShader(DEFAULT_VERTEX_SHADER_NAME);
-	m_ppixelShader = GraphicsManager::GetInstance()->GetPixelShader(DEFAULT_PIXEL_SHADER_NAME);
+	m_gameObjectType |= GameObjectType::GAME_UI_COMPONENT;
+	m_uiComponentType |= UIComponentType::BASE;
 
-	m_pmesh = GraphicsManager::GetInstance()->GetMesh(QUAD_MESH_NAME);
+	if (GameUIPrefab::IsPrefab())
+	{
+		LoadLocalData(GameUIPrefab::GetPrefabDataLoadedAtCreation());
+	}
+	else
+	{
+		LoadLocalData(data);
+	}
+}
+
+GameUIComponent::GameUIComponent(GameUIComponent const& other) : GameUIPrefab(other)
+{
+	m_isRenderable = other.m_isRenderable;
+	m_ptexture = other.m_ptexture;
+
+	m_uiComponentType = other.m_uiComponentType;
+	m_layer = other.m_layer;
+}
+
+GameUIComponent::~GameUIComponent()
+{
+
 }
 
 void GameUIComponent::Render(RenderStruct& renderStruct)
 {
-	//Update CB
-	PerInstanceCB cb;
-	XMStoreFloat4x4(&cb.world, XMMatrixTranspose(m_transform->GetWorldMatrix()));
-
-	GraphicsManager::GetInstance()->m_pperInstanceCB->Update(cb, renderStruct.m_pcontext);
-
-	ID3D11Buffer* pcbBuffer = GraphicsManager::GetInstance()->m_pperInstanceCB->GetBuffer();
-
-	//Bind CB and appropriate resources
-	renderStruct.m_pcontext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 1, &pcbBuffer);
-	renderStruct.m_pcontext->VSSetShader(m_pvertexShader, nullptr, 0);
-
-	renderStruct.m_pcontext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 1, &pcbBuffer);
-	renderStruct.m_pcontext->PSSetShader(m_ppixelShader, nullptr, 0);
-
-	renderStruct.m_pcontext->PSSetShaderResources(0, 1, &m_ptexture);
-	
-
-	//Draw object
-	renderStruct.m_pcontext->DrawIndexed(m_pmesh->GetIndexCount(), 0, 0);
-
-	//Unbind resources
-	renderStruct.m_pcontext->VSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 0, nullptr);
-	renderStruct.m_pcontext->PSSetConstantBuffers((int)GraphicsManager::CBOrders::PER_INSTANCE, 0, nullptr);
+	if (m_ptexture == nullptr)
+	{
+		return;
+	}
+	GraphicsManager::GetInstance()->RenderQuad(m_ptexture, m_transform->GetWorldPosition(), m_transform->GetWorldScale(), m_transform->GetWorldRotation().z, m_layer);
 }
 
 void GameUIComponent::Update()
 {
+}
+
+void GameUIComponent::EditorUpdate()
+{
+}
+
+void GameUIComponent::Serialize(nlohmann::json& data)
+{
+	GameUIPrefab::Serialize(data);
+
+	SaveLocalData(data);
+}
+
+void GameUIComponent::LoadLocalData(const nlohmann::json& jsonData)
+{
+	if (jsonData.contains("IsRendering"))
+	{
+		m_isRenderable = jsonData["IsRendering"];
+		m_layer = jsonData["Layer"];
+
+		m_texFilepath = L"";
+
+		std::string tempTexPath = jsonData["TexturePath"];
+		std::wstring wideTexPath = std::wstring(tempTexPath.begin(), tempTexPath.end());
+
+		SetTexture(wideTexPath);
+	}
+}
+
+void GameUIComponent::SaveLocalData(nlohmann::json& jsonData)
+{
+	std::string tempPath = std::string(m_texFilepath.begin(), m_texFilepath.end());
+	jsonData["TexturePath"] = tempPath;
+	jsonData["Layer"] = m_layer;
+	jsonData["IsRendering"] = m_isRenderable;
+	jsonData["UIType"] = (int)m_uiComponentType;
+}
+
+void GameUIComponent::LoadAllPrefabData(const nlohmann::json& jsonData)
+{
+	LoadLocalData(jsonData);
+	GameUIPrefab::LoadAllPrefabData(jsonData);
+}
+
+void GameUIComponent::SaveAllPrefabData(nlohmann::json& jsonData)
+{
+	SaveLocalData(jsonData);
+	GameUIPrefab::SaveAllPrefabData(jsonData);
 }
 
 void GameUIComponent::SetIsRenderable(bool& condition)
@@ -68,9 +114,23 @@ void GameUIComponent::SetLayer(const int& layer)
 	m_layer = layer;
 }
 
-void GameUIComponent::SetTexture(ID3D11ShaderResourceView* ptexture)
+void GameUIComponent::SetTexture(std::wstring wsfilepath)
 {
-	m_ptexture = ptexture;
+	m_ptexture = GraphicsManager::GetInstance()->GetShaderResourceView(wsfilepath);
+
+	if (m_ptexture == nullptr)
+	{
+		LOG("Tried to get a texture that doesn't exist!");
+	}
+	else
+	{
+		m_texFilepath = wsfilepath;
+	}
+}
+
+std::wstring GameUIComponent::GetTextureFilePath()
+{
+    return m_texFilepath;
 }
 
 #if EDITOR
@@ -78,7 +138,7 @@ void GameUIComponent::ShowEngineUI()
 {
 	ImGui::Begin("Properties");
 
-	EditorUI::IdentifierText("Identifier", m_uiElementIdentifier);
+	EditorUI::IdentifierText("Identifier", m_identifier);
 
 	ImGui::Spacing();
 	ImGui::Separator();
@@ -89,9 +149,11 @@ void GameUIComponent::ShowEngineUI()
 }
 void GameUIComponent::CreateEngineUI()
 {
-	ImGui::Spacing();
-
-	m_transform->CreateEngineUI();
+	GameUIPrefab::CreateEngineUI();
+}
+UIComponentType GameUIComponent::GetUIComponentType() const
+{
+	return m_uiComponentType;
 }
 #endif
 
@@ -110,7 +172,12 @@ Transform* GameUIComponent::GetTransform()
 	return m_transform;
 }
 
-const string& GameUIComponent::GetIdentifier()
+const UIComponentType& GameUIComponent::GetComponentType() const
 {
-	return m_uiElementIdentifier;
+	return m_uiComponentType;
+}
+
+bool GameUIComponent::ContainsType(UIComponentType type)
+{
+	return (m_uiComponentType & type) == type;
 }

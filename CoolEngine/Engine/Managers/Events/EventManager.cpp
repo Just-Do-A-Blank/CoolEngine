@@ -27,7 +27,6 @@ void EventManager::AddClient(EventType eventid, Observer* client)
 	if (!IsRegistered(eventid, client))
 	{
 		m_listenerClients[eventid].push_back(client);
-		//m_listenerClients.insert(make_pair(eventid, client));
 	}
 	
 	else //Outputs that there is a duplicate and doesnt add it to the list of m_listenerClients since it has no value to have 2
@@ -117,11 +116,11 @@ void EventManager::ProcessEvents()
 }
 
 //Sends the event to the listener
-void EventManager::SendEvent(Event* event) 
+void EventManager::SendEvent(Event* pevent) 
 {
-	for (auto i = 0; i < m_listenerClients[event->GetEventID()].size(); ++i)
+	for (auto i = 0; i < m_listenerClients[pevent->GetEventID()].size(); ++i)
 	{
-		m_listenerClients[event->GetEventID()][i]->Handle(event);
+		m_listenerClients[pevent->GetEventID()][i]->Handle(pevent);
 	}
 }
 

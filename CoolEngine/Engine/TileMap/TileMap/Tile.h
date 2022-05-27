@@ -1,13 +1,13 @@
 #pragma once
 #include <vector>
 
-#include "Engine/GameObjects/RenderableGameObject.h"
+#include "Engine/GameObjects/RenderableCollidableGameObject.h"
 #include "Engine/Graphics/SpriteAnimation.h"
 #include "Engine/ResourceDefines.h"
 
 class TileMap;
 
-class Tile : public RenderableGameObject
+class Tile : public RenderableCollidableGameObject
 {
 public:
 	//Constructors
@@ -16,10 +16,12 @@ public:
 	Tile();
 
 	// Load from parameters
-	Tile(wstring path, string identifier);
+	Tile(wstring path, string identifier, CoolUUID uuid);
 
 	// Load empty
-	Tile(string identifier);
+	Tile(string identifier, CoolUUID uuid);
+
+	void Init(string identifier, CoolUUID uuid);
 
 	//Setup
 
@@ -28,22 +30,20 @@ public:
 	//Getters
 	const bool& GetIsPassable() const;
 
-#if TILE_MAP_TOOL
 	int GetSpriteIndex() const;
 	int GetAnimIndex() const;
-#endif
 
 	//Setters
 	void SetIsPassable(bool passable);
 
-#if TILE_MAP_TOOL
 	void SetSpriteIndex(int index);
 	void SetAnimIndex(int index);
-#endif
 
 #if EDITOR
 	void CreateEngineUI() override;
 #endif
+
+	void CopyTile(Tile* ptile);
 
 protected:
 
@@ -51,10 +51,8 @@ private:
 	// True = walkable, False = Blocked
 	bool m_isPassable = true; 
 
-#if TILE_MAP_TOOL
 	int m_spriteIndex = -1;
 	int m_animIndex = -1;
-#endif
 
 #if EDITOR
 	wstring m_animPath;

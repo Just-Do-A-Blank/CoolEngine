@@ -1,925 +1,1833 @@
 #include "EditorUI.h"
-#include "Engine/GameObjects/AudioSourceGameObject.h"
 #include "Engine/Managers/GameManager.h"
 #include "Engine/Managers/GraphicsManager.h"
-#include "Engine/Managers/AudioManager.h"
 #include "Engine/Scene/Scene.h"
 #include "Engine/Includes/IMGUI/imgui_internal.h"
+#include "Engine/Physics/ParticleSystem.h"
+#include "Engine/GameObjects/InteractableGameObject.h"
+#include "Engine/GameObjects/WeaponGameObject.h"
+#include "Engine\GameObjects\EnemyGameObject.h"
+#include "Engine/GameObjects/LevelChangeGameObject.h"
+#include "Engine/GameObjects/PickupGameObject.h"
+#include "Engine/Tools/ToolBase.h"
+#include "Engine/Tools/AnimationTool.h"
+#include "Engine//Tools/TileMapTool.h"
+#include "Engine/FileIO/FileIO.h"
+
+#include "Engine/GameUI/UiCanvas.h"
+#include "Engine/GameUI/ImageComponent.h"
+#include "Engine/GameUI/TextComponent.h"
+#include "Engine/GameUI/ButtonComponent.h"
+
 
 #include <ShlObj_core.h>
 
 #if EDITOR
 HWND* EditorUI::m_phwnd = nullptr;
+bool EditorUI::s_bisViewportHovered = false;
+DirectX::XMFLOAT2 EditorUI::s_viewportSize = DirectX::XMFLOAT2(0, 0);
+DirectX::XMFLOAT2 EditorUI::s_viewportPosition = DirectX::XMFLOAT2(0, 0);
 
 void EditorUI::InitIMGUI(ID3D11DeviceContext* pcontext, ID3D11Device* pdevice, HWND* phwnd)
 {
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO();
-	io.WantCaptureMouse = true;
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
-	io.ConfigWindowsMoveFromTitleBarOnly = true;
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    io.WantCaptureMouse = true;
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
+    io.ConfigWindowsMoveFromTitleBarOnly = true;
 
-	float fontSize = 18.0f;
-	io.FontDefault = io.Fonts->AddFontFromFileTTF("Resources/UI/Fonts/OpenSans-Regular.ttf", fontSize);
+    float fontSize = 18.0f;
+    io.FontDefault = io.Fonts->AddFontFromFileTTF("Resources/UI/Fonts/OpenSans-Regular.ttf", fontSize);
 
-	ImGui::StyleColorsDark();
+    ImGui::StyleColorsDark();
 
-	// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
-	ImGuiStyle& style = ImGui::GetStyle();
-	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-	{
-		style.WindowRounding = 0.0f;
-		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-	}
+    // When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
+    ImGuiStyle& style = ImGui::GetStyle();
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        style.WindowRounding = 0.0f;
+        style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+    }
 
-	m_phwnd = phwnd;
+    m_phwnd = phwnd;
 
-	ImGui_ImplWin32_Init(*m_phwnd);
-	ImGui_ImplDX11_Init(pdevice, pcontext);
+    ImGui_ImplWin32_Init(*m_phwnd);
+    ImGui_ImplDX11_Init(pdevice, pcontext);
+
+    m_playButtonTexture = GraphicsManager::GetInstance()->GetShaderResourceView(PLAY_BUTTON_IMAGE);
+    m_stopButtonTexture = GraphicsManager::GetInstance()->GetShaderResourceView(STOP_BUTTON_IMAGE);
 }
 
 EditorUI::EditorUI(ID3D11Device* pdevice)
 {
 }
 
-void EditorUI::DrawEditorUI(ID3D11Device* pdevice)
+void EditorUI::DrawEditorUI(ID3D11Device* pdevice, ToolBase*& ptoolBase)
 {
-	DrawSceneGraphWindow();
+    DrawSceneGraphWindow(ptoolBase, pdevice);
 
-	DrawSceneManagementWindow();
+    DrawSceneManagementWindow();
 
-	if (GameManager::GetInstance()->GetSelectedGameObject() != nullptr)
-	{
-		GameManager::GetInstance()->GetSelectedGameObject()->ShowEngineUI();
-	}
+    DrawPlayButtonWindow(XMFLOAT2(20.0f, 20.0f), -4.0f);
 
-	m_contentBrowser.Draw();
 
+    if (m_selectedGameObjectNode != nullptr)
+    {
+        m_selectedGameObjectNode->NodeObject->ShowEngineUI();
+    }
+
+    m_contentBrowser.Draw();
+
+}
+
+void EditorUI::DrawPlayButtonWindow(XMFLOAT2 buttonSize, float verticalOffset)
+{
+    ImGui::Begin("Play Mode");
+    ImGuiStyle& style = ImGui::GetStyle();
+
+    float size = buttonSize.x + style.FramePadding.x * 4.0f;
+    float avail = ImGui::GetContentRegionAvail().x;
+
+    float horizontalOffset = (avail - size) * 0.5f;
+    if (horizontalOffset > 0.0f)
+    {
+        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + horizontalOffset);
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + verticalOffset);
+    }
+    ImGui::BeginDisabled(GameManager::GetInstance()->GetViewState() == ViewState::GAME_VIEW);
+
+    m_cameraErrorMessageOnPlay = ErrorPopupBox("PlayButtonCameraError", "There is no camera in the scene.\nPlease add one");
+    if (ImGui::ImageButton(m_playButtonTexture, ImVec2(buttonSize.x, buttonSize.y)))
+    {
+        m_cameraPresent = GameManager::GetInstance()->BeginPlay();
+
+        if (m_cameraPresent)
+        {
+            DeselectObjectInScene();
+        }
+        else
+        {
+            ShowError("PlayButtonCameraError");
+            m_cameraErrorMessageOnPlay = true;
+        }
+    }
+    ImGui::EndDisabled();
+
+    ImGui::SameLine();
+
+    ImGui::BeginDisabled(GameManager::GetInstance()->GetViewState() == ViewState::EDITOR_VIEW);
+    if (ImGui::ImageButton(m_stopButtonTexture, ImVec2(buttonSize.x, buttonSize.y)))
+    {
+        GameManager::GetInstance()->EndPlay();
+
+        DeselectObjectInScene();
+    }
+    ImGui::EndDisabled();
+    ImGui::End();
+}
+
+void EditorUI::SetIsViewportHovered(bool bHovered)
+{
+    s_bisViewportHovered = bHovered;
+}
+
+bool EditorUI::GetIsViewportHovered()
+{
+    return s_bisViewportHovered;
 }
 
 void EditorUI::Update()
 {
-	ImGuiIO& io = ImGui::GetIO();
+    ImGuiIO& io = ImGui::GetIO();
 
-	io.DisplaySize = ImVec2(GraphicsManager::GetInstance()->GetWindowDimensions().x, GraphicsManager::GetInstance()->GetWindowDimensions().y);
+    io.DisplaySize = ImVec2(GraphicsManager::GetInstance()->GetWindowDimensions().x, GraphicsManager::GetInstance()->GetWindowDimensions().y);
 
-	io.DeltaTime = GameManager::GetInstance()->GetTimer()->DeltaTime();
+    io.DeltaTime = GameManager::GetInstance()->GetTimer()->DeltaTime();
 }
 
-void EditorUI::DrawSceneGraphWindow()
+void EditorUI::SetViewportSize(DirectX::XMFLOAT2 size)
 {
-	if (!GameManager::GetInstance()->GetCurrentScene())
-	{
-		return;
-	}
-	ImGui::Begin("Scene Graph", nullptr, ImGuiWindowFlags_MenuBar);
+    s_viewportSize = size;
+}
 
-	GameManager* pgameManager = GameManager::GetInstance();
-	static int selected = -1;
+DirectX::XMFLOAT2 EditorUI::GetViewportSize()
+{
+    return s_viewportSize;
+}
 
-	TreeNode<GameObject>* prootNode = pgameManager->GetRootTreeNode();
+void EditorUI::SetViewportPosition(DirectX::XMFLOAT2 position)
+{
+    s_viewportPosition = position;
+}
 
-	m_base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
-	int nodeCount = -1;
+DirectX::XMFLOAT2 EditorUI::GetViewportPosition()
+{
+    return s_viewportPosition;
+}
 
-	TraverseTree(prootNode, nodeCount);
+void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
+{
+    if (!GameManager::GetInstance()->GetCurrentScene())
+    {
+        return;
+    }
+    ImGui::Begin("Scene Graph", nullptr, ImGuiWindowFlags_MenuBar);
 
-	if (ImGui::BeginMenuBar())
-	{
-		if (ImGui::BeginMenu("Create"))
-		{
-			if (ImGui::BeginMenu("GameObjects"))
+    GameManager* pgameManager = GameManager::GetInstance();
+    static int selected = -1;
+
+    TreeNode<GameObject>* prootNode = pgameManager->GetRootTreeNode();
+
+	TraverseTree(prootNode, m_SelectedNodeIdentifier);
+
+    if (ImGui::BeginMenuBar())
+    {
+        if (ImGui::BeginMenu("Create"))
+        {
+            if (ImGui::BeginMenu("GameObjects"))
+            {
+                if (ImGui::MenuItem("Base"))
+                {
+                    m_createGameObjectClicked = true;
+
+                    m_createObjectType = GameObjectType::BASE;
+                }
+                if (ImGui::MenuItem("Collidable"))
+                {
+                    m_createGameObjectClicked = true;
+
+                    m_createObjectType = GameObjectType::COLLIDABLE;
+                }
+                if (ImGui::MenuItem("Renderable"))
+                {
+                    m_createGameObjectClicked = true;
+
+                    m_createObjectType = GameObjectType::RENDERABLE;
+                }
+                if (ImGui::MenuItem("Renderable Collidable"))
+                {
+                    m_createGameObjectClicked = true;
+
+                    m_createObjectType = GameObjectType::RENDERABLE | GameObjectType::COLLIDABLE;
+                }
+                if (ImGui::MenuItem("Player"))
+                {
+                    m_createGameObjectClicked = true;
+
+                    m_createObjectType = GameObjectType::PLAYER;
+                }
+                if (ImGui::MenuItem("Enemy"))
+                {
+                    m_createGameObjectClicked = true;
+
+                    m_createObjectType = GameObjectType::ENEMY;
+                }
+                if (ImGui::MenuItem("Interactable"))
+                {
+                    m_createGameObjectClicked = true;
+
+                    m_createObjectType = GameObjectType::INTERACTABLE;
+                }
+                if (ImGui::MenuItem("Weapon"))
+                {
+                    m_createGameObjectClicked = true;
+
+                    m_createObjectType = GameObjectType::WEAPON;
+                }
+                if (ImGui::MenuItem("Camera"))
+                {
+                    m_createGameObjectClicked = true;
+
+                    m_createObjectType = GameObjectType::CAMERA;
+                }
+                if (ImGui::MenuItem("Level Change"))
+                {
+                    m_createGameObjectClicked = true;
+
+                    m_createObjectType = GameObjectType::LEVEL_CHANGE;
+                }
+                if (ImGui::MenuItem("Pickup"))
+                {
+                    m_createGameObjectClicked = true;
+
+                    m_createObjectType = GameObjectType::PICKUP;
+                }
+
+                ImGui::EndMenu();
+            }
+
+			if (ImGui::MenuItem("TileMap"))
 			{
-				if (ImGui::MenuItem("Base"))
-				{
-					m_createGameObjectClicked = true;
+				m_createGameObjectClicked = true;
 
-					m_createObjectType = GameObjectType::BASE;
-				}
-				if (ImGui::MenuItem("Collidable"))
-				{
-					m_createGameObjectClicked = true;
-
-					m_createObjectType = GameObjectType::COLLIDABLE;
-				}
-				if (ImGui::MenuItem("Renderable"))
-				{
-					m_createGameObjectClicked = true;
-
-					m_createObjectType = GameObjectType::RENDERABLE;
-				}
-				if (ImGui::MenuItem("Renderable Collidable"))
-				{
-					m_createGameObjectClicked = true;
-
-					m_createObjectType = GameObjectType::RENDERABLE | GameObjectType::COLLIDABLE;
-				}
-				if (ImGui::MenuItem("Sound"))
-				{
-					m_createGameObjectClicked = true;
-
-					m_createObjectType = GameObjectType::SOUND;
-				}
-
-				ImGui::EndMenu();
+				m_createObjectType = GameObjectType::TILE_MAP;
 			}
 
+            if (ImGui::MenuItem("ParticleSystem"))
+            {
+                m_createGameObjectClicked = true;
+
+                m_createObjectType = GameObjectType::PARTICLE_SYSTEM;
+            }
+            bool disableCheck = false;
+            if (m_selectedGameObjectNode && m_selectedGameObjectNode->NodeObject->ContainsType(GameObjectType::GAME_UI_COMPONENT))
+            {
+                disableCheck = (dynamic_cast<GameUIComponent*>(m_selectedGameObjectNode->NodeObject)->ContainsType(UIComponentType::CANVAS));
+            }
+            if (ImGui::BeginMenu("UI Component"))
+            {
+                m_createObjectType = GameObjectType::GAME_UI_COMPONENT;
+                if (ImGui::MenuItem("Canvas"))
+                {
+                    m_createUIObjectClicked = true;
+                    m_createUIComponentType = UIComponentType::CANVAS;
+                }
+                if (ImGui::MenuItem("Image", nullptr, nullptr, disableCheck))
+                {
+                    m_createUIObjectClicked = true;
+                    m_createUIComponentType = UIComponentType::IMAGE;
+                }
+                ToolTip("Select a Canvas GameObject to enable");
+                if (ImGui::MenuItem("Text", nullptr, nullptr, disableCheck))
+                {
+                    m_createUIObjectClicked = true;
+                    m_createUIComponentType = UIComponentType::TEXT;
+                }
+                ToolTip("Select a Canvas GameObject to enable");
+                if (ImGui::MenuItem("Button", nullptr, nullptr, disableCheck))
+                {
+                    m_createUIObjectClicked = true;
+                    m_createUIComponentType = UIComponentType::BUTTON;
+                }
+                ToolTip("Select a Canvas GameObject to enable");
+
+                ImGui::EndMenu();
+            }
+
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Delete"))
+        {
+            if (ImGui::MenuItem("GameObject"))
+            {
+                pgameManager->DeleteGameObjectUsingNode(m_selectedGameObjectNode);
+
+                m_gameObjectNodeClicked = -1;
+                m_selectedGameObjectNode = nullptr;
+            }
+
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Tools"))
+        {
+            if (ImGui::MenuItem("Animation"))
+            {
+                if (ptoolBase != nullptr)
+                {
+                    delete ptoolBase;
+                }
+
+                ptoolBase = new AnimationTool();
+                ptoolBase->Init(pdevice);
+            }
+
+            if (ImGui::MenuItem("Tile Map"))
+            {
+                if (ptoolBase != nullptr)
+                {
+                    delete ptoolBase;
+                }
+
+                ptoolBase = new TileMapTool();
+                ptoolBase->Init(pdevice);
+            }
+
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMenuBar();
+    }
+
+    ImGui::BeginChild("Root Drag & Drop Region");
+    ImGui::EndChild();
+
+    if (ImGui::BeginDragDropTarget())
+    {
+        const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("SceneGraphNode", ImGuiDragDropFlags_None);
+
+        if (ppayload != nullptr)
+        {
+            TreeNode<GameObject>* objectPointer = *(TreeNode<GameObject>**)ppayload->Data;
+            if (objectPointer->PreviousParent != nullptr)
+            {
+                pgameManager->GetCurrentScene()->GetSceneGraph()->MoveNode(objectPointer, nullptr);
+            }
+        }
+
+        ImGui::EndDragDropTarget();
+    }
+
+    if (ImGui::IsItemClicked())
+    {
+        m_gameObjectNodeClicked = -1;
+        m_selectedGameObjectNode = nullptr;
+    }
+
+    ImGui::End();
+
+    if (m_createGameObjectClicked)
+    {
+        ImGui::Begin("New Object");
+        static string gameObjectName;
+        InputText("Object Name", gameObjectName);
+
+        m_blankErrorMessageBoxShown = ErrorPopupBox("ObjectBlankErrorMessage", "Please enter an object name");
+
+        int clicked = 0;
+        if (ImGui::Button("Create"))
+        {
+            ++clicked;
+        }
+        if (clicked & 1)
+        {
+            if (gameObjectName == "")
+            {
+                ShowError("ObjectBlankErrorMessage");
+                m_blankErrorMessageBoxShown = true;
+            }
+            else
+            {
+                switch (m_createObjectType)
+                {
+                case GameObjectType::RENDERABLE | GameObjectType::COLLIDABLE:
+                    pgameManager->CreateGameObject<RenderableCollidableGameObject>(gameObjectName, m_selectedGameObjectNode);
+                    break;
+
+                case GameObjectType::RENDERABLE:
+                    pgameManager->CreateGameObject<RenderableGameObject>(gameObjectName, m_selectedGameObjectNode);
+                    break;
+
+                case GameObjectType::COLLIDABLE:
+                    pgameManager->CreateGameObject<CollidableGameObject>(gameObjectName, m_selectedGameObjectNode);
+                    break;
+
+                case GameObjectType::BASE:
+                    pgameManager->CreateGameObject<GameObject>(gameObjectName, m_selectedGameObjectNode);
+                    break;
+
+                case GameObjectType::PARTICLE_SYSTEM:
+                    pgameManager->CreateGameObject<ParticleSystem>(gameObjectName, m_selectedGameObjectNode);
+                    break;
+
+                case GameObjectType::PLAYER:
+                    pgameManager->CreateGameObject<PlayerGameObject>(gameObjectName, m_selectedGameObjectNode);
+                    break;
+
+                case GameObjectType::ENEMY:
+                    pgameManager->CreateGameObject<EnemyGameObject>(gameObjectName, m_selectedGameObjectNode);
+                    break;
+
+                case GameObjectType::INTERACTABLE:
+                    pgameManager->CreateGameObject<InteractableGameObject>(gameObjectName, m_selectedGameObjectNode);
+                    break;
+
+                case GameObjectType::WEAPON:
+                    pgameManager->CreateGameObject<WeaponGameObject>(gameObjectName, m_selectedGameObjectNode);
+                    break;
+
+                case GameObjectType::CAMERA:
+                    pgameManager->CreateGameObject<CameraGameObject>(gameObjectName, m_selectedGameObjectNode);
+                    break;
+
+        				case GameObjectType::TILE_MAP:
+        					pgameManager->CreateGameObject<TileMap>(gameObjectName, m_selectedGameObjectNode);
+        					break;
+                  
+                case GameObjectType::LEVEL_CHANGE:
+                    pgameManager->CreateGameObject<LevelChangeGameObject>(gameObjectName, m_selectedGameObjectNode);
+                    break;
+                case GameObjectType::PICKUP:
+                    pgameManager->CreateGameObject<PickupGameObject>(gameObjectName, m_selectedGameObjectNode);
+                    break;
+                }
 
 
-			if (ImGui::MenuItem("ParticleSystem"))
-			{
+                m_createObjectType = (GameObjectType)0;
 
-			}
+                m_createGameObjectClicked = false;
+                gameObjectName[0] = {};
+            }
+        }
 
-			ImGui::EndMenu();
-		}
+        ImGui::End();
+    }
+    else if (m_createUIObjectClicked)
+    {
+        ImGui::Begin("New UI Component");
 
-		if (ImGui::BeginMenu("Delete"))
-		{
-			if (ImGui::MenuItem("GameObject"))
-			{
-				pgameManager->DeleteSelectedGameObject();
+        m_blankErrorMessageBoxShown = ErrorPopupBox("ObjectBlankErrorMessage", "Please enter a component name");
+        static string uiObjectName;
+        InputText("UI Component Name", uiObjectName);
 
-				m_gameObjectNodeClicked = -1;
-				pgameManager->SelectGameObject(nullptr);
-			}
+        int clicked = 0;
+        if (ImGui::Button("Create"))
+        {
+            ++clicked;
+        }
+        if (clicked & 1)
+        {
+            if (uiObjectName == "")
+            {
+                ShowError("ObjectBlankErrorMessage");
+                m_blankErrorMessageBoxShown = true;
+            }
+            else
+            {
+                switch (m_createUIComponentType)
+                {
+                case UIComponentType::CANVAS:
+                    pgameManager->CreateGameObject<UICanvas>(uiObjectName, m_selectedGameObjectNode);
+                    break;
 
-			ImGui::EndMenu();
-		}
+                case UIComponentType::IMAGE:
+                    pgameManager->CreateGameObject<ImageComponent>(uiObjectName, m_selectedGameObjectNode);
+                    break;
 
-		ImGui::EndMenuBar();
-	}
-	ImGui::End();
+                case UIComponentType::TEXT:
+                    pgameManager->CreateGameObject<TextComponent>(uiObjectName, m_selectedGameObjectNode)->Init(uiObjectName, "comicSans", 20, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+                    break;
 
-	if (m_createGameObjectClicked)
-	{
-		ImGui::Begin("New Object");
-		static char gameObjectName[64] = "";
-		IMGUI_LEFT_LABEL(ImGui::InputText, "Object Name", gameObjectName, 64);
+                case UIComponentType::BUTTON:
+                    pgameManager->CreateGameObject<ButtonComponent>(uiObjectName, m_selectedGameObjectNode);
+                    break;
 
-		int clicked = 0;
-		if (ImGui::Button("Create"))
-		{
-			++clicked;
-		}
-		if (clicked & 1)
-		{
-			switch (m_createObjectType)
-			{
-			case GameObjectType::SOUND:
-				pgameManager->CreateGameObject<AudioSourceGameObject>(gameObjectName);
-				break;
-
-			case GameObjectType::RENDERABLE | GameObjectType::COLLIDABLE:
-				pgameManager->CreateGameObject<RenderableCollidableGameObject>(gameObjectName);
-				break;
-
-			case GameObjectType::RENDERABLE:
-				pgameManager->CreateGameObject<RenderableGameObject>(gameObjectName);
-				break;
-
-			case GameObjectType::COLLIDABLE:
-				pgameManager->CreateGameObject<CollidableGameObject>(gameObjectName);
-				break;
-
-			case GameObjectType::BASE:
-				pgameManager->CreateGameObject<GameObject>(gameObjectName);
-				break;
-			}
+                }
 
 
-			m_createObjectType =(GameObjectType) 0;
+                m_createUIComponentType = (UIComponentType)0;
 
-			m_createGameObjectClicked = false;
-			gameObjectName[0] = {};
-		}
-		ImGui::End();
-	}
+                m_createUIObjectClicked = false;
+                uiObjectName[0] = {};
+            }
+
+        }
+
+        ImGui::End();
+    }
 }
 
 void EditorUI::DrawSceneManagementWindow()
 {
-	GameManager* pgameManager = GameManager::GetInstance();
+    GameManager* pgameManager = GameManager::GetInstance();
 
-	ImGui::Begin("Scene Manager", nullptr, ImGuiWindowFlags_MenuBar);
-	bool flag = false;
+    ImGui::Begin("Scene Manager", nullptr, ImGuiWindowFlags_MenuBar);
+    bool flag = false;
 
-	static int selected = -1;
-	unordered_map<string, Scene*> sceneList = pgameManager->GetSceneList();
-	int sceneCount = 0;
-	for (unordered_map<string, Scene*>::iterator it = sceneList.begin(); it != sceneList.end(); ++it)
-	{
-		string sceneName = it->first;
-		if (ImGui::Selectable(sceneName.c_str(), selected == sceneCount))
-		{
-			if (selected != sceneCount)
-			{
-				selected = sceneCount;
-				pgameManager->SelectScene(it->second);
-			}
+    static int selected = -1;
+    unordered_map<string, Scene*> sceneList = pgameManager->GetSceneList();
+    int sceneCount = 0;
+    for (unordered_map<string, Scene*>::iterator it = sceneList.begin(); it != sceneList.end(); ++it)
+    {
+        string sceneName = it->first;
+        if (ImGui::Selectable(sceneName.c_str(), selected == sceneCount))
+        {
+            if (selected != sceneCount)
+            {
+                selected = sceneCount;
+                pgameManager->SwitchScene(it->second);
+            }
 
-			else
-			{
-				selected = -1;
-				pgameManager->SelectScene(nullptr);
-			}
-		}
-		++sceneCount;
+            else
+            {
+                selected = -1;
+                pgameManager->SwitchScene(nullptr);
+            }
+        }
+        ++sceneCount;
+    }
+
+    if (ImGui::BeginMenuBar())
+    {
+        if (ImGui::BeginMenu("File"))
+        {
+            if (ImGui::MenuItem("Create Scene", "Ctrl+C"))
+            {
+                m_createSceneClicked = true;
+            }
+
+            if (ImGui::MenuItem("Save Scene", "Ctrl+S"))
+            {
+                m_saveSceneClicked = true;
+                m_saveSceneName = GameManager::GetInstance()->GetCurrentSceneName();
+            }
+
+            if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
+            {
+				OpenFileExplorer(L"Scene files\0*.json\0", m_sceneNameBuffer, _countof(m_sceneNameBuffer));
+
+				std::wstring tempString = std::wstring(m_sceneNameBuffer);
+				std::string trueString = std::string(tempString.begin(), tempString.end());
+				int indexOfSlash = tempString.find_last_of('\\');
+				std::string sceneName = trueString.substr(indexOfSlash + 1, trueString.length() - indexOfSlash - 6);
+				if (tempString != L"" && !GameManager::GetInstance()->SwitchSceneUsingIdentifier(sceneName))
+				{
+					GameManager::GetInstance()->LoadSceneFromFile(std::string(tempString.begin(), tempString.end()), "", true);
+
+					DeselectObjectInScene();
+					if (m_sceneNodeSelected != -1)
+					{
+						m_sceneNodeSelected += 1;
+					}
+				}
+            }
+
+            if (ImGui::MenuItem("Delete Scene", "Ctrl+D"))
+            {
+                pgameManager->DeleteCurrentScene();
+                selected = -1;
+                DeselectObjectInScene();
+                pgameManager->SwitchScene(nullptr);
+            }
+
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMenuBar();
+    }
+
+    ImGui::End();
+
+    if (m_createSceneClicked)
+    {
+        ImGui::Begin("New Scene");
+        static string sceneName;
+        InputText("Scene Name", sceneName);
+
+        m_blankErrorMessageBoxShown = ErrorPopupBox("SceneBlankErrorMessage", "Please enter a scene name");
+
+        int clicked = 0;
+        if (ImGui::Button("Create"))
+        {
+            ++clicked;
+        }
+
+        if (clicked & 1)
+        {
+            if (sceneName == "")
+            {
+                ShowError("SceneBlankErrorMessage");
+                m_blankErrorMessageBoxShown = true;
+            }
+            else
+            {
+                DeselectObjectInScene();
+                pgameManager->CreateScene(sceneName, true);
+                m_createSceneClicked = false;
+                sceneName[0] = {};
+            }
+        }
+        ImGui::End();
 	}
-
-	if (ImGui::BeginMenuBar())
+	if (m_saveSceneClicked)
 	{
-		if (ImGui::BeginMenu("File"))
+		ImGui::Begin("Save Scene");
+
+		InputText("Save Name", m_saveSceneName);
+
+		int saveClicked = 0;
+		int cancelClicked = 0;
+
+		ImGui::Spacing();
+		ImGui::Spacing();
+
+		if (ImGui::Button("Save"))
 		{
-			if (ImGui::MenuItem("Create Scene", "Ctrl+C"))
-			{
-				m_createSceneClicked = true;
-			}
-
-			if (ImGui::MenuItem("Save Scene", "Ctrl+S"))
-			{
-				/* Do stuff */
-			}
-
-			if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
-			{
-				OpenFileExplorer(L"DDS files\0*.dds\0", m_texNameBuffer, _countof(m_texNameBuffer));
-			}
-
-			if (ImGui::MenuItem("Delete Scene", "Ctrl+D"))
-			{
-				pgameManager->DeleteSelectedScene();
-				selected = -1;
-				pgameManager->SelectScene(nullptr);
-			}
-
-			ImGui::EndMenu();
+			++saveClicked;
 		}
 
-		ImGui::EndMenuBar();
-	}
+		ImGui::SameLine();
+		ImGui::Spacing();
+		ImGui::SameLine();
 
-	ImGui::End();
-
-	if (m_createSceneClicked)
-	{
-		ImGui::Begin("New Scene");
-		static char sceneName[64] = "";
-		IMGUI_LEFT_LABEL(ImGui::InputText, "Scene Name", sceneName, 64);
-
-		int clicked = 0;
-
-		if (ImGui::Button("Create"))
+		if (ImGui::Button("Cancel"))
 		{
-			++clicked;
+			++cancelClicked;
 		}
 
-		if (clicked & 1)
+		if (saveClicked & 1)
 		{
-			pgameManager->CreateScene(sceneName);
-			m_createSceneClicked = false;
-			sceneName[0] = {};
+			SimpleFileIO::SaveScene(std::string("Resources\\Levels\\") + m_saveSceneName, m_saveSceneName);
+			m_saveSceneClicked = false;
+			m_saveSceneName[0] = {};
+		}
+		else if (cancelClicked & 1)
+		{
+			m_saveSceneClicked = false;
+			m_saveSceneName[0] = {};
 		}
 		ImGui::End();
 	}
 }
 
-void EditorUI::TraverseTree(TreeNode<GameObject>* pcurrentNode, int& nodeCount)
+void EditorUI::TraverseTree(TreeNode<GameObject>* pcurrentNode, std::string& selectedIdentifier)
 {
-	if (!pcurrentNode)
-	{
-		return;
-	}
+    if (!pcurrentNode)
+    {
+        return;
+    }
 
-	GameManager* pgameManager = GameManager::GetInstance();
+    GameManager* pgameManager = GameManager::GetInstance();
 
-	++nodeCount;
 	ImGuiTreeNodeFlags node_flags = m_base_flags;
-	const bool is_selected = (m_selectionMask & (1 << nodeCount)) != 0;
 
-
-	if (is_selected)
+	if (selectedIdentifier == pcurrentNode->NodeObject->GetIdentifier())
 	{
 		node_flags |= ImGuiTreeNodeFlags_Selected;
 	}
 
-	bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)nodeCount, node_flags, pcurrentNode->GameObject->GetIdentifier().c_str(), nodeCount);
-	if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+	bool node_open = ImGui::TreeNodeEx(pcurrentNode->NodeObject->GetIdentifier().c_str(), node_flags);
+
+	if (ImGui::IsItemClicked(ImGuiMouseButton_Left) == true && ImGui::IsItemHovered() == true)
 	{
-		if (nodeCount == m_gameObjectNodeClicked)
+		if (selectedIdentifier == pcurrentNode->NodeObject->GetIdentifier())
 		{
-			m_gameObjectNodeClicked = -1;
-			pgameManager->SelectGameObject(nullptr);
-
-
+			m_selectedGameObjectNode = nullptr;
+			selectedIdentifier = "";
 		}
 		else
 		{
-			m_gameObjectNodeClicked = nodeCount;
-			pgameManager->SelectGameObjectUsingTreeNode(pcurrentNode);
+			m_selectedGameObjectNode = pcurrentNode;
+			selectedIdentifier = pcurrentNode->NodeObject->GetIdentifier();
 		}
 	}
 
+    if (ImGui::BeginDragDropTarget())
+    {
+        const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("SceneGraphNode", ImGuiDragDropFlags_None);
+
+        if (ppayload != nullptr)
+        {
+            TreeNode<GameObject>* objectPointer = *(TreeNode<GameObject>**)ppayload->Data;
+
+            pgameManager->GetCurrentScene()->GetSceneGraph()->MoveNode(objectPointer, pcurrentNode);
+        }
+
+        ImGui::EndDragDropTarget();
+    }
+
+    if (ImGui::BeginDragDropSource() == true)
+    {
+        bool test = ImGui::SetDragDropPayload("SceneGraphNode", &pcurrentNode, sizeof(pcurrentNode), ImGuiCond_Once);
+        ImGui::EndDragDropSource();
+    }
 
 	if (node_open)
 	{
 		if (pcurrentNode->Child)
 		{
-			TraverseTree(pcurrentNode->Child, nodeCount);
+			TraverseTree(pcurrentNode->Child, selectedIdentifier);
 		}
-
-
 		ImGui::TreePop();
 	}
 
 	if (pcurrentNode->Sibling)
 	{
-		TraverseTree(pcurrentNode->Sibling, nodeCount);
+		TraverseTree(pcurrentNode->Sibling, selectedIdentifier);
 	}
 
 
-	if (m_gameObjectNodeClicked != -1)
-	{
-		m_selectionMask = (1 << m_gameObjectNodeClicked); // Click to single-select
-	}
-	else
-	{
-		//Resets selection
-		m_selectionMask = 0;
-	}
+    if (m_gameObjectNodeClicked != -1)
+    {
+        m_selectionMask = (1 << m_gameObjectNodeClicked); // Click to single-select
+    }
+    else
+    {
+        //Resets selection
+        m_selectionMask = 0;
+    }
 
+}
+
+void EditorUI::DeselectObjectInScene()
+{
+    m_gameObjectNodeClicked = -1;
+    m_selectedGameObjectNode = nullptr;
 }
 
 void EditorUI::ShutdownIMGUI()
 {
-	ImGui_ImplDX11_Shutdown();
-	ImGui_ImplWin32_Shutdown();
-	ImGui::DestroyContext();
+    ImGui_ImplDX11_Shutdown();
+    ImGui_ImplWin32_Shutdown();
+    ImGui::DestroyContext();
 }
 
 void EditorUI::OpenFileExplorer(const WCHAR* fileFilters, WCHAR* buffer, int bufferSize)
 {
-	OPENFILENAME ofn;
+    OPENFILENAME ofn;
 
-	//Null terminate first index so no information from buffer is displayed
-	buffer[0] = '\0';
+    //Null terminate first index so no information from buffer is displayed
+    buffer[0] = '\0';
 
-	ZeroMemory(&ofn, sizeof(OPENFILENAME));
-	ofn.lStructSize = sizeof(OPENFILENAME);
-	ofn.hwndOwner = *m_phwnd;
-	ofn.lpstrFile = buffer;
-	ofn.nMaxFile = bufferSize;
-	ofn.lpstrFilter = fileFilters;
-	ofn.nFilterIndex = 0;
-	ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
+    ZeroMemory(&ofn, sizeof(OPENFILENAME));
+    ofn.lStructSize = sizeof(OPENFILENAME);
+    ofn.hwndOwner = *m_phwnd;
+    ofn.lpstrFile = buffer;
+    ofn.nMaxFile = bufferSize;
+    ofn.lpstrFilter = fileFilters;
+    ofn.nFilterIndex = 0;
+    ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
 
-	GetOpenFileName(&ofn);
+    GetOpenFileName(&ofn);
 }
 
 void EditorUI::OpenFolderExplorer(WCHAR* buffer, int bufferSize)
 {
-	buffer[0] = '\0';
+    buffer[0] = '\0';
 
-	BROWSEINFOW browserInfo;
-	ZeroMemory(&browserInfo, sizeof(BROWSEINFOW));
-	browserInfo.hwndOwner = *m_phwnd;
-	browserInfo.pidlRoot = NULL;
-	browserInfo.pszDisplayName = buffer;
-	browserInfo.lpszTitle = L"Choose animation file";
-	browserInfo.ulFlags = BIF_EDITBOX;
-	browserInfo.lpfn = NULL;
-	browserInfo.lParam = NULL;
-	browserInfo.iImage = 0;
+    BROWSEINFOW browserInfo;
+    ZeroMemory(&browserInfo, sizeof(BROWSEINFOW));
+    browserInfo.hwndOwner = *m_phwnd;
+    browserInfo.pidlRoot = NULL;
+    browserInfo.pszDisplayName = buffer;
+    browserInfo.lpszTitle = L"Choose animation file";
+    browserInfo.ulFlags = BIF_EDITBOX;
+    browserInfo.lpfn = NULL;
+    browserInfo.lParam = NULL;
+    browserInfo.iImage = 0;
 
-	SHBrowseForFolder(&browserInfo);
+    SHBrowseForFolder(&browserInfo);
 }
 
-void EditorUI::DragFloat2(const string& label, XMFLOAT2& values, const float& columnWidth, const float& speed, const float& min, const float& max)
+void EditorUI::DragFloat2(const string& label, XMFLOAT2& values, EditorUIFloatParameters parameters)
 {
-	ImGuiIO& io = ImGui::GetIO();
+    ImGuiIO& io = ImGui::GetIO();
 
-	ImGui::PushID(label.c_str());
+    ImGui::PushID(label.c_str());
 
-	ImGui::Columns(2);
-	ImGui::SetColumnWidth(0, columnWidth);
-	ImGui::Text(label.c_str());
-	ImGui::NextColumn();
+    ImGui::Columns(2);
+    ImGui::SetColumnWidth(0, parameters.m_columnWidth);
+    ImGui::Text(label.c_str());
+    SetupTooltip(parameters.m_tooltipText);
 
-	ImGui::PushMultiItemsWidths(2, ImGui::CalcItemWidth());
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+    ImGui::NextColumn();
 
-	float lineHeight = io.FontDefault->FontSize + ImGui::GetStyle().FramePadding.y * 2.0f;
-	ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
+    ImGui::PushMultiItemsWidths(2, ImGui::CalcItemWidth());
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
 
-	ImGui::Button("X", buttonSize);
-	ImGui::SameLine();
-	ImGui::DragFloat("##X", &values.x, speed, min, max, "%.2f");
-	ImGui::PopItemWidth();
-	ImGui::SameLine();
+    float lineHeight = io.FontDefault->FontSize + ImGui::GetStyle().FramePadding.y * 2.0f;
+    ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
 
-	ImGui::Button("Y", buttonSize);
-	ImGui::SameLine();
-	ImGui::DragFloat("##Y", &values.y, speed, min, max, "%.2f");
-	ImGui::PopItemWidth();
+    ImGui::Button("X", buttonSize);
+    ImGui::SameLine();
+    ImGui::DragFloat("##X", &values.x, parameters.m_speed, parameters.m_minValue, parameters.m_maxValue, "%.2f");
+    ImGui::PopItemWidth();
+    ImGui::SameLine();
 
-	ImGui::PopStyleVar();
+    ImGui::Button("Y", buttonSize);
+    ImGui::SameLine();
+    ImGui::DragFloat("##Y", &values.y, parameters.m_speed, parameters.m_minValue, parameters.m_maxValue, "%.2f");
+    ImGui::PopItemWidth();
 
-	ImGui::Columns(1);
+    ImGui::PopStyleVar();
+
+    ImGui::Columns(1);
+
+    ImGui::PopID();
+}
+
+void EditorUI::DragFloat3(const string& label, XMFLOAT3& values, EditorUIFloatParameters parameters)
+{
+    ImGuiIO& io = ImGui::GetIO();
+
+    ImGui::PushID(label.c_str());
+
+	  ImGui::Columns(2);
+    ImGui::SetColumnWidth(0, parameters.m_columnWidth);
+    ImGui::Text(label.c_str());
+    SetupTooltip(parameters.m_tooltipText);
+
+    ImGui::NextColumn();
+
+    ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+    float lineHeight = io.FontDefault->FontSize + ImGui::GetStyle().FramePadding.y * 2.0f;
+    ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
+
+    ImGui::Button("X", buttonSize);
+    ImGui::SameLine();
+    ImGui::DragFloat("##X", &values.x, parameters.m_speed, parameters.m_minValue, parameters.m_maxValue, "%.2f");
+    ImGui::PopItemWidth();
+    ImGui::SameLine();
+
+    ImGui::Button("Y", buttonSize);
+    ImGui::SameLine();
+    ImGui::DragFloat("##Y", &values.y, parameters.m_speed, parameters.m_minValue, parameters.m_maxValue, "%.2f");
+    ImGui::PopItemWidth();
+    ImGui::SameLine();
+
+    ImGui::Button("Z", buttonSize);
+    ImGui::SameLine();
+    ImGui::DragFloat("##Z", &values.z, parameters.m_speed, parameters.m_minValue, parameters.m_maxValue, "%.2f");
+    ImGui::PopItemWidth();
+
+    ImGui::PopStyleVar();
+
+    ImGui::Columns(1);
+
+    ImGui::PopID();
+}
+
+void EditorUI::DragInt(const string& label, int& value, EditorUIIntParameters parameters)
+{
+    SetupDefaultsInParameters(parameters);
+
+    ImGui::PushID(label.c_str());
+
+    ImGui::Columns(2);
+
+    ImGui::SetColumnWidth(0, parameters.m_columnWidth);
+    ImGui::Text(label.c_str());
+    SetupTooltip(parameters.m_tooltipText);
+
+    ImGui::NextColumn();
+
+    ImGui::PushItemWidth(ImGui::CalcItemWidth());
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+    ImGui::DragInt("##Int", &value, parameters.m_speed, parameters.m_minValue, parameters.m_maxValue, "%.2f");
+
+    ImGui::PopItemWidth();
+
+    ImGui::PopStyleVar();
+
+    ImGui::Columns(1);
+
+    ImGui::PopID();
+}
+
+bool EditorUI::Checkbox(const string& label, bool& value, EditorUINonSpecificParameters parameters)
+{
+	bool interacted = false;
+
+    SetupDefaultsInParameters(parameters);
+
+    ImGui::PushID(label.c_str());
+
+    ImGui::Columns(2);
+
+    ImGui::SetColumnWidth(0, parameters.m_columnWidth);
+    ImGui::Text(label.c_str());
+    SetupTooltip(parameters.m_tooltipText);
+
+    ImGui::NextColumn();
+
+    ImGui::PushItemWidth(ImGui::CalcItemWidth());
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+	if (ImGui::Checkbox("##Checkbox", &value) == true)
+	{
+		interacted = true;
+	}
+
+    ImGui::PopItemWidth();
+
+    ImGui::PopStyleVar();
+
+    ImGui::Columns(1);
 
 	ImGui::PopID();
-}
 
-void EditorUI::DragFloat3(const string& label, XMFLOAT3& values, const float& columnWidth, const float& speed, const float& min, const float& max)
-{
-	ImGuiIO& io = ImGui::GetIO();
-
-	ImGui::PushID(label.c_str());
-
-	ImGui::Columns(2);
-	ImGui::SetColumnWidth(0, columnWidth);
-	ImGui::Text(label.c_str());
-	ImGui::NextColumn();
-
-	ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
-
-	float lineHeight = io.FontDefault->FontSize + ImGui::GetStyle().FramePadding.y * 2.0f;
-	ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
-
-	ImGui::Button("X", buttonSize);
-	ImGui::SameLine();
-	ImGui::DragFloat("##X", &values.x, speed, min, max, "%.2f");
-	ImGui::PopItemWidth();
-	ImGui::SameLine();
-
-	ImGui::Button("Y", buttonSize);
-	ImGui::SameLine();
-	ImGui::DragFloat("##Y", &values.y, speed, min, max, "%.2f");
-	ImGui::PopItemWidth();
-	ImGui::SameLine();
-
-	ImGui::Button("Z", buttonSize);
-	ImGui::SameLine();
-	ImGui::DragFloat("##Z", &values.z, speed, min, max, "%.2f");
-	ImGui::PopItemWidth();
-
-	ImGui::PopStyleVar();
-
-	ImGui::Columns(1);
-
-ImGui::PopID();
-}
-
-void EditorUI::DragInt(const string& label, int& value, const float& columnWidth, const float& speed, const float& min, const float& max)
-{
-	ImGui::PushID(label.c_str());
-
-	ImGui::Columns(2);
-
-	ImGui::SetColumnWidth(0, columnWidth);
-	ImGui::Text(label.c_str());
-	ImGui::NextColumn();
-
-	ImGui::PushItemWidth(ImGui::CalcItemWidth());
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
-
-	ImGui::DragInt("##Int", &value, speed, min, max, "%.2f");
-
-	ImGui::PopItemWidth();
-
-	ImGui::PopStyleVar();
-
-	ImGui::Columns(1);
-
-	ImGui::PopID();
-}
-
-void EditorUI::Checkbox(const string& label, bool& value, const float& columnWidth)
-{
-	ImGui::PushID(label.c_str());
-
-	ImGui::Columns(2);
-
-	ImGui::SetColumnWidth(0, columnWidth);
-	ImGui::Text(label.c_str());
-	ImGui::NextColumn();
-
-	ImGui::PushItemWidth(ImGui::CalcItemWidth());
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
-
-	ImGui::Checkbox("##Checkbox", &value);
-
-	ImGui::PopItemWidth();
-
-	ImGui::PopStyleVar();
-
-	ImGui::Columns(1);
-
-	ImGui::PopID();
+	return interacted;
 }
 
 bool EditorUI::Texture(const string& label, wstring& filepath, ID3D11ShaderResourceView*& psrv, const float& columnWidth, ImVec2& imageDimensions)
 {
-	bool interacted = false;
+    bool interacted = false;
 
-	ImGui::PushID(label.c_str());
+    ImGui::PushID(label.c_str());
 
-	ImGui::Columns(2);
+    ImGui::Columns(2);
 
-	ImGui::SetColumnWidth(0, columnWidth);
-	ImGui::Text(label.c_str());
-	ImGui::NextColumn();
+    ImGui::SetColumnWidth(0, columnWidth);
+    ImGui::Text(label.c_str());
 
-	ImGui::PushItemWidth(ImGui::CalcItemWidth());
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+    ImGui::NextColumn();
 
-	if (ImGui::ImageButton((void*)(intptr_t)psrv, imageDimensions))
-	{
-		WCHAR buffer[FILEPATH_BUFFER_SIZE];
+    ImGui::PushItemWidth(ImGui::CalcItemWidth());
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
 
-		EditorUI::OpenFileExplorer(L"DDS files\0*.dds\0", buffer, FILEPATH_BUFFER_SIZE);
+    if (ImGui::ImageButton((void*)(intptr_t)psrv, imageDimensions))
+    {
+        WCHAR buffer[FILEPATH_BUFFER_SIZE];
 
-		filepath = wstring(buffer);
+        EditorUI::OpenFileExplorer(L"DDS files\0*.dds\0", buffer, FILEPATH_BUFFER_SIZE);
 
-		//Check if that path points to an asset in the resources folder
-		int index = filepath.find(L"Resources");
+        filepath = wstring(buffer);
 
-		if (index == -1)
-		{
-			LOG("The resource specified isn't stored in a resource folder!");
-		}
-		else
-		{
-			//Get relative file path
-			filepath = filepath.substr(index);
+        //Check if that path points to an asset in the resources folder
+        int index = filepath.find(L"Resources");
 
-			//Load texture if not loaded
-			if (GraphicsManager::GetInstance()->IsTextureLoaded(filepath) == false)
-			{
-				GraphicsManager::GetInstance()->LoadTextureFromFile(filepath);
-			}
+        if (index == -1)
+        {
+            LOG("The resource specified isn't stored in a resource folder!");
+        }
+        else
+        {
+            //Get relative file path
+            filepath = filepath.substr(index);
 
-			psrv = GraphicsManager::GetInstance()->GetShaderResourceView(filepath);
+            //Load texture if not loaded
+            if (GraphicsManager::GetInstance()->IsTextureLoaded(filepath) == false)
+            {
+                GraphicsManager::GetInstance()->LoadTextureFromFile(filepath);
+            }
 
-			interacted = true;
-		}
-	}
+            psrv = GraphicsManager::GetInstance()->GetShaderResourceView(filepath);
 
-	if(ImGui::BeginDragDropTarget())
-	{
-		const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowser", ImGuiDragDropFlags_SourceAllowNullID);
+            interacted = true;
+        }
+    }
 
-		if (ppayload != nullptr)
-		{
-			std::string tempString = std::string((char*)ppayload->Data, ppayload->DataSize / sizeof(char));
-			std::wstring wsfilepath = std::wstring(tempString.begin(), tempString.end());
+    if (ImGui::BeginDragDropTarget())
+    {
+        const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowserFile", ImGuiDragDropFlags_SourceAllowNullID);
 
-			//Check if that path points to an asset in the resources folder
-			int index = wsfilepath.find(L"Resources");
+        if (ppayload != nullptr)
+        {
+            std::string tempString = std::string((char*)ppayload->Data, ppayload->DataSize / sizeof(char));
+            std::wstring wsfilepath = std::wstring(tempString.begin(), tempString.end());
 
-			if (index == -1)
-			{
-				LOG("The resource specified isn't stored in a resource folder!");
-			}
-			else
-			{
-				//Get relative file path
-				wsfilepath = wsfilepath.substr(index);
+            //Check if that path points to an asset in the resources folder
+            int index = wsfilepath.find(L"Resources");
 
-				//Load texture if not loaded
-				bool bloaded = true;
+            if (index == -1)
+            {
+                LOG("The resource specified isn't stored in a resource folder!");
+            }
+            else
+            {
+                //Get relative file path
+                filepath = wsfilepath.substr(index);
 
-				if (GraphicsManager::GetInstance()->IsTextureLoaded(wsfilepath) == false)
-				{
-					bloaded = GraphicsManager::GetInstance()->LoadTextureFromFile(wsfilepath);
-				}
+                //Load texture if not loaded
+                bool bloaded = true;
 
-				if (bloaded == true)
-				{
-					psrv = GraphicsManager::GetInstance()->GetShaderResourceView(wsfilepath);
-				}
+                if (GraphicsManager::GetInstance()->IsTextureLoaded(filepath) == false)
+                {
+                    bloaded = GraphicsManager::GetInstance()->LoadTextureFromFile(filepath);
+                }
 
-				interacted = true;
-			}
-		}
+                if (bloaded == true)
+                {
+                    psrv = GraphicsManager::GetInstance()->GetShaderResourceView(filepath);
+                }
 
-		ImGui::EndDragDropTarget();
-	}
+                interacted = true;
+            }
+        }
 
-	ImGui::PopItemWidth();
+        ImGui::EndDragDropTarget();
+    }
 
-	ImGui::PopStyleVar();
+    ImGui::PopItemWidth();
 
-	ImGui::Columns(1);
+    ImGui::PopStyleVar();
 
-	ImGui::PopID();
+    ImGui::Columns(1);
 
-	return interacted;
+    ImGui::PopID();
+
+    return interacted;
 }
 
-bool EditorUI::RelativePath(const string& label, string& text, const float& columnWidth)
+bool EditorUI::InputText(const string& label, string& text, EditorUINonSpecificParameters parameters)
 {
-	bool interacted = false;
+    SetupDefaultsInParameters(parameters);
 
-	ImGui::PushID(label.c_str());
+    bool interacted = false;
 
-	ImGui::Columns(2);
+    ImGui::PushID(label.c_str());
 
-	ImGui::SetColumnWidth(0, columnWidth);
-	ImGui::Text(label.c_str());
-	ImGui::NextColumn();
+    ImGui::Columns(2);
 
-	ImGui::PushItemWidth(ImGui::CalcItemWidth());
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+    ImGui::SetColumnWidth(0, parameters.m_columnWidth);
+    ImGui::Text(label.c_str());
+    SetupTooltip(parameters.m_tooltipText);
+
+    ImGui::NextColumn();
+
+    ImGui::PushItemWidth(ImGui::CalcItemWidth());
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
 
 
-	char buffer[FILEPATH_BUFFER_SIZE];
+    char buffer[FILEPATH_BUFFER_SIZE];
 
-	strcpy_s(buffer, text.c_str());
+    strcpy_s(buffer, text.c_str());
 
-	if (ImGui::InputText("##text", buffer, FILEPATH_BUFFER_SIZE))
-	{
-		interacted = true;
+    if (ImGui::InputText("##text", buffer, FILEPATH_BUFFER_SIZE))
+    {
+        interacted = true;
+    }
 
-		text = string(buffer);
-	}
+    text = string(buffer);
 
-	if (ImGui::BeginDragDropTarget())
-	{
-		const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowser", ImGuiDragDropFlags_SourceAllowNullID);
+    ImGui::PopItemWidth();
 
-		if (ppayload != nullptr)
-		{
-			std::string tempString = std::string((char*)ppayload->Data, ppayload->DataSize / sizeof(char));
+    ImGui::PopStyleVar();
 
-			//Check if that path points to an asset in the resources folder
-			int index = tempString.find("Resources");
+    ImGui::Columns(1);
 
-			if (index == -1)
-			{
-				LOG("The resource specified isn't stored in a resource folder!");
-			}
-			else
-			{
-				//Get relative file path
-				tempString = tempString.substr(index);
+    ImGui::PopID();
 
-				if (AudioManager::GetInstance()->Load(tempString) == true)
-				{
-					interacted = true;
-
-					text = tempString;
-				}
-				else
-				{
-					LOG("Couldn't load audio file!");
-				}
-			}
-		}
-
-		ImGui::EndDragDropTarget();
-	}
-
-	ImGui::PopItemWidth();
-
-	ImGui::PopStyleVar();
-
-	ImGui::Columns(1);
-
-	ImGui::PopID();
-
-	return interacted;
+    return interacted;
 }
 
-bool EditorUI::InputText(const string& label, string& text, const float& columnWidth)
+void EditorUI::IdentifierText(const string& label, string& text, EditorUINonSpecificParameters parameters)
 {
-	bool interacted = false;
+    SetupDefaultsInParameters(parameters);
 
-	ImGui::PushID(label.c_str());
+    ImGui::PushID(label.c_str());
 
-	ImGui::Columns(2);
+    ImGui::Columns(2);
 
-	ImGui::SetColumnWidth(0, columnWidth);
-	ImGui::Text(label.c_str());
-	ImGui::NextColumn();
+    ImGui::SetColumnWidth(0, parameters.m_columnWidth);
+    ImGui::Text(label.c_str());
+    SetupTooltip(parameters.m_tooltipText);
 
-	ImGui::PushItemWidth(ImGui::CalcItemWidth());
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+    ImGui::NextColumn();
 
+    ImGui::PushItemWidth(ImGui::CalcItemWidth());
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
 
-	char buffer[FILEPATH_BUFFER_SIZE];
+    ImGui::TextUnformatted(text.c_str());
 
-	strcpy_s(buffer, text.c_str());
+    ImGui::PopItemWidth();
 
-	if (ImGui::InputText("##text", buffer, FILEPATH_BUFFER_SIZE))
-	{
-		interacted = true;
-	}
+    ImGui::PopStyleVar();
 
-	text = string(buffer);
+    ImGui::Columns(1);
 
-	ImGui::PopItemWidth();
-
-	ImGui::PopStyleVar();
-
-	ImGui::Columns(1);
-
-	ImGui::PopID();
-
-	return interacted;
-}
-
-void EditorUI::IdentifierText(const string& label, string& text, const float& columnWidth)
-{
-	ImGui::PushID(label.c_str());
-
-	ImGui::Columns(2);
-
-	ImGui::SetColumnWidth(0, columnWidth);
-	ImGui::Text(label.c_str());
-	ImGui::NextColumn();
-
-	ImGui::PushItemWidth(ImGui::CalcItemWidth());
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
-
-	ImGui::TextUnformatted(text.c_str());
-
-	ImGui::PopItemWidth();
-
-	ImGui::PopStyleVar();
-
-	ImGui::Columns(1);
-
-	ImGui::PopID();
+    ImGui::PopID();
 }
 
 bool EditorUI::Animation(const string& label, wstring& filepath, ID3D11ShaderResourceView* psrv, const float& columnWidth)
 {
-	bool interacted = false;
+    bool interacted = false;
 
-	ImGui::PushID(label.c_str());
+    ImGui::PushID(label.c_str());
 
-	ImGui::Columns(2);
+    ImGui::Columns(2);
 
-	ImGui::SetColumnWidth(0, columnWidth);
-	ImGui::Text(label.c_str());
-	ImGui::NextColumn();
+    ImGui::SetColumnWidth(0, columnWidth);
+    ImGui::Text(label.c_str());
 
-	ImGui::PushItemWidth(ImGui::CalcItemWidth());
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+    ImGui::NextColumn();
 
-	if (ImGui::TreeNode(label.c_str()) == true)
-	{
-		//Animation images
-		if (ImGui::ImageButton((void*)(intptr_t)psrv, DEFAULT_IMGUI_IMAGE_SIZE) == true)
-		{
-			WCHAR buffer[FILEPATH_BUFFER_SIZE];
+    ImGui::PushItemWidth(ImGui::CalcItemWidth());
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
 
-			EditorUI::OpenFolderExplorer(buffer, FILEPATH_BUFFER_SIZE);
+    if (ImGui::TreeNode(label.c_str()) == true)
+    {
+        //Animation images
+        if (ImGui::ImageButton((void*)(intptr_t)psrv, DEFAULT_IMGUI_IMAGE_SIZE) == true)
+        {
+            WCHAR buffer[FILEPATH_BUFFER_SIZE];
 
-			if (buffer[0] != '\0')
+			EditorUI::OpenFileExplorer(L"Animation Files\0*.json\0", buffer, FILEPATH_BUFFER_SIZE);
+
+			std::wstring tempPath = wstring(buffer);
+
+			int index = tempPath.find(L"Animations");
+
+			if (index == -1)
 			{
-				filepath = wstring(buffer);
-
-				interacted = true;
+				LOG("The resource specified isn't stored in a animation folder!");
 			}
-		}
+			else
+			{
+				//Get relative file path
+				filepath = tempPath.substr(index);
 
-		ImGui::TreePop();
-	}
+                interacted = true;
+            }
+        }
 
-	ImGui::PopItemWidth();
+		if (ImGui::BeginDragDropTarget())
+		{
+			const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowserFile", ImGuiDragDropFlags_SourceAllowNullID);
 
-	ImGui::PopStyleVar();
+			if (ppayload != nullptr)
+			{
+				std::string tempString = std::string((char*)ppayload->Data, ppayload->DataSize / sizeof(char));
+				std::wstring tempPath = wstring(tempString.begin(), tempString.end());
 
-	ImGui::Columns(1);
+				int index = tempPath.find(L"Animations");
 
-	ImGui::PopID();
+				if (index == -1)
+				{
+					LOG("The resource specified isn't stored in a animation folder!");
+				}
+				else
+				{
+					//Get relative file path
+					filepath = tempPath.substr(index);
 
-	return interacted;
+					interacted = true;
+				}
+			}
+
+            ImGui::EndDragDropTarget();
+        }
+
+        ImGui::TreePop();
+    }
+
+    ImGui::PopItemWidth();
+
+    ImGui::PopStyleVar();
+
+    ImGui::Columns(1);
+
+    ImGui::PopID();
+
+    return interacted;
 }
 
 void EditorUI::Animations(const string& label, unordered_map<string, SpriteAnimation>& animations, const float& columnWidth)
 {
-	char animName[ANIM_NAME_SIZE];
+    char animName[ANIM_NAME_SIZE];
 
-	wstring filepath = L"";
+    wstring filepath = L"";
 
-	string animOldName = "";
-	string animNewName = "";
+    string animOldName = "";
+    string animNewName = "";
+    string nameToUpdate = "";
 
-	bool updateAnim = false;
-	bool updateAnimName = false;
+    bool updateAnim = false;
+    bool updateAnimName = false;
 
-	for (unordered_map<string, SpriteAnimation>::iterator it = animations.begin(); it != animations.end(); ++it)
-	{
-		ImGui::PushID(label.c_str());
+    int count = 0;
 
-		ImGui::Columns(2);
+    for (unordered_map<string, SpriteAnimation>::iterator it = animations.begin(); it != animations.end(); ++it)
+    {
+        ImGui::PushID(to_string(count).c_str());
 
-		ImGui::SetColumnWidth(0, columnWidth);
+        ImGui::Columns(2);
 
-		strcpy_s(animName, it->first.c_str());
+        ImGui::SetColumnWidth(0, columnWidth);
 
-		if (ImGui::InputText("##Name", animName, ANIM_NAME_SIZE) == true)
-		{
-			animOldName = it->first;
-			animNewName = string(animName);
+        strcpy_s(animName, it->first.c_str());
 
-			updateAnimName = animNewName != "";
-		}
+        if (ImGui::InputText("##Name", animName, ANIM_NAME_SIZE) == true)
+        {
+            animOldName = it->first;
+            animNewName = string(animName);
 
-		ImGui::NextColumn();
+            updateAnimName = animNewName != "";
+        }
 
-		ImGui::PushItemWidth(ImGui::CalcItemWidth());
-		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+        ImGui::NextColumn();
 
-		if (ImGui::TreeNode(label.c_str()) == true)
-		{
-			//Animation images
-			if (ImGui::ImageButton((void*)(intptr_t)it->second.GetCurrentFrame(), DEFAULT_IMGUI_IMAGE_SIZE) == true)
-			{
-				WCHAR buffer[FILEPATH_BUFFER_SIZE];
+        ImGui::PushItemWidth(ImGui::CalcItemWidth());
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
 
-				EditorUI::OpenFolderExplorer(buffer, FILEPATH_BUFFER_SIZE);
+        if (ImGui::TreeNode(label.c_str()) == true)
+        {
+            //Animation images
+            if (ImGui::ImageButton((void*)(intptr_t)it->second.GetCurrentFrame(), DEFAULT_IMGUI_IMAGE_SIZE) == true)
+            {
+                WCHAR buffer[FILEPATH_BUFFER_SIZE];
 
-				filepath = wstring(buffer);
+				EditorUI::OpenFileExplorer(L"Animation Files\0*.json\0", buffer, FILEPATH_BUFFER_SIZE);
 
-				animOldName = it->first;
+				std::wstring tempPath = wstring(buffer);
 
-				updateAnim = filepath != L"";
+				int index = tempPath.find(L"Animations");
+
+				if (index == -1)
+				{
+					LOG("The resource specified isn't stored in a animation folder!");
+				}
+				else
+				{
+					//Get relative file path
+					filepath = tempPath.substr(index);
+
+					animOldName = it->first;
+
+					updateAnim = filepath != L"";
+
+					nameToUpdate = it->first;
+				}
 			}
 
-			ImGui::TreePop();
-		}
-
-		ImGui::PopItemWidth();
-
-		ImGui::PopStyleVar();
-
-		ImGui::Columns(1);
-
-		ImGui::PopID();
-	}
-
-	if (updateAnimName == true)
-	{
-		SpriteAnimation tempAnim = animations[animOldName];
-
-		animations.erase(animOldName);
-
-		animations.insert(pair<string, SpriteAnimation>(animNewName, tempAnim));
-	}
-
-	if (updateAnim == true)
-	{
-		SpriteAnimation anim = GraphicsManager::GetInstance()->GetAnimation(filepath);
-
-		if (anim.GetFrames() == nullptr)
-		{
-			if (GraphicsManager::GetInstance()->LoadAnimationFromFile(filepath) == false)
+			if (ImGui::BeginDragDropTarget())
 			{
-				animations[animName] = GraphicsManager::GetInstance()->GetAnimation(filepath);
-			}
-			else
-			{
-				LOG("Failed to load the animation!");
-			}
-		}
-		else
-		{
-			animations[animName] = anim;
-		}
-	}
+				const ImGuiPayload* ppayload = ImGui::AcceptDragDropPayload("ContentBrowserFile", ImGuiDragDropFlags_SourceAllowNullID);
+
+				if (ppayload != nullptr)
+				{
+					std::string tempString = std::string((char*)ppayload->Data, ppayload->DataSize / sizeof(char));
+					std::wstring tempPath = wstring(tempString.begin(), tempString.end());
+
+					int index = tempPath.find(L"Animations");
+
+					if (index == -1)
+					{
+						LOG("The resource specified isn't stored in a animation folder!");
+					}
+					else
+					{
+						//Get relative file path
+						filepath = tempPath.substr(index);
+
+						animOldName = it->first;
+
+						updateAnim = filepath != L"";
+
+						nameToUpdate = it->first;
+					}
+				}
+
+                ImGui::EndDragDropTarget();
+            }
+
+            ImGui::TreePop();
+        }
+
+        ImGui::PopItemWidth();
+
+        ImGui::PopStyleVar();
+
+        ImGui::Columns(1);
+
+        ImGui::PopID();
+
+        ++count;
+    }
+
+    if (updateAnimName == true)
+    {
+        SpriteAnimation tempAnim = animations[animOldName];
+
+        animations.erase(animOldName);
+
+        animations.insert(pair<string, SpriteAnimation>(animNewName, tempAnim));
+    }
+
+    if (updateAnim == true)
+    {
+        SpriteAnimation anim = GraphicsManager::GetInstance()->GetAnimation(filepath);
+
+        if (anim.GetFrames() == nullptr)
+        {
+            if (GraphicsManager::GetInstance()->LoadAnimationFromFile(filepath) == true)
+            {
+                animations[nameToUpdate] = GraphicsManager::GetInstance()->GetAnimation(filepath);
+            }
+            else
+            {
+                LOG("Failed to load the animation!");
+            }
+        }
+        else
+        {
+            animations[nameToUpdate] = anim;
+        }
+    }
 }
 
-bool EditorUI::DragFloat(const string& label, float& value, const float& columnWidth, const float& speed, const float& min, const float& max)
+bool EditorUI::DragFloat(const string& label, float& value, EditorUIFloatParameters parameters)
 {
-	bool interacted = false;
+    bool interacted = false;
 
-	ImGui::PushID(label.c_str());
+    ImGui::PushID(label.c_str());
 
-	ImGui::Columns(2);
+    ImGui::Columns(2);
 
-	ImGui::SetColumnWidth(0, columnWidth);
-	ImGui::Text(label.c_str());
-	ImGui::NextColumn();
+    ImGui::SetColumnWidth(0, parameters.m_columnWidth);
+    ImGui::Text(label.c_str());
+    SetupTooltip(parameters.m_tooltipText);
 
-	ImGui::PushItemWidth(ImGui::CalcItemWidth());
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+    ImGui::NextColumn();
 
-	interacted = ImGui::DragFloat("##Float", &value, speed, min, max, "%.2f");
+    ImGui::PushItemWidth(ImGui::CalcItemWidth());
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
 
-	ImGui::PopItemWidth();
+    interacted = ImGui::DragFloat("##Float", &value, parameters.m_speed, parameters.m_minValue, parameters.m_maxValue, "%.2f");
 
-	ImGui::PopStyleVar();
+    ImGui::PopItemWidth();
 
-	ImGui::Columns(1);
+    ImGui::PopStyleVar();
 
-	ImGui::PopID();
+    ImGui::Columns(1);
 
-	return interacted;
+    ImGui::PopID();
+
+    return interacted;
 }
 
+/// <summary>
+/// A title which spans the full length of the component editor window
+/// </summary>
+/// <param name="label">The title to display</param>
+/// <param name="columnWidth">The width of a single coloumn</param>
+void EditorUI::FullTitle(const string& label, EditorUINonSpecificParameters parameters)
+{
+    SetupDefaultsInParameters(parameters);
+
+    ImGui::Separator();
+    ImGui::PushID(label.c_str());
+
+    ImGui::Columns(1);
+    ImGui::Text(label.c_str());
+    SetupTooltip(parameters.m_tooltipText);
+
+    ImGui::PopID();
+    ImGui::Separator();
+}
+
+void EditorUI::ToolTip(const char* desc)
+{
+    if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
+    {
+        ImGui::BeginTooltip();
+        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+        ImGui::TextUnformatted(desc);
+        ImGui::PopTextWrapPos();
+        ImGui::EndTooltip();
+    }
+}
+
+/// <summary>
+/// Creates a section of UI which is sectioned off. Major sections of the UI should be in collapsing sections
+/// such that they do not clutter the User Interface
+/// </summary>
+/// <param name="label">The label to use in the UI</param>
+/// <param name="defaultValue">true means open on load, will retain value between equal headers.</param>
+/// <returns>Use this in the if statement, returns if the area is open or closed</returns>
+bool EditorUI::CollapsingSection(const string& label, bool defaultValue)
+{
+    ImGui::PushID(label.c_str());
+    ImGui::Columns(1);
+    bool returnValue = false;
+    if (defaultValue)
+    {
+        returnValue = ImGui::CollapsingHeader(label.c_str(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen);
+    }
+    else
+    {
+        returnValue = ImGui::CollapsingHeader(label.c_str(), ImGuiTreeNodeFlags_OpenOnArrow);
+    }
+    ImGui::PopID();
+    return returnValue;
+}
+
+/// <summary>
+/// Sets up the default parameters for floats with defaults where optional parameters were opt-out
+/// </summary>
+/// <param name="parameters">Parameters optionally required to display a float or set of floats in the editor</param>
+void EditorUI::SetupDefaultsInParameters(EditorUIFloatParameters& parameters)
+{
+    if (parameters.m_columnWidth == NULL)
+    {
+        parameters.m_columnWidth = GetDefaultColumnWidth();
+    }
+
+    if (parameters.m_speed == NULL)
+    {
+        parameters.m_speed = GetDefaultSpeed();
+    }
+
+    if (parameters.m_minValue == NULL)
+    {
+        parameters.m_minValue = GetDefaultMinimumValue();
+    }
+
+    if (parameters.m_maxValue == NULL)
+    {
+        parameters.m_maxValue = GetDefaultMaximumValue();
+    }
+
+    if (parameters.m_tooltipText == NULL)
+    {
+        parameters.m_tooltipText = "";
+    }
+}
+
+/// <summary>
+/// Sets up the default parameters for ints with defaults where optional parameters were opt-out
+/// </summary>
+/// <param name="parameters">Parameters optionally required to display a ints or set of ints in the editor</param>
+void EditorUI::SetupDefaultsInParameters(EditorUIIntParameters& parameters)
+{
+    if (parameters.m_columnWidth == NULL)
+    {
+        parameters.m_columnWidth = GetDefaultColumnWidth();
+    }
+
+    if (parameters.m_speed == NULL)
+    {
+        parameters.m_speed = GetDefaultSpeed();
+    }
+
+    if (parameters.m_minValue == NULL)
+    {
+        parameters.m_minValue = (int)GetDefaultMinimumValue();
+    }
+
+    if (parameters.m_maxValue == NULL)
+    {
+        parameters.m_maxValue = (int)GetDefaultMaximumValue();
+    }
+
+    if (parameters.m_tooltipText == NULL)
+    {
+        parameters.m_tooltipText = "";
+    }
+}
+
+/// <summary>
+/// Sets up the default parameters for inputs which do not have any data which relate to one another
+/// </summary>
+/// <param name="parameters">Sets up the default parameters for inputs which do not have any data which relate to one another</param>
+void EditorUI::SetupDefaultsInParameters(EditorUINonSpecificParameters& parameters)
+{
+    if (parameters.m_columnWidth == NULL)
+    {
+        parameters.m_columnWidth = GetDefaultColumnWidth();
+    }
+
+    if (parameters.m_tooltipText == NULL)
+    {
+        parameters.m_tooltipText = "";
+    }
+}
+
+/// <summary>
+/// If tooltip text found, it will add tooltip text to which ever element is just displayed from IMGUI
+/// </summary>
+/// <param name="tooltipText">Text to display in the tooltip</param>
+void EditorUI::SetupTooltip(char* tooltipText)
+{
+    if (tooltipText == "")
+    {
+        return;
+    }
+
+    if (ImGui::IsItemHovered())
+    {
+        ImGui::BeginTooltip();
+        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+        ImGui::TextUnformatted(tooltipText);
+        ImGui::PopTextWrapPos();
+        ImGui::EndTooltip();
+    }
+}
+
+/// <summary>
+/// Displays a single button on the interface
+/// </summary>
+/// <param name="label">Label on the button</param>
+/// <returns>True, means the button is pressed</returns>
+bool EditorUI::BasicButton(const string& label)
+{
+    return ImGui::Button(label.c_str());
+}
+
+/// <summary>
+/// Displays two buttons on the interface using the coloumn system
+/// </summary>
+/// <param name="leftLabel">Label on the left button</param>
+/// <param name="rightLabel">Label on the right button</param>
+/// <param name="parameters">Optional parameters - Tooltip is ignored</param>
+/// <returns>EditorButtonCallback containing callbacks from the buttons</returns>
+EditorButtonCallback EditorUI::BasicDuelButtons(const string& leftLabel, const string& rightLabel, EditorUINonSpecificParameters parameters)
+{
+    SetupDefaultsInParameters(parameters);
+
+    EditorButtonCallback callbacks = EditorButtonCallback();
+
+    ImGui::Separator();
+    ImGui::PushID(leftLabel.c_str());
+
+    ImGui::Columns(2);
+    ImGui::SetColumnWidth(0, parameters.m_columnWidth);
+
+    callbacks.m_leftButton = BasicButton(leftLabel);
+
+    ImGui::NextColumn();
+
+    ImGui::SetColumnWidth(0, parameters.m_columnWidth);
+
+    callbacks.m_rightButton = BasicButton(rightLabel);
+
+    ImGui::NextColumn();
+
+    ImGui::PushItemWidth(ImGui::CalcItemWidth());
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+    ImGui::PopItemWidth();
+    ImGui::PopStyleVar();
+    ImGui::PopID();
+
+    ImGui::Separator();
+
+    return callbacks;
+}
+
+/// <summary>
+/// Called to display the error message box in the key
+/// </summary>
+/// <param name="key">A unique key for the error message box. Recommended: [ClassName]_[Something Unique with your class]</param>
+void EditorUI::ShowError(const string& key)
+{
+    ImGui::PushID(key.c_str());
+    ImGui::OpenPopup(key.c_str());
+    ImGui::PopID();
+}
+
+/// <summary>
+/// Stores the state of the error message box.
+/// Store the result of this in a bool used to show if the error box is on screen or not.
+/// </summary>
+/// <param name="key">A unique key for the error message box. Recommended: [ClassName]_[Something Unique with your class]</param>
+/// <param name="body">The error to display</param>
+/// <param name="doPopupInCenter">true means the popup will display near to the center of the screen. Default is false.</param>
+/// <returns>True means popup is still on the screen</returns>
+bool EditorUI::ErrorPopupBox(const string& key, const string& body, bool doPopupInCenter)
+{
+    ImGuiStyle& style = ImGui::GetStyle();
+    ImGui::PushStyleColor(ImGuiCol_MenuBarBg, style.Colors[ImGuiCol_Header]);
+
+    if (doPopupInCenter)
+    {
+        SetNextWindowToCenter();
+    }
+
+    ImGui::PushID(key.c_str());
+    bool popup = ImGui::BeginPopup(key.c_str(), ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize);
+    if (popup)
+    {
+        if (ImGui::BeginMenuBar())
+        {
+            ImGui::Text("Error message");
+            ImGui::EndMenuBar();
+        }
+
+        ImGui::Text(body.c_str());
+
+        ImGui::EndPopup();
+    }
+
+    ImGui::PopStyleColor();
+    ImGui::PopID();
+
+    return popup;
+}
+
+/// <summary>
+/// Stores the state of the error message box.
+/// Store the result of this in a bool used to show if the error box is on screen or not.
+/// </summary>
+/// <param name="key">A unique key for the error message box. Recommended: [ClassName]_[Something Unique with your class]</param>
+/// <param name="body">The error to display</param>
+/// <param name="doPopupInCenter">true means the popup will display near to the center of the screen. Default is false.</param>
+/// <returns>True means popup is still on the screen</returns>
+EditorButtonCallback EditorUI::ErrorPopupBoxWithOptions(
+    const string& key,
+    const string& body,
+    const string& leftButton,
+    const string& rightButton,
+    bool doPopupInCenter
+)
+{
+    ImGuiStyle& style = ImGui::GetStyle();
+    ImGui::PushStyleColor(ImGuiCol_MenuBarBg, style.Colors[ImGuiCol_Header]);
+
+    if (doPopupInCenter)
+    {
+        SetNextWindowToCenter();
+    }
+
+    EditorButtonCallback callback = EditorButtonCallback();
+
+    ImGui::PushID(key.c_str());
+    bool popup = ImGui::BeginPopup(key.c_str(), ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize);
+    if (popup)
+    {
+        if (ImGui::BeginMenuBar())
+        {
+            ImGui::Text("Error message");
+
+            ImGui::EndMenuBar();
+        }
+
+        ImGui::Text(body.c_str());
+
+        callback = BasicDuelButtons(leftButton, rightButton);
+
+        ImGui::EndPopup();
+    }
+
+    ImGui::PopStyleColor();
+    ImGui::PopID();
+
+    return callback;
+}
+
+/// <summary>
+/// Pops up the next window in the center
+/// </summary>
+void EditorUI::SetNextWindowToCenter()
+{
+    ImGuiIO& io = ImGui::GetIO();
+    ImVec2 pos(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
+    ImGui::SetNextWindowPos(pos, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+}
+
+/// <summary>
+/// Standard combo box with strings as inputs
+/// </summary>
+/// <param name="label">The label to use</param>
+/// <param name="values">A list of values as string</param>
+/// <param name="selected">The selected value (updated as selected)</param>
+/// <param name="parameters">The non-spesfic parametres</param>
+/// <returns>True means the selection has changed</returns>
+bool EditorUI::ComboBox(const string& label, list<string>& values, string& selected, EditorUINonSpecificParameters parameters)
+{
+    SetupDefaultsInParameters(parameters);
+
+    ImGui::PushID(label.c_str());
+
+    ImGui::Columns(2);
+
+    ImGui::SetColumnWidth(0, parameters.m_columnWidth);
+    ImGui::Text(label.c_str());
+    SetupTooltip(parameters.m_tooltipText);
+
+    ImGui::NextColumn();
+
+    ImGui::PushItemWidth(ImGui::CalcItemWidth());
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+    if (values.size() > 0)
+    {
+        if (selected == "")
+        {
+            selected = values.front();
+        }
+        else if (std::find(values.begin(), values.end(), selected) == values.end())
+        {
+            selected = values.front();
+        }
+    }
+
+
+    string originalSelection = selected;
+    
+    if (ImGui::BeginCombo("", selected.c_str()))
+    {
+        std::list<string>::iterator it;
+        for (it = values.begin(); it != values.end(); it++)
+        {
+            const bool is_selected = it->c_str() == selected;
+            if (ImGui::Selectable(it->c_str(), is_selected))
+            {
+                selected = it->c_str();
+            }
+
+            if (is_selected)
+            {
+                ImGui::SetItemDefaultFocus();
+            }
+        }
+
+        ImGui::EndCombo();
+    }
+
+    ImGui::PopItemWidth();
+
+    ImGui::PopStyleVar();
+
+    ImGui::Columns(1);
+
+    ImGui::PopID();
+
+    return selected != originalSelection;
+}
+
+/// <summary>
+/// Standard combo box with strings as inputs
+/// </summary>
+/// <param name="label">The label to use</param>
+/// <param name="values">A list of values as string</param>
+/// <param name="selected">The selected value (updated as selected)</param>
+/// <param name="parameters">The non-spesfic parametres</param>
+/// <returns>True means the selection has changed</returns>
+bool EditorUI::ComboBox(const string& label, list<pair<int, string>>& values, pair<int, string>& selected, EditorUINonSpecificParameters parameters)
+{
+    SetupDefaultsInParameters(parameters);
+
+    ImGui::PushID(label.c_str());
+
+    ImGui::Columns(2);
+
+    ImGui::SetColumnWidth(0, parameters.m_columnWidth);
+    ImGui::Text(label.c_str());
+    SetupTooltip(parameters.m_tooltipText);
+
+    ImGui::NextColumn();
+
+    ImGui::PushItemWidth(ImGui::CalcItemWidth());
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+    if (values.size() > 0)
+    {
+        if (selected.second == "")
+        {
+            selected = values.front();
+        }
+        else if (std::find(values.begin(), values.end(), selected) == values.end())
+        {
+            selected = values.front();
+        }
+    }
+
+    pair<int, string> originalSelection = selected;
+
+    if (ImGui::BeginCombo("", selected.second.c_str()))
+    {
+        std::list<pair<int, string>>::iterator it;
+        for (it = values.begin(); it != values.end(); it++)
+        {
+            const bool is_selected = *it == selected;
+            if (ImGui::Selectable(it->second.c_str(), is_selected))
+            {
+                selected = *it;
+            }
+
+            if (is_selected)
+            {
+                ImGui::SetItemDefaultFocus();
+            }
+        }
+
+        ImGui::EndCombo();
+    }
+
+    ImGui::PopItemWidth();
+
+    ImGui::PopStyleVar();
+
+    ImGui::Columns(1);
+
+    ImGui::PopID();
+
+    return selected != originalSelection;
+}
 #endif

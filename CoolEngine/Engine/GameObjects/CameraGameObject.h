@@ -13,9 +13,13 @@ private:
     float m_farDepth;
 
 public:
-	CameraGameObject(string identifier);
+	CameraGameObject(string identifier, CoolUUID uuid);
+	CameraGameObject(const nlohmann::json& data, CoolUUID index);
+	CameraGameObject(CameraGameObject const& other);
+  
+	virtual ~CameraGameObject()override;
 
-    void Initialize(XMFLOAT3& position, XMFLOAT3& forwardVector, XMFLOAT3& upVector,
+    virtual void Initialize(const XMFLOAT3& position, XMFLOAT3& forwardVector, XMFLOAT3& upVector,
         float& windowWidth, float& windowHeight, float& nearDepth, float& farDepth);
 
     void CreateViewMatrix();
@@ -24,11 +28,17 @@ public:
     void ReshapeCamera(float newWindowWidth, float newWindowHeight, float
         newNearDepth, float newFarDepth);
 
-    void Update();
+    virtual void Update()override;
+    virtual void EditorUpdate()override;
+
+    virtual void Serialize(nlohmann::json& jsonData) override;
+
+    void LoadLocalData(const nlohmann::json& jsonData);
+    void SaveLocalData(nlohmann::json& jsonData);
 
 	//Getters
 	XMFLOAT4X4 GetView() const;
 	XMFLOAT4X4 GetProjection() const;
 	XMFLOAT4X4 GetViewProjection() const;
+    XMFLOAT2& GetMousePositionInWorldSpace()const;
 };
-

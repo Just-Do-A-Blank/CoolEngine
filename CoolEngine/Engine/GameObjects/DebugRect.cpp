@@ -2,7 +2,7 @@
 #include "DebugRect.h"
 #include "Engine/ResourceDefines.h"
 
-DebugRect::DebugRect(wstring albedoName, string identifier, bool screenSpace) : RenderableGameObject(identifier)
+DebugRect::DebugRect(wstring albedoName, string identifier, CoolUUID uuid, bool screenSpace) : RenderableGameObject(identifier, uuid)
 {
 	SetAlbedo(albedoName);
 
@@ -18,6 +18,15 @@ DebugRect::DebugRect(wstring albedoName, string identifier, bool screenSpace) : 
 	}
 }
 
+DebugRect::DebugRect(DebugRect const& other) : RenderableGameObject(other)
+{
+	m_colour = other.m_colour;
+}
+
+DebugRect::~DebugRect()
+{
+}
+
 void DebugRect::SetDebugColour(DebugDrawManager::DebugColour colour)
 {
 	m_colour = colour;
@@ -29,6 +38,10 @@ void DebugRect::Render(RenderStruct& renderStruct)
 }
 
 void DebugRect::Update()
+{
+}
+
+void DebugRect::EditorUpdate()
 {
 }
 

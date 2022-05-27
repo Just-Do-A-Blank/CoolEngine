@@ -1,9 +1,12 @@
 #pragma once
+#include "Engine/Structure/Singleton.h"
 
-class Inputs
+#define NUM_KEYCODES 256
+
+class Inputs : public Singleton<Inputs>
 {
 public:
-
+	bool IsKeyPressed(int ikeycode);
 
 	void Update(HWND* hWnd, UINT* message, WPARAM* wParam, LPARAM* lParam);
 
@@ -14,5 +17,5 @@ public:
 	void Initialize();
 	void Update();
 
-	bool m_keyState[256] = { false };
+	bool m_keyState[NUM_KEYCODES] = { false };
 };
