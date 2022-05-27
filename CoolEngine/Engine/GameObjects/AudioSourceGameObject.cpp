@@ -166,7 +166,7 @@ void AudioSourceGameObject::OnTriggerHold(GameObject* obj1, GameObject* obj2)
 		isPlaying = false;
 	}
 
-	if (m_playOnOverlap == false || isPlaying == true)
+	if (m_playOnOverlap == false || isPlaying == true || (obj1 != this && obj2 != this))
 	{
 		return;
 	}
