@@ -236,7 +236,10 @@ void Collision::Update(vector<GameObject*> gameObjectMap)
 		{
 			XMFLOAT3 p = pcollidable1->GetTransform()->GetWorldPosition();
 			XMFLOAT2 d = pcollidable1->GetShape()->GetShapeDimensions();
+
+#if _DEBUG
 			DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect(p, XMFLOAT3(d.x, d.y, 1), DebugDrawManager::DebugColour::PURPLE);
+#endif
 		}
 	}
 
@@ -345,14 +348,20 @@ void Collision::Update(vector<GameObject*>& gameObjectMap, vector<Tile*>& tiles)
 			{
 				XMFLOAT3 p = pcollidable->GetTransform()->GetWorldPosition();
 				XMFLOAT2 d = pcollidable->GetShape()->GetShapeDimensions();
+
+#if _DEBUG
 				DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect(p, XMFLOAT3(d.x, d.y, 1), DebugDrawManager::DebugColour::PURPLE);
+#endif
 			}
 
 			if (tiles[j]->GetShape() != nullptr && tiles[j]->GetShape()->IsRendered())
 			{
 				XMFLOAT3 p = tiles[j]->GetTransform()->GetWorldPosition();
 				XMFLOAT2 d = tiles[j]->GetShape()->GetShapeDimensions();
+
+#if _DEBUG
 				DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect(p, XMFLOAT3(d.x, d.y, 1), DebugDrawManager::DebugColour::PURPLE);
+#endif
 			}
 
 			if (pcollidable->GetShape()->IsCollidable() == true)
