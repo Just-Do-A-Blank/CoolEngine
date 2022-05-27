@@ -16,6 +16,8 @@ public:
 
 	void SetSceneName(string path);
 
+	void UpdateDoorState();
+
 #if EDITOR
 	virtual void CreateEngineUI() override;
 #endif

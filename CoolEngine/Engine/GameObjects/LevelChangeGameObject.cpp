@@ -3,17 +3,20 @@
 #include "Engine/Managers/GameManager.h"
 #include "Engine/EditorUI/EditorUI.h"
 
+
 LevelChangeGameObject::LevelChangeGameObject() : TriggerableGameObject()
 {
     m_gameObjectType |= GameObjectType::LEVEL_CHANGE;
 
     m_playerName = "Player";
+
 }
 
 LevelChangeGameObject::LevelChangeGameObject(string identifier, CoolUUID uuid) : TriggerableGameObject(identifier, uuid)
 {
     m_gameObjectType |= GameObjectType::LEVEL_CHANGE;
     m_playerName = "Player";
+
 }
 
 LevelChangeGameObject::LevelChangeGameObject(const nlohmann::json& data, CoolUUID uuid) : TriggerableGameObject(data, uuid)
@@ -22,6 +25,7 @@ LevelChangeGameObject::LevelChangeGameObject(const nlohmann::json& data, CoolUUI
 
     m_sceneName = data["LevelChangeName"];
     m_playerName = data["PlayerName"];
+
 }
 
 LevelChangeGameObject::LevelChangeGameObject(LevelChangeGameObject const& other) : TriggerableGameObject(other)
@@ -81,9 +85,32 @@ void LevelChangeGameObject::SetSceneName(string name)
     m_sceneName = name;
 }
 
+void LevelChangeGameObject::UpdateDoorState()
+{
+    int enemycount = 0;
+
+    for each (GameObject * var in GameManager::GetInstance()->GetAllGameObjectsInCurrentScene())
+    {
+        if (var->GetGameObjectType() == (GameObjectType)16)
+        {
+            enemycount + 1;
+        }
+    }
+
+    if (enemycount > 0)
+    {
+        GetAnimationStateMachine()->SetActiveState("DoorOpenned");
+    }
+    else
+    {
+        GetAnimationStateMachine()->SetActiveState("DoorClosed");
+    }
+
+}
+
 void LevelChangeGameObject::OnTriggerHold(GameObject* obj1, GameObject* obj2)
 {
-    if (obj1->ContainsType(GameObjectType::PLAYER) && obj2->ContainsType(GameObjectType::LEVEL_CHANGE))
+    if (obj1->ContainsType(GameObjectType::PLAYER) && obj2->ContainsType(GameObjectType::LEVEL_CHANGE) && GetAnimationStateMachine()->GetStateName(GetAnimationStateMachine()->GetActiveState()) == "OpennedDoor")
     {
         string sceneFilePath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Levels\\" + m_sceneName + ".json";
         if (!GameManager::GetInstance()->SwitchSceneUsingIdentifier(sceneFilePath))
