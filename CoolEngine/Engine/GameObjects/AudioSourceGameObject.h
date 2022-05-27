@@ -13,6 +13,7 @@ public:
 	AudioSourceGameObject(string identifier, CoolUUID uuid);
 	AudioSourceGameObject(const nlohmann::json& data, CoolUUID uuid);
 	AudioSourceGameObject(AudioSourceGameObject const& other);
+	virtual ~AudioSourceGameObject();
 
 	//Getters
 	const float& GetVolume() const;

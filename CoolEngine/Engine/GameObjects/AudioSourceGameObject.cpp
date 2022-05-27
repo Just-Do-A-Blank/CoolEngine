@@ -33,6 +33,14 @@ AudioSourceGameObject::AudioSourceGameObject(AudioSourceGameObject const& other)
 	m_playOnOverlap = other.m_playOnOverlap;
 }
 
+AudioSourceGameObject::~AudioSourceGameObject()
+{
+	if (m_pchannel != nullptr)
+	{
+		FMOD_RESULT result = m_pchannel->stop();
+	}
+}
+
 const float& AudioSourceGameObject::GetVolume() const
 {
 	return m_volume;
