@@ -1,0 +1,13 @@
+Images:
+
+hud/heart1
+hud/heart2
+hud/heart3
+
+hud/stamina1
+hud/stamina2
+
+hud/weaponholding
+
+text:
+hud/weaponstrength

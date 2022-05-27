@@ -128,7 +128,6 @@ void TileMap::Update()
 			if (m_tiles[i][j] != nullptr)
 			{
 				m_tiles[i][j]->Update();
-				m_tiles[i][j]->GetTransform()->UpdateMatrix();
 			}
 		}
 	}
@@ -152,7 +151,6 @@ void TileMap::EditorUpdate()
 			if (m_tiles[i][j] != nullptr)
 			{
 				m_tiles[i][j]->Update();
-				m_tiles[i][j]->GetTransform()->UpdateMatrix();
 			}
 		}
 	}
