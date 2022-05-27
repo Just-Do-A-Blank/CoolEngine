@@ -83,15 +83,16 @@ void LevelChangeGameObject::SetSceneName(string name)
 
 void LevelChangeGameObject::OnTriggerHold(GameObject* obj1, GameObject* obj2)
 {
-    if (obj1->ContainsType(GameObjectType::PLAYER) && obj2->ContainsType(GameObjectType::LEVEL_CHANGE))
-    {
-        string sceneFilePath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Levels\\" + m_sceneName + ".json";
-        if (!GameManager::GetInstance()->SwitchSceneUsingIdentifier(sceneFilePath))
-        {
-            GameManager::GetInstance()->LoadSceneFromFile(sceneFilePath);
-            GameManager::GetInstance()->SwitchSceneUsingIdentifier(m_sceneName, m_playerName, true);
-        }
-    }
+	if (obj1->ContainsType(GameObjectType::LEVEL_CHANGE) && obj2->ContainsType(GameObjectType::PLAYER) ||
+		obj2->ContainsType(GameObjectType::LEVEL_CHANGE) && obj1->ContainsType(GameObjectType::PLAYER))
+	{
+		string sceneFilePath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Levels\\" + m_sceneName + ".json";
+		if (!GameManager::GetInstance()->SwitchSceneUsingIdentifier(sceneFilePath))
+		{
+			GameManager::GetInstance()->LoadSceneFromFile(sceneFilePath, m_playerName, true);
+			m_sceneName = "";
+		}
+	}
 }
 
 #if EDITOR

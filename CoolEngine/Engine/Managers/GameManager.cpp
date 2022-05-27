@@ -780,6 +780,9 @@ void GameManager::Deserialize(nlohmann::json& data)
 
 	string sceneName = data["SceneName"];
 	Scene* pnewScene = new Scene(sceneName);
+	GetCurrentViewStateSceneMap().insert(pair<string, Scene*>(sceneName, pnewScene));
+
+	vector<CharacterGameObject*> penemies;
 
 	for (nlohmann::json::const_iterator typeIt = data.begin(); typeIt != data.end(); ++typeIt)
 	{
@@ -823,6 +826,8 @@ void GameManager::Deserialize(nlohmann::json& data)
 			case AccumlateType::ENEMY:
 				gameObjects[*uuid] = new EnemyGameObject(data[typeIt.key()][uuidString], uuid);
 				gameObjects[*uuid]->m_UUID = uuid;
+
+				penemies.push_back(dynamic_cast<CharacterGameObject*>(gameObjects[*uuid]));
 				break;
 
 			case AccumlateType::PLAYER:
@@ -954,9 +959,16 @@ void GameManager::Deserialize(nlohmann::json& data)
 		pnode->NodeObject->GetTransform()->UpdateMatrix();
 
 		pnode = pnode->Sibling;
+	}	
+
+	Scene*& currentScene = GetCurrentViewStateScene();
+	currentScene = pnewScene;
+
+	for (int i = 0; i < penemies.size(); ++i)
+	{
+		penemies[i]->Start();
 	}
 
-	GetCurrentViewStateSceneMap().insert(pair<string, Scene*>(sceneName, pnewScene));
 }
 
 unordered_map<string, Scene*>& GameManager::GetCurrentViewStateSceneMap()
@@ -1006,7 +1018,7 @@ void GameManager::CreateScene(string sceneIdentifier, bool unloadCurrentScene)
 	pcurrentScene = newScene;
 }
 
-bool GameManager::LoadSceneFromFile(std::string fileLocation, bool unloadCurrentScene)
+bool GameManager::LoadSceneFromFile(std::string fileLocation, string playerIdentifier, bool unloadCurrentScene)
 {
 	ifstream fileIn(fileLocation);
 	if (fileIn.is_open())
@@ -1018,12 +1030,27 @@ bool GameManager::LoadSceneFromFile(std::string fileLocation, bool unloadCurrent
 		GraphicsManager::GetInstance()->Deserialize(dataIn);
 		FontManager::GetInstance()->Deserialize(dataIn);
 
-		if (unloadCurrentScene && GetCurrentViewStateScene())
-		{
-			DeleteCurrentScene();
-		}
+		Scene* oldScene = GetCurrentViewStateScene();
 
 		Deserialize(dataIn);
+
+		if (playerIdentifier != "")
+		{
+			PlayerGameObject* pplayer = oldScene->GetGameObjectUsingIdentifier<PlayerGameObject>(playerIdentifier);
+			GetCurrentViewStateScene()->CopyGameObject<PlayerGameObject>(*pplayer);
+		}
+
+		if (unloadCurrentScene && oldScene)
+		{
+			oldScene->m_psceneGraph->DeleteAllGameObjects();
+			m_pbulletCreator->DeleteBullets();
+
+			unordered_map<string, Scene*>& sceneMap = GetCurrentViewStateSceneMap();
+			sceneMap.erase(oldScene->GetSceneIdentifier());
+
+			delete oldScene;
+			oldScene = nullptr;
+		}
 		return true;
 	}
 	return false;

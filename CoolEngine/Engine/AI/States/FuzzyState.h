@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/Includes/json.hpp"
 
+class EnemyGameObject;
 enum class FuzzyStateType
 {
 	MELEE_MOVEMENT = 0,
@@ -15,9 +16,9 @@ enum class FuzzyStateType
 class FuzzyState
 {
 public:
-	FuzzyState();
-	FuzzyState(const nlohmann::json& data);
-	FuzzyState(const FuzzyState* pother);
+	FuzzyState(EnemyGameObject* penemy);
+	FuzzyState(const nlohmann::json& data, EnemyGameObject* penemy);
+	FuzzyState(const FuzzyState* pother, EnemyGameObject* penemy);
 
 	virtual void Enter() = 0;
 	virtual void Exit() = 0;
@@ -48,6 +49,7 @@ public:
 
 protected:
 	FuzzyStateType m_stateType = FuzzyStateType::COUNT;
+	EnemyGameObject* m_penemy = nullptr;
 
 private:
 	float m_activationLevel = 0.5f;
