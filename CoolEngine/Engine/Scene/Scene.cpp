@@ -42,25 +42,24 @@ void Scene::Update()
 
 	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
 	vector<GameObject*> updateList;
-	PlayerGameObject* pgO = nullptr;
+	CollidableGameObject* cgO = nullptr;
 
 	updateList.reserve(gameObjectList.size());
 
 	for (size_t i = 0; i < gameObjectList.size(); i++)
 	{
-		if (gameObjectList[i]->ContainsType(GameObjectType::PLAYER))
+		if (gameObjectList[i]->ContainsType(GameObjectType::COLLIDABLE) && gameObjectList[i]->GetIdentifier() == "Player")
 		{
-			pgO = dynamic_cast<PlayerGameObject*>( gameObjectList[i]);
+			cgO = dynamic_cast<CollidableGameObject*>(gameObjectList[i]);
+			if (cgO == nullptr)
+			{
+				return;
+			}
 		}
 	}
+	
+	m_quadtree->GetUpdateList(cgO, updateList);
 
-	if (pgO == nullptr)
-	{
-		return;
-	}
-
-	m_quadtree->GetUpdateList(pgO, updateList);
-	 
 	for (int it = 0; it < updateList.size(); ++it)
 	{
 		updateList[it]->Update();
@@ -92,24 +91,23 @@ void Scene::Render(RenderStruct& renderStruct)
 
 	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
 	vector<GameObject*> updateList;
-	PlayerGameObject* pgO = nullptr;
+	CollidableGameObject* cgO = nullptr;
 
 	updateList.reserve(gameObjectList.size());
 
 	for (size_t i = 0; i < gameObjectList.size(); i++)
 	{
-		if (gameObjectList[i]->ContainsType(GameObjectType::PLAYER))
+		if (gameObjectList[i]->ContainsType(GameObjectType::COLLIDABLE) && gameObjectList[i]->GetIdentifier() == "Player")
 		{
-			pgO = dynamic_cast<PlayerGameObject*>(gameObjectList[i]);
+			cgO = dynamic_cast<CollidableGameObject*>(gameObjectList[i]);
+			if (cgO == nullptr)
+			{
+				return;
+			}
 		}
 	}
 
-	if (pgO == nullptr)
-	{
-		return;
-	}
-
-	m_quadtree->GetUpdateList(pgO, updateList);
+	m_quadtree->GetUpdateList(cgO, updateList);
 
 	for (int it = 0; it < updateList.size(); ++it)
 	{

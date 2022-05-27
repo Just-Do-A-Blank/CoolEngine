@@ -4,6 +4,7 @@
 
 Quadtree::Quadtree(XMFLOAT2 pos , int childrenSize, CompassFacing direction, int distantOffset)
 {
+    m_Initialized = false;
     m_angle = pos;
     m_children.reserve(childrenSize);
     m_maxNodeSize = childrenSize;
@@ -30,6 +31,18 @@ Quadtree::Quadtree(XMFLOAT2 pos, int childrenSize, int distantOffset)
     m_maxNodeSize = childrenSize;
     m_direction = CompassFacing::Centre;
     m_objectOffset = distantOffset;
+
+    XMFLOAT3 pos3 = XMFLOAT3(pos.x, pos.y, 0);
+    XMFLOAT3 rot = XMFLOAT3(0, 0, 0);
+    XMFLOAT3 scal = XMFLOAT3(distantOffset, distantOffset, 1);
+
+    m_Anchor = new GameObject();
+    m_Anchor->GetTransform()->SetWorldPosition(pos3);
+    m_Anchor->GetTransform()->SetWorldRotation(rot);
+    m_Anchor->GetTransform()->SetWorldScale(scal);
+
+
+    m_Collider = new Box(m_Anchor);
 
     m_NW = new Quadtree(XMFLOAT2(-1.f + pos.x, pos.y), childrenSize, CompassFacing::NorthWest, distantOffset);
     m_NE = new Quadtree(XMFLOAT2(1.f + pos.x, pos.y), childrenSize, CompassFacing::NorthEast, distantOffset);
@@ -130,25 +143,52 @@ bool Quadtree::RemoveObject(GameObject* pgameObjectAddress)
 }
 
 
-void Quadtree::GetUpdateList(CollidableGameObject* player, std::vector<GameObject*>& listToUpdate)
+void Quadtree::GetUpdateList(CollidableGameObject* obj, std::vector<GameObject*>& listToUpdate)
 {
-    Transform* t = player->GetTransform();
+    Transform* t = obj->GetTransform();
     XMFLOAT2 updatePoint = XMFLOAT2(t->GetWorldPosition().x, t->GetWorldPosition().y);
-    if (m_direction == CompassFacing::Centre)
-    {
-        CheckForObjectUpdate(listToUpdate);
-    }
-    if (m_NW == nullptr)
-    {
-        return;
-    }
-    
-    PlayerGameObject* gObj = dynamic_cast<PlayerGameObject*>(SimpleQueryByIdentifier("Player"));
 
-    m_NW->Collides(player, listToUpdate);
-    m_NE->Collides(player, listToUpdate);
-    m_SW->Collides(player, listToUpdate);
-    m_SE->Collides(player, listToUpdate);
+    Box* boxCollider = nullptr;
+    Circle* circleCollider = nullptr;
+    switch (obj->GetShape()->GetShapeType())
+    {
+    case ShapeType::BOX:
+        boxCollider = dynamic_cast<Box*>(obj->GetShape());
+        if (m_direction == CompassFacing::Centre && m_Collider->Collide(boxCollider))
+        {
+            CheckForObjectUpdate(listToUpdate);
+        }
+        if (m_NW == nullptr)
+        {
+            return;
+        }
+
+        m_NW->Collides(obj, listToUpdate);
+        m_NE->Collides(obj, listToUpdate);
+        m_SW->Collides(obj, listToUpdate);
+        m_SE->Collides(obj, listToUpdate);
+        break;
+    case ShapeType::CIRCLE:
+        circleCollider = dynamic_cast<Circle*>(obj->GetShape());
+        if (m_direction == CompassFacing::Centre && m_Collider->Collide(circleCollider))
+        {
+            CheckForObjectUpdate(listToUpdate);
+        }
+        if (m_NW == nullptr)
+        {
+            return;
+        }
+
+        m_NW->Collides(obj, listToUpdate);
+        m_NE->Collides(obj, listToUpdate);
+        m_SW->Collides(obj, listToUpdate);
+        m_SE->Collides(obj, listToUpdate);
+        break;
+    case ShapeType::COUNT:
+        break;
+    default:
+        break;
+    }
 
 }
 
