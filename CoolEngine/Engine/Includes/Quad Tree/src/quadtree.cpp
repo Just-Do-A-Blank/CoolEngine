@@ -20,7 +20,7 @@ Quadtree::Quadtree(XMFLOAT2 pos , int childrenSize, CompassFacing direction, int
     m_Anchor->GetTransform()->SetParentTransform(nullptr);
 
 
-    m_Collider = new Box(m_Anchor);
+    m_Collider = new Box(m_Anchor, XMFLOAT2(distantOffset, distantOffset));
 }
 
 Quadtree::Quadtree(XMFLOAT2 pos, int childrenSize, int distantOffset)
@@ -40,6 +40,8 @@ Quadtree::Quadtree(XMFLOAT2 pos, int childrenSize, int distantOffset)
     m_Anchor->GetTransform()->SetParentTransform(nullptr);
 
     m_Collider = new Box(m_Anchor);
+    m_Collider->GetShapeDimensions() = XMFLOAT2(distantOffset, distantOffset);
+    m_Collider->UpdateShapeDimensions();
 
     m_NW = new Quadtree(XMFLOAT2(-1.f + pos.x, pos.y), childrenSize, CompassFacing::NorthWest, distantOffset);
     m_NE = new Quadtree(XMFLOAT2(1.f + pos.x, pos.y), childrenSize, CompassFacing::NorthEast, distantOffset);

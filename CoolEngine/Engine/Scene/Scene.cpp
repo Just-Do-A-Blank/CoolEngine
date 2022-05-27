@@ -46,25 +46,29 @@ void Scene::Update()
 
 	updateList.reserve(gameObjectList.size());
 
+	for (int it = 0; it < gameObjectList.size(); ++it)
+	{
+		//gameObjectList[it]->Update();
+	}
+
 	for (size_t i = 0; i < gameObjectList.size(); i++)
 	{
-		if (gameObjectList[i]->ContainsType(GameObjectType::COLLIDABLE) && gameObjectList[i]->GetIdentifier() == "Player")
+		if (gameObjectList[i]->ContainsType(GameObjectType::COLLIDABLE))
 		{
 			cgO = dynamic_cast<CollidableGameObject*>(gameObjectList[i]);
 			if (cgO == nullptr)
 			{
 				return;
 			}
+			m_quadtree->GetUpdateList(cgO, updateList);
+			Collision::Update(updateList);
 		}
 	}
-	
-	m_quadtree->GetUpdateList(cgO, updateList);
 
-	for (int it = 0; it < updateList.size(); ++it)
+	for (int it = 0; it < gameObjectList.size(); ++it)
 	{
-		updateList[it]->Update();
+		gameObjectList[it]->Update();
 	}
-
 	Collision::Update(updateList);
 }
 
@@ -90,30 +94,17 @@ void Scene::Render(RenderStruct& renderStruct)
 	RenderableGameObject* prenderableGameObject = nullptr;
 
 	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
-	vector<GameObject*> updateList;
-	CollidableGameObject* cgO = nullptr;
 
-	updateList.reserve(gameObjectList.size());
 
-	for (size_t i = 0; i < gameObjectList.size(); i++)
+	for (int it = 0; it < gameObjectList.size(); ++it)
 	{
-		if (gameObjectList[i]->ContainsType(GameObjectType::COLLIDABLE) && gameObjectList[i]->GetIdentifier() == "Player")
+		if (!gameObjectList[it]->m_isEnabled)
 		{
-			cgO = dynamic_cast<CollidableGameObject*>(gameObjectList[i]);
-			if (cgO == nullptr)
-			{
-				return;
-			}
+			continue;
 		}
-	}
-
-	m_quadtree->GetUpdateList(cgO, updateList);
-
-	for (int it = 0; it < updateList.size(); ++it)
-	{
-		if (updateList[it]->ContainsType(GameObjectType::RENDERABLE))
+		if (gameObjectList[it]->ContainsType(GameObjectType::RENDERABLE))
 		{
-			prenderableGameObject = dynamic_cast<RenderableGameObject*>(updateList[it]);
+			prenderableGameObject = dynamic_cast<RenderableGameObject*>(gameObjectList[it]);
 			prenderableGameObject->Render(renderStruct);
 
 			continue;
@@ -121,7 +112,7 @@ void Scene::Render(RenderStruct& renderStruct)
 
 		if (gameObjectList[it]->ContainsType(GameObjectType::GAME_UI_COMPONENT))
 		{
-			dynamic_cast<GameUIComponent*>(updateList[it])->Render(renderStruct);
+			dynamic_cast<GameUIComponent*>(gameObjectList[it])->Render(renderStruct);
 			continue;
 		}
 	}
