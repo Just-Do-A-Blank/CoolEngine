@@ -151,26 +151,14 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	//Create scene
 	GameManager* pgameManager = GameManager::GetInstance();
 
-	//Music
-	AudioManager::GetInstance()->LoadMusic(TEST_MUSIC);
-
-	AudioManager::GetInstance()->PlayMusic(TEST_MUSIC, 0.001f, true);
-
-	//Sound
-	AudioManager::GetInstance()->Load(TEST_SOUND);
-
-	AudioManager::GetInstance()->Play(TEST_SOUND, 0.01f);
-
 	GraphicsManager::GetInstance()->LoadTextureFromFile(DEFAULT_IMGUI_IMAGE);
 	GraphicsManager::GetInstance()->LoadTextureFromFile(TEST2);
 
 	
-	// Observer for collision detection
-	CollisionObserver collisionObserver = CollisionObserver();
-
 	// Observer for taking damage
 	DamageCalculation damageObserver = DamageCalculation();
 	
+#if EDITOR
 	string testSceneFilePath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Levels\\TestScene.json";
 	if (!pgameManager->LoadSceneFromFile(testSceneFilePath, "", true))
 	{
@@ -179,6 +167,16 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		pgameManager->SwitchSceneUsingIdentifier("EmptyScene");
 		pgameManager->CreateGameObject<CameraGameObject>("SceneCamera");
 	}
+#else
+	string entryPath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Levels\\Entry.json";
+
+	if (!pgameManager->LoadSceneFromFile(entryPath, "", true))
+	{
+		LOG("Failed to load entry scene");
+
+		exit(-1);
+	}
+#endif
 
 	GameManager::GetInstance()->GetTimer()->Tick();
 	GameManager::GetInstance()->GetTimer()->Tick();
