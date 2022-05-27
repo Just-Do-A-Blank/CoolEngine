@@ -98,4 +98,7 @@ private:
 
 	string m_tileMapName = "";
 	string m_editorTileMapName = "";
+
+	bool m_showColliders = false;
+	bool m_pathfindingMesh = false;
 };
