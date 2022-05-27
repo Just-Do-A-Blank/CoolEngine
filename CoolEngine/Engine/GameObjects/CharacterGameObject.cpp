@@ -118,6 +118,7 @@ void CharacterGameObject::TakeDamage(float damage)
 	if (m_health < 0 && ContainsType(GameObjectType::ENEMY))
 	{
 		EventManager::Instance()->AddEvent(new EnemyDeathEvent());
+		
 	}
 }
 
