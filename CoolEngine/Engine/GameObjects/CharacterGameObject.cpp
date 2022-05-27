@@ -44,7 +44,7 @@ CharacterGameObject::~CharacterGameObject()
 
 void CharacterGameObject::Start()
 {
-    PrefabGameObject::Start();
+    TriggerableGameObject::Start();
 
 	AddWeapon();
 }

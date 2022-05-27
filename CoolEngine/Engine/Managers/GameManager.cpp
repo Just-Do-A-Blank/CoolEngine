@@ -985,6 +985,8 @@ void GameManager::Deserialize(nlohmann::json& data)
 	if (m_playerName != "")
 	{
 		PlayerGameObject* pplayer = GetCurrentViewStateScene()->GetGameObjectUsingIdentifier<PlayerGameObject>(m_playerName);
+		pplayer->GetTransform()->SetWorldPosition(XMFLOAT3(0, 0, 0));
+
 		pnewScene->CopyGameObject<PlayerGameObject>(*pplayer);
 	}
 

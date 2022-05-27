@@ -405,6 +405,7 @@ bool TileMap::CreateTile(int row, int column, Tile*& ptile)
 
 	ptile = m_tiles[row][column];
 
+	ptile->GetTransform()->SetParentTransform(nullptr);
 	ptile->GetTransform()->UpdateMatrix();
 
 	return true;

@@ -17,6 +17,7 @@ CameraGameObject::CameraGameObject(string identifier, CoolUUID uuid) : GameObjec
 	float nearDepth = 0.01f;
 	float farDepth = 1000.0f;
 
+	m_transform->SetParentTransform(nullptr);
 	Initialize(cameraPos, cameraForward, cameraUp, windowWidth, windowHeight, nearDepth, farDepth);
 }
 

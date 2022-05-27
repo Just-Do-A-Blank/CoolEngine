@@ -24,7 +24,7 @@ class Transform : EditorUIComponent
 	XMFLOAT3 m_defaultUpVector = UP_DEFAULT;
 	XMFLOAT3 m_defaultLeftVector = LEFT_DEFAULT;
 
-	Transform* m_pparentTransform;
+	Transform* m_pparentTransform = nullptr;
 	vector<Transform*> m_childrenTransformList;
 
 	//Matrices

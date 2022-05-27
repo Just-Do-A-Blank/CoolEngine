@@ -33,7 +33,7 @@ public:
 protected:
 
 	std::unordered_map<std::string, FiniteState*> m_states;
-	FiniteState* m_pstate;
+	FiniteState* m_pstate = nullptr;
 
 private:
 

@@ -77,7 +77,7 @@ private:
     /// <summary>
     /// The state to move the player
     /// </summary>
-    PlayerMovementState* m_currentState;
+    PlayerMovementState* m_currentState = nullptr;
 
     /// <summary>
     /// The state to move the player
