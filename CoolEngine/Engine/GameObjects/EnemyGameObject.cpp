@@ -9,7 +9,7 @@
 #include "Engine/GameObjects/RangedWeaponGameObject.h"
 #include "Engine/ResourceDefines.h"
 #include "Engine/GameObjects/PlayerGameObject.h"
-
+#include "Engine/Managers/Events/EnemyDeathEvent.h"
 
 EnemyGameObject::EnemyGameObject(string identifier, CoolUUID uuid) : CharacterGameObject(identifier, uuid)
 {
@@ -39,6 +39,8 @@ EnemyGameObject::EnemyGameObject(EnemyGameObject const& other) : CharacterGameOb
 
 EnemyGameObject::~EnemyGameObject()
 {
+	EventManager::Instance()->SendEvent(new EnemyDeathEvent());
+
 	delete m_pAIStateMachine;
 	m_pAIStateMachine = nullptr;
 }
@@ -124,9 +126,11 @@ void EnemyGameObject::SetWeaponPositionWander()
 	m_pweapon->SetWeaponPosition(XMFLOAT2(m_direction.x, m_direction.y));
 }
 
+#if EDITOR
 void EnemyGameObject::CreateEngineUI()
 {
 	CharacterGameObject::CreateEngineUI();
 
 	m_pAIStateMachine->CreateEngineUI();
 }
+#endif

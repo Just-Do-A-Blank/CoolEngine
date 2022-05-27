@@ -228,10 +228,12 @@ void SceneGraph<T>::DeleteNode(TreeNode<T>* currentNode, bool deleteData)
 	}
 
 	string gameObjectName = currentNode->NodeObject->GetIdentifier();
+	UINT64 uuid = *m_rootNode->NodeObject->GetUUID();
 	m_sceneTreeNodeMap.erase(gameObjectName);
 	m_sceneNodeObjectsMap.erase(gameObjectName);
 	m_sceneNodeObjectList.erase(remove(m_sceneNodeObjectList.begin(), m_sceneNodeObjectList.end(), currentNode->NodeObject));
 	m_sceneNodeList.erase(remove(m_sceneNodeList.begin(), m_sceneNodeList.end(), currentNode));
+	m_sceneNodeObjectsUUIDMap.erase(uuid);
 
 	if (deleteData)
 	{
@@ -300,10 +302,12 @@ void SceneGraph<T>::DeleteNodeObjectUsingNode(TreeNode<T>* currentNode)
 	}
 
 	string gameObjectName = currentNode->NodeObject->GetIdentifier();
+	UINT64 uuid = *m_rootNode->NodeObject->GetUUID();
 	m_sceneTreeNodeMap.erase(gameObjectName);
 	m_sceneNodeObjectsMap.erase(gameObjectName);
 	m_sceneNodeObjectList.erase(remove(m_sceneNodeObjectList.begin(), m_sceneNodeObjectList.end(), currentNode->NodeObject));
 	m_sceneNodeList.erase(remove(m_sceneNodeList.begin(), m_sceneNodeList.end(), currentNode));
+	m_sceneNodeObjectsUUIDMap.erase(uuid);
 
 	delete currentNode->NodeObject;
 	currentNode->NodeObject = nullptr;
@@ -324,10 +328,12 @@ void SceneGraph<T>::DeleteAllGameObjects()
 		TreeNode<T>* siblingNode = m_rootNode->Sibling;
 
 		string gameObjectName = m_rootNode->NodeObject->GetIdentifier();
+		UINT64 uuid = *m_rootNode->NodeObject->GetUUID();
 		m_sceneTreeNodeMap.erase(gameObjectName);
 		m_sceneNodeObjectsMap.erase(gameObjectName);
 		m_sceneNodeObjectList.erase(remove(m_sceneNodeObjectList.begin(), m_sceneNodeObjectList.end(), m_rootNode->NodeObject));
 		m_sceneNodeList.erase(remove(m_sceneNodeList.begin(), m_sceneNodeList.end(), m_rootNode));
+		m_sceneNodeObjectsUUIDMap.erase(uuid);
 
 		delete m_rootNode->NodeObject;
 		m_rootNode->NodeObject = nullptr;

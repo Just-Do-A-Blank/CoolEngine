@@ -4,6 +4,7 @@
 #include "Engine/Physics/Box.h"
 #include "Engine/Physics/Circle.h"
 #include "Engine/GameObjects/RenderableCollidableGameObject.h"
+#include "Engine/GameObjects/GameObject.h"
 #include "Engine/GameObjects/PlayerGameObject.h"
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/Managers/DebugDrawManager.h"
@@ -48,13 +49,15 @@ public:
 
     bool RemoveObject(GameObject* pgameObjectAddress);
 
-    void UpdateQuadTreeStucture();
-
     void GetUpdateList(CollidableGameObject* player, std::vector<GameObject*>& list);
 
     GameObject* SimpleQueryByIdentifier(std::string identifier);
 
     GameObject* QueryByIdentifier(std::string identifier, XMFLOAT2 point);
+
+    void SetInitialized(bool value) { m_Initialized = value; };
+
+    const bool Initialized() { return m_Initialized; }
 
 private:
     bool Collides(CollidableGameObject* pG, std::vector<GameObject*>& list);
@@ -65,6 +68,7 @@ private:
 
     bool LoacteObjectAndOverwrite(GameObject* dest,  GameObject* value);
 
+    bool m_Initialized;
     std::vector<GameObject*> m_children;
     Quadtree * m_NW = nullptr;
     Quadtree * m_NE = nullptr;

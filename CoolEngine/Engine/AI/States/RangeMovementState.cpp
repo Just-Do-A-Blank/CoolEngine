@@ -119,6 +119,7 @@ void RangeMovementState::Deserialize(const nlohmann::json& data)
 	m_lowerOptimalDistanceMultiplier = data["LowerOptimalDistance"];
 }
 
+#if EDITOR
 void RangeMovementState::CreateEngineUI()
 {
 	FuzzyState::CreateEngineUI();
@@ -170,6 +171,7 @@ void RangeMovementState::CreateEngineUI()
 
 	EditorUI::DragFloat("Maximum Activation Multiplier", m_upperOptimalDistanceMultiplier, params);
 }
+#endif
 
 XMFLOAT3 RangeMovementState::CalculateTargetPosition() const
 {
