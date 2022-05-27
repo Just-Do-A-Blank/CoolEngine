@@ -53,6 +53,12 @@ public:
     /// </summary>
     /// <returns>The resource manager</returns>
     PlayerResourceManager* GetPlayerResources();
+
+    /// <summary>
+    /// Gets the inventory on the player.
+    /// </summary>
+    /// <returns>The player's inventory</returns>
+    Inventory* GetInventory();
 protected:
 
     virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;

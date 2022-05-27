@@ -12,7 +12,7 @@ PickupGameObject::PickupGameObject(string identifier, CoolUUID uuid) : Interacta
     m_gameObjectType |= GameObjectType::PICKUP;
     m_isConsumedOnPickup = false;
     m_pPickupResourceInterface = new PickupResourceInterface(&m_pResouces);
-
+    m_UItexturePath = std::wstring();
 }
 
 PickupGameObject::PickupGameObject(const nlohmann::json& data, CoolUUID index) : InteractableGameObject(data, index)
@@ -36,6 +36,9 @@ PickupGameObject::PickupGameObject(PickupGameObject const& other) : Interactable
 {
     m_pPickupResourceInterface = new PickupResourceInterface(*other.m_pPickupResourceInterface);
     m_isConsumedOnPickup = other.m_isConsumedOnPickup;
+
+    m_UItexturePath = other.m_UItexturePath;
+    SetUITexture(m_UItexturePath);
 }
 
 PickupGameObject::~PickupGameObject()
@@ -89,8 +92,9 @@ void PickupGameObject::CreateEngineUI()
 
         m_pPickupResourceInterface->CreateEngineUI();
 
+        EditorUI::Texture("UI Texture", m_UItexturePath, m_pUItexture, 150, ImVec2(150, 150));
 
-
+        ImGui::Spacing();
     }
 }
 #endif
@@ -130,6 +134,13 @@ void PickupGameObject::LoadLocalData(const nlohmann::json& jsonData)
 
     } while (exists);
 
+    if (jsonData.contains("PickupUITexturePath"))
+    {
+        std::string tempPath = jsonData["PickupUITexturePath"];
+        m_UItexturePath = std::wstring(tempPath.begin(), tempPath.end());
+
+        SetUITexture(m_UItexturePath);
+    }
 }
 
 void PickupGameObject::SaveLocalData(nlohmann::json& jsonData)
@@ -155,6 +166,9 @@ void PickupGameObject::SaveLocalData(nlohmann::json& jsonData)
 
         i++;
     }
+
+    std::string tempPath = std::string(m_UItexturePath.begin(), m_UItexturePath.end());
+    jsonData["PickupUITexturePath"] = tempPath;
 }
 
 
@@ -176,3 +190,25 @@ void PickupGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
 }
 
 
+void PickupGameObject::SetUITexture(std::wstring wsfilepath)
+{
+    m_pUItexture = GraphicsManager::GetInstance()->GetShaderResourceView(wsfilepath);
+
+    if (m_pUItexture == nullptr)
+    {
+        LOG("Tried to get a texture that doesn't exist!");
+    }
+    else
+    {
+        m_UItexturePath = wsfilepath;
+    }
+}
+
+/// <summary>
+/// Shows engine UI
+/// </summary>
+/// <return>Get the UI Texture for the Pickup</return>
+std::wstring PickupGameObject::GetUITexturePath()
+{
+    return m_UItexturePath;
+}

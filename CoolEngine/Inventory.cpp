@@ -31,7 +31,7 @@ void Inventory::AddItemToInventory(GameObject* pickedUpObject)
 
 GameObject* Inventory::GetItemInSlot(int pos)
 {
-	if (pos <= m_pInventory.size())
+	if (pos < m_pInventory.size())
 	{
 		return m_pInventory[pos];
 	}
