@@ -156,30 +156,36 @@ void PlayerWalkingState::UpdateButtonOrderOnButtonPressed(EGAMEPLAYBUTTONCLASS b
     }
 }
 
-bool PlayerWalkingState::IsIdle(EGAMEPLAYBUTTONCLASS button)
+//New Change
+bool PlayerWalkingState::IsIdle()
 {
     bool playerIdle = false;
-
     XMFLOAT3 playerForce = m_playerMovingBody->GetForceApplied();
+    bool xIdle = playerForce.x > -1 && playerForce.x < 1;
+    bool yIdle = playerForce.y > -1 && playerForce.y < 1;
+    bool zIdle = playerForce.z > -1 && playerForce.z < 1;
+
+    bool idle = xIdle && yIdle && zIdle;
+    
 
     FiniteState* nextAnimState = m_playerReference->GetAnimationStateMachine()->GetActiveState();
     AnimationState* pAnimationState = dynamic_cast<AnimationState*>(nextAnimState);
 
     std::string previousAnimState = m_playerReference->GetAnimationStateMachine()->GetStateName(pAnimationState);
 
-    if (MathHelper::Equals(playerForce, XMFLOAT3(0.0, 0.0, 0.0)) && previousAnimState == "PlayerWalkDown")
+    if ( idle && previousAnimState == "PlayerWalkDown")
     {
         pAnimationState->SetInt("5_IdleDown", 4);
     }
-    else if (MathHelper::Equals(playerForce, XMFLOAT3(0.0, 0.0, 0.0)) && previousAnimState == "PlayerWalkRight")
+    else if (idle && previousAnimState == "PlayerWalkRight")
     {
         pAnimationState->SetInt("6_IdleUp", 4);
     }
-    else if (MathHelper::Equals(playerForce, XMFLOAT3(0.0, 0.0, 0.0)) && previousAnimState == "PlayerWalkLeft")
+    else if (idle && previousAnimState == "PlayerWalkLeft")
     {
         pAnimationState->SetInt("7_IdleUp", 4);
     }
-    else if (MathHelper::Equals(playerForce, XMFLOAT3(0.0, 0.0, 0.0)))
+    else if (idle)
     {
         pAnimationState->SetInt("6_IdleUp", 4);
     }
@@ -224,10 +230,27 @@ bool PlayerWalkingState::IsVerticalDirection(EGAMEPLAYBUTTONCLASS button)
         {
             pAnimationState->SetInt("4_WalkUp", 8);
         }
+        else if (previousAnimState == "PlayerIdleFront")
+        {
+            pAnimationState->SetInt("0_WalkUp", 8);
+        }
+        else if (previousAnimState == "PlayerIdleLeft")
+        {
+            pAnimationState->SetInt("2_WalkUp", 8);
+        }
+        else if (previousAnimState == "PlayerIdleRight")
+        {
+            pAnimationState->SetInt("3_WalkUp", 8);
+        }
+        else if (previousAnimState == "PlayerIdleUp")
+        {
+            pAnimationState->SetInt("1_WalkUp", 8);
+        }
         else
         {
             pAnimationState->SetInt("0_WalkUp", 8);
         }
+        
         
 
         
@@ -254,6 +277,23 @@ bool PlayerWalkingState::IsVerticalDirection(EGAMEPLAYBUTTONCLASS button)
         {
             pAnimationState->SetInt("4_WalkDown", 5);
         }
+        else if (previousAnimState == "PlayerIdleFront")
+        {
+            pAnimationState->SetInt("0_WalkDown", 5);
+        }
+        else if (previousAnimState == "PlayerIdleLeft")
+        {
+            pAnimationState->SetInt("2_WalkDown", 5);
+        }
+        else if (previousAnimState == "PlayerIdleRight")
+        {
+            pAnimationState->SetInt("3_WalkDown", 5);
+        }
+        else if (previousAnimState == "PlayerIdleUp")
+        {
+            pAnimationState->SetInt("1_WalkDown", 5);
+        }
+
         
         
     }
@@ -292,6 +332,22 @@ bool PlayerWalkingState::IsHorizontalDirection(EGAMEPLAYBUTTONCLASS button)
         {
             pAnimationState->SetInt("4_WalkLeft", 6);
         }
+        else if (previousAnimState == "PlayerIdleFront")
+        {
+            pAnimationState->SetInt("0_WalkLeft", 6);
+        }
+        else if (previousAnimState == "PlayerIdleLeft")
+        {
+            pAnimationState->SetInt("2_WalkLeft", 6);
+        }
+        else if (previousAnimState == "PlayerIdleRight")
+        {
+            pAnimationState->SetInt("3_WalkLeft", 6);
+        }
+        else if (previousAnimState == "PlayerIdleUp")
+        {
+            pAnimationState->SetInt("1_WalkLeft", 6);
+        }
        
 
         
@@ -313,6 +369,22 @@ bool PlayerWalkingState::IsHorizontalDirection(EGAMEPLAYBUTTONCLASS button)
         else if (previousAnimState == "PlayerWalkLeft")
         {
             pAnimationState->SetInt("7_WalkRight", 7);
+        }
+        else if (previousAnimState == "PlayerIdleFront")
+        {
+            pAnimationState->SetInt("0_WalkRight", 7);
+        }
+        else if (previousAnimState == "PlayerIdleLeft")
+        {
+            pAnimationState->SetInt("2_WalkRight", 7);
+        }
+        else if (previousAnimState == "PlayerIdleRight")
+        {
+            pAnimationState->SetInt("3_WalkRight", 7);
+        }
+        else if (previousAnimState == "PlayerIdleUp")
+        {
+            pAnimationState->SetInt("1_WalkRight", 7);
         }
         
         
@@ -394,6 +466,7 @@ void PlayerWalkingState::MovePlayer(float timeDelta)
     ApplyForce(timeDelta, vector);
 
     MoveByForce(timeDelta);
+    IsIdle();
 }
 
 /// <summary>

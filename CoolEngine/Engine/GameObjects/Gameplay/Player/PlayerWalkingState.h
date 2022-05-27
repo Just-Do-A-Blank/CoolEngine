@@ -149,7 +149,7 @@ private:
     /// </summary>
     /// <param name="button"></param>
     /// <returns></returns>
-    bool IsIdle(EGAMEPLAYBUTTONCLASS button);
+    bool IsIdle();
 
     /// <summary>
     /// Detirmines if the button is on the same axis
