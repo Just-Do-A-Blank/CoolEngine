@@ -86,6 +86,7 @@ void RangeAttackState::Deserialize(const nlohmann::json& data)
 	m_attackRangeVariance = data["AttackRangeVariance"];
 }
 
+#if EDITOR
 void RangeAttackState::CreateEngineUI()
 {
 	FuzzyState::CreateEngineUI();
@@ -99,6 +100,7 @@ void RangeAttackState::CreateEngineUI()
 
 	EditorUI::DragFloat("Attack Range Variance", m_attackRangeVariance, params);
 }
+#endif
 
 void RangeAttackState::Start()
 {

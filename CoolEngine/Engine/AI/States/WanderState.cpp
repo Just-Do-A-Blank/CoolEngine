@@ -118,6 +118,7 @@ void WanderState::Deserialize(const nlohmann::json& data)
 	m_waitTimeVariance = data["WaitTimeVariance"];
 }
 
+#if EDITOR
 void WanderState::CreateEngineUI()
 {
 	FuzzyState::CreateEngineUI();
@@ -167,6 +168,7 @@ void WanderState::CreateEngineUI()
 
 	EditorUI::DragFloat("Wait Time Variance", m_waitTimeVariance, params);
 }
+#endif
 
 void WanderState::Start()
 {

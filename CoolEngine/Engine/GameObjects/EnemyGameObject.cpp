@@ -124,9 +124,11 @@ void EnemyGameObject::SetWeaponPositionWander()
 	m_pweapon->SetWeaponPosition(XMFLOAT2(m_direction.x, m_direction.y));
 }
 
+#if EDITOR
 void EnemyGameObject::CreateEngineUI()
 {
 	CharacterGameObject::CreateEngineUI();
 
 	m_pAIStateMachine->CreateEngineUI();
 }
+#endif
