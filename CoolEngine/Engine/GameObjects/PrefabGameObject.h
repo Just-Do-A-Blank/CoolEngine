@@ -54,6 +54,21 @@ protected:
     /// </summary>
     bool IsPrefab();
 
+protected:
+
+    /// <summary>
+    /// The key used to save and load the prefab - Blank means there is no prefab
+    /// </summary>
+    /// <returns>The prefab key</returns>
+    string GetPrefabKey();
+
+    /// <summary>
+    /// Load the prefab file.
+    /// Note this will not work on consutrction as construction is top down.
+    /// </summary>
+    /// <param name="key">The prefab file</param>
+    void LoadPrefab(string key);
+
 private:
     /// <summary>
     /// The identifier for the prefab
@@ -89,13 +104,6 @@ private:
     /// The data gathered on creation if any
     /// </summary>
     nlohmann::json m_prefabFileData;
-
-    /// <summary>
-    /// Load the prefab file.
-    /// Note this will not work on consutrction as construction is top down.
-    /// </summary>
-    /// <param name="key">The prefab file</param>
-    void LoadPrefab(string key);
 
     /// <summary>
     /// Save the prefab to file

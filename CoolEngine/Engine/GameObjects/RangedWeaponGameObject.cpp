@@ -2,6 +2,7 @@
 #include "Engine/Managers/Events/AttackEvents.h"
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/Managers/GameManager.h"
+#include "Engine/EditorUI/EditorUI.h"
 
 RangedWeaponGameObject::RangedWeaponGameObject(string identifier, CoolUUID uuid) : WeaponGameObject(identifier, uuid)
 {
@@ -84,6 +85,33 @@ void RangedWeaponGameObject::Serialize(nlohmann::json& data)
     SaveLocalData(data);
 }
 
+#if EDITOR
+void RangedWeaponGameObject::CreateEngineUI()
+{
+    WeaponGameObject::CreateEngineUI();
+
+    if (EditorUI::CollapsingSection("Ranged Weapon", true))
+    {
+        EditorUIFloatParameters floatParam = EditorUIFloatParameters();
+        EditorUINonSpecificParameters nonParam = EditorUINonSpecificParameters();
+
+        floatParam.m_minValue = 0;
+        floatParam.m_maxValue = 1000.0f;
+        EditorUI::DragFloat("Shot Speed", m_shotSpeed, floatParam);
+
+        floatParam.m_minValue = 0;
+        floatParam.m_maxValue = 100.0f;
+        EditorUI::DragFloat("Angle Interval", m_angleInterval, floatParam);
+
+        floatParam.m_minValue = 0;
+        floatParam.m_maxValue = 5.0f;
+        EditorUI::DragFloat("Time Between Shots", m_timeBetweenShots, floatParam);
+
+        EditorUI::Checkbox("Is Bullet", m_isShot, nonParam);
+    }
+}
+#endif
+
 void RangedWeaponGameObject::LoadLocalData(const nlohmann::json& jsonData)
 {
     if (jsonData.contains("AngleInterval"))
@@ -114,7 +142,23 @@ void RangedWeaponGameObject::Attack()
 {
 	if (GameManager::GetInstance()->GetTimer()->GameTime() - m_lastShotTimestamp >= m_timeBetweenShots)
 	{
-		EventManager::Instance()->AddEvent(new CreateBulletEvent(this, m_transform->GetForwardVector(), m_transform->GetWorldPosition()));
+        float angle = MathHelper::DotProduct(XMFLOAT2(m_transform->GetForwardVector().x, m_transform->GetForwardVector().y), XMFLOAT2(0, 1));
+        angle = std::acosf(angle);
+        if (m_transform->GetForwardVector().x > 0.0f)
+        {
+            angle *= -1.0f;
+        }
+        angle += (XM_PIDIV2 - ((GetShotCount() - 1) * XM_PIDIV2 * m_angleInterval / 180.0f));
+        XMFLOAT3 direction;
+
+        for (size_t i = 0; i < GetShotCount(); ++i)
+        {
+            direction = XMFLOAT3(std::cosf(angle), std::sinf(angle), 0.0f);
+
+            EventManager::Instance()->AddEvent(new CreateBulletEvent(this, direction, m_transform->GetWorldPosition()));
+
+            angle += XM_PI * m_angleInterval / 180.0f;
+        }
 
 		m_lastShotTimestamp = GameManager::GetInstance()->GetTimer()->GameTime();
 	}

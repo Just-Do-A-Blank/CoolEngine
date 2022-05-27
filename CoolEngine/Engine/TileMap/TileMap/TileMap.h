@@ -27,7 +27,7 @@ public:
 	TileMap(TileMap const& other);
 
 	// Load from file
-	TileMap(wstring mapPath, XMFLOAT3 position, string identifier, CoolUUID uuid);
+	TileMap(std::string mapName, XMFLOAT3 position, string identifier, CoolUUID uuid);
 
 	// Load from parameters
 	TileMap(int width, int height, string identifier, CoolUUID uuid, XMFLOAT3 position, float tileDimensions);
@@ -65,11 +65,11 @@ public:
 #endif
 
 	void Init(int width, int height, XMFLOAT3 position, float tileDimensions);
-	void Init(wstring mapPath, XMFLOAT3 position);
+	void Init(std::string mapPath, XMFLOAT3 position);
 
 	void Serialize(nlohmann::json& jsonData) override;
 
-	std::wstring GetMapPath() const;
+	std::string GetMapName() const;
 
 protected:
 
@@ -79,8 +79,8 @@ private:
 
 	void InitTilePosition(Tile* tile, int row, int column);
 
-	bool Load(wstring path);
-	bool Save(wstring path);
+	bool Load(string path);
+	bool Save(string path);
 
 	bool GetCoordsFromWorldPos(int* prow, int* pcolumn, const XMFLOAT2& pos);
 
@@ -96,9 +96,6 @@ private:
 	std::vector<wstring> m_spritePaths;
 	std::vector<wstring> m_animPaths;
 
-	std::wstring m_mapPath;
-
-#if EDITOR
 	string m_tileMapName = "";
-#endif
+	string m_editorTileMapName = "";
 };

@@ -5,25 +5,21 @@
 #include "Engine/GameObjects/MeleeWeaponGameObject.h"
 #include "Engine/EditorUI/EditorUI.h"
 
-MeleeAttackState::MeleeAttackState(EnemyGameObject* penemy) : FuzzyState()
+MeleeAttackState::MeleeAttackState(EnemyGameObject* penemy) : FuzzyState(penemy)
 {
 	m_stateType = FuzzyStateType::MELEE_ATTACK;
-
-	m_penemy = penemy;
 }
 
-MeleeAttackState::MeleeAttackState(const nlohmann::json& data) : FuzzyState(data)
+MeleeAttackState::MeleeAttackState(const nlohmann::json& data, EnemyGameObject* penemy) : FuzzyState(data, penemy)
 {
 	m_stateType = FuzzyStateType::MELEE_ATTACK;
 
 	Deserialize(data);
 }
 
-MeleeAttackState::MeleeAttackState(MeleeAttackState const* other, EnemyGameObject* penemy) : FuzzyState(other)
+MeleeAttackState::MeleeAttackState(MeleeAttackState const* other, EnemyGameObject* penemy) : FuzzyState(other, penemy)
 {
 	m_stateType = FuzzyStateType::MELEE_ATTACK;
-
-	m_penemy = penemy;
 
 	m_attackRangeVariance = other->m_attackRangeVariance;
 }
@@ -43,18 +39,23 @@ void MeleeAttackState::Exit()
 
 float MeleeAttackState::CalculateActivation()
 {
-	if (m_penemy->GetWeapon() == nullptr || m_penemy->GetWeapon()->ContainsType(GameObjectType::MELEE_WEAPON) == false)
+	if (!m_penemy || m_penemy->GetWeapon() == nullptr || m_penemy->GetWeapon()->ContainsType(GameObjectType::MELEE_WEAPON) == false)
 	{
 		return 0.0f;
+	}
+	else
+	{
+		m_pweapon = (MeleeWeaponGameObject*)m_penemy->GetWeapon();
 	}
 
 	MeleeWeaponGameObject* pmeleeWeapon = (MeleeWeaponGameObject*)m_penemy->GetWeapon();
 
 	float distanceSq = MathHelper::DistanceSquared(m_penemy->GetTransform()->GetWorldPosition(), m_pplayer->GetTransform()->GetWorldPosition());
 
-	float variance = MathHelper::RandomNumber(0.0f, m_attackRangeVariance) - (m_attackRangeVariance * 0.5f);
+	float varianceSq = MathHelper::RandomNumber(0.0f, m_attackRangeVariance) - (m_attackRangeVariance * 0.5f);
+	varianceSq *= std::abs(varianceSq);
 
-	if (distanceSq + variance <= pmeleeWeapon->GetRadius() * pmeleeWeapon->GetRadius())
+	if (distanceSq + varianceSq <= pmeleeWeapon->GetRadius() * pmeleeWeapon->GetRadius())
 	{
 		return 1.0f;
 	}
@@ -80,7 +81,24 @@ void MeleeAttackState::CreateEngineUI()
 
 void MeleeAttackState::Update()
 {
-	//Add code to swing weapon
+	if (m_attackedLastFrame == true && m_pweapon->GetIsSwinging() == false)
+	{
+		XMFLOAT2 enemyPos = XMFLOAT2(m_penemy->GetTransform()->GetWorldPosition().x, m_penemy->GetTransform()->GetWorldPosition().y);
+		XMFLOAT2 playerPos = XMFLOAT2(m_pplayer->GetTransform()->GetWorldPosition().x, m_pplayer->GetTransform()->GetWorldPosition().y);
+
+		XMFLOAT2 toWeapon = MathHelper::Minus(playerPos, enemyPos);
+
+		if (MathHelper::SquareMagnitude(toWeapon) != 0)
+		{
+			toWeapon = MathHelper::Normalize(toWeapon);
+
+			m_pweapon->SetWeaponPosition(toWeapon);
+		}
+	}
+
+	m_pweapon->Attack();
+
+	m_attackedLastFrame = m_pweapon->GetIsSwinging();
 }
 
 void MeleeAttackState::Serialize(nlohmann::json& data)

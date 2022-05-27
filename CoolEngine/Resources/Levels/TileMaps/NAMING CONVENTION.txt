@@ -1,0 +1,11 @@
+MediumRoom1_G    --- G = Ground Layer
+MediumRoom1_D_1  --- D = Detail Layer   --- D_1 = Detail map version 1 (used for generating random room details)
+
+Medium room - 25x25 32xTiles
+Large room - 35x35x 32xTiles
+Small room - 15x15 32xTiles
+
+WaterFieldBackground - Background layer for outside levels
+VoidFieldBackground - Background layer for indoor levels
+
+1 layer of invisible tiles with passible set to off if tile map is outside, if indoors then walls should have passible set off. 

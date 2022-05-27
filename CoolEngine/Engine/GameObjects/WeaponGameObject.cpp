@@ -1,7 +1,7 @@
 #include "WeaponGameObject.h"
 #include "Engine/Managers/Events/MouseEvents.h"
 #include "Engine/Managers/Events/EventManager.h"
-#include "Engine\EditorUI\EditorUI.h"
+#include "Engine/EditorUI/EditorUI.h"
 #include "Engine/Managers/GraphicsManager.h"
 
 WeaponGameObject::WeaponGameObject() : TriggerableGameObject()
@@ -85,7 +85,7 @@ WeaponGameObject::WeaponGameObject(WeaponGameObject const& other) : TriggerableG
 
 WeaponGameObject::~WeaponGameObject()
 {
-
+    UnregisterForEvents();
 }
 
 void WeaponGameObject::Serialize(nlohmann::json& data)
@@ -99,23 +99,26 @@ void WeaponGameObject::Serialize(nlohmann::json& data)
     void WeaponGameObject::CreateEngineUI()
     {
         TriggerableGameObject::CreateEngineUI();
+
         if (EditorUI::CollapsingSection("Weapon", true))
         {
             EditorUI::InputText("Unique Key", m_key);
 
             EditorUIIntParameters numberParam = EditorUIIntParameters();
             numberParam.m_minValue = 0;
-            numberParam.m_maxValue = 99999;
+            numberParam.m_maxValue = 1000;
             EditorUI::DragInt("Level", m_level, numberParam);
 
             EditorUIFloatParameters floatParam = EditorUIFloatParameters();
             floatParam.m_minValue = 0;
-            floatParam.m_maxValue = 99999;
+            floatParam.m_maxValue = 1000;
             EditorUI::DragFloat("Damage", m_damage, floatParam);
+
+            EditorUI::DragFloat("Radius", m_radius, floatParam);
 
             EditorUI::DragInt("Shots", m_shotCount, numberParam);
 
-            EditorUI::DragFloat("Leathal Time", m_timeLethal, floatParam);
+            EditorUI::DragFloat("Lethal Time", m_timeLethal, floatParam);
             EditorUI::DragFloat("Travel Distance", m_distanceTravelled, floatParam);
 
             if (EditorUI::ComboBox("Element", m_elementsList, m_elementSelectedItem))
@@ -151,6 +154,15 @@ void WeaponGameObject::LoadLocalData(const nlohmann::json& jsonData)
         m_element = (ELEMENTS)jsonData["WeaponElement"];
         m_statusEffect = (STATUSES)jsonData["WeaponStatus"];
         m_radius = jsonData["Radius"];
+        if (jsonData.count("WeaponIsHeld"))
+        {
+            m_isHeld = jsonData["WeaponIsHeld"];
+        }
+        else
+        {
+            m_isHeld = false;
+        }
+
 
 #if EDITOR
         m_elementSelectedItem = GetElementsFromIndex((int)m_element);
@@ -181,7 +193,7 @@ void WeaponGameObject::SaveLocalData(nlohmann::json& jsonData)
     jsonData["WeaponElement"] = (int)m_element;
     jsonData["WeaponStatus"] = (int)m_statusEffect;
     jsonData["Radius"] = m_radius;
-
+    jsonData["WeaponIsHeld"] = m_isHeld;
     std::string tempPath = std::string(m_UITexturePath.begin(), m_UITexturePath.end());
     jsonData["WeaponUITexturePath"] = tempPath;
 }
@@ -201,6 +213,16 @@ void WeaponGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
 void WeaponGameObject::Attack()
 {
 
+}
+
+bool WeaponGameObject::GetHeld()
+{
+    return m_isHeld;
+}
+
+void WeaponGameObject::SetHeld(bool isHeld)
+{
+    m_isHeld = isHeld;
 }
 
 void WeaponGameObject::CalculateWeaponStrength()
@@ -383,23 +405,6 @@ int WeaponGameObject::RoundUp(float value)
     }
 
     return temp;
-}
-
-void WeaponGameObject::Handle(Event* e)
-{
-	switch (e->GetEventID())
-	{
-	case EventType::MouseButtonPressed:
-		{
-			MouseButtonPressedEvent* pmouseEvent = (MouseButtonPressedEvent*)e;
-
-			if (pmouseEvent->GetButton() == VK_LBUTTON && m_isPlayerWeapon)
-			{
-				Attack();
-			}
-		}
-		break;
-	}
 }
 
 void WeaponGameObject::RegisterForEvents()

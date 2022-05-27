@@ -3,12 +3,13 @@
 
 class PlayerGameObject;
 class EnemyGameObject;
+class MeleeWeaponGameObject;
 
 class MeleeAttackState : public FuzzyState
 {
 public:
 	MeleeAttackState(EnemyGameObject* penemy);
-	MeleeAttackState(const nlohmann::json& data);
+	MeleeAttackState(const nlohmann::json& data, EnemyGameObject* penemy);
 	MeleeAttackState(MeleeAttackState const* other, EnemyGameObject* penemy);
 
 	void SetEnemy(EnemyGameObject* penemy);
@@ -33,8 +34,11 @@ protected:
 
 private:
 	PlayerGameObject* m_pplayer = nullptr;
-	EnemyGameObject* m_penemy = nullptr;
+
+	MeleeWeaponGameObject* m_pweapon = nullptr;
 
 	float m_attackRangeVariance = 100.0f;
+
+	bool m_attackedLastFrame = false;
 };
 

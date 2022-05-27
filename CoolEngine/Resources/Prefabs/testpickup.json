@@ -1,0 +1,1 @@
+{"AnimationStateMachine":{"ActiveState":"","States":null},"BoxScale":[1.0,1.0],"ConsumedOnPickup":false,"EffectName0":"hp","EffectStrength0":13.800000190734863,"IsCollidable":true,"IsRenderable":true,"IsTrigger":false,"Layers":0,"PickupQuantity":0,"PrefabKey":"testpickup","ShapeType":"Box","TexturePath":"Resources\\Sprites\\Brick.dds"}

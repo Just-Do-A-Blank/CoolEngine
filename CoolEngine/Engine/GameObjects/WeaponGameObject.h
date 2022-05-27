@@ -3,7 +3,7 @@
 #include "Engine/Managers/Events/DamageCalculation.h"
 #include "Engine/ResourceDefines.h"
 
-class WeaponGameObject : public TriggerableGameObject, public Observer
+class WeaponGameObject : public TriggerableGameObject
 {
 public:
 	WeaponGameObject();
@@ -55,8 +55,6 @@ public:
 	bool GetIsDualType();
 	int RoundUp(float value);
 
-	void Handle(Event* e) override;
-
 	void RegisterForEvents();
 	void UnregisterForEvents();
 
@@ -64,6 +62,8 @@ public:
 
 	virtual void Attack();
 
+	bool GetHeld();
+	void SetHeld(bool isHeld);
 #if EDITOR
     virtual void CreateEngineUI() override;
 #endif
@@ -84,7 +84,7 @@ private:
 	float m_radius = 50.0f;
 
 	wstring m_bulletTexturePath = DEFAULT_IMGUI_IMAGE;
-	XMFLOAT3 m_bulletScale = XMFLOAT3(25, 25, 25);
+	XMFLOAT3 m_bulletScale = XMFLOAT3(25.0f, 25.0f, 25.0f);
 	XMFLOAT2 m_collisionScale = XMFLOAT2(1, 1);
 
 	ELEMENTS m_element = ELEMENTS::NONE;
@@ -93,6 +93,7 @@ private:
 	bool m_isPlayerWeapon = true;
 	XMFLOAT2 m_holderPosition = XMFLOAT2(0.0f, 0.0f);
 	XMFLOAT2 m_targetPosition = XMFLOAT2(1.0f, 1.0f);
+	bool m_isHeld = false;
 
     void LoadLocalData(const nlohmann::json& jsonData);
     void SaveLocalData(nlohmann::json& jsonData);

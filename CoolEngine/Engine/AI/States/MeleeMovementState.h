@@ -11,7 +11,7 @@ class MeleeMovementState : public FuzzyState
 {
 public:
 	MeleeMovementState(EnemyGameObject* penemy);
-	MeleeMovementState(const nlohmann::json& data);
+	MeleeMovementState(const nlohmann::json& data, EnemyGameObject* penemy);
 	MeleeMovementState(MeleeMovementState const* other, EnemyGameObject* penemy);
 
 	void SetEnemy(EnemyGameObject* penemy);
@@ -36,7 +36,6 @@ protected:
 
 private:
 	PlayerGameObject* m_pplayer = nullptr;
-	EnemyGameObject* m_penemy = nullptr;
 
 	MeleeWeaponGameObject* m_pweapon = nullptr;
 

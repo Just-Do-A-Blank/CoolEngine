@@ -20,6 +20,7 @@ protected:
 
 	WeaponGameObject* m_pweapon = nullptr;
 	bool m_isWeaponRanged = false;
+	bool m_hasWeapon = false;
 
     virtual void LoadAllPrefabData(const nlohmann::json& jsonData) override;
     virtual void SaveAllPrefabData(nlohmann::json& jsonData) override;
@@ -33,6 +34,8 @@ public:
 	virtual ~CharacterGameObject()override;
 
 	void Start() override;
+
+	void AddWeapon();
 
 	virtual void Update();
 	virtual void EditorUpdate();

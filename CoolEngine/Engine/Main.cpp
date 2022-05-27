@@ -172,11 +172,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	DamageCalculation damageObserver = DamageCalculation();
 	
 	string testSceneFilePath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Levels\\TestScene.json";
-	if (pgameManager->LoadSceneFromFile(testSceneFilePath))
-	{
-		pgameManager->SwitchSceneUsingIdentifier("TestScene");
-	}
-	else
+	if (!pgameManager->LoadSceneFromFile(testSceneFilePath, "", true))
 	{
 		GameManager* pgameManager = GameManager::GetInstance();
 		pgameManager->CreateScene("EmptyScene");
@@ -775,9 +771,7 @@ void Update()
 	Inputs::GetInstance()->Update();
 	EventManager::Instance()->ProcessEvents();
 
-	PickupsManager::GetInstance()->Update();
-
-
+	//PickupsManager::GetInstance()->Update();
 
 	GameManager* pgamemanager = GameManager::GetInstance();
 

@@ -34,12 +34,20 @@ TileMap::TileMap(const nlohmann::json& data, CoolUUID uuid) : RenderableGameObje
 	Tile::s_ptileMap = this;
 #endif
 
-	std::string mapPath = data["MapPath"];
+	if (data.contains("MapName"))
+	{
+		m_tileMapName = data["MapName"];
+	}
+	else
+	{
+		m_tileMapName = "";
+	}
+
+	m_editorTileMapName = m_tileMapName;
+
 	XMFLOAT3 position = XMFLOAT3(data["Position"][0], data["Position"][1], data["Position"][2]);
 
-	m_mapPath = std::wstring(mapPath.begin(), mapPath.end());
-
-	Init(m_mapPath, position);
+	Init(m_tileMapName, position);
 }
 
 TileMap::TileMap(TileMap const& other) : RenderableGameObject(other)
@@ -48,13 +56,15 @@ TileMap::TileMap(TileMap const& other) : RenderableGameObject(other)
 	Tile::s_ptileMap = this;
 #endif
 
-	m_mapPath = other.GetMapPath();
+	m_tileMapName = other.m_tileMapName;
+	m_editorTileMapName = m_tileMapName;
+
 	XMFLOAT3 position = other.GetTransform()->GetLocalPosition();
 
-	Init(m_mapPath, position);
+	Init(m_tileMapName, position);
 }
 
-TileMap::TileMap(wstring mapPath, XMFLOAT3 position, string identifier, CoolUUID uuid) : RenderableGameObject(identifier, uuid)
+TileMap::TileMap(string mapName, XMFLOAT3 position, string identifier, CoolUUID uuid) : RenderableGameObject(identifier, uuid)
 {
 	m_gameObjectType |= GameObjectType::TILE_MAP;
 
@@ -62,9 +72,10 @@ TileMap::TileMap(wstring mapPath, XMFLOAT3 position, string identifier, CoolUUID
 	Tile::s_ptileMap = this;
 #endif
 
-	m_mapPath = mapPath;
+	m_tileMapName = mapName;
+	m_editorTileMapName = m_tileMapName;
 
-	Init(mapPath, position);
+	Init(mapName, position);
 }
 
 TileMap::TileMap(int width, int height, string identifier, CoolUUID uuid, XMFLOAT3 position, float tileDimensions) : RenderableGameObject(identifier, uuid)
@@ -188,7 +199,7 @@ void TileMap::InitTilePosition(Tile* tile, int row, int column) // Give tiles po
 	tile->GetTransform()->SetLocalPosition(XMFLOAT3(pos.x, pos.y, 0));
 }
 
-bool TileMap::Load(wstring path) // Load data for the map from a given path
+bool TileMap::Load(string path) // Load data for the map from a given path
 {
 	ifstream inFile(path);
 
@@ -198,8 +209,6 @@ bool TileMap::Load(wstring path) // Load data for the map from a given path
 
 		return false;
 	}
-
-	m_mapPath = path;
 
 	json jsonData;
 
@@ -277,7 +286,7 @@ bool TileMap::Load(wstring path) // Load data for the map from a given path
 	return true;
 }
 
-bool TileMap::Save(wstring path)
+bool TileMap::Save(string path)
 {
 	std::ofstream outFile;
 	outFile.open(path);
@@ -288,8 +297,6 @@ bool TileMap::Save(wstring path)
 
 		return false;
 	}
-
-	m_mapPath = path;
 
 	json jsonOutput = {};
 	jsonOutput["Dimensions"] = { m_width, m_height };
@@ -447,23 +454,25 @@ void TileMap::CreateEngineUI()
 	ImGui::Separator();
 	ImGui::Spacing();
 
-	EditorUI::InputText("Tile Map Name", m_tileMapName);
+	EditorUI::InputText("Tile Map Name", m_editorTileMapName);
 
 	ImGui::Spacing();
 
 	if (ImGui::Button("Save") == true)
 	{
-		if (m_tileMapName == "")
+		if (m_editorTileMapName == "")
 		{
 			LOG("Tried to save the tile map but didn't enter a name!");
 		}
 		else
 		{
-			wstring filepath = GameManager::GetInstance()->GetWideWorkingDirectory() + L"\\Resources\\Levels\\TileMaps\\" + wstring(m_tileMapName.begin(), m_tileMapName.end()) + L".json";
+			string filepath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Levels\\TileMaps\\" + m_editorTileMapName + ".json";
 
 			if (Save(filepath) == true)
 			{
 				LOG("Tile map saved!");
+
+				m_tileMapName = m_editorTileMapName;
 			}
 			else
 			{
@@ -476,13 +485,13 @@ void TileMap::CreateEngineUI()
 
 	if (ImGui::Button("Load") == true)
 	{
-		if (m_tileMapName == "")
+		if (m_editorTileMapName == "")
 		{
 			LOG("Tried to load a tile map but didn't enter a name!");
 		}
 		else
 		{
-			wstring filepath = GameManager::GetInstance()->GetWideWorkingDirectory() + L"\\Resources\\Levels\\TileMaps\\" + wstring(m_tileMapName.begin(), m_tileMapName.end()) + L".json";
+			string filepath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Levels\\TileMaps\\" + m_editorTileMapName + ".json";
 
 			for (int i = 0; i < m_width; ++i)
 			{
@@ -504,6 +513,8 @@ void TileMap::CreateEngineUI()
 			if (Load(filepath) == true)
 			{
 				LOG("Tile map loaded!");
+
+				m_tileMapName = m_editorTileMapName;
 			}
 			else
 			{
@@ -533,11 +544,13 @@ void TileMap::Init(int width, int height, XMFLOAT3 position, float tileDimension
 	InitMap();
 }
 
-void TileMap::Init(wstring mapPath, XMFLOAT3 position)
+void TileMap::Init(string mapPath, XMFLOAT3 position)
 {
 	m_transform->SetLocalPosition(position);
 
-	if (Load(mapPath) == true)
+	string filepath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Levels\\TileMaps\\" + mapPath + ".json";
+
+	if (Load(filepath) == true)
 	{
 		Pathfinding::GetInstance()->Initialize(this);
 	}
@@ -547,15 +560,13 @@ void TileMap::Serialize(nlohmann::json& data)
 {
 	RenderableGameObject::Serialize(data);
 
-	std::string tempPath = std::string(m_mapPath.begin(), m_mapPath.end());
-
-	data["MapPath"] = tempPath;
+	data["MapName"] = m_tileMapName;
 	data["Position"] = { m_transform->GetLocalPosition().x ,m_transform->GetLocalPosition().y ,m_transform->GetLocalPosition().z };
 }
 
-std::wstring TileMap::GetMapPath() const
+std::string TileMap::GetMapName() const
 {
-	return m_mapPath;
+	return m_tileMapName;
 }
 
 bool TileMap::GetTileFromWorldPos(XMFLOAT2 pos, Tile*& ptile, int* prow, int* pcolumn) // Takes a set of coordinates and finds if a tile is there
