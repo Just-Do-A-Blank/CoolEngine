@@ -162,8 +162,6 @@ bool GameManager::BeginPlay()
 
 	CopyScene();
 
-	m_pcurrentGameScene->InitializeQuadTree();
-
 	m_pcurrentGameScene->SetActiveCameraUsingIdentifier(m_pcurrentEditorScene->GetActiveCamera()->GetIdentifier());
 	m_viewState = ViewState::GAME_VIEW;
 
@@ -185,7 +183,6 @@ bool GameManager::EndPlay()
 		for (unordered_map<string, Scene*>::iterator it = m_gameSceneMap.begin(); it != m_gameSceneMap.end(); ++it)
 		{
 			it->second->m_psceneGraph->DeleteAllGameObjects();
-
 			delete it->second;
 			it->second = nullptr;
 			m_pbulletCreator->DeleteBullets();
@@ -650,8 +647,6 @@ bool GameManager::SwitchSceneUsingIdentifier(string sceneIdentifier, string play
 	}
 
 	pcurrentScene = sceneMap[sceneIdentifier];
-
-	pcurrentScene->InitializeQuadTree();
 
 	PickupsManager::GetInstance()->ResetPlayer();
 
