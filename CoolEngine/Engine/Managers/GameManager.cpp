@@ -5,6 +5,7 @@
 #include "Engine/GameObjects/RangedWeaponGameObject.h"
 #include "Engine/GameObjects/MeleeWeaponGameObject.h"
 #include "Engine/GameObjects/InteractableGameObject.h"
+#include "Engine/GameObjects/AudioSourceGameObject.h"
 #include "Engine/Scene/Scene.h"
 #include "SceneGraph.h"
 #include "GraphicsManager.h"
@@ -454,6 +455,23 @@ void GameManager::CopyScene()
 			else
 			{
 				m_pcurrentGameScene->CopyGameObject<LevelChangeGameObject>(*(dynamic_cast<LevelChangeGameObject*>(gameObjectNodeList[it]->NodeObject)));
+			}
+			break;
+
+		case AccumlateType::SOUND:
+			if (gameObjectNodeList[it]->PreviousParent)
+			{
+				TreeNode<GameObject>* parentNode = m_pcurrentGameScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
+				m_pcurrentGameScene->CopyGameObject<AudioSourceGameObject>(*(dynamic_cast<AudioSourceGameObject*>(gameObjectNodeList[it]->NodeObject)), parentNode);
+			}
+			else if (gameObjectNodeList[it]->PreviousSibling)
+			{
+				TreeNode<GameObject>* previousSiblingNode = m_pcurrentGameScene->GetTreeNode(gameObjectNodeList[it]->PreviousSibling->NodeObject);
+				m_pcurrentGameScene->CopyGameObject<AudioSourceGameObject>(*(dynamic_cast<AudioSourceGameObject*>(gameObjectNodeList[it]->NodeObject)), nullptr, previousSiblingNode);
+			}
+			else
+			{
+				m_pcurrentGameScene->CopyGameObject<AudioSourceGameObject>(*(dynamic_cast<AudioSourceGameObject*>(gameObjectNodeList[it]->NodeObject)));
 			}
 			break;
 
