@@ -20,6 +20,8 @@ public:
 
     virtual bool GetKillsOnDrain();
 
+    virtual int GetGain();
+
     virtual void SetValue(int value);
 
     virtual void SetMaxValue(int value);
@@ -31,6 +33,8 @@ public:
     virtual void SetAttachesToWeaponDamage(bool value);
 
     virtual void SetKillsOnDrain(bool value);
+
+    virtual void SetGain(int value);
 
 private:
 	int m_value;
@@ -52,5 +56,10 @@ private:
     /// True means if this is min value then it kill the character
     /// </summary>
     bool m_resourceKillOnDrain;
+
+    /// <summary>
+    /// How much to gain every half second
+    /// </summary>
+    int m_valueGained;
 };
 

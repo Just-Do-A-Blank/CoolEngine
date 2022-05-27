@@ -4,6 +4,7 @@
 
 Quadtree::Quadtree(XMFLOAT2 pos , int childrenSize, CompassFacing direction, int distantOffset)
 {
+    m_Initialized = false;
     m_angle = pos;
     m_children.reserve(childrenSize);
     m_maxNodeSize = childrenSize;
@@ -15,9 +16,8 @@ Quadtree::Quadtree(XMFLOAT2 pos , int childrenSize, CompassFacing direction, int
     XMFLOAT3 scal = XMFLOAT3(distantOffset, distantOffset, 1);
 
     m_Anchor = new GameObject();
-    m_Anchor->GetTransform()->SetWorldPosition(pos3);
-    m_Anchor->GetTransform()->SetWorldRotation(rot);
-    m_Anchor->GetTransform()->SetWorldScale(scal);
+    m_Anchor->GetTransform()->Initialize(pos3, rot, scal);
+    m_Anchor->GetTransform()->SetParentTransform(nullptr);
 
 
     m_Collider = new Box(m_Anchor);
@@ -30,6 +30,16 @@ Quadtree::Quadtree(XMFLOAT2 pos, int childrenSize, int distantOffset)
     m_maxNodeSize = childrenSize;
     m_direction = CompassFacing::Centre;
     m_objectOffset = distantOffset;
+
+    XMFLOAT3 pos3 = XMFLOAT3(pos.x, pos.y, 0);
+    XMFLOAT3 rot = XMFLOAT3(0, 0, 0);
+    XMFLOAT3 scal = XMFLOAT3(distantOffset, distantOffset, 1);
+
+    m_Anchor = new GameObject();
+    m_Anchor->GetTransform()->Initialize(pos3, rot, scal);
+    m_Anchor->GetTransform()->SetParentTransform(nullptr);
+
+    m_Collider = new Box(m_Anchor);
 
     m_NW = new Quadtree(XMFLOAT2(-1.f + pos.x, pos.y), childrenSize, CompassFacing::NorthWest, distantOffset);
     m_NE = new Quadtree(XMFLOAT2(1.f + pos.x, pos.y), childrenSize, CompassFacing::NorthEast, distantOffset);
@@ -129,30 +139,58 @@ bool Quadtree::RemoveObject(GameObject* pgameObjectAddress)
     return LoacteObjectAndOverwrite(pgameObjectAddress, nullptr);
 }
 
-void Quadtree::UpdateQuadTreeStucture()
-{
 
-}
-
-void Quadtree::GetUpdateList(CollidableGameObject* player, std::vector<GameObject*>& listToUpdate)
+void Quadtree::GetUpdateList(CollidableGameObject* obj, std::vector<GameObject*>& listToUpdate)
 {
-    Transform* t = player->GetTransform();
+    if (obj == nullptr)
+    {
+        LOG("Object for GetUpdateList is null")
+            return;
+    }
+    Transform* t = obj->GetTransform();
     XMFLOAT2 updatePoint = XMFLOAT2(t->GetWorldPosition().x, t->GetWorldPosition().y);
-    if (m_direction == CompassFacing::Centre)
-    {
-        CheckForObjectUpdate(listToUpdate);
-    }
-    if (m_NW == nullptr)
-    {
-        return;
-    }
-    
-    PlayerGameObject* gObj = dynamic_cast<PlayerGameObject*>(SimpleQueryByIdentifier("Player"));
 
-    m_NW->Collides(player, listToUpdate);
-    m_NE->Collides(player, listToUpdate);
-    m_SW->Collides(player, listToUpdate);
-    m_SE->Collides(player, listToUpdate);
+    Box* boxCollider = nullptr;
+    Circle* circleCollider = nullptr;
+    switch (obj->GetShape()->GetShapeType())
+    {
+    case ShapeType::BOX:
+        boxCollider = dynamic_cast<Box*>(obj->GetShape());
+        if (m_direction == CompassFacing::Centre && m_Collider->Collide(boxCollider))
+        {
+            CheckForObjectUpdate(listToUpdate);
+        }
+        if (m_NW == nullptr)
+        {
+            return;
+        }
+
+        m_NW->Collides(obj, listToUpdate);
+        m_NE->Collides(obj, listToUpdate);
+        m_SW->Collides(obj, listToUpdate);
+        m_SE->Collides(obj, listToUpdate);
+        break;
+    case ShapeType::CIRCLE:
+        circleCollider = dynamic_cast<Circle*>(obj->GetShape());
+        if (m_direction == CompassFacing::Centre && m_Collider->Collide(circleCollider))
+        {
+            CheckForObjectUpdate(listToUpdate);
+        }
+        if (m_NW == nullptr)
+        {
+            return;
+        }
+
+        m_NW->Collides(obj, listToUpdate);
+        m_NE->Collides(obj, listToUpdate);
+        m_SW->Collides(obj, listToUpdate);
+        m_SE->Collides(obj, listToUpdate);
+        break;
+    case ShapeType::COUNT:
+        break;
+    default:
+        break;
+    }
 
 }
 
@@ -228,9 +266,34 @@ GameObject* Quadtree::QueryByIdentifier(std::string identifier, XMFLOAT2 point)
 
 bool Quadtree::Collides(CollidableGameObject* pG, std::vector<GameObject*>& list)
 {
-    if (m_NW != nullptr)
+    Box* boxCollider = nullptr;
+    Circle* circleCollider = nullptr;
+    switch (pG->GetShape()->GetShapeType())
     {
-        if (m_Collider->Collide(pG->GetShape()))
+    case ShapeType::BOX:
+        boxCollider = dynamic_cast<Box*>(pG->GetShape());
+        break;
+    case ShapeType::CIRCLE:
+        circleCollider = dynamic_cast<Circle*>(pG->GetShape());
+        break;
+    case ShapeType::COUNT:
+        break;
+    default:
+        break;
+    }
+
+    if (boxCollider != nullptr)
+    {
+        if (m_Collider->Collide(boxCollider))
+        {
+            CheckForObjectUpdate(list);
+            GetUpdateList(pG, list);
+            return true;
+        }
+    }
+    else if (circleCollider != nullptr)
+    {
+        if (m_Collider->Collide(circleCollider))
         {
             CheckForObjectUpdate(list);
             GetUpdateList(pG, list);
@@ -256,7 +319,10 @@ void Quadtree::CheckForObjectUpdate(std::vector<GameObject*>& list)
 {
     for (size_t i = 0; i < m_children.size(); i++)
     {
-        list.push_back(m_children[i]);
+        if (m_children[i]->GetEnabled())
+        {
+            list.push_back(m_children[i]);
+        }
     }
 }
 

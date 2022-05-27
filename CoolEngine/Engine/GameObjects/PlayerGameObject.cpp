@@ -400,10 +400,14 @@ void PlayerGameObject::Update()
 
 	XMFLOAT2 pos = XMFLOAT2(m_transform->GetWorldPosition().x, m_transform->GetWorldPosition().y);
 
-	XMFLOAT2 toWeapon = MathHelper::Minus(GameManager::GetInstance()->GetCamera()->GetMousePositionInWorldSpace(), pos);
+    GameManager* gamemanager = GameManager::GetInstance();
+	XMFLOAT2 toWeapon = MathHelper::Minus(gamemanager->GetCamera()->GetMousePositionInWorldSpace(), pos);
 	toWeapon = MathHelper::Normalize(toWeapon);
 
 	m_pweapon->SetWeaponPosition(toWeapon);
+
+    float timeDelta = gamemanager->GetTimer()->DeltaTime();
+    m_resourceManager->Update(timeDelta);
 }
 
 void PlayerGameObject::TakeDamage(float damage)
