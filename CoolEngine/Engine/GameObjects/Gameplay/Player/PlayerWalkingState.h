@@ -145,6 +145,13 @@ private:
     bool IsHorizontalDirection(EGAMEPLAYBUTTONCLASS button);
 
     /// <summary>
+    /// Determines if there is no user Input at all
+    /// </summary>
+    /// <param name="button"></param>
+    /// <returns></returns>
+    bool IsIdle(EGAMEPLAYBUTTONCLASS button);
+
+    /// <summary>
     /// Detirmines if the button is on the same axis
     /// </summary>
     /// <param name="current">The button to check</param>

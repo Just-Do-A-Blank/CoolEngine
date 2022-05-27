@@ -8,14 +8,14 @@
         "BoolTransitions": null,
         "FloatTransitions": null,
         "IntTransitions": {
-          "0_IdleUpTrans": [ [ 0, 1, "PlayerIdleUp" ] ],
-          "1_IdleLeftTrans": [ [ 0, 2, "PlayerIdleLeft" ] ],
-          "2_IdleRightTrans": [ [ 0, 3, "PlayerIdleRight" ] ],
-          "3_WalkUpTrans": [ [ 0, 4, "PlayerWalkUp" ] ],
-          "4_WalkDownTrans": [ [ 0, 6, "PlayerWalkDown" ] ],
-          "5_WalkLeftTrans": [ [ 0, 7, "PlayerWalkLeft" ] ],
-          "6_WalkRightTrans": [ [ 0, 8, "PlayerWalkRight" ] ],
-          "7_IdleDownTrans": [ [ 0, 1, "" ] ],
+          "0_IdleDown": [ [ 0, 1, "" ] ],
+          "0_IdleLeft": [ [ 0, 2, "PlayerIdleLeft" ] ],
+          "0_IdleRight": [ [ 0, 3, "PlayerIdleRight" ] ],
+          "0_IdleUp": [ [ 0, 4, "PlayerIdleUp" ] ],
+          "0_WalkDown": [ [ 0, 5, "PlayerWalkDown" ] ],
+          "0_WalkLeft": [ [ 0, 6, "PlayerWalkLeft" ] ],
+          "0_WalkRight": [ [ 0, 7, "PlayerWalkRight" ] ],
+          "0_WalkUp": [ [ 0, 8, "PlayerWalkUp" ] ],
           "PlayerFrontTrans": [ [ 0, 5, "PlayerWalkUp" ] ]
         }
       },
@@ -24,14 +24,32 @@
         "AnimIsLooping": true,
         "BoolTransitions": null,
         "FloatTransitions": null,
-        "IntTransitions": null
+        "IntTransitions": {
+          "2_IdleDown": [ [ 0, 1, "PlayerIdleFront" ] ],
+          "2_IdleLeft": [ [ 0, 2, "" ] ],
+          "2_IdleRight": [ [ 0, 3, "PlayerIdleRight" ] ],
+          "2_IdleUp": [ [ 0, 4, "PlayerIdleUp" ] ],
+          "2_WalkDown": [ [ 0, 5, "PlayerWalkDown" ] ],
+          "2_WalkLeft": [ [ 0, 6, "PlayerWalkLeft" ] ],
+          "2_WalkRight": [ [ 0, 7, "PlayerWalkRight" ] ],
+          "2_WalkUp": [ [ 0, 8, "PlayerWalkUp" ] ]
+        }
       },
       "PlayerIdleRight": {
         "Anim": "Animations\\IdleRightAnim.json",
         "AnimIsLooping": true,
         "BoolTransitions": null,
         "FloatTransitions": null,
-        "IntTransitions": null
+        "IntTransitions": {
+          "3_IdleDown": [ [ 0, 1, "PlayerIdleFront" ] ],
+          "3_IdleLeft": [ [ 0, 2, "PlayerIdleLeft" ] ],
+          "3_IdleRight": [ [ 0, 3, "" ] ],
+          "3_IdleUp": [ [ 0, 4, "PlayerIdleUp" ] ],
+          "3_WalkDown": [ [ 0, 5, "PlayerWalkDown" ] ],
+          "3_WalkLeft": [ [ 0, 6, "PlayerWalkLeft" ] ],
+          "3_WalkRight": [ [ 0, 7, "PlayerWalkRight" ] ],
+          "3_WalkUp": [ [ 0, 8, "PlayerWalkUp" ] ]
+        }
       },
       "PlayerIdleUp": {
         "Anim": "Animations\\IdleBackAnim.json",
@@ -39,14 +57,14 @@
         "BoolTransitions": null,
         "FloatTransitions": null,
         "IntTransitions": {
-          "1_IdleDownTrans": [ [ 0, 1, "PlayerIdleFront" ] ],
-          "1_IdleLeftTrans": [ [ 0, 1, "" ] ],
-          "1_IdleRightTrans": [ [ 0, 1, "" ] ],
-          "1_IdleUpTrans": [ [ 0, 1, "" ] ],
-          "1_WalkDownTrans": [ [ 0, 1, "" ] ],
-          "1_WalkLeftTrans": [ [ 0, 1, "" ] ],
-          "1_WalkRightTrans": [ [ 0, 1, "" ] ],
-          "1_WalkUpTrans": [ [ 0, 1, "" ] ]
+          "1_IdleDown": [ [ 0, 1, "PlayerIdleFront" ] ],
+          "1_IdleLeft": [ [ 0, 2, "PlayerIdleLeft" ] ],
+          "1_IdleRight": [ [ 0, 3, "PlayerIdleRight" ] ],
+          "1_IdleUp": [ [ 0, 4, "" ] ],
+          "1_WalkDown": [ [ 0, 5, "PlayerWalkDown" ] ],
+          "1_WalkLeft": [ [ 0, 6, "PlayerWalkLeft" ] ],
+          "1_WalkRight": [ [ 0, 7, "PlayerWalkRight" ] ],
+          "1_WalkUp": [ [ 0, 8, "PlayerWalkUp" ] ]
         }
       },
       "PlayerWalkDown": {
@@ -54,21 +72,48 @@
         "AnimIsLooping": true,
         "BoolTransitions": null,
         "FloatTransitions": null,
-        "IntTransitions": null
+        "IntTransitions": {
+          "5_IdleDown": [ [ 0, 1, "PlayerIdleFront" ] ],
+          "5_IdleLeft": [ [ 0, 2, "PlayerIdleLeft" ] ],
+          "5_IdleRight": [ [ 0, 3, "PlayerIdleRight" ] ],
+          "5_IdleUp": [ [ 0, 4, "PlayerIdleUp" ] ],
+          "5_WalkDown": [ [ 0, 5, "" ] ],
+          "5_WalkLeft": [ [ 0, 6, "PlayerWalkLeft" ] ],
+          "5_WalkRight": [ [ 0, 7, "PlayerWalkRight" ] ],
+          "5_WalkUp": [ [ 0, 8, "PlayerWalkUp" ] ]
+        }
       },
       "PlayerWalkLeft": {
         "Anim": "Animations\\WalkLeftAnim.json",
         "AnimIsLooping": true,
         "BoolTransitions": null,
         "FloatTransitions": null,
-        "IntTransitions": null
+        "IntTransitions": {
+          "7_IdleDown": [ [ 0, 1, "PlayerIdleFront" ] ],
+          "7_IdleLeft": [ [ 0, 2, "PlayerIdleLeft" ] ],
+          "7_IdleRight": [ [ 0, 3, "PlayerIdleRight" ] ],
+          "7_IdleUp": [ [ 0, 4, "PlayerIdleUp" ] ],
+          "7_WalkDown": [ [ 0, 5, "PlayerWalkDown" ] ],
+          "7_WalkLeft": [ [ 0, 6, "" ] ],
+          "7_WalkRight": [ [ 0, 7, "PlayerWalkRight" ] ],
+          "7_WalkUp": [ [ 0, 8, "PlayerWalkUp" ] ]
+        }
       },
       "PlayerWalkRight": {
         "Anim": "Animations\\WalkRightAnim.json",
         "AnimIsLooping": true,
         "BoolTransitions": null,
         "FloatTransitions": null,
-        "IntTransitions": null
+        "IntTransitions": {
+          "4_IdleDown": [ [ 0, 1, "PlayerIdleFront" ] ],
+          "4_IdleLeft": [ [ 0, 2, "PlayerIdleLeft" ] ],
+          "4_IdleRight": [ [ 0, 3, "PlayerIdleRight" ] ],
+          "4_IdleUp": [ [ 0, 4, "PlayerIdleUp" ] ],
+          "4_WalkDown": [ [ 0, 5, "PlayerWalkDown" ] ],
+          "4_WalkLeft": [ [ 0, 6, "PlayerWalkLeft" ] ],
+          "4_WalkRight": [ [ 0, 7, "" ] ],
+          "4_WalkUp": [ [ 0, 8, "PlayerWalkUp" ] ]
+        }
       },
       "PlayerWalkUp": {
         "Anim": "Animations\\WalkBackAnim.json",
@@ -76,8 +121,15 @@
         "BoolTransitions": null,
         "FloatTransitions": null,
         "IntTransitions": {
-          "WalkUpTrans": [ [ 0, 5, "PlayerWalkUp" ] ],
-          "testTrans": [ [ 0, 1, "PlayerIdleFront" ] ]
+          "6_IdleDown": [ [ 0, 1, "PlayerIdleFront" ] ],
+          "6_IdleLeft": [ [ 0, 2, "PlayerIdleLeft" ] ],
+          "6_IdleRight": [ [ 0, 3, "PlayerIdleRight" ] ],
+          "6_IdleUp": [ [ 0, 4, "PlayerIdleUp" ] ],
+          "6_WalkDown": [ [ 0, 5, "PlayerWalkDown" ] ],
+          "6_WalkLeft": [ [ 0, 6, "PlayerWalkLeft" ] ],
+          "6_WalkRight": [ [ 0, 7, "PlayerWalkRight" ] ],
+          "6_WalkUp": [ [ 0, 8, "" ] ],
+          "WalkUpTrans": [ [ 0, 5, "PlayerWalkUp" ] ]
         }
       }
     }

@@ -156,6 +156,38 @@ void PlayerWalkingState::UpdateButtonOrderOnButtonPressed(EGAMEPLAYBUTTONCLASS b
     }
 }
 
+bool PlayerWalkingState::IsIdle(EGAMEPLAYBUTTONCLASS button)
+{
+    bool playerIdle = false;
+
+    XMFLOAT3 playerForce = m_playerMovingBody->GetForceApplied();
+
+    FiniteState* nextAnimState = m_playerReference->GetAnimationStateMachine()->GetActiveState();
+    AnimationState* pAnimationState = dynamic_cast<AnimationState*>(nextAnimState);
+
+    std::string previousAnimState = m_playerReference->GetAnimationStateMachine()->GetStateName(pAnimationState);
+
+    if (MathHelper::Equals(playerForce, XMFLOAT3(0.0, 0.0, 0.0)) && previousAnimState == "PlayerWalkDown")
+    {
+        pAnimationState->SetInt("5_IdleDown", 4);
+    }
+    else if (MathHelper::Equals(playerForce, XMFLOAT3(0.0, 0.0, 0.0)) && previousAnimState == "PlayerWalkRight")
+    {
+        pAnimationState->SetInt("6_IdleUp", 4);
+    }
+    else if (MathHelper::Equals(playerForce, XMFLOAT3(0.0, 0.0, 0.0)) && previousAnimState == "PlayerWalkLeft")
+    {
+        pAnimationState->SetInt("7_IdleUp", 4);
+    }
+    else if (MathHelper::Equals(playerForce, XMFLOAT3(0.0, 0.0, 0.0)))
+    {
+        pAnimationState->SetInt("6_IdleUp", 4);
+    }
+
+    playerIdle = true;
+    return playerIdle;
+
+}
 /// <summary>
 /// Detirmines if the button is a vertical direction button
 /// </summary>
@@ -167,11 +199,9 @@ bool PlayerWalkingState::IsVerticalDirection(EGAMEPLAYBUTTONCLASS button)
 
     //Implementing Animations
 
-    XMFLOAT3 playerForce = m_playerMovingBody->GetForceApplied();
+    bool playerIdle = false;
 
     
-
-    bool playerIdle = false;
 
     switch (button)
     {
@@ -179,17 +209,54 @@ bool PlayerWalkingState::IsVerticalDirection(EGAMEPLAYBUTTONCLASS button)
     {
         FiniteState* nextAnimState = m_playerReference->GetAnimationStateMachine()->GetActiveState();
         AnimationState* pAnimationState = dynamic_cast<AnimationState*>(nextAnimState);
-        pAnimationState->SetInt("PlayerFrontTrans", 5);
+
+        std::string previousAnimState = m_playerReference->GetAnimationStateMachine()->GetStateName(pAnimationState);
+
+        if (previousAnimState == "PlayerWalkDown")
+        {
+            pAnimationState->SetInt("5_WalkUp", 8);
+        }
+        else if (previousAnimState == "PlayerWalkLeft")
+        {
+            pAnimationState->SetInt("7_WalkUp", 8);
+        }
+        else if (previousAnimState == "PlayerWalkRight")
+        {
+            pAnimationState->SetInt("4_WalkUp", 8);
+        }
+        else
+        {
+            pAnimationState->SetInt("0_WalkUp", 8);
+        }
+        
+
         
     }
         break;
 
 
-       /* if (MathHelper::Equals(playerForce, XMFLOAT3(0.0, 0.0, 0.0)))
-        {
-            pAnimationState->SetInt("PlayerFrontTrans", 1);
-        }*/
+        
     case EGAMEPLAYBUTTONCLASS::MoveDown:
+    {
+        FiniteState* nextAnimState = m_playerReference->GetAnimationStateMachine()->GetActiveState();
+        AnimationState* pAnimationState = dynamic_cast<AnimationState*>(nextAnimState);
+        std::string previousAnimState = m_playerReference->GetAnimationStateMachine()->GetStateName(pAnimationState);
+
+        if (previousAnimState == "PlayerWalkUp")
+        {
+            pAnimationState->SetInt("6_WalkDown", 5);
+        }
+        else if (previousAnimState == "PlayerWalkLeft")
+        {
+            pAnimationState->SetInt("7_WalkDown", 5);
+        }
+        else if (previousAnimState == "PlayerWalkRight")
+        {
+            pAnimationState->SetInt("4_WalkDown", 5);
+        }
+        
+        
+    }
         isVertical = true;
         break;
     }
@@ -208,7 +275,48 @@ bool PlayerWalkingState::IsHorizontalDirection(EGAMEPLAYBUTTONCLASS button)
     switch (button)
     {
     case EGAMEPLAYBUTTONCLASS::MoveLeft:
+    {
+        FiniteState* nextAnimState = m_playerReference->GetAnimationStateMachine()->GetActiveState();
+        AnimationState* pAnimationState = dynamic_cast<AnimationState*>(nextAnimState);
+        std::string previousAnimState = m_playerReference->GetAnimationStateMachine()->GetStateName(pAnimationState);
+
+        if (previousAnimState == "PlayerWalkUp")
+        {
+            pAnimationState->SetInt("6_WalkLeft", 6);
+        }
+        else if (previousAnimState == "PlayerWalkDown")
+        {
+            pAnimationState->SetInt("5_WalkLeft", 6);
+        }
+        else if (previousAnimState == "PlayerWalkRight")
+        {
+            pAnimationState->SetInt("4_WalkLeft", 6);
+        }
+       
+
+        
+    }
     case EGAMEPLAYBUTTONCLASS::MoveRight:
+    {
+        FiniteState* nextAnimState = m_playerReference->GetAnimationStateMachine()->GetActiveState();
+        AnimationState* pAnimationState = dynamic_cast<AnimationState*>(nextAnimState);
+        std::string previousAnimState = m_playerReference->GetAnimationStateMachine()->GetStateName(pAnimationState);
+
+        if (previousAnimState == "PlayerWalkUp")
+        {
+            pAnimationState->SetInt("6_WalkRight", 7);
+        }
+        else if (previousAnimState == "PlayerWalkDown")
+        {
+            pAnimationState->SetInt("5_WalkRight", 7);
+        }
+        else if (previousAnimState == "PlayerWalkLeft")
+        {
+            pAnimationState->SetInt("7_WalkRight", 7);
+        }
+        
+        
+    }
         isVertical = true;
         break;
     }
