@@ -21,7 +21,6 @@ TextUIWeaponDisplay::TextUIWeaponDisplay(nlohmann::json& data, TextComponent* te
 #endif
 
 	LoadLocalData(data);
-#endif
 
 	m_textComponent = textComponent;
 }
