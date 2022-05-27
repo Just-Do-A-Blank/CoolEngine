@@ -863,6 +863,11 @@ void GameManager::Deserialize(nlohmann::json& data)
 				gameObjects[*uuid]->m_UUID = uuid;
 				break;
 
+			case AccumlateType::SOUND:
+				gameObjects[*uuid] = new AudioSourceGameObject(data[typeIt.key()][uuidString], uuid);
+				gameObjects[*uuid]->m_UUID = uuid;
+				break;
+
 			case AccumlateType::WEAPON:
 				gameObjects[*uuid] = new WeaponGameObject(data[typeIt.key()][uuidString], uuid);
 				gameObjects[*uuid]->m_UUID = uuid;
