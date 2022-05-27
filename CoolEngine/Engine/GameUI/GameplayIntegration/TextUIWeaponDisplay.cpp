@@ -18,6 +18,8 @@ TextUIWeaponDisplay::TextUIWeaponDisplay(nlohmann::json& data, TextComponent* te
 {
 #if EDITOR
 	m_WeaponStatList = GetWeaponStatAsList();
+#endif
+
 	LoadLocalData(data);
 #endif
 
