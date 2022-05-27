@@ -53,6 +53,8 @@ private:
 
 	ViewState m_viewState = ViewState::EDITOR_VIEW;
 
+	std::string m_playerName = "";
+
 public:
 	void Init();
 

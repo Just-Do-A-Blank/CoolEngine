@@ -39,7 +39,7 @@ TextComponent::TextComponent(nlohmann::json& data, CoolUUID uuid, ID3D11Device* 
 		m_textUIResourceDisplay = new TextUIResourceDisplay(data, this);
 		m_resourceAttachement = m_textUIResourceDisplay;
 
-		m_textUIWeaponDisplay = new TextUIWeaponDisplay(GameUIComponent::GetPrefabDataLoadedAtCreation(), this);
+		m_textUIWeaponDisplay = new TextUIWeaponDisplay(data, this);
 		m_weaponAttachment = m_textUIWeaponDisplay;
 
 		LoadLocalData(data);

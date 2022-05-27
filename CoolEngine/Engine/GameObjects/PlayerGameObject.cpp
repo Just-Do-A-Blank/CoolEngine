@@ -265,6 +265,19 @@ void PlayerGameObject::UseResource(unordered_set<PickupResource*> consumable)
 	}
 }
 
+void PlayerGameObject::MouseButtonPressed(MouseButtonPressedEvent* e)
+{
+	switch (e->GetButton())
+	{
+	case VK_LBUTTON:
+		if (m_pweapon != nullptr)
+		{
+			m_pweapon->Attack();
+		}
+		break;
+	}
+}
+
 void PlayerGameObject::OnTriggerHold(GameObject* obj1, GameObject* obj2)
 {
 	//If the player has interacted with the object
@@ -301,9 +314,22 @@ void PlayerGameObject::OnTriggerHold(GameObject* obj1, GameObject* obj2)
 			{
 				if (weapon->GetEnabled())
 				{
-					//Pick it up
-					EventManager::Instance()->AddEvent(new PickupEvent(obj2));
-					obj2->SetEnabled(false);
+					//Putting weapon into inventory if we have a weapon
+					if (m_pweapon != nullptr)
+					{
+						//Pick it up
+						EventManager::Instance()->AddEvent(new PickupEvent(obj2));
+						obj2->SetEnabled(false);
+					}
+					//The player doesnt have a weapon currently (its nullptr)
+					else
+					{
+						//Equip it
+						m_pweapon = weapon;
+						m_pweapon->SetHeld(true);
+					}
+
+
 				}
 			}
 		}
@@ -346,7 +372,7 @@ void PlayerGameObject::Handle(Event* e)
 		//KeyReleased((KeyReleasedEvent*)e);
 		break;
 	case EventType::MouseButtonPressed:
-		//MouseButtonPressed((MouseButtonPressedEvent*)e);
+		MouseButtonPressed((MouseButtonPressedEvent*)e);
 		break;
 	case EventType::MouseButtonReleased:
 		//MouseButtonReleased((MouseButtonReleasedEvent*)e);
@@ -371,6 +397,13 @@ void PlayerGameObject::Update()
     m_playerController->Update();
 
 	AudioManager::GetInstance()->SetListenerPosition(m_transform->GetWorldPosition());
+
+	XMFLOAT2 pos = XMFLOAT2(m_transform->GetWorldPosition().x, m_transform->GetWorldPosition().y);
+
+	XMFLOAT2 toWeapon = MathHelper::Minus(GameManager::GetInstance()->GetCamera()->GetMousePositionInWorldSpace(), pos);
+	toWeapon = MathHelper::Normalize(toWeapon);
+
+	m_pweapon->SetWeaponPosition(toWeapon);
 }
 
 void PlayerGameObject::TakeDamage(float damage)

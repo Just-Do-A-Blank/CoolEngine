@@ -624,6 +624,11 @@ void GameManager::SwitchScene(Scene* pscene, string playerIdentifier, bool unloa
 
 bool GameManager::SwitchSceneUsingIdentifier(string sceneIdentifier, string playerIdentifier, bool unloadCurrentScene)
 {
+	if (playerIdentifier != "")
+	{
+		m_playerName = playerIdentifier;
+	}
+
 	unordered_map<string, Scene*> sceneMap = GetCurrentViewStateSceneMap();
 	if (sceneMap.count(sceneIdentifier) == 0)
 	{
@@ -982,6 +987,12 @@ void GameManager::Deserialize(nlohmann::json& data)
 		pnode = pnode->Sibling;
 	}	
 
+	if (m_playerName != "")
+	{
+		PlayerGameObject* pplayer = GetCurrentViewStateScene()->GetGameObjectUsingIdentifier<PlayerGameObject>(m_playerName);
+		pnewScene->CopyGameObject<PlayerGameObject>(*pplayer);
+	}
+
 	Scene*& currentScene = GetCurrentViewStateScene();
 	currentScene = pnewScene;
 
@@ -1046,6 +1057,11 @@ bool GameManager::LoadSceneFromFile(std::string fileLocation, string playerIdent
 	ifstream fileIn(fileLocation);
 	if (fileIn.is_open())
 	{
+		if (playerIdentifier != "")
+		{
+			m_playerName = playerIdentifier;
+		}
+
 		nlohmann::json dataIn;
 		fileIn >> dataIn;
 
@@ -1056,12 +1072,6 @@ bool GameManager::LoadSceneFromFile(std::string fileLocation, string playerIdent
 		Scene* oldScene = GetCurrentViewStateScene();
 
 		Deserialize(dataIn);
-
-		if (playerIdentifier != "")
-		{
-			PlayerGameObject* pplayer = oldScene->GetGameObjectUsingIdentifier<PlayerGameObject>(playerIdentifier);
-			GetCurrentViewStateScene()->CopyGameObject<PlayerGameObject>(*pplayer);
-		}
 
 		if (unloadCurrentScene && oldScene)
 		{
