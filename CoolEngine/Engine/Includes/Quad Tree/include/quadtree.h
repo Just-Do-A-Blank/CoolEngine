@@ -4,6 +4,7 @@
 #include "Engine/Physics/Box.h"
 #include "Engine/Physics/Circle.h"
 #include "Engine/GameObjects/RenderableCollidableGameObject.h"
+#include "Engine/GameObjects/GameObject.h"
 #include "Engine/GameObjects/PlayerGameObject.h"
 #include "Engine/Managers/Events/EventManager.h"
 #include "Engine/Managers/DebugDrawManager.h"

@@ -228,9 +228,34 @@ GameObject* Quadtree::QueryByIdentifier(std::string identifier, XMFLOAT2 point)
 
 bool Quadtree::Collides(CollidableGameObject* pG, std::vector<GameObject*>& list)
 {
-    if (m_NW != nullptr)
+    Box* boxCollider = nullptr;
+    Circle* circleCollider = nullptr;
+    switch (pG->GetShape()->GetShapeType())
     {
-        if (m_Collider->Collide(pG->GetShape()))
+    case ShapeType::BOX:
+        boxCollider = dynamic_cast<Box*>(pG->GetShape());
+        break;
+    case ShapeType::CIRCLE:
+        circleCollider = dynamic_cast<Circle*>(pG->GetShape());
+        break;
+    case ShapeType::COUNT:
+        break;
+    default:
+        break;
+    }
+
+    if (boxCollider != nullptr)
+    {
+        if (m_Collider->Collide(boxCollider))
+        {
+            CheckForObjectUpdate(list);
+            GetUpdateList(pG, list);
+            return true;
+        }
+    }
+    else if (circleCollider != nullptr)
+    {
+        if (m_Collider->Collide(circleCollider))
         {
             CheckForObjectUpdate(list);
             GetUpdateList(pG, list);
@@ -256,7 +281,10 @@ void Quadtree::CheckForObjectUpdate(std::vector<GameObject*>& list)
 {
     for (size_t i = 0; i < m_children.size(); i++)
     {
-        list.push_back(m_children[i]);
+        if (m_children[i]->GetEnabled())
+        {
+            list.push_back(m_children[i]);
+        }
     }
 }
 

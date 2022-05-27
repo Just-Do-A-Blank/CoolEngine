@@ -15,7 +15,7 @@ Scene::Scene(string identifier)
 	const XMFLOAT3 scal = XMFLOAT3(1, 1, 1);
 
 	Transform* trans = new Transform();
-	m_quadtree = new Quadtree(XMFLOAT2(300,0), 4, 600);
+	m_quadtree = new Quadtree(XMFLOAT2(0,0), 4, 1000);
 }
 
 Scene::~Scene()
@@ -36,7 +36,7 @@ void Scene::Update()
 {
 	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
 	vector<GameObject*> updateList;
-	PlayerGameObject* pgO;
+	PlayerGameObject* pgO = nullptr;
 
 	updateList.reserve(gameObjectList.size());
 
@@ -46,6 +46,11 @@ void Scene::Update()
 		{
 			pgO = dynamic_cast<PlayerGameObject*>( gameObjectList[i]);
 		}
+	}
+
+	if (pgO == nullptr)
+	{
+		return;
 	}
 
 	m_quadtree->GetUpdateList(pgO, updateList);
