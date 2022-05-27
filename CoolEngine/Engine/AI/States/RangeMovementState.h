@@ -11,7 +11,7 @@ class RangeMovementState : public FuzzyState
 {
 public:
 	RangeMovementState(EnemyGameObject* penemy);
-	RangeMovementState(const nlohmann::json& data);
+	RangeMovementState(const nlohmann::json& data, EnemyGameObject* penemy);
 	RangeMovementState(RangeMovementState const* other, EnemyGameObject* penemy);
 
 	void SetEnemy(EnemyGameObject* penemy);
@@ -36,7 +36,6 @@ protected:
 
 private:
 	PlayerGameObject* m_pplayer = nullptr;
-	EnemyGameObject* m_penemy = nullptr;
 
 	RangedWeaponGameObject* m_prangeWeapon = nullptr;
 

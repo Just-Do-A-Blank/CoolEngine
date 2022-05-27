@@ -105,7 +105,13 @@ void EnemyGameObject::SetWeaponPositionAgro()
 		return;
 	}
 
-	m_pweapon->SetTargetPosition(XMFLOAT2(m_pplayer->GetTransform()->GetWorldPosition().x, m_pplayer->GetTransform()->GetWorldPosition().y));
+	XMFLOAT2 pos = XMFLOAT2(m_transform->GetWorldPosition().x, m_transform->GetWorldPosition().y);
+	XMFLOAT2 playerPos = XMFLOAT2(m_pplayer->GetTransform()->GetWorldPosition().x, m_pplayer->GetTransform()->GetWorldPosition().y);
+
+	XMFLOAT2 toWeapon = MathHelper::Minus(playerPos, pos);
+	toWeapon = MathHelper::Normalize(toWeapon);
+
+	m_pweapon->SetWeaponPosition(toWeapon);
 }
 
 void EnemyGameObject::SetWeaponPositionWander()
@@ -115,15 +121,14 @@ void EnemyGameObject::SetWeaponPositionWander()
 		return;
 	}
 
-	XMFLOAT3 targetPos = MathHelper::Multiply(m_direction, m_pweapon->GetRadius() * 2);
-	targetPos = MathHelper::Plus(m_transform->GetWorldPosition(), targetPos);
-
-	m_pweapon->SetTargetPosition(XMFLOAT2(targetPos.x, targetPos.y));
+	m_pweapon->SetWeaponPosition(XMFLOAT2(m_direction.x, m_direction.y));
 }
 
+#if EDITOR
 void EnemyGameObject::CreateEngineUI()
 {
 	CharacterGameObject::CreateEngineUI();
 
 	m_pAIStateMachine->CreateEngineUI();
 }
+#endif

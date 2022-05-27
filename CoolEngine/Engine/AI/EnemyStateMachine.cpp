@@ -301,6 +301,14 @@ bool EnemyStateMachine::Load()
 
 	fileIn.close();
 
+	for (int i = 0; i < m_states.size(); ++i)
+	{
+		delete m_states[i];
+		m_states[i] = nullptr;
+	}
+
+	m_states.clear();
+
 	for (nlohmann::json::const_iterator it = data.begin(); it != data.end(); ++it)
 	{
 		FuzzyStateType type = (FuzzyStateType)stoi(it.key());
@@ -308,24 +316,29 @@ bool EnemyStateMachine::Load()
 		switch (type)
 		{
 		case FuzzyStateType::MELEE_ATTACK:
-			m_states.push_back(new MeleeAttackState(data[it.key()]));
+			m_states.push_back(new MeleeAttackState(data[it.key()], m_penemy));
 			break;
 
 		case FuzzyStateType::MELEE_MOVEMENT:
-			m_states.push_back(new MeleeMovementState(data[it.key()]));
+			m_states.push_back(new MeleeMovementState(data[it.key()], m_penemy));
 			break;
 
 		case FuzzyStateType::RANGE_ATTACK:
-			m_states.push_back(new RangeAttackState(data[it.key()]));
+			m_states.push_back(new RangeAttackState(data[it.key()], m_penemy));
 			break;
 
 		case FuzzyStateType::RANGE_MOVEMENT:
-			m_states.push_back(new RangeMovementState(data[it.key()]));
+			m_states.push_back(new RangeMovementState(data[it.key()], m_penemy));
 			break;
 
 		case FuzzyStateType::WANDER:
-			m_states.push_back(new WanderState(data[it.key()]));
+			m_states.push_back(new WanderState(data[it.key()], m_penemy));
 			break;
+		}
+
+		if (GameManager::GetInstance()->GetViewState() == ViewState::GAME_VIEW)
+		{
+			m_states.back()->Start();
 		}
 	}
 

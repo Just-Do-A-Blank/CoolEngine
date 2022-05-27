@@ -3,8 +3,10 @@
 #include "Engine/GameObjects/PlayerGameObject.h"
 #include "Engine/GameObjects/WeaponGameObject.h"
 #include "Engine\GameUI\GameplayIntegration\EWeaponUIAttachmentOption.h"
+#include "Engine\Managers\Events\EventObserver.h"
+#include "Engine\Managers\Events\PickupEvent.h"
 
-class GameplayUIWeaponAttachment
+class GameplayUIWeaponAttachment : public Observer
 {
 public:
     GameplayUIWeaponAttachment();
@@ -43,6 +45,11 @@ public:
     /// Called when the UI element should update
     /// </summary>
     void Update();
+
+    /// <summary>
+    /// Handles events from the Observations
+    /// </summary>
+    void Handle(Event* e) override;
 
     void LoadFromTopLevel(const nlohmann::json& jsonData);
     void SaveFromTopLevel(nlohmann::json& jsonData);
@@ -106,6 +113,27 @@ private:
     /// </summary>
     /// <param name="weapon">Current weapon to display</param>
     void UpdatedUI(WeaponGameObject* weapon);
+
+    /// <summary>
+    /// Handles pickup events
+    /// </summary>
+    void PlayerPickedupItem(PickupEvent* e);
+
+    /// <summary>
+    /// True means we are safe to scan the inventory for a new weapon
+    /// </summary>
+    bool m_playerPickedUpItem;
+
+    /// <summary>
+    /// Gets the weapon in the inventory
+    /// </summary>
+    /// <returns>The weapon to use</returns>
+    WeaponGameObject* GetWeaponInInventory();
+
+    /// <summary>
+    /// Weapon currently in the players inventory. Can be nullptr.
+    /// </summary>
+    WeaponGameObject* m_weaponCurrentlyInInventory;
 
 #if EDITOR
     list<pair<int, string>> m_attachmentSettingList;

@@ -79,7 +79,6 @@ protected:
     /// </summary>
     virtual void OnTriggerExit(GameObject* obj1, GameObject* obj2) override { }
 
-    //virtual void Update() override {}  /// commented out due to error: "Error	C2535	'void PlayerGameObject::Update(void)': member function already defined or declared	CoolEngine	C : \Users\s019135i\Documents\GitHub\CoolEngine\CoolEngine\Engine\GameObjects\PlayerGameObject.h	59
     Inventory* m_pInventory;
 
 private:
@@ -113,7 +112,7 @@ private:
     /// <summary>
     /// Handles any mouse button presses when pressed (frame whilst pressed)
     /// </summary>
-	//void MouseButtonPressed(MouseButtonPressedEvent* e);
+	void MouseButtonPressed(MouseButtonPressedEvent* e);
 
     /// <summary>
     /// Handles any mouse button when they are released (first frame).

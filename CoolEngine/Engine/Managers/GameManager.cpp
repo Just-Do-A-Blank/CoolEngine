@@ -5,6 +5,7 @@
 #include "Engine/GameObjects/RangedWeaponGameObject.h"
 #include "Engine/GameObjects/MeleeWeaponGameObject.h"
 #include "Engine/GameObjects/InteractableGameObject.h"
+#include "Engine/GameObjects/AudioSourceGameObject.h"
 #include "Engine/Scene/Scene.h"
 #include "SceneGraph.h"
 #include "GraphicsManager.h"
@@ -457,6 +458,23 @@ void GameManager::CopyScene()
 			}
 			break;
 
+		case AccumlateType::SOUND:
+			if (gameObjectNodeList[it]->PreviousParent)
+			{
+				TreeNode<GameObject>* parentNode = m_pcurrentGameScene->GetTreeNode(gameObjectNodeList[it]->PreviousParent->NodeObject);
+				m_pcurrentGameScene->CopyGameObject<AudioSourceGameObject>(*(dynamic_cast<AudioSourceGameObject*>(gameObjectNodeList[it]->NodeObject)), parentNode);
+			}
+			else if (gameObjectNodeList[it]->PreviousSibling)
+			{
+				TreeNode<GameObject>* previousSiblingNode = m_pcurrentGameScene->GetTreeNode(gameObjectNodeList[it]->PreviousSibling->NodeObject);
+				m_pcurrentGameScene->CopyGameObject<AudioSourceGameObject>(*(dynamic_cast<AudioSourceGameObject*>(gameObjectNodeList[it]->NodeObject)), nullptr, previousSiblingNode);
+			}
+			else
+			{
+				m_pcurrentGameScene->CopyGameObject<AudioSourceGameObject>(*(dynamic_cast<AudioSourceGameObject*>(gameObjectNodeList[it]->NodeObject)));
+			}
+			break;
+
 		case AccumlateType::TILE_MAP:
 			if (gameObjectNodeList[it]->PreviousParent)
 			{
@@ -603,6 +621,11 @@ void GameManager::SwitchScene(Scene* pscene, string playerIdentifier, bool unloa
 
 bool GameManager::SwitchSceneUsingIdentifier(string sceneIdentifier, string playerIdentifier, bool unloadCurrentScene)
 {
+	if (playerIdentifier != "")
+	{
+		m_playerName = playerIdentifier;
+	}
+
 	unordered_map<string, Scene*> sceneMap = GetCurrentViewStateSceneMap();
 	if (sceneMap.count(sceneIdentifier) == 0)
 	{
@@ -780,6 +803,7 @@ void GameManager::Deserialize(nlohmann::json& data)
 
 	string sceneName = data["SceneName"];
 	Scene* pnewScene = new Scene(sceneName);
+	GetCurrentViewStateSceneMap().insert(pair<string, Scene*>(sceneName, pnewScene));
 
 	for (nlohmann::json::const_iterator typeIt = data.begin(); typeIt != data.end(); ++typeIt)
 	{
@@ -837,6 +861,11 @@ void GameManager::Deserialize(nlohmann::json& data)
 
 			case AccumlateType::INTERACTABLE:
 				gameObjects[*uuid] = new InteractableGameObject(data[typeIt.key()][uuidString], uuid);
+				gameObjects[*uuid]->m_UUID = uuid;
+				break;
+
+			case AccumlateType::SOUND:
+				gameObjects[*uuid] = new AudioSourceGameObject(data[typeIt.key()][uuidString], uuid);
 				gameObjects[*uuid]->m_UUID = uuid;
 				break;
 
@@ -917,8 +946,6 @@ void GameManager::Deserialize(nlohmann::json& data)
 
 	pcomponent = gameObjects[data["RootNode"]];
 
-
-
 	pnode = pnewScene->m_psceneGraph->NewNode(pcomponent);
 
 	std::stack<TreeNode<GameObject>*> toPush;
@@ -948,15 +975,29 @@ void GameManager::Deserialize(nlohmann::json& data)
 
 	pnode = pnewScene->m_psceneGraph->GetRootNode();
 
-
 	while (pnode != nullptr)
 	{
 		pnode->NodeObject->GetTransform()->UpdateMatrix();
 
 		pnode = pnode->Sibling;
+	}	
+
+	if (m_playerName != "")
+	{
+		PlayerGameObject* pplayer = GetCurrentViewStateScene()->GetGameObjectUsingIdentifier<PlayerGameObject>(m_playerName);
+		pnewScene->CopyGameObject<PlayerGameObject>(*pplayer);
 	}
 
-	GetCurrentViewStateSceneMap().insert(pair<string, Scene*>(sceneName, pnewScene));
+	Scene*& currentScene = GetCurrentViewStateScene();
+	currentScene = pnewScene;
+
+	if (m_viewState == ViewState::GAME_VIEW)
+	{
+		for (std::unordered_map<UINT64, GameObject*>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
+		{
+			it->second->Start();
+		}
+	}
 }
 
 unordered_map<string, Scene*>& GameManager::GetCurrentViewStateSceneMap()
@@ -1006,11 +1047,16 @@ void GameManager::CreateScene(string sceneIdentifier, bool unloadCurrentScene)
 	pcurrentScene = newScene;
 }
 
-bool GameManager::LoadSceneFromFile(std::string fileLocation, bool unloadCurrentScene)
+bool GameManager::LoadSceneFromFile(std::string fileLocation, string playerIdentifier, bool unloadCurrentScene)
 {
 	ifstream fileIn(fileLocation);
 	if (fileIn.is_open())
 	{
+		if (playerIdentifier != "")
+		{
+			m_playerName = playerIdentifier;
+		}
+
 		nlohmann::json dataIn;
 		fileIn >> dataIn;
 
@@ -1018,12 +1064,21 @@ bool GameManager::LoadSceneFromFile(std::string fileLocation, bool unloadCurrent
 		GraphicsManager::GetInstance()->Deserialize(dataIn);
 		FontManager::GetInstance()->Deserialize(dataIn);
 
-		if (unloadCurrentScene && GetCurrentViewStateScene())
-		{
-			DeleteCurrentScene();
-		}
+		Scene* oldScene = GetCurrentViewStateScene();
 
 		Deserialize(dataIn);
+
+		if (unloadCurrentScene && oldScene)
+		{
+			oldScene->m_psceneGraph->DeleteAllGameObjects();
+			m_pbulletCreator->DeleteBullets();
+
+			unordered_map<string, Scene*>& sceneMap = GetCurrentViewStateSceneMap();
+			sceneMap.erase(oldScene->GetSceneIdentifier());
+
+			delete oldScene;
+			oldScene = nullptr;
+		}
 		return true;
 	}
 	return false;

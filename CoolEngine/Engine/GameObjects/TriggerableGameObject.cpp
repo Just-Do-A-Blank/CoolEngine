@@ -3,48 +3,23 @@
 
 TriggerableGameObject::TriggerableGameObject() : RenderableCollidableGameObject()
 {
-    EventManager::Instance()->AddClient(EventType::CollisionEnter, this);
-    EventManager::Instance()->AddClient(EventType::CollisionExit, this);
-    EventManager::Instance()->AddClient(EventType::CollisionHold, this);
-    EventManager::Instance()->AddClient(EventType::TriggerEnter, this);
-    EventManager::Instance()->AddClient(EventType::TriggerExit, this);
-    EventManager::Instance()->AddClient(EventType::TriggerHold, this);
-
 	m_gameObjectType |= GameObjectType::TRIGGERABLE;
 }
 
 TriggerableGameObject::TriggerableGameObject(string identifier, CoolUUID uuid) : RenderableCollidableGameObject(identifier, uuid)
 {
-    EventManager::Instance()->AddClient(EventType::CollisionEnter, this);
-    EventManager::Instance()->AddClient(EventType::CollisionExit, this);
-    EventManager::Instance()->AddClient(EventType::CollisionHold, this);
-    EventManager::Instance()->AddClient(EventType::TriggerEnter, this);
-    EventManager::Instance()->AddClient(EventType::TriggerExit, this);
-    EventManager::Instance()->AddClient(EventType::TriggerHold, this);
-
 	m_gameObjectType |= GameObjectType::TRIGGERABLE;
 }
 
 TriggerableGameObject::TriggerableGameObject(const nlohmann::json& data, CoolUUID uuid) : RenderableCollidableGameObject(data, uuid)
 {
-    EventManager::Instance()->AddClient(EventType::CollisionEnter, this);
-    EventManager::Instance()->AddClient(EventType::CollisionExit, this);
-    EventManager::Instance()->AddClient(EventType::CollisionHold, this);
-    EventManager::Instance()->AddClient(EventType::TriggerEnter, this);
-    EventManager::Instance()->AddClient(EventType::TriggerExit, this);
-    EventManager::Instance()->AddClient(EventType::TriggerHold, this);
+
 
 	m_gameObjectType |= GameObjectType::TRIGGERABLE;
 }
 
 TriggerableGameObject::TriggerableGameObject(TriggerableGameObject const& other) : RenderableCollidableGameObject(other)
 {
-    EventManager::Instance()->AddClient(EventType::CollisionEnter, this);
-    EventManager::Instance()->AddClient(EventType::CollisionExit, this);
-    EventManager::Instance()->AddClient(EventType::CollisionHold, this);
-    EventManager::Instance()->AddClient(EventType::TriggerEnter, this);
-    EventManager::Instance()->AddClient(EventType::TriggerExit, this);
-    EventManager::Instance()->AddClient(EventType::TriggerHold, this);
 
 }
 
@@ -61,6 +36,16 @@ TriggerableGameObject::~TriggerableGameObject()
 void TriggerableGameObject::Serialize(nlohmann::json& data)
 {
 	RenderableCollidableGameObject::Serialize(data);
+}
+
+void TriggerableGameObject::Start()
+{
+	EventManager::Instance()->AddClient(EventType::CollisionEnter, this);
+	EventManager::Instance()->AddClient(EventType::CollisionExit, this);
+	EventManager::Instance()->AddClient(EventType::CollisionHold, this);
+	EventManager::Instance()->AddClient(EventType::TriggerEnter, this);
+	EventManager::Instance()->AddClient(EventType::TriggerExit, this);
+	EventManager::Instance()->AddClient(EventType::TriggerHold, this);
 }
 
 /// <summary>
