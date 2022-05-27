@@ -301,6 +301,14 @@ bool EnemyStateMachine::Load()
 
 	fileIn.close();
 
+	for (int i = 0; i < m_states.size(); ++i)
+	{
+		delete m_states[i];
+		m_states[i] = nullptr;
+	}
+
+	m_states.clear();
+
 	for (nlohmann::json::const_iterator it = data.begin(); it != data.end(); ++it)
 	{
 		FuzzyStateType type = (FuzzyStateType)stoi(it.key());
@@ -326,6 +334,11 @@ bool EnemyStateMachine::Load()
 		case FuzzyStateType::WANDER:
 			m_states.push_back(new WanderState(data[it.key()], m_penemy));
 			break;
+		}
+
+		if (GameManager::GetInstance()->GetViewState() == ViewState::GAME_VIEW)
+		{
+			m_states.back()->Start();
 		}
 	}
 
