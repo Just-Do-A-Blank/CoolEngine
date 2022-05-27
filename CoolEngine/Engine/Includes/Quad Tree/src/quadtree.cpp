@@ -16,9 +16,8 @@ Quadtree::Quadtree(XMFLOAT2 pos , int childrenSize, CompassFacing direction, int
     XMFLOAT3 scal = XMFLOAT3(distantOffset, distantOffset, 1);
 
     m_Anchor = new GameObject();
-    m_Anchor->GetTransform()->SetWorldPosition(pos3);
-    m_Anchor->GetTransform()->SetWorldRotation(rot);
-    m_Anchor->GetTransform()->SetWorldScale(scal);
+    m_Anchor->GetTransform()->Initialize(pos3, rot, scal);
+    m_Anchor->GetTransform()->SetParentTransform(nullptr);
 
 
     m_Collider = new Box(m_Anchor);
@@ -37,10 +36,8 @@ Quadtree::Quadtree(XMFLOAT2 pos, int childrenSize, int distantOffset)
     XMFLOAT3 scal = XMFLOAT3(distantOffset, distantOffset, 1);
 
     m_Anchor = new GameObject();
-    m_Anchor->GetTransform()->SetWorldPosition(pos3);
-    m_Anchor->GetTransform()->SetWorldRotation(rot);
-    m_Anchor->GetTransform()->SetWorldScale(scal);
-
+    m_Anchor->GetTransform()->Initialize(pos3, rot, scal);
+    m_Anchor->GetTransform()->SetParentTransform(nullptr);
 
     m_Collider = new Box(m_Anchor);
 
@@ -145,6 +142,11 @@ bool Quadtree::RemoveObject(GameObject* pgameObjectAddress)
 
 void Quadtree::GetUpdateList(CollidableGameObject* obj, std::vector<GameObject*>& listToUpdate)
 {
+    if (obj == nullptr)
+    {
+        LOG("Object for GetUpdateList is null")
+            return;
+    }
     Transform* t = obj->GetTransform();
     XMFLOAT2 updatePoint = XMFLOAT2(t->GetWorldPosition().x, t->GetWorldPosition().y);
 
