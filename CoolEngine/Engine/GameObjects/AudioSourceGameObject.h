@@ -38,12 +38,13 @@ protected:
 	void OnTriggerHold(GameObject* obj1, GameObject* obj2) override;
 
 private:
-	float m_volume = 1.0f;
+	float m_volume = 0.5f;
 
 	std::string m_soundName = "";
 
 	bool m_loop = false;
 	bool m_playOnOverlap = true;
+	bool m_playedOnce = false;
 
 	FMOD::Channel* m_pchannel = nullptr;
 };

@@ -74,7 +74,6 @@ void AudioSourceGameObject::Serialize(nlohmann::json& data)
 }
 
 #if EDITOR
-
 void AudioSourceGameObject::CreateEngineUI()
 {
 	TriggerableGameObject::CreateEngineUI();
@@ -83,7 +82,7 @@ void AudioSourceGameObject::CreateEngineUI()
 
 	if (EditorUI::CollapsingSection("Audio") == true)
 	{
-		EditorUI::InputText("Audio Path", m_soundName);
+		EditorUI::InputText("Audio Name", m_soundName);
 
 		ImGui::Spacing();
 
@@ -105,10 +104,11 @@ void AudioSourceGameObject::CreateEngineUI()
 		}
 	}
 }
+#endif
 
 void AudioSourceGameObject::Update()
 {
-	if (m_loop)
+	if (m_loop && m_playedOnce == true)
 	{
 		bool isPlaying = false;
 
@@ -128,7 +128,14 @@ bool AudioSourceGameObject::Play()
 {
 	if (m_soundName != "")
 	{
-		return AudioManager::GetInstance()->Play(m_soundName, m_transform->GetWorldPosition(), m_volume, &m_pchannel);
+		bool played = AudioManager::GetInstance()->Play(m_soundName, m_transform->GetWorldPosition(), m_volume, &m_pchannel);
+
+		if (played == true)
+		{
+			m_playedOnce = true;
+		}
+
+		return played;
 	}
 	else
 	{
@@ -141,9 +148,14 @@ bool AudioSourceGameObject::Play()
 void AudioSourceGameObject::OnTriggerHold(GameObject* obj1, GameObject* obj2)
 {
 	bool isPlaying = false;
-	m_pchannel->isPlaying(&isPlaying);
+	FMOD_RESULT result = FMOD_OK;
 
-	if (m_playOnOverlap == false || isPlaying == true)
+	if (m_pchannel != nullptr)
+	{
+		result = m_pchannel->isPlaying(&isPlaying);
+	}
+
+	if (m_playOnOverlap == false || isPlaying == true || result != FMOD_OK)
 	{
 		return;
 	}
@@ -166,5 +178,3 @@ void AudioSourceGameObject::OnTriggerHold(GameObject* obj1, GameObject* obj2)
 
 	Play();
 }
-
-#endif
