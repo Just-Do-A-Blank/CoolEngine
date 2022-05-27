@@ -93,8 +93,7 @@ void LevelChangeGameObject::OnTriggerHold(GameObject* obj1, GameObject* obj2)
 		string sceneFilePath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Levels\\" + m_sceneName + ".json";
 		if (!GameManager::GetInstance()->SwitchSceneUsingIdentifier(sceneFilePath))
 		{
-			GameManager::GetInstance()->LoadSceneFromFile(sceneFilePath);
-			GameManager::GetInstance()->SwitchSceneUsingIdentifier(m_sceneName, m_playerName, true);
+			GameManager::GetInstance()->LoadSceneFromFile(sceneFilePath, m_playerName, true);
 		}
 	}
 }
