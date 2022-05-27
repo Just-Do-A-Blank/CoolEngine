@@ -314,9 +314,22 @@ void PlayerGameObject::OnTriggerHold(GameObject* obj1, GameObject* obj2)
 			{
 				if (weapon->GetEnabled())
 				{
-					//Pick it up
-					EventManager::Instance()->AddEvent(new PickupEvent(obj2));
-					obj2->SetEnabled(false);
+					//Putting weapon into inventory if we have a weapon
+					if (m_pweapon != nullptr)
+					{
+						//Pick it up
+						EventManager::Instance()->AddEvent(new PickupEvent(obj2));
+						obj2->SetEnabled(false);
+					}
+					//The player doesnt have a weapon currently (its nullptr)
+					else
+					{
+						//Equip it
+						m_pweapon = weapon;
+						m_pweapon->SetHeld(true);
+					}
+
+
 				}
 			}
 		}
