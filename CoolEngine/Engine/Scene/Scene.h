@@ -199,6 +199,11 @@ private:
 			}
 		}
 
+		if (GameManager::GetInstance()->GetViewState() == ViewState::GAME_VIEW)
+		{
+			pgameObject->Start();
+		}
+
 		return gameObject;
 	}
 
