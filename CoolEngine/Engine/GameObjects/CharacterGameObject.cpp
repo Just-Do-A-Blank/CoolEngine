@@ -3,6 +3,7 @@
 #include "Engine/GameObjects/MeleeWeaponGameObject.h"
 #include "Engine/GameObjects/RangedWeaponGameObject.h"
 #include "Engine/Physics/Shape.h"
+#include "Engine/Managers/Events/EnemyDeathEvent.h"
 
 CharacterGameObject::CharacterGameObject() : TriggerableGameObject()
 {
@@ -113,6 +114,11 @@ void CharacterGameObject::TakeDamage(float damage)
 {
 	m_health -= damage;
 	// To do - Kill at zero health
+
+	if (m_health < 0 && ContainsType(GameObjectType::ENEMY))
+	{
+		GameManager::GetInstance()->DeleteGameObjectUsingIdentifier(m_identifier);
+	}
 }
 
 void CharacterGameObject::Serialize(nlohmann::json& jsonData)
