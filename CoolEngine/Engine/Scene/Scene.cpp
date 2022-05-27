@@ -15,7 +15,7 @@ Scene::Scene(string identifier)
 	const XMFLOAT3 scal = XMFLOAT3(1, 1, 1);
 
 	Transform* trans = new Transform();
-	m_quadtree = new Quadtree(XMFLOAT2(0,0), 4, 500);
+	m_quadtree = new Quadtree(XMFLOAT2(300,0), 4, 600);
 }
 
 Scene::~Scene()
@@ -34,47 +34,22 @@ void Scene::Start()
 
 void Scene::Update()
 {
-	if (!m_quadtree->Initialized())
-	{
-		InitializeQuadTree();
-	}
-
-
 	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
-	vector<GameObject*> updateList;
-	CollidableGameObject* cgO = nullptr;
 
-	updateList.reserve(gameObjectList.size());
-
-	for (size_t i = 0; i < gameObjectList.size(); i++)
+	for (int it = 0; it < gameObjectList.size(); ++it)
 	{
-		if (gameObjectList[i]->ContainsType(GameObjectType::COLLIDABLE) && gameObjectList[i]->GetIdentifier() == "Player")
+		if(gameObjectList[it]->GetEnabled())
 		{
-			cgO = dynamic_cast<CollidableGameObject*>(gameObjectList[i]);
-			if (cgO == nullptr)
-			{
-				return;
-			}
+			gameObjectList[it]->Update();
 		}
-	}
-	
-	m_quadtree->GetUpdateList(cgO, updateList);
 
-	for (int it = 0; it < updateList.size(); ++it)
-	{
-		updateList[it]->Update();
 	}
-
-	Collision::Update(updateList);
+	gameObjectList = m_psceneGraph->GetAllNodeObjects();
+	Collision::Update(gameObjectList);
 }
 
 void Scene::EditorUpdate()
 {
-	if (!m_quadtree->Initialized())
-	{
-		InitializeQuadTree();
-	}
-
 	vector<GameObject*> gameObjectList= m_psceneGraph->GetAllNodeObjects();
 
 	for (int it = 0; it < gameObjectList.size(); ++it)
@@ -90,30 +65,18 @@ void Scene::Render(RenderStruct& renderStruct)
 	RenderableGameObject* prenderableGameObject = nullptr;
 
 	vector<GameObject*> gameObjectList = m_psceneGraph->GetAllNodeObjects();
-	vector<GameObject*> updateList;
-	CollidableGameObject* cgO = nullptr;
-
-	updateList.reserve(gameObjectList.size());
-
-	for (size_t i = 0; i < gameObjectList.size(); i++)
+	for (int it = 0; it < gameObjectList.size(); ++it)
 	{
-		if (gameObjectList[i]->ContainsType(GameObjectType::COLLIDABLE) && gameObjectList[i]->GetIdentifier() == "Player")
+		//If this object is not enabled, do not render it 
+		if (!gameObjectList[it]->GetEnabled())
 		{
-			cgO = dynamic_cast<CollidableGameObject*>(gameObjectList[i]);
-			if (cgO == nullptr)
-			{
-				return;
-			}
+			continue;
 		}
-	}
 
-	m_quadtree->GetUpdateList(cgO, updateList);
 
-	for (int it = 0; it < updateList.size(); ++it)
-	{
-		if (updateList[it]->ContainsType(GameObjectType::RENDERABLE))
+		if (gameObjectList[it]->ContainsType(GameObjectType::RENDERABLE))
 		{
-			prenderableGameObject = dynamic_cast<RenderableGameObject*>(updateList[it]);
+			prenderableGameObject = dynamic_cast<RenderableGameObject*>(gameObjectList[it]);
 			prenderableGameObject->Render(renderStruct);
 
 			continue;
@@ -121,7 +84,7 @@ void Scene::Render(RenderStruct& renderStruct)
 
 		if (gameObjectList[it]->ContainsType(GameObjectType::GAME_UI_COMPONENT))
 		{
-			dynamic_cast<GameUIComponent*>(updateList[it])->Render(renderStruct);
+			dynamic_cast<GameUIComponent*>(gameObjectList[it])->Render(renderStruct);
 			continue;
 		}
 	}
@@ -134,7 +97,6 @@ void Scene::InitializeQuadTree()
 	{
 		m_quadtree->InsertElement(gameObjectList[i]);
 	}
-	m_quadtree->SetInitialized(true);
 }
 
 vector<GameObject*>& Scene::GetAllGameObjects()
