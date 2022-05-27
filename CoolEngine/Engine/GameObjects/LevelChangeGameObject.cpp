@@ -85,11 +85,6 @@ void LevelChangeGameObject::SetSceneName(string name)
     m_sceneName = name;
 }
 
-void LevelChangeGameObject::UpdateDoorState()
-{
-
-}
-
 void LevelChangeGameObject::OnTriggerHold(GameObject* obj1, GameObject* obj2)
 {
 	if (obj1->ContainsType(GameObjectType::PLAYER) && obj2->ContainsType(GameObjectType::LEVEL_CHANGE) && m_enemiesInScene <= 0)
