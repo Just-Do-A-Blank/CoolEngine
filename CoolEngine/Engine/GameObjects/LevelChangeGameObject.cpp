@@ -3,17 +3,20 @@
 #include "Engine/Managers/GameManager.h"
 #include "Engine/EditorUI/EditorUI.h"
 
+
 LevelChangeGameObject::LevelChangeGameObject() : TriggerableGameObject()
 {
     m_gameObjectType |= GameObjectType::LEVEL_CHANGE;
 
     m_playerName = "Player";
+
 }
 
 LevelChangeGameObject::LevelChangeGameObject(string identifier, CoolUUID uuid) : TriggerableGameObject(identifier, uuid)
 {
     m_gameObjectType |= GameObjectType::LEVEL_CHANGE;
     m_playerName = "Player";
+
 }
 
 LevelChangeGameObject::LevelChangeGameObject(const nlohmann::json& data, CoolUUID uuid) : TriggerableGameObject(data, uuid)
@@ -22,6 +25,7 @@ LevelChangeGameObject::LevelChangeGameObject(const nlohmann::json& data, CoolUUI
 
     m_sceneName = data["LevelChangeName"];
     m_playerName = data["PlayerName"];
+
 }
 
 LevelChangeGameObject::LevelChangeGameObject(LevelChangeGameObject const& other) : TriggerableGameObject(other)
@@ -101,7 +105,11 @@ void LevelChangeGameObject::Handle(Event* e)
 	if (e->GetEventID() == EventType::EnemyDeath)
 	{
 		--m_enemiesInScene;
-	}
+        if(m_enemiesInScene <= 0)
+        {
+            GetAnimationStateMachine()->SetActiveState("DoorOpenned");
+        }
+    }
 }
 
 void LevelChangeGameObject::Start()
@@ -121,6 +129,15 @@ void LevelChangeGameObject::Start()
 			++m_enemiesInScene;
 		}
 	}
+
+    if(m_enemiesInScene > 0)
+    {
+        GetAnimationStateMachine()->SetActiveState("DoorClosed");
+    }
+    else
+    {
+        GetAnimationStateMachine()->SetActiveState("DoorOpenned");
+    }
 }
 
 #if EDITOR
