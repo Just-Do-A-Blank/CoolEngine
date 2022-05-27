@@ -71,6 +71,11 @@ void Scene::Update()
 
 void Scene::EditorUpdate()
 {
+	if (!m_quadtree->Initialized())
+	{
+		InitializeQuadTree();
+	}
+
 	vector<GameObject*> gameObjectList= m_psceneGraph->GetAllNodeObjects();
 
 	for (int it = 0; it < gameObjectList.size(); ++it)
