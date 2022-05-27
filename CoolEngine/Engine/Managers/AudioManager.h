@@ -19,19 +19,19 @@ public:
 	bool Init();
 
 	//Music functions
-	bool LoadMusic(string relativePath);
+	bool LoadMusic(string name);
 
-	bool PlayMusic(string relativePath, float volume, bool loop);
+	bool PlayMusic(string name, float volume, bool loop);
 
 	//Sound functions
-	bool Load(string relativePath);
+	bool Load(string name);
 
-	bool Play(string relativePath, float volume);
-	bool Play(string relativePath, XMFLOAT3 position, float volume);
+	bool Play(string name, float volume);
+	bool Play(string name, XMFLOAT3 position, float volume, FMOD::Channel** ppchannel = nullptr);
 
 	void Update();
 
-	bool Delete(string relativePath);
+	bool Delete(string name);
 
 	void SetListenerPosition(XMFLOAT3 position);
 

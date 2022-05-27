@@ -8,6 +8,7 @@
 #include "Engine/GameObjects/WeaponGameObject.h"
 #include "Engine\GameObjects\EnemyGameObject.h"
 #include "Engine/GameObjects/LevelChangeGameObject.h"
+#include "Engine/GameObjects/AudioSourceGameObject.h"
 #include "Engine/GameObjects/PickupGameObject.h"
 #include "Engine/Tools/ToolBase.h"
 #include "Engine/Tools/AnimationTool.h"
@@ -229,6 +230,12 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
 
                     m_createObjectType = GameObjectType::INTERACTABLE;
                 }
+				if (ImGui::MenuItem("Sound"))
+				{
+					m_createGameObjectClicked = true;
+
+					m_createObjectType = GameObjectType::SOUND;
+				}
                 if (ImGui::MenuItem("Weapon"))
                 {
                     m_createGameObjectClicked = true;
@@ -434,6 +441,10 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
                     pgameManager->CreateGameObject<InteractableGameObject>(gameObjectName, m_selectedGameObjectNode);
                     break;
 
+				case GameObjectType::SOUND:
+					pgameManager->CreateGameObject<AudioSourceGameObject>(gameObjectName, m_selectedGameObjectNode);
+					break;
+
                 case GameObjectType::WEAPON:
                     pgameManager->CreateGameObject<WeaponGameObject>(gameObjectName, m_selectedGameObjectNode);
                     break;
@@ -442,9 +453,9 @@ void EditorUI::DrawSceneGraphWindow(ToolBase*& ptoolBase, ID3D11Device* pdevice)
                     pgameManager->CreateGameObject<CameraGameObject>(gameObjectName, m_selectedGameObjectNode);
                     break;
 
-        				case GameObjectType::TILE_MAP:
-        					pgameManager->CreateGameObject<TileMap>(gameObjectName, m_selectedGameObjectNode);
-        					break;
+        		case GameObjectType::TILE_MAP:
+        			pgameManager->CreateGameObject<TileMap>(gameObjectName, m_selectedGameObjectNode);
+        			break;
                   
                 case GameObjectType::LEVEL_CHANGE:
                     pgameManager->CreateGameObject<LevelChangeGameObject>(gameObjectName, m_selectedGameObjectNode);

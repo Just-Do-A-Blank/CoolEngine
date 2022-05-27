@@ -328,6 +328,9 @@
     <ClCompile Include="Inventory.cpp">
       <Filter>Engine\GameObjects\Gameplay\Inventory</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GameObjects\AudioSourceGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -833,6 +836,9 @@
     </ClInclude>
     <ClInclude Include="Inventory.h">
       <Filter>Engine\GameObjects\Gameplay\Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjects\AudioSourceGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
