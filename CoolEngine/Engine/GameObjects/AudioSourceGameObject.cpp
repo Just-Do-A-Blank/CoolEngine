@@ -147,15 +147,18 @@ bool AudioSourceGameObject::Play()
 
 void AudioSourceGameObject::OnTriggerHold(GameObject* obj1, GameObject* obj2)
 {
-	bool isPlaying = false;
-	FMOD_RESULT result = FMOD_OK;
+	bool isPlaying = true;
 
 	if (m_pchannel != nullptr)
 	{
-		result = m_pchannel->isPlaying(&isPlaying);
+		m_pchannel->isPlaying(&isPlaying);
+	}
+	else
+	{
+		isPlaying = false;
 	}
 
-	if (m_playOnOverlap == false || isPlaying == true || result != FMOD_OK)
+	if (m_playOnOverlap == false || isPlaying == true)
 	{
 		return;
 	}
