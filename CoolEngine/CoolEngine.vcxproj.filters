@@ -298,6 +298,12 @@
     <ClCompile Include="Engine\GameUI\GameplayIntegration\TextUIWeaponDisplay.cpp">
       <Filter>Engine\GameUI\GameplayIntegration</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\ImageUIPickupDisplay.cpp">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameUI\GameplayIntegration\GameplayUIPickupAttachement.cpp">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClCompile>
     <ClCompile Include="Engine\AI\States\MeleeAttackState.cpp">
       <Filter>Engine\AI\States</Filter>
     </ClCompile>
@@ -322,6 +328,10 @@
     <ClCompile Include="Inventory.cpp">
       <Filter>Engine\GameObjects\Gameplay\Inventory</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GameObjects\AudioSourceGameObject.cpp">
+      <Filter>Engine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Managers\Events\EnemyDeathEvent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\stdafx.h">
@@ -798,6 +808,12 @@
     <ClInclude Include="Engine\GameUI\GameplayIntegration\EWeaponTextDisplayStat.h">
       <Filter>Engine\GameUI\GameplayIntegration</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\ImageUIPickupDisplay.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameUI\GameplayIntegration\GameplayUIPickupAttachement.h">
+      <Filter>Engine\GameUI\GameplayIntegration</Filter>
+    </ClInclude>
     <ClInclude Include="Engine\AI\States\MeleeAttackState.h">
       <Filter>Engine\AI\States</Filter>
     </ClInclude>
@@ -822,6 +838,10 @@
     <ClInclude Include="Inventory.h">
       <Filter>Engine\GameObjects\Gameplay\Inventory</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\GameObjects\AudioSourceGameObject.h">
+      <Filter>Engine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Managers\Events\EnemyDeathEvent.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Engine\Includes\DirectXTK\SimpleMath.inl" />

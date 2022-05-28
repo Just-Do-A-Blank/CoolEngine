@@ -47,6 +47,15 @@ TileMap::TileMap(const nlohmann::json& data, CoolUUID uuid) : RenderableGameObje
 
 	XMFLOAT3 position = XMFLOAT3(data["Position"][0], data["Position"][1], data["Position"][2]);
 
+	if (data.contains("PathFinding") == true)
+	{
+		m_pathfindingMesh = data["PathFinding"];
+	}
+	else
+	{
+		m_pathfindingMesh = false;
+	}
+
 	Init(m_tileMapName, position);
 }
 
@@ -119,7 +128,6 @@ void TileMap::Update()
 			if (m_tiles[i][j] != nullptr)
 			{
 				m_tiles[i][j]->Update();
-				m_tiles[i][j]->GetTransform()->UpdateMatrix();
 			}
 		}
 	}
@@ -143,7 +151,6 @@ void TileMap::EditorUpdate()
 			if (m_tiles[i][j] != nullptr)
 			{
 				m_tiles[i][j]->Update();
-				m_tiles[i][j]->GetTransform()->UpdateMatrix();
 			}
 		}
 	}
@@ -398,6 +405,7 @@ bool TileMap::CreateTile(int row, int column, Tile*& ptile)
 
 	ptile = m_tiles[row][column];
 
+	ptile->GetTransform()->SetParentTransform(nullptr);
 	ptile->GetTransform()->UpdateMatrix();
 
 	return true;
@@ -451,9 +459,6 @@ void TileMap::DeleteTile(int row, int column)
 #if EDITOR
 void TileMap::CreateEngineUI()
 {
-	ImGui::Separator();
-	ImGui::Spacing();
-
 	EditorUI::InputText("Tile Map Name", m_editorTileMapName);
 
 	ImGui::Spacing();
@@ -524,6 +529,26 @@ void TileMap::CreateEngineUI()
 	}
 
 	ImGui::Spacing();
+
+	if (EditorUI::Checkbox("Show Colliders", m_showColliders) == true)
+	{
+		for (int i = 0; i < m_width; ++i)
+		{
+			for (int j = 0; j < m_height; ++j)
+			{
+				if (m_tiles[i][j] != nullptr && m_tiles[i][j]->GetIsPassable() == false)
+				{
+					m_tiles[i][j]->GetShape()->SetIsRendered(m_showColliders);
+				}
+			}
+		}
+	}
+
+	ImGui::Spacing();
+
+	EditorUI::Checkbox("Pathfinding", m_pathfindingMesh);
+
+	ImGui::Spacing();
 	ImGui::Separator();
 }
 #endif
@@ -550,7 +575,7 @@ void TileMap::Init(string mapPath, XMFLOAT3 position)
 
 	string filepath = GameManager::GetInstance()->GetWorkingDirectory() + "\\Resources\\Levels\\TileMaps\\" + mapPath + ".json";
 
-	if (Load(filepath) == true)
+	if (Load(filepath) == true && m_pathfindingMesh == true)
 	{
 		Pathfinding::GetInstance()->Initialize(this);
 	}
@@ -562,6 +587,7 @@ void TileMap::Serialize(nlohmann::json& data)
 
 	data["MapName"] = m_tileMapName;
 	data["Position"] = { m_transform->GetLocalPosition().x ,m_transform->GetLocalPosition().y ,m_transform->GetLocalPosition().z };
+	data["PathFinding"] = m_pathfindingMesh;
 }
 
 std::string TileMap::GetMapName() const

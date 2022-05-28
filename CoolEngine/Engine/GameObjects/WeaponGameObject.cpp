@@ -85,7 +85,7 @@ WeaponGameObject::WeaponGameObject(WeaponGameObject const& other) : TriggerableG
 
 WeaponGameObject::~WeaponGameObject()
 {
-
+    UnregisterForEvents();
 }
 
 void WeaponGameObject::Serialize(nlohmann::json& data)
@@ -153,7 +153,25 @@ void WeaponGameObject::LoadLocalData(const nlohmann::json& jsonData)
         m_distanceTravelled = jsonData["WeaponDistanceTravelled"];
         m_element = (ELEMENTS)jsonData["WeaponElement"];
         m_statusEffect = (STATUSES)jsonData["WeaponStatus"];
-        m_radius = jsonData["Radius"];
+
+		if (jsonData.contains("Radius") == true)
+		{
+			m_radius = jsonData["Radius"];
+		}
+		else
+		{
+			m_radius = 0.0f;
+		}
+
+        if (jsonData.count("WeaponIsHeld"))
+        {
+            m_isHeld = jsonData["WeaponIsHeld"];
+        }
+        else
+        {
+            m_isHeld = false;
+        }
+
 
 #if EDITOR
         m_elementSelectedItem = GetElementsFromIndex((int)m_element);
@@ -184,7 +202,7 @@ void WeaponGameObject::SaveLocalData(nlohmann::json& jsonData)
     jsonData["WeaponElement"] = (int)m_element;
     jsonData["WeaponStatus"] = (int)m_statusEffect;
     jsonData["Radius"] = m_radius;
-
+    jsonData["WeaponIsHeld"] = m_isHeld;
     std::string tempPath = std::string(m_UITexturePath.begin(), m_UITexturePath.end());
     jsonData["WeaponUITexturePath"] = tempPath;
 }
@@ -204,6 +222,16 @@ void WeaponGameObject::SaveAllPrefabData(nlohmann::json& jsonData)
 void WeaponGameObject::Attack()
 {
 
+}
+
+bool WeaponGameObject::GetHeld()
+{
+    return m_isHeld;
+}
+
+void WeaponGameObject::SetHeld(bool isHeld)
+{
+    m_isHeld = isHeld;
 }
 
 void WeaponGameObject::CalculateWeaponStrength()
@@ -386,23 +414,6 @@ int WeaponGameObject::RoundUp(float value)
     }
 
     return temp;
-}
-
-void WeaponGameObject::Handle(Event* e)
-{
-	switch (e->GetEventID())
-	{
-	case EventType::MouseButtonPressed:
-		{
-			MouseButtonPressedEvent* pmouseEvent = (MouseButtonPressedEvent*)e;
-
-			if (pmouseEvent->GetButton() == VK_LBUTTON && m_isPlayerWeapon)
-			{
-				Attack();
-			}
-		}
-		break;
-	}
 }
 
 void WeaponGameObject::RegisterForEvents()

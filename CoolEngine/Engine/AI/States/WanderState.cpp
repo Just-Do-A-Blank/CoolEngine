@@ -4,24 +4,20 @@
 #include "Engine/Managers/GameManager.h"
 #include "Engine/EditorUI/EditorUI.h"
 
-WanderState::WanderState(EnemyGameObject* penemy) : FuzzyState()
+WanderState::WanderState(EnemyGameObject* penemy) : FuzzyState(penemy)
 {
 	m_stateType = FuzzyStateType::WANDER;
-
-	m_penemy = penemy;
 }
-WanderState::WanderState(const nlohmann::json& data) : FuzzyState(data)
+WanderState::WanderState(const nlohmann::json& data, EnemyGameObject* penemy) : FuzzyState(data, penemy)
 {
 	m_stateType = FuzzyStateType::WANDER;
 
 	Deserialize(data);
 }
 
-WanderState::WanderState(WanderState const* other, EnemyGameObject* penemy) : FuzzyState(other)
+WanderState::WanderState(WanderState const* other, EnemyGameObject* penemy) : FuzzyState(other, penemy)
 {
 	m_stateType = FuzzyStateType::WANDER;
-
-	m_penemy = penemy;
 
 	m_activationDistance = other->m_activationDistance;
 	m_nodePopDistance = other->m_nodePopDistance;
@@ -122,6 +118,7 @@ void WanderState::Deserialize(const nlohmann::json& data)
 	m_waitTimeVariance = data["WaitTimeVariance"];
 }
 
+#if EDITOR
 void WanderState::CreateEngineUI()
 {
 	FuzzyState::CreateEngineUI();
@@ -171,6 +168,7 @@ void WanderState::CreateEngineUI()
 
 	EditorUI::DragFloat("Wait Time Variance", m_waitTimeVariance, params);
 }
+#endif
 
 void WanderState::Start()
 {

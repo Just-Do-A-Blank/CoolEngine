@@ -6,11 +6,9 @@
 #include "Engine/AI/Pathfinding.h"
 #include "Engine/EditorUI/EditorUI.h"
 
-MeleeMovementState::MeleeMovementState(EnemyGameObject* penemy) : FuzzyState()
+MeleeMovementState::MeleeMovementState(EnemyGameObject* penemy) : FuzzyState(penemy)
 {
 	m_stateType = FuzzyStateType::MELEE_MOVEMENT;
-
-	m_penemy = penemy;
 }
 
 void MeleeMovementState::SetEnemy(EnemyGameObject* penemy)
@@ -18,18 +16,16 @@ void MeleeMovementState::SetEnemy(EnemyGameObject* penemy)
 	m_penemy = penemy;
 }
 
-MeleeMovementState::MeleeMovementState(const nlohmann::json& data) : FuzzyState(data)
+MeleeMovementState::MeleeMovementState(const nlohmann::json& data, EnemyGameObject* penemy) : FuzzyState(data, penemy)
 {
 	m_stateType = FuzzyStateType::MELEE_MOVEMENT;
 
 	Deserialize(data);
 }
 
-MeleeMovementState::MeleeMovementState(MeleeMovementState const* other, EnemyGameObject* penemy) : FuzzyState(other)
+MeleeMovementState::MeleeMovementState(MeleeMovementState const* other, EnemyGameObject* penemy) : FuzzyState(other, penemy)
 {
 	m_stateType = FuzzyStateType::MELEE_MOVEMENT;
-
-	m_penemy = penemy;
 
 	m_activationDistance = other->m_activationDistance;
 	m_maxActivationDistance = other->m_maxActivationDistance;

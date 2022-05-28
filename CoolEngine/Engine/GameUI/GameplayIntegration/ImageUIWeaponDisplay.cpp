@@ -44,29 +44,21 @@ void ImageUIWeaponDisplay::Start()
 /// <param name="weaponGameObject">The weapon to display</param>
 void ImageUIWeaponDisplay::Update(WeaponGameObject* weaponGameObject)
 {
-	switch (m_weaponAttachmentOption)
-	{
-		case EWEAPONUIATTACHMENTOPTION::Holding:
-			if (weaponGameObject != nullptr && m_texturePathAttached == std::wstring())
-			{
-				m_imageComponent->SetTexture(weaponGameObject->GetUITexturePath());
-			}
-			else
-			{
-				m_imageComponent->SetTexture(m_texturePathAttached);
-			}
-			break;
-		case EWEAPONUIATTACHMENTOPTION::Inventory:
-			if (weaponGameObject != nullptr && m_texturePathAttached == std::wstring())
-			{
-				m_imageComponent->SetTexture(weaponGameObject->GetUITexturePath());
-			}
-			else
-			{
-				m_imageComponent->SetTexture(m_texturePathNotAttached);
-			}
-		break;
-	}
+    if (weaponGameObject != nullptr)
+    {
+        if (m_texturePathAttached == std::wstring())
+        {
+            m_imageComponent->SetTexture(weaponGameObject->GetUITexturePath());
+        }
+        else
+        {
+            m_imageComponent->SetTexture(m_texturePathAttached);
+        }
+    }
+    else
+    {
+        m_imageComponent->SetTexture(m_texturePathNotAttached);
+    }
 }
 
 #if EDITOR
@@ -79,14 +71,14 @@ void ImageUIWeaponDisplay::Update(WeaponGameObject* weaponGameObject)
 
 			float colWidth = 150;
 			ImVec2 imageSize = ImVec2(100, 100);
-			EditorUI::Texture("Image if held", m_texturePathAttached, m_ptextureWeaponAttached, colWidth, imageSize);
+			EditorUI::Texture("Image if full", m_texturePathAttached, m_ptextureWeaponAttached, colWidth, imageSize);
 
 			if (EditorUI::BasicButton("Reset Image Held"))
 			{
 				SetAttachedTexture(std::wstring());
 			}
 
-			EditorUI::Texture("Image if not held", m_texturePathNotAttached, m_ptextureWeaponNotAttached, colWidth, imageSize);
+			EditorUI::Texture("Image if empty", m_texturePathNotAttached, m_ptextureWeaponNotAttached, colWidth, imageSize);
 
 			if (EditorUI::BasicButton("Reset Image Not Held"))
 			{

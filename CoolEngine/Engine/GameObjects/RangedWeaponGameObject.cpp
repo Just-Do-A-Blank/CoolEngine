@@ -142,7 +142,23 @@ void RangedWeaponGameObject::Attack()
 {
 	if (GameManager::GetInstance()->GetTimer()->GameTime() - m_lastShotTimestamp >= m_timeBetweenShots)
 	{
-		EventManager::Instance()->AddEvent(new CreateBulletEvent(this, m_transform->GetForwardVector(), m_transform->GetWorldPosition()));
+        float angle = MathHelper::DotProduct(XMFLOAT2(m_transform->GetForwardVector().x, m_transform->GetForwardVector().y), XMFLOAT2(0, 1));
+        angle = std::acosf(angle);
+        if (m_transform->GetForwardVector().x > 0.0f)
+        {
+            angle *= -1.0f;
+        }
+        angle += (XM_PIDIV2 - ((GetShotCount() - 1) * XM_PIDIV2 * m_angleInterval / 180.0f));
+        XMFLOAT3 direction;
+
+        for (size_t i = 0; i < GetShotCount(); ++i)
+        {
+            direction = XMFLOAT3(std::cosf(angle), std::sinf(angle), 0.0f);
+
+            EventManager::Instance()->AddEvent(new CreateBulletEvent(this, direction, m_transform->GetWorldPosition()));
+
+            angle += XM_PI * m_angleInterval / 180.0f;
+        }
 
 		m_lastShotTimestamp = GameManager::GetInstance()->GetTimer()->GameTime();
 	}
@@ -150,16 +166,5 @@ void RangedWeaponGameObject::Attack()
 
 void RangedWeaponGameObject::Update()
 {
-    XMFLOAT2 toWeapon;
-    if (GetIsPlayerWeapon())
-    {
-        toWeapon = MathHelper::Minus(GameManager::GetInstance()->GetCamera()->GetMousePositionInWorldSpace(), GetHolderPosition());
-    }
-    else
-    {
-        toWeapon = MathHelper::Minus(GetTargetPosition(), GetHolderPosition());
-    }
-    toWeapon = MathHelper::Normalize(toWeapon);
 
-    SetWeaponPosition(toWeapon);
 }

@@ -10,7 +10,7 @@ BulletCreator::BulletCreator()
 	EventManager::Instance()->AddClient(EventType::CreateBullet, this);
 	EventManager::Instance()->AddClient(EventType::MouseButtonPressed, this);
 
-	m_pBulletPool = new ObjectPool<BulletGameObject>(32);
+	m_pBulletPool = new ObjectPool<BulletGameObject>(64);
 }
 
 void BulletCreator::Render(RenderStruct& renderStruct)
@@ -49,9 +49,9 @@ BulletCreator::~BulletCreator()
 
 void BulletCreator::CreateBullet(CreateBulletEvent* e)
 {
-	BulletGameObject* p_bullet =  m_pBulletPool->CreateEntryInPool()->m_pObject;
+	BulletGameObject* p_bullet =  m_pBulletPool->CreateEntryInPool();
 
-	if (e->GetObj() == nullptr)
+	if (e->GetObj() == nullptr || p_bullet == nullptr)
 	{
 		return;
 	}
@@ -87,6 +87,7 @@ void BulletCreator::CreateBullet(CreateBulletEvent* e)
 	p_bullet->SetTotalTime(e->GetObj()->GetDistanceTravelled() / e->GetObj()->GetSpeed());
 	p_bullet->SetAlbedo(e->GetObj()->GetBulletTexturePath());
 }
+
 
 void BulletCreator::Handle(Event* e)
 {

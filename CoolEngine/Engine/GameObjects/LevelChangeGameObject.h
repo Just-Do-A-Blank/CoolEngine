@@ -20,6 +20,10 @@ public:
 	virtual void CreateEngineUI() override;
 #endif
 
+	void Handle(Event* e) override;
+
+	void Start() override;
+
 protected:
     /// <summary>
     /// Occurs when two objects collide without collision on. Fired every frame.
@@ -47,5 +51,7 @@ private:
 
 	string m_sceneName;
 	string m_playerName;
+
+	int m_enemiesInScene = -1;
 };
 

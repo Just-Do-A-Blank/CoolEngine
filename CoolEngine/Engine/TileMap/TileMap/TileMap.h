@@ -84,9 +84,9 @@ private:
 
 	bool GetCoordsFromWorldPos(int* prow, int* pcolumn, const XMFLOAT2& pos);
 
-	int	m_width;
-	int	m_height;
-	int	m_totalTiles;
+	int	m_width = 0;
+	int	m_height = 0;
+	int	m_totalTiles = 0;
 
 	int	m_tileScaleInt;
 	XMFLOAT3 m_tileScale;
@@ -98,4 +98,7 @@ private:
 
 	string m_tileMapName = "";
 	string m_editorTileMapName = "";
+
+	bool m_showColliders = false;
+	bool m_pathfindingMesh = false;
 };

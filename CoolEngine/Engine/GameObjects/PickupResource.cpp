@@ -4,7 +4,7 @@
 #include <algorithm>
 
 
-PickupResourceInterface::PickupResourceInterface(list<PickupResource*>* resources)
+PickupResourceInterface::PickupResourceInterface(unordered_set<PickupResource*>* resources)
 {
     m_pPickupEffects = resources;
     m_errorMsg = "";
@@ -103,7 +103,8 @@ void PickupResourceInterface::CreateNewResourceInterface()
 
     if (EditorUI::BasicButton("Add new effect"))
     {
-        m_pPickupEffects->push_back(new PickupResource());
+        
+        m_pPickupEffects->insert(new PickupResource());
     }
 
     ImGui::Spacing();
@@ -121,7 +122,11 @@ void PickupResourceInterface::DisplayResourcesForEdit()
     }
 
 
-    list<PickupResource*>::iterator i;
+    unordered_set<PickupResource*>::iterator i;
+    EditorUINonSpecificParameters nonPara;
+    nonPara.m_columnWidth = 150;
+    nonPara.m_tooltipText = "";
+
     int j = 0;
 
     for (i = m_pPickupEffects->begin();i != m_pPickupEffects->end(); i++)
@@ -131,8 +136,10 @@ void PickupResourceInterface::DisplayResourcesForEdit()
         string currentSelected = (*i)->key;
 
         unordered_set<string>::iterator it;
-        EditorUI::FullTitle("");
-        ImGui::Spacing();
+        string effectNum = "Effect ";
+        effectNum.append(to_string(j));
+
+        EditorUI::FullTitle(effectNum,nonPara);
 
         EditorUIFloatParameters floatParameters = EditorUIFloatParameters();
         floatParameters.m_tooltipText = "The strength of the effect (if singular use 1). Negative can subtract";
@@ -154,9 +161,6 @@ void PickupResourceInterface::DisplayResourcesForEdit()
             ImGui::EndCombo();
         }
 
-
-
-        
 
         ImGui::Spacing();
 
@@ -189,5 +193,5 @@ void PickupResourceInterface::TextToLower(string& text)
 
 void PickupResourceInterface::RemoveEffect(PickupResource* resource)
 {
-    m_pPickupEffects->remove(resource);
+    m_pPickupEffects->erase(resource);
 }

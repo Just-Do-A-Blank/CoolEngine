@@ -25,6 +25,7 @@ enum class GameObjectType
 	LEVEL_CHANGE = 32768,
 	TILE_MAP = 65536,
 	PICKUP = 131072,
+	SOUND = 262144,
 };
 
 DEFINE_ENUM_FLAG_OPERATORS(GameObjectType);
@@ -37,20 +38,21 @@ enum class AccumlateType
 	RENDERABLE  = (int)(GameObjectType::RENDERABLE | GameObjectType::BASE),
 	COLLIDABLE = (int)(GameObjectType::COLLIDABLE | GameObjectType::BASE),
 	COLLIDABLE_RENDERERABLE = (int)(GameObjectType::COLLIDABLE | GameObjectType::RENDERABLE | GameObjectType::BASE),
-	TRIGGERABLE = (int)((int)GameObjectType::TRIGGERABLE | COLLIDABLE_RENDERERABLE),
-	INTERACTABLE = (int)((int)GameObjectType::INTERACTABLE | TRIGGERABLE),
-	CHARACTER = (int)((int)GameObjectType::CHARACTER | TRIGGERABLE),
-	ENEMY = (int)((int)GameObjectType::ENEMY | CHARACTER),
-	PLAYER = (int)((int)GameObjectType::PLAYER | CHARACTER),
-	WEAPON = (int)((int)GameObjectType::WEAPON | TRIGGERABLE),
-	MELEE_WEAPON = (int)((int)GameObjectType::MELEE_WEAPON | WEAPON),
-	RANGE_WEAPON = (int)((int)GameObjectType::RANGE_WEAPON | WEAPON),
-	BULLET = (int)((int)GameObjectType::BULLET | WEAPON),
-	CAMERA = (int)((int)GameObjectType::CAMERA | BASE),
-	UI_COMPONENT = (int)((int)GameObjectType::GAME_UI_COMPONENT | BASE),
-	LEVEL_CHANGE = (int)((int)GameObjectType::LEVEL_CHANGE | TRIGGERABLE),
+	TRIGGERABLE = ((int)GameObjectType::TRIGGERABLE | COLLIDABLE_RENDERERABLE),
+	INTERACTABLE = ((int)GameObjectType::INTERACTABLE | TRIGGERABLE),
+	CHARACTER = ((int)GameObjectType::CHARACTER | TRIGGERABLE),
+	ENEMY = ((int)GameObjectType::ENEMY | CHARACTER),
+	PLAYER = ((int)GameObjectType::PLAYER | CHARACTER),
+	WEAPON = ((int)GameObjectType::WEAPON | TRIGGERABLE),
+	MELEE_WEAPON = ((int)GameObjectType::MELEE_WEAPON | WEAPON),
+	RANGE_WEAPON = ((int)GameObjectType::RANGE_WEAPON | WEAPON),
+	BULLET = ((int)GameObjectType::BULLET | WEAPON),
+	CAMERA = ((int)GameObjectType::CAMERA | BASE),
+	UI_COMPONENT = ((int)GameObjectType::GAME_UI_COMPONENT | BASE),
+	LEVEL_CHANGE = ((int)GameObjectType::LEVEL_CHANGE | TRIGGERABLE),
 	TILE_MAP = ((int)GameObjectType::TILE_MAP | RENDERABLE),
-	PICKUP = (int)((int)GameObjectType::PICKUP | INTERACTABLE)
+	PICKUP = ((int)GameObjectType::PICKUP | INTERACTABLE),
+	SOUND = ((int)GameObjectType::SOUND | TRIGGERABLE)
 };
 
 
@@ -66,6 +68,7 @@ protected:
 	Transform* m_transform;
 	string m_identifier;
 	CoolUUID m_UUID;
+	bool m_isEnabled;
 
 	GameObject* m_pTest = nullptr;
 
@@ -82,14 +85,14 @@ protected:
 
 public:
 	GameObject();
-	GameObject(GameObject const &other);
+	GameObject(GameObject const& other);
 	GameObject(string identifier, CoolUUID uuid);
 	GameObject(const nlohmann::json& data, CoolUUID uuid);
 	virtual ~GameObject();
 
-    /// <summary>
-    /// Called after construction, before first Update.
-    /// </summary>
+	/// <summary>
+	/// Called after construction, before first Update.
+	/// </summary>
 	virtual void Start();
 
 	virtual void Update();
@@ -99,6 +102,9 @@ public:
 
 	void Init(const nlohmann::json& data, CoolUUID uuid);
 	void Init(GameObject const& other);
+
+	void SetEnabled(bool isEnabled) { m_isEnabled = isEnabled; }
+	bool GetEnabled() { return m_isEnabled; }
 
 #if EDITOR
 	virtual void ShowEngineUI();

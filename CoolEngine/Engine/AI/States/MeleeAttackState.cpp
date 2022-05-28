@@ -5,25 +5,21 @@
 #include "Engine/GameObjects/MeleeWeaponGameObject.h"
 #include "Engine/EditorUI/EditorUI.h"
 
-MeleeAttackState::MeleeAttackState(EnemyGameObject* penemy) : FuzzyState()
+MeleeAttackState::MeleeAttackState(EnemyGameObject* penemy) : FuzzyState(penemy)
 {
 	m_stateType = FuzzyStateType::MELEE_ATTACK;
-
-	m_penemy = penemy;
 }
 
-MeleeAttackState::MeleeAttackState(const nlohmann::json& data) : FuzzyState(data)
+MeleeAttackState::MeleeAttackState(const nlohmann::json& data, EnemyGameObject* penemy) : FuzzyState(data, penemy)
 {
 	m_stateType = FuzzyStateType::MELEE_ATTACK;
 
 	Deserialize(data);
 }
 
-MeleeAttackState::MeleeAttackState(MeleeAttackState const* other, EnemyGameObject* penemy) : FuzzyState(other)
+MeleeAttackState::MeleeAttackState(MeleeAttackState const* other, EnemyGameObject* penemy) : FuzzyState(other, penemy)
 {
 	m_stateType = FuzzyStateType::MELEE_ATTACK;
-
-	m_penemy = penemy;
 
 	m_attackRangeVariance = other->m_attackRangeVariance;
 }
@@ -43,7 +39,7 @@ void MeleeAttackState::Exit()
 
 float MeleeAttackState::CalculateActivation()
 {
-	if (m_penemy->GetWeapon() == nullptr || m_penemy->GetWeapon()->ContainsType(GameObjectType::MELEE_WEAPON) == false)
+	if (!m_penemy || m_penemy->GetWeapon() == nullptr || m_penemy->GetWeapon()->ContainsType(GameObjectType::MELEE_WEAPON) == false)
 	{
 		return 0.0f;
 	}

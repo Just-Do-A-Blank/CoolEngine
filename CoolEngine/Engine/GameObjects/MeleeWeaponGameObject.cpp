@@ -151,22 +151,7 @@ void MeleeWeaponGameObject::Attack()
 
 void MeleeWeaponGameObject::Update()
 {
-    if (!m_isSwinging)
-    {
-        XMFLOAT2 toWeapon;
-        if (GetIsPlayerWeapon())
-        {
-            toWeapon = MathHelper::Minus(GameManager::GetInstance()->GetCamera()->GetMousePositionInWorldSpace(), GetHolderPosition());
-        }
-        else
-        {
-            toWeapon = MathHelper::Minus(GetTargetPosition(), GetHolderPosition());
-        }
-        toWeapon = MathHelper::Normalize(toWeapon);
-
-        SetWeaponPosition(toWeapon);
-    }
-    else if (m_isSwinging && m_currentSwingTime > 0.0f)
+    if (m_isSwinging && m_currentSwingTime > 0.0f)
     {
         XMFLOAT2 toWeapon = XMFLOAT2(std::cosf(XM_PI * m_currentSwingAngle / 180.0f), std::sinf(XM_PI * m_currentSwingAngle / 180.0f));
         SetWeaponPosition(toWeapon);

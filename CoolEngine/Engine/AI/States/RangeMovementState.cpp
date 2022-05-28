@@ -4,25 +4,21 @@
 #include "Engine/GameObjects/PlayerGameObject.h"
 #include "Engine/EditorUI/EditorUI.h"
 
-RangeMovementState::RangeMovementState(EnemyGameObject* penemy) : FuzzyState()
+RangeMovementState::RangeMovementState(EnemyGameObject* penemy) : FuzzyState(penemy)
 {
 	m_stateType = FuzzyStateType::RANGE_MOVEMENT;
-
-	m_penemy = penemy;
 }
 
-RangeMovementState::RangeMovementState(const nlohmann::json& data) : FuzzyState(data)
+RangeMovementState::RangeMovementState(const nlohmann::json& data, EnemyGameObject* penemy) : FuzzyState(data, penemy)
 {
 	m_stateType = FuzzyStateType::RANGE_MOVEMENT;
 
 	Deserialize(data);
 }
 
-RangeMovementState::RangeMovementState(RangeMovementState const* other, EnemyGameObject* penemy) : FuzzyState(other)
+RangeMovementState::RangeMovementState(RangeMovementState const* other, EnemyGameObject* penemy) : FuzzyState(other, penemy)
 {
 	m_stateType = FuzzyStateType::RANGE_MOVEMENT;
-
-	m_penemy = penemy;
 
 	m_maxActivationDistance = other->m_maxActivationDistance;
 	m_nodePopDistance = other->m_nodePopDistance;
@@ -123,6 +119,7 @@ void RangeMovementState::Deserialize(const nlohmann::json& data)
 	m_lowerOptimalDistanceMultiplier = data["LowerOptimalDistance"];
 }
 
+#if EDITOR
 void RangeMovementState::CreateEngineUI()
 {
 	FuzzyState::CreateEngineUI();
@@ -174,6 +171,7 @@ void RangeMovementState::CreateEngineUI()
 
 	EditorUI::DragFloat("Maximum Activation Multiplier", m_upperOptimalDistanceMultiplier, params);
 }
+#endif
 
 XMFLOAT3 RangeMovementState::CalculateTargetPosition() const
 {

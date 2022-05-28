@@ -225,7 +225,7 @@ void Collision::Update(vector<GameObject*> gameObjectMap)
 
 	for (int it1 = 0; it1 < gameObjectMap.size(); ++it1)
 	{
-		if (gameObjectMap[it1]->ContainsType(GameObjectType::COLLIDABLE) == false)
+		if (gameObjectMap[it1]->ContainsType(GameObjectType::COLLIDABLE) == false || gameObjectMap[it1]->GetEnabled() == false)
 		{
 			continue;
 		}
@@ -236,47 +236,53 @@ void Collision::Update(vector<GameObject*> gameObjectMap)
 		{
 			XMFLOAT3 p = pcollidable1->GetTransform()->GetWorldPosition();
 			XMFLOAT2 d = pcollidable1->GetShape()->GetShapeDimensions();
+
+#if _DEBUG
 			DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect(p, XMFLOAT3(d.x, d.y, 1), DebugDrawManager::DebugColour::PURPLE);
+#endif
 		}
 	}
 
 	for (int it1 = 0; it1 < gameObjectMap.size(); ++it1)
 	{
-		for (int it2 = 0; it2 < gameObjectMap.size(); ++it2)
+		if (gameObjectMap[it1]->GetEnabled() == false)
 		{
-			if (it1 != it2)
+			continue;
+		}
+
+		for (int it2 = it1+1; it2 < gameObjectMap.size(); ++it2)
+		{
+			if (gameObjectMap[it1]->ContainsType(GameObjectType::COLLIDABLE) == false || gameObjectMap[it2]->ContainsType(GameObjectType::COLLIDABLE) == false || gameObjectMap[it2]->GetEnabled() == false)
 			{
-				if (gameObjectMap[it1]->ContainsType(GameObjectType::COLLIDABLE) == false || gameObjectMap[it2]->ContainsType(GameObjectType::COLLIDABLE) == false)
-				{
-					continue;
-				}
+				continue;
+			}
 
-				pcollidable1 = dynamic_cast<CollidableGameObject*>(gameObjectMap[it1]);
-				pcollidable2 = dynamic_cast<CollidableGameObject*>(gameObjectMap[it2]);
+			pcollidable1 = dynamic_cast<CollidableGameObject*>(gameObjectMap[it1]);
+			pcollidable2 = dynamic_cast<CollidableGameObject*>(gameObjectMap[it2]);
 
-				if (pcollidable1->GetShape() == nullptr || pcollidable2->GetShape() == nullptr)
-				{
-					continue;
-				}
+			if (pcollidable1->GetShape() == nullptr || pcollidable2->GetShape() == nullptr)
+			{
+				continue;
+			}
 
-				// Whether to just collide or collide with response
-				if (pcollidable1->GetShape()->IsCollidable() && pcollidable2->GetShape()->IsCollidable())
+			// Whether to just collide or collide with response
+			if (pcollidable1->GetShape()->IsCollidable() && pcollidable2->GetShape()->IsCollidable())
+			{
+				bool hasCollided = pcollidable1->GetShape()->CollideResponse(pcollidable2->GetShape());
+				if (hasCollided)
 				{
-					bool hasCollided = pcollidable1->GetShape()->CollideResponse(pcollidable2->GetShape());
-					if (hasCollided)
-					{
-						EventManager::Instance()->AddEvent(new CollisionHoldEvent(pcollidable1, pcollidable2));
-					}
-				}
-				else if (pcollidable1->GetShape()->IsTrigger() && pcollidable2->GetShape()->IsTrigger() || pcollidable1->GetShape()->IsCollidable() && pcollidable2->GetShape()->IsTrigger() || pcollidable2->GetShape()->IsCollidable() && pcollidable1->GetShape()->IsTrigger())
-				{
-					bool hasCollided = pcollidable1->GetShape()->Collide(pcollidable2->GetShape());
-					if (hasCollided)
-					{
-						EventManager::Instance()->AddEvent(new TriggerHoldEvent(pcollidable1, pcollidable2));
-					}
+					EventManager::Instance()->AddEvent(new CollisionHoldEvent(pcollidable1, pcollidable2));
 				}
 			}
+			else if (pcollidable1->GetShape()->IsTrigger() && pcollidable2->GetShape()->IsTrigger() || pcollidable1->GetShape()->IsCollidable() && pcollidable2->GetShape()->IsTrigger() || pcollidable2->GetShape()->IsCollidable() && pcollidable1->GetShape()->IsTrigger())
+			{
+				bool hasCollided = pcollidable1->GetShape()->Collide(pcollidable2->GetShape());
+				if (hasCollided)
+				{
+					EventManager::Instance()->AddEvent(new TriggerHoldEvent(pcollidable1, pcollidable2));
+				}
+			}
+
 		}
 	}
 }
@@ -338,7 +344,27 @@ void Collision::Update(vector<GameObject*>& gameObjectMap, vector<Tile*>& tiles)
 				continue;
 			}
 
-			if (pcollidable->GetShape()->IsCollidable() && pcollidable->GetShape()->IsTrigger() == false)
+			if (pcollidable->GetShape() != nullptr && pcollidable->GetShape()->IsRendered())
+			{
+				XMFLOAT3 p = pcollidable->GetTransform()->GetWorldPosition();
+				XMFLOAT2 d = pcollidable->GetShape()->GetShapeDimensions();
+
+#if _DEBUG
+				DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect(p, XMFLOAT3(d.x, d.y, 1), DebugDrawManager::DebugColour::PURPLE);
+#endif
+			}
+
+			if (tiles[j]->GetShape() != nullptr && tiles[j]->GetShape()->IsRendered())
+			{
+				XMFLOAT3 p = tiles[j]->GetTransform()->GetWorldPosition();
+				XMFLOAT2 d = tiles[j]->GetShape()->GetShapeDimensions();
+
+#if _DEBUG
+				DebugDrawManager::GetInstance()->CreateWorldSpaceDebugRect(p, XMFLOAT3(d.x, d.y, 1), DebugDrawManager::DebugColour::PURPLE);
+#endif
+			}
+
+			if (pcollidable->GetShape()->IsCollidable() == true)
 			{
 				bool hasCollided = pcollidable->GetShape()->CollideResponse(tiles[j]->GetShape());
 
