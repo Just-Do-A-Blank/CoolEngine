@@ -1,1 +1,30 @@
-{"AnimationStateMachine":{"ActiveState":"DoorClosed","States":{"DoorClosed":{"Anim":"Animations\\WoodDoorClosed.json","AnimIsLooping":true,"BoolTransitions":{"EnemiesDead":[[false,true,"DoorOpenned"]]},"FloatTransitions":null,"IntTransitions":null},"DoorOpenned":{"Anim":"Animations\\WoodDoorOpen.json","AnimIsLooping":true,"BoolTransitions":null,"FloatTransitions":null,"IntTransitions":null}}},"BoxScale":[1.0,1.0],"IsCollidable":false,"IsRenderable":true,"IsTrigger":true,"Layers":0,"PrefabKey":"door","ShapeType":"Box","TexturePath":"Resources\\Sprites\\General\\Doors\\DoorOpen.dds"}
+{
+  
+  "AnimationStateMachine": {
+    "ActiveState": "DoorClosed",
+    "States": {
+      "DoorClosed": {
+        "Anim": "Animations\\WoodDoorClosed.json",
+        "AnimIsLooping": true,
+        "BoolTransitions": { "EnemiesDead": [ [ false, true, "DoorOpenned" ] ] },
+        "FloatTransitions": null,
+        "IntTransitions": null
+      },
+      "DoorOpenned": {
+        "Anim": "Animations\\WoodDoorOpen.json",
+        "AnimIsLooping": true,
+        "BoolTransitions": null,
+        "FloatTransitions": null,
+        "IntTransitions": null
+      }
+    }
+  },
+  "BoxScale": [ 1.0, 1.0 ],
+  "IsCollidable": false,
+  "IsRenderable": true,
+  "IsTrigger": true,
+  "Layers": 0,
+  "PrefabKey": "door",
+  "ShapeType": "Box",
+  "TexturePath": "Resources\\Sprites\\General\\Doors\\DoorOpen.dds"
+}

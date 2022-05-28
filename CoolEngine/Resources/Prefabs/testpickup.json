@@ -1,1 +1,20 @@
-{"AnimationStateMachine":{"ActiveState":"","States":null},"BoxScale":[1.0,1.0],"ConsumedOnPickup":false,"EffectName0":"hp","EffectStrength0":13.800000190734863,"IsCollidable":false,"IsRenderable":true,"IsTrigger":true,"Layers":0,"PickupQuantity":0,"PickupUITexturePath":"","PrefabKey":"testpickup","ShapeType":"Box","TexturePath":"Resources\\Sprites\\Brick.dds"}
+{
+  
+  "AnimationStateMachine": {
+    "ActiveState": "",
+    "States": null
+  },
+  "BoxScale": [ 1.0, 1.0 ],
+  "ConsumedOnPickup": false,
+  "EffectName0": "hp",
+  "EffectStrength0": 13.800000190734863,
+  "IsCollidable": false,
+  "IsRenderable": true,
+  "IsTrigger": true,
+  "Layers": 0,
+  "PickupQuantity": 0,
+  "PickupUITexturePath": "",
+  "PrefabKey": "testpickup",
+  "ShapeType": "Box",
+  "TexturePath": "Resources\\Sprites\\Brick.dds"
+}

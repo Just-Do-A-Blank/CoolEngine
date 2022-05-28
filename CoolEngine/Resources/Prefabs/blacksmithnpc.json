@@ -1,1 +1,23 @@
-{"AnimationStateMachine":{"ActiveState":"asd","States":{"asd":{"Anim":"Animations\\BlacksmithIdleAnim.json","AnimIsLooping":true,"BoolTransitions":null,"FloatTransitions":null,"IntTransitions":null}}},"BoxScale":[1.0,1.0],"IsCollidable":true,"IsRenderable":true,"IsTrigger":false,"Layers":0,"PrefabKey":"blacksmithnpc","ShapeType":"Box","TexturePath":"Resources\\Sprites\\General\\Characters\\BlacksmithShopKeeper\\ShopKeeper1.dds"}
+{
+
+  "AnimationStateMachine": {
+    "ActiveState": "asd",
+    "States": {
+      "asd": {
+        "Anim": "Animations\\BlacksmithIdleAnim.json",
+        "AnimIsLooping": true,
+        "BoolTransitions": null,
+        "FloatTransitions": null,
+        "IntTransitions": null
+      }
+    }
+  },
+  "BoxScale": [ 1.0, 1.0 ],
+  "IsCollidable": true,
+  "IsRenderable": true,
+  "IsTrigger": false,
+  "Layers": 0,
+  "PrefabKey": "blacksmithnpc",
+  "ShapeType": "Box",
+  "TexturePath": "Resources\\Sprites\\General\\Characters\\BlacksmithShopKeeper\\ShopKeeper1.dds"
+}
