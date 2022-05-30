@@ -559,64 +559,140 @@ void FiniteState::CreateIntTransitionUI()
 
 #endif
 
-void FiniteState::Serialize(nlohmann::json& data, FiniteStateMachine* pstateMachine)
+void FiniteState::ExportTransitions(nlohmann::json& data, FiniteStateMachine* pstateMachine)
 {
-	data[m_name]["BoolTransitions"] = {};
+	data["BoolTransitions"] = {};
 
 	for (std::unordered_map<std::string, TransitionInfo<bool>>::iterator it = m_boolTransitionInfo.begin(); it != m_boolTransitionInfo.end(); ++it)
 	{
-		data[m_name]["BoolTransitions"][it->first].push_back({ it->second.CurrentValue, it->second.TransitionValue, pstateMachine->GetStateName(it->second.NewState) });
+		data["BoolTransitions"][it->first].push_back({ it->second.CurrentValue, it->second.TransitionValue, pstateMachine->GetStateName(it->second.NewState) });
 	}
 
-	data[m_name]["IntTransitions"] = {};
+	data["IntTransitions"] = {};
 
 	for (std::unordered_map<std::string, TransitionInfo<int>>::iterator it = m_intTransitionInfo.begin(); it != m_intTransitionInfo.end(); ++it)
 	{
-		data[m_name]["IntTransitions"][it->first].push_back({ it->second.CurrentValue, it->second.TransitionValue, pstateMachine->GetStateName(it->second.NewState) });
+		data["IntTransitions"][it->first].push_back({ it->second.CurrentValue, it->second.TransitionValue, pstateMachine->GetStateName(it->second.NewState) });
 	}
 
-	data[m_name]["FloatTransitions"] = {};
+	data["FloatTransitions"] = {};
 
 	for (std::unordered_map<std::string, TransitionInfo<float>>::iterator it = m_floatTransitionInfo.begin(); it != m_floatTransitionInfo.end(); ++it)
 	{
-		data[m_name]["FloatTransitions"][it->first].push_back({ it->second.CurrentValue, it->second.TransitionValue, pstateMachine->GetStateName(it->second.NewState) });
+		data["FloatTransitions"][it->first].push_back({ it->second.CurrentValue, it->second.TransitionValue, pstateMachine->GetStateName(it->second.NewState) });
 	}
+}
+
+void FiniteState::ImportTransition(const nlohmann::json& data, FiniteStateMachine* pstateMachine)
+{
+    for (nlohmann::json::const_iterator it = data["BoolTransitions"].begin(); it != data["BoolTransitions"].end(); ++it)
+    {
+        TransitionInfo<bool> info;
+        info.CurrentValue = data["BoolTransitions"][it.key()][0][0];
+        //info.ResetValue = info.CurrentValue;
+        //info.TransitionValue = data[m_name]["BoolTransitions"][it.key()][0][1];
+        //info.NewState = pstateMachine->GetState(data[m_name]["BoolTransitions"][it.key()][0][2]);
+
+        // Only copy the current values
+        if (m_boolTransitionInfo.find(it.key()) != m_boolTransitionInfo.end())
+        {
+            m_boolTransitionInfo[it.key()].CurrentValue = info.CurrentValue;
+        }
+	}
+
+	for (nlohmann::json::const_iterator it = data["IntTransitions"].begin(); it != data["IntTransitions"].end(); ++it)
+	{
+		TransitionInfo<int> info;
+		info.CurrentValue = data["IntTransitions"][it.key()][0][0];
+		//info.ResetValue = info.CurrentValue;
+		//info.TransitionValue = data[m_name]["IntTransitions"][it.key()][0][1];
+		//info.NewState = pstateMachine->GetState(data[m_name]["IntTransitions"][it.key()][0][2]);
+
+		//m_intTransitionInfo[it.key()] = info;
+
+        // Only copy the current values
+        if (m_intTransitionInfo.find(it.key()) != m_intTransitionInfo.end())
+        {
+            m_intTransitionInfo[it.key()].CurrentValue = info.CurrentValue;
+        }
+	}
+
+	for (nlohmann::json::const_iterator it = data["FloatTransitions"].begin(); it != data["FloatTransitions"].end(); ++it)
+	{
+		TransitionInfo<float> info;
+		info.CurrentValue = data["FloatTransitions"][it.key()][0][0];
+		//info.ResetValue = info.CurrentValue;
+		//info.TransitionValue = data[m_name]["FloatTransitions"][it.key()][0][1];
+		//info.NewState = pstateMachine->GetState(data[m_name]["FloatTransitions"][it.key()][0][2]);
+
+		//m_floatTransitionInfo[it.key()] = info;
+
+        // Only copy the current values
+        if (m_floatTransitionInfo.find(it.key()) != m_floatTransitionInfo.end())
+        {
+            m_floatTransitionInfo[it.key()].CurrentValue = info.CurrentValue;
+        }
+	}
+}
+
+void FiniteState::Serialize(nlohmann::json& data, FiniteStateMachine* pstateMachine)
+{
+    data[m_name]["BoolTransitions"] = {};
+
+    for (std::unordered_map<std::string, TransitionInfo<bool>>::iterator it = m_boolTransitionInfo.begin(); it != m_boolTransitionInfo.end(); ++it)
+    {
+        data[m_name]["BoolTransitions"][it->first].push_back({ it->second.CurrentValue, it->second.TransitionValue, pstateMachine->GetStateName(it->second.NewState) });
+    }
+
+    data[m_name]["IntTransitions"] = {};
+
+    for (std::unordered_map<std::string, TransitionInfo<int>>::iterator it = m_intTransitionInfo.begin(); it != m_intTransitionInfo.end(); ++it)
+    {
+        data[m_name]["IntTransitions"][it->first].push_back({ it->second.CurrentValue, it->second.TransitionValue, pstateMachine->GetStateName(it->second.NewState) });
+    }
+
+    data[m_name]["FloatTransitions"] = {};
+
+    for (std::unordered_map<std::string, TransitionInfo<float>>::iterator it = m_floatTransitionInfo.begin(); it != m_floatTransitionInfo.end(); ++it)
+    {
+        data[m_name]["FloatTransitions"][it->first].push_back({ it->second.CurrentValue, it->second.TransitionValue, pstateMachine->GetStateName(it->second.NewState) });
+    }
 }
 
 void FiniteState::Deserialize(const nlohmann::json& data, FiniteStateMachine* pstateMachine)
 {
-	for (nlohmann::json::const_iterator it = data[m_name]["BoolTransitions"].begin(); it != data[m_name]["BoolTransitions"].end(); ++it)
-	{
-		TransitionInfo<bool> info;
-		info.CurrentValue = data[m_name]["BoolTransitions"][it.key()][0][0];
-		info.ResetValue = info.CurrentValue;
-		info.TransitionValue = data[m_name]["BoolTransitions"][it.key()][0][1];
-		info.NewState = pstateMachine->GetState(data[m_name]["BoolTransitions"][it.key()][0][2]);
+    for (nlohmann::json::const_iterator it = data[m_name]["BoolTransitions"].begin(); it != data[m_name]["BoolTransitions"].end(); ++it)
+    {
+        TransitionInfo<bool> info;
+        info.CurrentValue = data[m_name]["BoolTransitions"][it.key()][0][0];
+        info.ResetValue = info.CurrentValue;
+        info.TransitionValue = data[m_name]["BoolTransitions"][it.key()][0][1];
+        info.NewState = pstateMachine->GetState(data[m_name]["BoolTransitions"][it.key()][0][2]);
 
-		m_boolTransitionInfo[it.key()] = info;
-	}
+        m_boolTransitionInfo[it.key()] = info;
+    }
 
-	for (nlohmann::json::const_iterator it = data[m_name]["IntTransitions"].begin(); it != data[m_name]["IntTransitions"].end(); ++it)
-	{
-		TransitionInfo<int> info;
-		info.CurrentValue = data[m_name]["IntTransitions"][it.key()][0][0];
-		info.ResetValue = info.CurrentValue;
-		info.TransitionValue = data[m_name]["IntTransitions"][it.key()][0][1];
-		info.NewState = pstateMachine->GetState(data[m_name]["IntTransitions"][it.key()][0][2]);
+    for (nlohmann::json::const_iterator it = data[m_name]["IntTransitions"].begin(); it != data[m_name]["IntTransitions"].end(); ++it)
+    {
+        TransitionInfo<int> info;
+        info.CurrentValue = data[m_name]["IntTransitions"][it.key()][0][0];
+        info.ResetValue = info.CurrentValue;
+        info.TransitionValue = data[m_name]["IntTransitions"][it.key()][0][1];
+        info.NewState = pstateMachine->GetState(data[m_name]["IntTransitions"][it.key()][0][2]);
 
-		m_intTransitionInfo[it.key()] = info;
-	}
+        m_intTransitionInfo[it.key()] = info;
+    }
 
-	for (nlohmann::json::const_iterator it = data[m_name]["FloatTransitions"].begin(); it != data[m_name]["FloatTransitions"].end(); ++it)
-	{
-		TransitionInfo<float> info;
-		info.CurrentValue = data[m_name]["FloatTransitions"][it.key()][0][0];
-		info.ResetValue = info.CurrentValue;
-		info.TransitionValue = data[m_name]["FloatTransitions"][it.key()][0][1];
-		info.NewState = pstateMachine->GetState(data[m_name]["FloatTransitions"][it.key()][0][2]);
+    for (nlohmann::json::const_iterator it = data[m_name]["FloatTransitions"].begin(); it != data[m_name]["FloatTransitions"].end(); ++it)
+    {
+        TransitionInfo<float> info;
+        info.CurrentValue = data[m_name]["FloatTransitions"][it.key()][0][0];
+        info.ResetValue = info.CurrentValue;
+        info.TransitionValue = data[m_name]["FloatTransitions"][it.key()][0][1];
+        info.NewState = pstateMachine->GetState(data[m_name]["FloatTransitions"][it.key()][0][2]);
 
-		m_floatTransitionInfo[it.key()] = info;
-	}
+        m_floatTransitionInfo[it.key()] = info;
+    }
 }
 
 void FiniteState::SetName(std::string name)

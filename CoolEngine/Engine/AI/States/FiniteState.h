@@ -37,6 +37,9 @@ public:
 
 	virtual bool Transition(FiniteState*& pnewState);
 
+    virtual void ImportTransition(const nlohmann::json& data, FiniteStateMachine* pstateMachine);
+    virtual void ExportTransitions(nlohmann::json& data, FiniteStateMachine* pstateMachine);
+
 #if EDITOR
 	virtual void CreateEngineUI();
 #endif

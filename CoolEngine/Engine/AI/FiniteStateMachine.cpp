@@ -98,10 +98,13 @@ void FiniteStateMachine::Update()
 		if (m_pstate->Transition(pstate) == true)
 		{
 			m_pstate->Exit();
+            nlohmann::json data = nlohmann::json();
+            m_pstate->ExportTransitions(data, this);
 
 			m_pstate = pstate;
 
 			m_pstate->Enter();
+            m_pstate->ImportTransition(data, this);
 		}
 	}
 }
